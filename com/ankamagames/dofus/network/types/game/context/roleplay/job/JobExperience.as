@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
          return 98;
       }
       
-      public function initJobExperience(jobId:uint=0, jobLevel:uint=0, jobXP:Number=0, jobXpLevelFloor:Number=0, jobXpNextLevelFloor:Number=0) : JobExperience {
+      public function initJobExperience(jobId:uint = 0, jobLevel:uint = 0, jobXP:Number = 0, jobXpLevelFloor:Number = 0, jobXpNextLevelFloor:Number = 0) : JobExperience {
          this.jobId = jobId;
          this.jobLevel = jobLevel;
          this.jobXP = jobXP;

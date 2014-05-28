@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          return 5732;
       }
       
-      public function initGameRolePlayPlayerFightFriendlyAnswerMessage(fightId:int=0, accept:Boolean=false) : GameRolePlayPlayerFightFriendlyAnswerMessage {
+      public function initGameRolePlayPlayerFightFriendlyAnswerMessage(fightId:int = 0, accept:Boolean = false) : GameRolePlayPlayerFightFriendlyAnswerMessage {
          this.fightId = fightId;
          this.accept = accept;
          this._isInitialized = true;

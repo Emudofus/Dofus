@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6397;
       }
       
-      public function initAllianceInvitedMessage(recruterId:uint=0, recruterName:String="", allianceInfo:BasicNamedAllianceInformations=null) : AllianceInvitedMessage {
+      public function initAllianceInvitedMessage(recruterId:uint = 0, recruterName:String = "", allianceInfo:BasicNamedAllianceInformations = null) : AllianceInvitedMessage {
          this.recruterId = recruterId;
          this.recruterName = recruterName;
          this.allianceInfo = allianceInfo;

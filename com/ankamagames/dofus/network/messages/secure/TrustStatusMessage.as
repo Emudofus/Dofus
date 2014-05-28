@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.secure
          return 6267;
       }
       
-      public function initTrustStatusMessage(trusted:Boolean=false) : TrustStatusMessage {
+      public function initTrustStatusMessage(trusted:Boolean = false) : TrustStatusMessage {
          this.trusted = trusted;
          this._isInitialized = true;
          return this;

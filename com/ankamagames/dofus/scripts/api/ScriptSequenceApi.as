@@ -3,7 +3,6 @@ package com.ankamagames.dofus.scripts.api
    import com.ankamagames.jerakine.lua.LuaPackage;
    import com.ankamagames.jerakine.sequencer.SerialSequencer;
    import com.ankamagames.jerakine.types.events.SequencerEvent;
-   import __AS3__.vec.*;
    
    public class ScriptSequenceApi extends Object implements LuaPackage
    {
@@ -35,7 +34,7 @@ package com.ankamagames.dofus.scripts.api
       
       public function clear() : void {
          var seq:SerialSequencer = null;
-         for each (seq in this._sequencers)
+         for each(seq in this._sequencers)
          {
             seq.clear();
          }
@@ -49,7 +48,7 @@ package com.ankamagames.dofus.scripts.api
          this._sequencers.splice(this._sequencers.indexOf(pEvent.currentTarget),1);
          if(this._sequencers.length == 0)
          {
-            for each (c in this._callbacks)
+            for each(c in this._callbacks)
             {
                c.apply();
             }

@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.look
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.types.game.look
          return 55;
       }
       
-      public function initEntityLook(bonesId:uint=0, skins:Vector.<uint>=null, indexedColors:Vector.<int>=null, scales:Vector.<int>=null, subentities:Vector.<SubEntity>=null) : EntityLook {
+      public function initEntityLook(bonesId:uint = 0, skins:Vector.<uint> = null, indexedColors:Vector.<int> = null, scales:Vector.<int> = null, subentities:Vector.<SubEntity> = null) : EntityLook {
          this.bonesId = bonesId;
          this.skins = skins;
          this.indexedColors = indexedColors;

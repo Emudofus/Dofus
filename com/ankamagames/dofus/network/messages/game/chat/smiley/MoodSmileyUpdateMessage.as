@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.chat.smiley
          return 6388;
       }
       
-      public function initMoodSmileyUpdateMessage(accountId:uint=0, playerId:uint=0, smileyId:int=0) : MoodSmileyUpdateMessage {
+      public function initMoodSmileyUpdateMessage(accountId:uint = 0, playerId:uint = 0, smileyId:int = 0) : MoodSmileyUpdateMessage {
          this.accountId = accountId;
          this.playerId = playerId;
          this.smileyId = smileyId;

@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.types.game.friend
          return 105;
       }
       
-      public function initIgnoredOnlineInformations(accountId:uint=0, accountName:String="", playerId:uint=0, playerName:String="", breed:int=0, sex:Boolean=false) : IgnoredOnlineInformations {
+      public function initIgnoredOnlineInformations(accountId:uint = 0, accountName:String = "", playerId:uint = 0, playerName:String = "", breed:int = 0, sex:Boolean = false) : IgnoredOnlineInformations {
          super.initIgnoredInformations(accountId,accountName);
          this.playerId = playerId;
          this.playerName = playerName;

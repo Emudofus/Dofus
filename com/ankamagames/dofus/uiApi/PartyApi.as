@@ -5,7 +5,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.dofus.logic.game.common.frames.PartyManagementFrame;
    import com.ankamagames.dofus.kernel.Kernel;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.uiApi
          this._module = null;
       }
       
-      public function getPartyMembers(typeId:int=0) : Object {
+      public function getPartyMembers(typeId:int = 0) : Object {
          if(typeId == 1)
          {
             return this.partyManagementFrame.arenaPartyMembers;
@@ -45,7 +44,7 @@ package com.ankamagames.dofus.uiApi
          var pMember:Object = null;
          if(partyId == this.partyManagementFrame.arenaPartyId)
          {
-            for each (pMember in this.partyManagementFrame.arenaPartyMembers)
+            for each(pMember in this.partyManagementFrame.arenaPartyMembers)
             {
                if(pMember.isLeader)
                {
@@ -53,32 +52,30 @@ package com.ankamagames.dofus.uiApi
                }
             }
          }
-         else
+         else if(partyId == this.partyManagementFrame.partyId)
          {
-            if(partyId == this.partyManagementFrame.partyId)
+            for each(pMember in this.partyManagementFrame.partyMembers)
             {
-               for each (pMember in this.partyManagementFrame.partyMembers)
+               if(pMember.isLeader)
                {
-                  if(pMember.isLeader)
-                  {
-                     return pMember.id;
-                  }
+                  return pMember.id;
                }
             }
          }
+         
          return -1;
       }
       
       public function isInParty(pPlayerId:uint) : Boolean {
          var pMember:Object = null;
-         for each (pMember in this.partyManagementFrame.partyMembers)
+         for each(pMember in this.partyManagementFrame.partyMembers)
          {
             if(pPlayerId == pMember.id)
             {
                return true;
             }
          }
-         for each (pMember in this.partyManagementFrame.arenaPartyMembers)
+         for each(pMember in this.partyManagementFrame.arenaPartyMembers)
          {
             if(pPlayerId == pMember.id)
             {

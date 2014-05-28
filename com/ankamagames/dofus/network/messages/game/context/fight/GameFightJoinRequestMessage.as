@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 701;
       }
       
-      public function initGameFightJoinRequestMessage(fighterId:int=0, fightId:int=0) : GameFightJoinRequestMessage {
+      public function initGameFightJoinRequestMessage(fighterId:int = 0, fightId:int = 0) : GameFightJoinRequestMessage {
          this.fighterId = fighterId;
          this.fightId = fightId;
          this._isInitialized = true;

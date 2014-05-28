@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6221;
       }
       
-      public function initGameActionFightSpellImmunityMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, spellId:uint=0) : GameActionFightSpellImmunityMessage {
+      public function initGameActionFightSpellImmunityMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, spellId:uint = 0) : GameActionFightSpellImmunityMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this.spellId = spellId;

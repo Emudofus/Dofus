@@ -38,7 +38,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(CurrentPlayedFighterManager));
+      private static const _log:Logger;
       
       private static var _self:CurrentPlayedFighterManager;
       
@@ -116,16 +116,14 @@ package com.ankamagames.dofus.logic.game.fight.managers
          {
             PlayedCharacterManager.getInstance().characteristics = characteristics;
          }
-         else
+         else if(!this._characteristicsInformationsList[id])
          {
-            if(!this._characteristicsInformationsList[id])
-            {
-               this._characteristicsInformationsList[id] = characteristics;
-            }
+            this._characteristicsInformationsList[id] = characteristics;
          }
+         
       }
       
-      public function getCharacteristicsInformations(id:int=0) : CharacterCharacteristicsInformations {
+      public function getCharacteristicsInformations(id:int = 0) : CharacterCharacteristicsInformations {
          var player:PlayedCharacterManager = PlayedCharacterManager.getInstance();
          if(id)
          {
@@ -146,7 +144,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          var thisSpell:SpellWrapper = null;
          var spellKnown:SpellWrapper = null;
          var player:PlayedCharacterManager = PlayedCharacterManager.getInstance();
-         for each (spellKnown in player.spellsInventory)
+         for each(spellKnown in player.spellsInventory)
          {
             if(spellKnown.id == spellId)
             {
@@ -176,170 +174,13 @@ package com.ankamagames.dofus.logic.game.fight.managers
          return scm;
       }
       
-      public function canCastThisSpell(spellId:uint, lvl:uint, pTargetId:int=2147483647) : Boolean {
-         var thisSpell:SpellWrapper = null;
-         var spellKnown:SpellWrapper = null;
-         var apCost:uint = 0;
-         var maxCastPerTurn:uint = 0;
-         var spellModification:CharacterSpellModification = null;
-         var state:* = 0;
-         var stateRequired:* = 0;
-         var weapon:Weapon = null;
-         var currentState:SpellState = null;
-         var weapon2:Weapon = null;
-         var numberCastOnTarget:uint = 0;
-         var spell:Spell = Spell.getSpellById(spellId);
-         var spellLevel:SpellLevel = spell.getSpellLevel(lvl);
-         if(spellLevel == null)
-         {
-            return false;
-         }
-         var player:PlayedCharacterManager = PlayedCharacterManager.getInstance();
-         if(spellLevel.minPlayerLevel > player.infos.level)
-         {
-            return false;
-         }
-         for each (spellKnown in player.spellsInventory)
-         {
-            if(spellKnown.id == spellId)
-            {
-               thisSpell = spellKnown;
-            }
-         }
-         if(!thisSpell)
-         {
-            return false;
-         }
-         var characteristics:CharacterCharacteristicsInformations = this.getCharacteristicsInformations();
-         if(!characteristics)
-         {
-            return false;
-         }
-         var currentPA:int = characteristics.actionPointsCurrent;
-         if((spellId == 0) && (!(player.currentWeapon == null)))
-         {
-            weapon = Item.getItemById(player.currentWeapon.objectGID) as Weapon;
-            if(!weapon)
-            {
-               return false;
-            }
-            apCost = weapon.apCost;
-            maxCastPerTurn = weapon.maxCastPerTurn;
-         }
-         else
-         {
-            apCost = thisSpell.apCost;
-            maxCastPerTurn = thisSpell.maxCastPerTurn;
-         }
-         var spellModifs:SpellModificator = new SpellModificator();
-         for each (spellModification in characteristics.spellModifications)
-         {
-            if(spellModification.spellId == spellId)
-            {
-               switch(spellModification.modificationType)
-               {
-                  case CharacterSpellModificationTypeEnum.AP_COST:
-                     spellModifs.apCost = spellModification.value;
-                     continue;
-                  case CharacterSpellModificationTypeEnum.CAST_INTERVAL:
-                     spellModifs.castInterval = spellModification.value;
-                     continue;
-                  case CharacterSpellModificationTypeEnum.CAST_INTERVAL_SET:
-                     spellModifs.castIntervalSet = spellModification.value;
-                     continue;
-                  case CharacterSpellModificationTypeEnum.MAX_CAST_PER_TARGET:
-                     spellModifs.maxCastPerTarget = spellModification.value;
-                     continue;
-                  case CharacterSpellModificationTypeEnum.MAX_CAST_PER_TURN:
-                     spellModifs.maxCastPerTurn = spellModification.value;
-                     continue;
-               }
-            }
-            else
-            {
-               continue;
-            }
-         }
-         if(apCost > currentPA)
-         {
-            return false;
-         }
-         var states:Array = FightersStateManager.getInstance().getStates(this._currentFighterId);
-         if(!states)
-         {
-            states = new Array();
-         }
-         for each (state in states)
-         {
-            currentState = SpellState.getSpellStateById(state);
-            if((currentState.preventsFight) && (spellId == 0))
-            {
-               return false;
-            }
-            if((currentState.id == 101) && (spellId == 0))
-            {
-               weapon2 = Item.getItemById(player.currentWeapon.objectGID) as Weapon;
-               if(weapon2.typeId != 2)
-               {
-                  return false;
-               }
-            }
-            if((spellLevel.statesForbidden) && (!(spellLevel.statesForbidden.indexOf(state) == -1)))
-            {
-               return false;
-            }
-            if(currentState.preventsSpellCast)
-            {
-               if(spellLevel.statesRequired)
-               {
-                  if(spellLevel.statesRequired.indexOf(state) == -1)
-                  {
-                     return false;
-                  }
-                  continue;
-               }
-               return false;
-            }
-         }
-         for each (stateRequired in spellLevel.statesRequired)
-         {
-            if(states.indexOf(stateRequired) == -1)
-            {
-               return false;
-            }
-         }
-         if((spellLevel.canSummon) && (!player.canSummon()))
-         {
-            return false;
-         }
-         if((spellLevel.canBomb) && (!player.canBomb()))
-         {
-            return false;
-         }
-         if(!player.isFighting)
-         {
-            return true;
-         }
-         var spellCastManager:SpellCastInFightManager = this.getSpellCastManager();
-         var spellManager:SpellManager = spellCastManager.getSpellManagerBySpellId(spellId);
-         if(spellManager == null)
-         {
-            return true;
-         }
-         if((maxCastPerTurn <= spellManager.numberCastThisTurn) && (maxCastPerTurn > 0))
-         {
-            return false;
-         }
-         if((spellManager.cooldown > 0) || (thisSpell.actualCooldown > 0))
-         {
-            return false;
-         }
-         numberCastOnTarget = spellManager.getCastOnEntity(pTargetId);
-         if((spellLevel.maxCastPerTarget + spellModifs.getTotalBonus(spellModifs.maxCastPerTarget) <= numberCastOnTarget) && (spellLevel.maxCastPerTarget > 0))
-         {
-            return false;
-         }
-         return true;
+      public function canCastThisSpell(spellId:uint, lvl:uint, pTargetId:int = 2147483647) : Boolean {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function endFight() : void {
@@ -359,7 +200,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          var characteristics:CharacterCharacteristicsInformations = this.getCharacteristicsInformations();
          if(characteristics)
          {
-            for each (spellModification in characteristics.spellModifications)
+            for each(spellModification in characteristics.spellModifications)
             {
                if((spellModification.spellId == spellId) && (spellModification.modificationType == carac))
                {
@@ -385,13 +226,11 @@ package com.ankamagames.dofus.logic.game.fight.managers
          {
             KernelEventsManager.getInstance().processCallback(FightHookList.ShowMonsterArtwork,0);
          }
-         else
+         else if(currentFighterEntity)
          {
-            if(currentFighterEntity)
-            {
-               KernelEventsManager.getInstance().processCallback(FightHookList.ShowMonsterArtwork,currentFighterEntity.look.getBone());
-            }
+            KernelEventsManager.getInstance().processCallback(FightHookList.ShowMonsterArtwork,currentFighterEntity.look.getBone());
          }
+         
       }
    }
 }

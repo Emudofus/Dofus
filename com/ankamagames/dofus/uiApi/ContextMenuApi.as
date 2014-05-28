@@ -24,7 +24,7 @@ package com.ankamagames.dofus.uiApi
          throw new ApiError(makerName + " maker class is not compatible with IMenuMaker");
       }
       
-      public function create(data:*, makerName:String=null, makerParams:Array=null) : ContextMenuData {
+      public function create(data:*, makerName:String = null, makerParams:Array = null) : ContextMenuData {
          var menu:ContextMenuData = MenusFactory.create(SecureCenter.unsecure(data),makerName,SecureCenter.unsecure(makerParams));
          return menu;
       }

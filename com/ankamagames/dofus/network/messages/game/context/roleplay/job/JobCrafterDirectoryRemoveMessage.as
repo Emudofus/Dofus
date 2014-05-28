@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5653;
       }
       
-      public function initJobCrafterDirectoryRemoveMessage(jobId:uint=0, playerId:uint=0) : JobCrafterDirectoryRemoveMessage {
+      public function initJobCrafterDirectoryRemoveMessage(jobId:uint = 0, playerId:uint = 0) : JobCrafterDirectoryRemoveMessage {
          this.jobId = jobId;
          this.playerId = playerId;
          this._isInitialized = true;

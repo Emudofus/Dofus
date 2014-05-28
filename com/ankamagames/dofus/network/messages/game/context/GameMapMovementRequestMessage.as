@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 950;
       }
       
-      public function initGameMapMovementRequestMessage(keyMovements:Vector.<uint>=null, mapId:uint=0) : GameMapMovementRequestMessage {
+      public function initGameMapMovementRequestMessage(keyMovements:Vector.<uint> = null, mapId:uint = 0) : GameMapMovementRequestMessage {
          this.keyMovements = keyMovements;
          this.mapId = mapId;
          this._isInitialized = true;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.document
          return 5675;
       }
       
-      public function initDocumentReadingBeginMessage(documentId:uint=0) : DocumentReadingBeginMessage {
+      public function initDocumentReadingBeginMessage(documentId:uint = 0) : DocumentReadingBeginMessage {
          this.documentId = documentId;
          this._isInitialized = true;
          return this;

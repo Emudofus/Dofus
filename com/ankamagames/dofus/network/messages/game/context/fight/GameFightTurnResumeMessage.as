@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 6307;
       }
       
-      public function initGameFightTurnResumeMessage(id:int=0, waitTime:uint=0) : GameFightTurnResumeMessage {
+      public function initGameFightTurnResumeMessage(id:int = 0, waitTime:uint = 0) : GameFightTurnResumeMessage {
          super.initGameFightTurnStartMessage(id,waitTime);
          this._isInitialized = true;
          return this;

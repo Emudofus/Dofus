@@ -53,7 +53,7 @@ package com.ankamagames.dofus.misc.interClient
          this._statusTimer.start();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InterClientSlave));
+      protected static const _log:Logger;
       
       private var _receiving_lc:LocalConnection;
       

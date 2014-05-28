@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 49;
       }
       
-      public function initSpellItem(position:uint=0, spellId:int=0, spellLevel:int=0) : SpellItem {
+      public function initSpellItem(position:uint = 0, spellId:int = 0, spellLevel:int = 0) : SpellItem {
          this.position = position;
          this.spellId = spellId;
          this.spellLevel = spellLevel;

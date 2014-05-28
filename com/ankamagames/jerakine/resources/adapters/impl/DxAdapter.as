@@ -112,13 +112,11 @@ package com.ankamagames.jerakine.resources.adapters.impl
          {
             errCode = ResourceErrorCode.DX_MALFORMED_BINARY;
          }
-         else
+         else if(ee is SecurityErrorEvent)
          {
-            if(ee is SecurityErrorEvent)
-            {
-               errCode = ResourceErrorCode.DX_SECURITY_ERROR;
-            }
+            errCode = ResourceErrorCode.DX_SECURITY_ERROR;
          }
+         
          dispatchFailure("Script loading from binaries failed: " + ee.text,errCode);
       }
    }

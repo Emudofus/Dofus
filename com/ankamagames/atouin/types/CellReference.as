@@ -20,7 +20,7 @@ package com.ankamagames.atouin.types
          this.gfxId = new Array();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CellReference));
+      protected static const _log:Logger;
       
       private var _visible:Boolean;
       
@@ -91,7 +91,7 @@ package com.ankamagames.atouin.types
          var sprite:DisplayObject = null;
          var rectangle:PoolableRectangle = (PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle).renew();
          var boundRect:PoolableRectangle = PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle;
-         for each (sprite in this.listSprites)
+         for each(sprite in this.listSprites)
          {
             rectangle.extend(boundRect.renew(sprite.x,sprite.y,sprite.width,sprite.height));
          }

@@ -49,7 +49,7 @@ package com.ankamagames.berilia.types.uiDefinition
          target.anchors = this.anchors;
          target.event = this.event;
          target.properties = [];
-         for (key in this.properties)
+         for(key in this.properties)
          {
             target.properties[key] = this.properties[key];
          }

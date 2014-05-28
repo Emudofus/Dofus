@@ -32,10 +32,12 @@ package com.ankamagames.dofus.console.debug
                return "Make a kernel panic.";
             case "throw":
                return "Throw an exception";
+            default:
+               return "No help for command \'" + cmd + "\'";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

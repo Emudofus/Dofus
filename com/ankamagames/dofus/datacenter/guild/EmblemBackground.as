@@ -15,7 +15,7 @@ package com.ankamagames.dofus.datacenter.guild
       
       public static const MODULE:String = "EmblemBackgrounds";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmblemBackground));
+      protected static const _log:Logger;
       
       public static function getEmblemBackgroundById(id:int) : EmblemBackground {
          return GameData.getObject(MODULE,id) as EmblemBackground;

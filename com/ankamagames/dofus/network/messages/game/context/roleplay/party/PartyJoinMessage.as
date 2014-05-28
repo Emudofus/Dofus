@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyGuestInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -42,7 +41,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5576;
       }
       
-      public function initPartyJoinMessage(partyId:uint=0, partyType:uint=0, partyLeaderId:uint=0, maxParticipants:uint=0, members:Vector.<PartyMemberInformations>=null, guests:Vector.<PartyGuestInformations>=null, restricted:Boolean=false) : PartyJoinMessage {
+      public function initPartyJoinMessage(partyId:uint = 0, partyType:uint = 0, partyLeaderId:uint = 0, maxParticipants:uint = 0, members:Vector.<PartyMemberInformations> = null, guests:Vector.<PartyGuestInformations> = null, restricted:Boolean = false) : PartyJoinMessage {
          super.initAbstractPartyMessage(partyId);
          this.partyType = partyType;
          this.partyLeaderId = partyLeaderId;

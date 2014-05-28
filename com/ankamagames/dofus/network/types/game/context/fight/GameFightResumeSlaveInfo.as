@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.context.fight
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -27,7 +26,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 364;
       }
       
-      public function initGameFightResumeSlaveInfo(slaveId:int=0, spellCooldowns:Vector.<GameFightSpellCooldown>=null, summonCount:uint=0, bombCount:uint=0) : GameFightResumeSlaveInfo {
+      public function initGameFightResumeSlaveInfo(slaveId:int = 0, spellCooldowns:Vector.<GameFightSpellCooldown> = null, summonCount:uint = 0, bombCount:uint = 0) : GameFightResumeSlaveInfo {
          this.slaveId = slaveId;
          this.spellCooldowns = spellCooldowns;
          this.summonCount = summonCount;

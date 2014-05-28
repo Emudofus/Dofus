@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.guild
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.house.HouseInformationsForGuild;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5919;
       }
       
-      public function initGuildHousesInformationMessage(housesInformations:Vector.<HouseInformationsForGuild>=null) : GuildHousesInformationMessage {
+      public function initGuildHousesInformationMessage(housesInformations:Vector.<HouseInformationsForGuild> = null) : GuildHousesInformationMessage {
          this.housesInformations = housesInformations;
          this._isInitialized = true;
          return this;

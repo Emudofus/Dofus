@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItemQuantity;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -44,7 +43,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5762;
       }
       
-      public function initExchangeGuildTaxCollectorGetMessage(collectorName:String="", worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0, userName:String="", experience:Number=0, objectsInfos:Vector.<ObjectItemQuantity>=null) : ExchangeGuildTaxCollectorGetMessage {
+      public function initExchangeGuildTaxCollectorGetMessage(collectorName:String = "", worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:uint = 0, userName:String = "", experience:Number = 0, objectsInfos:Vector.<ObjectItemQuantity> = null) : ExchangeGuildTaxCollectorGetMessage {
          this.collectorName = collectorName;
          this.worldX = worldX;
          this.worldY = worldY;

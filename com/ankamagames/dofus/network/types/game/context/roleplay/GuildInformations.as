@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 127;
       }
       
-      public function initGuildInformations(guildId:uint=0, guildName:String="", guildEmblem:GuildEmblem=null) : GuildInformations {
+      public function initGuildInformations(guildId:uint = 0, guildName:String = "", guildEmblem:GuildEmblem = null) : GuildInformations {
          super.initBasicGuildInformations(guildId,guildName);
          this.guildEmblem = guildEmblem;
          return this;

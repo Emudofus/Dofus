@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 426;
       }
       
-      public function initFightTeamMemberWithAllianceCharacterInformations(id:int=0, name:String="", level:uint=0, allianceInfos:BasicAllianceInformations=null) : FightTeamMemberWithAllianceCharacterInformations {
+      public function initFightTeamMemberWithAllianceCharacterInformations(id:int = 0, name:String = "", level:uint = 0, allianceInfos:BasicAllianceInformations = null) : FightTeamMemberWithAllianceCharacterInformations {
          super.initFightTeamMemberCharacterInformations(id,name,level);
          this.allianceInfos = allianceInfos;
          return this;

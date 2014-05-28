@@ -5,7 +5,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.types.enums.Priority;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.game.tinsel.TitlesAndOrnamentsListRequestMessage;
    import com.ankamagames.dofus.network.messages.game.tinsel.TitlesAndOrnamentsListMessage;
@@ -37,7 +36,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TinselFrame));
+      protected static const _log:Logger;
       
       private var _knownTitles:Vector.<uint>;
       
@@ -124,7 +123,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is TitleLostMessage:
                tlmsg = msg as TitleLostMessage;
                indexToDelete = 0;
-               for each (id in this._knownTitles)
+               for each(id in this._knownTitles)
                {
                   if(id == tlmsg.titleId)
                   {
@@ -176,6 +175,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                osemsg = msg as OrnamentSelectErrorMessage;
                _log.debug("erreur de selection d\'ornement");
                return true;
+            default:
+               return false;
          }
       }
       

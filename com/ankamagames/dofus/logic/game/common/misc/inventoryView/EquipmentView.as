@@ -6,7 +6,6 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.misc.HookLock;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.misc.lists.InventoryHookList;
    import com.ankamagames.dofus.network.enums.CharacterInventoryPositionEnum;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
@@ -21,7 +20,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          this._hookLock = hookLock;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EquipmentView));
+      protected static const _log:Logger;
       
       private var _content:Vector.<ItemWrapper>;
       
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          var item:ItemWrapper = null;
          this._initializing = true;
          this._content = new Vector.<ItemWrapper>(62);
-         for each (item in items)
+         for each(item in items)
          {
             if(this.isListening(item))
             {

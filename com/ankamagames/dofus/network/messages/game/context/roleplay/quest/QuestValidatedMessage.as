@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
          return 6097;
       }
       
-      public function initQuestValidatedMessage(questId:uint=0) : QuestValidatedMessage {
+      public function initQuestValidatedMessage(questId:uint = 0) : QuestValidatedMessage {
          this.questId = questId;
          this._isInitialized = true;
          return this;

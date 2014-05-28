@@ -19,7 +19,6 @@ package com.ankamagames.dofus.kernel.sound.manager
    import com.ankamagames.tubul.types.SoundSilence;
    import com.ankamagames.tubul.Tubul;
    import com.ankamagames.dofus.kernel.sound.type.SoundDofus;
-   import __AS3__.vec.*;
    
    public class LocalizedSoundsManager extends Object
    {
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          this._isInitialized = false;
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(LocalizedSoundsManager));
+      private static const _log:Logger;
       
       private var _localizedSounds:Vector.<LocalizedMapSound>;
       
@@ -42,28 +41,12 @@ package com.ankamagames.dofus.kernel.sound.manager
       }
       
       public function setMap(pMap:Map) : void {
-         var layer:Layer = null;
-         var cell:Cell = null;
-         var element:BasicElement = null;
-         var elem:SoundElement = null;
-         var lms:LocalizedMapSound = null;
-         this.removeLocalizedSounds();
-         for each (layer in pMap.layers)
-         {
-            for each (cell in layer.cells)
-            {
-               for each (element in cell.elements)
-               {
-                  if(element is SoundElement)
-                  {
-                     elem = element as SoundElement;
-                     lms = new LocalizedMapSound(elem.soundId.toString(),elem.cell.pixelCoords,elem.nullVolumeDistance,elem.fullVolumeDistance,elem.minDelayBetweenLoops,elem.maxDelayBetweenLoops,elem.baseVolume);
-                     this._localizedSounds.push(lms);
-                  }
-               }
-            }
-         }
-         this._isInitialized = true;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function playLocalizedSounds() : void {
@@ -72,7 +55,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          var soundPath:String = null;
          var soundUri:Uri = null;
          var localizedSound:ISound = null;
-         for each (lms in this._localizedSounds)
+         for each(lms in this._localizedSounds)
          {
             busId = SoundUtil.getBusIdBySoundId(lms.soundId);
             soundPath = SoundUtil.getConfigEntryByBusId(busId);
@@ -106,7 +89,7 @@ package com.ankamagames.dofus.kernel.sound.manager
       
       public function stopLocalizedSounds() : void {
          var sound:ISound = null;
-         for each (sound in this._sounds)
+         for each(sound in this._sounds)
          {
             sound.stop();
             sound = null;

@@ -38,7 +38,7 @@ package com.ankamagames.atouin.managers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EntitiesDisplayManager));
+      protected static const _log:Logger;
       
       private static var _self:EntitiesDisplayManager;
       
@@ -52,7 +52,7 @@ package com.ankamagames.atouin.managers
       
       public var _dStrataRef:Dictionary;
       
-      public function displayEntity(oEntity:IDisplayable, cellCoords:MapPoint, strata:uint=0) : void {
+      public function displayEntity(oEntity:IDisplayable, cellCoords:MapPoint, strata:uint = 0) : void {
          var displayObject:DisplayObject = null;
          try
          {
@@ -97,20 +97,18 @@ package com.ankamagames.atouin.managers
                Atouin.getInstance().selectionContainer.addChild(displayObject);
             }
          }
+         else if(strata == PlacementStrataEnums.STRATA_FOREGROUND)
+         {
+            Atouin.getInstance().gfxContainer.addChild(displayObject);
+         }
          else
          {
-            if(strata == PlacementStrataEnums.STRATA_FOREGROUND)
-            {
-               Atouin.getInstance().gfxContainer.addChild(displayObject);
-            }
-            else
-            {
-               this.orderEntity(displayObject,cellSprite);
-            }
+            this.orderEntity(displayObject,cellSprite);
          }
+         
       }
       
-      public function refreshAlphaEntity(oEntity:IDisplayable, cellCoords:MapPoint, strata:uint=0) : void {
+      public function refreshAlphaEntity(oEntity:IDisplayable, cellCoords:MapPoint, strata:uint = 0) : void {
          var displayObject:DisplayObject = null;
          var cellSprite:Sprite = null;
          try

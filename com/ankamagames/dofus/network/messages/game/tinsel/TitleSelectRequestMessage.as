@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          return 6365;
       }
       
-      public function initTitleSelectRequestMessage(titleId:uint=0) : TitleSelectRequestMessage {
+      public function initTitleSelectRequestMessage(titleId:uint = 0) : TitleSelectRequestMessage {
          this.titleId = titleId;
          this._isInitialized = true;
          return this;

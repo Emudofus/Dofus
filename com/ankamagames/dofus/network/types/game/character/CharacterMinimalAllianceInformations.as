@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.character
          return 444;
       }
       
-      public function initCharacterMinimalAllianceInformations(id:uint=0, level:uint=0, name:String="", entityLook:EntityLook=null, guild:BasicGuildInformations=null, alliance:BasicAllianceInformations=null) : CharacterMinimalAllianceInformations {
+      public function initCharacterMinimalAllianceInformations(id:uint = 0, level:uint = 0, name:String = "", entityLook:EntityLook = null, guild:BasicGuildInformations = null, alliance:BasicAllianceInformations = null) : CharacterMinimalAllianceInformations {
          super.initCharacterMinimalGuildInformations(id,level,name,entityLook,guild);
          this.alliance = alliance;
          return this;

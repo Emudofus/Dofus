@@ -39,7 +39,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    public class RoleplayPointCellFrame extends Object implements Frame
    {
       
-      public function RoleplayPointCellFrame(callBack:Function=null, cursorIcon:Sprite=null, freeCellOnly:Boolean=false, customCellValidatorFct:Function=null, untargetableEntities:Boolean=false) {
+      public function RoleplayPointCellFrame(callBack:Function = null, cursorIcon:Sprite = null, freeCellOnly:Boolean = false, customCellValidatorFct:Function = null, untargetableEntities:Boolean = false) {
          var lkd:LinkedCursorData = null;
          super();
          this._entitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
@@ -56,9 +56,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RoleplayPointCellFrame));
+      protected static const _log:Logger;
       
-      private static const TARGET_COLOR:Color = new Color(16548386);
+      private static const TARGET_COLOR:Color;
       
       private static const SELECTION_TARGET:String = "SpellCastTarget";
       
@@ -144,6 +144,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   this._callBack(false,0,-1);
                }
                return false;
+            default:
+               return false;
          }
       }
       
@@ -190,7 +192,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          }
       }
       
-      private function showCell(cell:uint, entityId:int=-1) : void {
+      private function showCell(cell:uint, entityId:int = -1) : void {
          if(this.isValidCell(cell))
          {
             if(this._callBack != null)

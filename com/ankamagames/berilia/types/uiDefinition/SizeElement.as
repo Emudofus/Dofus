@@ -16,7 +16,7 @@ package com.ankamagames.berilia.types.uiDefinition
       
       public static const SIZE_PRC:uint = 1;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SizeElement));
+      protected static const _log:Logger;
       
       public var xUnit:uint;
       

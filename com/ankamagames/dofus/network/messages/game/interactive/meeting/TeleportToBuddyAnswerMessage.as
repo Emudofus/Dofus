@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
          return 6293;
       }
       
-      public function initTeleportToBuddyAnswerMessage(dungeonId:uint=0, buddyId:uint=0, accept:Boolean=false) : TeleportToBuddyAnswerMessage {
+      public function initTeleportToBuddyAnswerMessage(dungeonId:uint = 0, buddyId:uint = 0, accept:Boolean = false) : TeleportToBuddyAnswerMessage {
          this.dungeonId = dungeonId;
          this.buddyId = buddyId;
          this.accept = accept;

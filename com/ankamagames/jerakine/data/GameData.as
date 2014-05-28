@@ -16,17 +16,17 @@ package com.ankamagames.jerakine.data
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GameData));
+      protected static const _log:Logger;
       
       private static const CACHE_SIZE_RATIO:Number = 0.1;
       
-      private static var _directObjectCaches:Dictionary = new Dictionary();
+      private static var _directObjectCaches:Dictionary;
       
-      private static var _objectCaches:Dictionary = new Dictionary();
+      private static var _objectCaches:Dictionary;
       
-      private static var _objectsCaches:Dictionary = new Dictionary();
+      private static var _objectsCaches:Dictionary;
       
-      private static var _overrides:Dictionary = new Dictionary();
+      private static var _overrides:Dictionary;
       
       public static function addOverride(moduleId:String, keyId:int, newKeyId:uint) : void {
          if(!_overrides[moduleId])

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.debug
          return 6028;
       }
       
-      public function initDebugInClientMessage(level:uint=0, message:String="") : DebugInClientMessage {
+      public function initDebugInClientMessage(level:uint = 0, message:String = "") : DebugInClientMessage {
          this.level = level;
          this.message = message;
          this._isInitialized = true;

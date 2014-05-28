@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6115;
       }
       
-      public function initGuildInvitationByNameMessage(name:String="") : GuildInvitationByNameMessage {
+      public function initGuildInvitationByNameMessage(name:String = "") : GuildInvitationByNameMessage {
          this.name = name;
          this._isInitialized = true;
          return this;

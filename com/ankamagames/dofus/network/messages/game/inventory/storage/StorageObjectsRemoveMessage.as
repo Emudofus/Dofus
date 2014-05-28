@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
          return 6035;
       }
       
-      public function initStorageObjectsRemoveMessage(objectUIDList:Vector.<uint>=null) : StorageObjectsRemoveMessage {
+      public function initStorageObjectsRemoveMessage(objectUIDList:Vector.<uint> = null) : StorageObjectsRemoveMessage {
          this.objectUIDList = objectUIDList;
          this._isInitialized = true;
          return this;

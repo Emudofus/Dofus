@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          return 6322;
       }
       
-      public function initFighterStatsListMessage(stats:CharacterCharacteristicsInformations=null) : FighterStatsListMessage {
+      public function initFighterStatsListMessage(stats:CharacterCharacteristicsInformations = null) : FighterStatsListMessage {
          this.stats = stats;
          this._isInitialized = true;
          return this;

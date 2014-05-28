@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 6016;
       }
       
-      public function initJobListedUpdateMessage(addedOrDeleted:Boolean=false, jobId:uint=0) : JobListedUpdateMessage {
+      public function initJobListedUpdateMessage(addedOrDeleted:Boolean = false, jobId:uint = 0) : JobListedUpdateMessage {
          this.addedOrDeleted = addedOrDeleted;
          this.jobId = jobId;
          this._isInitialized = true;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.script
          return 6266;
       }
       
-      public function initURLOpenMessage(urlId:uint=0) : URLOpenMessage {
+      public function initURLOpenMessage(urlId:uint = 0) : URLOpenMessage {
          this.urlId = urlId;
          this._isInitialized = true;
          return this;

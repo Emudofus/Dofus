@@ -3,7 +3,7 @@ package com.ankamagames.tiphon.types
    public class TiphonEventInfo extends Object
    {
       
-      public function TiphonEventInfo(pType:String, pParams:String="") {
+      public function TiphonEventInfo(pType:String, pParams:String = "") {
          super();
          this.type = pType;
          this._params = pParams;

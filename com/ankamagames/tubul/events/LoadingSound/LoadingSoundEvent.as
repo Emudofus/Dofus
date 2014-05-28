@@ -5,7 +5,7 @@ package com.ankamagames.tubul.events.LoadingSound
    public class LoadingSoundEvent extends Event
    {
       
-      public function LoadingSoundEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function LoadingSoundEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

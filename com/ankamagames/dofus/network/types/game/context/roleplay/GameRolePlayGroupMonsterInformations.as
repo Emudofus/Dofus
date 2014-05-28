@@ -36,7 +36,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 160;
       }
       
-      public function initGameRolePlayGroupMonsterInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, staticInfos:GroupMonsterStaticInformations=null, ageBonus:int=0, lootShare:int=0, alignmentSide:int=0, keyRingBonus:Boolean=false, hasHardcoreDrop:Boolean=false, hasAVARewardToken:Boolean=false) : GameRolePlayGroupMonsterInformations {
+      public function initGameRolePlayGroupMonsterInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, staticInfos:GroupMonsterStaticInformations = null, ageBonus:int = 0, lootShare:int = 0, alignmentSide:int = 0, keyRingBonus:Boolean = false, hasHardcoreDrop:Boolean = false, hasAVARewardToken:Boolean = false) : GameRolePlayGroupMonsterInformations {
          super.initGameRolePlayActorInformations(contextualId,look,disposition);
          this.staticInfos = staticInfos;
          this.ageBonus = ageBonus;

@@ -10,7 +10,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.logic.game.fight.frames.FightPreparationFrame;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
    import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
    import com.ankamagames.dofus.internalDatacenter.spells.EffectsWrapper;
@@ -124,7 +123,7 @@ package com.ankamagames.dofus.uiApi
          var res:Array = new Array();
          var buffs:Array = BuffManager.getInstance().getAllBuff(targetId);
          var triggerList:Array = new Array();
-         for each (buffItem in buffs)
+         for each(buffItem in buffs)
          {
             if(buffItem.castingSpell.castingSpellId == castingSpellId)
             {
@@ -248,6 +247,9 @@ package com.ankamagames.dofus.uiApi
                return "defender";
             case TeamEnum.TEAM_SPECTATOR:
                return "spectator";
+            default:
+               this._log.warn("Unknown teamId " + fighterInfos.teamId + " ?!");
+               return "unknown";
          }
       }
    }

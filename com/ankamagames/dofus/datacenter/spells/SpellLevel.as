@@ -9,7 +9,6 @@ package com.ankamagames.dofus.datacenter.spells
    import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
    import com.ankamagames.jerakine.utils.display.spellZone.IZoneShape;
    import com.ankamagames.jerakine.utils.display.spellZone.ZoneEffect;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.monsters.Monster;
    
    public class SpellLevel extends Object implements ICellZoneProvider, IDataCenter
@@ -19,7 +18,7 @@ package com.ankamagames.dofus.datacenter.spells
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellLevel));
+      protected static const _log:Logger;
       
       private static const MODULE:String = "SpellLevels";
       
@@ -137,7 +136,7 @@ package com.ankamagames.dofus.datacenter.spells
          if(!this._spellZoneEffects)
          {
             this._spellZoneEffects = new Vector.<IZoneShape>();
-            for each (i in this.effects)
+            for each(i in this.effects)
             {
                zone = new ZoneEffect(uint(i.zoneSize),i.zoneShape);
                this._spellZoneEffects.push(zone);
@@ -150,7 +149,7 @@ package com.ankamagames.dofus.datacenter.spells
          var effect:EffectInstanceDice = null;
          var summonId:* = 0;
          var monsterS:Monster = null;
-         for each (effect in this.effects)
+         for each(effect in this.effects)
          {
             if((effect.effectId == 180) || (effect.effectId == 1011))
             {
@@ -173,7 +172,7 @@ package com.ankamagames.dofus.datacenter.spells
          var effect:EffectInstanceDice = null;
          var summonId:* = 0;
          var monsterS:Monster = null;
-         for each (effect in this.effects)
+         for each(effect in this.effects)
          {
             if(effect.effectId == 1008)
             {

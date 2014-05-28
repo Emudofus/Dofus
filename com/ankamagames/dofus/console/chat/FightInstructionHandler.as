@@ -9,7 +9,6 @@ package com.ankamagames.dofus.console.chat
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
    import com.ankamagames.dofus.kernel.Kernel;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    
    public class FightInstructionHandler extends Object implements ConsoleInstructionHandler
@@ -67,7 +66,7 @@ package com.ankamagames.dofus.console.chat
          var fighterId:* = 0;
          var fightFrame:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
          var fighters:Vector.<int> = fightFrame.battleFrame.fightersList;
-         for each (fighterId in fighters)
+         for each(fighterId in fighters)
          {
             if(fightFrame.getFighterName(fighterId) == name)
             {
@@ -85,7 +84,7 @@ package com.ankamagames.dofus.console.chat
          {
             fightFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
             fighters = fightFrame.battleFrame.fightersList;
-            for each (fighterId in fighters)
+            for each(fighterId in fighters)
             {
                console.output(fightFrame.getFighterName(fighterId));
             }
@@ -103,10 +102,12 @@ package com.ankamagames.dofus.console.chat
                return I18n.getUiText("ui.chat.console.help.list");
             case "kick":
                return I18n.getUiText("ui.chat.console.help.kick");
+            default:
+               return I18n.getUiText("ui.chat.console.noHelp",[cmd]);
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

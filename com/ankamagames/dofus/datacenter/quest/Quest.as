@@ -7,7 +7,6 @@ package com.ankamagames.dofus.datacenter.quest
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.data.I18n;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    
    public class Quest extends Object implements IDataCenter
@@ -17,7 +16,7 @@ package com.ankamagames.dofus.datacenter.quest
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Quest));
+      protected static const _log:Logger;
       
       public static const MODULE:String = "Quests";
       
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.datacenter.quest
          var res1:* = 0;
          var res2:* = 0;
          var validQuestRes:int = 0;
-         for each (questId in questFlag.questsToValidId)
+         for each(questId in questFlag.questsToValidId)
          {
             quest = Quest.getQuestById(questId);
             if(quest != null)
@@ -49,7 +48,7 @@ package com.ankamagames.dofus.datacenter.quest
                }
             }
          }
-         for each (questId in questFlag.questsToStartId)
+         for each(questId in questFlag.questsToStartId)
          {
             quest = Quest.getQuestById(questId);
             if(quest != null)

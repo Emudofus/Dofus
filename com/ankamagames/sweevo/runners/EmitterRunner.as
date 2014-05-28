@@ -11,13 +11,13 @@ package com.ankamagames.sweevo.runners
    public class EmitterRunner extends Object implements IRunner
    {
       
-      public function EmitterRunner(renderer:Renderer, onRun:Callback=null) {
+      public function EmitterRunner(renderer:Renderer, onRun:Callback = null) {
          super();
          this._renderer = renderer;
          this._onRun = onRun;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmitterRunner));
+      protected static const _log:Logger;
       
       private var _renderer:Renderer;
       

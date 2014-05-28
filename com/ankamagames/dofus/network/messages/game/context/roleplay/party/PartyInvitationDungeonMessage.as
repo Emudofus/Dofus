@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6244;
       }
       
-      public function initPartyInvitationDungeonMessage(partyId:uint=0, partyType:uint=0, maxParticipants:uint=0, fromId:uint=0, fromName:String="", toId:uint=0, dungeonId:uint=0) : PartyInvitationDungeonMessage {
+      public function initPartyInvitationDungeonMessage(partyId:uint = 0, partyType:uint = 0, maxParticipants:uint = 0, fromId:uint = 0, fromName:String = "", toId:uint = 0, dungeonId:uint = 0) : PartyInvitationDungeonMessage {
          super.initPartyInvitationMessage(partyId,partyType,maxParticipants,fromId,fromName,toId);
          this.dungeonId = dungeonId;
          this._isInitialized = true;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3004;
       }
       
-      public function initObjectErrorMessage(reason:int=0) : ObjectErrorMessage {
+      public function initObjectErrorMessage(reason:int = 0) : ObjectErrorMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

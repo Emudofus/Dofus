@@ -5,7 +5,7 @@ package com.ankamagames.dofus.types.entities
    public class TwirlParticle extends BasicParticle
    {
       
-      public function TwirlParticle(sprite:DisplayObject, life:uint, subExplosion:Boolean, deathCallback:Function, yLimitTop:int, maxRotationRay:uint=10) {
+      public function TwirlParticle(sprite:DisplayObject, life:uint, subExplosion:Boolean, deathCallback:Function, yLimitTop:int, maxRotationRay:uint = 10) {
          this.halfg = this.g / 2;
          super(sprite,life,subExplosion,deathCallback);
          var speed:Number = 0.1;

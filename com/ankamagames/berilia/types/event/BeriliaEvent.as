@@ -5,7 +5,7 @@ package com.ankamagames.berilia.types.event
    public class BeriliaEvent extends Event
    {
       
-      public function BeriliaEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function BeriliaEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

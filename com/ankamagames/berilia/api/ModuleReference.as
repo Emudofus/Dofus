@@ -8,8 +8,6 @@ package com.ankamagames.berilia.api
    import flash.utils.flash_proxy;
    import flash.utils.getQualifiedClassName;
    
-   use namespace flash_proxy;
-   
    public class ModuleReference extends Proxy implements Secure
    {
       

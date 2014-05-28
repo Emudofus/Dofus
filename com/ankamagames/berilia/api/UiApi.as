@@ -16,7 +16,6 @@ package com.ankamagames.berilia.api
    import com.ankamagames.berilia.managers.SecureCenter;
    import com.ankamagames.berilia.types.graphic.GraphicContainer;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.managers.StoreDataManager;
    import com.ankamagames.berilia.BeriliaConstants;
    import com.ankamagames.berilia.managers.BindsManager;
@@ -62,9 +61,9 @@ package com.ankamagames.berilia.api
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      public static const _log:Logger = Log.getLogger(getQualifiedClassName(UiApi));
+      public static const _log:Logger;
       
       private static var _label:Label;
       
@@ -91,7 +90,7 @@ package com.ankamagames.berilia.api
          this._module = null;
       }
       
-      public function loadUi(name:String, instanceName:String=null, params:*=null, strata:uint=1, cacheName:String=null, replace:Boolean=false) : Object {
+      public function loadUi(name:String, instanceName:String = null, params:* = null, strata:uint = 1, cacheName:String = null, replace:Boolean = false) : Object {
          var tmp:Array = null;
          var rootCtr:UiRootContainer = null;
          var mod:UiModule = this._module;
@@ -106,17 +105,15 @@ package com.ankamagames.berilia.api
                {
                   throw new BeriliaError("Module [" + tmp[0] + "] does not exist");
                }
+               else if((mod.trusted) && (!this._module.trusted))
+               {
+                  throw new ApiError("You cannot load trusted UI");
+               }
                else
                {
-                  if((mod.trusted) && (!this._module.trusted))
-                  {
-                     throw new ApiError("You cannot load trusted UI");
-                  }
-                  else
-                  {
-                     uiName = tmp[1];
-                  }
+                  uiName = tmp[1];
                }
+               
             }
             else
             {
@@ -139,7 +136,7 @@ package com.ankamagames.berilia.api
          return null;
       }
       
-      public function loadUiInside(name:String, container:GraphicContainer, instanceName:String=null, params:*=null) : Object {
+      public function loadUiInside(name:String, container:GraphicContainer, instanceName:String = null, params:* = null) : Object {
          var tmp:Array = null;
          var newContainer:UiRootContainer = null;
          var mod:UiModule = this._module;
@@ -154,17 +151,15 @@ package com.ankamagames.berilia.api
                {
                   throw new BeriliaError("Module [" + tmp[0] + "] does not exist");
                }
+               else if((mod.trusted) && (!this._module.trusted))
+               {
+                  throw new ApiError("You cannot load trusted UI");
+               }
                else
                {
-                  if((mod.trusted) && (!this._module.trusted))
-                  {
-                     throw new ApiError("You cannot load trusted UI");
-                  }
-                  else
-                  {
-                     uiName = tmp[1];
-                  }
+                  uiName = tmp[1];
                }
+               
             }
             else
             {
@@ -188,7 +183,7 @@ package com.ankamagames.berilia.api
          return null;
       }
       
-      public function unloadUi(instanceName:String=null) : void {
+      public function unloadUi(instanceName:String = null) : void {
          Berilia.getInstance().unloadUi(instanceName);
       }
       
@@ -212,7 +207,7 @@ package com.ankamagames.berilia.api
          var ui:UiRootContainer = null;
          var uiList:Dictionary = Berilia.getInstance().uiList;
          var res:Vector.<UiRootContainer> = new Vector.<UiRootContainer>();
-         for each (ui in uiList)
+         for each(ui in uiList)
          {
             if(ui.uiModule == this._module)
             {
@@ -227,12 +222,12 @@ package com.ankamagames.berilia.api
          var dml:Array = null;
          var l:Array = [];
          var ml:Array = UiModuleManager.getInstance().getModules();
-         for each (m in ml)
+         for each(m in ml)
          {
             l.push(m);
          }
          dml = UiModuleManager.getInstance().disabledModules;
-         for each (m in dml)
+         for each(m in dml)
          {
             l.push(m);
          }
@@ -240,7 +235,7 @@ package com.ankamagames.berilia.api
          return l;
       }
       
-      public function getModule(moduleName:String, includeUnInitialized:Boolean=false) : UiModule {
+      public function getModule(moduleName:String, includeUnInitialized:Boolean = false) : UiModule {
          return UiModuleManager.getInstance().getModule(moduleName,includeUnInitialized);
       }
       
@@ -256,7 +251,7 @@ package com.ankamagames.berilia.api
             mods = UiModuleManager.getInstance().getModules();
          }
          var moduleFound:Boolean = false;
-         for each (mod in mods)
+         for each(mod in mods)
          {
             if((mod.id == id) && (mod.enable == !b))
             {
@@ -283,7 +278,7 @@ package com.ankamagames.berilia.api
          BindsManager.getInstance();
       }
       
-      public function addShortcutHook(shortcutName:String, hook:Function, lowPriority:Boolean=false) : void {
+      public function addShortcutHook(shortcutName:String, hook:Function, lowPriority:Boolean = false) : void {
          var targetedShortcut:Shortcut = Shortcut.getShortcutByName(shortcutName);
          if((!targetedShortcut) && (!(shortcutName == "ALL")))
          {
@@ -429,6 +424,8 @@ package com.ankamagames.berilia.api
                return EventEnums.EVENT_ONBROWSER_DOM_READY_MSG;
             case EventEnums.EVENT_MIDDLECLICK:
                return EventEnums.EVENT_MIDDLECLICK_MSG;
+            default:
+               return null;
          }
       }
       
@@ -437,14 +434,14 @@ package com.ankamagames.berilia.api
       }
       
       public function createUri(uri:String) : Uri {
-         if(((uri) && (uri.indexOf(":") == -1)) && (!(uri.indexOf("./") == 0)) && (!(uri.indexOf("\\\\") == 0)))
+         if((uri && uri.indexOf(":") == -1) && (!(uri.indexOf("./") == 0)) && (!(uri.indexOf("\\\\") == 0)))
          {
             uri = "mod://" + this._module.id + "/" + uri;
          }
          return new Uri(uri);
       }
       
-      public function showTooltip(data:*, target:*, autoHide:Boolean=false, name:String="standard", point:uint=0, relativePoint:uint=2, offset:int=3, tooltipMaker:String=null, script:Class=null, makerParam:Object=null, cacheName:String=null, mouseEnabled:Boolean=false, strata:int=4, zoom:Number=1) : void {
+      public function showTooltip(data:*, target:*, autoHide:Boolean = false, name:String = "standard", point:uint = 0, relativePoint:uint = 2, offset:int = 3, tooltipMaker:String = null, script:Class = null, makerParam:Object = null, cacheName:String = null, mouseEnabled:Boolean = false, strata:int = 4, zoom:Number = 1) : void {
          var tt:Tooltip = null;
          if(this._currentUi)
          {
@@ -456,11 +453,11 @@ package com.ankamagames.berilia.api
          }
       }
       
-      public function hideTooltip(name:String=null) : void {
+      public function hideTooltip(name:String = null) : void {
          TooltipManager.hide(name);
       }
       
-      public function textTooltipInfo(content:String, css:String=null, cssClass:String=null, maxWidth:int=400) : Object {
+      public function textTooltipInfo(content:String, css:String = null, cssClass:String = null, maxWidth:int = 400) : Object {
          return new TextTooltipInfo(content,css,cssClass,maxWidth);
       }
       
@@ -486,7 +483,7 @@ package com.ankamagames.berilia.api
          return TreeData.fromArray(array);
       }
       
-      public function setFollowCursorUri(uri:*, lockX:Boolean=false, lockY:Boolean=false, xOffset:int=0, yOffset:int=0, scale:Number=1) : void {
+      public function setFollowCursorUri(uri:*, lockX:Boolean = false, lockY:Boolean = false, xOffset:int = 0, yOffset:int = 0, scale:Number = 1) : void {
          var cd:LinkedCursorData = null;
          if(uri)
          {
@@ -552,7 +549,7 @@ package com.ankamagames.berilia.api
          return StageShareManager.windowScale;
       }
       
-      public function setFullScreen(enabled:Boolean, onlyMaximize:Boolean=false) : void {
+      public function setFullScreen(enabled:Boolean, onlyMaximize:Boolean = false) : void {
          StageShareManager.setFullScreen(enabled,onlyMaximize);
       }
       
@@ -566,7 +563,7 @@ package com.ankamagames.berilia.api
       
       private function getInitBounds(pTx:Texture) : Rectangle {
          var bg:MovieClip = null;
-         if((this.oldTextureUri == null) || ((pTx) && (pTx.uri)) && (!(this.oldTextureUri == pTx.uri.toString())))
+         if((this.oldTextureUri == null) || (pTx && pTx.uri) && (!(this.oldTextureUri == pTx.uri.toString())))
          {
             if(!(pTx.child is DisplayObjectContainer))
             {
@@ -638,7 +635,7 @@ package com.ankamagames.berilia.api
          return new Rectangle(0,0,_label.textWidth,_label.textHeight);
       }
       
-      public function replaceParams(text:String, params:Array, replace:String="%") : String {
+      public function replaceParams(text:String, params:Array, replace:String = "%") : String {
          return I18n.replaceParams(text,params,replace);
       }
       
@@ -650,11 +647,11 @@ package com.ankamagames.berilia.api
          return I18n.getUiText(key,params);
       }
       
-      public function getTextFromKey(key:uint, replace:String="%", ... params) : String {
+      public function getTextFromKey(key:uint, replace:String = "%", ... params) : String {
          return I18n.getText(key,params,replace);
       }
       
-      public function processText(str:String, gender:String, singular:Boolean=true) : String {
+      public function processText(str:String, gender:String, singular:Boolean = true) : String {
          return PatternDecoder.combine(str,gender,singular);
       }
       

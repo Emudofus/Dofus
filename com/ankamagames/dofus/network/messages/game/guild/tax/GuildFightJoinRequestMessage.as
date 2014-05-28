@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5717;
       }
       
-      public function initGuildFightJoinRequestMessage(taxCollectorId:int=0) : GuildFightJoinRequestMessage {
+      public function initGuildFightJoinRequestMessage(taxCollectorId:int = 0) : GuildFightJoinRequestMessage {
          this.taxCollectorId = taxCollectorId;
          this._isInitialized = true;
          return this;

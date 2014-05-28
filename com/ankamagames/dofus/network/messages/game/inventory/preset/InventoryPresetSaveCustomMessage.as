@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          return 6329;
       }
       
-      public function initInventoryPresetSaveCustomMessage(presetId:uint=0, symbolId:uint=0, itemsPositions:Vector.<uint>=null, itemsUids:Vector.<uint>=null) : InventoryPresetSaveCustomMessage {
+      public function initInventoryPresetSaveCustomMessage(presetId:uint = 0, symbolId:uint = 0, itemsPositions:Vector.<uint> = null, itemsUids:Vector.<uint> = null) : InventoryPresetSaveCustomMessage {
          this.presetId = presetId;
          this.symbolId = symbolId;
          this.itemsPositions = itemsPositions;

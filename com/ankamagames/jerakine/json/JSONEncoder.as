@@ -1,6 +1,5 @@
 package com.ankamagames.jerakine.json
 {
-   import __AS3__.vec.*;
    import flash.utils.Dictionary;
    import flash.utils.describeType;
    import flash.utils.getQualifiedClassName;
@@ -8,7 +7,7 @@ package com.ankamagames.jerakine.json
    public class JSONEncoder extends Object
    {
       
-      public function JSONEncoder(value:*, pMaxDepth:uint=0, pShowObjectType:Boolean=false) {
+      public function JSONEncoder(value:*, pMaxDepth:uint = 0, pShowObjectType:Boolean = false) {
          super();
          this._depthLimit = pMaxDepth;
          this._showObjectType = pShowObjectType;
@@ -25,7 +24,7 @@ package com.ankamagames.jerakine.json
          return this.jsonString;
       }
       
-      private function convertToString(value:*, depth:int=0) : String {
+      private function convertToString(value:*, depth:int = 0) : String {
          if((!(this._depthLimit == 0)) && (depth > this._depthLimit))
          {
             return "";
@@ -86,6 +85,17 @@ package com.ankamagames.jerakine.json
                case "\t":
                   s = s + "\\t";
                   break;
+               default:
+                  if(ch < " ")
+                  {
+                     hexCode = ch.charCodeAt(0).toString(16);
+                     zeroPad = hexCode.length == 2?"00":"000";
+                     s = s + ("\\u" + zeroPad + hexCode);
+                  }
+                  else
+                  {
+                     s = s + ch;
+                  }
             }
             i++;
          }
@@ -99,7 +109,7 @@ package com.ankamagames.jerakine.json
             return "";
          }
          var s:String = "";
-         for each (value in a)
+         for each(value in a)
          {
             if(s.length > 0)
             {
@@ -111,61 +121,12 @@ package com.ankamagames.jerakine.json
       }
       
       private function objectToString(o:Object, depth:int) : String {
-         var className:Array = null;
-         var value:Object = null;
-         var key:String = null;
-         var v:XML = null;
-         if((!(this._depthLimit == 0)) && (depth > this._depthLimit))
-         {
-            return "";
-         }
-         var s:String = "";
-         var classInfo:XML = describeType(o);
-         if(classInfo.@name.toString() == "Object")
-         {
-            for (key in o)
-            {
-               value = o[key];
-               if(!(value is Function))
-               {
-                  if(s.length > 0)
-                  {
-                     s = s + ",";
-                  }
-                  s = s + (this.escapeString(key) + ":" + this.convertToString(value));
-               }
-            }
-         }
-         else
-         {
-            for each (v in classInfo..*.((name() == "variable") || (name() == "accessor") && (attribute("access").charAt(0) == "r")))
-            {
-               if(!((v.metadata) && (v.metadata.(@name == "Transient").length() > 0)))
-               {
-                  if(s.length > 0)
-                  {
-                     s = s + ",";
-                  }
-                  try
-                  {
-                     s = s + (this.escapeString(v.@name.toString()) + ":" + this.convertToString(o[v.@name]));
-                  }
-                  catch(e:Error)
-                  {
-                     continue;
-                  }
-               }
-            }
-         }
-         if(this._showObjectType)
-         {
-            className = getQualifiedClassName(o).split("::");
-         }
-         if(className != null)
-         {
-            return "{" + this.escapeString("type") + ":" + this.escapeString(className.pop()) + ", " + this.escapeString("value") + ":{" + s + "}}";
-         }
-         return "{" + s + "}";
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
    }
 }

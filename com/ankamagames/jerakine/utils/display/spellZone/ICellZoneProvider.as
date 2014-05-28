@@ -1,7 +1,5 @@
 package com.ankamagames.jerakine.utils.display.spellZone
 {
-   import __AS3__.vec.Vector;
-   
    public interface ICellZoneProvider
    {
       

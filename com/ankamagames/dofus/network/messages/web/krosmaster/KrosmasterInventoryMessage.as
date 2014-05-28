@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.web.krosmaster
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.web.krosmaster.KrosmasterFigure;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.web.krosmaster
          return 6350;
       }
       
-      public function initKrosmasterInventoryMessage(figures:Vector.<KrosmasterFigure>=null) : KrosmasterInventoryMessage {
+      public function initKrosmasterInventoryMessage(figures:Vector.<KrosmasterFigure> = null) : KrosmasterInventoryMessage {
          this.figures = figures;
          this._isInitialized = true;
          return this;

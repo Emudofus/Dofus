@@ -13,7 +13,7 @@ package com.ankamagames.atouin.data.elements.subtypes
          super(elementId,elementType);
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(NormalGraphicalElementData));
+      protected static const _log:Logger;
       
       public var blendMode:String;
       

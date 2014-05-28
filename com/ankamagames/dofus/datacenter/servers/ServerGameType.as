@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.servers
       
       public static const MODULE:String = "ServerGameTypes";
       
-      private static var _log:Logger = Log.getLogger(getQualifiedClassName(ServerGameType));
+      private static var _log:Logger;
       
       public static function getServerGameTypeById(id:int) : ServerGameType {
          return GameData.getObject(MODULE,id) as ServerGameType;

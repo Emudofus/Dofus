@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.servers
       
       public static const MODULE:String = "ServerPopulations";
       
-      private static var _log:Logger = Log.getLogger(getQualifiedClassName(ServerPopulation));
+      private static var _log:Logger;
       
       public static function getServerPopulationById(id:int) : ServerPopulation {
          return GameData.getObject(MODULE,id) as ServerPopulation;

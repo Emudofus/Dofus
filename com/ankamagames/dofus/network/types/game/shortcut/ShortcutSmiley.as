@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.shortcut
          return 388;
       }
       
-      public function initShortcutSmiley(slot:uint=0, smileyId:uint=0) : ShortcutSmiley {
+      public function initShortcutSmiley(slot:uint = 0, smileyId:uint = 0) : ShortcutSmiley {
          super.initShortcut(slot);
          this.smileyId = smileyId;
          return this;

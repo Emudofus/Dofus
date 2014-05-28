@@ -5,7 +5,7 @@ package com.ankamagames.tiphon.events
    public class SwlEvent extends Event
    {
       
-      public function SwlEvent(type:String, pUrl:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function SwlEvent(type:String, pUrl:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
          this._url = pUrl;
       }

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6062;
       }
       
-      public function initGuildLevelUpMessage(newLevel:uint=0) : GuildLevelUpMessage {
+      public function initGuildLevelUpMessage(newLevel:uint = 0) : GuildLevelUpMessage {
          this.newLevel = newLevel;
          this._isInitialized = true;
          return this;

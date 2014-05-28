@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.character.deletion
          return 166;
       }
       
-      public function initCharacterDeletionErrorMessage(reason:uint=1) : CharacterDeletionErrorMessage {
+      public function initCharacterDeletionErrorMessage(reason:uint = 1) : CharacterDeletionErrorMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

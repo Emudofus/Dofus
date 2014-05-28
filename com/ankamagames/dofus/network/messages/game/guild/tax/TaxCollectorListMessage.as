@@ -4,7 +4,6 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.guild.tax.TaxCollectorInformations;
    import com.ankamagames.dofus.network.types.game.guild.tax.TaxCollectorFightersInformation;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -37,7 +36,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5930;
       }
       
-      public function initTaxCollectorListMessage(nbcollectorMax:uint=0, informations:Vector.<TaxCollectorInformations>=null, fightersInformations:Vector.<TaxCollectorFightersInformation>=null) : TaxCollectorListMessage {
+      public function initTaxCollectorListMessage(nbcollectorMax:uint = 0, informations:Vector.<TaxCollectorInformations> = null, fightersInformations:Vector.<TaxCollectorFightersInformation> = null) : TaxCollectorListMessage {
          this.nbcollectorMax = nbcollectorMax;
          this.informations = informations;
          this.fightersInformations = fightersInformations;

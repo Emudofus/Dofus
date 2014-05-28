@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.mount
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.paddock.PaddockItem;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5992;
       }
       
-      public function initGameDataPaddockObjectListAddMessage(paddockItemDescription:Vector.<PaddockItem>=null) : GameDataPaddockObjectListAddMessage {
+      public function initGameDataPaddockObjectListAddMessage(paddockItemDescription:Vector.<PaddockItem> = null) : GameDataPaddockObjectListAddMessage {
          this.paddockItemDescription = paddockItemDescription;
          this._isInitialized = true;
          return this;

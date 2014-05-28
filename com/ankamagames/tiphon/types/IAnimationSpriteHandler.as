@@ -14,7 +14,7 @@ package com.ankamagames.tiphon.types
       
       function getSkinSprite(param1:EquipmentSprite) : Sprite;
       
-      function onAnimationEvent(param1:String, param2:String="") : void;
+      function onAnimationEvent(param1:String, param2:String = "") : void;
       
       function getColorTransform(param1:uint) : ColorTransform;
       

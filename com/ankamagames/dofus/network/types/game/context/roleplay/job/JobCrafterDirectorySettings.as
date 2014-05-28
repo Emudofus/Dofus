@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
          return 97;
       }
       
-      public function initJobCrafterDirectorySettings(jobId:uint=0, minSlot:uint=0, userDefinedParams:uint=0) : JobCrafterDirectorySettings {
+      public function initJobCrafterDirectorySettings(jobId:uint = 0, minSlot:uint = 0, userDefinedParams:uint = 0) : JobCrafterDirectorySettings {
          this.jobId = jobId;
          this.minSlot = minSlot;
          this.userDefinedParams = userDefinedParams;

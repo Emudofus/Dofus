@@ -27,13 +27,13 @@ package com.ankamagames.jerakine.utils.display
       
       private static var _rootContainer:DisplayObjectContainer;
       
-      private static var _customMouseX:int = NOT_INITIALIZED;
+      private static var _customMouseX:int = -77777;
       
-      private static var _customMouseY:int = NOT_INITIALIZED;
+      private static var _customMouseY:int = -77777;
       
       private static var _setQualityIsEnable:Boolean;
       
-      private static var _chrome:Point = new Point();
+      private static var _chrome:Point;
       
       public static var nativeWindowStartWidth:uint;
       
@@ -86,7 +86,7 @@ package com.ankamagames.jerakine.utils.display
          _stage.quality = oldQuality;
       }
       
-      public static function setFullScreen(enabled:Boolean, onlyMaximize:Boolean=false) : void {
+      public static function setFullScreen(enabled:Boolean, onlyMaximize:Boolean = false) : void {
          if(AirScanner.hasAir())
          {
             if(enabled)
@@ -100,17 +100,15 @@ package com.ankamagames.jerakine.utils.display
                   StageShareManager.stage["nativeWindow"].maximize();
                }
             }
+            else if(!onlyMaximize)
+            {
+               StageShareManager.stage.displayState = StageDisplayState.NORMAL;
+            }
             else
             {
-               if(!onlyMaximize)
-               {
-                  StageShareManager.stage.displayState = StageDisplayState.NORMAL;
-               }
-               else
-               {
-                  StageShareManager.stage["nativeWindow"].minimize();
-               }
+               StageShareManager.stage["nativeWindow"].minimize();
             }
+            
          }
       }
       

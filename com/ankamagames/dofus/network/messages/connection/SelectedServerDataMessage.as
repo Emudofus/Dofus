@@ -35,7 +35,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 42;
       }
       
-      public function initSelectedServerDataMessage(serverId:int=0, address:String="", port:uint=0, canCreateNewCharacter:Boolean=false, ticket:String="") : SelectedServerDataMessage {
+      public function initSelectedServerDataMessage(serverId:int = 0, address:String = "", port:uint = 0, canCreateNewCharacter:Boolean = false, ticket:String = "") : SelectedServerDataMessage {
          this.serverId = serverId;
          this.address = address;
          this.port = port;

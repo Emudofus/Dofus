@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.achievement
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.achievement.AchievementRewardable;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6205;
       }
       
-      public function initAchievementListMessage(finishedAchievementsIds:Vector.<uint>=null, rewardableAchievements:Vector.<AchievementRewardable>=null) : AchievementListMessage {
+      public function initAchievementListMessage(finishedAchievementsIds:Vector.<uint> = null, rewardableAchievements:Vector.<AchievementRewardable> = null) : AchievementListMessage {
          this.finishedAchievementsIds = finishedAchievementsIds;
          this.rewardableAchievements = rewardableAchievements;
          this._isInitialized = true;

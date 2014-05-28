@@ -33,7 +33,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          }
       }
       
-      private static var _log:Logger = Log.getLogger(getQualifiedClassName(RegConnectionManager));
+      private static var _log:Logger;
       
       private static var _self:RegConnectionManager;
       
@@ -174,7 +174,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          var functionName:String = null;
          var clientId:* = NaN;
          var cmds:Array = this._sock.readUTFBytes(pEvent.bytesLoaded).split("|");
-         for each (cmd in cmds)
+         for each(cmd in cmds)
          {
             if(cmd == "")
             {
@@ -207,6 +207,8 @@ package com.ankamagames.dofus.kernel.sound.manager
                   {
                      this.setAsMain(false);
                   }
+                  continue;
+               default:
                   continue;
             }
          }

@@ -48,7 +48,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(JobsFrame));
+      protected static const _log:Logger;
       
       private static function updateJobExperience(je:JobExperience) : void {
          var kj:KnownJob = PlayedCharacterManager.getInstance().jobs[je.jobId];
@@ -126,7 +126,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                jdmsg = msg as JobDescriptionMessage;
                PlayedCharacterManager.getInstance().jobs = [];
                n = 0;
-               for each (jd in jdmsg.jobsDescription)
+               for each(jd in jdmsg.jobsDescription)
                {
                   kj = PlayedCharacterManager.getInstance().jobs[jd.jobId];
                   if(!kj)
@@ -143,7 +143,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is JobCrafterDirectorySettingsMessage:
                jcdsmsg = msg as JobCrafterDirectorySettingsMessage;
                this._settings = new Array();
-               for each (setting in jcdsmsg.craftersSettings)
+               for each(setting in jcdsmsg.craftersSettings)
                {
                   this._settings.push(createCrafterDirectorySettings(setting));
                }
@@ -162,7 +162,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is JobExperienceMultiUpdateMessage:
                jemumsg = msg as JobExperienceMultiUpdateMessage;
-               for each (je in jemumsg.experiencesUpdate)
+               for each(je in jemumsg.experiencesUpdate)
                {
                   updateJobExperience(je);
                }
@@ -170,7 +170,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is JobUnlearntMessage:
                julmsg = msg as JobUnlearntMessage;
-               delete PlayedCharacterManager.getInstance().jobs[[julmsg.jobId]];
+               delete PlayedCharacterManager.getInstance().jobs[julmsg.jobId];
                KernelEventsManager.getInstance().processCallback(HookList.JobsListUpdated);
                return true;
             case msg is JobLevelUpMessage:
@@ -222,13 +222,15 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is ExchangeStartOkJobIndexMessage:
                esokimsg = msg as ExchangeStartOkJobIndexMessage;
                array = new Array();
-               for each (esojijob in esokimsg.jobs)
+               for each(esojijob in esokimsg.jobs)
                {
                   array.push(esojijob);
                }
                Kernel.getWorker().addFrame(this._jobCrafterDirectoryListDialogFrame);
                KernelEventsManager.getInstance().processCallback(CraftHookList.ExchangeStartOkJobIndex,array);
                return true;
+            default:
+               return false;
          }
       }
       

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
          return 6149;
       }
       
-      public function initDungeonLeftMessage(dungeonId:uint=0) : DungeonLeftMessage {
+      public function initDungeonLeftMessage(dungeonId:uint = 0) : DungeonLeftMessage {
          this.dungeonId = dungeonId;
          this._isInitialized = true;
          return this;

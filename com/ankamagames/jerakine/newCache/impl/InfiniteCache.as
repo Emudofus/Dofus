@@ -25,7 +25,7 @@ package com.ankamagames.jerakine.newCache.impl
       
       public function extract(ref:*) : * {
          var obj:* = this._cache[ref];
-         delete this._cache[[ref]];
+         delete this._cache[ref];
          this._size--;
          return obj;
       }

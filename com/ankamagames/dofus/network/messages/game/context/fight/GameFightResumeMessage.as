@@ -4,7 +4,6 @@ package com.ankamagames.dofus.network.messages.game.context.fight
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightSpellCooldown;
    import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
    import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMark;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -35,7 +34,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 6067;
       }
       
-      public function initGameFightResumeMessage(effects:Vector.<FightDispellableEffectExtendedInformations>=null, marks:Vector.<GameActionMark>=null, gameTurn:uint=0, spellCooldowns:Vector.<GameFightSpellCooldown>=null, summonCount:uint=0, bombCount:uint=0) : GameFightResumeMessage {
+      public function initGameFightResumeMessage(effects:Vector.<FightDispellableEffectExtendedInformations> = null, marks:Vector.<GameActionMark> = null, gameTurn:uint = 0, spellCooldowns:Vector.<GameFightSpellCooldown> = null, summonCount:uint = 0, bombCount:uint = 0) : GameFightResumeMessage {
          super.initGameFightSpectateMessage(effects,marks,gameTurn);
          this.spellCooldowns = spellCooldowns;
          this.summonCount = summonCount;

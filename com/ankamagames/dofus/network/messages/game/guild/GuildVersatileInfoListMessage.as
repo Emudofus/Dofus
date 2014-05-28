@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.guild
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.social.GuildVersatileInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6435;
       }
       
-      public function initGuildVersatileInfoListMessage(guilds:Vector.<GuildVersatileInformations>=null) : GuildVersatileInfoListMessage {
+      public function initGuildVersatileInfoListMessage(guilds:Vector.<GuildVersatileInformations> = null) : GuildVersatileInfoListMessage {
          this.guilds = guilds;
          this._isInitialized = true;
          return this;

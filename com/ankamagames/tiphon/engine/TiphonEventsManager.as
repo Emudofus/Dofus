@@ -5,7 +5,6 @@ package com.ankamagames.tiphon.engine
    import com.ankamagames.jerakine.interfaces.IFLAEventHandler;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.memory.WeakReference;
    import flash.display.Scene;
    import flash.display.FrameLabel;
@@ -26,9 +25,9 @@ package com.ankamagames.tiphon.engine
          }
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(TiphonEventsManager));
+      private static const _log:Logger;
       
-      private static var _listeners:Vector.<EventListener> = new Vector.<EventListener>();
+      private static var _listeners:Vector.<EventListener>;
       
       private static var _eventsDic:Array;
       
@@ -197,7 +196,7 @@ package com.ankamagames.tiphon.engine
          {
             this._events[pFrame] = new Vector.<TiphonEventInfo>();
          }
-         for each (event in this._events[pFrame])
+         for each(event in this._events[pFrame])
          {
             if((event.animationName == pAnimationName) && (event.label == pLabelName))
             {
@@ -221,14 +220,12 @@ package com.ankamagames.tiphon.engine
                labelEvent.label = pLabelName;
                this._events[pFrame].push(labelEvent);
             }
-            else
+            else if(pLabelName != "END")
             {
-               if(pLabelName != "END")
-               {
-                  ts = this._weakTiphonSprite.object as TiphonSprite;
-                  _log.error("Found label \'" + pLabelName + "\' on sprite " + ts.look.getBone() + " (anim " + ts.getAnimation() + ")");
-               }
+               ts = this._weakTiphonSprite.object as TiphonSprite;
+               _log.error("Found label \'" + pLabelName + "\' on sprite " + ts.look.getBone() + " (anim " + ts.getAnimation() + ")");
             }
+            
          }
       }
       
@@ -237,11 +234,11 @@ package com.ankamagames.tiphon.engine
          var events:Vector.<TiphonEventInfo> = null;
          var newEvents:Vector.<TiphonEventInfo> = null;
          var tei:TiphonEventInfo = null;
-         for (frame in this._events)
+         for(frame in this._events)
          {
             events = this._events[frame];
             newEvents = new Vector.<TiphonEventInfo>();
-            for each (tei in events)
+            for each(tei in events)
             {
                if((!(tei.animationName == pAnimation)) || (!(tei.type == pTypeName)))
                {
@@ -284,6 +281,8 @@ package com.ankamagames.tiphon.engine
                param = param.split(BALISE_PARAM_END)[0];
                returnEvent = new TiphonEventInfo(TiphonEvent.EVT_EVENT,param);
                break;
+            default:
+               returnEvent = this.convertOldLabel(pLabelName);
          }
          return returnEvent;
       }

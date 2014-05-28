@@ -39,19 +39,19 @@ package com.ankamagames.berilia.managers
       public function removeEventListener(ge:GenericListener) : void {
          var i:String = null;
          var j:Object = null;
-         for (i in this._aEvent)
+         for(i in this._aEvent)
          {
-            for (j in this._aEvent[i])
+            for(j in this._aEvent[i])
             {
                if(!((this._aEvent[i] == null) || (this._aEvent[i][j] == null)))
                {
                   if(this._aEvent[i][j] == ge)
                   {
-                     delete this._aEvent[i][[j]];
+                     delete this._aEvent[i][j];
                      if(!this._aEvent[i].length)
                      {
                         this._aEvent[i] = null;
-                        delete this._aEvent[[i]];
+                        delete this._aEvent[i];
                      }
                   }
                }
@@ -63,20 +63,20 @@ package com.ankamagames.berilia.managers
          var i:String = null;
          var j:Object = null;
          var l:GenericListener = null;
-         for (i in this._aEvent)
+         for(i in this._aEvent)
          {
-            for (j in this._aEvent[i])
+            for(j in this._aEvent[i])
             {
                if(!((this._aEvent[i] == null) || (this._aEvent[i][j] == null)))
                {
                   l = this._aEvent[i][j];
                   if(l.listener == name)
                   {
-                     delete this._aEvent[i][[j]];
+                     delete this._aEvent[i][j];
                      if(!this._aEvent[i].length)
                      {
                         this._aEvent[i] = null;
-                        delete this._aEvent[[i]];
+                        delete this._aEvent[i];
                      }
                   }
                }
@@ -90,10 +90,10 @@ package com.ankamagames.berilia.managers
          var i:* = undefined;
          var j:* = undefined;
          var index:* = undefined;
-         for (i in this._aEvent)
+         for(i in this._aEvent)
          {
             deleteIndex = null;
-            for (j in this._aEvent[i])
+            for(j in this._aEvent[i])
             {
                if(!((this._aEvent[i] == null) || (this._aEvent[i][j] == null)))
                {
@@ -108,9 +108,9 @@ package com.ankamagames.berilia.managers
                   }
                }
             }
-            for each (index in deleteIndex)
+            for each(index in deleteIndex)
             {
-               delete this._aEvent[i][[index]];
+               delete this._aEvent[i][index];
             }
          }
       }

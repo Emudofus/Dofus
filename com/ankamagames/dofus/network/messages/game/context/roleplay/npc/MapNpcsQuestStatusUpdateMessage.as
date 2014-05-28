@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.GameRolePlayNpcQuestFlag;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -38,7 +37,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5642;
       }
       
-      public function initMapNpcsQuestStatusUpdateMessage(mapId:int=0, npcsIdsWithQuest:Vector.<int>=null, questFlags:Vector.<GameRolePlayNpcQuestFlag>=null, npcsIdsWithoutQuest:Vector.<int>=null) : MapNpcsQuestStatusUpdateMessage {
+      public function initMapNpcsQuestStatusUpdateMessage(mapId:int = 0, npcsIdsWithQuest:Vector.<int> = null, questFlags:Vector.<GameRolePlayNpcQuestFlag> = null, npcsIdsWithoutQuest:Vector.<int> = null) : MapNpcsQuestStatusUpdateMessage {
          this.mapId = mapId;
          this.npcsIdsWithQuest = npcsIdsWithQuest;
          this.questFlags = questFlags;

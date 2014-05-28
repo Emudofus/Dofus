@@ -20,9 +20,9 @@ package com.ankamagames.dofus.internalDatacenter.quest
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TreasureHuntStepWrapper));
+      protected static const _log:Logger;
       
-      public static function create(type:uint, direction:int, mapId:int, poiLabel:uint, count:uint=0) : TreasureHuntStepWrapper {
+      public static function create(type:uint, direction:int, mapId:int, poiLabel:uint, count:uint = 0) : TreasureHuntStepWrapper {
          var item:TreasureHuntStepWrapper = new TreasureHuntStepWrapper();
          item.type = type;
          item.direction = direction;
@@ -56,35 +56,29 @@ package com.ankamagames.dofus.internalDatacenter.quest
                map = new WorldPointWrapper(this.mapId);
                this._stepText = I18n.getUiText("ui.common.start") + " [" + map.outdoorX + "," + map.outdoorY + "]";
             }
-            else
+            else if(this.type == TreasureHuntStepTypeEnum.DIRECTION_TO_POI)
             {
-               if(this.type == TreasureHuntStepTypeEnum.DIRECTION_TO_POI)
+               poi = PointOfInterest.getPointOfInterestById(this.poiLabel);
+               if(poi)
                {
-                  poi = PointOfInterest.getPointOfInterestById(this.poiLabel);
-                  if(poi)
-                  {
-                     this._stepText = poi.name;
-                  }
-                  else
-                  {
-                     this._stepText = "???";
-                  }
+                  this._stepText = poi.name;
                }
                else
                {
-                  if(this.type == TreasureHuntStepTypeEnum.DIRECTION)
-                  {
-                     this._stepText = "x" + this.count;
-                  }
-                  else
-                  {
-                     if(this.type == TreasureHuntStepTypeEnum.FIGHT)
-                     {
-                        this._stepText = "";
-                     }
-                  }
+                  this._stepText = "???";
                }
             }
+            else if(this.type == TreasureHuntStepTypeEnum.DIRECTION)
+            {
+               this._stepText = "x" + this.count;
+            }
+            else if(this.type == TreasureHuntStepTypeEnum.FIGHT)
+            {
+               this._stepText = "";
+            }
+            
+            
+            
          }
          return this._stepText;
       }
@@ -107,75 +101,59 @@ package com.ankamagames.dofus.internalDatacenter.quest
                   }
                }
             }
-            else
+            else if(this.type == TreasureHuntStepTypeEnum.DIRECTION_TO_POI)
             {
-               if(this.type == TreasureHuntStepTypeEnum.DIRECTION_TO_POI)
+               if(this.direction == DirectionsEnum.RIGHT)
                {
-                  if(this.direction == DirectionsEnum.RIGHT)
-                  {
-                     directionName = I18n.getUiText("ui.treasureHunt.theEast");
-                  }
-                  else
-                  {
-                     if(this.direction == DirectionsEnum.DOWN)
-                     {
-                        directionName = I18n.getUiText("ui.treasureHunt.theSouth");
-                     }
-                     else
-                     {
-                        if(this.direction == DirectionsEnum.LEFT)
-                        {
-                           directionName = I18n.getUiText("ui.treasureHunt.theWest");
-                        }
-                        else
-                        {
-                           if(this.direction == DirectionsEnum.UP)
-                           {
-                              directionName = I18n.getUiText("ui.treasureHunt.theNorth");
-                           }
-                        }
-                     }
-                  }
-                  this._stepRolloverText = I18n.getUiText("ui.treasureHunt.followDirectionToPOI",[directionName,"[" + this._stepText + "]"]);
+                  directionName = I18n.getUiText("ui.treasureHunt.theEast");
                }
-               else
+               else if(this.direction == DirectionsEnum.DOWN)
                {
-                  if(this.type == TreasureHuntStepTypeEnum.DIRECTION)
-                  {
-                     if(this.direction == DirectionsEnum.RIGHT)
-                     {
-                        directionName = I18n.getUiText("ui.treasureHunt.theEast");
-                     }
-                     else
-                     {
-                        if(this.direction == DirectionsEnum.DOWN)
-                        {
-                           directionName = I18n.getUiText("ui.treasureHunt.theSouth");
-                        }
-                        else
-                        {
-                           if(this.direction == DirectionsEnum.LEFT)
-                           {
-                              directionName = I18n.getUiText("ui.treasureHunt.theWest");
-                           }
-                           else
-                           {
-                              if(this.direction == DirectionsEnum.UP)
-                              {
-                                 directionName = I18n.getUiText("ui.treasureHunt.theNorth");
-                              }
-                           }
-                        }
-                     }
-                     this._stepRolloverText = PatternDecoder.combine(I18n.getUiText("ui.treasureHunt.followDirection",[this.count,directionName]),"n",this.count <= 1);
-                  }
+                  directionName = I18n.getUiText("ui.treasureHunt.theSouth");
                }
+               else if(this.direction == DirectionsEnum.LEFT)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theWest");
+               }
+               else if(this.direction == DirectionsEnum.UP)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theNorth");
+               }
+               
+               
+               
+               this._stepRolloverText = I18n.getUiText("ui.treasureHunt.followDirectionToPOI",[directionName,"[" + this._stepText + "]"]);
             }
+            else if(this.type == TreasureHuntStepTypeEnum.DIRECTION)
+            {
+               if(this.direction == DirectionsEnum.RIGHT)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theEast");
+               }
+               else if(this.direction == DirectionsEnum.DOWN)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theSouth");
+               }
+               else if(this.direction == DirectionsEnum.LEFT)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theWest");
+               }
+               else if(this.direction == DirectionsEnum.UP)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theNorth");
+               }
+               
+               
+               
+               this._stepRolloverText = PatternDecoder.combine(I18n.getUiText("ui.treasureHunt.followDirection",[this.count,directionName]),"n",this.count <= 1);
+            }
+            
+            
          }
          return this._stepRolloverText;
       }
       
-      public function update(type:uint, direction:int, mapId:int, poiLabel:uint, count:uint=0) : void {
+      public function update(type:uint, direction:int, mapId:int, poiLabel:uint, count:uint = 0) : void {
          this.type = type;
          this.direction = direction;
          this.mapId = mapId;

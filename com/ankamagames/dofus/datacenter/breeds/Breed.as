@@ -8,7 +8,6 @@ package com.ankamagames.dofus.datacenter.breeds
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.dofus.datacenter.spells.Spell;
    import com.ankamagames.jerakine.data.I18n;
-   import __AS3__.vec.*;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    
    public class Breed extends Object implements IDataCenter
@@ -20,9 +19,9 @@ package com.ankamagames.dofus.datacenter.breeds
       
       public static const MODULE:String = "Breeds";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Breed));
+      protected static const _log:Logger;
       
-      private static var _skinsForBreed:Array = new Array();
+      private static var _skinsForBreed:Array;
       
       public static function getBreedById(id:int) : Breed {
          return GameData.getObject(MODULE,id) as Breed;
@@ -39,7 +38,7 @@ package com.ankamagames.dofus.datacenter.breeds
          var id:int = 0;
          if(!_skinsForBreed.length)
          {
-            for each (breed in getBreeds())
+            for each(breed in getBreeds())
             {
                look = breed.maleLook.split("|")[1];
                look = look.split(",")[0];
@@ -51,7 +50,7 @@ package com.ankamagames.dofus.datacenter.breeds
                _skinsForBreed[SkinMapping.getSkinMappingById(int(look)).lowDefId] = breed.id;
             }
          }
-         for (skinKnown in _skinsForBreed)
+         for(skinKnown in _skinsForBreed)
          {
             if(skinKnown == skin.toString())
             {
@@ -148,7 +147,7 @@ package com.ankamagames.dofus.datacenter.breeds
          if((!this._breedSpells) && (!(Spell.getSpellById(1) == null)))
          {
             this._breedSpells = new Vector.<Spell>();
-            for each (spellId in this.breedSpellsId)
+            for each(spellId in this.breedSpellsId)
             {
                this._breedSpells.push(Spell.getSpellById(spellId));
             }
@@ -182,7 +181,7 @@ package com.ankamagames.dofus.datacenter.breeds
       
       public function getStatsPointsNeededForStrength(stat:uint) : uint {
          var i:* = undefined;
-         for (i in this.statsPointsForStrength)
+         for(i in this.statsPointsForStrength)
          {
             if(stat < this.statsPointsForStrength[i][0])
             {
@@ -194,7 +193,7 @@ package com.ankamagames.dofus.datacenter.breeds
       
       public function getStatsPointsNeededForIntelligence(stat:uint) : uint {
          var i:* = undefined;
-         for (i in this.statsPointsForIntelligence)
+         for(i in this.statsPointsForIntelligence)
          {
             if(stat < this.statsPointsForIntelligence[i][0])
             {
@@ -206,7 +205,7 @@ package com.ankamagames.dofus.datacenter.breeds
       
       public function getStatsPointsNeededForChance(stat:uint) : uint {
          var i:* = undefined;
-         for (i in this.statsPointsForChance)
+         for(i in this.statsPointsForChance)
          {
             if(stat < this.statsPointsForChance[i][0])
             {
@@ -218,7 +217,7 @@ package com.ankamagames.dofus.datacenter.breeds
       
       public function getStatsPointsNeededForAgility(stat:uint) : uint {
          var i:* = undefined;
-         for (i in this.statsPointsForAgility)
+         for(i in this.statsPointsForAgility)
          {
             if(stat < this.statsPointsForAgility[i][0])
             {
@@ -230,7 +229,7 @@ package com.ankamagames.dofus.datacenter.breeds
       
       public function getStatsPointsNeededForVitality(stat:uint) : uint {
          var i:* = undefined;
-         for (i in this.statsPointsForVitality)
+         for(i in this.statsPointsForVitality)
          {
             if(stat < this.statsPointsForVitality[i][0])
             {
@@ -242,7 +241,7 @@ package com.ankamagames.dofus.datacenter.breeds
       
       public function getStatsPointsNeededForWisdom(stat:uint) : uint {
          var i:* = undefined;
-         for (i in this.statsPointsForWisdom)
+         for(i in this.statsPointsForWisdom)
          {
             if(stat < this.statsPointsForWisdom[i][0])
             {

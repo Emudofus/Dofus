@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
          return 5608;
       }
       
-      public function initSpellUpgradeRequestMessage(spellId:uint=0, spellLevel:uint=0) : SpellUpgradeRequestMessage {
+      public function initSpellUpgradeRequestMessage(spellId:uint = 0, spellLevel:uint = 0) : SpellUpgradeRequestMessage {
          this.spellId = spellId;
          this.spellLevel = spellLevel;
          this._isInitialized = true;

@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 881;
       }
       
-      public function initChatServerMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="", senderId:int=0, senderName:String="", senderAccountId:int=0) : ChatServerMessage {
+      public function initChatServerMessage(channel:uint = 0, content:String = "", timestamp:uint = 0, fingerprint:String = "", senderId:int = 0, senderName:String = "", senderAccountId:int = 0) : ChatServerMessage {
          super.initChatAbstractServerMessage(channel,content,timestamp,fingerprint);
          this.senderId = senderId;
          this.senderName = senderName;

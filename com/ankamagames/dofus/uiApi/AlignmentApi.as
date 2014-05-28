@@ -15,7 +15,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.datacenter.alignments.AlignmentRank;
    import com.ankamagames.dofus.datacenter.alignments.AlignmentSide;
    import com.ankamagames.dofus.datacenter.alignments.AlignmentTitle;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.conquest.AllianceOnTheHillWrapper;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
@@ -169,9 +168,9 @@ package com.ankamagames.dofus.uiApi
          {
             giftsIds = rankJntGift.gifts;
             gifts = AlignmentGift.getAlignmentGifts();
-            for each (giftId in giftsIds)
+            for each(giftId in giftsIds)
             {
-               for each (gift in gifts)
+               for each(gift in gifts)
                {
                   if(giftId == gift.id)
                   {

@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 6490;
       }
       
-      public function initGameFightNewWaveMessage(id:uint=0, teamId:int=0, nbTurnBeforeNextWave:int=0) : GameFightNewWaveMessage {
+      public function initGameFightNewWaveMessage(id:uint = 0, teamId:int = 0, nbTurnBeforeNextWave:int = 0) : GameFightNewWaveMessage {
          this.id = id;
          this.teamId = teamId;
          this.nbTurnBeforeNextWave = nbTurnBeforeNextWave;

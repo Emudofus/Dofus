@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 407;
       }
       
-      public function initHumanOptionEmote(emoteId:uint=0, emoteStartTime:Number=0) : HumanOptionEmote {
+      public function initHumanOptionEmote(emoteId:uint = 0, emoteStartTime:Number = 0) : HumanOptionEmote {
          this.emoteId = emoteId;
          this.emoteStartTime = emoteStartTime;
          return this;

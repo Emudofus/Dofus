@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 3;
       }
       
-      public function initGameRolePlayMutantInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, name:String="", humanoidInfo:HumanInformations=null, accountId:uint=0, monsterId:int=0, powerLevel:int=0) : GameRolePlayMutantInformations {
+      public function initGameRolePlayMutantInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, name:String = "", humanoidInfo:HumanInformations = null, accountId:uint = 0, monsterId:int = 0, powerLevel:int = 0) : GameRolePlayMutantInformations {
          super.initGameRolePlayHumanoidInformations(contextualId,look,disposition,name,humanoidInfo,accountId);
          this.monsterId = monsterId;
          this.powerLevel = powerLevel;

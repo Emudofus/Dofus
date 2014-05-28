@@ -30,7 +30,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ExternalGameFrame));
+      protected static const _log:Logger;
       
       public function get priority() : int {
          return Priority.NORMAL;
@@ -104,6 +104,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                kpsmsg.initKrosmasterPlayingStatusMessage(kpsa.playing);
                ConnectionsHandler.getConnection().send(kpsmsg);
                return true;
+            default:
+               return false;
          }
       }
    }

@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.fight
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 5921;
       }
       
-      public function initGameFightSynchronizeMessage(fighters:Vector.<GameFightFighterInformations>=null) : GameFightSynchronizeMessage {
+      public function initGameFightSynchronizeMessage(fighters:Vector.<GameFightFighterInformations> = null) : GameFightSynchronizeMessage {
          this.fighters = fighters;
          this._isInitialized = true;
          return this;

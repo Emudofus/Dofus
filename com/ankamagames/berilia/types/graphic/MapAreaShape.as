@@ -68,7 +68,7 @@ package com.ankamagames.berilia.types.graphic
          return this._fillColor;
       }
       
-      public function colorTransform(duration:int, rM:Number=1, gM:Number=1, bM:Number=1, aM:Number=1, rO:Number=0, gO:Number=0, bO:Number=0, aO:Number=0) : void {
+      public function colorTransform(duration:int, rM:Number = 1, gM:Number = 1, bM:Number = 1, aM:Number = 1, rO:Number = 0, gO:Number = 0, bO:Number = 0, aO:Number = 0) : void {
          this._lastAlphaMultiplier = this._alphaMultiplier;
          this._lastAlphaOffset = this._alphaOffset;
          this._lastBlueMultiplier = this._blueMultiplier;

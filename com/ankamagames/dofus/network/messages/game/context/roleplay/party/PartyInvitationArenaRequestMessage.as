@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6283;
       }
       
-      public function initPartyInvitationArenaRequestMessage(name:String="") : PartyInvitationArenaRequestMessage {
+      public function initPartyInvitationArenaRequestMessage(name:String = "") : PartyInvitationArenaRequestMessage {
          super.initPartyInvitationRequestMessage(name);
          this._isInitialized = true;
          return this;

@@ -24,7 +24,7 @@ package com.ankamagames.dofus.misc.interClient
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InterClientManager));
+      protected static const _log:Logger;
       
       private static var _self:InterClientManager;
       
@@ -130,13 +130,11 @@ package com.ankamagames.dofus.misc.interClient
          {
             this._client.gainFocus(date);
          }
-         else
+         else if(this._master)
          {
-            if(this._master)
-            {
-               this._master.clientGainFocus("_dofus," + new Date().time);
-            }
+            this._master.clientGainFocus("_dofus," + new Date().time);
          }
+         
       }
       
       public function resetFocus() : void {
@@ -144,13 +142,11 @@ package com.ankamagames.dofus.misc.interClient
          {
             this._client.gainFocus(0);
          }
-         else
+         else if(this._master)
          {
-            if(this._master)
-            {
-               this._master.clientGainFocus("_dofus,0");
-            }
+            this._master.clientGainFocus("_dofus,0");
          }
+         
       }
       
       public function updateFocusList() : void {

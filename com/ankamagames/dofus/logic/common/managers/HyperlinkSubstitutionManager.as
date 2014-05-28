@@ -22,14 +22,16 @@ package com.ankamagames.dofus.logic.common.managers
          {
             case "autoanswer":
                return I18n.getUiText("ui.chat.status.autoanswer");
+            default:
+               return "Error";
          }
       }
       
-      public static function openAnkabox(messageType:String, accountId:int=0) : void {
+      public static function openAnkabox(messageType:String, accountId:int = 0) : void {
          KernelEventsManager.getInstance().processCallback(HookList.OpenWebPortal,WebLocationEnum.WEB_LOCATION_ANKABOX_SEND_MESSAGE,false,[accountId]);
       }
       
-      public static function rollOver(pX:int, pY:int, objectGID:uint, ornId:uint=0) : void {
+      public static function rollOver(pX:int, pY:int, objectGID:uint, ornId:uint = 0) : void {
          var target:Rectangle = new Rectangle(pX,pY,10,10);
          var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.chat.status.autoanswertooltip"));
          TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),true,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);

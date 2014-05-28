@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
          return 6279;
       }
       
-      public function initGameRolePlayArenaFightAnswerMessage(fightId:int=0, accept:Boolean=false) : GameRolePlayArenaFightAnswerMessage {
+      public function initGameRolePlayArenaFightAnswerMessage(fightId:int = 0, accept:Boolean = false) : GameRolePlayArenaFightAnswerMessage {
          this.fightId = fightId;
          this.accept = accept;
          this._isInitialized = true;

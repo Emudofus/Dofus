@@ -20,7 +20,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MountDialogFrame));
+      protected static const _log:Logger;
       
       public static function get mountFrame() : MountFrame {
          return Kernel.getWorker().getFrame(MountFrame) as MountFrame;
@@ -55,6 +55,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                   Kernel.getWorker().removeFrame(this);
                }
                return true;
+            default:
+               return false;
          }
       }
       

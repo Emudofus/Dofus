@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.visual
          return 6114;
       }
       
-      public function initGameRolePlaySpellAnimMessage(casterId:int=0, targetCellId:uint=0, spellId:uint=0, spellLevel:uint=0) : GameRolePlaySpellAnimMessage {
+      public function initGameRolePlaySpellAnimMessage(casterId:int = 0, targetCellId:uint = 0, spellId:uint = 0, spellLevel:uint = 0) : GameRolePlaySpellAnimMessage {
          this.casterId = casterId;
          this.targetCellId = targetCellId;
          this.spellId = spellId;

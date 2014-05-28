@@ -10,7 +10,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          super();
       }
       
-      private static var _weaponUtil:Weapon = new Weapon();
+      private static var _weaponUtil:Weapon;
       
       public var apCost:int;
       
@@ -36,7 +36,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          return true;
       }
       
-      override public function clone(baseClass:Class=null) : ItemWrapper {
+      override public function clone(baseClass:Class = null) : ItemWrapper {
          var result:ItemWrapper = super.clone(WeaponWrapper);
          _weaponUtil.copy(this,result);
          return result;

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.web.ankabox
          return 6275;
       }
       
-      public function initMailStatusMessage(unread:uint=0, total:uint=0) : MailStatusMessage {
+      public function initMailStatusMessage(unread:uint = 0, total:uint = 0) : MailStatusMessage {
          this.unread = unread;
          this.total = total;
          this._isInitialized = true;

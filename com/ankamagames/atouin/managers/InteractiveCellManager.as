@@ -52,7 +52,7 @@ package com.ankamagames.atouin.managers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InteractiveCellManager));
+      protected static const _log:Logger;
       
       private static var _self:InteractiveCellManager;
       
@@ -100,12 +100,12 @@ package com.ankamagames.atouin.managers
          Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
       }
       
-      public function setInteraction(click:Boolean=true, over:Boolean=false, out:Boolean=false) : void {
+      public function setInteraction(click:Boolean = true, over:Boolean = false, out:Boolean = false) : void {
          var cell:GraphicCell = null;
          this._interaction_click = click;
          this._cellOverEnabled = over;
          this._interaction_out = out;
-         for each (cell in this._aCells)
+         for each(cell in this._aCells)
          {
             if(click)
             {
@@ -192,7 +192,7 @@ package com.ankamagames.atouin.managers
          return false;
       }
       
-      public function show(b:Boolean, pIsInFight:Boolean=false) : void {
+      public function show(b:Boolean, pIsInFight:Boolean = false) : void {
          var cell:GraphicCell = null;
          this._bShowGrid = b;
          var alpha:Number = (this._bShowGrid) || (Atouin.getInstance().options.alwaysShowGrid)?1:0;
@@ -254,13 +254,11 @@ package com.ankamagames.atouin.managers
          {
             this.registerOver(true);
          }
-         else
+         else if((oldValue) && (!newValue))
          {
-            if((oldValue) && (!newValue))
-            {
-               this.registerOver(false);
-            }
+            this.registerOver(false);
          }
+         
       }
       
       private function registerOver(enabled:Boolean) : void {
@@ -303,7 +301,7 @@ package com.ankamagames.atouin.managers
          if(Atouin.getInstance().options.virtualPlayerJump)
          {
             a = EntitiesManager.getInstance().entities;
-            for each (entity in a)
+            for each(entity in a)
             {
                if(entity is IMovable)
                {

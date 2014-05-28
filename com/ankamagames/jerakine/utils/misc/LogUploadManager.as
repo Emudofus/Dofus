@@ -42,7 +42,7 @@ package com.ankamagames.jerakine.utils.misc
       
       private static var _self:LogUploadManager;
       
-      private static var mega:uint = Math.pow(2,20);
+      private static var mega:uint;
       
       public static function getInstance() : LogUploadManager {
          if(!_self)

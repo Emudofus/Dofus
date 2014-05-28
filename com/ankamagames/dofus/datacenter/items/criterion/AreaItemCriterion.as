@@ -18,6 +18,9 @@ package com.ankamagames.dofus.datacenter.items.criterion
             case ItemCriterionOperator.EQUAL:
             case ItemCriterionOperator.DIFFERENT:
                return super.isRespected;
+            default:
+               trace("Opérateur non conforme : " + _serverCriterionForm);
+               return false;
          }
       }
       
@@ -37,6 +40,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
             case ItemCriterionOperator.DIFFERENT:
                readableCriterion = I18n.getUiText("ui.tooltip.dontBeInArea",[areaName]);
                break;
+            default:
+               trace("Opérateur non conforme : " + _serverCriterionForm);
          }
          return readableCriterion;
       }

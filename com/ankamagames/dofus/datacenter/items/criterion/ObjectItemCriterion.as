@@ -15,7 +15,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
       
       override public function get isRespected() : Boolean {
          var iw:ItemWrapper = null;
-         for each (iw in InventoryManager.getInstance().realInventory)
+         for each(iw in InventoryManager.getInstance().realInventory)
          {
             if(iw.objectGID == _criterionValue)
             {

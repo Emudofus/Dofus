@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6061;
       }
       
-      public function initGuildMemberOnlineStatusMessage(memberId:uint=0, online:Boolean=false) : GuildMemberOnlineStatusMessage {
+      public function initGuildMemberOnlineStatusMessage(memberId:uint = 0, online:Boolean = false) : GuildMemberOnlineStatusMessage {
          this.memberId = memberId;
          this.online = online;
          this._isInitialized = true;

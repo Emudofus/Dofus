@@ -9,7 +9,7 @@ package com.ankamagames.tiphon.types
          super();
       }
       
-      private static const baseColorTransform:ColorTransform = new ColorTransform();
+      private static const baseColorTransform:ColorTransform;
       
       override public function colorize(colorT:ColorTransform) : void {
          if(colorT)

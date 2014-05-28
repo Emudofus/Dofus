@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
 {
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.interactive.skill.SkillActionDescription;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
@@ -25,7 +24,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
          return 101;
       }
       
-      public function initJobDescription(jobId:uint=0, skills:Vector.<SkillActionDescription>=null) : JobDescription {
+      public function initJobDescription(jobId:uint = 0, skills:Vector.<SkillActionDescription> = null) : JobDescription {
          this.jobId = jobId;
          this.skills = skills;
          return this;

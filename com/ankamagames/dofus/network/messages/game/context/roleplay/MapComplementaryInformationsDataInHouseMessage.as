@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.house.HouseInformationsInside;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.house.HouseInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
@@ -35,7 +34,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 6130;
       }
       
-      public function initMapComplementaryInformationsDataInHouseMessage(subAreaId:uint=0, mapId:uint=0, houses:Vector.<HouseInformations>=null, actors:Vector.<GameRolePlayActorInformations>=null, interactiveElements:Vector.<InteractiveElement>=null, statedElements:Vector.<StatedElement>=null, obstacles:Vector.<MapObstacle>=null, fights:Vector.<FightCommonInformations>=null, currentHouse:HouseInformationsInside=null) : MapComplementaryInformationsDataInHouseMessage {
+      public function initMapComplementaryInformationsDataInHouseMessage(subAreaId:uint = 0, mapId:uint = 0, houses:Vector.<HouseInformations> = null, actors:Vector.<GameRolePlayActorInformations> = null, interactiveElements:Vector.<InteractiveElement> = null, statedElements:Vector.<StatedElement> = null, obstacles:Vector.<MapObstacle> = null, fights:Vector.<FightCommonInformations> = null, currentHouse:HouseInformationsInside = null) : MapComplementaryInformationsDataInHouseMessage {
          super.initMapComplementaryInformationsDataMessage(subAreaId,mapId,houses,actors,interactiveElements,statedElements,obstacles,fights);
          this.currentHouse = currentHouse;
          this._isInitialized = true;

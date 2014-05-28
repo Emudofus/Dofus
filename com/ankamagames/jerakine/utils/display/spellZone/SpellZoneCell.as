@@ -78,7 +78,7 @@ package com.ankamagames.jerakine.utils.display.spellZone
       private function onClick(e:MouseEvent) : void {
       }
       
-      public function colorCell(color:uint, setDefault:Boolean=false) : void {
+      public function colorCell(color:uint, setDefault:Boolean = false) : void {
          var oColor:Color = new Color(color);
          this.filters = [new ColorMatrixFilter([oColor.red / 255,0,0,0,0,0,oColor.green / 255,0,0,0,0,0,oColor.blue / 255,0,0,0,0,0,this._alpha,0])];
          if(setDefault)

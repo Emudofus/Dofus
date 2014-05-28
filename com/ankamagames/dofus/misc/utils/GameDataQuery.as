@@ -2,7 +2,6 @@ package com.ankamagames.dofus.misc.utils
 {
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.data.GameDataFileAccessor;
-   import __AS3__.vec.*;
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.utils.misc.StringUtils;
    import com.ankamagames.jerakine.data.GameData;
@@ -21,7 +20,7 @@ package com.ankamagames.dofus.misc.utils
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GameDataQuery));
+      protected static const _log:Logger;
       
       public static function getQueryableFields(target:Class) : Vector.<String> {
          var target:Class = checkPackage(target);
@@ -86,7 +85,7 @@ package com.ankamagames.dofus.misc.utils
             match = newMatch;
             i++;
          }
-         for each (id in match)
+         for each(id in match)
          {
             result.push(id);
          }
@@ -164,7 +163,7 @@ package com.ankamagames.dofus.misc.utils
          return result;
       }
       
-      public static function sort(target:Class, ids:Vector.<uint>, fieldNames:*, ascending:*=true) : Vector.<uint> {
+      public static function sort(target:Class, ids:Vector.<uint>, fieldNames:*, ascending:* = true) : Vector.<uint> {
          var cleanedFieldNames:Vector.<String> = null;
          var i:uint = 0;
          var field:String = null;
@@ -222,7 +221,7 @@ package com.ankamagames.dofus.misc.utils
          {
             fieldName = fieldNames[i];
             fieldIndex = new Dictionary();
-            for each (data in datas)
+            for each(data in datas)
             {
                fieldIndex[data[fieldName]] = I18nFileAccessor.getInstance().getOrderIndex(data[fieldName]);
             }
@@ -300,7 +299,7 @@ package com.ankamagames.dofus.misc.utils
          {
             className = tmp[1];
             desc = DescribeTypeCache.typeDescription(GameDataList);
-            for each (constant in desc..constant)
+            for each(constant in desc..constant)
             {
                classInfo = constant.@type.toString().split("::");
                if(classInfo[1] == className)
@@ -309,13 +308,11 @@ package com.ankamagames.dofus.misc.utils
                }
             }
          }
-         else
+         else if(packageName.indexOf("com.ankamagames.dofus.datacenter") != 0)
          {
-            if(packageName.indexOf("com.ankamagames.dofus.datacenter") != 0)
-            {
-               throw new ArgumentError(getQualifiedClassName(target) + " is queryable (note found in datacenter package).");
-            }
+            throw new ArgumentError(getQualifiedClassName(target) + " is queryable (note found in datacenter package).");
          }
+         
          return target;
       }
    }

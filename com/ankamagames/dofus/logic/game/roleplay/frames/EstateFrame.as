@@ -33,7 +33,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EstateFrame));
+      protected static const _log:Logger;
       
       private var _estateList:Array;
       
@@ -66,7 +66,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             case msg is HouseToSellListMessage:
                htslmsg = msg as HouseToSellListMessage;
                this._estateList = new Array();
-               for each (house in htslmsg.houseList)
+               for each(house in htslmsg.houseList)
                {
                   estHouse = new Estate(house);
                   this._estateList.push(estHouse);
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             case msg is PaddockToSellListMessage:
                ptslmsg = msg as PaddockToSellListMessage;
                this._estateList = new Array();
-               for each (paddock in ptslmsg.paddockList)
+               for each(paddock in ptslmsg.paddockList)
                {
                   estPaddock = new Estate(paddock);
                   this._estateList.push(estPaddock);
@@ -111,6 +111,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                ldrmsg = new LeaveDialogRequestMessage();
                ConnectionsHandler.getConnection().send(ldrmsg);
                return true;
+            default:
+               return false;
          }
       }
       

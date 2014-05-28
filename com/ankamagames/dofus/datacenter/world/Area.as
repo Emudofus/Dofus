@@ -17,7 +17,7 @@ package com.ankamagames.dofus.datacenter.world
       
       public static const MODULE:String = "Areas";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Area));
+      protected static const _log:Logger;
       
       private static var _allAreas:Array;
       

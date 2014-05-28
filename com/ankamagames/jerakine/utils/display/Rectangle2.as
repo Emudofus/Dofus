@@ -6,7 +6,7 @@ package com.ankamagames.jerakine.utils.display
    public class Rectangle2 extends Object implements IRectangle
    {
       
-      public function Rectangle2(x:Number=0, y:Number=0, width:Number=0, height:Number=0) {
+      public function Rectangle2(x:Number = 0, y:Number = 0, width:Number = 0, height:Number = 0) {
          super();
          this._x = x;
          this._y = y;

@@ -40,15 +40,15 @@ package com.ankamagames.dofus.logic.game.roleplay.types
             {
                removeChild(icon);
             }
-            delete this._icons[[pIconName]];
+            delete this._icons[pIconName];
             this._nbIcons--;
             if(numChildren == this._nbIcons)
             {
-               for each (icon in this._icons)
+               for each(icon in this._icons)
                {
                   removeChild(icon);
                }
-               for each (icon in this._icons)
+               for each(icon in this._icons)
                {
                   icon.x = width == 0?icon.width / 2:width + 5 + icon.width / 2;
                   addChild(icon);

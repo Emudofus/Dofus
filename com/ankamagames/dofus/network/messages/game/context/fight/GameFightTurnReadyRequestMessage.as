@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 715;
       }
       
-      public function initGameFightTurnReadyRequestMessage(id:int=0) : GameFightTurnReadyRequestMessage {
+      public function initGameFightTurnReadyRequestMessage(id:int = 0) : GameFightTurnReadyRequestMessage {
          this.id = id;
          this._isInitialized = true;
          return this;

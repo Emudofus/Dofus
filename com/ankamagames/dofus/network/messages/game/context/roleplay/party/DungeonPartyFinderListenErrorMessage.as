@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6248;
       }
       
-      public function initDungeonPartyFinderListenErrorMessage(dungeonId:uint=0) : DungeonPartyFinderListenErrorMessage {
+      public function initDungeonPartyFinderListenErrorMessage(dungeonId:uint = 0) : DungeonPartyFinderListenErrorMessage {
          this.dungeonId = dungeonId;
          this._isInitialized = true;
          return this;

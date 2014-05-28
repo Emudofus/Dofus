@@ -35,7 +35,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5633;
       }
       
-      public function initTaxCollectorMovementMessage(hireOrFire:Boolean=false, basicInfos:TaxCollectorBasicInformations=null, playerId:uint=0, playerName:String="") : TaxCollectorMovementMessage {
+      public function initTaxCollectorMovementMessage(hireOrFire:Boolean = false, basicInfos:TaxCollectorBasicInformations = null, playerId:uint = 0, playerName:String = "") : TaxCollectorMovementMessage {
          this.hireOrFire = hireOrFire;
          this.basicInfos = basicInfos;
          this.playerId = playerId;

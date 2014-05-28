@@ -24,34 +24,34 @@ package com.ankamagames.dofus.misc.lists
          super();
       }
       
-      public static const MountToggleRidingRequest:DofusApiAction = new DofusApiAction("MountToggleRidingRequest",MountToggleRidingRequestAction);
+      public static const MountToggleRidingRequest:DofusApiAction;
       
-      public static const MountFeedRequest:DofusApiAction = new DofusApiAction("MountFeedRequest",MountFeedRequestAction);
+      public static const MountFeedRequest:DofusApiAction;
       
-      public static const MountReleaseRequest:DofusApiAction = new DofusApiAction("MountReleaseRequest",MountReleaseRequestAction);
+      public static const MountReleaseRequest:DofusApiAction;
       
-      public static const MountSterilizeRequest:DofusApiAction = new DofusApiAction("MountSterilizeRequest",MountSterilizeRequestAction);
+      public static const MountSterilizeRequest:DofusApiAction;
       
-      public static const MountRenameRequest:DofusApiAction = new DofusApiAction("MountRenameRequest",MountRenameRequestAction);
+      public static const MountRenameRequest:DofusApiAction;
       
-      public static const MountSetXpRatioRequest:DofusApiAction = new DofusApiAction("MountSetXpRatioRequest",MountSetXpRatioRequestAction);
+      public static const MountSetXpRatioRequest:DofusApiAction;
       
-      public static const MountInfoRequest:DofusApiAction = new DofusApiAction("MountInfoRequest",MountInfoRequestAction);
+      public static const MountInfoRequest:DofusApiAction;
       
-      public static const ExchangeRequestOnMountStock:DofusApiAction = new DofusApiAction("ExchangeRequestOnMountStock",ExchangeRequestOnMountStockAction);
+      public static const ExchangeRequestOnMountStock:DofusApiAction;
       
-      public static const ExchangeHandleMountStable:DofusApiAction = new DofusApiAction("ExchangeHandleMountStable",ExchangeHandleMountStableAction);
+      public static const ExchangeHandleMountStable:DofusApiAction;
       
-      public static const LeaveExchangeMount:DofusApiAction = new DofusApiAction("LeaveExchangeMount",LeaveExchangeMountAction);
+      public static const LeaveExchangeMount:DofusApiAction;
       
-      public static const PaddockRemoveItemRequest:DofusApiAction = new DofusApiAction("PaddockRemoveItemRequest",PaddockRemoveItemRequestAction);
+      public static const PaddockRemoveItemRequest:DofusApiAction;
       
-      public static const PaddockMoveItemRequest:DofusApiAction = new DofusApiAction("PaddockMoveItemRequest",PaddockMoveItemRequestAction);
+      public static const PaddockMoveItemRequest:DofusApiAction;
       
-      public static const PaddockBuyRequest:DofusApiAction = new DofusApiAction("PaddockBuyRequest",PaddockBuyRequestAction);
+      public static const PaddockBuyRequest:DofusApiAction;
       
-      public static const PaddockSellRequest:DofusApiAction = new DofusApiAction("PaddockSellRequest",PaddockSellRequestAction);
+      public static const PaddockSellRequest:DofusApiAction;
       
-      public static const MountInformationInPaddockRequest:DofusApiAction = new DofusApiAction("MountInformationInPaddockRequest",MountInformationInPaddockRequestAction);
+      public static const MountInformationInPaddockRequest:DofusApiAction;
    }
 }

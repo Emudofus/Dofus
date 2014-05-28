@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.updater.parts
          return 1506;
       }
       
-      public function initGetPartInfoMessage(id:String="") : GetPartInfoMessage {
+      public function initGetPartInfoMessage(id:String = "") : GetPartInfoMessage {
          this.id = id;
          this._isInitialized = true;
          return this;

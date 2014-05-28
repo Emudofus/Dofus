@@ -7,7 +7,7 @@ package com.hurlant.crypto.prng
    public class ARC4 extends Object implements IPRNG, IStreamCipher
    {
       
-      public function ARC4(key:ByteArray=null) {
+      public function ARC4(key:ByteArray = null) {
          super();
          this.S = new ByteArray();
          if(key)

@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.types.game.mount
 {
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectInteger;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
    import flash.utils.IDataInput;
@@ -87,7 +86,7 @@ package com.ankamagames.dofus.network.types.game.mount
          return 178;
       }
       
-      public function initMountClientData(id:Number=0, model:uint=0, ancestor:Vector.<uint>=null, behaviors:Vector.<uint>=null, name:String="", sex:Boolean=false, ownerId:uint=0, experience:Number=0, experienceForLevel:Number=0, experienceForNextLevel:Number=0, level:uint=0, isRideable:Boolean=false, maxPods:uint=0, isWild:Boolean=false, stamina:uint=0, staminaMax:uint=0, maturity:uint=0, maturityForAdult:uint=0, energy:uint=0, energyMax:uint=0, serenity:int=0, aggressivityMax:int=0, serenityMax:uint=0, love:uint=0, loveMax:uint=0, fecondationTime:int=0, isFecondationReady:Boolean=false, boostLimiter:uint=0, boostMax:Number=0, reproductionCount:int=0, reproductionCountMax:uint=0, effectList:Vector.<ObjectEffectInteger>=null) : MountClientData {
+      public function initMountClientData(id:Number = 0, model:uint = 0, ancestor:Vector.<uint> = null, behaviors:Vector.<uint> = null, name:String = "", sex:Boolean = false, ownerId:uint = 0, experience:Number = 0, experienceForLevel:Number = 0, experienceForNextLevel:Number = 0, level:uint = 0, isRideable:Boolean = false, maxPods:uint = 0, isWild:Boolean = false, stamina:uint = 0, staminaMax:uint = 0, maturity:uint = 0, maturityForAdult:uint = 0, energy:uint = 0, energyMax:uint = 0, serenity:int = 0, aggressivityMax:int = 0, serenityMax:uint = 0, love:uint = 0, loveMax:uint = 0, fecondationTime:int = 0, isFecondationReady:Boolean = false, boostLimiter:uint = 0, boostMax:Number = 0, reproductionCount:int = 0, reproductionCountMax:uint = 0, effectList:Vector.<ObjectEffectInteger> = null) : MountClientData {
          this.id = id;
          this.model = model;
          this.ancestor = ancestor;

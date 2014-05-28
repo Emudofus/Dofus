@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.delay
          return 6425;
       }
       
-      public function initGameRolePlayDelayedObjectUseMessage(delayedCharacterId:int=0, delayTypeId:uint=0, delayEndTime:Number=0, objectGID:uint=0) : GameRolePlayDelayedObjectUseMessage {
+      public function initGameRolePlayDelayedObjectUseMessage(delayedCharacterId:int = 0, delayTypeId:uint = 0, delayEndTime:Number = 0, objectGID:uint = 0) : GameRolePlayDelayedObjectUseMessage {
          super.initGameRolePlayDelayedActionMessage(delayedCharacterId,delayTypeId,delayEndTime);
          this.objectGID = objectGID;
          this._isInitialized = true;

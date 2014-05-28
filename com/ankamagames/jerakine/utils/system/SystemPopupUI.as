@@ -30,7 +30,7 @@ package com.ankamagames.jerakine.utils.system
          }
       }
       
-      private static const _popupRef:Dictionary = new Dictionary();
+      private static const _popupRef:Dictionary;
       
       public static function get(id:String) : SystemPopupUI {
          return _popupRef[id];
@@ -71,7 +71,7 @@ package com.ankamagames.jerakine.utils.system
          {
             parent.removeChild(this);
             this.buildUI(true);
-            delete _popupRef[[this._id]];
+            delete _popupRef[this._id];
          }
       }
       
@@ -137,7 +137,7 @@ package com.ankamagames.jerakine.utils.system
          return this._centerContent;
       }
       
-      private function buildUI(destroy:Boolean=false) : void {
+      private function buildUI(destroy:Boolean = false) : void {
          var oldBtn:* = undefined;
          var btnContainer:Sprite = null;
          var b:Object = null;
@@ -152,7 +152,7 @@ package com.ankamagames.jerakine.utils.system
          }
          if(this._callBacks)
          {
-            for (oldBtn in this._callBacks)
+            for(oldBtn in this._callBacks)
             {
                Sprite(oldBtn).removeEventListener(MouseEvent.MOUSE_OVER,this.onBtnMouseOver);
                Sprite(oldBtn).removeEventListener(MouseEvent.MOUSE_OUT,this.onBtnMouseOut);
@@ -187,7 +187,7 @@ package com.ankamagames.jerakine.utils.system
          if((this._buttons) && (this._buttons.length))
          {
             btnContainer = new Sprite();
-            for each (b in this._buttons)
+            for each(b in this._buttons)
             {
                btn = this.createButton(b.label);
                this._callBacks[btn] = b.callback;
@@ -248,13 +248,11 @@ package com.ankamagames.jerakine.utils.system
          {
             this._callBacks[e.target]();
          }
-         else
+         else if(this._callBacks[e.target] is Callback)
          {
-            if(this._callBacks[e.target] is Callback)
-            {
-               Callback(this._callBacks[e.target]).exec();
-            }
+            Callback(this._callBacks[e.target]).exec();
          }
+         
          this.destroy();
       }
    }

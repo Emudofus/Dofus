@@ -6,7 +6,7 @@ package com.hurlant.crypto.symmetric
    public class ECBMode extends Object implements IMode, ICipher
    {
       
-      public function ECBMode(key:ISymmetricKey, padding:IPad=null) {
+      public function ECBMode(key:ISymmetricKey, padding:IPad = null) {
          super();
          this.key = key;
          if(padding == null)

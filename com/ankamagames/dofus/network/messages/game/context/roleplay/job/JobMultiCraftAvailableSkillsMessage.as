@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.context.roleplay.job
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5747;
       }
       
-      public function initJobMultiCraftAvailableSkillsMessage(enabled:Boolean=false, playerId:uint=0, skills:Vector.<uint>=null) : JobMultiCraftAvailableSkillsMessage {
+      public function initJobMultiCraftAvailableSkillsMessage(enabled:Boolean = false, playerId:uint = 0, skills:Vector.<uint> = null) : JobMultiCraftAvailableSkillsMessage {
          super.initJobAllowMultiCraftRequestMessage(enabled);
          this.playerId = playerId;
          this.skills = skills;

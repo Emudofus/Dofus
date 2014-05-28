@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.interactive
          return 108;
       }
       
-      public function initStatedElement(elementId:uint=0, elementCellId:uint=0, elementState:uint=0) : StatedElement {
+      public function initStatedElement(elementId:uint = 0, elementCellId:uint = 0, elementState:uint = 0) : StatedElement {
          this.elementId = elementId;
          this.elementCellId = elementCellId;
          this.elementState = elementState;

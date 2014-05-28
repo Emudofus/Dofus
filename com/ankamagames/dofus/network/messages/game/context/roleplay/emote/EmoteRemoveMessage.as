@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.emote
          return 5687;
       }
       
-      public function initEmoteRemoveMessage(emoteId:uint=0) : EmoteRemoveMessage {
+      public function initEmoteRemoveMessage(emoteId:uint = 0) : EmoteRemoveMessage {
          this.emoteId = emoteId;
          this._isInitialized = true;
          return this;

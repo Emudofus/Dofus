@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6330;
       }
       
-      public function initGameActionFightCastOnTargetRequestMessage(spellId:uint=0, targetId:int=0) : GameActionFightCastOnTargetRequestMessage {
+      public function initGameActionFightCastOnTargetRequestMessage(spellId:uint = 0, targetId:int = 0) : GameActionFightCastOnTargetRequestMessage {
          this.spellId = spellId;
          this.targetId = targetId;
          this._isInitialized = true;

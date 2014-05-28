@@ -28,7 +28,6 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.berilia.utils.errors.ApiError;
    import com.ankamagames.berilia.types.shortcut.LocalizedKeyboard;
    import flash.ui.Keyboard;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
    
    public class BindsManager extends GenericEventsManager
@@ -51,7 +50,7 @@ package com.ankamagames.berilia.managers
       
       private static var _self:BindsManager;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(BindsManager));
+      protected static const _log:Logger;
       
       public static function getInstance() : BindsManager {
          if(_self == null)
@@ -118,7 +117,7 @@ package com.ankamagames.berilia.managers
          bindFilesPath.createDirectory();
          var bindFiles:Array = bindFilesPath.getDirectoryListing();
          var uris:Array = new Array();
-         for each (file in bindFiles)
+         for each(file in bindFiles)
          {
             if((!file.isDirectory) && (file.extension == "xml"))
             {
@@ -149,7 +148,7 @@ package com.ankamagames.berilia.managers
          return String.fromCharCode(nCharCode);
       }
       
-      public function getBind(s:Bind, returnDisabled:Boolean=false) : Bind {
+      public function getBind(s:Bind, returnDisabled:Boolean = false) : Bind {
          var b:Bind = null;
          if(this._aRegisterKey == null)
          {
@@ -296,13 +295,13 @@ package com.ankamagames.berilia.managers
          KernelEventsManager.getInstance().processCallback(BeriliaHookList.ShortcutUpdate,bind.targetedShortcut,bind);
       }
       
-      public function isRegisteredShortcut(s:Bind, disableGenericBind:Boolean=false) : Boolean {
+      public function isRegisteredShortcut(s:Bind, disableGenericBind:Boolean = false) : Boolean {
          return (!(_aEvent[s.targetedShortcut] == null)) || (!disableGenericBind) && (_aEvent["ALL"]);
       }
       
-      public function getBindFromShortcut(shorcutName:String, returnDisabled:Boolean=false) : Bind {
+      public function getBindFromShortcut(shorcutName:String, returnDisabled:Boolean = false) : Bind {
          var b:Bind = null;
-         for each (b in this._aRegisterKey)
+         for each(b in this._aRegisterKey)
          {
             if((b) && (b.targetedShortcut == shorcutName) && ((returnDisabled) || (!b.disabled)))
             {
@@ -340,7 +339,7 @@ package com.ankamagames.berilia.managers
                while(i < aGe.length)
                {
                   e = aGe[i];
-                  if(((e) && (e.listenerType == GenericListener.LISTENER_TYPE_UI)) && (e.listenerContext) && (e.listenerContext.object))
+                  if((e && e.listenerType == GenericListener.LISTENER_TYPE_UI) && (e.listenerContext) && (e.listenerContext.object))
                   {
                      urc = UiRootContainer(e.listenerContext.object);
                      if(urc)
@@ -359,7 +358,7 @@ package com.ankamagames.berilia.managers
                   i++;
                }
             }
-            for each (e in aGe)
+            for each(e in aGe)
             {
                if(!bContinue)
                {
@@ -397,14 +396,14 @@ package com.ankamagames.berilia.managers
          var bind:Bind = null;
          var shortcut:Shortcut = null;
          var nameIndexed:Array = new Array();
-         for each (bind in this._aRegisterKey)
+         for each(bind in this._aRegisterKey)
          {
             if(bind)
             {
                nameIndexed[bind.targetedShortcut] = bind;
             }
          }
-         for each (shortcut in Shortcut.getShortcuts())
+         for each(shortcut in Shortcut.getShortcuts())
          {
             if((nameIndexed[shortcut.name] == null) || (nameIndexed[shortcut.name].key == null) || (!(shortcut.defaultBind == nameIndexed[shortcut.name])))
             {
@@ -420,9 +419,9 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      public function changeKeyboard(locale:String, removeOldBind:Boolean=false) : void {
+      public function changeKeyboard(locale:String, removeOldBind:Boolean = false) : void {
          var k:LocalizedKeyboard = null;
-         for each (k in this._avaibleKeyboard)
+         for each(k in this._avaibleKeyboard)
          {
             if(k.locale == locale)
             {
@@ -475,7 +474,7 @@ package com.ankamagames.berilia.managers
          {
             return;
          }
-         for each (b in this._aRegisterKey)
+         for each(b in this._aRegisterKey)
          {
             if((b) && (b.targetedShortcut == bind.targetedShortcut))
             {
@@ -493,7 +492,7 @@ package com.ankamagames.berilia.managers
          if((this._shortcutsLoaded && this._bindsLoaded) && (this._bindsToCheck) && (this._bindsToCheck.length > 0))
          {
             updateData = false;
-            for each (o in this._bindsToCheck)
+            for each(o in this._bindsToCheck)
             {
                if(!Shortcut.getShortcutByName(o.bind.targetedShortcut))
                {
@@ -547,7 +546,7 @@ package com.ankamagames.berilia.managers
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.F10] = "(F10)";
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.F11] = "(F11)";
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.F12] = "(F12)";
-         for (ShortcutsEnum.BASIC_SHORTCUT_NAME[ShortcutsEnum.BASIC_SHORTCUT_KEYCODE] in ShortcutsEnum.BASIC_SHORTCUT_KEYCODE)
+         for(ShortcutsEnum.BASIC_SHORTCUT_NAME[ShortcutsEnum.BASIC_SHORTCUT_KEYCODE] in ShortcutsEnum.BASIC_SHORTCUT_KEYCODE)
          {
          }
       }
@@ -565,7 +564,7 @@ package com.ankamagames.berilia.managers
          var nbElementsToRemove:* = 0;
          var binds:XML = XML(sXml);
          var nameIndexed:Array = new Array();
-         for each (bind in this._aRegisterKey)
+         for each(bind in this._aRegisterKey)
          {
             if(bind)
             {
@@ -611,7 +610,7 @@ package com.ankamagames.berilia.managers
                i++;
             }
          }
-         for each (xBind in binds..bind)
+         for each(xBind in binds..bind)
          {
             shortcut = Shortcut.getShortcutByName(xBind..@shortcut);
             s = new Bind(xBind,xBind..@shortcut,xBind..@alt == true,xBind..@ctrl == true,xBind..@shift == true);
@@ -623,40 +622,36 @@ package com.ankamagames.berilia.managers
             {
                this._waitingBinds.push(s);
             }
+            else if(!this.canBind(s))
+            {
+               _log.warn(s.toString() + " cannot be bind.");
+            }
             else
             {
-               if(!this.canBind(s))
+               shortcut.defaultBind = s.copy();
+               if(!this.isRegister(s))
                {
-                  _log.warn(s.toString() + " cannot be bind.");
-               }
-               else
-               {
-                  shortcut.defaultBind = s.copy();
-                  if(!this.isRegister(s))
+                  if(nameIndexed[s.targetedShortcut])
                   {
-                     if(nameIndexed[s.targetedShortcut])
+                     if(removeOldbinds)
                      {
-                        if(removeOldbinds)
-                        {
-                           this.addBind(s);
-                        }
-                     }
-                     else
-                     {
-                        if(!init)
-                        {
-                           this._aRegisterKey.push(s);
-                        }
+                        this.addBind(s);
                      }
                   }
+                  else if(!init)
+                  {
+                     this._aRegisterKey.push(s);
+                  }
+                  
                }
             }
+            
          }
          if(!this._shortcutsLoaded)
          {
             this._bindsToCheck = new Array();
          }
-         for each (o in registeredKeys)
+         for each(o in registeredKeys)
          {
             if((!o.exist) || (this._shortcutsLoaded) && (!Shortcut.getShortcutByName(o.bind.targetedShortcut)))
             {

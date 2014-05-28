@@ -24,7 +24,7 @@ package com.ankamagames.dofus.logic.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LatencyFrame));
+      protected static const _log:Logger;
       
       public var pingRequested:uint;
       
@@ -61,6 +61,8 @@ package com.ankamagames.dofus.logic.common.frames
                blsmsg.initBasicLatencyStatsMessage(Math.min(32767,connection.latencyAvg),connection.latencySamplesCount,connection.latencySamplesMax);
                connection.send(blsmsg);
                return true;
+            default:
+               return false;
          }
       }
       

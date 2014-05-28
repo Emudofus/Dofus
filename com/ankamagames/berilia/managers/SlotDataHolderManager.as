@@ -5,7 +5,6 @@ package com.ankamagames.berilia.managers
    import flash.utils.getQualifiedClassName;
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.interfaces.ISlotData;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
    
    public class SlotDataHolderManager extends Object
@@ -18,7 +17,7 @@ package com.ankamagames.berilia.managers
          this._linkedSlotsData.push(linkedSlotData);
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SlotDataHolderManager));
+      protected static const _log:Logger;
       
       private var _weakHolderReference:Dictionary;
       
@@ -40,13 +39,13 @@ package com.ankamagames.berilia.managers
       }
       
       public function removeHolder(h:ISlotDataHolder) : void {
-         delete this._weakHolderReference[[h]];
+         delete this._weakHolderReference[h];
       }
       
       public function getHolders() : Array {
          var h:Object = null;
          var result:Array = [];
-         for (h in this._weakHolderReference)
+         for(h in this._weakHolderReference)
          {
             result.push(h);
          }
@@ -56,9 +55,9 @@ package com.ankamagames.berilia.managers
       public function refreshAll() : void {
          var h:Object = null;
          var linkedSlotData:ISlotData = null;
-         for (h in this._weakHolderReference)
+         for(h in this._weakHolderReference)
          {
-            for each (linkedSlotData in this._linkedSlotsData)
+            for each(linkedSlotData in this._linkedSlotsData)
             {
                if((h) && (ISlotDataHolder(h).data === linkedSlotData))
                {

@@ -36,7 +36,7 @@ package com.ankamagames.jerakine.data
       
       public function addCategory(constants:Array) : void {
          var i:* = undefined;
-         for (i in constants)
+         for(i in constants)
          {
             this._constants[i] = constants[i];
          }

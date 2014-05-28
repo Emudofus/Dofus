@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.interactive.zaap
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -27,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
          return 1604;
       }
       
-      public function initZaapListMessage(teleporterType:uint=0, mapIds:Vector.<uint>=null, subAreaIds:Vector.<uint>=null, costs:Vector.<uint>=null, destTeleporterType:Vector.<uint>=null, spawnMapId:uint=0) : ZaapListMessage {
+      public function initZaapListMessage(teleporterType:uint = 0, mapIds:Vector.<uint> = null, subAreaIds:Vector.<uint> = null, costs:Vector.<uint> = null, destTeleporterType:Vector.<uint> = null, spawnMapId:uint = 0) : ZaapListMessage {
          super.initTeleportDestinationsListMessage(teleporterType,mapIds,subAreaIds,costs,destTeleporterType);
          this.spawnMapId = spawnMapId;
          this._isInitialized = true;

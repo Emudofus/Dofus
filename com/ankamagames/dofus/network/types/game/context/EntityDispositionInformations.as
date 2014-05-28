@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context
          return 60;
       }
       
-      public function initEntityDispositionInformations(cellId:int=0, direction:uint=1) : EntityDispositionInformations {
+      public function initEntityDispositionInformations(cellId:int = 0, direction:uint = 1) : EntityDispositionInformations {
          this.cellId = cellId;
          this.direction = direction;
          return this;

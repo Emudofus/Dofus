@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5699;
       }
       
-      public function initGuildSpellUpgradeRequestMessage(spellId:uint=0) : GuildSpellUpgradeRequestMessage {
+      public function initGuildSpellUpgradeRequestMessage(spellId:uint = 0) : GuildSpellUpgradeRequestMessage {
          this.spellId = spellId;
          this._isInitialized = true;
          return this;

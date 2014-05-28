@@ -1,11 +1,9 @@
 package com.ankamagames.berilia.types.data
 {
-   import __AS3__.vec.*;
-   
    public class TreeData extends Object
    {
       
-      public function TreeData(value:*, label:String, expend:Boolean=false, childs:Vector.<TreeData>=null, parent:TreeData=null) {
+      public function TreeData(value:*, label:String, expend:Boolean = false, childs:Vector.<TreeData> = null, parent:TreeData = null) {
          super();
          this.value = value;
          this.label = label;
@@ -25,7 +23,7 @@ package com.ankamagames.berilia.types.data
          var children:* = undefined;
          var data:* = undefined;
          var res:Vector.<TreeData> = new Vector.<TreeData>();
-         for each (data in a)
+         for each(data in a)
          {
             if(Object(data).hasOwnProperty("children"))
             {

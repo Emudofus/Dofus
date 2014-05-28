@@ -20,9 +20,9 @@ package com.ankamagames.dofus.internalDatacenter.guild
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmblemWrapper));
+      protected static const _log:Logger;
       
-      private static var _cache:Array = new Array();
+      private static var _cache:Array;
       
       public static const UP:uint = 1;
       
@@ -45,7 +45,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return o;
       }
       
-      public static function create(pIdEmblem:uint, pType:uint, pColor:uint=0, useCache:Boolean=false) : EmblemWrapper {
+      public static function create(pIdEmblem:uint, pType:uint, pColor:uint = 0, useCache:Boolean = false) : EmblemWrapper {
          var emblem:EmblemWrapper = null;
          if((!_cache[pIdEmblem]) || (!useCache))
          {
@@ -148,7 +148,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return null;
       }
       
-      public function update(pIdEmblem:uint, pType:uint, pColor:uint=0) : void {
+      public function update(pIdEmblem:uint, pType:uint, pColor:uint = 0) : void {
          this.idEmblem = pIdEmblem;
          this._type = pType;
          this._color = pColor;

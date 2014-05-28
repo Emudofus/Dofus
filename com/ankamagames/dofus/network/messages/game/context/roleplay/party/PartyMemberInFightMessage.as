@@ -40,7 +40,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6342;
       }
       
-      public function initPartyMemberInFightMessage(partyId:uint=0, reason:uint=0, memberId:int=0, memberAccountId:uint=0, memberName:String="", fightId:int=0, fightMap:MapCoordinatesExtended=null, secondsBeforeFightStart:int=0) : PartyMemberInFightMessage {
+      public function initPartyMemberInFightMessage(partyId:uint = 0, reason:uint = 0, memberId:int = 0, memberAccountId:uint = 0, memberName:String = "", fightId:int = 0, fightMap:MapCoordinatesExtended = null, secondsBeforeFightStart:int = 0) : PartyMemberInFightMessage {
          super.initAbstractPartyMessage(partyId);
          this.reason = reason;
          this.memberId = memberId;

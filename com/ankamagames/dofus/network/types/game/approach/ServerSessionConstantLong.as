@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.approach
          return 429;
       }
       
-      public function initServerSessionConstantLong(id:uint=0, value:Number=0) : ServerSessionConstantLong {
+      public function initServerSessionConstantLong(id:uint = 0, value:Number = 0) : ServerSessionConstantLong {
          super.initServerSessionConstant(id);
          this.value = value;
          return this;

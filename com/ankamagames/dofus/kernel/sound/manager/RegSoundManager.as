@@ -12,7 +12,6 @@ package com.ankamagames.dofus.kernel.sound.manager
    import com.ankamagames.dofus.datacenter.ambientSounds.AmbientSound;
    import com.ankamagames.dofus.datacenter.world.MapPosition;
    import com.ankamagames.dofus.datacenter.world.SubArea;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.kernel.sound.type.SoundDofus;
    import com.ankamagames.tubul.interfaces.ISound;
    import com.ankamagames.tiphon.display.TiphonSprite;
@@ -56,7 +55,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          this.init();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RegSoundManager));
+      protected static const _log:Logger;
       
       private static var _self:ISoundManager;
       
@@ -154,7 +153,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          RegConnectionManager.getInstance().send(ProtocolEnum.DEACTIVATE_SOUNDS);
       }
       
-      public function setSubArea(pMap:Map=null) : void {
+      public function setSubArea(pMap:Map = null) : void {
          var saas:AmbientSound = null;
          var newAs:AmbientSound = null;
          var mp:MapPosition = MapPosition.getMapPositionById(pMap.id);
@@ -180,7 +179,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          }
          if(mp)
          {
-            for each (saas in mp.sounds)
+            for each(saas in mp.sounds)
             {
                newAs = new AmbientSound();
                newAs.channel = saas.channel;
@@ -192,7 +191,7 @@ package com.ankamagames.dofus.kernel.sound.manager
                sounds[saas.type_id - 1].push(newAs);
             }
          }
-         for each (saas in subArea.ambientSounds)
+         for each(saas in subArea.ambientSounds)
          {
             if(!((saas.type_id == 2) && (sounds[saas.type_id - 1].length == 1)))
             {
@@ -213,7 +212,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          this._fightMusicManager.setFightSounds(sounds[2],sounds[3]);
       }
       
-      public function playUISound(pSoundId:String, pLoop:Boolean=false) : void {
+      public function playUISound(pSoundId:String, pLoop:Boolean = false) : void {
          if(!this.checkIfAvailable())
          {
             return;
@@ -222,7 +221,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          newSound.play(pLoop);
       }
       
-      public function playSound(pSound:ISound, pLoop:Boolean=false, pLoops:int=-1) : ISound {
+      public function playSound(pSound:ISound, pLoop:Boolean = false, pLoops:int = -1) : ISound {
          var prop:String = null;
          if(!this.checkIfAvailable())
          {
@@ -230,7 +229,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          }
          var soundID:String = pSound.uri.fileName.split(".mp3")[0];
          var newSound:SoundDofus = new SoundDofus(soundID,true);
-         for (prop in pSound)
+         for(prop in pSound)
          {
             if(newSound.hasOwnProperty(prop))
             {
@@ -257,7 +256,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          this._fightMusicManager.stopFightMusic();
       }
       
-      public function handleFLAEvent(pAnimationName:String, pType:String, pParams:String, pSprite:Object=null) : void {
+      public function handleFLAEvent(pAnimationName:String, pType:String, pParams:String, pSprite:Object = null) : void {
          var sprite:TiphonSprite = null;
          var parent:Object = null;
          if(!((this.soundIsActivate) && (RegConnectionManager.getInstance().isMain)))
@@ -281,47 +280,43 @@ package com.ankamagames.dofus.kernel.sound.manager
                return;
             }
          }
-         else
+         else if(pSprite is WorldEntitySprite)
          {
-            if(pSprite is WorldEntitySprite)
+            posX = InteractiveCellManager.getInstance().getCell((pSprite as WorldEntitySprite).cellId).x;
+            posY = InteractiveCellManager.getInstance().getCell((pSprite as WorldEntitySprite).cellId).y;
+            entityId = (pSprite as WorldEntitySprite).identifier;
+         }
+         else if(pSprite is TiphonSprite)
+         {
+            sprite = pSprite as TiphonSprite;
+            if(sprite.parentSprite is TiphonSprite)
             {
-               posX = InteractiveCellManager.getInstance().getCell((pSprite as WorldEntitySprite).cellId).x;
-               posY = InteractiveCellManager.getInstance().getCell((pSprite as WorldEntitySprite).cellId).y;
-               entityId = (pSprite as WorldEntitySprite).identifier;
+               if(sprite.parentSprite.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0) != null)
+               {
+                  parent = sprite.parentSprite;
+                  if(parent.hasOwnProperty("absoluteBounds"))
+                  {
+                     posX = parent.absoluteBounds.x;
+                     posY = parent.absoluteBounds.y;
+                     entityId = parent.id;
+                     if((!(entityId == PlayedCharacterManager.getInstance().id)) && (entityId > 0) && (Kernel.getWorker().getFrame(FightBattleFrame) == null))
+                     {
+                        return;
+                     }
+                  }
+               }
             }
             else
             {
-               if(pSprite is TiphonSprite)
-               {
-                  sprite = pSprite as TiphonSprite;
-                  if(sprite.parentSprite is TiphonSprite)
-                  {
-                     if(sprite.parentSprite.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0) != null)
-                     {
-                        parent = sprite.parentSprite;
-                        if(parent.hasOwnProperty("absoluteBounds"))
-                        {
-                           posX = parent.absoluteBounds.x;
-                           posY = parent.absoluteBounds.y;
-                           entityId = parent.id;
-                           if((!(entityId == PlayedCharacterManager.getInstance().id)) && (entityId > 0) && (Kernel.getWorker().getFrame(FightBattleFrame) == null))
-                           {
-                              return;
-                           }
-                        }
-                     }
-                  }
-                  else
-                  {
-                     return;
-                  }
-               }
-               else
-               {
-                  return;
-               }
+               return;
             }
          }
+         else
+         {
+            return;
+         }
+         
+         
          switch(pType)
          {
             case "Sound":
@@ -385,13 +380,13 @@ package com.ankamagames.dofus.kernel.sound.manager
          {
             return;
          }
-         for each (isound in this._entitySounds[entityId])
+         for each(isound in this._entitySounds[entityId])
          {
             if(isound == pISound)
             {
                isound.stop();
                this._entitySounds[entityId].splice(this._entitySounds[entityId].indexOf(isound),1);
-               delete this._reverseEntitySounds[[pISound]];
+               delete this._reverseEntitySounds[pISound];
                if(this._entitySounds[entityId].length == 0)
                {
                   this._entitySounds[entityId] = null;
@@ -408,12 +403,12 @@ package com.ankamagames.dofus.kernel.sound.manager
          {
             return;
          }
-         for each (isound in this._entityDictionary[pEntityId])
+         for each(isound in this._entityDictionary[pEntityId])
          {
             fadeOut = new VolumeFadeEffect(-1,0,0.1);
             isound.stop(fadeOut);
          }
-         delete this._entityDictionary[[pEntityId]];
+         delete this._entityDictionary[pEntityId];
       }
       
       public function retriveXMLSounds() : void {
@@ -422,7 +417,7 @@ package com.ankamagames.dofus.kernel.sound.manager
       private function playIntro() : void {
       }
       
-      public function playIntroMusic(pFirstHarmonic:Boolean=true) : void {
+      public function playIntroMusic(pFirstHarmonic:Boolean = true) : void {
          if(!((this.soundIsActivate) && (RegConnectionManager.getInstance().isMain)))
          {
             return;
@@ -448,7 +443,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          RegConnectionManager.getInstance().send(ProtocolEnum.SWITCH_INTRO,RegConnectionManager.getInstance().socketClientID,pFirstHarmonic);
       }
       
-      public function stopIntroMusic(pImmediatly:Boolean=false) : void {
+      public function stopIntroMusic(pImmediatly:Boolean = false) : void {
          if(!this.checkIfAvailable())
          {
             return;
@@ -456,7 +451,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          RegConnectionManager.getInstance().send(ProtocolEnum.STOP_INTRO,RegConnectionManager.getInstance().socketClientID,pImmediatly);
       }
       
-      public function removeAllSounds(pFade:Number=0, pFadeTime:Number=0) : void {
+      public function removeAllSounds(pFade:Number = 0, pFadeTime:Number = 0) : void {
          RegConnectionManager.getInstance().send(ProtocolEnum.REMOVE_ALL_SOUNDS,RegConnectionManager.getInstance().socketClientID);
       }
       
@@ -580,7 +575,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          pEvent.sound.eventDispatcher.removeEventListener(SoundCompleteEvent.SOUND_COMPLETE,this.onSoundAdminComplete);
          var soundId:String = pEvent.sound.uri.fileName.split(".mp3")[0];
          this._adminSounds[soundId] = null;
-         delete this._adminSounds[[soundId]];
+         delete this._adminSounds[soundId];
       }
       
       public function onClose(pEvent:Event) : void {
@@ -642,7 +637,7 @@ package com.ankamagames.dofus.kernel.sound.manager
       private function createSoundEvent(sb:SoundBones, animationType:String, params:String) : Vector.<SoundEventParamWrapper> {
          var sa:SoundAnimation = null;
          var soundEvents:Vector.<SoundEventParamWrapper> = new Vector.<SoundEventParamWrapper>();
-         for each (sa in sb.getSoundAnimationByLabel(animationType,params))
+         for each(sa in sb.getSoundAnimationByLabel(animationType,params))
          {
             soundEvents.push(new SoundEventParamWrapper(sa.filename,sa.volume,sa.rolloff,sa.automationDuration,sa.automationVolume,sa.automationFadeIn,sa.automationFadeOut,sa.noCutSilence));
          }

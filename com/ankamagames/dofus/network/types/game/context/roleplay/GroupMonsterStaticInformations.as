@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
    import com.ankamagames.jerakine.network.INetworkType;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
-   import __AS3__.vec.*;
    
    public class GroupMonsterStaticInformations extends Object implements INetworkType
    {
@@ -24,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 140;
       }
       
-      public function initGroupMonsterStaticInformations(mainCreatureLightInfos:MonsterInGroupLightInformations=null, underlings:Vector.<MonsterInGroupInformations>=null) : GroupMonsterStaticInformations {
+      public function initGroupMonsterStaticInformations(mainCreatureLightInfos:MonsterInGroupLightInformations = null, underlings:Vector.<MonsterInGroupInformations> = null) : GroupMonsterStaticInformations {
          this.mainCreatureLightInfos = mainCreatureLightInfos;
          this.underlings = underlings;
          return this;

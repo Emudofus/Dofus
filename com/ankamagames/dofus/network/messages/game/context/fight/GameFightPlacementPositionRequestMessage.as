@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 704;
       }
       
-      public function initGameFightPlacementPositionRequestMessage(cellId:uint=0) : GameFightPlacementPositionRequestMessage {
+      public function initGameFightPlacementPositionRequestMessage(cellId:uint = 0) : GameFightPlacementPositionRequestMessage {
          this.cellId = cellId;
          this._isInitialized = true;
          return this;

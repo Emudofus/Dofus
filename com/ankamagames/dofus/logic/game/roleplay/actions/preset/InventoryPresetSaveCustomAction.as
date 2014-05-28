@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.logic.game.roleplay.actions.preset
 {
    import com.ankamagames.jerakine.handlers.messages.Action;
-   import __AS3__.vec.*;
    
    public class InventoryPresetSaveCustomAction extends Object implements Action
    {

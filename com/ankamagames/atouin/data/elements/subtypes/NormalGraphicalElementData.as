@@ -17,9 +17,9 @@ package com.ankamagames.atouin.data.elements.subtypes
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(NormalGraphicalElementData));
+      protected static const _log:Logger;
       
       public var gfxId:int;
       

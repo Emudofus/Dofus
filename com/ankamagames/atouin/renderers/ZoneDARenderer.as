@@ -5,7 +5,6 @@ package com.ankamagames.atouin.renderers
    import com.ankamagames.atouin.types.ZoneTile;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.types.Color;
    import com.ankamagames.atouin.types.DataMapContainer;
    import flash.geom.ColorTransform;
@@ -16,7 +15,7 @@ package com.ankamagames.atouin.renderers
    public class ZoneDARenderer extends Object implements IZoneRenderer
    {
       
-      public function ZoneDARenderer(nStrata:uint=0, alpha:Number=1, fixedStrata:Boolean=false) {
+      public function ZoneDARenderer(nStrata:uint = 0, alpha:Number = 1, fixedStrata:Boolean = false) {
          super();
          this._aZoneTile = new Array();
          this._aCellTile = new Array();
@@ -26,9 +25,9 @@ package com.ankamagames.atouin.renderers
          this._alpha = alpha;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ZoneDARenderer));
+      protected static const _log:Logger;
       
-      private static var zoneTileCache:Array = new Array();
+      private static var zoneTileCache:Array;
       
       private static function getZoneTile() : ZoneTile {
          if(zoneTileCache.length)
@@ -57,43 +56,13 @@ package com.ankamagames.atouin.renderers
       
       public var currentStrata:uint = 0;
       
-      public function render(cells:Vector.<uint>, oColor:Color, mapContainer:DataMapContainer, bAlpha:Boolean=false, updateStrata:Boolean=false) : void {
-         var j:* = 0;
-         var zt:ZoneTile = null;
-         var ct:ColorTransform = null;
-         this._cells = cells;
-         var num:int = cells.length;
-         j = 0;
-         while(j < num)
-         {
-            zt = this._aZoneTile[j];
-            if(!zt)
-            {
-               zt = getZoneTile();
-               this._aZoneTile[j] = zt;
-               zt.strata = this.currentStrata;
-               ct = new ColorTransform();
-               zt.color = oColor.color;
-            }
-            this._aCellTile[j] = cells[j];
-            zt.cellId = cells[j];
-            zt.text = this.getText(j);
-            if((updateStrata) || (!(EntitiesDisplayManager.getInstance()._dStrataRef[zt] == this.currentStrata)))
-            {
-               zt.strata = EntitiesDisplayManager.getInstance()._dStrataRef[zt] = this.currentStrata;
-            }
-            zt.display();
-            j++;
-         }
-         while(j < num)
-         {
-            zt = this._aZoneTile[j];
-            if(zt)
-            {
-               destroyZoneTile(zt);
-            }
-            j++;
-         }
+      public function render(cells:Vector.<uint>, oColor:Color, mapContainer:DataMapContainer, bAlpha:Boolean = false, updateStrata:Boolean = false) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       protected function getText(count:int) : String {

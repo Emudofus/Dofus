@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          return 6073;
       }
       
-      public function initGameRolePlayAggressionMessage(attackerId:uint=0, defenderId:uint=0) : GameRolePlayAggressionMessage {
+      public function initGameRolePlayAggressionMessage(attackerId:uint = 0, defenderId:uint = 0) : GameRolePlayAggressionMessage {
          this.attackerId = attackerId;
          this.defenderId = defenderId;
          this._isInitialized = true;

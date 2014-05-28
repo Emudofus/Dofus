@@ -6,7 +6,6 @@ package com.ankamagames.dofus.scripts
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.dofus.logic.game.common.misc.ISpellCastProvider;
    import com.ankamagames.dofus.logic.game.fight.types.CastingSpell;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.sequencer.ISequencable;
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    
@@ -18,7 +17,7 @@ package com.ankamagames.dofus.scripts
          this._spellCastProvider = spellCastProvider;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellFxRunner));
+      protected static const _log:Logger;
       
       private var _spellCastProvider:ISpellCastProvider;
       

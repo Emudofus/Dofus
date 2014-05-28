@@ -5,7 +5,7 @@ package com.somerandomdude.colortoolkit.spaces
    public class CMYK extends CoreColor implements IColorSpace
    {
       
-      public function CMYK(cyan:Number=0, magenta:Number=0, yellow:Number=0, black:Number=0) {
+      public function CMYK(cyan:Number = 0, magenta:Number = 0, yellow:Number = 0, black:Number = 0) {
          super();
          this._cyan = Math.min(100,Math.max(cyan,0));
          this._magenta = Math.min(100,Math.max(magenta,0));

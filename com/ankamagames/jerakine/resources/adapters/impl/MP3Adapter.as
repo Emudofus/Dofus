@@ -24,7 +24,7 @@ package com.ankamagames.jerakine.resources.adapters.impl
          super();
       }
       
-      private static var _a:Array = [];
+      private static var _a:Array;
       
       private var _sound:Sound;
       

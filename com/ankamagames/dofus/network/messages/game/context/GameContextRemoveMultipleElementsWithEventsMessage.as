@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.context
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -28,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 6416;
       }
       
-      public function initGameContextRemoveMultipleElementsWithEventsMessage(id:Vector.<int>=null, elementEventIds:Vector.<uint>=null) : GameContextRemoveMultipleElementsWithEventsMessage {
+      public function initGameContextRemoveMultipleElementsWithEventsMessage(id:Vector.<int> = null, elementEventIds:Vector.<uint> = null) : GameContextRemoveMultipleElementsWithEventsMessage {
          super.initGameContextRemoveMultipleElementsMessage(id);
          this.elementEventIds = elementEventIds;
          this._isInitialized = true;

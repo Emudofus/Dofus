@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(name:String=null, param:Object=null) : OpenBookAction {
+      public static function create(name:String = null, param:Object = null) : OpenBookAction {
          var action:OpenBookAction = new OpenBookAction();
          action.value = name;
          action.param = param;

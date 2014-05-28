@@ -15,6 +15,6 @@ package com.ankamagames.tubul.enum
       
       public static const HIGH:uint = 10;
       
-      public static const TOP:uint = uint.MAX_VALUE;
+      public static const TOP:uint = 4.294967295E9;
    }
 }

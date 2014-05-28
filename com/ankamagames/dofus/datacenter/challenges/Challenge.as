@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.challenges
       
       public static const MODULE:String = "Challenge";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Challenge));
+      protected static const _log:Logger;
       
       public static function getChallengeById(id:int) : Challenge {
          return GameData.getObject(MODULE,id) as Challenge;

@@ -21,7 +21,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          super();
       }
       
-      public static function create(pInformations:TaxCollectorInformations, pFightersInformations:TaxCollectorFightersInformation=null) : TaxCollectorWrapper {
+      public static function create(pInformations:TaxCollectorInformations, pFightersInformations:TaxCollectorFightersInformation = null) : TaxCollectorWrapper {
          var item:TaxCollectorWrapper = null;
          var comp:TaxCollectorComplementaryInformations = null;
          item = new TaxCollectorWrapper();
@@ -37,7 +37,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          item.fightTime = 0;
          item.waitTimeForPlacement = 0;
          item.nbPositionPerTeam = 5;
-         for each (comp in pInformations.complements)
+         for each(comp in pInformations.complements)
          {
             if(comp is TaxCollectorLootInformations)
             {
@@ -46,22 +46,18 @@ package com.ankamagames.dofus.internalDatacenter.guild
                item.pods = (comp as TaxCollectorLootInformations).pods;
                item.itemsValue = (comp as TaxCollectorLootInformations).itemsValue;
             }
-            else
+            else if(comp is TaxCollectorGuildInformations)
             {
-               if(comp is TaxCollectorGuildInformations)
-               {
-                  item.guild = (comp as TaxCollectorGuildInformations).guild;
-               }
-               else
-               {
-                  if(comp is TaxCollectorWaitingForHelpInformations)
-                  {
-                     item.fightTime = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.timeLeftBeforeFight * 100 + getTimer();
-                     item.waitTimeForPlacement = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.waitTimeForPlacement * 100;
-                     item.nbPositionPerTeam = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.nbPositionForDefensors;
-                  }
-               }
+               item.guild = (comp as TaxCollectorGuildInformations).guild;
             }
+            else if(comp is TaxCollectorWaitingForHelpInformations)
+            {
+               item.fightTime = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.timeLeftBeforeFight * 100 + getTimer();
+               item.waitTimeForPlacement = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.waitTimeForPlacement * 100;
+               item.nbPositionPerTeam = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.nbPositionForDefensors;
+            }
+            
+            
          }
          return item;
       }
@@ -100,7 +96,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       public var itemsValue:int;
       
-      public function update(pInformations:TaxCollectorInformations, pFightersInformations:TaxCollectorFightersInformation=null) : void {
+      public function update(pInformations:TaxCollectorInformations, pFightersInformations:TaxCollectorFightersInformation = null) : void {
          var comp:TaxCollectorComplementaryInformations = null;
          this.uniqueId = pInformations.uniqueId;
          this.lastName = TaxCollectorName.getTaxCollectorNameById(pInformations.lastNameId).name;
@@ -114,7 +110,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          this.fightTime = 0;
          this.waitTimeForPlacement = 0;
          this.nbPositionPerTeam = 5;
-         for each (comp in pInformations.complements)
+         for each(comp in pInformations.complements)
          {
             if(comp is TaxCollectorLootInformations)
             {
@@ -123,22 +119,18 @@ package com.ankamagames.dofus.internalDatacenter.guild
                this.pods = (comp as TaxCollectorLootInformations).pods;
                this.itemsValue = (comp as TaxCollectorLootInformations).itemsValue;
             }
-            else
+            else if(comp is TaxCollectorGuildInformations)
             {
-               if(comp is TaxCollectorGuildInformations)
-               {
-                  this.guild = (comp as TaxCollectorGuildInformations).guild;
-               }
-               else
-               {
-                  if(comp is TaxCollectorWaitingForHelpInformations)
-                  {
-                     this.fightTime = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.timeLeftBeforeFight * 100 + getTimer();
-                     this.waitTimeForPlacement = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.waitTimeForPlacement * 100;
-                     this.nbPositionPerTeam = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.nbPositionForDefensors;
-                  }
-               }
+               this.guild = (comp as TaxCollectorGuildInformations).guild;
             }
+            else if(comp is TaxCollectorWaitingForHelpInformations)
+            {
+               this.fightTime = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.timeLeftBeforeFight * 100 + getTimer();
+               this.waitTimeForPlacement = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.waitTimeForPlacement * 100;
+               this.nbPositionPerTeam = (comp as TaxCollectorWaitingForHelpInformations).waitingForHelpInfo.nbPositionForDefensors;
+            }
+            
+            
          }
       }
    }

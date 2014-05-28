@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberGeoPosition;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5595;
       }
       
-      public function initPartyLocateMembersMessage(partyId:uint=0, geopositions:Vector.<PartyMemberGeoPosition>=null) : PartyLocateMembersMessage {
+      public function initPartyLocateMembersMessage(partyId:uint = 0, geopositions:Vector.<PartyMemberGeoPosition> = null) : PartyLocateMembersMessage {
          super.initAbstractPartyMessage(partyId);
          this.geopositions = geopositions;
          this._isInitialized = true;

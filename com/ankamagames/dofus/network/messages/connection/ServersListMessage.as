@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.connection
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.connection.GameServerInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 30;
       }
       
-      public function initServersListMessage(servers:Vector.<GameServerInformations>=null) : ServersListMessage {
+      public function initServersListMessage(servers:Vector.<GameServerInformations> = null) : ServersListMessage {
          this.servers = servers;
          this._isInitialized = true;
          return this;

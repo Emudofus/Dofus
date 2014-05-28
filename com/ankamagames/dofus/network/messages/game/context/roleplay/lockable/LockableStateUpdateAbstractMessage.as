@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
          return 5671;
       }
       
-      public function initLockableStateUpdateAbstractMessage(locked:Boolean=false) : LockableStateUpdateAbstractMessage {
+      public function initLockableStateUpdateAbstractMessage(locked:Boolean = false) : LockableStateUpdateAbstractMessage {
          this.locked = locked;
          this._isInitialized = true;
          return this;

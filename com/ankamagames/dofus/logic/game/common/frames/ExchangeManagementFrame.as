@@ -9,7 +9,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayMovementFrame;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeRequestedTradeMessage;
@@ -75,7 +74,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ExchangeManagementFrame));
+      protected static const _log:Logger;
       
       private var _priority:int = 0;
       
@@ -281,6 +280,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                   case ExchangeTypeEnum.TAXCOLLECTOR:
                      this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType,esmsg.exchangeType);
                      return true;
+                  default:
+                     return true;
                }
             case msg is StorageInventoryContentMessage:
                sicmsg = msg as StorageInventoryContentMessage;
@@ -308,7 +309,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is StorageObjectsUpdateMessage:
                sosumsg = msg as StorageObjectsUpdateMessage;
-               for each (sosuobj in sosumsg.objectList)
+               for each(sosuobj in sosumsg.objectList)
                {
                   sosuic = ItemWrapper.create(sosuobj.position,sosuobj.objectUID,sosuobj.objectGID,sosuobj.quantity,sosuobj.effects);
                   InventoryManager.getInstance().bankInventory.modifyItem(sosuic);
@@ -317,7 +318,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is StorageObjectsRemoveMessage:
                sosrmsg = msg as StorageObjectsRemoveMessage;
-               for each (sosruid in sosrmsg.objectUIDList)
+               for each(sosruid in sosrmsg.objectUIDList)
                {
                   InventoryManager.getInstance().bankInventory.removeItem(sosruid);
                }
@@ -404,7 +405,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                merchant = this.roleplayContextFrame.entitiesFrame.getEntityInfos(esonmsg.npcSellerId);
                merchantLook = EntityLookAdapter.fromNetwork(merchant.look);
                NPCShopItems = new Array();
-               for each (oitsins in esonmsg.objectsInfos)
+               for each(oitsins in esonmsg.objectsInfos)
                {
                   itemwra = ItemWrapper.create(63,0,oitsins.objectGID,0,oitsins.effects,false);
                   NPCShopItems.push(
@@ -428,6 +429,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                   Kernel.getWorker().removeFrame(this);
                }
                return true;
+            default:
+               return false;
          }
       }
       

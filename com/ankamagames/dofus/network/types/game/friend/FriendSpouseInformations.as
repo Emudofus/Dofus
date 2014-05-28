@@ -39,7 +39,7 @@ package com.ankamagames.dofus.network.types.game.friend
          return 77;
       }
       
-      public function initFriendSpouseInformations(spouseAccountId:uint=0, spouseId:uint=0, spouseName:String="", spouseLevel:uint=0, breed:int=0, sex:int=0, spouseEntityLook:EntityLook=null, guildInfo:BasicGuildInformations=null, alignmentSide:int=0) : FriendSpouseInformations {
+      public function initFriendSpouseInformations(spouseAccountId:uint = 0, spouseId:uint = 0, spouseName:String = "", spouseLevel:uint = 0, breed:int = 0, sex:int = 0, spouseEntityLook:EntityLook = null, guildInfo:BasicGuildInformations = null, alignmentSide:int = 0) : FriendSpouseInformations {
          this.spouseAccountId = spouseAccountId;
          this.spouseId = spouseId;
          this.spouseName = spouseName;

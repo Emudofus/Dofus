@@ -60,7 +60,7 @@ package com.ankamagames.dofus.network.types.game.character.restriction
          return 204;
       }
       
-      public function initActorRestrictionsInformations(cantBeAggressed:Boolean=false, cantBeChallenged:Boolean=false, cantTrade:Boolean=false, cantBeAttackedByMutant:Boolean=false, cantRun:Boolean=false, forceSlowWalk:Boolean=false, cantMinimize:Boolean=false, cantMove:Boolean=false, cantAggress:Boolean=false, cantChallenge:Boolean=false, cantExchange:Boolean=false, cantAttack:Boolean=false, cantChat:Boolean=false, cantBeMerchant:Boolean=false, cantUseObject:Boolean=false, cantUseTaxCollector:Boolean=false, cantUseInteractive:Boolean=false, cantSpeakToNPC:Boolean=false, cantChangeZone:Boolean=false, cantAttackMonster:Boolean=false, cantWalk8Directions:Boolean=false) : ActorRestrictionsInformations {
+      public function initActorRestrictionsInformations(cantBeAggressed:Boolean = false, cantBeChallenged:Boolean = false, cantTrade:Boolean = false, cantBeAttackedByMutant:Boolean = false, cantRun:Boolean = false, forceSlowWalk:Boolean = false, cantMinimize:Boolean = false, cantMove:Boolean = false, cantAggress:Boolean = false, cantChallenge:Boolean = false, cantExchange:Boolean = false, cantAttack:Boolean = false, cantChat:Boolean = false, cantBeMerchant:Boolean = false, cantUseObject:Boolean = false, cantUseTaxCollector:Boolean = false, cantUseInteractive:Boolean = false, cantSpeakToNPC:Boolean = false, cantChangeZone:Boolean = false, cantAttackMonster:Boolean = false, cantWalk8Directions:Boolean = false) : ActorRestrictionsInformations {
          this.cantBeAggressed = cantBeAggressed;
          this.cantBeChallenged = cantBeChallenged;
          this.cantTrade = cantTrade;

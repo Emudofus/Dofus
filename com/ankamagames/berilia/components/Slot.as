@@ -53,13 +53,14 @@ package com.ankamagames.berilia.components
    {
       
       public function Slot() {
+         this._quantityTextFormat = new TextFormat("Tahoma",15,16777215);
          super();
          MEMORY_LOG[this] = 1;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Slot));
+      protected static const _log:Logger;
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
       public static const DRAG_AND_DROP_CURSOR_NAME:String = "DragAndDrop";
       
@@ -183,17 +184,15 @@ package com.ankamagames.berilia.components
                {
                   this._effect.uri = this.selectedTexture;
                }
+               else if(this._customTexture)
+               {
+                  this._effect.uri = this._customTexture;
+               }
                else
                {
-                  if(this._customTexture)
-                  {
-                     this._effect.uri = this._customTexture;
-                  }
-                  else
-                  {
-                     this._effect.uri = null;
-                  }
+                  this._effect.uri = null;
                }
+               
             }
          }
          else
@@ -391,13 +390,11 @@ package com.ankamagames.berilia.components
                this.updateTimer(0);
             }
          }
-         else
+         else if((this._data) && (this._data.timer))
          {
-            if((this._data) && (this._data.timer))
-            {
-               this.updateTimer(this._data.timer);
-            }
+            this.updateTimer(this._data.timer);
          }
+         
          if((width <= this._widthHeightMax) && (height <= this._widthHeightMax))
          {
             this._targetUri = this._data?this._data.iconUri:this._emptyTexture;
@@ -416,17 +413,15 @@ package com.ankamagames.berilia.components
             {
                this._backgroundIcon.uri = this._forcedBackGroundIconUri;
             }
+            else if((this._data) && (Object(this._data).hasOwnProperty("backGroundIconUri")) && (Object(this._data).backGroundIconUri))
+            {
+               this._backgroundIcon.uri = Object(this._data).backGroundIconUri;
+            }
             else
             {
-               if((this._data) && (Object(this._data).hasOwnProperty("backGroundIconUri")) && (Object(this._data).backGroundIconUri))
-               {
-                  this._backgroundIcon.uri = Object(this._data).backGroundIconUri;
-               }
-               else
-               {
-                  this._backgroundIcon.uri = null;
-               }
+               this._backgroundIcon.uri = null;
             }
+            
          }
       }
       
@@ -476,7 +471,7 @@ package com.ankamagames.berilia.components
          }
          try
          {
-            if((!this._backgroundIcon) && ((this._forcedBackGroundIconUri) || ((this._data) && (Object(this._data).hasOwnProperty("backGroundIconUri")) && Object(this._data).backGroundIconUri)))
+            if((!this._backgroundIcon) && ((this._forcedBackGroundIconUri) || (this._data && Object(this._data).hasOwnProperty("backGroundIconUri") && Object(this._data).backGroundIconUri)))
             {
                this._backgroundIcon = new Texture();
                this._backgroundIcon.mouseEnabled = false;
@@ -508,13 +503,11 @@ package com.ankamagames.berilia.components
                this.updateTimer(0);
             }
          }
-         else
+         else if((this._data) && (this._data.timer))
          {
-            if((this._data) && (this._data.timer))
-            {
-               this.updateTimer(this._data.timer);
-            }
+            this.updateTimer(this._data.timer);
          }
+         
          if(!this._effect)
          {
             this._effect = new Texture();
@@ -525,97 +518,11 @@ package com.ankamagames.berilia.components
             {
                this._effect.uri = this.selectedTexture;
             }
-            else
+            else if(this._customTexture)
             {
-               if(this._customTexture)
-               {
-                  this._effect.uri = this._customTexture;
-               }
+               this._effect.uri = this._customTexture;
             }
-            this._effect.finalize();
-            this._effect.finalized = true;
-            addChild(this._effect);
-         }
-         if((this._isButton) && ((!changingStateData) || (changingStateData.length == 0)))
-         {
-            stateChangingProperties = new Array();
-            stateChangingProperties[StatesEnum.STATE_NORMAL] = new Array();
-            stateChangingProperties[StatesEnum.STATE_NORMAL][this._icon.name] = new Array();
-            stateChangingProperties[StatesEnum.STATE_NORMAL][this._icon.name]["gotoAndStop"] = "normal";
-            stateChangingProperties[StatesEnum.STATE_OVER] = new Array();
-            stateChangingProperties[StatesEnum.STATE_OVER][this._icon.name] = new Array();
-            stateChangingProperties[StatesEnum.STATE_OVER][this._icon.name]["gotoAndStop"] = "over";
-            stateChangingProperties[StatesEnum.STATE_CLICKED] = new Array();
-            stateChangingProperties[StatesEnum.STATE_CLICKED][this._icon.name] = new Array();
-            stateChangingProperties[StatesEnum.STATE_CLICKED][this._icon.name]["gotoAndStop"] = "pressed";
-            stateChangingProperties[StatesEnum.STATE_SELECTED] = new Array();
-            stateChangingProperties[StatesEnum.STATE_SELECTED][this._icon.name] = new Array();
-            stateChangingProperties[StatesEnum.STATE_SELECTED][this._icon.name]["gotoAndStop"] = "selected";
-            stateChangingProperties[StatesEnum.STATE_SELECTED_OVER] = new Array();
-            stateChangingProperties[StatesEnum.STATE_SELECTED_OVER][this._icon.name] = new Array();
-            stateChangingProperties[StatesEnum.STATE_SELECTED_OVER][this._icon.name]["gotoAndStop"] = "selected_over";
-            stateChangingProperties[StatesEnum.STATE_SELECTED_CLICKED] = new Array();
-            stateChangingProperties[StatesEnum.STATE_SELECTED_CLICKED][this._icon.name] = new Array();
-            stateChangingProperties[StatesEnum.STATE_SELECTED_CLICKED][this._icon.name]["gotoAndStop"] = "selected_pressed";
-            changingStateData = stateChangingProperties;
-         }
-         _finalized = true;
-         if(getUi())
-         {
-            getUi().iAmFinalized(this);
-         }
-         return;
-         if((!this._backgroundIcon) && ((this._forcedBackGroundIconUri) || ((this._data) && (Object(this._data).hasOwnProperty("backGroundIconUri")) && Object(this._data).backGroundIconUri)))
-         {
-            this._backgroundIcon = new Texture();
-            this._backgroundIcon.mouseEnabled = false;
-            this._backgroundIcon.width = width;
-            this._backgroundIcon.height = height;
-            this._backgroundIcon.uri = this._forcedBackGroundIconUri?this._forcedBackGroundIconUri:Object(this._data).backGroundIconUri;
-            this._backgroundIcon.finalized = true;
-            this._backgroundIcon.finalize();
-            this._backgroundIcon.visible = this._displayBackgroundIcon;
-            addChildAt(this._backgroundIcon,0);
-         }
-         if((this._data) && (this._data.info1) && (!this._hideTopLabel))
-         {
-            this.updateQuantity(int(this._data.info1));
-         }
-         if((this._data) && (this._data.info1) && (!this._hideTopLabel))
-         {
-            this.updateQuantity(int(this._data.info1));
-         }
-         if(this._isTimerRunning)
-         {
-            if((!this._data) || (this._data.timer == 0))
-            {
-               this.updateTimer(0);
-            }
-         }
-         else
-         {
-            if((this._data) && (this._data.timer))
-            {
-               this.updateTimer(this._data.timer);
-            }
-         }
-         if(!this._effect)
-         {
-            this._effect = new Texture();
-            this._effect.mouseEnabled = false;
-            this._effect.width = width;
-            this._effect.height = height;
-            if(this._selected)
-            {
-               this._effect.uri = this.selectedTexture;
-            }
-            else
-            {
-               if(this._customTexture)
-               {
-                  this._effect.uri = this._customTexture;
-               }
-            }
+            
             this._effect.finalize();
             this._effect.finalized = true;
             addChild(this._effect);
@@ -654,7 +561,7 @@ package com.ankamagames.berilia.components
       
       private var _quantityText:TextField;
       
-      private const _quantityTextFormat:TextFormat = new TextFormat("Tahoma",15,16777215);
+      private const _quantityTextFormat:TextFormat;
       
       public function updateQuantity(num:int) : void {
          if(num == 0)
@@ -747,7 +654,7 @@ package com.ankamagames.berilia.components
                      _mousePressed = false;
                      if(!isMute)
                      {
-                        for each (listener in Berilia.getInstance().UISoundListeners)
+                        for each(listener in Berilia.getInstance().UISoundListeners)
                         {
                            soundToPLay = super.selectSound();
                            if(int(soundToPLay) != -1)
@@ -757,6 +664,8 @@ package com.ankamagames.berilia.components
                         }
                      }
                      break;
+                  default:
+                     super.process(msg);
                }
             }
          }
@@ -767,19 +676,17 @@ package com.ankamagames.berilia.components
                {
                   KernelEventsManager.getInstance().processCallback(BeriliaHookList.MouseShiftClick,SecureCenter.secure(this));
                }
-               else
+               else if(this._allowDrag)
                {
-                  if(this._allowDrag)
+                  if(!this._data)
                   {
-                     if(!this._data)
-                     {
-                        return false;
-                     }
-                     this._dragging = true;
-                     StageShareManager.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onDragAndDropStart);
-                     this._dragStartPoint = new Point(-MouseDownMessage(msg).mouseEvent.localX,-MouseDownMessage(msg).mouseEvent.localY);
+                     return false;
                   }
+                  this._dragging = true;
+                  StageShareManager.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onDragAndDropStart);
+                  this._dragStartPoint = new Point(-MouseDownMessage(msg).mouseEvent.localX,-MouseDownMessage(msg).mouseEvent.localY);
                }
+               
                break;
             case msg is MouseOverMessage:
                if(this._allowDrag)
@@ -798,21 +705,17 @@ package com.ankamagames.berilia.components
                         this._effect.uri = this.refuseDragTexture;
                      }
                   }
-                  else
-                  {
-                     if(this._effect != null)
-                     {
-                        this._effect.uri = this.highlightTexture;
-                     }
-                  }
-               }
-               else
-               {
-                  if(this._effect != null)
+                  else if(this._effect != null)
                   {
                      this._effect.uri = this.highlightTexture;
                   }
+                  
                }
+               else if(this._effect != null)
+               {
+                  this._effect.uri = this.highlightTexture;
+               }
+               
                break;
             case msg is MouseOutMessage:
                if(this._effect)
@@ -821,17 +724,15 @@ package com.ankamagames.berilia.components
                   {
                      this._effect.uri = this.selectedTexture;
                   }
+                  else if(this._customTexture)
+                  {
+                     this._effect.uri = this._customTexture;
+                  }
                   else
                   {
-                     if(this._customTexture)
-                     {
-                        this._effect.uri = this._customTexture;
-                     }
-                     else
-                     {
-                        this._effect.uri = null;
-                     }
+                     this._effect.uri = null;
                   }
+                  
                }
                break;
             case msg is MouseReleaseOutsideMessage:
@@ -856,7 +757,7 @@ package com.ankamagames.berilia.components
                            {
                               dropTargetHandler.processDrop(this,this.data,currentHolder);
                            }
-                           for each (listener2 in Berilia.getInstance().UISoundListeners)
+                           for each(listener2 in Berilia.getInstance().UISoundListeners)
                            {
                               listener2.playUISound("16053");
                            }
@@ -877,20 +778,18 @@ package com.ankamagames.berilia.components
                      KernelEventsManager.getInstance().processCallback(BeriliaHookList.DropEnd,SecureCenter.secure(SlotDragAndDropData(linkCursor.data).currentHolder));
                   }
                }
-               else
+               else if(dropTarget is Slot)
                {
-                  if(dropTarget is Slot)
+                  if((dropTarget as Slot).allowDrag == false)
                   {
-                     if((dropTarget as Slot).allowDrag == false)
+                     LinkedCursorSpriteManager.getInstance().removeItem(DRAG_AND_DROP_CURSOR_NAME);
+                     if(linkCursor != null)
                      {
-                        LinkedCursorSpriteManager.getInstance().removeItem(DRAG_AND_DROP_CURSOR_NAME);
-                        if(linkCursor != null)
-                        {
-                           KernelEventsManager.getInstance().processCallback(BeriliaHookList.DropEnd,SecureCenter.secure(SlotDragAndDropData(linkCursor.data).currentHolder));
-                        }
+                        KernelEventsManager.getInstance().processCallback(BeriliaHookList.DropEnd,SecureCenter.secure(SlotDragAndDropData(linkCursor.data).currentHolder));
                      }
                   }
                }
+               
                this.removeDrag();
                break;
             case msg is MouseClickMessage:
@@ -909,13 +808,11 @@ package com.ankamagames.berilia.components
                {
                   KernelEventsManager.getInstance().processCallback(BeriliaHookList.MouseCtrlDoubleClick,SecureCenter.secure(this));
                }
-               else
+               else if((ShortcutsFrame.altKey) && (msg is MouseDoubleClickMessage))
                {
-                  if((ShortcutsFrame.altKey) && (msg is MouseDoubleClickMessage))
-                  {
-                     KernelEventsManager.getInstance().processCallback(BeriliaHookList.MouseAltDoubleClick,SecureCenter.secure(this));
-                  }
+                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.MouseAltDoubleClick,SecureCenter.secure(this));
                }
+               
                break;
             case msg is MouseUpMessage:
                linkCursor = LinkedCursorSpriteManager.getInstance().getItem(DRAG_AND_DROP_CURSOR_NAME);
@@ -929,7 +826,7 @@ package com.ankamagames.berilia.components
                         dragData.currentHolder.removeDropSource(dragData.currentHolder);
                      }
                      this.processDrop(this,dragData.slotData,dragData.currentHolder);
-                     for each (listener3 in Berilia.getInstance().UISoundListeners)
+                     for each(listener3 in Berilia.getInstance().UISoundListeners)
                      {
                         listener3.playUISound("16053");
                      }
@@ -961,7 +858,6 @@ package com.ankamagames.berilia.components
                {
                   this.removeDrag();
                }
-               break;
          }
          return false;
       }
@@ -1105,7 +1001,7 @@ package com.ankamagames.berilia.components
          {
             return;
          }
-         for each (listener in Berilia.getInstance().UISoundListeners)
+         for each(listener in Berilia.getInstance().UISoundListeners)
          {
             listener.playUISound("16059");
          }

@@ -6,7 +6,7 @@ package com.ankamagames.tubul.events
    public class AudioBusEvent extends Event
    {
       
-      public function AudioBusEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function AudioBusEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

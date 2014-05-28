@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
          return 6294;
       }
       
-      public function initTeleportBuddiesAnswerMessage(accept:Boolean=false) : TeleportBuddiesAnswerMessage {
+      public function initTeleportBuddiesAnswerMessage(accept:Boolean = false) : TeleportBuddiesAnswerMessage {
          this.accept = accept;
          this._isInitialized = true;
          return this;

@@ -40,7 +40,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          this._animStep.start();
       }
       
-      public function stepFinished(step:ISequencable, withTimout:Boolean=false) : void {
+      public function stepFinished(step:ISequencable, withTimout:Boolean = false) : void {
          this._animStep.removeListener(this);
          FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_GOT_TACKLED,[this._fighterId],0,castingSpellId);
          executeCallbacks();

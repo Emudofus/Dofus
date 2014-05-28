@@ -9,7 +9,7 @@ package com.ankamagames.jerakine.utils.misc
          super();
       }
       
-      private static const _profiler:FightProfiler = new FightProfiler();
+      private static const _profiler:FightProfiler;
       
       private static var _startTime:int = 0;
       

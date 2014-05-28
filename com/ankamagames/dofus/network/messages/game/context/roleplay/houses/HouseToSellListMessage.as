@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.house.HouseInformationsForSell;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -34,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 6140;
       }
       
-      public function initHouseToSellListMessage(pageIndex:uint=0, totalPage:uint=0, houseList:Vector.<HouseInformationsForSell>=null) : HouseToSellListMessage {
+      public function initHouseToSellListMessage(pageIndex:uint = 0, totalPage:uint = 0, houseList:Vector.<HouseInformationsForSell> = null) : HouseToSellListMessage {
          this.pageIndex = pageIndex;
          this.totalPage = totalPage;
          this.houseList = houseList;

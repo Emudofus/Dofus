@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5520;
       }
       
-      public function initExchangeObjectMoveKamaMessage(quantity:int=0) : ExchangeObjectMoveKamaMessage {
+      public function initExchangeObjectMoveKamaMessage(quantity:int = 0) : ExchangeObjectMoveKamaMessage {
          this.quantity = quantity;
          this._isInitialized = true;
          return this;

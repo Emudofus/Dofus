@@ -8,7 +8,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import flash.utils.Dictionary;
    import com.ankamagames.dofus.network.types.game.achievement.AchievementRewardable;
    import com.ankamagames.jerakine.types.enums.Priority;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.quest.Achievement;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.quest.QuestListRequestMessage;
@@ -87,7 +86,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(QuestFrame));
+      protected static const _log:Logger;
       
       public static var notificationList:Array;
       
@@ -243,7 +242,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   this._questsInformations[stepsInfos.questId].objectives = new Array();
                   this._questsInformations[stepsInfos.questId].objectivesData = new Array();
                   this._questsInformations[stepsInfos.questId].objectivesDialogParams = new Array();
-                  for each (obj in stepsInfos.objectives)
+                  for each(obj in stepsInfos.objectives)
                   {
                      this._questsInformations[stepsInfos.questId].objectives[obj.objectiveId] = obj.objectiveStatus;
                      if((obj.dialogParams) && (obj.dialogParams.length > 0))
@@ -268,13 +267,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                   }
                   KernelEventsManager.getInstance().processCallback(QuestHookList.QuestInfosUpdated,stepsInfos.questId,true);
                }
-               else
+               else if(qsimsg.infos is QuestActiveInformations)
                {
-                  if(qsimsg.infos is QuestActiveInformations)
-                  {
-                     KernelEventsManager.getInstance().processCallback(QuestHookList.QuestInfosUpdated,(qsimsg.infos as QuestActiveInformations).questId,false);
-                  }
+                  KernelEventsManager.getInstance().processCallback(QuestHookList.QuestInfosUpdated,(qsimsg.infos as QuestActiveInformations).questId,false);
                }
+               
                return true;
             case msg is QuestStartRequestAction:
                qsra = msg as QuestStartRequestAction;
@@ -311,7 +308,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
                else
                {
-                  for each (activeQuest in this._activeQuests)
+                  for each(activeQuest in this._activeQuests)
                   {
                      if(activeQuest.questId == qvmsg.questId)
                      {
@@ -326,9 +323,9 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
                this._completedQuests.push(qvmsg.questId);
                questValidated = Quest.getQuestById(qvmsg.questId);
-               for each (step in questValidated.steps)
+               for each(step in questValidated.steps)
                {
-                  for each (questStepObjId in step.objectiveIds)
+                  for each(questStepObjId in step.objectiveIds)
                   {
                      KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag,"flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + qvmsg.questId + "_" + questStepObjId,PlayedCharacterManager.getInstance().currentWorldMap.id);
                   }
@@ -346,7 +343,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   this._questsInformations[qsvmsg.questId].stepId = qsvmsg.stepId;
                }
                objectivesIds = QuestStep.getQuestStepById(qsvmsg.stepId).objectiveIds;
-               for each (stepObjId in objectivesIds)
+               for each(stepObjId in objectivesIds)
                {
                   KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag,"flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + qsvmsg.questId + "_" + stepObjId,PlayedCharacterManager.getInstance().currentWorldMap.id);
                }
@@ -377,7 +374,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                almsg = msg as AchievementListMessage;
                this._finishedAchievementsIds = almsg.finishedAchievementsIds;
                this._rewardableAchievements = almsg.rewardableAchievements;
-               for each (finishAchId in this._finishedAchievementsIds)
+               for each(finishAchId in this._finishedAchievementsIds)
                {
                   if(Achievement.getAchievementById(finishAchId))
                   {
@@ -388,7 +385,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                      _log.warn("Succés " + finishAchId + " non exporté");
                   }
                }
-               for each (rewAch in this._rewardableAchievements)
+               for each(rewAch in this._rewardableAchievements)
                {
                   if(Achievement.getAchievementById(rewAch.id))
                   {
@@ -458,7 +455,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is AchievementRewardSuccessMessage:
                arsmsg = msg as AchievementRewardSuccessMessage;
-               for each (achievementRewardable in this._rewardableAchievements)
+               for each(achievementRewardable in this._rewardableAchievements)
                {
                   if(achievementRewardable.id == arsmsg.achievementId)
                   {
@@ -489,20 +486,16 @@ package com.ankamagames.dofus.logic.game.common.frames
                {
                   treasureHuntRequestAnswerText = I18n.getUiText("ui.treasureHunt.alreadyHaveQuest");
                }
-               else
+               else if(thramsg.result == TreasureHuntRequestEnum.TREASURE_HUNT_ERROR_NO_QUEST_FOUND)
                {
-                  if(thramsg.result == TreasureHuntRequestEnum.TREASURE_HUNT_ERROR_NO_QUEST_FOUND)
-                  {
-                     treasureHuntRequestAnswerText = I18n.getUiText("ui.treasureHunt.noQuestFound");
-                  }
-                  else
-                  {
-                     if(thramsg.result == TreasureHuntRequestEnum.TREASURE_HUNT_ERROR_UNDEFINED)
-                     {
-                        treasureHuntRequestAnswerText = I18n.getUiText("ui.popup.impossible_action");
-                     }
-                  }
+                  treasureHuntRequestAnswerText = I18n.getUiText("ui.treasureHunt.noQuestFound");
                }
+               else if(thramsg.result == TreasureHuntRequestEnum.TREASURE_HUNT_ERROR_UNDEFINED)
+               {
+                  treasureHuntRequestAnswerText = I18n.getUiText("ui.popup.impossible_action");
+               }
+               
+               
                if(treasureHuntRequestAnswerText)
                {
                   KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,treasureHuntRequestAnswerText,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
@@ -522,7 +515,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is TreasureHuntFinishedMessage:
                thfmsg = msg as TreasureHuntFinishedMessage;
                this._treasureHunts[thfmsg.questType] = null;
-               delete this._treasureHunts[[thfmsg.questType]];
+               delete this._treasureHunts[thfmsg.questType];
                KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntFinished,thfmsg.questType);
                return true;
             case msg is TreasureHuntGiveUpRequestAction:
@@ -543,56 +536,46 @@ package com.ankamagames.dofus.logic.game.common.frames
                {
                   treasureHuntDigAnswerText = I18n.getUiText("ui.fight.wrongMap");
                }
-               else
+               else if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_ERROR_UNDEFINED)
                {
-                  if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_ERROR_UNDEFINED)
-                  {
-                     treasureHuntDigAnswerText = I18n.getUiText("ui.popup.impossible_action");
-                  }
-                  else
-                  {
-                     if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_LOST)
-                     {
-                        treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.huntFail");
-                     }
-                     else
-                     {
-                        if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_NEW_HINT)
-                        {
-                           treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.stepSuccess");
-                        }
-                        else
-                        {
-                           if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_WRONG)
-                           {
-                              treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.digFail");
-                           }
-                           else
-                           {
-                              if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_FINISHED)
-                              {
-                                 if(thdramsg.questType == TreasureHuntTypeEnum.TREASURE_HUNT_CLASSIC)
-                                 {
-                                    treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.huntSuccess");
-                                 }
-                                 else
-                                 {
-                                    if(thdramsg.questType == TreasureHuntTypeEnum.TREASURE_HUNT_PORTAL)
-                                    {
-                                       treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.portalHuntSuccess",[PlayedCharacterManager.getInstance().currentMap.outdoorX,PlayedCharacterManager.getInstance().currentMap.outdoorY]);
-                                    }
-                                 }
-                              }
-                           }
-                        }
-                     }
-                  }
+                  treasureHuntDigAnswerText = I18n.getUiText("ui.popup.impossible_action");
                }
+               else if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_LOST)
+               {
+                  treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.huntFail");
+               }
+               else if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_NEW_HINT)
+               {
+                  treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.stepSuccess");
+               }
+               else if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_WRONG)
+               {
+                  treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.digFail");
+               }
+               else if(thdramsg.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_FINISHED)
+               {
+                  if(thdramsg.questType == TreasureHuntTypeEnum.TREASURE_HUNT_CLASSIC)
+                  {
+                     treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.huntSuccess");
+                  }
+                  else if(thdramsg.questType == TreasureHuntTypeEnum.TREASURE_HUNT_PORTAL)
+                  {
+                     treasureHuntDigAnswerText = I18n.getUiText("ui.treasureHunt.portalHuntSuccess",[PlayedCharacterManager.getInstance().currentMap.outdoorX,PlayedCharacterManager.getInstance().currentMap.outdoorY]);
+                  }
+                  
+               }
+               
+               
+               
+               
+               
                if(treasureHuntDigAnswerText)
                {
                   KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,treasureHuntDigAnswerText,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                }
                return true;
+            default:
+               return false;
          }
       }
       

@@ -21,7 +21,7 @@ package com.ankamagames.jerakine.pools
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PoolsManager));
+      protected static const _log:Logger;
       
       private static var _self:PoolsManager;
       

@@ -17,7 +17,7 @@ package com.ankamagames.dofus.network.types.game.shortcut
          return 367;
       }
       
-      public function initShortcutObject(slot:uint=0) : ShortcutObject {
+      public function initShortcutObject(slot:uint = 0) : ShortcutObject {
          super.initShortcut(slot);
          return this;
       }

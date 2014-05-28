@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.alliance
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.social.AllianceVersatileInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -21,7 +20,12 @@ package com.ankamagames.dofus.network.messages.game.alliance
       private var _isInitialized:Boolean = false;
       
       override public function get isInitialized() : Boolean {
-         return this._isInitialized;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: NullPointerException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public var alliances:Vector.<AllianceVersatileInformations>;
@@ -30,7 +34,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6436;
       }
       
-      public function initAllianceVersatileInfoListMessage(alliances:Vector.<AllianceVersatileInformations>=null) : AllianceVersatileInfoListMessage {
+      public function initAllianceVersatileInfoListMessage(alliances:Vector.<AllianceVersatileInformations> = null) : AllianceVersatileInfoListMessage {
          this.alliances = alliances;
          this._isInitialized = true;
          return this;

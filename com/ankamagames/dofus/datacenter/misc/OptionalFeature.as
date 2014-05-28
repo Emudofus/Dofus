@@ -24,7 +24,7 @@ package com.ankamagames.dofus.datacenter.misc
          if((!_keywords) || (!_keywords[key]))
          {
             _keywords = new Dictionary();
-            for each (_keywords[feature.keyword] in getAllOptionalFeatures())
+            for each(_keywords[feature.keyword] in getAllOptionalFeatures())
             {
             }
          }

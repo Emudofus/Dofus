@@ -18,7 +18,7 @@ package com.ankamagames.dofus.logic.game.fight.types
    public class StatBuff extends BasicBuff
    {
       
-      public function StatBuff(effect:FightTemporaryBoostEffect=null, castingSpell:CastingSpell=null, actionId:int=0) {
+      public function StatBuff(effect:FightTemporaryBoostEffect = null, castingSpell:CastingSpell = null, actionId:int = 0) {
          if(effect)
          {
             super(effect,castingSpell,actionId,effect.delta,null,null);
@@ -27,7 +27,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StatBuff));
+      protected static const _log:Logger;
       
       private var _statName:String;
       
@@ -152,6 +152,18 @@ package com.ankamagames.dofus.logic.game.fight.types
                infos.stats["movementPoints"] = infos.stats["movementPoints"] + this.delta;
                infos.stats["maxMovementPoints"] = infos.stats["maxMovementPoints"] + this.delta;
                break;
+            default:
+               if(infos)
+               {
+                  if(infos.stats.hasOwnProperty(this._statName))
+                  {
+                     infos.stats[this._statName] = infos.stats[this._statName] + this.delta;
+                  }
+               }
+               else
+               {
+                  _log.fatal("ATTENTION, le serveur essaye de buffer une entité qui n\'existe plus ! id=" + targetId);
+               }
          }
          super.onApplyed();
       }
@@ -287,10 +299,26 @@ package com.ankamagames.dofus.logic.game.fight.types
                infos.stats["movementPoints"] = infos.stats["movementPoints"] - this.delta;
                infos.stats["maxMovementPoints"] = infos.stats["maxMovementPoints"] - this.delta;
                break;
+            default:
+               if(infos)
+               {
+                  if(infos.stats.hasOwnProperty(this._statName))
+                  {
+                     infos.stats[this._statName] = infos.stats[this._statName] - this.delta;
+                  }
+                  else
+                  {
+                     _log.fatal("On essaye de supprimer une stat non prise en compte : " + this.statName);
+                  }
+               }
+               else
+               {
+                  _log.fatal("ATTENTION, Le serveur essaye de buffer une entité qui n\'existe plus ! id=" + targetId);
+               }
          }
       }
       
-      override public function clone(id:int=0) : BasicBuff {
+      override public function clone(id:int = 0) : BasicBuff {
          var sb:StatBuff = new StatBuff();
          sb._statName = this._statName;
          sb._isABoost = this._isABoost;

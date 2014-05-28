@@ -32,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6444;
       }
       
-      public function initAllianceModificationStartedMessage(canChangeName:Boolean=false, canChangeTag:Boolean=false, canChangeEmblem:Boolean=false) : AllianceModificationStartedMessage {
+      public function initAllianceModificationStartedMessage(canChangeName:Boolean = false, canChangeTag:Boolean = false, canChangeEmblem:Boolean = false) : AllianceModificationStartedMessage {
          this.canChangeName = canChangeName;
          this.canChangeTag = canChangeTag;
          this.canChangeEmblem = canChangeEmblem;

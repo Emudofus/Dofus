@@ -9,7 +9,6 @@ package com.ankamagames.tiphon.engine
    import flash.text.TextFieldAutoSize;
    import flash.events.TimerEvent;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
-   import __AS3__.vec.*;
    
    public final class TiphonDebugManager extends Object
    {
@@ -20,7 +19,7 @@ package com.ankamagames.tiphon.engine
       
       private static var _enabled:Boolean = false;
       
-      private static var _textList:Vector.<Object> = new Vector.<Object>();
+      private static var _textList:Vector.<Object>;
       
       public static function enable() : void {
          _enabled = true;

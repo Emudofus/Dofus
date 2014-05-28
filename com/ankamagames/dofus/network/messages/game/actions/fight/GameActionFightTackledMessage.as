@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
 {
    import com.ankamagames.dofus.network.messages.game.actions.AbstractGameActionMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 1004;
       }
       
-      public function initGameActionFightTackledMessage(actionId:uint=0, sourceId:int=0, tacklersIds:Vector.<int>=null) : GameActionFightTackledMessage {
+      public function initGameActionFightTackledMessage(actionId:uint = 0, sourceId:int = 0, tacklersIds:Vector.<int> = null) : GameActionFightTackledMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.tacklersIds = tacklersIds;
          this._isInitialized = true;

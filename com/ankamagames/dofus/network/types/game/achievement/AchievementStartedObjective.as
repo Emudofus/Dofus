@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.achievement
          return 402;
       }
       
-      public function initAchievementStartedObjective(id:uint=0, maxValue:uint=0, value:uint=0) : AchievementStartedObjective {
+      public function initAchievementStartedObjective(id:uint = 0, maxValue:uint = 0, value:uint = 0) : AchievementStartedObjective {
          super.initAchievementObjective(id,maxValue);
          this.value = value;
          return this;

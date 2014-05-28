@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 116;
       }
       
-      public function initAbstractFightTeamInformations(teamId:uint=2, leaderId:int=0, teamSide:int=0, teamTypeId:uint=0, nbWaves:uint=0) : AbstractFightTeamInformations {
+      public function initAbstractFightTeamInformations(teamId:uint = 2, leaderId:int = 0, teamSide:int = 0, teamTypeId:uint = 0, nbWaves:uint = 0) : AbstractFightTeamInformations {
          this.teamId = teamId;
          this.leaderId = leaderId;
          this.teamSide = teamSide;

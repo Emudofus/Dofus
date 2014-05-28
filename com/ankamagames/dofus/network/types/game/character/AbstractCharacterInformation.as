@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.character
          return 400;
       }
       
-      public function initAbstractCharacterInformation(id:uint=0) : AbstractCharacterInformation {
+      public function initAbstractCharacterInformation(id:uint = 0) : AbstractCharacterInformation {
          this.id = id;
          return this;
       }

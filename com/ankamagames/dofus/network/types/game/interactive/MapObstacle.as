@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.interactive
          return 200;
       }
       
-      public function initMapObstacle(obstacleCellId:uint=0, state:uint=0) : MapObstacle {
+      public function initMapObstacle(obstacleCellId:uint = 0, state:uint = 0) : MapObstacle {
          this.obstacleCellId = obstacleCellId;
          this.state = state;
          return this;

@@ -6,7 +6,7 @@ package com.ankamagames.tubul.events
    public class MP3SoundEvent extends Event
    {
       
-      public function MP3SoundEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function MP3SoundEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

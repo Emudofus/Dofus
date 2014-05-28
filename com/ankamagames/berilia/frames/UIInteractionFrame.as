@@ -73,7 +73,7 @@ package com.ankamagames.berilia.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UIInteractionFrame));
+      protected static const _log:Logger;
       
       public function get priority() : int {
          return Priority.HIGHEST;
@@ -156,7 +156,7 @@ package com.ankamagames.berilia.frames
                }
                onlyGrid = false;
                dispatched = false;
-               for each (uic in this.hierarchy)
+               for each(uic in this.hierarchy)
                {
                   isGrid = UIComponent(uic) is Grid;
                   if((!onlyGrid) || (isGrid))
@@ -228,21 +228,21 @@ package com.ankamagames.berilia.frames
                   this._isProcessingDirectInteraction = false;
                   return false;
                }
-               for each (uic3 in this.hierarchy)
+               for each(uic3 in this.hierarchy)
                {
                   UIComponent(uic3).process(comsg);
                }
                comsg.bubbling = true;
                this.hierarchy.reverse();
                this.hierarchy.pop();
-               for each (uic4 in this.hierarchy)
+               for each(uic4 in this.hierarchy)
                {
                   UIComponent(uic4).process(comsg);
                }
                this.hierarchy = null;
                if(!comsg.canceled)
                {
-                  for each (act2 in comsg.actions)
+                  for each(act2 in comsg.actions)
                   {
                      Berilia.getInstance().handler.process(act2);
                   }
@@ -395,17 +395,15 @@ package com.ankamagames.berilia.frames
             fct = gridInstance.renderer.eventModificator(msg,fctName,args,ie.instance as UIComponent);
             ErrorManager.tryFunction(CallWithParameters.call,[ie.callbackObject[fctName],args],"Erreur lors du traitement de " + msg);
          }
+         else if(msg is MouseWheelMessage)
+         {
+            ErrorManager.tryFunction(ie.callbackObject[fctName],[SecureCenter.secure(ie.instance),MouseWheelMessage(msg).mouseEvent.delta]);
+         }
          else
          {
-            if(msg is MouseWheelMessage)
-            {
-               ErrorManager.tryFunction(ie.callbackObject[fctName],[SecureCenter.secure(ie.instance),MouseWheelMessage(msg).mouseEvent.delta]);
-            }
-            else
-            {
-               ErrorManager.tryFunction(ie.callbackObject[fctName],[SecureCenter.secure(ie.instance)]);
-            }
+            ErrorManager.tryFunction(ie.callbackObject[fctName],[SecureCenter.secure(ie.instance)]);
          }
+         
       }
       
       private var _lastTs:uint = 0;
@@ -414,7 +412,7 @@ package com.ankamagames.berilia.frames
       
       private var _lastH:uint;
       
-      private function onStageResize(e:Event=null) : void {
+      private function onStageResize(e:Event = null) : void {
          if((this._lastW == StageShareManager.stage.stageWidth) && (this._lastH == StageShareManager.stage.stageHeight))
          {
             return;

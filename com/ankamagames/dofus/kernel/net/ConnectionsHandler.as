@@ -30,7 +30,7 @@ package com.ankamagames.dofus.kernel.net
       
       public static const KOLI_SERVER:String = "koli_server";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ConnectionsHandler));
+      protected static const _log:Logger;
       
       private static var _useSniffer:Boolean;
       
@@ -46,7 +46,7 @@ package com.ankamagames.dofus.kernel.net
       
       private static var _connectionTimeout:Timer;
       
-      private static var _currentHttpConnection:HttpServerConnection = new HttpServerConnection();
+      private static var _currentHttpConnection:HttpServerConnection;
       
       public static function get useSniffer() : Boolean {
          return _useSniffer;
@@ -194,7 +194,7 @@ package com.ankamagames.dofus.kernel.net
          Kernel.getWorker().process(new ConnectionResumedMessage());
       }
       
-      private static function etablishConnection(host:String, port:int, id:String, useSniffer:Boolean=false, proxy:IConnectionProxy=null) : void {
+      private static function etablishConnection(host:String, port:int, id:String, useSniffer:Boolean = false, proxy:IConnectionProxy = null) : void {
          var conn:IServerConnection = null;
          if(useSniffer)
          {
@@ -207,17 +207,15 @@ package com.ankamagames.dofus.kernel.net
                conn = new SnifferServerConnection();
             }
          }
+         else if(proxy != null)
+         {
+            conn = new ProxyedServerConnection(proxy);
+         }
          else
          {
-            if(proxy != null)
-            {
-               conn = new ProxyedServerConnection(proxy);
-            }
-            else
-            {
-               conn = new ServerConnection();
-            }
+            conn = new ServerConnection();
          }
+         
          if(!_currentConnection)
          {
             _currentConnection = new MultiConnection();

@@ -6,7 +6,6 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.misc.HookLock;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.misc.lists.MountHookList;
    
    public class CertificateView extends Object implements IInventoryView
@@ -17,7 +16,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          this._hookLock = hookLock;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CertificateView));
+      protected static const _log:Logger;
       
       private var _content:Vector.<ItemWrapper>;
       
@@ -26,7 +25,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
       public function initialize(items:Vector.<ItemWrapper>) : void {
          var item:ItemWrapper = null;
          this._content = new Vector.<ItemWrapper>();
-         for each (item in items)
+         for each(item in items)
          {
             if(this.isListening(item))
             {

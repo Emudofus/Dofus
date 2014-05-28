@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
          return 6303;
       }
       
-      public function initTeleportToBuddyCloseMessage(dungeonId:uint=0, buddyId:uint=0) : TeleportToBuddyCloseMessage {
+      public function initTeleportToBuddyCloseMessage(dungeonId:uint = 0, buddyId:uint = 0) : TeleportToBuddyCloseMessage {
          this.dungeonId = dungeonId;
          this.buddyId = buddyId;
          this._isInitialized = true;

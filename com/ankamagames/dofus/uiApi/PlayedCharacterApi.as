@@ -11,7 +11,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
    import com.ankamagames.dofus.datacenter.appearance.Title;
@@ -55,9 +54,9 @@ package com.ankamagames.dofus.uiApi
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayedCharacterApi));
+      protected static const _log:Logger;
       
       public static function characteristics() : CharacterCharacteristicsInformations {
          return PlayedCharacterManager.getInstance().characteristics;
@@ -114,7 +113,7 @@ package com.ankamagames.dofus.uiApi
       public static function getEquipment() : Array {
          var item:* = undefined;
          var equipment:Array = new Array();
-         for each (item in PlayedCharacterManager.getInstance().inventory)
+         for each(item in PlayedCharacterManager.getInstance().inventory)
          {
             if(item.position <= 15)
             {
@@ -150,7 +149,7 @@ package com.ankamagames.dofus.uiApi
          playerInfo = getEntityInfos();
          if((playerInfo) && (playerInfo.humanoidInfo))
          {
-            for each (option in playerInfo.humanoidInfo.options)
+            for each(option in playerInfo.humanoidInfo.options)
             {
                if(option is HumanOptionTitle)
                {
@@ -429,7 +428,7 @@ package com.ankamagames.dofus.uiApi
             obtentionSpellLevel = spellLevelZero.minPlayerLevel;
          }
          var spellInv:Array = getSpellInventory();
-         for each (sp in spellInv)
+         for each(sp in spellInv)
          {
             if(sp.spellId == pSpellId)
             {
@@ -437,7 +436,7 @@ package com.ankamagames.dofus.uiApi
             }
          }
          disable = true;
-         for each (spellWrapper in spellInv)
+         for each(spellWrapper in spellInv)
          {
             if(spellWrapper.spellId == pSpellId)
             {

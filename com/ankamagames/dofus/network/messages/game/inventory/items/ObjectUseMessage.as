@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3019;
       }
       
-      public function initObjectUseMessage(objectUID:uint=0) : ObjectUseMessage {
+      public function initObjectUseMessage(objectUID:uint = 0) : ObjectUseMessage {
          this.objectUID = objectUID;
          this._isInitialized = true;
          return this;

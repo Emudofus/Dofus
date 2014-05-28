@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(enabled:Boolean, rights:int=0) : HouseGuildShareAction {
+      public static function create(enabled:Boolean, rights:int = 0) : HouseGuildShareAction {
          var action:HouseGuildShareAction = new HouseGuildShareAction();
          action.enabled = enabled;
          action.rights = rights;

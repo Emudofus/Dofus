@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 20;
       }
       
-      public function initIdentificationFailedMessage(reason:uint=99) : IdentificationFailedMessage {
+      public function initIdentificationFailedMessage(reason:uint = 99) : IdentificationFailedMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6381;
       }
       
-      public function initAchievementFinishedInformationMessage(id:uint=0, finishedlevel:uint=0, name:String="", playerId:uint=0) : AchievementFinishedInformationMessage {
+      public function initAchievementFinishedInformationMessage(id:uint = 0, finishedlevel:uint = 0, name:String = "", playerId:uint = 0) : AchievementFinishedInformationMessage {
          super.initAchievementFinishedMessage(id,finishedlevel);
          this.name = name;
          this.playerId = playerId;

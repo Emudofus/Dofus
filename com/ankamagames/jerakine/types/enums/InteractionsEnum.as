@@ -14,11 +14,11 @@ package com.ankamagames.jerakine.types.enums
          super();
       }
       
-      public static const CLICK:uint = 1 << 0;
+      public static const CLICK:uint;
       
-      public static const OVER:uint = 1 << 1;
+      public static const OVER:uint;
       
-      public static const OUT:uint = 1 << 2;
+      public static const OUT:uint;
       
       public static function getEvents(interactionType:uint) : Array {
          switch(interactionType)
@@ -29,6 +29,8 @@ package com.ankamagames.jerakine.types.enums
                return [MouseEvent.MOUSE_OVER];
             case OUT:
                return [MouseEvent.MOUSE_OUT,Event.REMOVED_FROM_STAGE];
+            default:
+               throw new JerakineError("Unknown interaction type " + interactionType + ".");
          }
       }
       
@@ -42,6 +44,8 @@ package com.ankamagames.jerakine.types.enums
             case Event.REMOVED_FROM_STAGE:
             case MouseEvent.MOUSE_OUT:
                return EntityMouseOutMessage;
+            default:
+               throw new JerakineError("Unknown event type for an interaction \'" + eventType + "\'.");
          }
       }
    }

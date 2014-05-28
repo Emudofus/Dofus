@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6010;
       }
       
-      public function initExchangeObjectRemovedFromBagMessage(remote:Boolean=false, objectUID:uint=0) : ExchangeObjectRemovedFromBagMessage {
+      public function initExchangeObjectRemovedFromBagMessage(remote:Boolean = false, objectUID:uint = 0) : ExchangeObjectRemovedFromBagMessage {
          super.initExchangeObjectMessage(remote);
          this.objectUID = objectUID;
          this._isInitialized = true;

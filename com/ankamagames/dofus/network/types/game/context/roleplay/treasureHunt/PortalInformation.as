@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt
          return 466;
       }
       
-      public function initPortalInformation(portalId:uint=0, areaId:int=0) : PortalInformation {
+      public function initPortalInformation(portalId:uint = 0, areaId:int = 0) : PortalInformation {
          this.portalId = portalId;
          this.areaId = areaId;
          return this;

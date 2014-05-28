@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5578;
       }
       
-      public function initPartyLeaderUpdateMessage(partyId:uint=0, partyLeaderId:uint=0) : PartyLeaderUpdateMessage {
+      public function initPartyLeaderUpdateMessage(partyId:uint = 0, partyLeaderId:uint = 0) : PartyLeaderUpdateMessage {
          super.initAbstractPartyEventMessage(partyId);
          this.partyLeaderId = partyLeaderId;
          this._isInitialized = true;

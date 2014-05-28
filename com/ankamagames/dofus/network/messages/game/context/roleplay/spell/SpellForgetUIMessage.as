@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
          return 5565;
       }
       
-      public function initSpellForgetUIMessage(open:Boolean=false) : SpellForgetUIMessage {
+      public function initSpellForgetUIMessage(open:Boolean = false) : SpellForgetUIMessage {
          this.open = open;
          this._isInitialized = true;
          return this;

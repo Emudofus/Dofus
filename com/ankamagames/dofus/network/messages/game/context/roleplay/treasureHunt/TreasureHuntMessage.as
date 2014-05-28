@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStep;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -41,7 +40,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
          return 6486;
       }
       
-      public function initTreasureHuntMessage(questType:uint=0, startMapId:uint=0, stepList:Vector.<TreasureHuntStep>=null, checkPointCurrent:uint=0, checkPointTotal:uint=0, availableRetryCount:int=0) : TreasureHuntMessage {
+      public function initTreasureHuntMessage(questType:uint = 0, startMapId:uint = 0, stepList:Vector.<TreasureHuntStep> = null, checkPointCurrent:uint = 0, checkPointTotal:uint = 0, availableRetryCount:int = 0) : TreasureHuntMessage {
          this.questType = questType;
          this.startMapId = startMapId;
          this.stepList = stepList;

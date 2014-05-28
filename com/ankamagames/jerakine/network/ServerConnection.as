@@ -11,7 +11,6 @@ package com.ankamagames.jerakine.network
    import flash.utils.Timer;
    import flash.events.TimerEvent;
    import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.replay.LogFrame;
    import com.ankamagames.jerakine.replay.LogTypeEnum;
    import flash.events.ProgressEvent;
@@ -28,7 +27,7 @@ package com.ankamagames.jerakine.network
    public class ServerConnection extends Socket implements IEventDispatcher, IServerConnection
    {
       
-      public function ServerConnection(host:String=null, port:int=0) {
+      public function ServerConnection(host:String = null, port:int = 0) {
          this._pauseBuffer = new Array();
          this._latencyBuffer = new Array();
          super(host,port);
@@ -48,9 +47,9 @@ package com.ankamagames.jerakine.network
       
       private static const LATENCY_AVG_BUFFER_SIZE:uint = 50;
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ServerConnection));
+      protected static const _log:Logger;
       
       private var _rawParser:RawDataParser;
       
@@ -121,7 +120,7 @@ package com.ankamagames.jerakine.network
             return 0;
          }
          var total:uint = 0;
-         for each (latency in this._latencyBuffer)
+         for each(latency in this._latencyBuffer)
          {
             total = total + latency;
          }
@@ -190,7 +189,7 @@ package com.ankamagames.jerakine.network
          return className;
       }
       
-      private function inspect(target:*, indent:String="", isArray:Boolean=false) : String {
+      private function inspect(target:*, indent:String = "", isArray:Boolean = false) : String {
          var property:* = undefined;
          var v:* = undefined;
          var str:String = "";
@@ -199,7 +198,7 @@ package com.ankamagames.jerakine.network
          {
             str = str + this.getType(target);
          }
-         for each (property in content)
+         for each(property in content)
          {
             v = target[property];
             str = str + ("\n" + indent);
@@ -232,6 +231,9 @@ package com.ankamagames.jerakine.network
                case v is Boolean:
                case v is Number:
                   str = str + (" = " + v);
+                  continue;
+               default:
+                  str = str + (" " + this.inspect(v,indent + "\t"));
                   continue;
             }
          }
@@ -423,7 +425,7 @@ package com.ankamagames.jerakine.network
          return messageLength;
       }
       
-      protected function lowSend(msg:INetworkMessage, autoFlush:Boolean=true) : void {
+      protected function lowSend(msg:INetworkMessage, autoFlush:Boolean = true) : void {
          msg.pack(this);
          this._latestSent = getTimer();
          this._lastSent = getTimer();
@@ -522,7 +524,7 @@ package com.ankamagames.jerakine.network
          {
             _log.trace("Connection opened.");
          }
-         for each (msg in this._outputBuffer)
+         for each(msg in this._outputBuffer)
          {
             this.lowSend(msg,false);
          }

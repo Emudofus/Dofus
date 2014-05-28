@@ -2,7 +2,6 @@ package com.ankamagames.dofus.datacenter.world
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
-   import __AS3__.vec.Vector;
    
    public class WorldMap extends Object implements IDataCenter
    {

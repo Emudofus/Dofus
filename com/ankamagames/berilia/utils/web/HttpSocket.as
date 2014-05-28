@@ -18,9 +18,9 @@ package com.ankamagames.berilia.utils.web
          this._rootPath = rootPath;
       }
       
-      private static const SEPERATOR:RegExp = new RegExp(new RegExp("\\r?\\n\\r?\\n"));
+      private static const SEPERATOR:RegExp;
       
-      private static const NL:RegExp = new RegExp(new RegExp("\\r?\\n"));
+      private static const NL:RegExp;
       
       private var requestSocket:Socket;
       

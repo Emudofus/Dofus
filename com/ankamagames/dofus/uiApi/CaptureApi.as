@@ -22,15 +22,15 @@ package com.ankamagames.dofus.uiApi
          super();
       }
       
-      public static function getScreen(rect:Rectangle=null, scale:Number=1.0) : BitmapData {
+      public static function getScreen(rect:Rectangle = null, scale:Number = 1.0) : BitmapData {
          return capture(StageShareManager.stage,rect,new Rectangle(0,0,StageShareManager.startWidth,StageShareManager.startHeight),scale);
       }
       
-      public static function getBattleField(rect:Rectangle=null, scale:Number=1.0) : BitmapData {
+      public static function getBattleField(rect:Rectangle = null, scale:Number = 1.0) : BitmapData {
          return capture(Atouin.getInstance().worldContainer,rect,new Rectangle(0,0,AtouinConstants.CELL_WIDTH * AtouinConstants.MAP_WIDTH,AtouinConstants.CELL_HEIGHT * AtouinConstants.MAP_HEIGHT),scale);
       }
       
-      public static function getFromTarget(target:Object, rect:Rectangle=null, scale:Number=1.0, transparent:Boolean=false) : BitmapData {
+      public static function getFromTarget(target:Object, rect:Rectangle = null, scale:Number = 1.0, transparent:Boolean = false) : BitmapData {
          var target:Object = SecureCenter.unsecure(target);
          if((!target) || (!(target is DisplayObject)))
          {
@@ -45,7 +45,7 @@ package com.ankamagames.dofus.uiApi
          return capture(dObj,rect,bounds,scale,transparent);
       }
       
-      public static function jpegEncode(img:BitmapData, quality:uint=80, askForSave:Boolean=true, fileName:String="image.jpg") : ByteArray {
+      public static function jpegEncode(img:BitmapData, quality:uint = 80, askForSave:Boolean = true, fileName:String = "image.jpg") : ByteArray {
          var encodedImg:ByteArray = new JPEGEncoder(quality).encode(img);
          if((askForSave) && (AirScanner.hasAir()))
          {
@@ -54,7 +54,7 @@ package com.ankamagames.dofus.uiApi
          return encodedImg;
       }
       
-      public static function pngEncode(img:BitmapData, askForSave:Boolean=true, fileName:String="image.png") : ByteArray {
+      public static function pngEncode(img:BitmapData, askForSave:Boolean = true, fileName:String = "image.png") : ByteArray {
          var encodedImg:ByteArray = new PNGEncoder().encode(img);
          if((askForSave) && (AirScanner.hasAir()))
          {
@@ -63,7 +63,7 @@ package com.ankamagames.dofus.uiApi
          return encodedImg;
       }
       
-      private static function capture(target:DisplayObject, rect:Rectangle, maxRect:Rectangle, scale:Number=1.0, transparent:Boolean=false) : BitmapData {
+      private static function capture(target:DisplayObject, rect:Rectangle, maxRect:Rectangle, scale:Number = 1.0, transparent:Boolean = false) : BitmapData {
          var rect2:Rectangle = null;
          var matrix:Matrix = null;
          var data:BitmapData = null;

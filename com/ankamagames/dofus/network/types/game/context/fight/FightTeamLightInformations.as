@@ -32,7 +32,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 115;
       }
       
-      public function initFightTeamLightInformations(teamId:uint=2, leaderId:int=0, teamSide:int=0, teamTypeId:uint=0, nbWaves:uint=0, teamMembersCount:uint=0, meanLevel:uint=0, hasFriend:Boolean=false, hasGuildMember:Boolean=false, hasAllianceMember:Boolean=false, hasGroupMember:Boolean=false, hasMyTaxCollector:Boolean=false) : FightTeamLightInformations {
+      public function initFightTeamLightInformations(teamId:uint = 2, leaderId:int = 0, teamSide:int = 0, teamTypeId:uint = 0, nbWaves:uint = 0, teamMembersCount:uint = 0, meanLevel:uint = 0, hasFriend:Boolean = false, hasGuildMember:Boolean = false, hasAllianceMember:Boolean = false, hasGroupMember:Boolean = false, hasMyTaxCollector:Boolean = false) : FightTeamLightInformations {
          super.initAbstractFightTeamInformations(teamId,leaderId,teamSide,teamTypeId,nbWaves);
          this.teamMembersCount = teamMembersCount;
          this.meanLevel = meanLevel;

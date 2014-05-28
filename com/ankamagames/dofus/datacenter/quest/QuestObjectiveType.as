@@ -14,7 +14,7 @@ package com.ankamagames.dofus.datacenter.quest
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(QuestObjectiveType));
+      protected static const _log:Logger;
       
       public static const MODULE:String = "QuestObjectiveTypes";
       

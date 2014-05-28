@@ -6,7 +6,7 @@ package com.ankamagames.berilia.types.event
    public class CssEvent extends Event
    {
       
-      public function CssEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, stylesheet:ExtendedStyleSheet=null) {
+      public function CssEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, stylesheet:ExtendedStyleSheet = null) {
          super(type,bubbles,cancelable);
          this._stylesheet = stylesheet;
       }

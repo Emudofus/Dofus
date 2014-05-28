@@ -102,14 +102,14 @@ package com.ankamagames.berilia.components.gridRenderer
          this._uiRenderer.postInit(ui);
       }
       
-      public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0) : DisplayObject {
+      public function render(data:*, index:uint, selected:Boolean, subIndex:uint = 0) : DisplayObject {
          var container:GraphicContainer = new GraphicContainer();
          container.setUi(this._grid.getUi(),SecureCenter.ACCESS_KEY);
          this.update(data,index,container,selected,subIndex);
          return container;
       }
       
-      public function update(data:*, index:uint, target:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+      public function update(data:*, index:uint, target:DisplayObject, selected:Boolean, subIndex:uint = 0) : void {
          var s:Sprite = null;
          var ui:UiRootContainer = this._grid.getUi();
          if((!ui.uiClass.hasOwnProperty(this._getLineTypeFunctionName)) && (!this._defaultLineType) || (!ui.uiClass.hasOwnProperty(this._updateFunctionName)))
@@ -167,10 +167,10 @@ package com.ankamagames.berilia.components.gridRenderer
          var o:Object = null;
          var o2:Object = null;
          var o3:Object = null;
-         for each (o in this._componentReferences)
+         for each(o in this._componentReferences)
          {
             o2 = SecureCenter.unsecure(o);
-            for each (o3 in o2)
+            for each(o3 in o2)
             {
                if(o3 is GraphicContainer)
                {
@@ -194,7 +194,7 @@ package com.ankamagames.berilia.components.gridRenderer
       
       public function renderModificator(childs:Array) : Array {
          var container:ContainerElement = null;
-         for each (this._containerDefinition[container.name] in childs)
+         for each(this._containerDefinition[container.name] in childs)
          {
          }
          return [];
@@ -205,21 +205,118 @@ package com.ankamagames.berilia.components.gridRenderer
       }
       
       protected function buildLine(container:Sprite, name:String) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var key:String = null;
+         var multiGridMarkerIndex:* = 0;
+         var realElemName:String = null;
+         if(container.name == name)
+         {
+            return;
+         }
+         if(!this._containerCache[name])
+         {
+            this._containerCache[name] = [];
+         }
+         if(this._containerDefinition[container.name])
+         {
+            if(!this._containerCache[container.name])
+            {
+               this._containerCache[container.name] = [];
+            }
+            if(container.numChildren)
+            {
+               this._containerCache[container.name].push(container.getChildAt(0));
+               container.removeChildAt(0);
+            }
+         }
+         container.name = name?name:"#########EMPTY";
+         if(!name)
+         {
+            return;
+         }
+         if(this._containerCache[name].length)
+         {
+            container.addChild(this._containerCache[name].pop());
+            return;
+         }
+         var elemContainer:GraphicContainer = new GraphicContainer();
+         elemContainer.setUi(this._grid.getUi(),SecureCenter.ACCESS_KEY);
+         elemContainer.mouseEnabled = false;
+         container.addChild(elemContainer);
+         var cptNames:Array = [];
+         this._uiRenderer.makeChilds([this.copyElement(this._containerDefinition[name],cptNames)],elemContainer,true);
+         this._grid.getUi().render();
+         var components:Object = {};
+         var ui:UiRootContainer = this._grid.getUi();
+         for(key in cptNames)
+         {
+            multiGridMarkerIndex = key.indexOf("_m_");
+            realElemName = key;
+            if(multiGridMarkerIndex != -1)
+            {
+               realElemName = realElemName.substr(0,multiGridMarkerIndex);
+            }
+            components[realElemName] = SecureCenter.secure(ui.getElement(cptNames[key]),SecureCenter.ACCESS_KEY);
+         }
+         this._cptNameReferences[elemContainer] = components;
+         this._elemID++;
       }
       
       protected function copyElement(basicElement:BasicElement, names:Object) : BasicElement {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var childs:Array = null;
+         var elem:BasicElement = null;
+         var nsce:StateContainerElement = null;
+         var sce:StateContainerElement = null;
+         var stateChangingProperties:Array = null;
+         var state:uint = 0;
+         var stateStr:String = null;
+         var elemName:String = null;
+         var newElement:BasicElement = new (getDefinitionByName(getQualifiedClassName(basicElement)) as Class)();
+         basicElement.copy(newElement);
+         if(newElement.name)
+         {
+            newElement.setName(newElement.name + "_m_" + this._grid.name + "_" + this._elemID);
+            names[basicElement.name] = newElement.name;
+         }
+         else
+         {
+            newElement.setName("elem_m_" + this._grid.name + "_" + Math.random() * 1.0E10);
+         }
+         if(newElement is ContainerElement)
+         {
+            childs = new Array();
+            for each(elem in ContainerElement(basicElement).childs)
+            {
+               childs.push(this.copyElement(elem,names));
+            }
+            ContainerElement(newElement).childs = childs;
+         }
+         if(newElement is StateContainerElement)
+         {
+            nsce = newElement as StateContainerElement;
+            sce = basicElement as StateContainerElement;
+            stateChangingProperties = new Array();
+            for(stateStr in sce.stateChangingProperties)
+            {
+               state = parseInt(stateStr);
+               for(elemName in sce.stateChangingProperties[state])
+               {
+                  if(!stateChangingProperties[state])
+                  {
+                     stateChangingProperties[state] = [];
+                  }
+                  stateChangingProperties[state][elemName + "_m_" + this._grid.name + "_" + this._elemID] = sce.stateChangingProperties[state][elemName];
+               }
+            }
+            nsce.stateChangingProperties = stateChangingProperties;
+         }
+         if(newElement is ButtonElement)
+         {
+            if(newElement.properties["linkedTo"])
+            {
+               newElement.properties["linkedTo"] = newElement.properties["linkedTo"] + "_m_" + this._grid.name + "_" + this._elemID;
+            }
+         }
+         return newElement;
       }
    }
 }

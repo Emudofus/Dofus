@@ -37,7 +37,7 @@ package com.ankamagames.dofus.network.messages.game.chat.report
          return 821;
       }
       
-      public function initChatMessageReportMessage(senderName:String="", content:String="", timestamp:uint=0, channel:uint=0, fingerprint:String="", reason:uint=0) : ChatMessageReportMessage {
+      public function initChatMessageReportMessage(senderName:String = "", content:String = "", timestamp:uint = 0, channel:uint = 0, fingerprint:String = "", reason:uint = 0) : ChatMessageReportMessage {
          this.senderName = senderName;
          this.content = content;
          this.timestamp = timestamp;

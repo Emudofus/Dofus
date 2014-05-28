@@ -18,7 +18,7 @@ package com.ankamagames.jerakine.newCache.impl
          this._bounds = bound;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DisplayObjectCache));
+      protected static const _log:Logger;
       
       private var _cache:Dictionary;
       
@@ -35,9 +35,9 @@ package com.ankamagames.jerakine.newCache.impl
       public function contains(ref:*) : Boolean {
          var d:CacheableResource = null;
          var a:Array = this._cache[ref];
-         for each (d in a)
+         for each(d in a)
          {
-            if((d.resource) && ((d.resource is ASwf) || ((d.resource.hasOwnProperty("parent")) && (!d.resource.parent))))
+            if((d.resource) && ((d.resource is ASwf) || (d.resource.hasOwnProperty("parent") && !d.resource.parent)))
             {
                return true;
             }
@@ -49,8 +49,8 @@ package com.ankamagames.jerakine.newCache.impl
          var foundRes:* = this.peek(ref);
          if(foundRes)
          {
-            delete this._cache[[ref]];
-            delete this._useCount[[ref]];
+            delete this._cache[ref];
+            delete this._useCount[ref];
             this._size--;
          }
          return foundRes;
@@ -59,9 +59,9 @@ package com.ankamagames.jerakine.newCache.impl
       public function peek(ref:*) : * {
          var d:CacheableResource = null;
          var a:Array = this._cache[ref];
-         for each (d in a)
+         for each(d in a)
          {
-            if((d.resource) && ((d.resource is ASwf) || ((d.resource.hasOwnProperty("parent")) && (!d.resource.parent))))
+            if((d.resource) && ((d.resource is ASwf) || (d.resource.hasOwnProperty("parent") && !d.resource.parent)))
             {
                this._useCount[ref]++;
                return d;
@@ -108,7 +108,7 @@ package com.ankamagames.jerakine.newCache.impl
          var i:uint = 0;
          var ref:CacheableResource = null;
          var orderedUse:Array = new Array();
-         for (resName in this._cache)
+         for(resName in this._cache)
          {
             if((!(this._cache[resName] == null)) && (this._useCount[resName]))
             {
@@ -127,7 +127,7 @@ package com.ankamagames.jerakine.newCache.impl
          {
             dontCollect = false;
             a = this._cache[orderedUse[i].ref];
-            for each (ref in a)
+            for each(ref in a)
             {
                if((ref) && (ref.resource) && ((ref.resource is ASwf) || (ref.resource.hasOwnProperty("parent") && ref.resource.parent)))
                {
@@ -137,8 +137,8 @@ package com.ankamagames.jerakine.newCache.impl
             }
             if(!dontCollect)
             {
-               delete this._cache[[orderedUse[i].ref]];
-               delete this._useCount[[orderedUse[i].ref]];
+               delete this._cache[orderedUse[i].ref];
+               delete this._useCount[orderedUse[i].ref];
                this._size--;
             }
             i++;

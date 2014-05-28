@@ -13,7 +13,6 @@ package com.ankamagames.berilia.types.tooltip
    import com.ankamagames.berilia.managers.TooltipManager;
    import flash.events.Event;
    import com.ankamagames.berilia.types.event.UiRenderEvent;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    
@@ -24,15 +23,15 @@ package com.ankamagames.berilia.types.tooltip
          super();
       }
       
-      protected static var _log:Logger = Log.getLogger(getQualifiedClassName(TooltipPlacer));
+      protected static var _log:Logger;
       
-      private static var _tooltips:Vector.<TooltipPosition> = new Vector.<TooltipPosition>(0);
+      private static var _tooltips:Vector.<TooltipPosition>;
       
-      private static var _tooltipsRows:Dictionary = new Dictionary();
+      private static var _tooltipsRows:Dictionary;
       
-      private static var _tooltipsToWait:Vector.<String> = new Vector.<String>(0);
+      private static var _tooltipsToWait:Vector.<String>;
       
-      private static const _anchors:Array = [];
+      private static const _anchors:Array;
       
       private static var _init:Boolean;
       
@@ -45,9 +44,9 @@ package com.ankamagames.berilia.types.tooltip
          }
          _init = true;
          var config:Array = [LocationEnum.POINT_TOPLEFT,LocationEnum.POINT_TOP,LocationEnum.POINT_TOPRIGHT,LocationEnum.POINT_LEFT,LocationEnum.POINT_CENTER,LocationEnum.POINT_RIGHT,LocationEnum.POINT_BOTTOMLEFT,LocationEnum.POINT_BOTTOM,LocationEnum.POINT_BOTTOMRIGHT];
-         for each (pt1 in config)
+         for each(pt1 in config)
          {
-            for each (pt2 in config)
+            for each(pt2 in config)
             {
                _anchors.push(
                   {
@@ -63,105 +62,13 @@ package com.ankamagames.berilia.types.tooltip
          return _anchors.concat();
       }
       
-      public static function place(tooltip:DisplayObject, target:IRectangle, point:uint=6, relativePoint:uint=0, offset:int=3, alwaysDisplayed:Boolean=true) : void {
-         var pTarget:Point = null;
-         var pTooltip:Point = null;
-         var hackIRectangle:Rectangle2 = null;
-         var offsetPt:Point = null;
-         var tooltipZone:Rectangle2 = null;
-         var hitZoneSize:* = 0;
-         var newPt:Object = null;
-         var smallerZone:Object = null;
-         var obj:Object = null;
-         var ok:Boolean = false;
-         var ttBounds:Rectangle = tooltip.getBounds(tooltip);
-         var truePoint:uint = point;
-         var trueRelativePoint:uint = relativePoint;
-         var lastTurn:Boolean = false;
-         var anchors:Array = getAnchors();
-         var hitZones:Array = new Array();
-         while(!ok)
-         {
-            pTarget = new Point(target.x,target.y);
-            pTooltip = new Point(tooltip.x,tooltip.y);
-            hackIRectangle = new Rectangle2(tooltip.x,tooltip.y,tooltip.width,tooltip.height);
-            processAnchor(pTooltip,hackIRectangle,point);
-            processAnchor(pTarget,target,relativePoint);
-            offsetPt = makeOffset(point,offset);
-            pTarget.x = pTarget.x - (pTooltip.x - offsetPt.x + ttBounds.left);
-            pTarget.y = pTarget.y - (pTooltip.y - offsetPt.y);
-            tooltipZone = new Rectangle2(pTarget.x,pTarget.y,hackIRectangle.width,hackIRectangle.height);
-            if(alwaysDisplayed)
-            {
-               if(tooltipZone.y < 0)
-               {
-                  tooltipZone.y = 0;
-               }
-               if(tooltipZone.x < 0)
-               {
-                  tooltipZone.x = 0;
-               }
-               if(tooltipZone.y + tooltipZone.height > StageShareManager.startHeight)
-               {
-                  tooltipZone.y = tooltipZone.y - (tooltipZone.height + tooltipZone.y - StageShareManager.startHeight);
-               }
-               if(tooltipZone.x + tooltipZone.width > StageShareManager.startWidth)
-               {
-                  tooltipZone.x = tooltipZone.x - (tooltipZone.width + tooltipZone.x - StageShareManager.startWidth);
-               }
-            }
-            if(!lastTurn)
-            {
-               hitZoneSize = hitTest(tooltipZone,target);
-               ok = hitZoneSize == 0;
-               if(!ok)
-               {
-                  newPt = anchors.shift();
-                  if(!newPt)
-                  {
-                     smallerZone = 
-                        {
-                           "size":target.width * target.height,
-                           "point":
-                              {
-                                 "p1":truePoint,
-                                 "p2":trueRelativePoint
-                              }
-                        };
-                     for each (obj in hitZones)
-                     {
-                        if(smallerZone.size > obj.size)
-                        {
-                           smallerZone = obj;
-                        }
-                     }
-                     lastTurn = true;
-                     point = smallerZone.point.p1;
-                     relativePoint = smallerZone.point.p2;
-                  }
-                  else
-                  {
-                     hitZones.push(
-                        {
-                           "size":hitZoneSize,
-                           "point":
-                              {
-                                 "p1":point,
-                                 "p2":relativePoint
-                              }
-                        });
-                     point = newPt.p1;
-                     relativePoint = newPt.p2;
-                  }
-               }
-            }
-            else
-            {
-               ok = true;
-            }
-         }
-         tooltip.x = tooltipZone.x;
-         tooltip.y = tooltipZone.y;
+      public static function place(tooltip:DisplayObject, target:IRectangle, point:uint = 6, relativePoint:uint = 0, offset:int = 3, alwaysDisplayed:Boolean = true) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public static function placeWithArrow(tooltip:DisplayObject, target:IRectangle) : Object {
@@ -230,13 +137,13 @@ package com.ankamagames.berilia.types.tooltip
          }
       }
       
-      public static function checkRender(pEvent:Event=null) : void {
+      public static function checkRender(pEvent:Event = null) : void {
          var tp:TooltipPosition = null;
          if(pEvent)
          {
             pEvent.currentTarget.removeEventListener(UiRenderEvent.UIRenderComplete,checkRender);
          }
-         for each (tp in _tooltips)
+         for each(tp in _tooltips)
          {
             if(!tp.tooltip.ready)
             {
@@ -251,7 +158,7 @@ package com.ankamagames.berilia.types.tooltip
          var tp:TooltipPosition = null;
          var tIndexWait:* = 0;
          var tIndex:int = -1;
-         for each (tp in _tooltips)
+         for each(tp in _tooltips)
          {
             if(tp.tooltip == pTooltip)
             {
@@ -275,7 +182,7 @@ package com.ankamagames.berilia.types.tooltip
          var tp:TooltipPosition = null;
          var tIndexWait:* = 0;
          var tIndex:int = -1;
-         for each (tp in _tooltips)
+         for each(tp in _tooltips)
          {
             if(tp.tooltip.customUnicName == pTooltipName)
             {
@@ -325,7 +232,7 @@ package com.ankamagames.berilia.types.tooltip
             }
             ttps = isTooltipSuperposed(_tooltips[i]);
             addToRow = false;
-            for each (ttp in ttps)
+            for each(ttp in ttps)
             {
                if((ttp.mapRow == currentTooltipRow) && (!(ttp.tooltip.customUnicName == _tooltips[i].tooltip.customUnicName)))
                {
@@ -346,7 +253,7 @@ package com.ankamagames.berilia.types.tooltip
                   minX = 0;
                   maxX = 0;
                   minTooltipY = 0;
-                  for each (ttp in _tooltipsRows[currentTooltipRow])
+                  for each(ttp in _tooltipsRows[currentTooltipRow])
                   {
                      minTooltipY = minTooltipY == 0?ttp.tooltip.y:ttp.tooltip.y < minTooltipY?ttp.tooltip.y:minTooltipY;
                   }
@@ -360,24 +267,22 @@ package com.ankamagames.berilia.types.tooltip
                      }
                      j++;
                   }
-                  for each (ttp in _tooltipsRows[currentTooltipRow])
+                  for each(ttp in _tooltipsRows[currentTooltipRow])
                   {
                      ttp.tooltip.y = minTooltipY;
                   }
                   minX = maxX = _tooltips[i].target.x;
-                  for each (ttp in _tooltipsRows[currentTooltipRow])
+                  for each(ttp in _tooltipsRows[currentTooltipRow])
                   {
                      if(ttp.target.x < minX)
                      {
                         minX = ttp.target.x;
                      }
-                     else
+                     else if(ttp.target.x > maxX)
                      {
-                        if(ttp.target.x > maxX)
-                        {
-                           maxX = ttp.target.x;
-                        }
+                        maxX = ttp.target.x;
                      }
+                     
                      rowWidth = rowWidth + ttp.tooltip.width;
                   }
                   _tooltipsRows[currentTooltipRow].sort(compareHorizontalPos);
@@ -442,16 +347,16 @@ package com.ankamagames.berilia.types.tooltip
             }
             i--;
          }
-         for (row in _tooltipsRows)
+         for(row in _tooltipsRows)
          {
-            delete _tooltipsRows[[row]];
+            delete _tooltipsRows[row];
          }
       }
       
       private static function isTooltipSuperposed(pTooltipPosition:TooltipPosition) : Vector.<TooltipPosition> {
          var tp:TooltipPosition = null;
          var ttpsInCollision:Vector.<TooltipPosition> = null;
-         for each (tp in _tooltips)
+         for each(tp in _tooltips)
          {
             if((!(tp == pTooltipPosition)) && (!(hitTest(tp.rect,pTooltipPosition.rect) == 0)))
             {
@@ -471,17 +376,15 @@ package com.ankamagames.berilia.types.tooltip
          {
             result = 1;
          }
+         else if(pTooltipPosA.mapRow < pTooltipPosB.mapRow)
+         {
+            result = -1;
+         }
          else
          {
-            if(pTooltipPosA.mapRow < pTooltipPosB.mapRow)
-            {
-               result = -1;
-            }
-            else
-            {
-               result = 0;
-            }
+            result = 0;
          }
+         
          return result;
       }
       
@@ -491,17 +394,15 @@ package com.ankamagames.berilia.types.tooltip
          {
             result = 1;
          }
+         else if(pTooltipPosA.tooltip.x < pTooltipPosB.tooltip.x)
+         {
+            result = -1;
+         }
          else
          {
-            if(pTooltipPosA.tooltip.x < pTooltipPosB.tooltip.x)
-            {
-               result = -1;
-            }
-            else
-            {
-               result = 0;
-            }
+            result = 0;
          }
+         
          return result;
       }
       

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6049;
       }
       
-      public function initExchangeMountPaddockAddMessage(mountDescription:MountClientData=null) : ExchangeMountPaddockAddMessage {
+      public function initExchangeMountPaddockAddMessage(mountDescription:MountClientData = null) : ExchangeMountPaddockAddMessage {
          this.mountDescription = mountDescription;
          this._isInitialized = true;
          return this;

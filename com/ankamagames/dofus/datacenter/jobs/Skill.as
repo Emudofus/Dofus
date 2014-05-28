@@ -2,7 +2,6 @@ package com.ankamagames.dofus.datacenter.jobs
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.interactives.Interactive;
    import com.ankamagames.jerakine.data.I18n;
    

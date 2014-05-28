@@ -7,7 +7,6 @@ package com.ankamagames.dofus.kernel.sound.type
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.types.Uri;
-   import __AS3__.vec.Vector;
    import com.ankamagames.tubul.interfaces.IEffect;
    import com.ankamagames.tubul.types.SoundSilence;
    import flash.geom.Point;
@@ -23,7 +22,7 @@ package com.ankamagames.dofus.kernel.sound.type
    public class SoundDofus extends Object implements ISound, ILocalizedSound
    {
       
-      public function SoundDofus(pSoundID:String, useCache:Boolean=false) {
+      public function SoundDofus(pSoundID:String, useCache:Boolean = false) {
          super();
          this.init();
          if((_cache[pSoundID]) && (useCache))
@@ -42,11 +41,11 @@ package com.ankamagames.dofus.kernel.sound.type
          RegConnectionManager.getInstance().send(ProtocolEnum.ADD_SOUND,this._id,this._soundId,true);
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SoundDofus));
+      protected static const _log:Logger;
       
       private static var _currentId:int = -1;
       
-      private static var _cache:Dictionary = new Dictionary();
+      private static var _cache:Dictionary;
       
       protected var _busId:int;
       
@@ -280,7 +279,7 @@ package com.ankamagames.dofus.kernel.sound.type
       public function applyDynamicMix(pFadeIn:VolumeFadeEffect, pWaitingTime:uint, pFadeOut:VolumeFadeEffect) : void {
       }
       
-      public function play(pLoop:Boolean=false, pLoops:int=0, pFadeIn:VolumeFadeEffect=null, pFadeOut:VolumeFadeEffect=null) : void {
+      public function play(pLoop:Boolean = false, pLoops:int = 0, pFadeIn:VolumeFadeEffect = null, pFadeOut:VolumeFadeEffect = null) : void {
          var fadeInBeg:Number = -1;
          var fadeInEnd:Number = -1;
          var fadeInTime:Number = -1;
@@ -302,7 +301,7 @@ package com.ankamagames.dofus.kernel.sound.type
          RegConnectionManager.getInstance().send(ProtocolEnum.PLAY_SOUND,this._id,this._soundId,pLoop,pLoops,fadeInBeg,fadeInEnd,fadeInTime,fadeOutBeg,fadeOutEnd,fadeOutTime);
       }
       
-      public function stop(pFadeOut:VolumeFadeEffect=null) : void {
+      public function stop(pFadeOut:VolumeFadeEffect = null) : void {
          var fadeOutB:Number = -1;
          var fadeOutE:Number = -1;
          var fadeOutT:Number = -1;

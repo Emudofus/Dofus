@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.prism
          return 434;
       }
       
-      public function initPrismGeolocalizedInformation(subAreaId:uint=0, allianceId:uint=0, worldX:int=0, worldY:int=0, mapId:int=0, prism:PrismInformation=null) : PrismGeolocalizedInformation {
+      public function initPrismGeolocalizedInformation(subAreaId:uint = 0, allianceId:uint = 0, worldX:int = 0, worldY:int = 0, mapId:int = 0, prism:PrismInformation = null) : PrismGeolocalizedInformation {
          super.initPrismSubareaEmptyInfo(subAreaId,allianceId);
          this.worldX = worldX;
          this.worldY = worldY;

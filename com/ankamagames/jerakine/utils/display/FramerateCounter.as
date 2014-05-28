@@ -22,7 +22,7 @@ package com.ankamagames.jerakine.utils.display
       
       private static var _lastFrame:uint;
       
-      private static var _listeners:Array = new Array();
+      private static var _listeners:Array;
       
       private static var _enterFrameListened:Boolean;
       
@@ -70,7 +70,7 @@ package com.ankamagames.jerakine.utils.display
       
       private static function dispatchFps() : void {
          var listener:IFramerateListener = null;
-         for each (listener in _listeners)
+         for each(listener in _listeners)
          {
             listener.onFps(_frameRate);
          }

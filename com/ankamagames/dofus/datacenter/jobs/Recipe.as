@@ -6,7 +6,6 @@ package com.ankamagames.dofus.datacenter.jobs
    import com.ankamagames.dofus.misc.utils.GameDataQuery;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.jerakine.data.I18n;
-   import __AS3__.vec.*;
    
    public class Recipe extends Object implements IDataCenter
    {
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.datacenter.jobs
          var recipeSlots:uint = 0;
          var recipes:Array = new Array();
          var craftables:Vector.<int> = Skill.getSkillById(pSkillId).craftableItemIds;
-         for each (result in craftables)
+         for each(result in craftables)
          {
             recipe = getRecipeByResultId(result);
             if(recipe)

@@ -9,7 +9,6 @@ package com.ankamagames.tubul.types
    import com.ankamagames.tubul.events.PlaylistEvent;
    import com.ankamagames.tubul.events.FadeEvent;
    import com.ankamagames.tubul.events.SoundCompleteEvent;
-   import __AS3__.vec.*;
    import com.ankamagames.tubul.enum.EventListenerPriority;
    import com.ankamagames.tubul.interfaces.IAudioBus;
    import com.ankamagames.tubul.events.SoundSilenceEvent;
@@ -17,7 +16,7 @@ package com.ankamagames.tubul.types
    public class PlayList extends EventDispatcher
    {
       
-      public function PlayList(pShuffle:Boolean=false, pLoop:Boolean=false, pSilence:SoundSilence=null, pFadeIn:VolumeFadeEffect=null, pFadeOut:VolumeFadeEffect=null) {
+      public function PlayList(pShuffle:Boolean = false, pLoop:Boolean = false, pSilence:SoundSilence = null, pFadeIn:VolumeFadeEffect = null, pFadeOut:VolumeFadeEffect = null) {
          super();
          this.shuffle = pShuffle;
          this.loop = pLoop;
@@ -31,7 +30,7 @@ package com.ankamagames.tubul.types
          this.init();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayList));
+      protected static const _log:Logger;
       
       private var _sounds:Vector.<ISound>;
       
@@ -105,10 +104,10 @@ package com.ankamagames.tubul.types
          return this._sounds.length;
       }
       
-      public function removeSoundBySoundId(pSoundId:String, pRemoveAll:Boolean=true) : uint {
+      public function removeSoundBySoundId(pSoundId:String, pRemoveAll:Boolean = true) : uint {
          var sound:ISound = null;
          var index:* = 0;
-         for each (sound in this._sounds)
+         for each(sound in this._sounds)
          {
             if(sound.uri.fileName.split(".")[0] == pSoundId)
             {
@@ -147,7 +146,7 @@ package com.ankamagames.tubul.types
          }
       }
       
-      public function nextSound(pFadeOutCurrentSound:VolumeFadeEffect=null, pPlaySilenceBefore:Boolean=false) : void {
+      public function nextSound(pFadeOutCurrentSound:VolumeFadeEffect = null, pPlaySilenceBefore:Boolean = false) : void {
          var index:* = 0;
          if((pPlaySilenceBefore) && (this._playingSound))
          {
@@ -200,7 +199,7 @@ package com.ankamagames.tubul.types
          }
       }
       
-      public function stop(pFadeOut:VolumeFadeEffect=null) : void {
+      public function stop(pFadeOut:VolumeFadeEffect = null) : void {
          if(this._playingSound == null)
          {
             return;
@@ -225,7 +224,7 @@ package com.ankamagames.tubul.types
          this.init();
       }
       
-      public function playSilenceBetweenTwoSounds(pPlay:Boolean=false, pSilence:SoundSilence=null) : void {
+      public function playSilenceBetweenTwoSounds(pPlay:Boolean = false, pSilence:SoundSilence = null) : void {
          this._playSilence = pPlay;
          if((pPlay == false) && (!(this._silence == null)))
          {
@@ -261,7 +260,7 @@ package com.ankamagames.tubul.types
          }
          if(this._sounds)
          {
-            for each (s in this._sounds)
+            for each(s in this._sounds)
             {
                s.stop();
                s = null;

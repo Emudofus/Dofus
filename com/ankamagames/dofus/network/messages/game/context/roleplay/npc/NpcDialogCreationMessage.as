@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5618;
       }
       
-      public function initNpcDialogCreationMessage(mapId:int=0, npcId:int=0) : NpcDialogCreationMessage {
+      public function initNpcDialogCreationMessage(mapId:int = 0, npcId:int = 0) : NpcDialogCreationMessage {
          this.mapId = mapId;
          this.npcId = npcId;
          this._isInitialized = true;

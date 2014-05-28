@@ -2,7 +2,6 @@ package com.ankamagames.jerakine.utils.misc
 {
    import com.ankamagames.jerakine.logger.Logger;
    import flash.utils.ByteArray;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
@@ -14,7 +13,7 @@ package com.ankamagames.jerakine.utils.misc
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StringUtils));
+      protected static const _log:Logger;
       
       public static function cleanString(s:String) : String {
          var s:String = s.split("&").join("&amp;");
@@ -30,7 +29,7 @@ package com.ankamagames.jerakine.utils.misc
          return b.readUTFBytes(b.length);
       }
       
-      public static function fill(str:String, len:uint, char:String, before:Boolean=true) : String {
+      public static function fill(str:String, len:uint, char:String, before:Boolean = true) : String {
          if((!char) || (!char.length))
          {
             return str;
@@ -49,59 +48,16 @@ package com.ankamagames.jerakine.utils.misc
          return str;
       }
       
-      public static function formatArray(data:Array, header:Array=null) : String {
-         var row:* = undefined;
-         var i:* = undefined;
-         var len:uint = 0;
-         var lenIndex:* = undefined;
-         var headerLine:Array = null;
-         var headerSubLine:Array = null;
-         var line:Array = null;
-         var str:String = null;
-         var colSep:String = " | ";
-         var headerColSep:String = "-+-";
-         var spaces:String = "                                                                                                               ";
-         var headerSep:String = "---------------------------------------------------------------------------------------------------------------";
-         var length:Array = [];
-         var result:Array = [];
-         for each (row in data)
-         {
-            for (i in row)
-            {
-               lenIndex = header?header[i]:i;
-               length[lenIndex] = isNaN(length[lenIndex])?String(row[i]).length:Math.max(length[lenIndex],String(row[i]).length);
-            }
-         }
-         if((i is String) || (header))
-         {
-            headerLine = [];
-            headerSubLine = [];
-            row = header?header:row;
-            for (i in row)
-            {
-               lenIndex = header?header[i]:i;
-               length[lenIndex] = isNaN(length[lenIndex])?lenIndex.length:Math.max(length[lenIndex],lenIndex.length);
-               headerLine.push(lenIndex + spaces.substr(0,length[lenIndex] - lenIndex.length));
-               headerSubLine.push(headerSep.substr(0,length[lenIndex]));
-            }
-            result.push(headerLine.join(colSep));
-            result.push(headerSubLine.join(headerColSep));
-         }
-         for each (row in data)
-         {
-            line = [];
-            for (i in row)
-            {
-               str = row[i];
-               lenIndex = header?header[i]:i;
-               line.push(str + spaces.substr(0,length[lenIndex] - String(str).length));
-            }
-            result.push(line.join(colSep));
-         }
-         return result.join("\n");
+      public static function formatArray(data:Array, header:Array = null) : String {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
-      public static function replace(src:String, pFrom:*=null, pTo:*=null) : String {
+      public static function replace(src:String, pFrom:* = null, pTo:* = null) : String {
          var i:uint = 0;
          if(!pFrom)
          {
@@ -166,7 +122,7 @@ package com.ankamagames.jerakine.utils.misc
          return pString;
       }
       
-      public static function getDelimitedText(pText:String, pFirstDelimiter:String, pSecondDelimiter:String, pIncludeDelimiter:Boolean=false) : Vector.<String> {
+      public static function getDelimitedText(pText:String, pFirstDelimiter:String, pSecondDelimiter:String, pIncludeDelimiter:Boolean = false) : Vector.<String> {
          var delimitedText:String = null;
          var firstPart:String = null;
          var secondPart:String = null;
@@ -318,7 +274,7 @@ package com.ankamagames.jerakine.utils.misc
          return str;
       }
       
-      private static function getSingleDelimitedText(pStringEntry:String, pFirstDelimiter:String, pSecondDelimiter:String, pIncludeDelimiter:Boolean=false) : String {
+      private static function getSingleDelimitedText(pStringEntry:String, pFirstDelimiter:String, pSecondDelimiter:String, pIncludeDelimiter:Boolean = false) : String {
          var firstDelimiterIndex:* = 0;
          var nextFirstDelimiterIndex:* = 0;
          var nextSecondDelimiterIndex:* = 0;
@@ -346,19 +302,17 @@ package com.ankamagames.jerakine.utils.misc
                secondDelimiterToSkip = secondDelimiterToSkip + getAllIndexOf(pFirstDelimiter,pStringEntry.slice(nextFirstDelimiterIndex + pFirstDelimiter.length,nextSecondDelimiterIndex)).length;
                currentIndex = nextSecondDelimiterIndex + pFirstDelimiter.length;
             }
+            else if(secondDelimiterToSkip > 1)
+            {
+               currentIndex = nextSecondDelimiterIndex + pSecondDelimiter.length;
+               secondDelimiterToSkip--;
+            }
             else
             {
-               if(secondDelimiterToSkip > 1)
-               {
-                  currentIndex = nextSecondDelimiterIndex + pSecondDelimiter.length;
-                  secondDelimiterToSkip--;
-               }
-               else
-               {
-                  delimitedContent = pStringEntry.slice(firstDelimiterIndex,nextSecondDelimiterIndex + pSecondDelimiter.length);
-                  exit = true;
-               }
+               delimitedContent = pStringEntry.slice(firstDelimiterIndex,nextSecondDelimiterIndex + pSecondDelimiter.length);
+               exit = true;
             }
+            
          }
          if((!pIncludeDelimiter) && (!(delimitedContent == "")))
          {
@@ -368,7 +322,7 @@ package com.ankamagames.jerakine.utils.misc
          return delimitedContent;
       }
       
-      public static function kamasToString(kamas:Number, unit:String="-") : String {
+      public static function kamasToString(kamas:Number, unit:String = "-") : String {
          if(unit == "-")
          {
             unit = I18n.getUiText("ui.common.short.kama",[]);
@@ -381,68 +335,64 @@ package com.ankamagames.jerakine.utils.misc
          return kamaString + " " + unit;
       }
       
-      public static function stringToKamas(string:String, unit:String="-") : int {
+      public static function stringToKamas(string:String, unit:String = "-") : int {
          var str2:String = null;
          var tmp:String = string;
          do
          {
-               str2 = tmp;
-               tmp = str2.replace(I18n.getUiText("ui.common.numberSeparator"),"");
-            }while(str2 != tmp);
-            
-            do
-            {
-                  str2 = tmp;
-                  tmp = str2.replace(" ","");
-               }while(str2 != tmp);
-               
-               if(unit == "-")
-               {
-                  unit = I18n.getUiText("ui.common.short.kama",[]);
-               }
-               if(str2.substr(str2.length - unit.length) == unit)
-               {
-                  str2 = str2.substr(0,str2.length - unit.length);
-               }
-               return int(str2);
-            }
-            
-            public static function formateIntToString(val:Number) : String {
-               var numx3:* = 0;
-               var str:String = "";
-               var modulo:Number = 1000;
-               var numberSeparator:String = I18n.getUiText("ui.common.numberSeparator");
-               while(true)
-               {
-                  if(val / modulo < 1)
-                  {
-                     str = int(val % modulo / (modulo / 1000)) + numberSeparator + str;
-                     break;
-                  }
-                  numx3 = int(val % modulo / (modulo / 1000));
-                  if(numx3 < 10)
-                  {
-                     str = "00" + numx3 + numberSeparator + str;
-                  }
-                  else
-                  {
-                     if(numx3 < 100)
-                     {
-                        str = "0" + numx3 + numberSeparator + str;
-                     }
-                     else
-                     {
-                        str = numx3 + numberSeparator + str;
-                     }
-                  }
-                  modulo = modulo * 1000;
-               }
-               var f:* = str.charAt(str.length - 1);
-               if(str.charAt(str.length - 1) == numberSeparator)
-               {
-                  return str.substr(0,str.length - 1);
-               }
-               return str;
-            }
+            str2 = tmp;
+            tmp = str2.replace(I18n.getUiText("ui.common.numberSeparator"),"");
          }
+         while(str2 != tmp);
+         
+         do
+         {
+            str2 = tmp;
+            tmp = str2.replace(" ","");
+         }
+         while(str2 != tmp);
+         
+         if(unit == "-")
+         {
+            unit = I18n.getUiText("ui.common.short.kama",[]);
+         }
+         if(str2.substr(str2.length - unit.length) == unit)
+         {
+            str2 = str2.substr(0,str2.length - unit.length);
+         }
+         return int(str2);
       }
+      
+      public static function formateIntToString(val:Number) : String {
+         var numx3:* = 0;
+         var str:String = "";
+         var modulo:Number = 1000;
+         var numberSeparator:String = I18n.getUiText("ui.common.numberSeparator");
+         while(val / modulo >= 1)
+         {
+            numx3 = int(val % modulo / (modulo / 1000));
+            if(numx3 < 10)
+            {
+               str = "00" + numx3 + numberSeparator + str;
+            }
+            else if(numx3 < 100)
+            {
+               str = "0" + numx3 + numberSeparator + str;
+            }
+            else
+            {
+               str = numx3 + numberSeparator + str;
+            }
+            
+            modulo = modulo * 1000;
+         }
+         str = int(val % modulo / (modulo / 1000)) + numberSeparator + str;
+         var f:* = str.charAt(str.length - 1);
+         if(str.charAt(str.length - 1) == numberSeparator)
+         {
+            return str.substr(0,str.length - 1);
+         }
+         return str;
+      }
+   }
+}

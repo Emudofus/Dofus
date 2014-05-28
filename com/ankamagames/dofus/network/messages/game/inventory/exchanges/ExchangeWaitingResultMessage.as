@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5786;
       }
       
-      public function initExchangeWaitingResultMessage(bwait:Boolean=false) : ExchangeWaitingResultMessage {
+      public function initExchangeWaitingResultMessage(bwait:Boolean = false) : ExchangeWaitingResultMessage {
          this.bwait = bwait;
          this._isInitialized = true;
          return this;

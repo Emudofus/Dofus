@@ -12,7 +12,7 @@ package com.ankamagames.jerakine.sequencer
    public class SerialSequencer extends EventDispatcher implements ISequencer, IEventDispatcher
    {
       
-      public function SerialSequencer(type:String="SerialSequencerDefault") {
+      public function SerialSequencer(type:String = "SerialSequencerDefault") {
          this._aStep = new Array();
          super();
          if(!SEQUENCERS[type])
@@ -22,19 +22,19 @@ package com.ankamagames.jerakine.sequencer
          SEQUENCERS[type][this] = true;
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(SerialSequencer));
+      private static const _log:Logger;
       
       public static const DEFAULT_SEQUENCER_NAME:String = "SerialSequencerDefault";
       
-      private static var SEQUENCERS:Array = [];
+      private static var SEQUENCERS:Array;
       
       public static function clearByType(type:String) : void {
          var seq:Object = null;
-         for (seq in SEQUENCERS[type])
+         for(seq in SEQUENCERS[type])
          {
             SerialSequencer(seq).clear();
          }
-         delete SEQUENCERS[[type]];
+         delete SEQUENCERS[type];
       }
       
       private var _aStep:Array;
@@ -136,7 +136,7 @@ package com.ankamagames.jerakine.sequencer
             this._currentStep.clear();
             this._currentStep = null;
          }
-         for each (step in this._aStep)
+         for each(step in this._aStep)
          {
             if(step)
             {
@@ -195,7 +195,7 @@ package com.ankamagames.jerakine.sequencer
          }
       }
       
-      public function stepFinished(step:ISequencable, withTimout:Boolean=false) : void {
+      public function stepFinished(step:ISequencable, withTimout:Boolean = false) : void {
          step.removeListener(this);
          if(this._running)
          {
@@ -224,13 +224,11 @@ package com.ankamagames.jerakine.sequencer
                this.execute();
             }
          }
-         else
+         else if(hasEventListener(SequencerEvent.SEQUENCE_STEP_FINISH))
          {
-            if(hasEventListener(SequencerEvent.SEQUENCE_STEP_FINISH))
-            {
-               dispatchEvent(new SequencerEvent(SequencerEvent.SEQUENCE_STEP_FINISH,this,this._currentStep));
-            }
+            dispatchEvent(new SequencerEvent(SequencerEvent.SEQUENCE_STEP_FINISH,this,this._currentStep));
          }
+         
       }
       
       private function onSubSequenceEnd(e:SequencerEvent) : void {

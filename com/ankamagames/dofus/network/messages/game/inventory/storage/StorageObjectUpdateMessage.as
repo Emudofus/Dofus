@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
          return 5647;
       }
       
-      public function initStorageObjectUpdateMessage(object:ObjectItem=null) : StorageObjectUpdateMessage {
+      public function initStorageObjectUpdateMessage(object:ObjectItem = null) : StorageObjectUpdateMessage {
          this.object = object;
          this._isInitialized = true;
          return this;

@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.character.choice
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 6475;
       }
       
-      public function initBasicCharactersListMessage(characters:Vector.<CharacterBaseInformations>=null) : BasicCharactersListMessage {
+      public function initBasicCharactersListMessage(characters:Vector.<CharacterBaseInformations> = null) : BasicCharactersListMessage {
          this.characters = characters;
          this._isInitialized = true;
          return this;

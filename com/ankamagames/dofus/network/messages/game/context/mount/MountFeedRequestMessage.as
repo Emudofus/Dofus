@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 6189;
       }
       
-      public function initMountFeedRequestMessage(mountUid:Number=0, mountLocation:int=0, mountFoodUid:uint=0, quantity:uint=0) : MountFeedRequestMessage {
+      public function initMountFeedRequestMessage(mountUid:Number = 0, mountLocation:int = 0, mountFoodUid:uint = 0, quantity:uint = 0) : MountFeedRequestMessage {
          this.mountUid = mountUid;
          this.mountLocation = mountLocation;
          this.mountFoodUid = mountFoodUid;

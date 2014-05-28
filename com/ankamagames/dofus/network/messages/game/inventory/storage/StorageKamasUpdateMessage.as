@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
          return 5645;
       }
       
-      public function initStorageKamasUpdateMessage(kamasTotal:int=0) : StorageKamasUpdateMessage {
+      public function initStorageKamasUpdateMessage(kamasTotal:int = 0) : StorageKamasUpdateMessage {
          this.kamasTotal = kamasTotal;
          this._isInitialized = true;
          return this;

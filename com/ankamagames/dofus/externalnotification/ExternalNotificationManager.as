@@ -18,7 +18,6 @@ package com.ankamagames.dofus.externalnotification
    import com.ankamagames.dofus.logic.common.managers.PlayerManager;
    import com.ankamagames.jerakine.types.enums.DataStoreEnum;
    import flash.events.TimerEvent;
-   import __AS3__.vec.*;
    import flash.display.NativeWindowSystemChrome;
    import flash.display.NativeWindowType;
    import flash.utils.describeType;
@@ -58,7 +57,7 @@ package com.ankamagames.dofus.externalnotification
       
       private static const DEBUG:Boolean = false;
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(ExternalNotificationManager));
+      private static const _log:Logger;
       
       private static var _instance:ExternalNotificationManager;
       
@@ -154,14 +153,14 @@ package com.ankamagames.dofus.externalnotification
          var extNotif:ExternalNotification = null;
          var notifData:Object = StoreDataManager.getInstance().getData(this._dataStoreType,"notificationsEvent" + pNotificationType);
          var hasOptions:Boolean = this.hasNotificationData(pNotificationType);
-         var invalidData:Boolean = ((((notifData) && (hasOptions)) && (!notifData.hasOwnProperty("active"))) && (!notifData.hasOwnProperty("sound"))) && (!notifData.hasOwnProperty("multi")) && (!notifData.hasOwnProperty("notify"));
+         var invalidData:Boolean = (notifData && hasOptions && !notifData.hasOwnProperty("active") && !notifData.hasOwnProperty("sound")) && (!notifData.hasOwnProperty("multi")) && (!notifData.hasOwnProperty("notify"));
          if((!notifData) || (invalidData))
          {
             extNotifs = ExternalNotification.getExternalNotifications();
             notifData = new Object();
             if(hasOptions)
             {
-               for each (extNotif in extNotifs)
+               for each(extNotif in extNotifs)
                {
                   if(ExternalNotificationTypeEnum[extNotif.name] == pNotificationType)
                   {
@@ -222,9 +221,9 @@ package com.ankamagames.dofus.externalnotification
       private function isNotificationDuplicated(pClientId:String, pNotificationType:int) : Boolean {
          var typeVisible:* = false;
          var enWin:ExternalNotificationWindow = null;
-         for each (enWin in this._notificationsList)
+         for each(enWin in this._notificationsList)
          {
-            if((!typeVisible) && (!(enWin.clientId == pClientId)) && (enWin.notificationType == pNotificationType))
+            if((!(enWin.clientId == pClientId)) && (enWin.notificationType == pNotificationType))
             {
                typeVisible = true;
                break;
@@ -264,7 +263,7 @@ package com.ankamagames.dofus.externalnotification
          this._nbGeneralEvents = ExternalNotification.getExternalNotifications().length;
          var x:XML = describeType(ExternalNotificationTypeEnum);
          var events:XMLList = x..constant;
-         for each (notificationEvent in events)
+         for each(notificationEvent in events)
          {
             notificationType = ExternalNotificationTypeEnum[notificationEvent.@name];
             this.updateNotificationOptions(notificationType,this.getNotificationOptions(notificationType));
@@ -465,7 +464,7 @@ package com.ankamagames.dofus.externalnotification
          this._clientWindow.alwaysInFront = false;
       }
       
-      public function notifyUser(pAlways:Boolean=true) : void {
+      public function notifyUser(pAlways:Boolean = true) : void {
          SystemManager.getSingleton().notifyUser(pAlways);
       }
       
@@ -494,7 +493,7 @@ package com.ankamagames.dofus.externalnotification
          var foundNotification:ExternalNotificationWindow = null;
          if(this._notificationsList.length > 0)
          {
-            for each (enWin in this._notificationsList)
+            for each(enWin in this._notificationsList)
             {
                if((enWin.clientId == pClientId) && (enWin.id == pExternalNotificationId))
                {
@@ -512,7 +511,7 @@ package com.ankamagames.dofus.externalnotification
          if(this._notificationsList.length > 0)
          {
             foundNotifications = new Vector.<ExternalNotificationWindow>(0);
-            for each (enWin in this._notificationsList)
+            for each(enWin in this._notificationsList)
             {
                if(enWin.clientId == pClientId)
                {
@@ -527,7 +526,7 @@ package com.ankamagames.dofus.externalnotification
       private function hasNotificationData(pNotificationType:int) : Boolean {
          var extNotif:ExternalNotification = null;
          var extNotifs:Array = ExternalNotification.getExternalNotifications();
-         for each (extNotif in extNotifs)
+         for each(extNotif in extNotifs)
          {
             if(ExternalNotificationTypeEnum[extNotif.name] == pNotificationType)
             {
@@ -562,6 +561,8 @@ package com.ankamagames.dofus.externalnotification
             case "notificationsPosition":
                this.setNotificationsPosition(pEvent.propertyValue as int);
                break;
+            default:
+               return;
          }
          if(!this._isMaster)
          {
@@ -749,7 +750,7 @@ package com.ankamagames.dofus.externalnotification
             else
             {
                params = pArgs[0];
-               for each (param in params)
+               for each(param in params)
                {
                   argArray.push(param);
                }
@@ -764,14 +765,14 @@ package com.ankamagames.dofus.externalnotification
       private function sendToSlaves(pMethodName:String, ... pArgs) : void {
          var slaveId:String = null;
          this._broadCasting = true;
-         for each (slaveId in this._slavesIds)
+         for each(slaveId in this._slavesIds)
          {
             this.sendToSlave(slaveId,pMethodName,pArgs);
          }
          this._broadCasting = false;
       }
       
-      private function becomeMaster(pSlavesIds:Array=null) : void {
+      private function becomeMaster(pSlavesIds:Array = null) : void {
          var id:String = null;
          this._masterConnection.client = getInstance();
          this._masterConnection.connect(this.CONNECTION_ID);
@@ -781,7 +782,7 @@ package com.ankamagames.dofus.externalnotification
             if(pSlavesIds != this._slavesIds)
             {
                this._slavesIds = new Array();
-               for each (id in pSlavesIds)
+               for each(id in pSlavesIds)
                {
                   this._slavesIds.push(id);
                }
@@ -808,7 +809,7 @@ package com.ankamagames.dofus.externalnotification
          var extNotifs:Vector.<ExternalNotificationWindow> = this.getExternalNotifications(pSlaveId);
          if(extNotifs)
          {
-            for each (extNotif in extNotifs)
+            for each(extNotif in extNotifs)
             {
                this.destroyExternalNotification(extNotif);
             }
@@ -818,7 +819,7 @@ package com.ankamagames.dofus.externalnotification
       public function updateClientsIds(pClientsIds:Array) : void {
          var id:String = null;
          this._slavesIds = new Array();
-         for each (id in pClientsIds)
+         for each(id in pClientsIds)
          {
             if(this._slavesIds.indexOf(id) == -1)
             {
@@ -929,7 +930,7 @@ package com.ankamagames.dofus.externalnotification
          }
       }
       
-      public function handleFocusRequest(pClientId:String, pHookName:String=null, pHookParams:Array=null) : void {
+      public function handleFocusRequest(pClientId:String, pHookName:String = null, pHookParams:Array = null) : void {
          var hook:Hook = null;
          if(pClientId != this._clientId)
          {
@@ -967,7 +968,7 @@ package com.ankamagames.dofus.externalnotification
          }
       }
       
-      public function closeExternalNotification(pClientId:String, pExternalNotificationId:String, pSendFocusRequestOnClose:Boolean=false) : void {
+      public function closeExternalNotification(pClientId:String, pExternalNotificationId:String, pSendFocusRequestOnClose:Boolean = false) : void {
          var enWin:ExternalNotificationWindow = this.getExternalNotification(pClientId,pExternalNotificationId);
          if(pSendFocusRequestOnClose)
          {
@@ -1050,7 +1051,7 @@ package com.ankamagames.dofus.externalnotification
          }
       }
       
-      private function destroyExternalNotification(pExtNotifWin:ExternalNotificationWindow, pReplaceOthers:Boolean=true) : void {
+      private function destroyExternalNotification(pExtNotifWin:ExternalNotificationWindow, pReplaceOthers:Boolean = true) : void {
          var i:* = 0;
          var diff:* = NaN;
          clearTimeout(pExtNotifWin.timeoutId);

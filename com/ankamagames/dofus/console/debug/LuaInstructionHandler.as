@@ -41,10 +41,12 @@ package com.ankamagames.dofus.console.debug
                return "Loads and executes a lua script file.";
             case "luarecorder":
                return "Open a separate window to record in game actions and generate a LUA script file.";
+            default:
+               return "Unknown command \'" + cmd + "\'.";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return null;
       }
       

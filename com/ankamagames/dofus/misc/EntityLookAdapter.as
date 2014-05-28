@@ -21,7 +21,7 @@ package com.ankamagames.dofus.misc
          var o:TiphonEntityLook = new TiphonEntityLook();
          o.lock();
          o.setBone(n.bonesId);
-         for each (skin in n.skins)
+         for each(skin in n.skins)
          {
             o.addSkin(skin);
          }
@@ -41,14 +41,12 @@ package com.ankamagames.dofus.misc
          {
             o.setScales(n.scales[0] / 100,n.scales[0] / 100);
          }
-         else
+         else if(n.scales.length == 2)
          {
-            if(n.scales.length == 2)
-            {
-               o.setScales(n.scales[0] / 100,n.scales[1] / 100);
-            }
+            o.setScales(n.scales[0] / 100,n.scales[1] / 100);
          }
-         for each (se in n.subentities)
+         
+         for each(se in n.subentities)
          {
             o.addSubEntity(se.bindingPointCategory,se.bindingPointIndex,EntityLookAdapter.fromNetwork(se.subEntityLook));
          }
@@ -71,7 +69,7 @@ package com.ankamagames.dofus.misc
          n.bonesId = o.getBone();
          n.skins = o.getSkins(false,false);
          var colors:Array = o.getColors(true);
-         for (colorIndexStr in colors)
+         for(colorIndexStr in colors)
          {
             colorIndex = parseInt(colorIndexStr);
             color = colors[colorIndexStr];
@@ -81,10 +79,10 @@ package com.ankamagames.dofus.misc
          n.scales.push(uint(o.getScaleX() * 100));
          n.scales.push(uint(o.getScaleY() * 100));
          subEntities = o.getSubEntities(true);
-         for (catStr in subEntities)
+         for(catStr in subEntities)
          {
             cat = parseInt(catStr);
-            for (indStr in subEntities[catStr])
+            for(indStr in subEntities[catStr])
             {
                ind = parseInt(indStr);
                se = new SubEntity();

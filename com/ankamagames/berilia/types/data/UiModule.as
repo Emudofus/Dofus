@@ -14,12 +14,11 @@ package com.ankamagames.berilia.types.data
    import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.berilia.managers.UiGroupManager;
    import com.ankamagames.berilia.utils.errors.BeriliaError;
-   import __AS3__.vec.*;
    
    public class UiModule extends Object implements IModuleUtil
    {
       
-      public function UiModule(id:String=null, name:String=null, version:String=null, gameVersion:String=null, author:String=null, shortDescription:String=null, description:String=null, iconUri:String=null, script:String=null, shortcuts:String=null, uis:Array=null, cachedFiles:Array=null, activated:Boolean=false) {
+      public function UiModule(id:String = null, name:String = null, version:String = null, gameVersion:String = null, author:String = null, shortDescription:String = null, description:String = null, iconUri:String = null, script:String = null, shortcuts:String = null, uis:Array = null, cachedFiles:Array = null, activated:Boolean = false) {
          var ui:UiData = null;
          this._instanceId = ++ID_COUNT;
          this._apiScriptAnalyserCallback = new Dictionary();
@@ -39,7 +38,7 @@ package com.ankamagames.berilia.types.data
          this._id = id;
          this._uis = new Array();
          this._cachedFiles = cachedFiles?cachedFiles:new Array();
-         for each (this._uis[ui.name] in uis)
+         for each(this._uis[ui.name] in uis)
          {
          }
          this._apiList = new Vector.<Object>();
@@ -47,9 +46,9 @@ package com.ankamagames.berilia.types.data
       
       private static var ID_COUNT:uint = 0;
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UiModule));
+      protected static const _log:Logger;
       
       public static function createFromXml(xml:XML, nativePath:String, id:String) : UiModule {
          var um:UiModule = new UiModule();
@@ -211,7 +210,7 @@ package com.ankamagames.berilia.types.data
          else
          {
             this._enable = false;
-            for each (uiGroup in this._groups)
+            for each(uiGroup in this._groups)
             {
                UiGroupManager.getInstance().removeGroup(uiGroup.name);
             }
@@ -243,7 +242,7 @@ package com.ankamagames.berilia.types.data
          }
          else
          {
-            for each (ui in this.uis)
+            for each(ui in this.uis)
             {
                if((appDomain) && (appDomain.hasDefinition(ui.uiClassName)))
                {
@@ -381,15 +380,15 @@ package com.ankamagames.berilia.types.data
       
       private function onScriptAnalyserReady() : void {
          var f:Function = null;
-         for each (f in this._actionScriptAnalyserCallback)
+         for each(f in this._actionScriptAnalyserCallback)
          {
             f(this._scriptAnalyser.actions);
          }
-         for each (f in this._hookScriptAnalyserCallback)
+         for each(f in this._hookScriptAnalyserCallback)
          {
             f(this._scriptAnalyser.hooks);
          }
-         for each (f in this._apiScriptAnalyserCallback)
+         for each(f in this._apiScriptAnalyserCallback)
          {
             f(this._scriptAnalyser.apis);
          }
@@ -399,101 +398,12 @@ package com.ankamagames.berilia.types.data
       }
       
       protected function fillFromXml(xml:XML, nativePath:String, id:String) : void {
-         var uiGroup:UiGroup = null;
-         var group:XML = null;
-         var uiData:UiData = null;
-         var uis:XML = null;
-         var path:XML = null;
-         var uiNames:Array = null;
-         var groupName:String = null;
-         var uisXML:XMLList = null;
-         var uiName:XML = null;
-         var uisGroup:String = null;
-         var ui:XML = null;
-         var file:String = null;
-         var mod:String = null;
-         var fileuri:String = null;
-         this.setProperty("name",xml..header..name);
-         this.setProperty("version",xml..header..version);
-         this.setProperty("gameVersion",xml..header..gameVersion);
-         this.setProperty("author",xml..header..author);
-         this.setProperty("description",xml..header..description);
-         this.setProperty("shortDescription",xml..header..shortDescription);
-         this.setProperty("script",xml..script);
-         this.setProperty("shortcuts",xml..shortcuts);
-         this._rawXml = xml;
-         var nativePath:String = nativePath.split("app:/").join("");
-         if((nativePath.indexOf("file://") == -1) && (!(nativePath.substr(0,2) == "\\\\")))
-         {
-            nativePath = "file://" + nativePath;
-         }
-         this._id = id;
-         if(this.script)
-         {
-            this._script = nativePath + "/" + this.script;
-         }
-         if(this.shortcuts)
-         {
-            this._shortcuts = nativePath + "/" + this.shortcuts;
-         }
-         this._rootPath = nativePath + "/";
-         this._storagePath = unescape(this._rootPath + "storage/").replace("file://","");
-         var iconPath:String = xml..header..icon;
-         if((iconPath) && (iconPath.length))
-         {
-            this._iconUri = new Uri(this._rootPath + iconPath);
-         }
-         this._groups = new Vector.<UiGroup>();
-         for(;xml.uiGroup hasNext _loc5_;uiGroup = new UiGroup(group.@name,group.@exclusive.toString() == "true",group.@permanent.toString() == "true",uiNames),UiGroupManager.getInstance().registerGroup(uiGroup),this._groups.push(uiGroup))
-         {
-            group = nextValue(_loc5_,_loc6_);
-            uiNames = new Array();
-            groupName = group..@name;
-            try
-            {
-               uisXML = xml.uis.(@group == groupName);
-               for each (uiName in uisXML..@name)
-               {
-                  uiNames.push(uiName.toString());
-               }
-            }
-            catch(e:Error)
-            {
-               continue;
-            }
-         }
-         for each (uis in xml.uis)
-         {
-            uisGroup = uis.@group.toString();
-            for each (ui in uis..ui)
-            {
-               if(ui.@group.toString().length)
-               {
-                  uisGroup = ui.@group.toString();
-               }
-               file = null;
-               if(ui.@file.toString().length)
-               {
-                  if(ui.@file.indexOf("::") != -1)
-                  {
-                     mod = nativePath.split("Ankama")[0];
-                     fileuri = ui.@file;
-                     fileuri = fileuri.replace("::","/");
-                     file = mod + fileuri;
-                  }
-                  else
-                  {
-                     file = nativePath + "/" + ui.@file;
-                  }
-               }
-               uiData = new UiData(this,ui.@name,file,ui["class"],uisGroup);
-               this._uis[uiData.name] = uiData;
-            }
-         }
-         for each (path in xml.cachedFiles..path)
-         {
-            this.cachedFiles.push(path.children().toString());
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function setProperty(key:String, value:String) : void {

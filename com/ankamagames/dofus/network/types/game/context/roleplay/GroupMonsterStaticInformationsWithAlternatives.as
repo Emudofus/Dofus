@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.context.roleplay
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -21,7 +20,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 396;
       }
       
-      public function initGroupMonsterStaticInformationsWithAlternatives(mainCreatureLightInfos:MonsterInGroupLightInformations=null, underlings:Vector.<MonsterInGroupInformations>=null, alternatives:Vector.<AlternativeMonstersInGroupLightInformations>=null) : GroupMonsterStaticInformationsWithAlternatives {
+      public function initGroupMonsterStaticInformationsWithAlternatives(mainCreatureLightInfos:MonsterInGroupLightInformations = null, underlings:Vector.<MonsterInGroupInformations> = null, alternatives:Vector.<AlternativeMonstersInGroupLightInformations> = null) : GroupMonsterStaticInformationsWithAlternatives {
          super.initGroupMonsterStaticInformations(mainCreatureLightInfos,underlings);
          this.alternatives = alternatives;
          return this;

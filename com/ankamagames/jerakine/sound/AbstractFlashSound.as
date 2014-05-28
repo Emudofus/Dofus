@@ -9,7 +9,7 @@ package com.ankamagames.jerakine.sound
    public class AbstractFlashSound extends Socket
    {
       
-      public function AbstractFlashSound(lcid:uint=0) {
+      public function AbstractFlashSound(lcid:uint = 0) {
          super();
          CONNECTION_NAME = CONNECTION_NAME + lcid.toString();
          this._data = new ByteArray();

@@ -3,12 +3,11 @@ package com.ankamagames.jerakine.logger.targets
    import com.ankamagames.jerakine.logger.LogEvent;
    import com.ankamagames.jerakine.json.JSON;
    import com.hurlant.util.Base64;
-   import __AS3__.vec.*;
    
    public class LimitedBufferTarget extends AbstractTarget
    {
       
-      public function LimitedBufferTarget(pLimit:int=50) {
+      public function LimitedBufferTarget(pLimit:int = 50) {
          super();
          this._limit = pLimit;
          this._buffer = new Vector.<LogEvent>();
@@ -31,7 +30,7 @@ package com.ankamagames.jerakine.logger.targets
          var obj:Object = null;
          var json:String = null;
          var newArray:Array = new Array();
-         for each (log in this._buffer)
+         for each(log in this._buffer)
          {
             obj = new Object();
             obj.message = log.message;

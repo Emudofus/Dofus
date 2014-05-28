@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 6468;
       }
       
-      public function initPrismSetSabotagedRequestMessage(subAreaId:uint=0) : PrismSetSabotagedRequestMessage {
+      public function initPrismSetSabotagedRequestMessage(subAreaId:uint = 0) : PrismSetSabotagedRequestMessage {
          this.subAreaId = subAreaId;
          this._isInitialized = true;
          return this;

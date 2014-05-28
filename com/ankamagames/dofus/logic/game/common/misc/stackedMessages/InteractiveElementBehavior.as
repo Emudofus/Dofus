@@ -39,13 +39,13 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          this._isMoving = false;
       }
       
-      private static var interactiveElements:Array = new Array();
+      private static var interactiveElements:Array;
       
       private static var currentElementId:int = -1;
       
-      private static const FILTER_1:GlowFilter = new GlowFilter(16777215,0.8,6,6,4);
+      private static const FILTER_1:GlowFilter;
       
-      private static const FILTER_2:GlowFilter = new GlowFilter(2845168,0.8,4,4,2);
+      private static const FILTER_2:GlowFilter;
       
       public var interactiveElement:InteractiveElement;
       
@@ -111,56 +111,46 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
             pendingMessage = pMsgToProcess;
             returnValue = true;
          }
-         else
+         else if((pMsgToProcess is GameMapMovementMessage) && ((pMsgToProcess as GameMapMovementMessage).actorId == PlayedCharacterManager.getInstance().id) && ((pMsgToProcess as GameMapMovementMessage).keyMovements[0] == entity.position.cellId))
          {
-            if((pMsgToProcess is GameMapMovementMessage) && ((pMsgToProcess as GameMapMovementMessage).actorId == PlayedCharacterManager.getInstance().id) && ((pMsgToProcess as GameMapMovementMessage).keyMovements[0] == entity.position.cellId))
+            this._isMoving = true;
+            if(this._isFreeMovement)
             {
-               this._isMoving = true;
-               if(this._isFreeMovement)
-               {
-                  this._lastCellExpected = (pMsgToProcess as GameMapMovementMessage).keyMovements[(pMsgToProcess as GameMapMovementMessage).keyMovements.length - 1];
-               }
-               else
-               {
-                  this._lastCellExpected = -1;
-               }
+               this._lastCellExpected = (pMsgToProcess as GameMapMovementMessage).keyMovements[(pMsgToProcess as GameMapMovementMessage).keyMovements.length - 1];
             }
             else
             {
-               if(pMsgToProcess is CharacterMovementStoppedMessage)
-               {
-                  this._lastCellExpected = -1;
-                  this._isMoving = false;
-               }
-               else
-               {
-                  if((pMode == ALWAYS) && (pMsgToProcess is CellClickMessage) && (this._isMoving))
-                  {
-                     isAvailableToStart = false;
-                     returnValue = true;
-                     canBeStacked = false;
-                  }
-                  else
-                  {
-                     if(pMsgToProcess is InteractiveElementUpdatedMessage)
-                     {
-                        ieumsg = pMsgToProcess as InteractiveElementUpdatedMessage;
-                        if(ieumsg.interactiveElement.enabledSkills.length)
-                        {
-                           interactiveElements[ieumsg.interactiveElement.elementId] = true;
-                        }
-                        else
-                        {
-                           if((ieumsg.interactiveElement.disabledSkills.length) && (interactiveElements[ieumsg.interactiveElement.elementId]))
-                           {
-                              interactiveElements[ieumsg.interactiveElement.elementId] = null;
-                           }
-                        }
-                     }
-                  }
-               }
+               this._lastCellExpected = -1;
             }
          }
+         else if(pMsgToProcess is CharacterMovementStoppedMessage)
+         {
+            this._lastCellExpected = -1;
+            this._isMoving = false;
+         }
+         else if((pMode == ALWAYS) && (pMsgToProcess is CellClickMessage) && (this._isMoving))
+         {
+            isAvailableToStart = false;
+            returnValue = true;
+            canBeStacked = false;
+         }
+         else if(pMsgToProcess is InteractiveElementUpdatedMessage)
+         {
+            ieumsg = pMsgToProcess as InteractiveElementUpdatedMessage;
+            if(ieumsg.interactiveElement.enabledSkills.length)
+            {
+               interactiveElements[ieumsg.interactiveElement.elementId] = true;
+            }
+            else if((ieumsg.interactiveElement.disabledSkills.length) && (interactiveElements[ieumsg.interactiveElement.elementId]))
+            {
+               interactiveElements[ieumsg.interactiveElement.elementId] = null;
+            }
+            
+         }
+         
+         
+         
+         
          return returnValue;
       }
       
@@ -175,22 +165,18 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
             this._startTime = 0;
             isAvailableToStart = false;
          }
-         else
+         else if((pMsgToProcess is InteractiveUsedMessage) && ((pMsgToProcess as InteractiveUsedMessage).entityId == PlayedCharacterManager.getInstance().id))
          {
-            if((pMsgToProcess is InteractiveUsedMessage) && ((pMsgToProcess as InteractiveUsedMessage).entityId == PlayedCharacterManager.getInstance().id))
-            {
-               isAvailableToStart = true;
-               this._tmpInteractiveElementId = (pMsgToProcess as InteractiveUsedMessage).elemId;
-               this._startTime = 0;
-            }
-            else
-            {
-               if((pMsgToProcess is InteractiveUseEndedMessage) && (this._tmpInteractiveElementId == (pMsgToProcess as InteractiveUseEndedMessage).elemId))
-               {
-                  this._startTime = getTimer();
-               }
-            }
+            isAvailableToStart = true;
+            this._tmpInteractiveElementId = (pMsgToProcess as InteractiveUsedMessage).elemId;
+            this._startTime = 0;
          }
+         else if((pMsgToProcess is InteractiveUseEndedMessage) && (this._tmpInteractiveElementId == (pMsgToProcess as InteractiveUseEndedMessage).elemId))
+         {
+            this._startTime = getTimer();
+         }
+         
+         
       }
       
       override public function processOutputMessage(pMsgToProcess:Message, pMode:String) : Boolean {
@@ -200,34 +186,28 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
             this.stopAction();
             returnValue = true;
          }
-         else
+         else if(pMsgToProcess is InteractiveUseErrorMessage)
          {
-            if(pMsgToProcess is InteractiveUseErrorMessage)
-            {
-               this.stopAction();
-               returnValue = true;
-               actionStarted = true;
-            }
-            else
-            {
-               if(pMsgToProcess is InteractiveUsedMessage)
-               {
-                  this.removeIcon();
-                  this._duration = (pMsgToProcess as InteractiveUsedMessage).duration * 100;
-                  this._timeOutRecolte = getTimer();
-                  actionStarted = true;
-                  returnValue = this._duration == 0;
-               }
-               else
-               {
-                  if((this._timeOutRecolte > 0) && (getTimer() > this._timeOutRecolte + this._duration + 1000))
-                  {
-                     this.stopAction();
-                     returnValue = true;
-                  }
-               }
-            }
+            this.stopAction();
+            returnValue = true;
+            actionStarted = true;
          }
+         else if(pMsgToProcess is InteractiveUsedMessage)
+         {
+            this.removeIcon();
+            this._duration = (pMsgToProcess as InteractiveUsedMessage).duration * 100;
+            this._timeOutRecolte = getTimer();
+            actionStarted = true;
+            returnValue = this._duration == 0;
+         }
+         else if((this._timeOutRecolte > 0) && (getTimer() > this._timeOutRecolte + this._duration + 1000))
+         {
+            this.stopAction();
+            returnValue = true;
+         }
+         
+         
+         
          return returnValue;
       }
       
@@ -254,7 +234,7 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          {
             return;
          }
-         for each (ieskill in this.interactiveElement.enabledSkills)
+         for each(ieskill in this.interactiveElement.enabledSkills)
          {
             if(ieskill.skillInstanceUid == this.currentSkillInstanceId)
             {

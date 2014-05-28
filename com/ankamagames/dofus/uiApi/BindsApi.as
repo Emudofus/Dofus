@@ -32,7 +32,7 @@ package com.ankamagames.dofus.uiApi
          var s:Shortcut = null;
          var copy:Array = new Array();
          var ss:Array = Shortcut.getShortcuts();
-         for each (s in ss)
+         for each(s in ss)
          {
             if(s.visible)
             {
@@ -42,7 +42,7 @@ package com.ankamagames.dofus.uiApi
          return copy;
       }
       
-      public function getShortcutBind(shortcutName:String, returnDisabled:Boolean=false) : Bind {
+      public function getShortcutBind(shortcutName:String, returnDisabled:Boolean = false) : Bind {
          return BindsManager.getInstance().getBindFromShortcut(shortcutName,returnDisabled);
       }
       
@@ -54,7 +54,7 @@ package com.ankamagames.dofus.uiApi
          BindsManager.getInstance().removeBind(BindsManager.getInstance().getBindFromShortcut(targetedBind));
       }
       
-      public function getShortcutBindStr(shortcutName:String, returnDisabled:Boolean=false) : String {
+      public function getShortcutBindStr(shortcutName:String, returnDisabled:Boolean = false) : String {
          var bind:Bind = this.getShortcutBind(shortcutName,returnDisabled);
          if((!(bind == null)) && (!(bind.key == null)))
          {

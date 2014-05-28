@@ -7,41 +7,41 @@ package avmplus
          super();
       }
       
-      public static const HIDE_NSURI_METHODS:uint = HIDE_NSURI_METHODS;
+      public static const HIDE_NSURI_METHODS:uint = 1.0;
       
-      public static const INCLUDE_BASES:uint = INCLUDE_BASES;
+      public static const INCLUDE_BASES:uint = 2.0;
       
-      public static const INCLUDE_INTERFACES:uint = INCLUDE_INTERFACES;
+      public static const INCLUDE_INTERFACES:uint = 4.0;
       
-      public static const INCLUDE_VARIABLES:uint = INCLUDE_VARIABLES;
+      public static const INCLUDE_VARIABLES:uint = 8.0;
       
-      public static const INCLUDE_ACCESSORS:uint = INCLUDE_ACCESSORS;
+      public static const INCLUDE_ACCESSORS:uint = 16.0;
       
-      public static const INCLUDE_METHODS:uint = INCLUDE_METHODS;
+      public static const INCLUDE_METHODS:uint = 32.0;
       
-      public static const INCLUDE_METADATA:uint = INCLUDE_METADATA;
+      public static const INCLUDE_METADATA:uint = 64.0;
       
-      public static const INCLUDE_CONSTRUCTOR:uint = INCLUDE_CONSTRUCTOR;
+      public static const INCLUDE_CONSTRUCTOR:uint = 128.0;
       
-      public static const INCLUDE_TRAITS:uint = INCLUDE_TRAITS;
+      public static const INCLUDE_TRAITS:uint = 256.0;
       
-      public static const USE_ITRAITS:uint = USE_ITRAITS;
+      public static const USE_ITRAITS:uint = 512.0;
       
-      public static const HIDE_OBJECT:uint = HIDE_OBJECT;
+      public static const HIDE_OBJECT:uint = 1024.0;
       
-      public static const FLASH10_FLAGS:uint = FLASH10_FLAGS;
+      public static const FLASH10_FLAGS:uint;
       
-      public static const ACCESSOR_FLAGS:uint = INCLUDE_TRAITS | INCLUDE_ACCESSORS;
+      public static const ACCESSOR_FLAGS:uint;
       
-      public static const INTERFACE_FLAGS:uint = INCLUDE_TRAITS | INCLUDE_INTERFACES;
+      public static const INTERFACE_FLAGS:uint;
       
-      public static const METHOD_FLAGS:uint = INCLUDE_TRAITS | INCLUDE_METHODS;
+      public static const METHOD_FLAGS:uint;
       
-      public static const VARIABLE_FLAGS:uint = INCLUDE_TRAITS | INCLUDE_VARIABLES;
+      public static const VARIABLE_FLAGS:uint;
       
-      public static const GET_INSTANCE_INFO:uint = INCLUDE_BASES | INCLUDE_INTERFACES | INCLUDE_VARIABLES | INCLUDE_ACCESSORS | INCLUDE_METHODS | INCLUDE_METADATA | INCLUDE_CONSTRUCTOR | INCLUDE_TRAITS | USE_ITRAITS;
+      public static const GET_INSTANCE_INFO:uint;
       
-      public static const GET_CLASS_INFO:uint = INCLUDE_INTERFACES | INCLUDE_VARIABLES | INCLUDE_ACCESSORS | INCLUDE_METHODS | INCLUDE_METADATA | INCLUDE_TRAITS | HIDE_OBJECT;
+      public static const GET_CLASS_INFO:uint;
       
       public static function getJSONFunction() : Function {
          try

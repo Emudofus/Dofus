@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.security
          return 5607;
       }
       
-      public function initClientKeyMessage(key:String="") : ClientKeyMessage {
+      public function initClientKeyMessage(key:String = "") : ClientKeyMessage {
          this.key = key;
          this._isInitialized = true;
          return this;

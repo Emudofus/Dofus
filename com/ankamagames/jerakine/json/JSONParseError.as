@@ -3,7 +3,7 @@ package com.ankamagames.jerakine.json
    public class JSONParseError extends Error
    {
       
-      public function JSONParseError(message:String="", location:int=0, text:String="") {
+      public function JSONParseError(message:String = "", location:int = 0, text:String = "") {
          super(message);
          name = "JSONParseError";
          this._location = location;

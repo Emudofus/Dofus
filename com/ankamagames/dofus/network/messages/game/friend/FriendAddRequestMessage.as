@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 4004;
       }
       
-      public function initFriendAddRequestMessage(name:String="") : FriendAddRequestMessage {
+      public function initFriendAddRequestMessage(name:String = "") : FriendAddRequestMessage {
          this.name = name;
          this._isInitialized = true;
          return this;

@@ -7,7 +7,6 @@ package com.ankamagames.jerakine.resources.protocols.impl
    import flash.utils.ByteArray;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.resources.protocols.AbstractFileProtocol;
    import com.ankamagames.jerakine.types.Uri;
    import com.ankamagames.jerakine.resources.IResourceObserver;
@@ -37,7 +36,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(HttpCacheProtocol));
+      protected static const _log:Logger;
       
       private static const LIMITE_ATTEMPT_FOR_DOWNLOAD:uint = 2;
       
@@ -49,21 +48,21 @@ package com.ankamagames.jerakine.resources.protocols.impl
       
       private static var _cachedFileData:Dictionary;
       
-      private static var _calcCachedFileData:Dictionary = new Dictionary(true);
+      private static var _calcCachedFileData:Dictionary;
       
-      private static var _pathCrcList:Dictionary = new Dictionary();
+      private static var _pathCrcList:Dictionary;
       
-      private static var _httpDataToLoad:Vector.<Object> = new Vector.<Object>();
+      private static var _httpDataToLoad:Vector.<Object>;
       
-      private static var _fileDataToLoad:Vector.<Object> = new Vector.<Object>();
+      private static var _fileDataToLoad:Vector.<Object>;
       
-      private static var _attemptToDownloadFile:Dictionary = new Dictionary(true);
+      private static var _attemptToDownloadFile:Dictionary;
       
       private static var _totalCrcTime:int = 0;
       
-      private static var _crc:CRC32 = new CRC32();
+      private static var _crc:CRC32;
       
-      private static var _buff_crc:ByteArray = new ByteArray();
+      private static var _buff_crc:ByteArray;
       
       private static var _urlRewritePattern;
       
@@ -114,34 +113,32 @@ package com.ankamagames.jerakine.resources.protocols.impl
                this.loadFile(uri,observer,dispatchProgress,forcedAdapter);
             }
          }
+         else if(this.uriIsAlreadyWaitingForHttpDownload(uri))
+         {
+            _fileDataToLoad.push(
+               {
+                  "uri":uri,
+                  "observer":observer,
+                  "dispatchProgress":dispatchProgress,
+                  "adapter":forcedAdapter
+               });
+         }
          else
          {
-            if(this.uriIsAlreadyWaitingForHttpDownload(uri))
-            {
-               _fileDataToLoad.push(
-                  {
-                     "uri":uri,
-                     "observer":observer,
-                     "dispatchProgress":dispatchProgress,
-                     "adapter":forcedAdapter
-                  });
-            }
-            else
-            {
-               _httpDataToLoad.push(
-                  {
-                     "uri":uri,
-                     "observer":observer,
-                     "dispatchProgress":dispatchProgress,
-                     "adapter":forcedAdapter
-                  });
-            }
+            _httpDataToLoad.push(
+               {
+                  "uri":uri,
+                  "observer":observer,
+                  "dispatchProgress":dispatchProgress,
+                  "adapter":forcedAdapter
+               });
          }
+         
       }
       
       private function uriIsAlreadyWaitingForHttpDownload(uri:Uri) : Boolean {
          var data:Object = null;
-         for each (data in _httpDataToLoad)
+         for each(data in _httpDataToLoad)
          {
             if(data.uri.path == uri.path)
             {
@@ -165,7 +162,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
             _cachedFileData = new Dictionary();
             data = new ByteArray();
             dirListing = streamingFilelists.getDirectoryListing();
-            for each (streamingFile in dirListing)
+            for each(streamingFile in dirListing)
             {
                data.clear();
                fs = new FileStream();
@@ -212,7 +209,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
       
       private function loadQueueData() : void {
          var file:Object = null;
-         for each (file in _httpDataToLoad)
+         for each(file in _httpDataToLoad)
          {
             this.loadFile(file.uri,file.observer,file.dispatchProgress,file.adapter);
          }
@@ -374,25 +371,23 @@ package com.ankamagames.jerakine.resources.protocols.impl
             uri.tag = oldUri;
             adapter = AdvancedSwfAdapter;
          }
+         else if(uri.fileType == "swl")
+         {
+            uri = new Uri(this.getLocalPath(uri));
+            if(uri.tag == null)
+            {
+               uri.tag = new Object();
+            }
+            uri.tag.oldUri = oldUri;
+         }
          else
          {
-            if(uri.fileType == "swl")
-            {
-               uri = new Uri(this.getLocalPath(uri));
-               if(uri.tag == null)
-               {
-                  uri.tag = new Object();
-               }
-               uri.tag.oldUri = oldUri;
-            }
-            else
-            {
-               uri = new Uri(this.getLocalPath(uri));
-               uri.tag = oldUri;
-            }
+            uri = new Uri(this.getLocalPath(uri));
+            uri.tag = oldUri;
          }
+         
          this._parent.load(uri,observer,dispatchProgress,null,adapter,false);
-         for each (d in _fileDataToLoad)
+         for each(d in _fileDataToLoad)
          {
             if((!(d == null)) && (d.uri.path == uri.path))
             {

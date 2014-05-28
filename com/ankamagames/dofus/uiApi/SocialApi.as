@@ -12,7 +12,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.internalDatacenter.people.SpouseWrapper;
    import com.ankamagames.dofus.logic.game.common.frames.PlayedCharacterUpdatesFrame;
    import com.ankamagames.dofus.internalDatacenter.guild.GuildWrapper;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.guild.GuildMember;
    import com.ankamagames.dofus.internalDatacenter.guild.GuildFactSheetWrapper;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
@@ -60,7 +59,7 @@ package com.ankamagames.dofus.uiApi
          var friend:FriendWrapper = null;
          var fl:Array = new Array();
          var friendsList:Array = this.socialFrame.friendsList;
-         for each (friend in friendsList)
+         for each(friend in friendsList)
          {
             fl.push(friend);
          }
@@ -71,7 +70,7 @@ package com.ankamagames.dofus.uiApi
       public function isFriend(playerName:String) : Boolean {
          var friend:* = undefined;
          var friendsList:Array = this.socialFrame.friendsList;
-         for each (friend in friendsList)
+         for each(friend in friendsList)
          {
             if(friend.playerName == playerName)
             {
@@ -84,7 +83,7 @@ package com.ankamagames.dofus.uiApi
       public function getEnemiesList() : Array {
          var enemy:EnemyWrapper = null;
          var el:Array = new Array();
-         for each (enemy in this.socialFrame.enemiesList)
+         for each(enemy in this.socialFrame.enemiesList)
          {
             el.push(enemy);
          }
@@ -94,7 +93,7 @@ package com.ankamagames.dofus.uiApi
       
       public function isEnemy(playerName:String) : Boolean {
          var enemy:* = undefined;
-         for each (enemy in this.socialFrame.enemiesList)
+         for each(enemy in this.socialFrame.enemiesList)
          {
             if(enemy.playerName == playerName)
             {
@@ -107,7 +106,7 @@ package com.ankamagames.dofus.uiApi
       public function getIgnoredList() : Array {
          var ignored:IgnoredWrapper = null;
          var il:Array = new Array();
-         for each (ignored in this.socialFrame.ignoredList)
+         for each(ignored in this.socialFrame.ignoredList)
          {
             il.push(ignored);
          }
@@ -115,7 +114,7 @@ package com.ankamagames.dofus.uiApi
          return il;
       }
       
-      public function isIgnored(name:String, accountId:int=0) : Boolean {
+      public function isIgnored(name:String, accountId:int = 0) : Boolean {
          return this.socialFrame.isIgnored(name,accountId);
       }
       
@@ -183,7 +182,7 @@ package com.ankamagames.dofus.uiApi
          {
             return this.socialFrame.guild.hasRight(pRightId);
          }
-         for each (member in this.socialFrame.guildmembers)
+         for each(member in this.socialFrame.guildmembers)
          {
             if(member.id == pPlayerId)
             {
@@ -257,16 +256,14 @@ package com.ankamagames.dofus.uiApi
                seifw = TaxCollectorsManager.getInstance().allTaxCollectorsInPreFight[pSocialFightId];
             }
          }
-         else
+         else if(pType == 1)
          {
-            if(pType == 1)
-            {
-               seifw = TaxCollectorsManager.getInstance().prismsFighters[pSocialFightId];
-            }
+            seifw = TaxCollectorsManager.getInstance().prismsFighters[pSocialFightId];
          }
+         
          if(seifw)
          {
-            for each (defender in seifw.allyCharactersInformations)
+            for each(defender in seifw.allyCharactersInformations)
             {
                if(defender.playerCharactersInformations.id == pPlayerId)
                {
@@ -326,7 +323,7 @@ package com.ankamagames.dofus.uiApi
          var p:SocialEntityInFightWrapper = TaxCollectorsManager.getInstance().prismsFighters[pSubAreaId];
          if(p)
          {
-            for each (defender in p.allyCharactersInformations)
+            for each(defender in p.allyCharactersInformations)
             {
                if(defender.playerCharactersInformations.id == pPlayerId)
                {
@@ -343,9 +340,9 @@ package com.ankamagames.dofus.uiApi
          var found:Boolean = false;
          var se:BasicChatSentence = null;
          var chatFrame:ChatFrame = Kernel.getWorker().getFrame(ChatFrame) as ChatFrame;
-         for each (channel in chatFrame.getMessages())
+         for each(channel in chatFrame.getMessages())
          {
-            for each (sentence in channel)
+            for each(sentence in channel)
             {
                if((sentence.fingerprint == fingerprint) && (sentence.timestamp == timestamp))
                {

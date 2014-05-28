@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 5693;
       }
       
-      public function initGameEntityDispositionMessage(disposition:IdentifiedEntityDispositionInformations=null) : GameEntityDispositionMessage {
+      public function initGameEntityDispositionMessage(disposition:IdentifiedEntityDispositionInformations = null) : GameEntityDispositionMessage {
          this.disposition = disposition;
          this._isInitialized = true;
          return this;

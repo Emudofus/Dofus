@@ -29,7 +29,7 @@ package com.ankamagames.atouin.managers
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(DataGroundMapManager));
+      private static const _log:Logger;
       
       private static const MAPS_DIRECTORY:String = "./maps";
       
@@ -51,7 +51,7 @@ package com.ankamagames.atouin.managers
       
       private static var _currentOutputFileStream:FileStream;
       
-      private static var _bitmapDataList:Array = new Array();
+      private static var _bitmapDataList:Array;
       
       private static var _processing:Boolean = false;
       
@@ -105,7 +105,7 @@ package com.ankamagames.atouin.managers
       
       private static var buffer:BitmapData;
       
-      private static var _m:Matrix = new Matrix();
+      private static var _m:Matrix;
       
       public static function saveGroundMap(ground:BitmapData, map:Map) : void {
          var cacheSize:Point = null;
@@ -272,6 +272,9 @@ package com.ankamagames.atouin.managers
                case qualityEnum == GroundCache.GROUND_CACHE_LOW_QUALITY:
                   quality = JPEG_LOW_QUALITY;
                   break;
+               default:
+                  quality = JPEG_MEDIUM_QUALITY;
+                  _log.error("Attention Enum d\'encodage pour la qualité JPG non valide, utisation d\'une qualité moyenne");
             }
             _currentQuality = quality;
          }

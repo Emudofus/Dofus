@@ -5,7 +5,6 @@ package com.ankamagames.dofus.network.messages.game.alliance
    import com.ankamagames.dofus.network.types.game.social.AllianceFactSheetInformations;
    import com.ankamagames.dofus.network.types.game.social.GuildInsiderFactSheetInformations;
    import com.ankamagames.dofus.network.types.game.prism.PrismSubareaEmptyInfo;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -39,7 +38,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6403;
       }
       
-      public function initAllianceInsiderInfoMessage(allianceInfos:AllianceFactSheetInformations=null, guilds:Vector.<GuildInsiderFactSheetInformations>=null, prisms:Vector.<PrismSubareaEmptyInfo>=null) : AllianceInsiderInfoMessage {
+      public function initAllianceInsiderInfoMessage(allianceInfos:AllianceFactSheetInformations = null, guilds:Vector.<GuildInsiderFactSheetInformations> = null, prisms:Vector.<PrismSubareaEmptyInfo> = null) : AllianceInsiderInfoMessage {
          this.allianceInfos = allianceInfos;
          this.guilds = guilds;
          this.prisms = prisms;

@@ -5,7 +5,7 @@ package com.ankamagames.jerakine.logger
    public class TextLogEvent extends LogEvent
    {
       
-      public function TextLogEvent(category:String=null, message:String=null, logLevel:uint=0) {
+      public function TextLogEvent(category:String = null, message:String = null, logLevel:uint = 0) {
          super(category,message,logLevel);
       }
       

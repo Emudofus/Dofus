@@ -14,7 +14,7 @@ package com.ankamagames.dofus.datacenter.npcs
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(NpcAction));
+      protected static const _log:Logger;
       
       public static const MODULE:String = "NpcActions";
       

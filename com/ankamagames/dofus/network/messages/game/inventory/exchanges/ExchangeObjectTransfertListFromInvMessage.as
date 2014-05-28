@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6183;
       }
       
-      public function initExchangeObjectTransfertListFromInvMessage(ids:Vector.<uint>=null) : ExchangeObjectTransfertListFromInvMessage {
+      public function initExchangeObjectTransfertListFromInvMessage(ids:Vector.<uint> = null) : ExchangeObjectTransfertListFromInvMessage {
          this.ids = ids;
          this._isInitialized = true;
          return this;

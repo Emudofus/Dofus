@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3022;
       }
       
-      public function initObjectDeleteMessage(objectUID:uint=0, quantity:uint=0) : ObjectDeleteMessage {
+      public function initObjectDeleteMessage(objectUID:uint = 0, quantity:uint = 0) : ObjectDeleteMessage {
          this.objectUID = objectUID;
          this.quantity = quantity;
          this._isInitialized = true;

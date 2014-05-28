@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.livingObjects
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    
    public class Pet extends Object implements IDataCenter
    {
@@ -16,7 +15,7 @@ package com.ankamagames.dofus.datacenter.livingObjects
       
       public static const MODULE:String = "Pets";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Pet));
+      protected static const _log:Logger;
       
       public static function getPetById(id:int) : Pet {
          return GameData.getObject(MODULE,id) as Pet;

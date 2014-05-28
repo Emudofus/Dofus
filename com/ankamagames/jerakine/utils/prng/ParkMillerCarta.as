@@ -3,7 +3,7 @@ package com.ankamagames.jerakine.utils.prng
    public class ParkMillerCarta extends Object implements PRNG
    {
       
-      public function ParkMillerCarta(seedValue:uint=0) {
+      public function ParkMillerCarta(seedValue:uint = 0) {
          super();
          this.seed(seedValue);
       }

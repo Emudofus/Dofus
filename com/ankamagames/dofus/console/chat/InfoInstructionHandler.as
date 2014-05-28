@@ -97,10 +97,12 @@ package com.ankamagames.dofus.console.chat
                return I18n.getUiText("ui.chat.console.help.mapid");
             case "time":
                return I18n.getUiText("ui.chat.console.help.time");
+            default:
+               return I18n.getUiText("ui.chat.console.noHelp",[cmd]);
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

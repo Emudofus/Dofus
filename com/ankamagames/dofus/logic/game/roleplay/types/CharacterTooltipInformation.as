@@ -33,7 +33,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
          {
             playerInfo = pInfos as GameRolePlayCharacterInformations;
             CssManager.getInstance().askCss(this._cssUri,new Callback(this.onCssLoaded));
-            for each (option in pInfos.humanoidInfo.options)
+            for each(option in pInfos.humanoidInfo.options)
             {
                if(option is HumanOptionTitle)
                {
@@ -72,7 +72,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CharacterTooltipInformation));
+      protected static const _log:Logger;
       
       private var _cssUri:String;
       

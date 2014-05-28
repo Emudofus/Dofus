@@ -19,15 +19,17 @@ package com.ankamagames.jerakine.managers
       
       public static var showPopup:Boolean = false;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ErrorManager));
+      protected static const _log:Logger;
       
-      public static var eventDispatcher:EventDispatcher = new EventDispatcher();
+      public static var eventDispatcher:EventDispatcher;
       
       public static var lastTryFunctionHasException:Boolean;
       
+      public static var lastExceptionStacktrace:String;
+      
       public static var lastTryFunctionParams:Array;
       
-      public static function tryFunction(fct:Function, params:Array=null, complementaryInformations:String=null, context:Object=null) : * {
+      public static function tryFunction(fct:Function, params:Array = null, complementaryInformations:String = null, context:Object = null) : * {
          var result:* = undefined;
          var result2:* = undefined;
          if(!catchError)
@@ -47,6 +49,7 @@ package com.ankamagames.jerakine.managers
          }
          catch(e:Error)
          {
+            lastExceptionStacktrace = e.message + " : \n" + e.getStackTrace();
             lastTryFunctionHasException = true;
             addError(complementaryInformations,e,showPopup);
             lastTryFunctionParams = null;
@@ -54,7 +57,7 @@ package com.ankamagames.jerakine.managers
          }
       }
       
-      public static function addError(txt:String=null, error:*=null, show:Boolean=true) : void {
+      public static function addError(txt:String = null, error:* = null, show:Boolean = true) : void {
          if(!error)
          {
             error = new Error();

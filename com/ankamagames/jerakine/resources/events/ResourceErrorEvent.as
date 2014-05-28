@@ -6,7 +6,7 @@ package com.ankamagames.jerakine.resources.events
    public class ResourceErrorEvent extends ResourceEvent
    {
       
-      public function ResourceErrorEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function ResourceErrorEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

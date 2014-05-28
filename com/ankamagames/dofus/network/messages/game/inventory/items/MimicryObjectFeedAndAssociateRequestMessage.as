@@ -39,7 +39,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6460;
       }
       
-      public function initMimicryObjectFeedAndAssociateRequestMessage(mimicryUID:uint=0, mimicryPos:uint=0, foodUID:uint=0, foodPos:uint=0, hostUID:uint=0, hostPos:uint=0, preview:Boolean=false) : MimicryObjectFeedAndAssociateRequestMessage {
+      public function initMimicryObjectFeedAndAssociateRequestMessage(mimicryUID:uint = 0, mimicryPos:uint = 0, foodUID:uint = 0, foodPos:uint = 0, hostUID:uint = 0, hostPos:uint = 0, preview:Boolean = false) : MimicryObjectFeedAndAssociateRequestMessage {
          this.mimicryUID = mimicryUID;
          this.mimicryPos = mimicryPos;
          this.foodUID = foodUID;

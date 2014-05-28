@@ -16,8 +16,6 @@ package com.ankamagames.dofus.internalDatacenter.communication
    import flash.utils.flash_proxy;
    import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
    
-   use namespace flash_proxy;
-   
    public class EmoteWrapper extends Proxy implements IDataCenter, ISlotData
    {
       
@@ -25,11 +23,11 @@ package com.ankamagames.dofus.internalDatacenter.communication
          super();
       }
       
-      private static var _cache:Array = new Array();
+      private static var _cache:Array;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmoteWrapper));
+      protected static const _log:Logger;
       
-      public static function create(emoteID:uint, position:int=-1, useCache:Boolean=true) : EmoteWrapper {
+      public static function create(emoteID:uint, position:int = -1, useCache:Boolean = true) : EmoteWrapper {
          var emote:EmoteWrapper = new EmoteWrapper();
          if((!_cache[emoteID]) || (!useCache))
          {
@@ -56,7 +54,7 @@ package com.ankamagames.dofus.internalDatacenter.communication
       
       public static function refreshAllEmoteHolders() : void {
          var wrapper:EmoteWrapper = null;
-         for each (wrapper in _cache)
+         for each(wrapper in _cache)
          {
             wrapper._slotDataHolderManager.refreshAll();
          }
@@ -200,7 +198,7 @@ package com.ankamagames.dofus.internalDatacenter.communication
          this._slotDataHolderManager.setLinkedSlotData(slotData);
       }
       
-      public function getIconUri(pngMode:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean = true) : Uri {
          if(!this._uri)
          {
             this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/emotes/").concat(this.id).concat(".png"));

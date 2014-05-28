@@ -1,7 +1,5 @@
 package com.ankamagames.dofus.datacenter.items.criterion
 {
-   import __AS3__.vec.Vector;
-   
    public interface IItemCriterion
    {
       

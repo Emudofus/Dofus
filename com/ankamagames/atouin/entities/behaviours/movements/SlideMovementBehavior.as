@@ -17,11 +17,11 @@ package com.ankamagames.atouin.entities.behaviours.movements
          }
       }
       
-      private static const RUN_LINEAR_VELOCITY:Number = 1 / 170 * 3;
+      private static const RUN_LINEAR_VELOCITY:Number = 0.01764705882352941;
       
-      private static const RUN_HORIZONTAL_DIAGONAL_VELOCITY:Number = 1 / 255 * 3;
+      private static const RUN_HORIZONTAL_DIAGONAL_VELOCITY:Number = 0.011764705882352941;
       
-      private static const RUN_VERTICAL_DIAGONAL_VELOCITY:Number = 1 / 150 * 3;
+      private static const RUN_VERTICAL_DIAGONAL_VELOCITY:Number = 0.02;
       
       private static const RUN_ANIMATION:String = "AnimStatique";
       

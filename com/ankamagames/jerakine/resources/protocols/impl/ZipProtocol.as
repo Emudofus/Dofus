@@ -25,9 +25,9 @@ package com.ankamagames.jerakine.resources.protocols.impl
       
       private static const ZIP_CACHE_PREFIX:String = "RES_ZIP_";
       
-      private static var _singleLoadingZips:Dictionary = new Dictionary(true);
+      private static var _singleLoadingZips:Dictionary;
       
-      private static var _loadingZips:Dictionary = new Dictionary(true);
+      private static var _loadingZips:Dictionary;
       
       private var _uri:Uri;
       
@@ -56,19 +56,17 @@ package com.ankamagames.jerakine.resources.protocols.impl
                this._zldr = this._cache.peek(ZIP_CACHE_PREFIX + uri.path);
                this.onComplete(null);
             }
+            else if(_loadingZips[uri.path])
+            {
+               _loadingZips[uri.path].push(this);
+            }
             else
             {
-               if(_loadingZips[uri.path])
-               {
-                  _loadingZips[uri.path].push(this);
-               }
-               else
-               {
-                  _loadingZips[uri.path] = [this];
-                  this.prepareZipLoader();
-                  this._zldr.load(new URLRequest(uri.path));
-               }
+               _loadingZips[uri.path] = [this];
+               this.prepareZipLoader();
+               this._zldr.load(new URLRequest(uri.path));
             }
+            
             return;
          }
       }
@@ -110,7 +108,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
       
       private function onComplete(e:Event) : void {
          var listener:ZipProtocol = null;
-         for each (listener in _loadingZips[this._uri.path])
+         for each(listener in _loadingZips[this._uri.path])
          {
             if(this._zldr.fileExists(listener._uri.subPath))
             {
@@ -121,7 +119,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
                listener._observer.onFailed(this._uri,"File " + listener._uri.subPath + " cannot be found in the ZIP file " + listener._uri.path + ".",ResourceErrorCode.ZIP_FILE_NOT_FOUND_IN_ARCHIVE);
             }
          }
-         delete _loadingZips[[this._uri.path]];
+         delete _loadingZips[this._uri.path];
          if(this._cache)
          {
             this._cache.store(ZIP_CACHE_PREFIX + this._uri.path,this._zldr);
@@ -131,17 +129,17 @@ package com.ankamagames.jerakine.resources.protocols.impl
       
       private function onError(ee:ErrorEvent) : void {
          var listener:ZipProtocol = null;
-         for each (listener in _loadingZips[this._uri.path])
+         for each(listener in _loadingZips[this._uri.path])
          {
             listener._observer.onFailed(listener._uri,"Can\'t load the ZIP file " + listener._uri.path + ": " + ee.text,ResourceErrorCode.ZIP_NOT_FOUND);
          }
-         delete _loadingZips[[this._uri.path]];
+         delete _loadingZips[this._uri.path];
          this.releaseZipLoader();
       }
       
       private function onProgress(pe:ProgressEvent) : void {
          var listener:ZipProtocol = null;
-         for each (listener in _loadingZips[this._uri.path])
+         for each(listener in _loadingZips[this._uri.path])
          {
             listener._observer.onProgress(listener._uri,pe.bytesLoaded,pe.bytesTotal);
          }

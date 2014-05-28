@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.chat.smiley
          return 800;
       }
       
-      public function initChatSmileyRequestMessage(smileyId:uint=0) : ChatSmileyRequestMessage {
+      public function initChatSmileyRequestMessage(smileyId:uint = 0) : ChatSmileyRequestMessage {
          this.smileyId = smileyId;
          this._isInitialized = true;
          return this;

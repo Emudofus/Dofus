@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 5570;
       }
       
-      public function initGameActionFightUnmarkCellsMessage(actionId:uint=0, sourceId:int=0, markId:int=0) : GameActionFightUnmarkCellsMessage {
+      public function initGameActionFightUnmarkCellsMessage(actionId:uint = 0, sourceId:int = 0, markId:int = 0) : GameActionFightUnmarkCellsMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.markId = markId;
          this._isInitialized = true;

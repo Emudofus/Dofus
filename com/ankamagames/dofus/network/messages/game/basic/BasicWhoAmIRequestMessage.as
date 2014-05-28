@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 5664;
       }
       
-      public function initBasicWhoAmIRequestMessage(verbose:Boolean=false) : BasicWhoAmIRequestMessage {
+      public function initBasicWhoAmIRequestMessage(verbose:Boolean = false) : BasicWhoAmIRequestMessage {
          this.verbose = verbose;
          this._isInitialized = true;
          return this;

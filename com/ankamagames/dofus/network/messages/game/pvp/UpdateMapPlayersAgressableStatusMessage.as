@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.pvp
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.pvp
          return 6454;
       }
       
-      public function initUpdateMapPlayersAgressableStatusMessage(playerIds:Vector.<uint>=null, enable:Vector.<uint>=null) : UpdateMapPlayersAgressableStatusMessage {
+      public function initUpdateMapPlayersAgressableStatusMessage(playerIds:Vector.<uint> = null, enable:Vector.<uint> = null) : UpdateMapPlayersAgressableStatusMessage {
          this.playerIds = playerIds;
          this.enable = enable;
          this._isInitialized = true;

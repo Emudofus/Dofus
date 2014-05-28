@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.paddock.PaddockInformationsForSell;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -34,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
          return 6138;
       }
       
-      public function initPaddockToSellListMessage(pageIndex:uint=0, totalPage:uint=0, paddockList:Vector.<PaddockInformationsForSell>=null) : PaddockToSellListMessage {
+      public function initPaddockToSellListMessage(pageIndex:uint = 0, totalPage:uint = 0, paddockList:Vector.<PaddockInformationsForSell> = null) : PaddockToSellListMessage {
          this.pageIndex = pageIndex;
          this.totalPage = totalPage;
          this.paddockList = paddockList;

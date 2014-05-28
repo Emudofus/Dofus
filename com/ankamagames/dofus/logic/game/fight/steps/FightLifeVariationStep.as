@@ -85,13 +85,11 @@ package com.ankamagames.dofus.logic.game.fight.steps
          {
             FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_LIFE_LOSS,[_targetId,Math.abs(this._delta),this._actionId],_targetId,castingSpellId,false,2);
          }
-         else
+         else if(this._delta > 0)
          {
-            if(this._delta > 0)
-            {
-               FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_LIFE_GAIN,[_targetId,Math.abs(this._delta),this._actionId],_targetId,castingSpellId,false,2);
-            }
+            FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_LIFE_GAIN,[_targetId,Math.abs(this._delta),this._actionId],_targetId,castingSpellId,false,2);
          }
+         
          super.start();
       }
    }

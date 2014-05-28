@@ -5,7 +5,6 @@ package com.ankamagames.dofus.internalDatacenter.items
    import flash.system.LoaderContext;
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.types.Uri;
@@ -21,9 +20,9 @@ package com.ankamagames.dofus.internalDatacenter.items
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(MountWrapper));
+      private static const _log:Logger;
       
-      private static var _mountUtil:Object = new Object();
+      private static var _mountUtil:Object;
       
       private static var _uriLoaderContext:LoaderContext;
       
@@ -35,7 +34,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          {
             mountWrapper.mountId = _mountUtil.model;
             mountWrapper.effects = new Vector.<EffectInstance>();
-            for each (effect in _mountUtil.effectList)
+            for each(effect in _mountUtil.effectList)
             {
                mountWrapper.effects.push(effect);
             }
@@ -98,7 +97,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          return this._uri;
       }
       
-      override public function getIconUri(pngMode:Boolean=true) : Uri {
+      override public function getIconUri(pngMode:Boolean = true) : Uri {
          if(pngMode)
          {
             this._uriPngMode = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/mounts/").concat(this.mountId).concat(".png"));
@@ -137,7 +136,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          {
             this.mountId = _mountUtil.model;
             effects = new Vector.<EffectInstance>();
-            for each (effect in _mountUtil.effectList)
+            for each(effect in _mountUtil.effectList)
             {
                effects.push(effect);
             }

@@ -38,11 +38,11 @@ package com.ankamagames.dofus.logic.game.fight.managers
          }
       }
       
-      private static var _log:Logger = Log.getLogger(getQualifiedClassName(SpellZoneManager));
+      private static var _log:Logger;
       
       private static var _self:SpellZoneManager;
       
-      private static const ZONE_COLOR:Color = new Color(10929860);
+      private static const ZONE_COLOR:Color;
       
       private static const SELECTION_ZONE:String = "SpellCastZone";
       
@@ -92,14 +92,14 @@ package com.ankamagames.dofus.logic.game.fight.managers
          }
       }
       
-      public function getSpellZone(spell:*, ignoreShapeA:Boolean=false) : IZone {
+      public function getSpellZone(spell:*, ignoreShapeA:Boolean = false) : IZone {
          var fx:EffectInstance = null;
          var shape:uint = 88;
          var ray:uint = 0;
          var minRay:uint = 0;
          if(!spell.hasOwnProperty("shape"))
          {
-            for each (fx in spell.effects)
+            for each(fx in spell.effects)
             {
                if((!(fx.zoneShape == 0)) && (fx.zoneSize < 63) && ((fx.zoneSize > ray) || (fx.zoneSize == ray) && (shape == SpellShapeEnum.P)))
                {
@@ -117,7 +117,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          return this.getZone(shape,ray,minRay,ignoreShapeA);
       }
       
-      public function getZone(pShape:uint, pZoneSize:uint, pMinZoneSize:uint, pIgnoreShapeA:Boolean=false) : IZone {
+      public function getZone(pShape:uint, pZoneSize:uint, pMinZoneSize:uint, pIgnoreShapeA:Boolean = false) : IZone {
          var shapeT:Cross = null;
          var shapeW:Square = null;
          var shapePlus:Cross = null;
@@ -179,6 +179,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
                   return new Lozenge(0,63,DataMapProvider.getInstance());
                }
             case SpellShapeEnum.P:
+            default:
                return new Cross(0,0,DataMapProvider.getInstance());
          }
       }

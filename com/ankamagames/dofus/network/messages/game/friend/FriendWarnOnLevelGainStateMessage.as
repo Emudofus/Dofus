@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 6078;
       }
       
-      public function initFriendWarnOnLevelGainStateMessage(enable:Boolean=false) : FriendWarnOnLevelGainStateMessage {
+      public function initFriendWarnOnLevelGainStateMessage(enable:Boolean = false) : FriendWarnOnLevelGainStateMessage {
          this.enable = enable;
          this._isInitialized = true;
          return this;

@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.character.replay
          return 6354;
       }
       
-      public function initCharacterReplayWithRelookRequestMessage(characterId:uint=0, cosmeticId:uint=0) : CharacterReplayWithRelookRequestMessage {
+      public function initCharacterReplayWithRelookRequestMessage(characterId:uint = 0, cosmeticId:uint = 0) : CharacterReplayWithRelookRequestMessage {
          super.initCharacterReplayRequestMessage(characterId);
          this.cosmeticId = cosmeticId;
          this._isInitialized = true;

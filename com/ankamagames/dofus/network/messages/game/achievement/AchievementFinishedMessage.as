@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6208;
       }
       
-      public function initAchievementFinishedMessage(id:uint=0, finishedlevel:uint=0) : AchievementFinishedMessage {
+      public function initAchievementFinishedMessage(id:uint = 0, finishedlevel:uint = 0) : AchievementFinishedMessage {
          this.id = id;
          this.finishedlevel = finishedlevel;
          this._isInitialized = true;

@@ -43,7 +43,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
          return 194;
       }
       
-      public function initJobCrafterDirectoryEntryPlayerInfo(playerId:uint=0, playerName:String="", alignmentSide:int=0, breed:int=0, sex:Boolean=false, isInWorkshop:Boolean=false, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0, status:PlayerStatus=null) : JobCrafterDirectoryEntryPlayerInfo {
+      public function initJobCrafterDirectoryEntryPlayerInfo(playerId:uint = 0, playerName:String = "", alignmentSide:int = 0, breed:int = 0, sex:Boolean = false, isInWorkshop:Boolean = false, worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:uint = 0, status:PlayerStatus = null) : JobCrafterDirectoryEntryPlayerInfo {
          this.playerId = playerId;
          this.playerName = playerName;
          this.alignmentSide = alignmentSide;

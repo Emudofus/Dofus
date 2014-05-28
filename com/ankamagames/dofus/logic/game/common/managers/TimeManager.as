@@ -81,7 +81,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          return date.getTime() + this.serverUtcTimeLag;
       }
       
-      public function formatClock(time:Number, unchanged:Boolean=false, useTimezoneOffset:Boolean=false) : String {
+      public function formatClock(time:Number, unchanged:Boolean = false, useTimezoneOffset:Boolean = false) : String {
          var timeToUse:Number = time;
          if((unchanged) && (timeToUse > 0))
          {
@@ -93,7 +93,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          return hour + ":" + minute;
       }
       
-      public function formatDateIRL(time:Number, useTimezoneOffset:Boolean=false) : String {
+      public function formatDateIRL(time:Number, useTimezoneOffset:Boolean = false) : String {
          var date:Array = this.getDateFromTime(time,useTimezoneOffset);
          var day:String = date[2] > 9?date[2].toString():"0" + date[2];
          var month:String = date[3] > 9?date[3].toString():"0" + date[3];
@@ -114,7 +114,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          return [date[2],month,nyear];
       }
       
-      public function getDuration(time:Number, short:Boolean=false, addSeconds:Boolean=false) : String {
+      public function getDuration(time:Number, short:Boolean = false, addSeconds:Boolean = false) : String {
          var result:String = null;
          var hour:String = null;
          var minute:String = null;
@@ -203,7 +203,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          return hour + ":" + minute;
       }
       
-      public function getDateFromTime(timeUTC:Number, useTimezoneOffset:Boolean=false) : Array {
+      public function getDateFromTime(timeUTC:Number, useTimezoneOffset:Boolean = false) : Array {
          var date:Date = null;
          var nday:* = NaN;
          var nmonth:* = NaN;

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.approach
          return 110;
       }
       
-      public function initAuthenticationTicketMessage(lang:String="", ticket:String="") : AuthenticationTicketMessage {
+      public function initAuthenticationTicketMessage(lang:String = "", ticket:String = "") : AuthenticationTicketMessage {
          this.lang = lang;
          this.ticket = ticket;
          this._isInitialized = true;

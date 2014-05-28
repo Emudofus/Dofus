@@ -17,6 +17,6 @@ package com.ankamagames.dofus.types.enums
       
       public static const INFORMATION:uint = 4;
       
-      public static const NOTIFICATION_PRIORITY:Array = [NotificationTypeEnum.ERROR,NotificationTypeEnum.PRIORITY_INVITATION,NotificationTypeEnum.INVITATION,NotificationTypeEnum.INFORMATION,NotificationTypeEnum.TUTORIAL];
+      public static const NOTIFICATION_PRIORITY:Array;
    }
 }

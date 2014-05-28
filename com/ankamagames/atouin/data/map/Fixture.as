@@ -15,7 +15,7 @@ package com.ankamagames.atouin.data.map
          this._map = map;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Fixture));
+      protected static const _log:Logger;
       
       public var fixtureId:int;
       

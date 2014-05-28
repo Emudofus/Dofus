@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5580;
       }
       
-      public function initPartyAcceptInvitationMessage(partyId:uint=0) : PartyAcceptInvitationMessage {
+      public function initPartyAcceptInvitationMessage(partyId:uint = 0) : PartyAcceptInvitationMessage {
          super.initAbstractPartyMessage(partyId);
          this._isInitialized = true;
          return this;

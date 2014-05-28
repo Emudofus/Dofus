@@ -51,7 +51,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.datacenter.alignments.AlignmentBalance;
    import com.ankamagames.dofus.datacenter.guild.RankName;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
    import com.ankamagames.dofus.datacenter.jobs.Skill;
    import com.ankamagames.dofus.datacenter.communication.InfoMessage;
@@ -159,16 +158,16 @@ package com.ankamagames.dofus.uiApi
          return Spell.getSpells();
       }
       
-      public function getSpellWrapper(id:uint, level:uint=1) : SpellWrapper {
+      public function getSpellWrapper(id:uint, level:uint = 1) : SpellWrapper {
          var sw:SpellWrapper = SpellWrapper.create(-1,id,level,false);
          return sw;
       }
       
-      public function getEmoteWrapper(id:uint, position:uint=0) : EmoteWrapper {
+      public function getEmoteWrapper(id:uint, position:uint = 0) : EmoteWrapper {
          return EmoteWrapper.create(id,position);
       }
       
-      public function getButtonWrapper(buttonId:uint, position:int, uriName:String, callback:Function, name:String, shortcut:String="") : ButtonWrapper {
+      public function getButtonWrapper(buttonId:uint, position:int, uriName:String, callback:Function, name:String, shortcut:String = "") : ButtonWrapper {
          return ButtonWrapper.create(buttonId,position,uriName,callback,name,shortcut);
       }
       
@@ -232,10 +231,10 @@ package com.ankamagames.dofus.uiApi
          return SuperArea.getSuperAreaById(id);
       }
       
-      public function getAllArea(withHouses:Boolean=false, withPaddocks:Boolean=false) : Array {
+      public function getAllArea(withHouses:Boolean = false, withPaddocks:Boolean = false) : Array {
          var area:Area = null;
          var results:Array = new Array();
-         for each (area in Area.getAllArea())
+         for each(area in Area.getAllArea())
          {
             if((withHouses) && (area.containHouses) || (withPaddocks) && (area.containPaddocks) || (!withHouses) && (!withPaddocks))
             {
@@ -249,7 +248,7 @@ package com.ankamagames.dofus.uiApi
          return WorldPoint.fromMapId(id);
       }
       
-      public function getItem(id:int, returnDefaultItemIfNull:Boolean=true) : Item {
+      public function getItem(id:int, returnDefaultItemIfNull:Boolean = true) : Item {
          return Item.getItemById(id,returnDefaultItemIfNull);
       }
       
@@ -295,123 +294,13 @@ package com.ankamagames.dofus.uiApi
          return Pet.getPetById(id);
       }
       
-      public function getSetEffects(GIDList:Array, setBonus:Array=null) : Array {
-         var item:* = undefined;
-         var GID:* = undefined;
-         var GIDe:* = undefined;
-         var line:* = undefined;
-         var lineNA:* = undefined;
-         var iGID:* = undefined;
-         var effect:* = undefined;
-         var effectEquip:* = undefined;
-         var setBonusLine:* = undefined;
-         var effectsDice:Dictionary = new Dictionary();
-         var effects:Array = new Array();
-         var effectsNonAddable:Array = new Array();
-         var GIDEquippedList:Array = new Array();
-         for each (item in PlayedCharacterManager.getInstance().inventory)
-         {
-            if(item.position <= 15)
-            {
-               for (iGID in GIDList)
-               {
-                  if(item.objectGID == GIDList[iGID])
-                  {
-                     GIDEquippedList.push(item);
-                     GIDList[iGID] = -1;
-                  }
-               }
-            }
-         }
-         for each (GID in GIDList)
-         {
-            if(GID != -1)
-            {
-               for each (effect in Item.getItemById(GID).possibleEffects)
-               {
-                  if(Effect.getEffectById(effect.effectId).useDice)
-                  {
-                     if(effectsDice[effect.effectId])
-                     {
-                        effectsDice[effect.effectId].add(effect);
-                     }
-                     else
-                     {
-                        effectsDice[effect.effectId] = effect.clone();
-                     }
-                  }
-                  else
-                  {
-                     effectsNonAddable.push(effect.clone());
-                  }
-               }
-            }
-         }
-         for each (GIDe in GIDEquippedList)
-         {
-            for each (effectEquip in GIDe.effects)
-            {
-               if(Effect.getEffectById(effectEquip.effectId).useDice)
-               {
-                  if(effectsDice[effectEquip.effectId])
-                  {
-                     effectsDice[effectEquip.effectId].add(effectEquip);
-                  }
-                  else
-                  {
-                     effectsDice[effectEquip.effectId] = effectEquip.clone();
-                  }
-               }
-               else
-               {
-                  effectsNonAddable.push(effectEquip.clone());
-               }
-            }
-         }
-         if((setBonus) && (setBonus.length))
-         {
-            for each (setBonusLine in setBonus)
-            {
-               if(setBonusLine is String)
-               {
-                  this._log.debug("Bonus en texte, on ne peut pas l\'ajouter");
-               }
-               else
-               {
-                  if((Effect.getEffectById(setBonusLine.effectId)) && (Effect.getEffectById(setBonusLine.effectId).useDice))
-                  {
-                     if(effectsDice[setBonusLine.effectId])
-                     {
-                        effectsDice[setBonusLine.effectId].add(SecureCenter.unsecure(setBonusLine));
-                     }
-                     else
-                     {
-                        effectsDice[setBonusLine.effectId] = SecureCenter.unsecure(setBonusLine).clone();
-                     }
-                  }
-                  else
-                  {
-                     effectsNonAddable.push(SecureCenter.unsecure(setBonusLine).clone());
-                  }
-               }
-            }
-         }
-         for each (line in effectsDice)
-         {
-            if(line.showInSet > 0)
-            {
-               effects.push(line);
-            }
-         }
-         for each (lineNA in effectsNonAddable)
-         {
-            if(lineNA.showInSet > 0)
-            {
-               effects.push(lineNA);
-            }
-         }
-         effects.sortOn("category",Array.NUMERIC);
-         return effects;
+      public function getSetEffects(GIDList:Array, setBonus:Array = null) : Array {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function getMonsterFromId(monsterId:uint) : Monster {
@@ -476,73 +365,55 @@ package com.ankamagames.dofus.uiApi
          {
             balance = 1;
          }
+         else if(percent == 10)
+         {
+            balance = 2;
+         }
+         else if(percent == 20)
+         {
+            balance = 3;
+         }
+         else if(percent == 30)
+         {
+            balance = 4;
+         }
+         else if(percent == 40)
+         {
+            balance = 5;
+         }
+         else if(percent == 50)
+         {
+            balance = 6;
+         }
+         else if(percent == 60)
+         {
+            balance = 7;
+         }
+         else if(percent == 70)
+         {
+            balance = 8;
+         }
+         else if(percent == 80)
+         {
+            balance = 9;
+         }
+         else if(percent == 90)
+         {
+            balance = 10;
+         }
          else
          {
-            if(percent == 10)
-            {
-               balance = 2;
-            }
-            else
-            {
-               if(percent == 20)
-               {
-                  balance = 3;
-               }
-               else
-               {
-                  if(percent == 30)
-                  {
-                     balance = 4;
-                  }
-                  else
-                  {
-                     if(percent == 40)
-                     {
-                        balance = 5;
-                     }
-                     else
-                     {
-                        if(percent == 50)
-                        {
-                           balance = 6;
-                        }
-                        else
-                        {
-                           if(percent == 60)
-                           {
-                              balance = 7;
-                           }
-                           else
-                           {
-                              if(percent == 70)
-                              {
-                                 balance = 8;
-                              }
-                              else
-                              {
-                                 if(percent == 80)
-                                 {
-                                    balance = 9;
-                                 }
-                                 else
-                                 {
-                                    if(percent == 90)
-                                    {
-                                       balance = 10;
-                                    }
-                                    else
-                                    {
-                                       balance = Math.ceil(percent / 10);
-                                    }
-                                 }
-                              }
-                           }
-                        }
-                     }
-                  }
-               }
-            }
+            balance = Math.ceil(percent / 10);
          }
+         
+         
+         
+         
+         
+         
+         
+         
+         
          return AlignmentBalance.getAlignmentBalanceById(balance);
       }
       
@@ -554,7 +425,7 @@ package com.ankamagames.dofus.uiApi
          return RankName.getRankNames();
       }
       
-      public function getItemWrapper(itemGID:uint, itemPosition:int=0, itemUID:uint=0, itemQuantity:uint=0, itemEffects:*=null) : ItemWrapper {
+      public function getItemWrapper(itemGID:uint, itemPosition:int = 0, itemUID:uint = 0, itemQuantity:uint = 0, itemEffects:* = null) : ItemWrapper {
          if(itemEffects == null)
          {
             itemEffects = new Vector.<ObjectEffect>();
@@ -573,7 +444,7 @@ package com.ankamagames.dofus.uiApi
       public function getHouseSkills() : Array {
          var skill:Skill = null;
          var houseSkills:Array = new Array();
-         for each (skill in Skill.getSkills())
+         for each(skill in Skill.getSkills())
          {
             if(skill.availableInHouse)
             {
@@ -600,7 +471,7 @@ package com.ankamagames.dofus.uiApi
             return chatFrame.smilies;
          }
          var a:Array = new Array();
-         for each (smiley in Smiley.getSmileys())
+         for each(smiley in Smiley.getSmileys())
          {
             if(smiley.forPlayers)
             {
@@ -636,12 +507,12 @@ package com.ankamagames.dofus.uiApi
          var backEmblemTotal:Array = EmblemBackground.getEmblemBackgrounds();
          var upEmblems:Array = new Array();
          var backEmblems:Array = new Array();
-         for each (upEmblem in upEmblemTotal)
+         for each(upEmblem in upEmblemTotal)
          {
             upEmblems.push(EmblemWrapper.create(upEmblem.id,EmblemWrapper.UP));
          }
          upEmblems.sortOn("order",Array.NUMERIC);
-         for each (backEmblem in backEmblemTotal)
+         for each(backEmblem in backEmblemTotal)
          {
             backEmblems.push(EmblemWrapper.create(backEmblem.id,EmblemWrapper.BACK));
          }
@@ -885,11 +756,11 @@ package com.ankamagames.dofus.uiApi
          return GameDataQuery.returnInstance(dataClass,ids);
       }
       
-      public function querySort(dataClass:Class, ids:Vector.<uint>, fields:*, ascending:*=true) : Vector.<uint> {
+      public function querySort(dataClass:Class, ids:Vector.<uint>, fields:*, ascending:* = true) : Vector.<uint> {
          return GameDataQuery.sort(dataClass,ids,fields,ascending);
       }
       
-      public function querySortI18nId(data:*, fields:*, ascending:*=true) : * {
+      public function querySortI18nId(data:*, fields:*, ascending:* = true) : * {
          return GameDataQuery.sortI18n(data,fields,ascending);
       }
    }

@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party.companio
          return 452;
       }
       
-      public function initPartyCompanionMemberInformations(indexId:uint=0, companionGenericId:uint=0, entityLook:EntityLook=null, initiative:uint=0, lifePoints:uint=0, maxLifePoints:uint=0, prospecting:uint=0, regenRate:uint=0) : PartyCompanionMemberInformations {
+      public function initPartyCompanionMemberInformations(indexId:uint = 0, companionGenericId:uint = 0, entityLook:EntityLook = null, initiative:uint = 0, lifePoints:uint = 0, maxLifePoints:uint = 0, prospecting:uint = 0, regenRate:uint = 0) : PartyCompanionMemberInformations {
          super.initPartyCompanionBaseInformations(indexId,companionGenericId,entityLook);
          this.initiative = initiative;
          this.lifePoints = lifePoints;

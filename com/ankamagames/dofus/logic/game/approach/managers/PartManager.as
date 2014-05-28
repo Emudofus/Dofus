@@ -12,7 +12,6 @@ package com.ankamagames.dofus.logic.game.approach.managers
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
    import com.ankamagames.dofus.datacenter.misc.Pack;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.messages.updater.parts.DownloadPartMessage;
    
    public class PartManager extends Object
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.logic.game.approach.managers
       
       public static const STATE_FINISHED:int = 2;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PartManager));
+      protected static const _log:Logger;
       
       private static var _singleton:PartManager;
       
@@ -66,14 +65,14 @@ package com.ankamagames.dofus.logic.game.approach.managers
          var part:ContentPart = null;
          var key:String = null;
          this._parts = new Dictionary();
-         for each (part in parts)
+         for each(part in parts)
          {
             this.updatePart(part);
          }
          if(!this._firstParts)
          {
             this._firstParts = new Dictionary();
-            for (key in this._parts)
+            for(key in this._parts)
             {
                this._firstParts[key] = this._parts[key];
             }
@@ -94,7 +93,7 @@ package com.ankamagames.dofus.logic.game.approach.managers
          }
          if(this._parts[partName].state == PartStateEnum.PART_NOT_INSTALLED)
          {
-            for each (part in this._downloadList)
+            for each(part in this._downloadList)
             {
                if(part == partName)
                {
@@ -137,7 +136,7 @@ package com.ankamagames.dofus.logic.game.approach.managers
                if(part.id == this._downloadingPart)
                {
                   isDownloading = false;
-                  for each (p in this._parts)
+                  for each(p in this._parts)
                   {
                      if(p.state == PartStateEnum.PART_BEING_UPDATER)
                      {
@@ -184,13 +183,13 @@ package com.ankamagames.dofus.logic.game.approach.managers
          var count:uint = 0;
          var packs:Array = Pack.getAllPacks();
          var list:Vector.<uint> = new Vector.<uint>();
-         for each (pack in packs)
+         for each(pack in packs)
          {
             if(pack.hasSubAreas)
             {
                count++;
                found = false;
-               for each (part in this._firstParts)
+               for each(part in this._firstParts)
                {
                   if((part.id == pack.name) && (part.state == 2))
                   {
@@ -213,7 +212,7 @@ package com.ankamagames.dofus.logic.game.approach.managers
       
       public function getPart(partName:String) : ContentPart {
          var part:ContentPart = null;
-         for each (part in this._parts)
+         for each(part in this._parts)
          {
             if(part.id == partName)
             {
@@ -261,14 +260,12 @@ package com.ankamagames.dofus.logic.game.approach.managers
                UpdaterConnexionHandler.getConnection().send(dpmsg);
                this._downloadingPart = partName;
             }
-            else
+            else if(this._downloadList.indexOf(partName) == -1)
             {
-               if(this._downloadList.indexOf(partName) == -1)
-               {
-                  _log.info("A download is running. Add " + partName + " to download queue");
-                  this._downloadList.push(partName);
-               }
+               _log.info("A download is running. Add " + partName + " to download queue");
+               this._downloadList.push(partName);
             }
+            
          }
       }
    }

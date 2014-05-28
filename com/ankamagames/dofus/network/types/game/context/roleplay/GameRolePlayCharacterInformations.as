@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 36;
       }
       
-      public function initGameRolePlayCharacterInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, name:String="", humanoidInfo:HumanInformations=null, accountId:uint=0, alignmentInfos:ActorAlignmentInformations=null) : GameRolePlayCharacterInformations {
+      public function initGameRolePlayCharacterInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, name:String = "", humanoidInfo:HumanInformations = null, accountId:uint = 0, alignmentInfos:ActorAlignmentInformations = null) : GameRolePlayCharacterInformations {
          super.initGameRolePlayHumanoidInformations(contextualId,look,disposition,name,humanoidInfo,accountId);
          this.alignmentInfos = alignmentInfos;
          return this;

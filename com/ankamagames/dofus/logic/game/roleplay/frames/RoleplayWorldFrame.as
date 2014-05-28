@@ -124,13 +124,14 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    {
       
       public function RoleplayWorldFrame() {
+         this._common = XmlConfig.getInstance().getEntry("config.ui.skin");
          this._infoEntitiesFrame = new InfoEntitiesFrame();
          this.sysApi = new SystemApi();
          this._entityTooltipData = new Dictionary();
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RoleplayWorldFrame));
+      protected static const _log:Logger;
       
       private static const NO_CURSOR:int = -1;
       
@@ -138,13 +139,13 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       
       private static const NPC_CURSOR:int = 1;
       
-      private static const INTERACTIVE_CURSOR_OFFSET:Point = new Point(0,0);
+      private static const INTERACTIVE_CURSOR_OFFSET:Point;
       
       private static const COLLECTABLE_INTERACTIVE_ACTION_ID:uint = 1;
       
-      private static var _monstersInfoFrame:MonstersInfoFrame = new MonstersInfoFrame();
+      private static var _monstersInfoFrame:MonstersInfoFrame;
       
-      private const _common:String = XmlConfig.getInstance().getEntry("config.ui.skin");
+      private const _common:String;
       
       private var _mouseLabel:Label;
       
@@ -220,13 +221,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          {
             Kernel.getWorker().addFrame(_monstersInfoFrame);
          }
-         else
+         else if(Kernel.getWorker().contains(MonstersInfoFrame))
          {
-            if(Kernel.getWorker().contains(MonstersInfoFrame))
-            {
-               Kernel.getWorker().removeFrame(_monstersInfoFrame);
-            }
+            Kernel.getWorker().removeFrame(_monstersInfoFrame);
          }
+         
          if(AirScanner.hasAir())
          {
             StageShareManager.stage.nativeWindow.addEventListener(Event.DEACTIVATE,this.onWindowDeactivate);
@@ -427,27 +426,21 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                {
                   neighborId = PlayedCharacterManager.getInstance().currentMap.rightNeighbourId;
                }
-               else
+               else if(amomsg.direction == DirectionsEnum.DOWN)
                {
-                  if(amomsg.direction == DirectionsEnum.DOWN)
-                  {
-                     neighborId = PlayedCharacterManager.getInstance().currentMap.bottomNeighbourId;
-                  }
-                  else
-                  {
-                     if(amomsg.direction == DirectionsEnum.LEFT)
-                     {
-                        neighborId = PlayedCharacterManager.getInstance().currentMap.leftNeighbourId;
-                     }
-                     else
-                     {
-                        if(amomsg.direction == DirectionsEnum.UP)
-                        {
-                           neighborId = PlayedCharacterManager.getInstance().currentMap.topNeighbourId;
-                        }
-                     }
-                  }
+                  neighborId = PlayedCharacterManager.getInstance().currentMap.bottomNeighbourId;
                }
+               else if(amomsg.direction == DirectionsEnum.LEFT)
+               {
+                  neighborId = PlayedCharacterManager.getInstance().currentMap.leftNeighbourId;
+               }
+               else if(amomsg.direction == DirectionsEnum.UP)
+               {
+                  neighborId = PlayedCharacterManager.getInstance().currentMap.topNeighbourId;
+               }
+               
+               
+               
                neighborSubarea = SubArea.getSubAreaByMapId(neighborId);
                subareaChange = false;
                x = 0;
@@ -773,7 +766,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   if(teamType == TeamTypeEnum.TEAM_TYPE_TAXCOLLECTOR)
                   {
                      team = this.roleplayContextFrame.entitiesFrame.getFightTeam(entityc.id) as FightTeam;
-                     for each (fighter in team.teamInfos.teamMembers)
+                     for each(fighter in team.teamInfos.teamMembers)
                      {
                         if(fighter is FightTeamMemberTaxCollectorInformations)
                         {
@@ -801,14 +794,12 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                      ConnectionsHandler.getConnection().send(gfjrmsg);
                   }
                }
-               else
+               else if((!(entityc.id == PlayedCharacterManager.getInstance().id)) && (!menuResult))
                {
-                  if((!(entityc.id == PlayedCharacterManager.getInstance().id)) && (!menuResult))
-                  {
-                     this.roleplayMovementFrame.setFollowingInteraction(null);
-                     this.roleplayMovementFrame.askMoveTo(entityc.position);
-                  }
+                  this.roleplayMovementFrame.setFollowingInteraction(null);
+                  this.roleplayMovementFrame.askMoveTo(entityc.position);
                }
+               
                return true;
             case msg is InteractiveElementActivationMessage:
                if(this.allowOnlyCharacterInteraction)
@@ -857,7 +848,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                }
                iemovmsg = msg as InteractiveElementMouseOverMessage;
                interactiveElem = iemovmsg.interactiveElement;
-               for each (interactiveSkill in interactiveElem.enabledSkills)
+               for each(interactiveSkill in interactiveElem.enabledSkills)
                {
                   if(interactiveSkill.skillId == 175)
                   {
@@ -874,55 +865,51 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                {
                   infosIe = houseWrapper;
                }
-               else
+               else if((infosIe == null) && (interactive))
                {
-                  if((infosIe == null) && (interactive))
+                  elem = new Object();
+                  elem.interactive = interactive.name;
+                  enabledSkills = "";
+                  for each(interactiveSkill in interactiveElem.enabledSkills)
                   {
-                     elem = new Object();
-                     elem.interactive = interactive.name;
-                     enabledSkills = "";
-                     for each (interactiveSkill in interactiveElem.enabledSkills)
-                     {
-                        enabledSkills = enabledSkills + (Skill.getSkillById(interactiveSkill.skillId).name + "\n");
-                     }
-                     elem.enabledSkills = enabledSkills;
-                     disabledSkills = "";
-                     for each (interactiveSkill in interactiveElem.disabledSkills)
-                     {
-                        disabledSkills = disabledSkills + (Skill.getSkillById(interactiveSkill.skillId).name + "\n");
-                     }
-                     elem.disabledSkills = disabledSkills;
-                     elem.isCollectable = interactive.actionId == COLLECTABLE_INTERACTIVE_ACTION_ID;
-                     if(elem.isCollectable)
-                     {
-                        showBonus = true;
-                        iewab = interactiveElem as InteractiveElementWithAgeBonus;
-                        if(interactiveElem.enabledSkills.length > 0)
-                        {
-                           collectSkill = Skill.getSkillById(interactiveElem.enabledSkills[0].skillId);
-                           if(collectSkill.parentJobId == 1)
-                           {
-                              showBonus = false;
-                           }
-                        }
-                        else
-                        {
-                           if(!iewab)
-                           {
-                              showBonus = false;
-                           }
-                        }
-                        if(showBonus)
-                        {
-                           elem.collectSkill = collectSkill;
-                           elem.ageBonus = iewab?iewab.ageBonus:0;
-                        }
-                     }
-                     infosIe = elem;
-                     ttMaker = "interactiveElement";
-                     tooltipCacheName = "InteractiveElementCache";
+                     enabledSkills = enabledSkills + (Skill.getSkillById(interactiveSkill.skillId).name + "\n");
                   }
+                  elem.enabledSkills = enabledSkills;
+                  disabledSkills = "";
+                  for each(interactiveSkill in interactiveElem.disabledSkills)
+                  {
+                     disabledSkills = disabledSkills + (Skill.getSkillById(interactiveSkill.skillId).name + "\n");
+                  }
+                  elem.disabledSkills = disabledSkills;
+                  elem.isCollectable = interactive.actionId == COLLECTABLE_INTERACTIVE_ACTION_ID;
+                  if(elem.isCollectable)
+                  {
+                     showBonus = true;
+                     iewab = interactiveElem as InteractiveElementWithAgeBonus;
+                     if(interactiveElem.enabledSkills.length > 0)
+                     {
+                        collectSkill = Skill.getSkillById(interactiveElem.enabledSkills[0].skillId);
+                        if(collectSkill.parentJobId == 1)
+                        {
+                           showBonus = false;
+                        }
+                     }
+                     else if(!iewab)
+                     {
+                        showBonus = false;
+                     }
+                     
+                     if(showBonus)
+                     {
+                        elem.collectSkill = collectSkill;
+                        elem.ageBonus = iewab?iewab.ageBonus:0;
+                     }
+                  }
+                  infosIe = elem;
+                  ttMaker = "interactiveElement";
+                  tooltipCacheName = "InteractiveElementCache";
                }
+               
                if(infosIe)
                {
                   TooltipManager.show(infosIe,new Rectangle(target.right,int(target.y + target.height - AtouinConstants.CELL_HEIGHT),0,0),UiModuleManager.getInstance().getModule("Ankama_Tooltips"),false,TooltipManager.TOOLTIP_STANDAR_NAME,LocationEnum.POINT_BOTTOMLEFT,LocationEnum.POINT_TOP,0,true,ttMaker,null,null,tooltipCacheName);
@@ -955,13 +942,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                {
                   Kernel.getWorker().removeFrame(_monstersInfoFrame);
                }
-               else
+               else if((AirScanner.hasAir()) && (StageShareManager.stage.nativeWindow.active) && (!((!_monstersInfoFrame.triggeredByShortcut) && (!this._mouseDown))))
                {
-                  if((AirScanner.hasAir()) && (StageShareManager.stage.nativeWindow.active) && (!((!_monstersInfoFrame.triggeredByShortcut) && (!this._mouseDown))))
-                  {
-                     Kernel.getWorker().addFrame(_monstersInfoFrame);
-                  }
+                  Kernel.getWorker().addFrame(_monstersInfoFrame);
                }
+               
                return true;
             case msg is MouseDownMessage:
                this._mouseDown = true;
@@ -996,10 +981,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          ac.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityAnimRendered);
          var tooltipData:Object = this._entityTooltipData[ac];
          TooltipManager.show(tooltipData.data,ac.absoluteBounds,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),false,tooltipData.name,LocationEnum.POINT_BOTTOM,LocationEnum.POINT_TOP,tooltipData.tooltipOffset,true,tooltipData.tooltipMaker,null,null,tooltipData.cacheName,false,StrataEnum.STRATA_WORLD,this.sysApi.getCurrentZoom());
-         delete this._entityTooltipData[[ac]];
+         delete this._entityTooltipData[ac];
       }
       
-      private function displayCursor(type:int, pEnable:Boolean=true) : void {
+      private function displayCursor(type:int, pEnable:Boolean = true) : void {
          if(type == -1)
          {
             Mouse.show();

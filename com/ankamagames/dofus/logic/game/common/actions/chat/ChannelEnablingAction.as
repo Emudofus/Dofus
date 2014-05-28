@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions.chat
          super();
       }
       
-      public static function create(channel:uint, enable:Boolean=true) : ChannelEnablingAction {
+      public static function create(channel:uint, enable:Boolean = true) : ChannelEnablingAction {
          var a:ChannelEnablingAction = new ChannelEnablingAction();
          a.channel = channel;
          a.enable = enable;

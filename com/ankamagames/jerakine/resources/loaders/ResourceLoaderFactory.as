@@ -20,6 +20,8 @@ package com.ankamagames.jerakine.resources.loaders
                return new ParallelRessourceLoader(1);
             case ResourceLoaderType.SINGLE_LOADER:
                return new SingleRessourceLoader();
+            default:
+               throw new ArgumentError("Unknown loader type " + type + ".");
          }
       }
    }

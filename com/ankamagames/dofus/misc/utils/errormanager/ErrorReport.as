@@ -28,11 +28,11 @@ package com.ankamagames.dofus.misc.utils.errormanager
          this._reportData = reportInfo;
       }
       
-      private static var _htmlTemplate:Class = ErrorReport__htmlTemplate;
+      private static var _htmlTemplate:Class;
       
       private static var ONLINE_REPORT_PLATEFORM:String = "http://utils.dofus.lan/bugs/";
       
-      private static var ONLINE_REPORT_SERVICE:String = ONLINE_REPORT_PLATEFORM + "makeReport.php";
+      private static var ONLINE_REPORT_SERVICE:String;
       
       private var _reportData:Object;
       
@@ -56,7 +56,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
             {
                this._reportData.stacktrace = String(this._reportData.stacktrace).replace(new RegExp("<","g"),"&lt;").replace(new RegExp(">","g"),"&gt;");
             }
-            for (key in this._reportData)
+            for(key in this._reportData)
             {
                template = template.replace("{{" + key + "}}",this._reportData[key]);
             }

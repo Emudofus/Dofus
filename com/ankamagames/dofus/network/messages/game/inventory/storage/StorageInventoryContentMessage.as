@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
 {
    import com.ankamagames.dofus.network.messages.game.inventory.items.InventoryContentMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
@@ -27,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.storage
          return 5646;
       }
       
-      public function initStorageInventoryContentMessage(objects:Vector.<ObjectItem>=null, kamas:uint=0) : StorageInventoryContentMessage {
+      public function initStorageInventoryContentMessage(objects:Vector.<ObjectItem> = null, kamas:uint = 0) : StorageInventoryContentMessage {
          super.initInventoryContentMessage(objects,kamas);
          this._isInitialized = true;
          return this;

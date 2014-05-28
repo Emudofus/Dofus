@@ -8,7 +8,6 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
    import com.ankamagames.dofus.logic.game.roleplay.types.AnimFunTimer;
    import com.ankamagames.jerakine.utils.prng.ParkMillerCarta;
    import com.ankamagames.jerakine.utils.prng.PRNG;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
    import com.ankamagames.tiphon.display.TiphonSprite;
    import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
@@ -42,7 +41,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AnimFunManager));
+      protected static const _log:Logger;
       
       public static const ANIM_FUN_TIMER_MIN:int = 40000;
       
@@ -136,7 +135,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
       
       public function get running() : Boolean {
          var t:AnimFunTimer = null;
-         for each (t in this._timerList)
+         for each(t in this._timerList)
          {
             if(t.running)
             {
@@ -208,23 +207,21 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
                }
                list = monster.animFunList;
             }
-            else
+            else if(entityInfo is GameRolePlayNpcInformations)
             {
-               if(entityInfo is GameRolePlayNpcInformations)
-               {
-                  npcInfo = entityInfo as GameRolePlayNpcInformations;
-                  npc = Npc.getNpcById(npcInfo.npcId);
-                  if(!npc)
-                  {
-                     return;
-                  }
-                  list = npc.animFunList;
-               }
-               else
+               npcInfo = entityInfo as GameRolePlayNpcInformations;
+               npc = Npc.getNpcById(npcInfo.npcId);
+               if(!npc)
                {
                   return;
                }
+               list = npc.animFunList;
             }
+            else
+            {
+               return;
+            }
+            
             if(roleplayEntitiesFrame.hasIcon(entityInfo.contextualId))
             {
                roleplayEntitiesFrame.forceIconUpdate(entityInfo.contextualId);
@@ -249,7 +246,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
          }
          var timestamp:Number = TimeManager.getInstance().getTimestamp();
          timestamp = timestamp % this._animDelaysSum;
-         for each (delay in this._animDelays)
+         for each(delay in this._animDelays)
          {
             if(timestamp > delay.delay)
             {
@@ -274,7 +271,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
          var entitiesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
          var entities:Dictionary = entitiesFrame.getEntitiesDictionnary();
          var list:Array = new Array();
-         for each (entity in entities)
+         for each(entity in entities)
          {
             if(entity is GameRolePlayGroupMonsterInformations)
             {
@@ -284,17 +281,15 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
                   list.push(entity);
                }
             }
-            else
+            else if(entity is GameRolePlayNpcInformations)
             {
-               if(entity is GameRolePlayNpcInformations)
+               npc = Npc.getNpcById((entity as GameRolePlayNpcInformations).npcId);
+               if((npc) && (!(npc.animFunList.length == 0)))
                {
-                  npc = Npc.getNpcById((entity as GameRolePlayNpcInformations).npcId);
-                  if((npc) && (!(npc.animFunList.length == 0)))
-                  {
-                     list.push(entity);
-                  }
+                  list.push(entity);
                }
             }
+            
          }
          if(list.length)
          {
@@ -326,23 +321,21 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
             }
             list = monster.animFunList;
          }
-         else
+         else if(entity is GameRolePlayNpcInformations)
          {
-            if(entity is GameRolePlayNpcInformations)
-            {
-               npcInfo = entity as GameRolePlayNpcInformations;
-               npc = Npc.getNpcById(npcInfo.npcId);
-               if(!npc)
-               {
-                  return 0;
-               }
-               list = npc.animFunList;
-            }
-            else
+            npcInfo = entity as GameRolePlayNpcInformations;
+            npc = Npc.getNpcById(npcInfo.npcId);
+            if(!npc)
             {
                return 0;
             }
+            list = npc.animFunList;
          }
+         else
+         {
+            return 0;
+         }
+         
          var animIndex:int = 0;
          var max:int = 0;
          var num:int = list.length;
@@ -373,7 +366,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
          var entitiesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
          var entities:Dictionary = entitiesFrame.getEntitiesDictionnary();
          var monsters:Array = new Array();
-         for each (entity in entities)
+         for each(entity in entities)
          {
             sprite = DofusEntities.getEntity(entity.contextualId) as AnimatedCharacter;
             if((sprite) && (sprite.isMoving))

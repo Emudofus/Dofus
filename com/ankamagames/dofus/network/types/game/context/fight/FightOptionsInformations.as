@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 20;
       }
       
-      public function initFightOptionsInformations(isSecret:Boolean=false, isRestrictedToPartyOnly:Boolean=false, isClosed:Boolean=false, isAskingForHelp:Boolean=false) : FightOptionsInformations {
+      public function initFightOptionsInformations(isSecret:Boolean = false, isRestrictedToPartyOnly:Boolean = false, isClosed:Boolean = false, isAskingForHelp:Boolean = false) : FightOptionsInformations {
          this.isSecret = isSecret;
          this.isRestrictedToPartyOnly = isRestrictedToPartyOnly;
          this.isClosed = isClosed;

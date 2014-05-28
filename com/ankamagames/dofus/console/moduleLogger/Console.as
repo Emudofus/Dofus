@@ -21,7 +21,6 @@ package com.ankamagames.dofus.console.moduleLogger
    import flash.filesystem.File;
    import flash.filesystem.FileStream;
    import flash.filesystem.FileMode;
-   import __AS3__.vec.*;
    
    public final class Console extends Object
    {
@@ -77,7 +76,7 @@ package com.ankamagames.dofus.console.moduleLogger
       
       private static const SCROLL_COLOR:uint = 6710920;
       
-      public static const CONSOLE_STYLE:StyleSheet = new StyleSheet();
+      public static const CONSOLE_STYLE:StyleSheet;
       
       public static var showActionLog:Boolean = true;
       
@@ -183,14 +182,14 @@ package com.ankamagames.dofus.console.moduleLogger
          this._showUI = false;
          this._showAction = false;
          this._showShortcut = false;
-         for each (icon in this._filterButton)
+         for each(icon in this._filterButton)
          {
             icon.disable(true);
          }
          this.onFilterChange();
       }
       
-      public function display(quietMode:Boolean=false) : void {
+      public function display(quietMode:Boolean = false) : void {
          ModuleLogger.active = true;
          this._active = true;
          if(quietMode)
@@ -225,7 +224,7 @@ package com.ankamagames.dofus.console.moduleLogger
          }
       }
       
-      private function clearConsole(e:Event=null) : void {
+      private function clearConsole(e:Event = null) : void {
          this._lines.splice(0,this._lines.length);
          this._allInfo.splice(0,this._allInfo.length);
          this._scrollBar.updateScrolling();
@@ -296,13 +295,11 @@ package com.ankamagames.dofus.console.moduleLogger
             this._window.stage.addChild(this._filterUI);
             this.onResize();
          }
-         else
+         else if(this._filterUI.parent)
          {
-            if(this._filterUI.parent)
-            {
-               this._filterUI.parent.removeChild(this._filterUI);
-            }
+            this._filterUI.parent.removeChild(this._filterUI);
          }
+         
       }
       
       private function createWindow() : void {
@@ -390,7 +387,7 @@ package com.ankamagames.dofus.console.moduleLogger
          }
       }
       
-      private function onFilterChange(event:Event=null) : void {
+      private function onFilterChange(event:Event = null) : void {
          var message:TypeMessage = null;
          var type:* = 0;
          var text:String = null;
@@ -427,7 +424,7 @@ package com.ankamagames.dofus.console.moduleLogger
          this.onResize();
       }
       
-      private function onResize(event:Event=null) : void {
+      private function onResize(event:Event = null) : void {
          var posX:* = 0;
          var k:* = 0;
          this._backGround.graphics.clear();
@@ -494,30 +491,24 @@ package com.ankamagames.dofus.console.moduleLogger
             this._showHook = !this._showHook;
             target.disable(!this._showHook);
          }
-         else
+         else if(type == TypeMessage.TYPE_UI)
          {
-            if(type == TypeMessage.TYPE_UI)
-            {
-               this._showUI = !this._showUI;
-               target.disable(!this._showUI);
-            }
-            else
-            {
-               if(type == TypeMessage.TYPE_ACTION)
-               {
-                  this._showAction = !this._showAction;
-                  target.disable(!this._showAction);
-               }
-               else
-               {
-                  if(type == TypeMessage.TYPE_SHORTCUT)
-                  {
-                     this._showShortcut = !this._showShortcut;
-                     target.disable(!this._showShortcut);
-                  }
-               }
-            }
+            this._showUI = !this._showUI;
+            target.disable(!this._showUI);
          }
+         else if(type == TypeMessage.TYPE_ACTION)
+         {
+            this._showAction = !this._showAction;
+            target.disable(!this._showAction);
+         }
+         else if(type == TypeMessage.TYPE_SHORTCUT)
+         {
+            this._showShortcut = !this._showShortcut;
+            target.disable(!this._showShortcut);
+         }
+         
+         
+         
          this.onFilterChange();
       }
       
@@ -538,12 +529,21 @@ package com.ankamagames.dofus.console.moduleLogger
       private var regExp2:RegExp;
       
       private function onFileSelect(e:Event) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var fileStream:FileStream = null;
+         var text:String = null;
+         try
+         {
+            text = this._lines.join(File.lineEnding);
+            text = text.replace(this.regExp,"");
+            text = text.replace(this.regExp2," ");
+            fileStream = new FileStream();
+            fileStream.open(e.target as File,FileMode.WRITE);
+            fileStream.writeUTFBytes(text);
+            fileStream.close();
+         }
+         catch(e:Error)
+         {
+         }
       }
       
       private function onScrollVChange(e:Event) : void {

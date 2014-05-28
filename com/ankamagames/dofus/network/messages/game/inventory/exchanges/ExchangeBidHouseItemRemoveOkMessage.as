@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5946;
       }
       
-      public function initExchangeBidHouseItemRemoveOkMessage(sellerId:int=0) : ExchangeBidHouseItemRemoveOkMessage {
+      public function initExchangeBidHouseItemRemoveOkMessage(sellerId:int = 0) : ExchangeBidHouseItemRemoveOkMessage {
          this.sellerId = sellerId;
          this._isInitialized = true;
          return this;

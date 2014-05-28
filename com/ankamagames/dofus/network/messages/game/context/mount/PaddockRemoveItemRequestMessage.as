@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5958;
       }
       
-      public function initPaddockRemoveItemRequestMessage(cellId:uint=0) : PaddockRemoveItemRequestMessage {
+      public function initPaddockRemoveItemRequestMessage(cellId:uint = 0) : PaddockRemoveItemRequestMessage {
          this.cellId = cellId;
          this._isInitialized = true;
          return this;

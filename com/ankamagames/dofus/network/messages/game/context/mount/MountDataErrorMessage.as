@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 6172;
       }
       
-      public function initMountDataErrorMessage(reason:uint=0) : MountDataErrorMessage {
+      public function initMountDataErrorMessage(reason:uint = 0) : MountDataErrorMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.servers
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    
    public class Server extends Object implements IDataCenter
@@ -15,7 +14,7 @@ package com.ankamagames.dofus.datacenter.servers
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Server));
+      protected static const _log:Logger;
       
       public static const MODULE:String = "Servers";
       

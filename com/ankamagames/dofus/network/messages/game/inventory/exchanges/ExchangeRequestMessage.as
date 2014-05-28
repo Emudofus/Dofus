@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5505;
       }
       
-      public function initExchangeRequestMessage(exchangeType:int=0) : ExchangeRequestMessage {
+      public function initExchangeRequestMessage(exchangeType:int = 0) : ExchangeRequestMessage {
          this.exchangeType = exchangeType;
          this._isInitialized = true;
          return this;

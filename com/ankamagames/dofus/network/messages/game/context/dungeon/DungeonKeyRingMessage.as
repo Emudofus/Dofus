@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
          return 6299;
       }
       
-      public function initDungeonKeyRingMessage(availables:Vector.<uint>=null, unavailables:Vector.<uint>=null) : DungeonKeyRingMessage {
+      public function initDungeonKeyRingMessage(availables:Vector.<uint> = null, unavailables:Vector.<uint> = null) : DungeonKeyRingMessage {
          this.availables = availables;
          this.unavailables = unavailables;
          this._isInitialized = true;
@@ -60,12 +59,36 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
       }
       
       public function serializeAs_DungeonKeyRingMessage(output:IDataOutput) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         output.writeShort(this.availables.length);
+         var _i1:uint = 0;
+         while(_i1 < this.availables.length)
+         {
+            if(this.availables[_i1] < 0)
+            {
+               throw new Error("Forbidden value (" + this.availables[_i1] + ") on element 1 (starting at 1) of availables.");
+            }
+            else
+            {
+               output.writeShort(this.availables[_i1]);
+               _i1++;
+               continue;
+            }
+         }
+         output.writeShort(this.unavailables.length);
+         var _i2:uint = 0;
+         while(_i2 < this.unavailables.length)
+         {
+            if(this.unavailables[_i2] < 0)
+            {
+               throw new Error("Forbidden value (" + this.unavailables[_i2] + ") on element 2 (starting at 1) of unavailables.");
+            }
+            else
+            {
+               output.writeShort(this.unavailables[_i2]);
+               _i2++;
+               continue;
+            }
+         }
       }
       
       public function deserialize(input:IDataInput) : void {
@@ -73,12 +96,40 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
       }
       
       public function deserializeAs_DungeonKeyRingMessage(input:IDataInput) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _val1:uint = 0;
+         var _val2:uint = 0;
+         var _availablesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1 < _availablesLen)
+         {
+            _val1 = input.readShort();
+            if(_val1 < 0)
+            {
+               throw new Error("Forbidden value (" + _val1 + ") on elements of availables.");
+            }
+            else
+            {
+               this.availables.push(_val1);
+               _i1++;
+               continue;
+            }
+         }
+         var _unavailablesLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2 < _unavailablesLen)
+         {
+            _val2 = input.readShort();
+            if(_val2 < 0)
+            {
+               throw new Error("Forbidden value (" + _val2 + ") on elements of unavailables.");
+            }
+            else
+            {
+               this.unavailables.push(_val2);
+               _i2++;
+               continue;
+            }
+         }
       }
    }
 }

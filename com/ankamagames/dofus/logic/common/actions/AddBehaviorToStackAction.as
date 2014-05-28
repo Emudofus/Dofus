@@ -5,7 +5,7 @@ package com.ankamagames.dofus.logic.common.actions
    public class AddBehaviorToStackAction extends Object implements Action
    {
       
-      public function AddBehaviorToStackAction(data:Array=null) {
+      public function AddBehaviorToStackAction(data:Array = null) {
          super();
          this.behavior = !(data == null)?data:new Array();
       }

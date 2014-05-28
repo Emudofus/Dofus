@@ -3,7 +3,7 @@ package com.ankamagames.berilia.types.data
    public class TextTooltipInfo extends Object
    {
       
-      public function TextTooltipInfo(content:String, css:String=null, cssClass:String=null, maxWidth:int=400) {
+      public function TextTooltipInfo(content:String, css:String = null, cssClass:String = null, maxWidth:int = 400) {
          super();
          this.content = content;
          this.css = css;

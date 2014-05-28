@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6324;
       }
       
-      public function initGuildModificationStartedMessage(canChangeName:Boolean=false, canChangeEmblem:Boolean=false) : GuildModificationStartedMessage {
+      public function initGuildModificationStartedMessage(canChangeName:Boolean = false, canChangeEmblem:Boolean = false) : GuildModificationStartedMessage {
          this.canChangeName = canChangeName;
          this.canChangeEmblem = canChangeEmblem;
          this._isInitialized = true;

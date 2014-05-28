@@ -34,7 +34,7 @@ package com.ankamagames.dofus.logic.connection.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GameStartingFrame));
+      protected static const _log:Logger;
       
       private var _worker:Worker;
       
@@ -91,6 +91,8 @@ package com.ankamagames.dofus.logic.connection.frames
             case msg is OpenMainMenuAction:
                KernelEventsManager.getInstance().processCallback(HookList.OpenMainMenu);
                return true;
+            default:
+               return false;
          }
       }
       
@@ -103,7 +105,7 @@ package com.ankamagames.dofus.logic.connection.frames
          var textId:uint = 0;
          var commonMod:Object = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
          var a:Array = new Array();
-         for each (i in msg.parameters)
+         for each(i in msg.parameters)
          {
             a.push(i);
          }

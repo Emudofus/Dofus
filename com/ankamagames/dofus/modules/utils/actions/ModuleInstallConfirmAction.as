@@ -9,7 +9,7 @@ package com.ankamagames.dofus.modules.utils.actions
          super();
       }
       
-      public static function create(update:Boolean=false) : ModuleInstallConfirmAction {
+      public static function create(update:Boolean = false) : ModuleInstallConfirmAction {
          var action:ModuleInstallConfirmAction = new ModuleInstallConfirmAction();
          action.isUpdate = update;
          return action;

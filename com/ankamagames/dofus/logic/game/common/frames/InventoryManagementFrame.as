@@ -86,7 +86,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
    import com.ankamagames.dofus.network.enums.ShortcutBarEnum;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
-   import __AS3__.vec.*;
    import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
    import com.ankamagames.dofus.network.enums.ObjectErrorEnum;
@@ -109,7 +108,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InventoryManagementFrame));
+      protected static const _log:Logger;
       
       private var _objectUIDToDrop:int;
       
@@ -149,7 +148,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          var shortcutProperties:Object = null;
          var shortcut:Shortcut = null;
          var wrappers:Array = new Array();
-         for each (shortcut in shortcuts)
+         for each(shortcut in shortcuts)
          {
             shortcutProperties = this.getShortcutWrapperPropFromShortcut(shortcut);
             wrappers[shortcut.slot] = ShortcutWrapper.create(shortcut.slot,shortcutProperties.id,shortcutProperties.type,shortcutProperties.gid);
@@ -278,7 +277,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   }
                }
                presetWrappers = new Array(8);
-               for each (preset in icapmsg.presets)
+               for each(preset in icapmsg.presets)
                {
                   presetWrappers[preset.presetId] = PresetWrapper.create(preset.presetId,preset.symbolId,preset.objects,preset.mount);
                }
@@ -320,7 +319,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is ObjectsAddedMessage:
                osam = msg as ObjectsAddedMessage;
-               for each (osait in osam.object)
+               for each(osait in osam.object)
                {
                   InventoryManager.getInstance().inventory.addObjectItem(osait);
                }
@@ -333,7 +332,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   this._objectUIDToDrop = -1;
                }
                InventoryManager.getInstance().inventory.modifyItemQuantity(oqm.objectUID,oqm.quantity);
-               for each (shortcutQty in InventoryManager.getInstance().shortcutBarItems)
+               for each(shortcutQty in InventoryManager.getInstance().shortcutBarItems)
                {
                   if((shortcutQty) && (shortcutQty.id == oqm.objectUID))
                   {
@@ -344,10 +343,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is ObjectsQuantityMessage:
                osqm = msg as ObjectsQuantityMessage;
-               for each (objoqm in osqm.objectsUIDAndQty)
+               for each(objoqm in osqm.objectsUIDAndQty)
                {
                   InventoryManager.getInstance().inventory.modifyItemQuantity(objoqm.objectUID,objoqm.quantity);
-                  for each (shortcutsQty in InventoryManager.getInstance().shortcutBarItems)
+                  for each(shortcutsQty in InventoryManager.getInstance().shortcutBarItems)
                   {
                      if((shortcutsQty) && (shortcutsQty.id == objoqm.objectUID))
                      {
@@ -386,14 +385,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                {
                   InventoryManager.getInstance().shortcutBarItems = this.getWrappersFromShortcuts(sbcmsg.shortcuts);
                }
-               else
+               else if(sbcmsg.barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
                {
-                  if(sbcmsg.barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
-                  {
-                     InventoryManager.getInstance().shortcutBarSpells = this.getWrappersFromShortcuts(sbcmsg.shortcuts);
-                     PlayedCharacterManager.getInstance().playerShortcutList = InventoryManager.getInstance().shortcutBarSpells;
-                  }
+                  InventoryManager.getInstance().shortcutBarSpells = this.getWrappersFromShortcuts(sbcmsg.shortcuts);
+                  PlayedCharacterManager.getInstance().playerShortcutList = InventoryManager.getInstance().shortcutBarSpells;
                }
+               
                KernelEventsManager.getInstance().processCallback(InventoryHookList.ShortcutBarViewContent,sbcmsg.barType);
                return true;
             case msg is ShortcutBarRefreshMessage:
@@ -411,24 +408,22 @@ package com.ankamagames.dofus.logic.game.common.frames
                      inventoryMgr.shortcutBarItems[sbrmsg.shortcut.slot] = ShortcutWrapper.create(sbrmsg.shortcut.slot,sRProperties.id,sRProperties.type,sRProperties.gid);
                   }
                }
-               else
+               else if(sbrmsg.barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
                {
-                  if(sbrmsg.barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
+                  if(inventoryMgr.shortcutBarSpells[sbrmsg.shortcut.slot])
                   {
-                     if(inventoryMgr.shortcutBarSpells[sbrmsg.shortcut.slot])
-                     {
-                        inventoryMgr.shortcutBarSpells[sbrmsg.shortcut.slot].update(sbrmsg.shortcut.slot,sRProperties.id,sRProperties.type,sRProperties.gid);
-                     }
-                     else
-                     {
-                        inventoryMgr.shortcutBarSpells[sbrmsg.shortcut.slot] = ShortcutWrapper.create(sbrmsg.shortcut.slot,sRProperties.id,sRProperties.type,sRProperties.gid);
-                     }
-                     if(PlayedCharacterManager.getInstance().spellsInventory == PlayedCharacterManager.getInstance().playerSpellList)
-                     {
-                        PlayedCharacterManager.getInstance().playerShortcutList = InventoryManager.getInstance().shortcutBarSpells;
-                     }
+                     inventoryMgr.shortcutBarSpells[sbrmsg.shortcut.slot].update(sbrmsg.shortcut.slot,sRProperties.id,sRProperties.type,sRProperties.gid);
+                  }
+                  else
+                  {
+                     inventoryMgr.shortcutBarSpells[sbrmsg.shortcut.slot] = ShortcutWrapper.create(sbrmsg.shortcut.slot,sRProperties.id,sRProperties.type,sRProperties.gid);
+                  }
+                  if(PlayedCharacterManager.getInstance().spellsInventory == PlayedCharacterManager.getInstance().playerSpellList)
+                  {
+                     PlayedCharacterManager.getInstance().playerShortcutList = InventoryManager.getInstance().shortcutBarSpells;
                   }
                }
+               
                KernelEventsManager.getInstance().processCallback(InventoryHookList.ShortcutBarViewContent,sbrmsg.barType);
                return true;
             case msg is ShortcutBarRemovedMessage:
@@ -437,13 +432,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                {
                   InventoryManager.getInstance().shortcutBarItems[sbrmmsg.slot] = null;
                }
-               else
+               else if(sbrmmsg.barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
                {
-                  if(sbrmmsg.barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
-                  {
-                     InventoryManager.getInstance().shortcutBarSpells[sbrmmsg.slot] = null;
-                  }
+                  InventoryManager.getInstance().shortcutBarSpells[sbrmmsg.slot] = null;
                }
+               
                KernelEventsManager.getInstance().processCallback(InventoryHookList.ShortcutBarViewContent,sbrmmsg.barType);
                return true;
             case msg is ShortcutBarAddRequestAction:
@@ -457,46 +450,38 @@ package com.ankamagames.dofus.logic.game.common.frames
                   shortcuti.slot = sbara.slot;
                   sbarmsg.initShortcutBarAddRequestMessage(sbara.barType,shortcuti);
                }
-               else
+               else if(sbara.barType == 1)
                {
-                  if(sbara.barType == 1)
-                  {
-                     shortcutp = new ShortcutObjectPreset();
-                     shortcutp.presetId = sbara.id;
-                     shortcutp.slot = sbara.slot;
-                     sbarmsg.initShortcutBarAddRequestMessage(0,shortcutp);
-                  }
-                  else
-                  {
-                     if(sbara.barType == 3)
-                     {
-                        shortcutsm = new ShortcutSmiley();
-                        shortcutsm.smileyId = sbara.id;
-                        shortcutsm.slot = sbara.slot;
-                        sbarmsg.initShortcutBarAddRequestMessage(0,shortcutsm);
-                     }
-                     else
-                     {
-                        if(sbara.barType == 4)
-                        {
-                           shortcute = new ShortcutEmote();
-                           shortcute.emoteId = sbara.id;
-                           shortcute.slot = sbara.slot;
-                           sbarmsg.initShortcutBarAddRequestMessage(0,shortcute);
-                        }
-                        else
-                        {
-                           if(sbara.barType == 2)
-                           {
-                              shortcuts = new ShortcutSpell();
-                              shortcuts.spellId = sbara.id;
-                              shortcuts.slot = sbara.slot;
-                              sbarmsg.initShortcutBarAddRequestMessage(1,shortcuts);
-                           }
-                        }
-                     }
-                  }
+                  shortcutp = new ShortcutObjectPreset();
+                  shortcutp.presetId = sbara.id;
+                  shortcutp.slot = sbara.slot;
+                  sbarmsg.initShortcutBarAddRequestMessage(0,shortcutp);
                }
+               else if(sbara.barType == 3)
+               {
+                  shortcutsm = new ShortcutSmiley();
+                  shortcutsm.smileyId = sbara.id;
+                  shortcutsm.slot = sbara.slot;
+                  sbarmsg.initShortcutBarAddRequestMessage(0,shortcutsm);
+               }
+               else if(sbara.barType == 4)
+               {
+                  shortcute = new ShortcutEmote();
+                  shortcute.emoteId = sbara.id;
+                  shortcute.slot = sbara.slot;
+                  sbarmsg.initShortcutBarAddRequestMessage(0,shortcute);
+               }
+               else if(sbara.barType == 2)
+               {
+                  shortcuts = new ShortcutSpell();
+                  shortcuts.spellId = sbara.id;
+                  shortcuts.slot = sbara.slot;
+                  sbarmsg.initShortcutBarAddRequestMessage(1,shortcuts);
+               }
+               
+               
+               
+               
                ConnectionsHandler.getConnection().send(sbarmsg);
                return true;
             case msg is ShortcutBarRemoveRequestAction:
@@ -515,14 +500,14 @@ package com.ankamagames.dofus.logic.game.common.frames
                pspa = msg as PresetSetPositionAction;
                hiddenObjects = new Vector.<ItemWrapper>();
                loop5:
-               for each (realitem in InventoryManager.getInstance().inventory.getView("real").content)
+               for each(realitem in InventoryManager.getInstance().inventory.getView("real").content)
                {
                   if(Item.getItemById(realitem.objectGID).typeId == Inventory.HIDDEN_TYPE_ID)
                   {
                      hiddenObjects.push(realitem);
                      if((realitem.effects) && (realitem.effects.length))
                      {
-                        for each (effect in realitem.effects)
+                        for each(effect in realitem.effects)
                         {
                            if(effect.effectId == 707)
                            {
@@ -581,7 +566,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is ObjectsDeletedMessage:
                osdmsg = msg as ObjectsDeletedMessage;
                positions = new Array();
-               for each (osdit in osdmsg.objectUID)
+               for each(osdit in osdmsg.objectUID)
                {
                   InventoryManager.getInstance().inventory.removeItem(osdit,-1);
                }
@@ -613,7 +598,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                nbFood = 0;
                nbBonus = 0;
                view = InventoryManager.getInstance().inventory.getView("roleplayBuff");
-               for each (t in view.content)
+               for each(t in view.content)
                {
                   switch(t.position)
                   {
@@ -626,6 +611,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                      case CharacterInventoryPositionEnum.INVENTORY_POSITION_FIRST_BONUS:
                      case CharacterInventoryPositionEnum.INVENTORY_POSITION_SECOND_BONUS:
                         nbBonus++;
+                        continue;
+                     default:
                         continue;
                   }
                }
@@ -685,7 +672,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                ipudmsg = msg as InventoryPresetUpdateMessage;
                newPW = PresetWrapper.create(ipudmsg.preset.presetId,ipudmsg.preset.symbolId,ipudmsg.preset.objects,ipudmsg.preset.mount);
                InventoryManager.getInstance().presets[ipudmsg.preset.presetId] = newPW;
-               for each (shortcutipud in InventoryManager.getInstance().shortcutBarItems)
+               for each(shortcutipud in InventoryManager.getInstance().shortcutBarItems)
                {
                   if((shortcutipud) && (shortcutipud.realItem is PresetWrapper) && ((shortcutipud.realItem as PresetWrapper).id == ipudmsg.preset.presetId))
                   {
@@ -786,13 +773,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                   }
                   KernelEventsManager.getInstance().processCallback(InventoryHookList.PresetError,reason3);
                }
-               else
+               else if(!Berilia.getInstance().getUi("storage"))
                {
-                  if(!Berilia.getInstance().getUi("storage"))
-                  {
-                     KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.preset.inUse",[ipurmsg.presetId + 1]),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
-                  }
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.preset.inUse",[ipurmsg.presetId + 1]),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
                }
+               
                return true;
             case msg is InventoryPresetItemUpdateRequestAction:
                ipira = msg as InventoryPresetItemUpdateRequestAction;
@@ -884,21 +869,19 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
             }
          }
+         else if(oua.quantity > 1)
+         {
+            oummsg = new ObjectUseMultipleMessage();
+            oummsg.initObjectUseMultipleMessage(oua.objectUID,oua.quantity);
+            ConnectionsHandler.getConnection().send(oummsg);
+         }
          else
          {
-            if(oua.quantity > 1)
-            {
-               oummsg = new ObjectUseMultipleMessage();
-               oummsg.initObjectUseMultipleMessage(oua.objectUID,oua.quantity);
-               ConnectionsHandler.getConnection().send(oummsg);
-            }
-            else
-            {
-               oumsg = new ObjectUseMessage();
-               oumsg.initObjectUseMessage(oua.objectUID);
-               ConnectionsHandler.getConnection().send(oumsg);
-            }
+            oumsg = new ObjectUseMessage();
+            oumsg.initObjectUseMessage(oua.objectUID);
+            ConnectionsHandler.getConnection().send(oumsg);
          }
+         
       }
       
       private function addObject(objectItem:ObjectItem) : void {
@@ -915,38 +898,30 @@ package com.ankamagames.dofus.logic.game.common.frames
             gid = (shortcut as ShortcutObjectItem).itemGID;
             type = 0;
          }
-         else
+         else if(shortcut is ShortcutObjectPreset)
          {
-            if(shortcut is ShortcutObjectPreset)
-            {
-               id = (shortcut as ShortcutObjectPreset).presetId;
-               type = 1;
-            }
-            else
-            {
-               if(shortcut is ShortcutEmote)
-               {
-                  id = (shortcut as ShortcutEmote).emoteId;
-                  type = 4;
-               }
-               else
-               {
-                  if(shortcut is ShortcutSmiley)
-                  {
-                     id = (shortcut as ShortcutSmiley).smileyId;
-                     type = 3;
-                  }
-                  else
-                  {
-                     if(shortcut is ShortcutSpell)
-                     {
-                        id = (shortcut as ShortcutSpell).spellId;
-                        type = 2;
-                     }
-                  }
-               }
-            }
+            id = (shortcut as ShortcutObjectPreset).presetId;
+            type = 1;
          }
+         else if(shortcut is ShortcutEmote)
+         {
+            id = (shortcut as ShortcutEmote).emoteId;
+            type = 4;
+         }
+         else if(shortcut is ShortcutSmiley)
+         {
+            id = (shortcut as ShortcutSmiley).smileyId;
+            type = 3;
+         }
+         else if(shortcut is ShortcutSpell)
+         {
+            id = (shortcut as ShortcutSpell).spellId;
+            type = 2;
+         }
+         
+         
+         
+         
          return 
             {
                "id":id,

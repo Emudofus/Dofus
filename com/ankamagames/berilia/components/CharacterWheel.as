@@ -47,13 +47,13 @@ package com.ankamagames.berilia.components
          this._ctrDepth = new Array();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CharacterWheel));
+      protected static const _log:Logger;
       
-      private static const _animationModifier:Dictionary = new Dictionary();
+      private static const _animationModifier:Dictionary;
       
-      private static const _skinModifier:Dictionary = new Dictionary();
+      private static const _skinModifier:Dictionary;
       
-      private static const _subEntitiesBehaviors:Dictionary = new Dictionary();
+      private static const _subEntitiesBehaviors:Dictionary;
       
       public static function setSubEntityDefaultBehavior(category:uint, behavior:ISubEntityBehavior) : void {
          _subEntitiesBehaviors[category] = behavior;
@@ -257,7 +257,7 @@ package com.ankamagames.berilia.components
          var numChildrenCtr:uint = 0;
          if(!__removed)
          {
-            for each (g in this._aMountainsCtr)
+            for each(g in this._aMountainsCtr)
             {
                g.remove();
             }
@@ -287,7 +287,7 @@ package com.ankamagames.berilia.components
             this._charaSelCtr = null;
             this._midZCtr = null;
             this._frontZCtr = null;
-            for each (behavior in _subEntitiesBehaviors)
+            for each(behavior in _subEntitiesBehaviors)
             {
                if(behavior)
                {
@@ -310,7 +310,7 @@ package com.ankamagames.berilia.components
          this.createMountainsCtrBitmap(this._aSprites[this._nSelectedChara].parent,this._nSelectedChara);
       }
       
-      public function setAnimation(animationName:String, direction:int=0) : void {
+      public function setAnimation(animationName:String, direction:int = 0) : void {
          var seq:SerialSequencer = new SerialSequencer();
          var sprite:TiphonSprite = this._aSprites[this._nSelectedChara];
          if(animationName == "AnimStatique")
@@ -326,7 +326,7 @@ package com.ankamagames.berilia.components
          }
       }
       
-      public function equipCharacter(list:Array, numDelete:int=0) : void {
+      public function equipCharacter(list:Array, numDelete:int = 0) : void {
          var bones:Array = null;
          var k:* = 0;
          var sprite:TiphonSprite = this._aSprites[this._nSelectedChara];
@@ -378,7 +378,7 @@ package com.ankamagames.berilia.components
             te.destroy();
             k++;
          }
-         for each (g in this._aMountainsCtr)
+         for each(g in this._aMountainsCtr)
          {
             g.remove();
          }
@@ -428,7 +428,7 @@ package com.ankamagames.berilia.components
                   {
                      oPerso.skinModifier = _skinModifier[oPerso.look.getBone()];
                   }
-                  for (cat in _subEntitiesBehaviors)
+                  for(cat in _subEntitiesBehaviors)
                   {
                      if(_subEntitiesBehaviors[cat])
                      {
@@ -505,13 +505,11 @@ package com.ankamagames.berilia.components
          {
             event.target.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onMoutainPartRendered);
          }
-         else
+         else if(event.type == Event.COMPLETE)
          {
-            if(event.type == Event.COMPLETE)
-            {
-               event.target.removeEventListener(Event.COMPLETE,this.onMoutainPartRendered);
-            }
+            event.target.removeEventListener(Event.COMPLETE,this.onMoutainPartRendered);
          }
+         
          if((this._aRenderePartNames[event.target.name]) && (event.target.stage))
          {
             this.createMountainsCtrBitmap(this._aRenderePartNames[event.target.name],int(event.target.name.replace("char","")));
@@ -589,14 +587,14 @@ package com.ankamagames.berilia.components
          }
          if(sens == 1)
          {
-            for each (listener in Berilia.getInstance().UISoundListeners)
+            for each(listener in Berilia.getInstance().UISoundListeners)
             {
                listener.playUISound("16079");
             }
          }
          else
          {
-            for each (listener2 in Berilia.getInstance().UISoundListeners)
+            for each(listener2 in Berilia.getInstance().UISoundListeners)
             {
                listener2.playUISound("16080");
             }
@@ -640,75 +638,12 @@ package com.ankamagames.berilia.components
       }
       
       private function onRotateMountains(e:Event) : void {
-         var ctr:GraphicContainer = null;
-         var angle:* = NaN;
-         var coef:* = NaN;
-         this._bMovingMountains = true;
-         if(this._nRotationStep == 0)
-         {
-            this.endRotationMountains();
-         }
-         if(Math.abs(this._nRotationPieceTrg - this._nRotation) < 0.01)
-         {
-            this._nRotation = this._nRotationPieceTrg;
-         }
-         else
-         {
-            this._nRotation = this._nRotation + (this._nRotationPieceTrg - this._nRotation) / 3;
-         }
-         var zOrder:Array = new Array();
-         var i:int = 0;
-         for each (ctr in this._aMountainsCtr)
-         {
-            angle = (this._nRotation + this._nRotationStep * i) % (2 * Math.PI);
-            coef = Math.abs(Math.PI - (angle < 0?angle + 2 * Math.PI:angle) % (2 * Math.PI)) / Math.PI;
-            zOrder.push(
-               {
-                  "ctr":ctr,
-                  "z":coef
-               });
-            ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 2) + this._nXCenterEllipsis;
-            ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 2) + this._nYCenterEllipsis;
-            if(this._nNbCharacters == 2)
-            {
-               if(ctr.y < 300)
-               {
-                  ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
-                  ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
-               }
-            }
-            if(this._nNbCharacters == 4)
-            {
-               if(ctr.y < 300)
-               {
-                  ctr.x = this._nWidthEllipsis * Math.cos(angle + Math.PI / 6 + Math.PI / 2) + this._nXCenterEllipsis;
-                  ctr.y = this._nHeightEllipsis * Math.sin(angle + Math.PI / 6 + Math.PI / 2) + this._nYCenterEllipsis;
-               }
-            }
-            ctr.scaleX = ctr.scaleY = Math.max(0.3,coef);
-            ctr.alpha = Math.max(0.3,coef);
-            if(ctr.numChildren == 3)
-            {
-               ctr.getChildAt(0).visible = ctr.getChildAt(1).visible = i == this._nSelectedChara;
-               ctr.getChildAt(2).visible = !(i == this._nSelectedChara);
-            }
-            i++;
-         }
-         zOrder.sortOn("z",Array.NUMERIC);
-         i = 0;
-         while(i < zOrder.length)
-         {
-            zOrder[i].ctr.parent.addChildAt(zOrder[i].ctr,this._ctrDepth[i]);
-            i++;
-         }
-         if(this._charaSelCtr)
-         {
-            this._charaSelCtr.setChildIndex(this._frontZCtr,this._charaSelCtr.numChildren - 1);
-         }
-         if(this._nRotationPieceTrg == this._nRotation)
-         {
-            this.endRotationMountains();
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
    }
 }

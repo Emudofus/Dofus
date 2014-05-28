@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 5723;
       }
       
-      public function initLivingObjectDissociateMessage(livingUID:uint=0, livingPosition:uint=0) : LivingObjectDissociateMessage {
+      public function initLivingObjectDissociateMessage(livingUID:uint = 0, livingPosition:uint = 0) : LivingObjectDissociateMessage {
          this.livingUID = livingUID;
          this.livingPosition = livingPosition;
          this._isInitialized = true;

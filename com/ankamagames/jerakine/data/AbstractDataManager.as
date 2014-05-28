@@ -15,6 +15,7 @@ package com.ankamagames.jerakine.data
    {
       
       public function AbstractDataManager() {
+         this._log = Log.getLogger(getQualifiedClassName(AbstractDataManager));
          super();
       }
       
@@ -26,7 +27,7 @@ package com.ankamagames.jerakine.data
       
       protected var _soPrefix:String = "";
       
-      protected const _log:Logger = Log.getLogger(getQualifiedClassName(AbstractDataManager));
+      protected const _log:Logger;
       
       public function getObject(key:uint) : Object {
          var v:* = undefined;
@@ -67,7 +68,7 @@ package com.ankamagames.jerakine.data
             return null;
          }
          var data:Array = new Array();
-         for each (fileNum in fileList)
+         for each(fileNum in fileList)
          {
             soName = this._soPrefix + fileNum;
             if(this._cacheSO.contains(soName))
@@ -87,7 +88,7 @@ package com.ankamagames.jerakine.data
          return data;
       }
       
-      function init(soCacheSize:uint, keyCacheSize:uint, soPrefix:String="") : void {
+      function init(soCacheSize:uint, keyCacheSize:uint, soPrefix:String = "") : void {
          if(keyCacheSize == uint.MAX_VALUE)
          {
             this._cacheKey = new InfiniteCache();

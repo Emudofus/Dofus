@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.social
          return 422;
       }
       
-      public function initAlliancedGuildFactSheetInformations(guildId:uint=0, guildName:String="", guildEmblem:GuildEmblem=null, allianceInfos:BasicNamedAllianceInformations=null) : AlliancedGuildFactSheetInformations {
+      public function initAlliancedGuildFactSheetInformations(guildId:uint = 0, guildName:String = "", guildEmblem:GuildEmblem = null, allianceInfos:BasicNamedAllianceInformations = null) : AlliancedGuildFactSheetInformations {
          super.initGuildInformations(guildId,guildName,guildEmblem);
          this.allianceInfos = allianceInfos;
          return this;

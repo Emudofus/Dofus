@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
          return 6483;
       }
       
-      public function initTreasureHuntFinishedMessage(questType:uint=0) : TreasureHuntFinishedMessage {
+      public function initTreasureHuntFinishedMessage(questType:uint = 0) : TreasureHuntFinishedMessage {
          this.questType = questType;
          this._isInitialized = true;
          return this;

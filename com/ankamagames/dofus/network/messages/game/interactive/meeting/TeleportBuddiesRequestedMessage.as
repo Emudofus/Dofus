@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.meeting
          return 6302;
       }
       
-      public function initTeleportBuddiesRequestedMessage(dungeonId:uint=0, inviterId:uint=0, invalidBuddiesIds:Vector.<uint>=null) : TeleportBuddiesRequestedMessage {
+      public function initTeleportBuddiesRequestedMessage(dungeonId:uint = 0, inviterId:uint = 0, invalidBuddiesIds:Vector.<uint> = null) : TeleportBuddiesRequestedMessage {
          this.dungeonId = dungeonId;
          this.inviterId = inviterId;
          this.invalidBuddiesIds = invalidBuddiesIds;

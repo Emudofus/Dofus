@@ -7,7 +7,7 @@ package com.somerandomdude.colortoolkit.schemes
    public class Tetrad extends ColorWheelScheme implements IColorScheme
    {
       
-      public function Tetrad(primaryColor:int, angle:Number=90) {
+      public function Tetrad(primaryColor:int, angle:Number = 90) {
          this._angle = angle;
          super(primaryColor);
       }

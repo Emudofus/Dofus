@@ -29,7 +29,7 @@ package com.ankamagames.berilia.components
          _tText.mouseWheelEnabled = false;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TextArea));
+      protected static const _log:Logger;
       
       private var _sbScrollBar:ScrollBar;
       
@@ -138,7 +138,7 @@ package com.ankamagames.berilia.components
          this._bHideScroll = hideScroll;
       }
       
-      override public function appendText(sTxt:String, style:String=null) : void {
+      override public function appendText(sTxt:String, style:String = null) : void {
          super.appendText(sTxt,style);
          if(this._bFinalized)
          {
@@ -185,7 +185,7 @@ package com.ankamagames.berilia.components
          return super.process(msg);
       }
       
-      private function updateScrollBar(reset:Boolean=false) : void {
+      private function updateScrollBar(reset:Boolean = false) : void {
          if(_tText.numLines * _tText.getLineMetrics(0).height < height)
          {
             _tText.scrollV = 0;

@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.chat.smiley
          return 6185;
       }
       
-      public function initLocalizedChatSmileyMessage(entityId:int=0, smileyId:uint=0, accountId:uint=0, cellId:uint=0) : LocalizedChatSmileyMessage {
+      public function initLocalizedChatSmileyMessage(entityId:int = 0, smileyId:uint = 0, accountId:uint = 0, cellId:uint = 0) : LocalizedChatSmileyMessage {
          super.initChatSmileyMessage(entityId,smileyId,accountId);
          this.cellId = cellId;
          this._isInitialized = true;

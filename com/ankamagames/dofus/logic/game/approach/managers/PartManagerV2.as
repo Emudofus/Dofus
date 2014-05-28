@@ -33,9 +33,9 @@ package com.ankamagames.dofus.logic.game.approach.managers
          }
       }
       
-      private static const instance:PartManagerV2 = new PartManagerV2();
+      private static const instance:PartManagerV2;
       
-      private static const logger:Logger = Log.getLogger(getQualifiedClassName(PartManagerV2));
+      private static const logger:Logger;
       
       private static const PROJECT_NAME:String = "game";
       
@@ -58,7 +58,7 @@ package com.ankamagames.dofus.logic.game.approach.managers
          return this._modules?!(this._modules[name] == null)?this._modules[name].activated as Boolean:false:false;
       }
       
-      public function activateComponent(name:String, activate:Boolean=true, project:String="game") : void {
+      public function activateComponent(name:String, activate:Boolean = true, project:String = "game") : void {
          if(!this.hasComponent(name))
          {
             logger.debug("Ask updater for " + activate?"activate":"desactivate" + " component : " + name);
@@ -113,7 +113,6 @@ package com.ankamagames.dofus.logic.game.approach.managers
                em = msg as ErrorMessage;
                hook = HookList.UpdateError;
                params = [hook,em.type,em.message];
-               break;
          }
          if(hook)
          {

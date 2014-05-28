@@ -26,7 +26,7 @@ package com.ankamagames.atouin.entities.behaviours.display
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AtouinDisplayBehavior));
+      protected static const _log:Logger;
       
       private static var _self:AtouinDisplayBehavior;
       
@@ -38,7 +38,7 @@ package com.ankamagames.atouin.entities.behaviours.display
          return _self;
       }
       
-      public function display(displayable:IDisplayable, strata:uint=0) : void {
+      public function display(displayable:IDisplayable, strata:uint = 0) : void {
          var entity:IEntity = displayable as IEntity;
          EntitiesManager.getInstance().addAnimatedEntity(entity.id,entity,strata);
       }

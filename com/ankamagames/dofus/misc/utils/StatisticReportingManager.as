@@ -83,23 +83,6 @@ package com.ankamagames.dofus.misc.utils
          {
          }
          return false;
-         if((oldValue) && (oldValue == value))
-         {
-            return false;
-         }
-         urlRequest = new URLRequest(WEB_SERVICE);
-         urlRequest.method = URLRequestMethod.POST;
-         urlRequest.data = new URLVariables();
-         urlRequest.data.guid = MD5.hash(PlayerManager.getInstance().nickname);
-         urlRequest.data.version = BuildInfos.BUILD_TYPE;
-         urlRequest.data.key = key;
-         urlRequest.data.value = value;
-         urlLoader = new URLLoader();
-         urlLoader.addEventListener(Event.COMPLETE,this.onSended);
-         urlLoader.addEventListener(IOErrorEvent.IO_ERROR,this.onSendError);
-         urlLoader.load(urlRequest);
-         StoreDataManager.getInstance().setData(this._dt,key,value);
-         return true;
       }
       
       public function isReported(key:String) : Boolean {

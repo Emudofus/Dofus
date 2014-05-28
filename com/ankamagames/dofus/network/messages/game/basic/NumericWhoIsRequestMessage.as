@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 6298;
       }
       
-      public function initNumericWhoIsRequestMessage(playerId:uint=0) : NumericWhoIsRequestMessage {
+      public function initNumericWhoIsRequestMessage(playerId:uint = 0) : NumericWhoIsRequestMessage {
          this.playerId = playerId;
          this._isInitialized = true;
          return this;

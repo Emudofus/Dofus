@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 5535;
       }
       
-      public function initGameActionFightStealKamaMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, amount:uint=0) : GameActionFightStealKamaMessage {
+      public function initGameActionFightStealKamaMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, amount:uint = 0) : GameActionFightStealKamaMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this.amount = amount;

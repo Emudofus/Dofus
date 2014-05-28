@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 6121;
       }
       
-      public function initCharacterSelectionWithRenameMessage(id:int=0, name:String="") : CharacterSelectionWithRenameMessage {
+      public function initCharacterSelectionWithRenameMessage(id:int = 0, name:String = "") : CharacterSelectionWithRenameMessage {
          super.initCharacterSelectionMessage(id);
          this.name = name;
          this._isInitialized = true;

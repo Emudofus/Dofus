@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6249;
       }
       
-      public function initDungeonPartyFinderRegisterRequestMessage(dungeonIds:Vector.<uint>=null) : DungeonPartyFinderRegisterRequestMessage {
+      public function initDungeonPartyFinderRegisterRequestMessage(dungeonIds:Vector.<uint> = null) : DungeonPartyFinderRegisterRequestMessage {
          this.dungeonIds = dungeonIds;
          this._isInitialized = true;
          return this;
@@ -55,12 +54,21 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
       }
       
       public function serializeAs_DungeonPartyFinderRegisterRequestMessage(output:IDataOutput) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ArrayIndexOutOfBoundsException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         output.writeShort(this.dungeonIds.length);
+         var _i1:uint = 0;
+         while(_i1 < this.dungeonIds.length)
+         {
+            if(this.dungeonIds[_i1] < 0)
+            {
+               throw new Error("Forbidden value (" + this.dungeonIds[_i1] + ") on element 1 (starting at 1) of dungeonIds.");
+            }
+            else
+            {
+               output.writeShort(this.dungeonIds[_i1]);
+               _i1++;
+               continue;
+            }
+         }
       }
       
       public function deserialize(input:IDataInput) : void {

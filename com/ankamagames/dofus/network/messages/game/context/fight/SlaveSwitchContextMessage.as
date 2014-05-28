@@ -5,7 +5,6 @@ package com.ankamagames.dofus.network.messages.game.context.fight
    import com.ankamagames.dofus.network.types.game.data.items.SpellItem;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.network.types.game.shortcut.Shortcut;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -43,7 +42,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 6214;
       }
       
-      public function initSlaveSwitchContextMessage(masterId:int=0, slaveId:int=0, slaveSpells:Vector.<SpellItem>=null, slaveStats:CharacterCharacteristicsInformations=null, shortcuts:Vector.<Shortcut>=null) : SlaveSwitchContextMessage {
+      public function initSlaveSwitchContextMessage(masterId:int = 0, slaveId:int = 0, slaveSpells:Vector.<SpellItem> = null, slaveStats:CharacterCharacteristicsInformations = null, shortcuts:Vector.<Shortcut> = null) : SlaveSwitchContextMessage {
          this.masterId = masterId;
          this.slaveId = slaveId;
          this.slaveSpells = slaveSpells;

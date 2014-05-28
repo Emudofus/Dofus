@@ -32,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.atlas.compass
          return 5591;
       }
       
-      public function initCompassUpdateMessage(type:uint=0, coords:MapCoordinates=null) : CompassUpdateMessage {
+      public function initCompassUpdateMessage(type:uint = 0, coords:MapCoordinates = null) : CompassUpdateMessage {
          this.type = type;
          this.coords = coords;
          this._isInitialized = true;

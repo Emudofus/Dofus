@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5748;
       }
       
-      public function initJobAllowMultiCraftRequestMessage(enabled:Boolean=false) : JobAllowMultiCraftRequestMessage {
+      public function initJobAllowMultiCraftRequestMessage(enabled:Boolean = false) : JobAllowMultiCraftRequestMessage {
          this.enabled = enabled;
          this._isInitialized = true;
          return this;

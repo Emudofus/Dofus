@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5575;
       }
       
-      public function initPartyUpdateMessage(partyId:uint=0, memberInformations:PartyMemberInformations=null) : PartyUpdateMessage {
+      public function initPartyUpdateMessage(partyId:uint = 0, memberInformations:PartyMemberInformations = null) : PartyUpdateMessage {
          super.initAbstractPartyEventMessage(partyId);
          this.memberInformations = memberInformations;
          this._isInitialized = true;

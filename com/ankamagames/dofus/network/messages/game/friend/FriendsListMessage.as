@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.friend
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.friend.FriendInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 4002;
       }
       
-      public function initFriendsListMessage(friendsList:Vector.<FriendInformations>=null) : FriendsListMessage {
+      public function initFriendsListMessage(friendsList:Vector.<FriendInformations> = null) : FriendsListMessage {
          this.friendsList = friendsList;
          this._isInitialized = true;
          return this;

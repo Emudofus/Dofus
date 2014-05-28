@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.data.items
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
@@ -21,7 +20,7 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 164;
       }
       
-      public function initObjectItemToSellInBid(objectGID:uint=0, effects:Vector.<ObjectEffect>=null, objectUID:uint=0, quantity:uint=0, objectPrice:uint=0, unsoldDelay:uint=0) : ObjectItemToSellInBid {
+      public function initObjectItemToSellInBid(objectGID:uint = 0, effects:Vector.<ObjectEffect> = null, objectUID:uint = 0, quantity:uint = 0, objectPrice:uint = 0, unsoldDelay:uint = 0) : ObjectItemToSellInBid {
          super.initObjectItemToSell(objectGID,effects,objectUID,quantity,objectPrice);
          this.unsoldDelay = unsoldDelay;
          return this;

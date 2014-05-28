@@ -15,7 +15,7 @@ package com.ankamagames.tiphon.engine
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(TiphonMultiBonesManager));
+      private static const _log:Logger;
       
       private static var _instance:TiphonMultiBonesManager;
       
@@ -31,7 +31,7 @@ package com.ankamagames.tiphon.engine
       
       private var _nbBonesLoaded:int;
       
-      public function getAllBonesFromLook(look:TiphonEntityLook, result:Array=null) : Array {
+      public function getAllBonesFromLook(look:TiphonEntityLook, result:Array = null) : Array {
          var seTab:* = undefined;
          var se:* = undefined;
          if(!result)
@@ -39,9 +39,9 @@ package com.ankamagames.tiphon.engine
             result = new Array();
          }
          result.push(look.getBone());
-         for each (seTab in look.getSubEntities())
+         for each(seTab in look.getSubEntities())
          {
-            for each (se in seTab)
+            for each(se in seTab)
             {
                this.getAllBonesFromLook(se,result);
             }
@@ -49,7 +49,7 @@ package com.ankamagames.tiphon.engine
          return result;
       }
       
-      public function onLoadedBone(bone:uint, callback:Callback=null) : void {
+      public function onLoadedBone(bone:uint, callback:Callback = null) : void {
          this._nbBonesLoaded++;
          if(this._nbBonesLoaded == this._nbBonesToLoad)
          {
@@ -60,14 +60,14 @@ package com.ankamagames.tiphon.engine
          }
       }
       
-      public function forceBonesLoading(bones:Array, callback:Callback=null) : void {
+      public function forceBonesLoading(bones:Array, callback:Callback = null) : void {
          var bone:uint = 0;
          var hasBone:* = false;
          var hasRessource:* = false;
          var file:Uri = null;
          this._nbBonesLoaded = 0;
          this._nbBonesToLoad = bones.length;
-         for each (bone in bones)
+         for each(bone in bones)
          {
             hasBone = BoneIndexManager.getInstance().hasCustomBone(bone);
             hasRessource = Tiphon.skullLibrary.hasResource(bone);

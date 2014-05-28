@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.data.items
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 121;
       }
       
-      public function initSellerBuyerDescriptor(quantities:Vector.<uint>=null, types:Vector.<uint>=null, taxPercentage:Number=0, taxModificationPercentage:Number=0, maxItemLevel:uint=0, maxItemPerAccount:uint=0, npcContextualId:int=0, unsoldDelay:uint=0) : SellerBuyerDescriptor {
+      public function initSellerBuyerDescriptor(quantities:Vector.<uint> = null, types:Vector.<uint> = null, taxPercentage:Number = 0, taxModificationPercentage:Number = 0, maxItemLevel:uint = 0, maxItemPerAccount:uint = 0, npcContextualId:int = 0, unsoldDelay:uint = 0) : SellerBuyerDescriptor {
          this.quantities = quantities;
          this.types = types;
          this.taxPercentage = taxPercentage;

@@ -4,7 +4,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.mount.MountClientData;
    import com.ankamagames.dofus.internalDatacenter.mount.MountData;
    import com.ankamagames.jerakine.messages.Message;
@@ -82,7 +81,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MountFrame));
+      protected static const _log:Logger;
       
       public static const MAX_XP_RATIO:uint = 90;
       
@@ -124,7 +123,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          this._stableList = new Array();
          if(stables)
          {
-            for each (mcd in stables)
+            for each(mcd in stables)
             {
                this._stableList.push(MountData.makeMountData(mcd,true,this._mountXpRatio));
             }
@@ -132,7 +131,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          this._paddockList = new Array();
          if(paddocks)
          {
-            for each (mcd in paddocks)
+            for each(mcd in paddocks)
             {
                this._paddockList.push(MountData.makeMountData(mcd,true,this._mountXpRatio));
             }
@@ -361,13 +360,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                   {
                      lastStaticAnim = player.getAnimation();
                   }
-                  else
+                  else if((currentEmote) && (currentEmote.persistancy))
                   {
-                     if((currentEmote) && (currentEmote.persistancy))
-                     {
-                        lastStaticAnim = player.getAnimation().replace("_","_Statique_");
-                     }
+                     lastStaticAnim = player.getAnimation().replace("_","_Statique_");
                   }
+                  
                   if(lastStaticAnim)
                   {
                      (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).lastStaticAnimations[player.id] = {"anim":lastStaticAnim};
@@ -422,7 +419,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is UpdateMountBoostMessage:
                umbmsg = msg as UpdateMountBoostMessage;
                mountToUpdate = null;
-               for each (m in this._paddockList)
+               for each(m in this._paddockList)
                {
                   if(m.id == umbmsg.rideId)
                   {
@@ -435,7 +432,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   _log.error("Can\'t find " + umbmsg.rideId + " ride ID for update mount boost");
                   return true;
                }
-               for each (boost in umbmsg.boostToUpdateList)
+               for each(boost in umbmsg.boostToUpdateList)
                {
                   if(boost is UpdateMountIntBoost)
                   {
@@ -459,6 +456,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                            continue;
                         case UpdatableMountBoostEnum.TIREDNESS:
                            mountToUpdate.boostLimiter = intBoost.value;
+                        default:
                            continue;
                      }
                   }
@@ -511,6 +509,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                mremsg = msg as MountReleasedMessage;
                KernelEventsManager.getInstance().processCallback(MountHookList.MountReleased,mremsg.mountId);
                return true;
+            default:
+               return false;
          }
       }
       

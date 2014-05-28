@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.social
          return 437;
       }
       
-      public function initGuildInAllianceVersatileInformations(guildId:uint=0, leaderId:uint=0, guildLevel:uint=0, nbMembers:uint=0, allianceId:uint=0) : GuildInAllianceVersatileInformations {
+      public function initGuildInAllianceVersatileInformations(guildId:uint = 0, leaderId:uint = 0, guildLevel:uint = 0, nbMembers:uint = 0, allianceId:uint = 0) : GuildInAllianceVersatileInformations {
          super.initGuildVersatileInformations(guildId,leaderId,guildLevel,nbMembers);
          this.allianceId = allianceId;
          return this;

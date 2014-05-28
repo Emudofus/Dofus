@@ -21,9 +21,9 @@ package com.ankamagames.dofus.kernel.sound.manager
       
       function retriveRollOffPresets() : void;
       
-      function setSubArea(param1:Map=null) : void;
+      function setSubArea(param1:Map = null) : void;
       
-      function playSound(param1:ISound, param2:Boolean=false, param3:int=-1) : ISound;
+      function playSound(param1:ISound, param2:Boolean = false, param3:int = -1) : ISound;
       
       function playFightMusic() : void;
       
@@ -33,13 +33,13 @@ package com.ankamagames.dofus.kernel.sound.manager
       
       function applyDynamicMix(param1:VolumeFadeEffect, param2:uint, param3:VolumeFadeEffect) : void;
       
-      function playIntroMusic(param1:Boolean=true) : void;
+      function playIntroMusic(param1:Boolean = true) : void;
       
       function switchIntroMusic(param1:Boolean) : void;
       
-      function stopIntroMusic(param1:Boolean=false) : void;
+      function stopIntroMusic(param1:Boolean = false) : void;
       
-      function removeAllSounds(param1:Number=0, param2:Number=0) : void;
+      function removeAllSounds(param1:Number = 0, param2:Number = 0) : void;
       
       function reset() : void;
       

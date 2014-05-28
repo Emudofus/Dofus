@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
          return 6085;
       }
       
-      public function initQuestObjectiveValidationMessage(questId:uint=0, objectiveId:uint=0) : QuestObjectiveValidationMessage {
+      public function initQuestObjectiveValidationMessage(questId:uint = 0, objectiveId:uint = 0) : QuestObjectiveValidationMessage {
          this.questId = questId;
          this.objectiveId = objectiveId;
          this._isInitialized = true;

@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 76;
       }
       
-      public function initObjectEffect(actionId:uint=0) : ObjectEffect {
+      public function initObjectEffect(actionId:uint = 0) : ObjectEffect {
          this.actionId = actionId;
          return this;
       }
@@ -33,15 +33,12 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
       }
       
       public function serializeAs_ObjectEffect(output:IDataOutput) : void {
-         if(this.actionId < 0)
-         {
-            throw new Error("Forbidden value (" + this.actionId + ") on element actionId.");
-         }
-         else
-         {
-            output.writeShort(this.actionId);
-            return;
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: NullPointerException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function deserialize(input:IDataInput) : void {

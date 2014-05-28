@@ -1,7 +1,5 @@
 package com.hurlant.math
 {
-   use namespace bi_internal;
-   
    class ClassicReduction extends Object implements IReduction
    {
       

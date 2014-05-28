@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 221;
       }
       
-      public function initChangeMapMessage(mapId:uint=0) : ChangeMapMessage {
+      public function initChangeMapMessage(mapId:uint = 0) : ChangeMapMessage {
          this.mapId = mapId;
          this._isInitialized = true;
          return this;

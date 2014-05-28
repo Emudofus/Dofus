@@ -32,7 +32,7 @@ package com.ankamagames.dofus.misc.options
          CssManager.getInstance().askCss(this._cssUri,new Callback(this.onCssLoaded));
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ChatOptions));
+      protected static const _log:Logger;
       
       public var colors:Array;
       

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3010;
       }
       
-      public function initObjectMovementMessage(objectUID:uint=0, position:uint=63) : ObjectMovementMessage {
+      public function initObjectMovementMessage(objectUID:uint = 0, position:uint = 63) : ObjectMovementMessage {
          this.objectUID = objectUID;
          this.position = position;
          this._isInitialized = true;

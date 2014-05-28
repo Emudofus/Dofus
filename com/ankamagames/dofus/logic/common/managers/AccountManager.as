@@ -20,7 +20,7 @@ package com.ankamagames.dofus.logic.common.managers
       
       private static var _singleton:AccountManager;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AccountManager));
+      protected static const _log:Logger;
       
       public static function getInstance() : AccountManager {
          if(!_singleton)
@@ -52,7 +52,7 @@ package com.ankamagames.dofus.logic.common.managers
          return "";
       }
       
-      public function setAccount(playerName:String, accountId:int, accountName:String=null) : void {
+      public function setAccount(playerName:String, accountId:int, accountName:String = null) : void {
          this._accounts[playerName] = 
             {
                "id":accountId,
@@ -60,7 +60,7 @@ package com.ankamagames.dofus.logic.common.managers
             };
       }
       
-      public function setAccountFromId(playerId:int, accountId:int, accountName:String=null) : void {
+      public function setAccountFromId(playerId:int, accountId:int, accountName:String = null) : void {
          var entityInfo:GameRolePlayNamedActorInformations = null;
          var _fightEntityFrame:FightEntitiesFrame = null;
          var fightInfo:GameFightFighterNamedInformations = null;

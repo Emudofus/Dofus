@@ -6,7 +6,7 @@ package com.hurlant.util.der
    public class ByteString extends ByteArray implements IAsn1Type
    {
       
-      public function ByteString(type:uint=4, length:uint=0) {
+      public function ByteString(type:uint = 4, length:uint = 0) {
          super();
          this.type = type;
          this.len = length;

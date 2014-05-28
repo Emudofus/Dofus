@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.character.replay
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -28,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.character.replay
          return 6111;
       }
       
-      public function initCharacterReplayWithRecolorRequestMessage(characterId:uint=0, indexedColor:Vector.<int>=null) : CharacterReplayWithRecolorRequestMessage {
+      public function initCharacterReplayWithRecolorRequestMessage(characterId:uint = 0, indexedColor:Vector.<int> = null) : CharacterReplayWithRecolorRequestMessage {
          super.initCharacterReplayRequestMessage(characterId);
          this.indexedColor = indexedColor;
          this._isInitialized = true;

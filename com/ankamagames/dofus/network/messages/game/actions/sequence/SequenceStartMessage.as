@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions.sequence
          return 955;
       }
       
-      public function initSequenceStartMessage(sequenceType:int=0, authorId:int=0) : SequenceStartMessage {
+      public function initSequenceStartMessage(sequenceType:int = 0, authorId:int = 0) : SequenceStartMessage {
          this.sequenceType = sequenceType;
          this.authorId = authorId;
          this._isInitialized = true;

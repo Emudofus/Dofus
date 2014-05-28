@@ -6,7 +6,7 @@ package com.ankamagames.jerakine.resources.events
    public class ResourceLoadedEvent extends ResourceEvent
    {
       
-      public function ResourceLoadedEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function ResourceLoadedEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

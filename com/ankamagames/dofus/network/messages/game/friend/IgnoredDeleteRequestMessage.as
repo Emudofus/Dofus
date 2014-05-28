@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5680;
       }
       
-      public function initIgnoredDeleteRequestMessage(accountId:uint=0, session:Boolean=false) : IgnoredDeleteRequestMessage {
+      public function initIgnoredDeleteRequestMessage(accountId:uint = 0, session:Boolean = false) : IgnoredDeleteRequestMessage {
          this.accountId = accountId;
          this.session = session;
          this._isInitialized = true;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.updater.parts
          return 1511;
       }
       
-      public function initDownloadCurrentSpeedMessage(downloadSpeed:uint=0) : DownloadCurrentSpeedMessage {
+      public function initDownloadCurrentSpeedMessage(downloadSpeed:uint = 0) : DownloadCurrentSpeedMessage {
          this.downloadSpeed = downloadSpeed;
          this._isInitialized = true;
          return this;

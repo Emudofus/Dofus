@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 6081;
       }
       
-      public function initGameContextKickMessage(targetId:int=0) : GameContextKickMessage {
+      public function initGameContextKickMessage(targetId:int = 0) : GameContextKickMessage {
          this.targetId = targetId;
          this._isInitialized = true;
          return this;

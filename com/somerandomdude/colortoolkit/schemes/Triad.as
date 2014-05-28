@@ -6,7 +6,7 @@ package com.somerandomdude.colortoolkit.schemes
    public class Triad extends ColorWheelScheme implements IColorScheme
    {
       
-      public function Triad(primaryColor:int, angle:Number=120) {
+      public function Triad(primaryColor:int, angle:Number = 120) {
          this._angle = angle;
          super(primaryColor);
       }

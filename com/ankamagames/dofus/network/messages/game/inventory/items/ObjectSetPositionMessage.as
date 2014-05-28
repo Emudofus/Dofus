@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3021;
       }
       
-      public function initObjectSetPositionMessage(objectUID:uint=0, position:uint=63, quantity:uint=0) : ObjectSetPositionMessage {
+      public function initObjectSetPositionMessage(objectUID:uint = 0, position:uint = 63, quantity:uint = 0) : ObjectSetPositionMessage {
          this.objectUID = objectUID;
          this.position = position;
          this.quantity = quantity;
@@ -57,7 +57,12 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
       }
       
       public function serialize(output:IDataOutput) : void {
-         this.serializeAs_ObjectSetPositionMessage(output);
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: NullPointerException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function serializeAs_ObjectSetPositionMessage(output:IDataOutput) : void {

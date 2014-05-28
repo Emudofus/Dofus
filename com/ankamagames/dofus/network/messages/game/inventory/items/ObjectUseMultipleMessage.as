@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6234;
       }
       
-      public function initObjectUseMultipleMessage(objectUID:uint=0, quantity:uint=0) : ObjectUseMultipleMessage {
+      public function initObjectUseMultipleMessage(objectUID:uint = 0, quantity:uint = 0) : ObjectUseMultipleMessage {
          super.initObjectUseMessage(objectUID);
          this.quantity = quantity;
          this._isInitialized = true;

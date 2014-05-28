@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 6265;
       }
       
-      public function initSpouseStatusMessage(hasSpouse:Boolean=false) : SpouseStatusMessage {
+      public function initSpouseStatusMessage(hasSpouse:Boolean = false) : SpouseStatusMessage {
          this.hasSpouse = hasSpouse;
          this._isInitialized = true;
          return this;

@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.web.krosmaster
          return 397;
       }
       
-      public function initKrosmasterFigure(uid:String="", figure:uint=0, pedestal:uint=0, bound:Boolean=false) : KrosmasterFigure {
+      public function initKrosmasterFigure(uid:String = "", figure:uint = 0, pedestal:uint = 0, bound:Boolean = false) : KrosmasterFigure {
          this.uid = uid;
          this.figure = figure;
          this.pedestal = pedestal;

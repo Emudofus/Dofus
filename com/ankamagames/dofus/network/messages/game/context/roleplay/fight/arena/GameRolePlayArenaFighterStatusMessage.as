@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
          return 6281;
       }
       
-      public function initGameRolePlayArenaFighterStatusMessage(fightId:int=0, playerId:uint=0, accepted:Boolean=false) : GameRolePlayArenaFighterStatusMessage {
+      public function initGameRolePlayArenaFighterStatusMessage(fightId:int = 0, playerId:uint = 0, accepted:Boolean = false) : GameRolePlayArenaFighterStatusMessage {
          this.fightId = fightId;
          this.playerId = playerId;
          this.accepted = accepted;

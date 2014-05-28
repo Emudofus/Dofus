@@ -12,8 +12,6 @@ package com.ankamagames.dofus.internalDatacenter.appearance
    import flash.utils.flash_proxy;
    import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
    
-   use namespace flash_proxy;
-   
    public class OrnamentWrapper extends Proxy implements IDataCenter, ISlotData
    {
       
@@ -21,11 +19,11 @@ package com.ankamagames.dofus.internalDatacenter.appearance
          super();
       }
       
-      private static var _cache:Array = new Array();
+      private static var _cache:Array;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(OrnamentWrapper));
+      protected static const _log:Logger;
       
-      public static function create(ornId:uint, position:int=-1, useCache:Boolean=true) : OrnamentWrapper {
+      public static function create(ornId:uint, position:int = -1, useCache:Boolean = true) : OrnamentWrapper {
          var ow:OrnamentWrapper = new OrnamentWrapper();
          if((!_cache[ornId]) || (!useCache))
          {
@@ -161,7 +159,7 @@ package com.ankamagames.dofus.internalDatacenter.appearance
       public function removeHolder(h:ISlotDataHolder) : void {
       }
       
-      public function getIconUri(pngMode:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean = true) : Uri {
          if(!this._uri)
          {
             this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/ornaments/").concat(this.iconId).concat(".png"));

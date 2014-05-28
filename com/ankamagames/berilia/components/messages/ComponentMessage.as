@@ -17,7 +17,7 @@ package com.ankamagames.berilia.components.messages
          this._target = target;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ComponentMessage));
+      protected static const _log:Logger;
       
       protected var _target:InteractiveObject;
       
@@ -40,18 +40,16 @@ package com.ankamagames.berilia.components.messages
          {
             throw new InvalidCancelError("Can\'t cancel a bubbling message.");
          }
+         else if((this._canceled) && (!value))
+         {
+            throw new InvalidCancelError("Can\'t uncancel a canceled message.");
+         }
          else
          {
-            if((this._canceled) && (!value))
-            {
-               throw new InvalidCancelError("Can\'t uncancel a canceled message.");
-            }
-            else
-            {
-               this._canceled = value;
-               return;
-            }
+            this._canceled = value;
+            return;
          }
+         
       }
       
       public function get actions() : Array {

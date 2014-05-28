@@ -1,6 +1,5 @@
 package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 {
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.logic.game.common.misc.IStorageView;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.datacenter.items.Item;

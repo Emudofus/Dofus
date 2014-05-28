@@ -4,7 +4,6 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.berilia.types.data.UiModule;
    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestActiveInformations;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.quest.Quest;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.frames.QuestFrame;
@@ -47,7 +46,7 @@ package com.ankamagames.dofus.uiApi
          var completedQuest:uint = 0;
          var r:Vector.<Object> = new Vector.<Object>(0,false);
          var activeQuests:Vector.<QuestActiveInformations> = this.getQuestFrame().getActiveQuests();
-         for each (activeQuest in activeQuests)
+         for each(activeQuest in activeQuests)
          {
             r.push(
                {
@@ -56,7 +55,7 @@ package com.ankamagames.dofus.uiApi
                });
          }
          completedQuests = this.getQuestFrame().getCompletedQuests();
-         for each (completedQuest in completedQuests)
+         for each(completedQuest in completedQuests)
          {
             r.push(
                {
@@ -71,7 +70,7 @@ package com.ankamagames.dofus.uiApi
          var activeQuest:QuestActiveInformations = null;
          var data:Vector.<uint> = new Vector.<uint>();
          var activeQuests:Vector.<QuestActiveInformations> = this.getQuestFrame().getActiveQuests();
-         for each (activeQuest in activeQuests)
+         for each(activeQuest in activeQuests)
          {
             data.push(activeQuest.questId);
          }
@@ -82,7 +81,7 @@ package com.ankamagames.dofus.uiApi
          return this.getQuestFrame().getCompletedQuests();
       }
       
-      public function getAllQuestsOrderByCategory(withCompletedQuests:Boolean=false) : Array {
+      public function getAllQuestsOrderByCategory(withCompletedQuests:Boolean = false) : Array {
          var quest:Quest = null;
          var questInfos:QuestActiveInformations = null;
          var category:Object = null;
@@ -93,7 +92,7 @@ package com.ankamagames.dofus.uiApi
          var tabIndex:uint = 0;
          var activeQuests:Vector.<QuestActiveInformations> = this.getQuestFrame().getActiveQuests();
          totalQuest = totalQuest + activeQuests.length;
-         for each (questInfos in activeQuests)
+         for each(questInfos in activeQuests)
          {
             quest = Quest.getQuestById(questInfos.questId);
             tabIndex = quest.category.order;
@@ -114,7 +113,7 @@ package com.ankamagames.dofus.uiApi
          {
             completedQuests = this.getQuestFrame().getCompletedQuests();
             totalQuest = totalQuest + completedQuests.length;
-            for each (questId in completedQuests)
+            for each(questId in completedQuests)
             {
                quest = Quest.getQuestById(questId);
                tabIndex = quest.category.order;
@@ -164,7 +163,7 @@ package com.ankamagames.dofus.uiApi
          return !(this.getQuestFrame().finishedAchievementsIds.indexOf(id) == -1);
       }
       
-      public function getAchievementKamasReward(achievement:Achievement, level:int=0) : Number {
+      public function getAchievementKamasReward(achievement:Achievement, level:int = 0) : Number {
          if(level == 0)
          {
             level = PlayedCharacterManager.getInstance().infos.level;
@@ -172,7 +171,7 @@ package com.ankamagames.dofus.uiApi
          return achievement.getKamasReward(level);
       }
       
-      public function getAchievementExperienceReward(achievement:Achievement, level:int=0) : Number {
+      public function getAchievementExperienceReward(achievement:Achievement, level:int = 0) : Number {
          if(level == 0)
          {
             level = PlayedCharacterManager.getInstance().infos.level;
@@ -189,7 +188,7 @@ package com.ankamagames.dofus.uiApi
          var objAch:AchievementObjective = null;
          var text:String = "-";
          var a:Achievement = Achievement.getAchievementById(achId);
-         for each (objId in a.objectiveIds)
+         for each(objId in a.objectiveIds)
          {
             objAch = AchievementObjective.getAchievementObjectiveById(objId);
             if((objAch) && (objAch.name))

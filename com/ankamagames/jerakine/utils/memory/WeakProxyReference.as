@@ -4,8 +4,6 @@ package com.ankamagames.jerakine.utils.memory
    import flash.utils.Dictionary;
    import flash.utils.flash_proxy;
    
-   use namespace flash_proxy;
-   
    public dynamic class WeakProxyReference extends Proxy
    {
       
@@ -19,7 +17,7 @@ package com.ankamagames.jerakine.utils.memory
       
       public function get object() : Object {
          var n:Object = null;
-         for (n in this.dictionary)
+         for(n in this.dictionary)
          {
             return n;
          }
@@ -28,7 +26,7 @@ package com.ankamagames.jerakine.utils.memory
       
       private function getObject() : Object {
          var n:Object = null;
-         for (n in this.dictionary)
+         for(n in this.dictionary)
          {
             return n;
          }
@@ -56,7 +54,7 @@ package com.ankamagames.jerakine.utils.memory
       }
       
       override flash_proxy function deleteProperty(p_propertyName:*) : Boolean {
-         delete this.getObject()[[p_propertyName]];
+         delete this.getObject()[p_propertyName];
          return true;
       }
    }

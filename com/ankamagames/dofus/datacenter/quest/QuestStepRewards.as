@@ -2,7 +2,6 @@ package com.ankamagames.dofus.datacenter.quest
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
-   import __AS3__.vec.Vector;
    
    public class QuestStepRewards extends Object implements IDataCenter
    {

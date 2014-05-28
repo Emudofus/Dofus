@@ -25,7 +25,6 @@ package com.ankamagames.dofus.logic.game.fight.managers
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
    
    public class BuffManager extends Object
@@ -50,7 +49,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
       
       public static const INCREMENT_MODE_TARGET:int = 2;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(BuffManager));
+      protected static const _log:Logger;
       
       private static var _self:BuffManager;
       
@@ -128,180 +127,41 @@ package com.ankamagames.dofus.logic.game.fight.managers
       public function synchronize() : void {
          var buffTarget:Array = null;
          var buffItem:BasicBuff = null;
-         for each (buffTarget in this._buffs)
+         for each(buffTarget in this._buffs)
          {
-            for each (buffItem in buffTarget)
+            for each(buffItem in buffTarget)
             {
                buffItem.undisable();
             }
          }
       }
       
-      public function incrementDuration(targetId:int, delta:int, dispellEffect:Boolean=false, incrementMode:int=1) : void {
-         var buffTarget:Array = null;
-         var buffItem:BasicBuff = null;
-         var modified:* = false;
-         var skipBuffUpdate:* = false;
-         var spell:CastingSpell = null;
-         var newBuffs:Array = new Array();
-         var updateStatList:Boolean = false;
-         for each (buffTarget in this._buffs)
-         {
-            for each (buffItem in buffTarget)
-            {
-               if((incrementMode == INCREMENT_MODE_SOURCE) && (buffItem.aliveSource == targetId) || (incrementMode == INCREMENT_MODE_TARGET) && (buffItem.targetId == targetId))
-               {
-                  if((incrementMode == INCREMENT_MODE_SOURCE) && (this.spellBuffsToIgnore.length))
-                  {
-                     skipBuffUpdate = false;
-                     for each (spell in this.spellBuffsToIgnore)
-                     {
-                        if((spell.castingSpellId == buffItem.castingSpell.castingSpellId) && (spell.casterId == targetId))
-                        {
-                           skipBuffUpdate = true;
-                           break;
-                        }
-                     }
-                     if(skipBuffUpdate)
-                     {
-                        if(!newBuffs.hasOwnProperty(String(buffItem.targetId)))
-                        {
-                           newBuffs[buffItem.targetId] = new Array();
-                        }
-                        newBuffs[buffItem.targetId].push(buffItem);
-                        continue;
-                     }
-                  }
-                  modified = buffItem.incrementDuration(delta,dispellEffect);
-                  if(buffItem.active)
-                  {
-                     if(!newBuffs.hasOwnProperty(String(buffItem.targetId)))
-                     {
-                        newBuffs[buffItem.targetId] = new Array();
-                     }
-                     newBuffs[buffItem.targetId].push(buffItem);
-                     if(modified)
-                     {
-                        KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,buffItem.id,buffItem.targetId);
-                     }
-                  }
-                  else
-                  {
-                     BasicBuff(buffItem).onRemoved();
-                     KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,buffItem,buffItem.targetId,"CoolDown");
-                     if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
-                     {
-                        updateStatList = true;
-                     }
-                  }
-               }
-               else
-               {
-                  if(!newBuffs.hasOwnProperty(String(buffItem.targetId)))
-                  {
-                     newBuffs[buffItem.targetId] = new Array();
-                  }
-                  newBuffs[buffItem.targetId].push(buffItem);
-               }
-            }
-         }
-         if(updateStatList)
-         {
-            KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
-         }
-         this._buffs = newBuffs;
+      public function incrementDuration(targetId:int, delta:int, dispellEffect:Boolean = false, incrementMode:int = 1) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
-      public function markFinishingBuffs(targetId:int, ignoreCurrent:Boolean=false) : void {
-         var updateStatList:* = false;
-         var buffItem:BasicBuff = null;
-         var mark:* = false;
-         var fightBattleFrame:FightBattleFrame = null;
-         var state:* = 0;
-         var casterFound:* = false;
-         var fighter:* = 0;
-         var statBuffItem:StatBuff = null;
-         if(this._buffs.hasOwnProperty(String(targetId)))
-         {
-            updateStatList = false;
-            for each (buffItem in this._buffs[targetId])
-            {
-               mark = false;
-               if(buffItem.duration == 1)
-               {
-                  fightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
-                  if(fightBattleFrame == null)
-                  {
-                     return;
-                  }
-                  state = 0;
-                  casterFound = false;
-                  for each (fighter in fightBattleFrame.fightersList)
-                  {
-                     if(fighter == buffItem.aliveSource)
-                     {
-                        casterFound = true;
-                     }
-                     if(fighter == fightBattleFrame.currentPlayerId)
-                     {
-                        state = 1;
-                     }
-                     if(state == 1)
-                     {
-                        if((casterFound) && ((!(fighter == fightBattleFrame.currentPlayerId)) || (!ignoreCurrent)))
-                        {
-                           state = 2;
-                           mark = true;
-                        }
-                        else
-                        {
-                           if((fighter == targetId) && (!(fighter == fightBattleFrame.currentPlayerId)))
-                           {
-                              state = 2;
-                              mark = false;
-                           }
-                        }
-                     }
-                  }
-                  if((mark) && (!ignoreCurrent))
-                  {
-                     buffItem.finishing = true;
-                     if((buffItem is StatBuff) && (!(targetId == PlayedCharacterManager.getInstance().id)))
-                     {
-                        statBuffItem = buffItem as StatBuff;
-                        if(statBuffItem.statName)
-                        {
-                           targetId = statBuffItem.targetId;
-                           if(!this._finishingBuffs[targetId])
-                           {
-                              this._finishingBuffs[targetId] = new Array();
-                           }
-                           this._finishingBuffs[targetId].push(buffItem);
-                        }
-                     }
-                     BasicBuff(buffItem).onDisabled();
-                     if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
-                     {
-                        updateStatList = true;
-                     }
-                  }
-               }
-            }
-            if(updateStatList)
-            {
-               KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
-            }
-         }
+      public function markFinishingBuffs(targetId:int, ignoreCurrent:Boolean = false) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
-      public function addBuff(buff:BasicBuff, applyBuff:Boolean=true) : void {
+      public function addBuff(buff:BasicBuff, applyBuff:Boolean = true) : void {
          var sameBuff:BasicBuff = null;
          var actualBuff:BasicBuff = null;
          if(!this._buffs[buff.targetId])
          {
             this._buffs[buff.targetId] = new Array();
          }
-         for each (actualBuff in this._buffs[buff.targetId])
+         for each(actualBuff in this._buffs[buff.targetId])
          {
             if(buff.equals(actualBuff))
             {
@@ -315,7 +175,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          }
          else
          {
-            if(((sameBuff.castingSpell.spellRank) && (sameBuff.castingSpell.spellRank.maxStack > 0)) && (sameBuff.stack) && (sameBuff.stack.length == sameBuff.castingSpell.spellRank.maxStack))
+            if((sameBuff.castingSpell.spellRank && sameBuff.castingSpell.spellRank.maxStack > 0) && (sameBuff.stack) && (sameBuff.stack.length == sameBuff.castingSpell.spellRank.maxStack))
             {
                return;
             }
@@ -359,11 +219,11 @@ package com.ankamagames.dofus.logic.game.fight.managers
          return true;
       }
       
-      public function dispell(targetId:int, forceUndispellable:Boolean=false, critical:Boolean=false, dying:Boolean=false) : void {
+      public function dispell(targetId:int, forceUndispellable:Boolean = false, critical:Boolean = false, dying:Boolean = false) : void {
          var buff:BasicBuff = null;
          var deletedBuffs:Array = new Array();
          var newBuffs:Array = new Array();
-         for each (buff in this._buffs[targetId])
+         for each(buff in this._buffs[targetId])
          {
             if(buff.canBeDispell(forceUndispellable,int.MIN_VALUE,dying))
             {
@@ -379,12 +239,12 @@ package com.ankamagames.dofus.logic.game.fight.managers
          this._buffs[targetId] = newBuffs;
       }
       
-      public function dispellSpell(targetId:int, spellId:uint, forceUndispellable:Boolean=false, critical:Boolean=false, dying:Boolean=false) : void {
+      public function dispellSpell(targetId:int, spellId:uint, forceUndispellable:Boolean = false, critical:Boolean = false, dying:Boolean = false) : void {
          var buff:BasicBuff = null;
          var deletedBuff:BasicBuff = null;
          var deletedBuffs:Array = new Array();
          var newBuffs:Array = new Array();
-         for each (buff in this._buffs[targetId])
+         for each(buff in this._buffs[targetId])
          {
             if((spellId == buff.castingSpell.spell.id) && (buff.canBeDispell(forceUndispellable,int.MIN_VALUE,dying)))
             {
@@ -397,7 +257,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
             }
          }
          this._buffs[targetId] = newBuffs;
-         for each (deletedBuff in deletedBuffs)
+         for each(deletedBuff in deletedBuffs)
          {
             if(deletedBuff.stack)
             {
@@ -410,7 +270,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          }
       }
       
-      public function dispellUniqueBuff(targetId:int, boostUID:int, forceUndispellable:Boolean=false, dying:Boolean=false, ultimateDebuff:Boolean=true) : void {
+      public function dispellUniqueBuff(targetId:int, boostUID:int, forceUndispellable:Boolean = false, dying:Boolean = false, ultimateDebuff:Boolean = true) : void {
          var i:int = this.getBuffIndex(targetId,boostUID);
          if(i == -1)
          {
@@ -439,6 +299,10 @@ package com.ankamagames.dofus.logic.game.fight.managers
                   case 950:
                   case 951:
                      break;
+                  default:
+                     buff.param1 = buff.param1 - buff.stack[0].param1;
+                     buff.param2 = buff.param2 - buff.stack[0].param2;
+                     buff.param3 = buff.param3 - buff.stack[0].param3;
                }
                buff.stack.shift();
                buff.refreshDescription();
@@ -459,21 +323,21 @@ package com.ankamagames.dofus.logic.game.fight.managers
          }
       }
       
-      public function removeLinkedBuff(sourceId:int, forceUndispellable:Boolean=false, dying:Boolean=false) : Array {
+      public function removeLinkedBuff(sourceId:int, forceUndispellable:Boolean = false, dying:Boolean = false) : Array {
          var buffList:Array = null;
          var buffListCopy:Array = null;
          var buff:BasicBuff = null;
          var impactedTarget:Array = [];
          var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
          var infos:GameFightFighterInformations = entitiesFrame.getEntityInfos(sourceId) as GameFightFighterInformations;
-         for each (buffList in this._buffs)
+         for each(buffList in this._buffs)
          {
             buffListCopy = new Array();
-            for each (buff in buffList)
+            for each(buff in buffList)
             {
                buffListCopy.push(buff);
             }
-            for each (buff in buffListCopy)
+            for each(buff in buffListCopy)
             {
                if(buff.source == sourceId)
                {
@@ -504,9 +368,9 @@ package com.ankamagames.dofus.logic.game.fight.managers
             {
                return;
             }
-            for each (buffList in this._buffs)
+            for each(buffList in this._buffs)
             {
-               for each (buff in buffList)
+               for each(buff in buffList)
                {
                   if(buff.aliveSource == sourceId)
                   {
@@ -525,7 +389,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
             return -1;
          }
          var found:Boolean = false;
-         for each (fighter in frame.fightersList)
+         for each(fighter in frame.fightersList)
          {
             if(found)
             {
@@ -553,7 +417,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
       
       public function getBuff(buffId:uint, playerId:int) : BasicBuff {
          var buff:BasicBuff = null;
-         for each (buff in this._buffs[playerId])
+         for each(buff in this._buffs[playerId])
          {
             if(buffId == buff.id)
             {
@@ -565,7 +429,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
       
       public function getFinishingBuffs(fighterid:int) : Array {
          var buffArray:Array = this._finishingBuffs[fighterid];
-         delete this._finishingBuffs[[fighterid]];
+         delete this._finishingBuffs[fighterid];
          return buffArray;
       }
       
@@ -576,13 +440,13 @@ package com.ankamagames.dofus.logic.game.fight.managers
       private function getBuffIndex(targetId:int, buffId:int) : int {
          var i:Object = null;
          var subBuff:BasicBuff = null;
-         for (i in this._buffs[targetId])
+         for(i in this._buffs[targetId])
          {
             if(buffId == this._buffs[targetId][i].id)
             {
                return int(i);
             }
-            for each (subBuff in (this._buffs[targetId][i] as BasicBuff).stack)
+            for each(subBuff in (this._buffs[targetId][i] as BasicBuff).stack)
             {
                if(buffId == subBuff.id)
                {

@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.character.alignment
          return 201;
       }
       
-      public function initActorAlignmentInformations(alignmentSide:int=0, alignmentValue:uint=0, alignmentGrade:uint=0, characterPower:uint=0) : ActorAlignmentInformations {
+      public function initActorAlignmentInformations(alignmentSide:int = 0, alignmentValue:uint = 0, alignmentGrade:uint = 0, characterPower:uint = 0) : ActorAlignmentInformations {
          this.alignmentSide = alignmentSide;
          this.alignmentValue = alignmentValue;
          this.alignmentGrade = alignmentGrade;

@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.communication
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    
@@ -18,7 +17,7 @@ package com.ankamagames.dofus.datacenter.communication
       
       public static const MODULE:String = "Emoticons";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Emoticon));
+      protected static const _log:Logger;
       
       public static function getEmoticonById(id:int) : Emoticon {
          return GameData.getObject(MODULE,id) as Emoticon;
@@ -77,48 +76,12 @@ package com.ankamagames.dofus.datacenter.communication
       }
       
       public function getAnimName(look:TiphonEntityLook) : String {
-         var animName:String = null;
-         var anim:String = null;
-         var animCase:Array = null;
-         var caseBoneId:uint = 0;
-         var caseSkins:Array = null;
-         var matchingSkin:uint = 0;
-         var skin:String = null;
-         var skinId:uint = 0;
-         var lookSkin:* = undefined;
-         if(look)
-         {
-            for each (anim in this.anims)
-            {
-               animCase = anim.split(";");
-               caseBoneId = parseInt(animCase[0]);
-               if((look) && (caseBoneId == look.getBone()))
-               {
-                  caseSkins = animCase[1].split(",");
-                  matchingSkin = 0;
-                  for each (skin in caseSkins)
-                  {
-                     skinId = parseInt(skin);
-                     for each (lookSkin in look.skins)
-                     {
-                        if(skinId == lookSkin)
-                        {
-                           matchingSkin++;
-                        }
-                     }
-                  }
-                  if(matchingSkin > 0)
-                  {
-                     animName = "AnimEmote" + animCase[2];
-                  }
-               }
-            }
-         }
-         if(!animName)
-         {
-            animName = "AnimEmote" + this.defaultAnim.charAt(0).toUpperCase() + this.defaultAnim.substr(1).toLowerCase() + "_0";
-         }
-         return animName;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
    }
 }

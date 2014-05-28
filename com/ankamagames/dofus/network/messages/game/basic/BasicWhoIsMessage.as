@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.basic
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.social.AbstractSocialGroupInfos;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -50,7 +49,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 180;
       }
       
-      public function initBasicWhoIsMessage(self:Boolean=false, position:int=-1, accountNickname:String="", accountId:uint=0, playerName:String="", playerId:uint=0, areaId:int=0, socialGroups:Vector.<AbstractSocialGroupInfos>=null, verbose:Boolean=false, playerState:uint=99) : BasicWhoIsMessage {
+      public function initBasicWhoIsMessage(self:Boolean = false, position:int = -1, accountNickname:String = "", accountId:uint = 0, playerName:String = "", playerId:uint = 0, areaId:int = 0, socialGroups:Vector.<AbstractSocialGroupInfos> = null, verbose:Boolean = false, playerState:uint = 99) : BasicWhoIsMessage {
          this.self = self;
          this.position = position;
          this.accountNickname = accountNickname;

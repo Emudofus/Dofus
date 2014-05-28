@@ -21,7 +21,7 @@ package com.ankamagames.dofus.types.entities
    public class Projectile extends TiphonSprite implements IDisplayable, IMovable, IEntity
    {
       
-      public function Projectile(nId:int, look:TiphonEntityLook, postInit:Boolean=false, startPlayingOnlyWhenDisplayed:Boolean=true) {
+      public function Projectile(nId:int, look:TiphonEntityLook, postInit:Boolean = false, startPlayingOnlyWhenDisplayed:Boolean = true) {
          super(look);
          this.startPlayingOnlyWhenDisplayed = startPlayingOnlyWhenDisplayed;
          this.id = nId;
@@ -33,7 +33,7 @@ package com.ankamagames.dofus.types.entities
          mouseEnabled = false;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Projectile));
+      protected static const _log:Logger;
       
       private var _id:int;
       
@@ -91,7 +91,7 @@ package com.ankamagames.dofus.types.entities
       
       public var startPlayingOnlyWhenDisplayed:Boolean;
       
-      public function init(direction:int=-1) : void {
+      public function init(direction:int = -1) : void {
          this._displayBehavior = AtouinDisplayBehavior.getInstance();
          this._movementBehavior = ParableMovementBehavior.getInstance();
          setDirection(direction == -1?DirectionsEnum.RIGHT:direction);
@@ -105,7 +105,7 @@ package com.ankamagames.dofus.types.entities
          }
       }
       
-      public function display(strata:uint=0) : void {
+      public function display(strata:uint = 0) : void {
          this._displayBehavior.display(this,strata);
          this._displayed = true;
       }
@@ -121,7 +121,7 @@ package com.ankamagames.dofus.types.entities
          super.destroy();
       }
       
-      public function move(path:MovementPath, callback:Function=null) : void {
+      public function move(path:MovementPath, callback:Function = null) : void {
          this._movementBehavior.move(this,path,callback);
       }
       
@@ -129,7 +129,7 @@ package com.ankamagames.dofus.types.entities
          this._movementBehavior.jump(this,newPosition);
       }
       
-      public function stop(forceStop:Boolean=false) : void {
+      public function stop(forceStop:Boolean = false) : void {
          this._movementBehavior.stop(this);
       }
       

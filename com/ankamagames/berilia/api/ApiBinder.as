@@ -19,22 +19,22 @@ package com.ankamagames.berilia.api
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ApiBinder));
+      protected static const _log:Logger;
       
-      private static var _apiClass:Array = new Array();
+      private static var _apiClass:Array;
       
-      private static var _apiInstance:Array = new Array();
+      private static var _apiInstance:Array;
       
-      private static var _apiData:Array = new Array();
+      private static var _apiData:Array;
       
-      private static var _isComplexFctCache:Dictionary = new Dictionary();
+      private static var _isComplexFctCache:Dictionary;
       
       public static function addApi(name:String, apiClass:Class) : void {
          _apiClass[name] = apiClass;
       }
       
       public static function removeApi(name:String) : void {
-         delete _apiClass[[name]];
+         delete _apiClass[name];
       }
       
       public static function reset() : void {
@@ -54,7 +54,7 @@ package com.ankamagames.berilia.api
          _apiData[name] = null;
       }
       
-      public static function initApi(target:Object, module:UiModule, sharedDefinition:ApplicationDomain=null) : String {
+      public static function initApi(target:Object, module:UiModule, sharedDefinition:ApplicationDomain = null) : String {
          var api:Object = null;
          var metaTag:XML = null;
          var metaData:* = undefined;
@@ -62,9 +62,9 @@ package com.ankamagames.berilia.api
          var modName:String = null;
          addApiData("module",module);
          var desc:XML = DescribeTypeCache.typeDescription(target);
-         for each (metaTag in desc..variable)
+         for each(metaTag in desc..variable)
          {
-            for each (metaData in metaTag.metadata)
+            for each(metaData in metaTag.metadata)
             {
                if((metaData.@name == "Module") && (!UiModuleManager.getInstance().getModules()[metaData.arg.@value]))
                {
@@ -81,7 +81,7 @@ package com.ankamagames.berilia.api
             }
             else
             {
-               for each (metaData in metaTag.metadata)
+               for each(metaData in metaTag.metadata)
                {
                   if(metaData.@name == "Api")
                   {
@@ -131,109 +131,12 @@ package com.ankamagames.berilia.api
       }
       
       private static function getApiInstance(name:String, trusted:Boolean, sharedDefinition:ApplicationDomain) : Object {
-         var apiDesc:XML = null;
-         var api:Object = null;
-         var apiRef:* = undefined;
-         var instancied:Boolean = false;
-         var meta:XML = null;
-         var tag:String = null;
-         var help:String = null;
-         var boxing:Boolean = false;
-         var method:XML = null;
-         var accessor:XML = null;
-         var metaData:XML = null;
-         var metaData2:* = undefined;
-         if((_apiInstance[name]) && (_apiInstance[name][trusted]))
-         {
-            return _apiInstance[name][trusted];
-         }
-         if(_apiClass[name])
-         {
-            apiDesc = DescribeTypeCache.typeDescription(_apiClass[name]);
-            api = new sharedDefinition.getDefinition("d2api::" + name + "Api") as Class();
-            apiRef = _apiClass[name];
-            instancied = false;
-            for each (meta in apiDesc..metadata)
-            {
-               if(meta.@name == "InstanciedApi")
-               {
-                  apiRef = new _apiClass[name]();
-                  instancied = true;
-                  break;
-               }
-            }
-            for each (method in apiDesc..method)
-            {
-               boxing = true;
-               for each (metaData in method.metadata)
-               {
-                  if((metaData.@name == "Untrusted") || (metaData.@name == "Trusted") || (metaData.@name == "Deprecated"))
-                  {
-                     tag = metaData.@name;
-                     if(metaData.@name == "Deprecated")
-                     {
-                        help = metaData.arg.(@key == "help").@value;
-                     }
-                  }
-                  if(metaData.@name == "NoBoxing")
-                  {
-                     boxing = false;
-                  }
-               }
-               if((!(tag == "Untrusted")) && (!(tag == "Trusted")) && (!(tag == "Deprecated")))
-               {
-                  throw new ApiError("Missing tag [Untrusted / Trusted] before function \"" + method.@name + "\" in " + _apiClass[name]);
-               }
-               else
-               {
-                  if((tag == "Untrusted") || ((tag == "Trusted") || (tag == "Deprecated")) && (trusted))
-                  {
-                     if(tag == "Deprecated")
-                     {
-                        api[method.@name] = createDepreciatedMethod(apiRef[method.@name],method.@name,help);
-                     }
-                     else
-                     {
-                        if((boxing) && (!isComplexFct(method)))
-                        {
-                           api[method.@name] = SecureCenter.secure(apiRef[method.@name]);
-                        }
-                        else
-                        {
-                           api[method.@name] = apiRef[method.@name];
-                        }
-                     }
-                  }
-                  else
-                  {
-                     api[method.@name] = GenericApiFunction.getRestrictedFunctionAccess(apiRef[method.@name]);
-                  }
-                  continue;
-               }
-            }
-            for each (accessor in apiDesc..accessor)
-            {
-               for each (metaData2 in accessor.metadata)
-               {
-                  if(metaData2.@name == "ApiData")
-                  {
-                     apiRef[accessor.@name] = _apiData[metaData2.arg.@value];
-                     break;
-                  }
-               }
-            }
-            if(!instancied)
-            {
-               if(!_apiInstance[name])
-               {
-                  _apiInstance[name] = new Array();
-               }
-               _apiInstance[name][trusted] = api;
-            }
-            return api;
-         }
-         _log.error("Api [" + name + "] is not avaible");
-         return null;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private static function isComplexFct(methodDesc:XML) : Boolean {
@@ -249,7 +152,7 @@ package com.ankamagames.berilia.api
             _isComplexFctCache[cacheKey] = false;
             return false;
          }
-         for each (paramType in methodDesc..parameter..@type)
+         for each(paramType in methodDesc..parameter..@type)
          {
             if(simpleType.indexOf(paramType) == -1)
             {

@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5832;
       }
       
-      public function initExchangeModifiedPaymentForCraftMessage(onlySuccess:Boolean=false, object:ObjectItemNotInContainer=null) : ExchangeModifiedPaymentForCraftMessage {
+      public function initExchangeModifiedPaymentForCraftMessage(onlySuccess:Boolean = false, object:ObjectItemNotInContainer = null) : ExchangeModifiedPaymentForCraftMessage {
          this.onlySuccess = onlySuccess;
          this.object = object;
          this._isInitialized = true;

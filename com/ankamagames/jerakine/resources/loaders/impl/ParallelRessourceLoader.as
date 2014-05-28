@@ -20,7 +20,7 @@ package com.ankamagames.jerakine.resources.loaders.impl
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
       private var _maxParallel:uint;
       
@@ -30,28 +30,26 @@ package com.ankamagames.jerakine.resources.loaders.impl
       
       private var _loadDictionnary:Dictionary;
       
-      public function load(uris:*, cache:ICache=null, forcedAdapter:Class=null, singleFile:Boolean=false) : void {
+      public function load(uris:*, cache:ICache = null, forcedAdapter:Class = null, singleFile:Boolean = false) : void {
          var newUris:Array = null;
          var uri:Uri = null;
          if(uris is Uri)
          {
             newUris = [uris];
          }
+         else if(uris is Array)
+         {
+            newUris = uris;
+         }
          else
          {
-            if(uris is Array)
-            {
-               newUris = uris;
-            }
-            else
-            {
-               throw new ArgumentError("URIs must be an array or an Uri instance.");
-            }
+            throw new ArgumentError("URIs must be an array or an Uri instance.");
          }
+         
          var mustStartLoading:Boolean = false;
          if(this._uris != null)
          {
-            for each (uri in newUris)
+            for each(uri in newUris)
             {
                this._uris.push(
                   {
@@ -68,7 +66,7 @@ package com.ankamagames.jerakine.resources.loaders.impl
          else
          {
             this._uris = new Array();
-            for each (uri in newUris)
+            for each(uri in newUris)
             {
                this._uris.push(
                   {
@@ -91,7 +89,7 @@ package com.ankamagames.jerakine.resources.loaders.impl
       override public function cancel() : void {
          var p:IProtocol = null;
          super.cancel();
-         for each (p in this._loadDictionnary)
+         for each(p in this._loadDictionnary)
          {
             if(p)
             {
@@ -143,13 +141,13 @@ package com.ankamagames.jerakine.resources.loaders.impl
       
       override public function onLoaded(uri:Uri, resourceType:uint, resource:*) : void {
          super.onLoaded(uri,resourceType,resource);
-         delete this._loadDictionnary[[uri]];
+         delete this._loadDictionnary[uri];
          this.decrementLoads();
       }
       
       override public function onFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
          super.onFailed(uri,errorMsg,errorCode);
-         delete this._loadDictionnary[[uri]];
+         delete this._loadDictionnary[uri];
          this.decrementLoads();
       }
    }

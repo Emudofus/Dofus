@@ -50,86 +50,86 @@ package com.ankamagames.dofus.misc.lists
          super();
       }
       
-      public static const ExchangeAccept:DofusApiAction = new DofusApiAction("ExchangeAccept",ExchangeAcceptAction);
+      public static const ExchangeAccept:DofusApiAction;
       
-      public static const ExchangeRefuse:DofusApiAction = new DofusApiAction("ExchangeRefuse",ExchangeRefuseAction);
+      public static const ExchangeRefuse:DofusApiAction;
       
-      public static const ExchangeObjectMove:DofusApiAction = new DofusApiAction("ExchangeObjectMove",ExchangeObjectMoveAction);
+      public static const ExchangeObjectMove:DofusApiAction;
       
-      public static const ExchangeObjectMoveKama:DofusApiAction = new DofusApiAction("ExchangeObjectMoveKama",ExchangeObjectMoveKamaAction);
+      public static const ExchangeObjectMoveKama:DofusApiAction;
       
-      public static const ExchangeObjectTransfertAllToInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertAllToInv",ExchangeObjectTransfertAllToInvAction);
+      public static const ExchangeObjectTransfertAllToInv:DofusApiAction;
       
-      public static const ExchangeObjectTransfertListToInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertListToInv",ExchangeObjectTransfertListToInvAction);
+      public static const ExchangeObjectTransfertListToInv:DofusApiAction;
       
-      public static const ExchangeObjectTransfertExistingToInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertExistingToInv",ExchangeObjectTransfertExistingToInvAction);
+      public static const ExchangeObjectTransfertExistingToInv:DofusApiAction;
       
-      public static const ExchangeObjectTransfertListWithQuantityToInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertListWithQuantityToInv",ExchangeObjectTransfertListWithQuantityToInvAction);
+      public static const ExchangeObjectTransfertListWithQuantityToInv:DofusApiAction;
       
-      public static const ExchangeObjectTransfertAllFromInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertAllFromInv",ExchangeObjectTransfertAllFromInvAction);
+      public static const ExchangeObjectTransfertAllFromInv:DofusApiAction;
       
-      public static const ExchangeObjectTransfertListFromInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertListFromInv",ExchangeObjectTransfertListFromInvAction);
+      public static const ExchangeObjectTransfertListFromInv:DofusApiAction;
       
-      public static const ExchangeObjectTransfertExistingFromInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertExistingFromInv",ExchangeObjectTransfertExistingFromInvAction);
+      public static const ExchangeObjectTransfertExistingFromInv:DofusApiAction;
       
-      public static const ExchangeReady:DofusApiAction = new DofusApiAction("ExchangeReady",ExchangeReadyAction);
+      public static const ExchangeReady:DofusApiAction;
       
-      public static const ExchangePlayerRequest:DofusApiAction = new DofusApiAction("ExchangePlayerRequest",ExchangePlayerRequestAction);
+      public static const ExchangePlayerRequest:DofusApiAction;
       
-      public static const ExchangeOnHumanVendorRequest:DofusApiAction = new DofusApiAction("ExchangeOnHumanVendorRequest",ExchangeOnHumanVendorRequestAction);
+      public static const ExchangeOnHumanVendorRequest:DofusApiAction;
       
-      public static const ExchangeStartAsVendorRequest:DofusApiAction = new DofusApiAction("ExchangeStartAsVendorRequest",ExchangeStartAsVendorRequestAction);
+      public static const ExchangeStartAsVendorRequest:DofusApiAction;
       
-      public static const ExchangeRequestOnShopStock:DofusApiAction = new DofusApiAction("ExchangeRequestOnShopStock",ExchangeRequestOnShopStockAction);
+      public static const ExchangeRequestOnShopStock:DofusApiAction;
       
-      public static const LeaveShopStock:DofusApiAction = new DofusApiAction("LeaveShopStock",LeaveShopStockAction);
+      public static const LeaveShopStock:DofusApiAction;
       
-      public static const ExchangeShopStockMouvmentAdd:DofusApiAction = new DofusApiAction("ExchangeShopStockMouvmentAdd",ExchangeShopStockMouvmentAddAction);
+      public static const ExchangeShopStockMouvmentAdd:DofusApiAction;
       
-      public static const ExchangeShopStockMouvmentRemove:DofusApiAction = new DofusApiAction("ExchangeShopStockMouvmentRemove",ExchangeShopStockMouvmentRemoveAction);
+      public static const ExchangeShopStockMouvmentRemove:DofusApiAction;
       
-      public static const ExchangeObjectModifyPriced:DofusApiAction = new DofusApiAction("ExchangeObjectModifyPriced",ExchangeObjectModifyPricedAction);
+      public static const ExchangeObjectModifyPriced:DofusApiAction;
       
-      public static const ExchangeBuy:DofusApiAction = new DofusApiAction("ExchangeBuy",ExchangeBuyAction);
+      public static const ExchangeBuy:DofusApiAction;
       
-      public static const ExchangeSell:DofusApiAction = new DofusApiAction("ExchangeSell",ExchangeSellAction);
+      public static const ExchangeSell:DofusApiAction;
       
-      public static const ExchangeShowVendorTax:DofusApiAction = new DofusApiAction("ExchangeShowVendorTax",ExchangeShowVendorTaxAction);
+      public static const ExchangeShowVendorTax:DofusApiAction;
       
-      public static const ExchangeBidHouseSearch:DofusApiAction = new DofusApiAction("ExchangeBidHouseSearch",ExchangeBidHouseSearchAction);
+      public static const ExchangeBidHouseSearch:DofusApiAction;
       
-      public static const ExchangeBidHouseList:DofusApiAction = new DofusApiAction("ExchangeBidHouseList",ExchangeBidHouseListAction);
+      public static const ExchangeBidHouseList:DofusApiAction;
       
-      public static const ExchangeBidHouseType:DofusApiAction = new DofusApiAction("ExchangeBidHouseType",ExchangeBidHouseTypeAction);
+      public static const ExchangeBidHouseType:DofusApiAction;
       
-      public static const ExchangeBidHouseBuy:DofusApiAction = new DofusApiAction("ExchangeBidHouseBuy",ExchangeBidHouseBuyAction);
+      public static const ExchangeBidHouseBuy:DofusApiAction;
       
-      public static const ExchangeBidHousePrice:DofusApiAction = new DofusApiAction("ExchangeBidHousePrice",ExchangeBidHousePriceAction);
+      public static const ExchangeBidHousePrice:DofusApiAction;
       
-      public static const LeaveBidHouse:DofusApiAction = new DofusApiAction("LeaveBidHouse",LeaveBidHouseAction);
+      public static const LeaveBidHouse:DofusApiAction;
       
-      public static const BidHouseStringSearch:DofusApiAction = new DofusApiAction("BidHouseStringSearch",BidHouseStringSearchAction);
+      public static const BidHouseStringSearch:DofusApiAction;
       
-      public static const BidSwitchToBuyerMode:DofusApiAction = new DofusApiAction("BidSwitchToBuyerMode",BidSwitchToBuyerModeAction);
+      public static const BidSwitchToBuyerMode:DofusApiAction;
       
-      public static const BidSwitchToSellerMode:DofusApiAction = new DofusApiAction("BidSwitchToSellerMode",BidSwitchToSellerModeAction);
+      public static const BidSwitchToSellerMode:DofusApiAction;
       
-      public static const ExchangeItemGoldAddAsPayment:DofusApiAction = new DofusApiAction("ExchangeItemGoldAddAsPayment",ExchangeItemGoldAddAsPaymentAction);
+      public static const ExchangeItemGoldAddAsPayment:DofusApiAction;
       
-      public static const ExchangeItemObjectAddAsPayment:DofusApiAction = new DofusApiAction("ExchangeItemObjectAddAsPayment",ExchangeItemObjectAddAsPaymentAction);
+      public static const ExchangeItemObjectAddAsPayment:DofusApiAction;
       
-      public static const JobAllowMultiCraftRequestSet:DofusApiAction = new DofusApiAction("JobAllowMultiCraftRequestSet",JobAllowMultiCraftRequestSetAction);
+      public static const JobAllowMultiCraftRequestSet:DofusApiAction;
       
-      public static const ExchangePlayerMultiCraftRequest:DofusApiAction = new DofusApiAction("ExchangePlayerMultiCraftRequest",ExchangePlayerMultiCraftRequestAction);
+      public static const ExchangePlayerMultiCraftRequest:DofusApiAction;
       
-      public static const ExchangeReplay:DofusApiAction = new DofusApiAction("ExchangeReplay",ExchangeReplayAction);
+      public static const ExchangeReplay:DofusApiAction;
       
-      public static const ExchangeReplayStop:DofusApiAction = new DofusApiAction("ExchangeReplayStop",ExchangeReplayStopAction);
+      public static const ExchangeReplayStop:DofusApiAction;
       
-      public static const ExchangeMultiCraftSetCrafterCanUseHisRessources:DofusApiAction = new DofusApiAction("ExchangeMultiCraftSetCrafterCanUseHisRessources",ExchangeMultiCraftSetCrafterCanUseHisRessourcesAction);
+      public static const ExchangeMultiCraftSetCrafterCanUseHisRessources:DofusApiAction;
       
-      public static const ExchangeObjectUseInWorkshop:DofusApiAction = new DofusApiAction("ExchangeObjectUseInWorkshop",ExchangeObjectUseInWorkshopAction);
+      public static const ExchangeObjectUseInWorkshop:DofusApiAction;
       
-      public static const ExchangeRequestOnTaxCollector:DofusApiAction = new DofusApiAction("ExchangeRequestOnTaxCollector",ExchangeRequestOnTaxCollectorAction);
+      public static const ExchangeRequestOnTaxCollector:DofusApiAction;
    }
 }

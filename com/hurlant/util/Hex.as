@@ -25,7 +25,7 @@ package com.hurlant.util
          return a;
       }
       
-      public static function fromArray(array:ByteArray, colons:Boolean=false) : String {
+      public static function fromArray(array:ByteArray, colons:Boolean = false) : String {
          var s:String = "";
          var i:uint = 0;
          while(i < array.length)
@@ -48,7 +48,7 @@ package com.hurlant.util
          return a.readUTFBytes(a.length);
       }
       
-      public static function fromString(str:String, colons:Boolean=false) : String {
+      public static function fromString(str:String, colons:Boolean = false) : String {
          var a:ByteArray = new ByteArray();
          a.writeUTFBytes(str);
          return fromArray(a,colons);

@@ -37,11 +37,11 @@ package com.ankamagames.dofus.uiApi
          HyperlinkDisplayArrowManager.setArrowPosition(pUiName,pComponentName,pPosition);
       }
       
-      public function highlightUi(uiName:String, componentName:String, pos:int=0, reverse:int=0, strata:int=5, loop:Boolean=false) : void {
+      public function highlightUi(uiName:String, componentName:String, pos:int = 0, reverse:int = 0, strata:int = 5, loop:Boolean = false) : void {
          HyperlinkDisplayArrowManager.showArrow(uiName,componentName,pos,reverse,strata,loop?1:0);
       }
       
-      public function highlightCell(cellIds:Array, loop:Boolean=false) : void {
+      public function highlightCell(cellIds:Array, loop:Boolean = false) : void {
          if(loop)
          {
             if(!_showCellTimer)
@@ -65,19 +65,19 @@ package com.ankamagames.dofus.uiApi
          }
       }
       
-      public function highlightAbsolute(targetRect:Rectangle, pos:uint, reverse:int=0, strata:int=5, loop:Boolean=false) : void {
+      public function highlightAbsolute(targetRect:Rectangle, pos:uint, reverse:int = 0, strata:int = 5, loop:Boolean = false) : void {
          HyperlinkDisplayArrowManager.showAbsoluteArrow(targetRect,pos,reverse,strata,loop?1:0);
       }
       
-      public function highlightMapTransition(mapId:int, shapeOrientation:int, position:int, reverse:Boolean=false, strata:int=5, loop:Boolean=false) : void {
+      public function highlightMapTransition(mapId:int, shapeOrientation:int, position:int, reverse:Boolean = false, strata:int = 5, loop:Boolean = false) : void {
          HyperlinkDisplayArrowManager.showMapTransition(mapId,shapeOrientation,position,reverse?1:0,strata,loop?1:0);
       }
       
-      public function highlightNpc(npcId:int, loop:Boolean=false) : void {
+      public function highlightNpc(npcId:int, loop:Boolean = false) : void {
          HyperlinkShowNpcManager.showNpc(npcId,loop?1:0);
       }
       
-      public function highlightMonster(monsterId:int, loop:Boolean=false) : void {
+      public function highlightMonster(monsterId:int, loop:Boolean = false) : void {
          HyperlinkShowMonsterManager.showMonster(monsterId,loop?1:0);
       }
       

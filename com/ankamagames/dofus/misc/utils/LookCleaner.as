@@ -23,7 +23,7 @@ package com.ankamagames.dofus.misc.utils
             }
             return ridderLook;
          }
-         for each (breed in Breed.getBreeds())
+         for each(breed in Breed.getBreeds())
          {
             if(breed.creatureBonesId == result.getBone())
             {

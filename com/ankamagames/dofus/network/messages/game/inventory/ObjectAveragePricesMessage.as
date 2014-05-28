@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.inventory
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory
          return 6335;
       }
       
-      public function initObjectAveragePricesMessage(ids:Vector.<uint>=null, avgPrices:Vector.<uint>=null) : ObjectAveragePricesMessage {
+      public function initObjectAveragePricesMessage(ids:Vector.<uint> = null, avgPrices:Vector.<uint> = null) : ObjectAveragePricesMessage {
          this.ids = ids;
          this.avgPrices = avgPrices;
          this._isInitialized = true;

@@ -12,7 +12,6 @@ package com.ankamagames.dofus.scripts.api
    import com.ankamagames.atouin.Atouin;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayContextFrame;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
    import com.ankamagames.dofus.datacenter.monsters.Monster;
    import com.ankamagames.dofus.datacenter.npcs.Npc;
@@ -41,7 +40,7 @@ package com.ankamagames.dofus.scripts.api
          {
             player.teleport(this._playerPosition.x,this._playerPosition.y).start();
          }
-         delete this._entities[[PlayedCharacterManager.getInstance().id]];
+         delete this._entities[PlayedCharacterManager.getInstance().id];
       }
       
       public function getEntity(pEntityId:int) : ScriptEntity {
@@ -99,7 +98,7 @@ package com.ankamagames.dofus.scripts.api
          return this.getEntity(PlayedCharacterManager.getInstance().id);
       }
       
-      public function createMonster(pMonsterId:int, pAddEntity:Boolean=true, pStartX:int=0, pStartY:int=0, pStartDirection:int=1) : ScriptEntity {
+      public function createMonster(pMonsterId:int, pAddEntity:Boolean = true, pStartX:int = 0, pStartY:int = 0, pStartDirection:int = 1) : ScriptEntity {
          var entity:ScriptEntity = this.createEntity(Monster.getMonsterById(pMonsterId).look);
          if(pAddEntity)
          {
@@ -111,7 +110,7 @@ package com.ankamagames.dofus.scripts.api
          return entity;
       }
       
-      public function createNpc(pNpcId:int, pAddEntity:Boolean=true, pStartX:int=0, pStartY:int=0, pStartDirection:int=1) : ScriptEntity {
+      public function createNpc(pNpcId:int, pAddEntity:Boolean = true, pStartX:int = 0, pStartY:int = 0, pStartDirection:int = 1) : ScriptEntity {
          var entity:ScriptEntity = this.createEntity(Npc.getNpcById(pNpcId).look);
          if(pAddEntity)
          {
@@ -123,7 +122,7 @@ package com.ankamagames.dofus.scripts.api
          return entity;
       }
       
-      public function createCustom(pLook:String, pAddEntity:Boolean=true, pStartX:int=0, pStartY:int=0, pStartDirection:int=1) : ScriptEntity {
+      public function createCustom(pLook:String, pAddEntity:Boolean = true, pStartX:int = 0, pStartY:int = 0, pStartDirection:int = 1) : ScriptEntity {
          var entity:ScriptEntity = this.createEntity(pLook);
          if(pAddEntity)
          {
@@ -136,12 +135,12 @@ package com.ankamagames.dofus.scripts.api
       }
       
       public function removeEntity(pEntityId:int) : void {
-         delete this._entities[[pEntityId]];
+         delete this._entities[pEntityId];
       }
       
       public function removeEntities() : void {
          var entity:ScriptEntity = null;
-         for each (entity in this._entities)
+         for each(entity in this._entities)
          {
             if(entity.id != PlayedCharacterManager.getInstance().id)
             {

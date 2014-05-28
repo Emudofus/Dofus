@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.context.roleplay.quest
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -25,7 +24,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.quest
          return 385;
       }
       
-      public function initQuestObjectiveInformations(objectiveId:uint=0, objectiveStatus:Boolean=false, dialogParams:Vector.<String>=null) : QuestObjectiveInformations {
+      public function initQuestObjectiveInformations(objectiveId:uint = 0, objectiveStatus:Boolean = false, dialogParams:Vector.<String> = null) : QuestObjectiveInformations {
          this.objectiveId = objectiveId;
          this.objectiveStatus = objectiveStatus;
          this.dialogParams = dialogParams;

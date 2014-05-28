@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
          return 6151;
       }
       
-      public function initChallengeDungeonStackedBonusMessage(dungeonId:uint=0, xpBonus:uint=0, dropBonus:uint=0) : ChallengeDungeonStackedBonusMessage {
+      public function initChallengeDungeonStackedBonusMessage(dungeonId:uint = 0, xpBonus:uint = 0, dropBonus:uint = 0) : ChallengeDungeonStackedBonusMessage {
          this.dungeonId = dungeonId;
          this.xpBonus = xpBonus;
          this.dropBonus = dropBonus;

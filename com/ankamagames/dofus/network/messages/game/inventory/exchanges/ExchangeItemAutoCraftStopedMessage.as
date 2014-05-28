@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5810;
       }
       
-      public function initExchangeItemAutoCraftStopedMessage(reason:int=0) : ExchangeItemAutoCraftStopedMessage {
+      public function initExchangeItemAutoCraftStopedMessage(reason:int = 0) : ExchangeItemAutoCraftStopedMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

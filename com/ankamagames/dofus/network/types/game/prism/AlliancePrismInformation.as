@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.prism
          return 427;
       }
       
-      public function initAlliancePrismInformation(typeId:uint=0, state:uint=1, nextVulnerabilityDate:uint=0, placementDate:uint=0, rewardTokenCount:uint=0, alliance:AllianceInformations=null) : AlliancePrismInformation {
+      public function initAlliancePrismInformation(typeId:uint = 0, state:uint = 1, nextVulnerabilityDate:uint = 0, placementDate:uint = 0, rewardTokenCount:uint = 0, alliance:AllianceInformations = null) : AlliancePrismInformation {
          super.initPrismInformation(typeId,state,nextVulnerabilityDate,placementDate,rewardTokenCount);
          this.alliance = alliance;
          return this;

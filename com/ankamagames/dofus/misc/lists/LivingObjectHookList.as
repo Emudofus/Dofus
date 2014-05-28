@@ -9,16 +9,16 @@ package com.ankamagames.dofus.misc.lists
          super();
       }
       
-      public static const LivingObjectUpdate:Hook = new Hook("LivingObjectUpdate",false);
+      public static const LivingObjectUpdate:Hook;
       
-      public static const LivingObjectDissociate:Hook = new Hook("LivingObjectDissociate",false);
+      public static const LivingObjectDissociate:Hook;
       
-      public static const LivingObjectFeed:Hook = new Hook("LivingObjectFeed",false);
+      public static const LivingObjectFeed:Hook;
       
-      public static const LivingObjectAssociate:Hook = new Hook("LivingObjectAssociate",false);
+      public static const LivingObjectAssociate:Hook;
       
-      public static const MimicryObjectPreview:Hook = new Hook("MimicryObjectPreview",false);
+      public static const MimicryObjectPreview:Hook;
       
-      public static const MimicryObjectAssociated:Hook = new Hook("MimicryObjectAssociated",false);
+      public static const MimicryObjectAssociated:Hook;
    }
 }

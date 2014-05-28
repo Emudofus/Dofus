@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          return 165;
       }
       
-      public function initAdditionalTaxCollectorInformations(collectorCallerName:String="", date:uint=0) : AdditionalTaxCollectorInformations {
+      public function initAdditionalTaxCollectorInformations(collectorCallerName:String = "", date:uint = 0) : AdditionalTaxCollectorInformations {
          this.collectorCallerName = collectorCallerName;
          this.date = date;
          return this;

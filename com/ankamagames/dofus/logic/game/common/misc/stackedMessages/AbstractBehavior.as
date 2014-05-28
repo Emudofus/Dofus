@@ -17,7 +17,7 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          super();
       }
       
-      protected static var _log:Logger = Log.getLogger(getQualifiedClassName(AbstractBehavior));
+      protected static var _log:Logger;
       
       public static const NORMAL:String = "normal";
       
@@ -25,7 +25,7 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
       
       public static const ALWAYS:String = "always";
       
-      public static function createFake(type:String, params:Array=null) : AbstractBehavior {
+      public static function createFake(type:String, params:Array = null) : AbstractBehavior {
          var behavior:AbstractBehavior = null;
          switch(type)
          {

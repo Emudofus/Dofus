@@ -52,6 +52,8 @@ package com.ankamagames.jerakine.resources
                return "signedFile";
             case RESOURCE_NONE:
                return "none";
+            default:
+               return "unknown";
          }
       }
    }

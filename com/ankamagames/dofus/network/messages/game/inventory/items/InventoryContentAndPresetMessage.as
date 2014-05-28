@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.inventory.preset.Preset;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6162;
       }
       
-      public function initInventoryContentAndPresetMessage(objects:Vector.<ObjectItem>=null, kamas:uint=0, presets:Vector.<Preset>=null) : InventoryContentAndPresetMessage {
+      public function initInventoryContentAndPresetMessage(objects:Vector.<ObjectItem> = null, kamas:uint = 0, presets:Vector.<Preset> = null) : InventoryContentAndPresetMessage {
          super.initInventoryContentMessage(objects,kamas);
          this.presets = presets;
          this._isInitialized = true;

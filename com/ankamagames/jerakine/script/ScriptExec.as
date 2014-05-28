@@ -28,7 +28,7 @@ package com.ankamagames.jerakine.script
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ScriptExec));
+      protected static const _log:Logger;
       
       private static var _prepared:Boolean;
       
@@ -38,20 +38,18 @@ package com.ankamagames.jerakine.script
       
       private static var _runners:Dictionary;
       
-      public static function exec(script:*, runner:IRunner, useCache:Boolean=true, successCallback:Callback=null, errorCallback:Callback=null) : void {
+      public static function exec(script:*, runner:IRunner, useCache:Boolean = true, successCallback:Callback = null, errorCallback:Callback = null) : void {
          var scriptUri:Uri = null;
          var ada:IAdapter = null;
          if(script is Uri)
          {
             scriptUri = script;
          }
-         else
+         else if(script is BinaryScript)
          {
-            if(script is BinaryScript)
-            {
-               scriptUri = new Uri("file://fake_script_url/" + BinaryScript(script).path);
-            }
+            scriptUri = new Uri("file://fake_script_url/" + BinaryScript(script).path);
          }
+         
          if(!_prepared)
          {
             prepare();
@@ -103,7 +101,7 @@ package com.ankamagames.jerakine.script
             _log.error("Cannot execute " + rle.uri + "; not a script.");
             isFailed = true;
          }
-         for each (obj in _runners[uriSum])
+         for each(obj in _runners[uriSum])
          {
             if(isFailed)
             {
@@ -122,30 +120,28 @@ package com.ankamagames.jerakine.script
                      Callback(obj.error).exec();
                   }
                }
-               else
+               else if(obj.success)
                {
-                  if(obj.success)
-                  {
-                     Callback(obj.success).exec();
-                  }
+                  Callback(obj.success).exec();
                }
+               
             }
          }
-         delete _runners[[uriSum]];
+         delete _runners[uriSum];
       }
       
       private static function onError(ree:ResourceErrorEvent) : void {
          var obj:Object = null;
          _log.error("Cannot execute " + ree.uri + "; script not found (" + ree.errorMsg + ").");
          var uriSum:String = ree.uri.toSum();
-         for each (obj in _runners[uriSum])
+         for each(obj in _runners[uriSum])
          {
             if(obj.error)
             {
                Callback(obj.error).exec();
             }
          }
-         delete _runners[[uriSum]];
+         delete _runners[uriSum];
       }
       
       private static function onLoadedWrapper(uri:Uri, resourceType:uint, resource:*) : void {

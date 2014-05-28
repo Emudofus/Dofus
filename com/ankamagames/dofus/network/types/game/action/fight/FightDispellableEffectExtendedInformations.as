@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.types.game.action.fight
          return 208;
       }
       
-      public function initFightDispellableEffectExtendedInformations(actionId:uint=0, sourceId:int=0, effect:AbstractFightDispellableEffect=null) : FightDispellableEffectExtendedInformations {
+      public function initFightDispellableEffectExtendedInformations(actionId:uint = 0, sourceId:int = 0, effect:AbstractFightDispellableEffect = null) : FightDispellableEffectExtendedInformations {
          this.actionId = actionId;
          this.sourceId = sourceId;
          this.effect = effect;

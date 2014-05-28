@@ -195,7 +195,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          this._throwSubSequence.start();
       }
       
-      private function throwFinished(e:Event=null) : void {
+      private function throwFinished(e:Event = null) : void {
          var rider:DisplayObject = null;
          if(this._throwSubSequence)
          {

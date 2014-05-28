@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 210;
       }
       
-      public function initMapFightCountMessage(fightCount:uint=0) : MapFightCountMessage {
+      public function initMapFightCountMessage(fightCount:uint = 0) : MapFightCountMessage {
          this.fightCount = fightCount;
          this._isInitialized = true;
          return this;

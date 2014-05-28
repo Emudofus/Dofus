@@ -3,7 +3,6 @@ package com.ankamagames.dofus.logic.game.common.managers
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.types.positions.MovementPath;
    import com.ankamagames.jerakine.types.positions.PathElement;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
@@ -17,7 +16,7 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       private static const DEBUG_ADAPTER:Boolean = false;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MapMovementAdapter));
+      protected static const _log:Logger;
       
       public static function getServerMovement(path:MovementPath) : Vector.<uint> {
          var pe:PathElement = null;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          var movement:Vector.<uint> = new Vector.<uint>();
          var lastOrientation:uint = 0;
          var moveCount:uint = 0;
-         for each (pe in path.path)
+         for each(pe in path.path)
          {
             lastOrientation = pe.orientation;
             value = (lastOrientation & 7) << 12 | pe.step.cellId & 4095;
@@ -41,7 +40,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          if(DEBUG_ADAPTER)
          {
             movStr = "";
-            for each (movCell in movement)
+            for each(movCell in movement)
             {
                movStr = movStr + ((movCell & 4095) + " > ");
             }
@@ -59,7 +58,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          var movElement:PathElement = null;
          var mp:MovementPath = new MovementPath();
          var moveCount:uint = 0;
-         for each (movement in path)
+         for each(movement in path)
          {
             destination = MapPoint.fromCellId(movement & 4095);
             pe = new PathElement();
@@ -85,7 +84,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          if(DEBUG_ADAPTER)
          {
             movStr = "Start : " + mp.start.cellId + " | ";
-            for each (movElement in mp.path)
+            for each(movElement in mp.path)
             {
                movStr = movStr + (movElement.step.cellId + " > ");
             }

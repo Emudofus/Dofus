@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.stats
          return 5610;
       }
       
-      public function initStatsUpgradeRequestMessage(statId:uint=11, boostPoint:uint=0) : StatsUpgradeRequestMessage {
+      public function initStatsUpgradeRequestMessage(statId:uint = 11, boostPoint:uint = 0) : StatsUpgradeRequestMessage {
          this.statId = statId;
          this.boostPoint = boostPoint;
          this._isInitialized = true;

@@ -8,7 +8,6 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
    import flash.display.Bitmap;
    import flash.text.TextField;
    import com.ankamagames.jerakine.utils.benchmark.monitoring.FpsManagerConst;
-   import __AS3__.vec.*;
    import flash.text.TextFormat;
    import flash.events.MouseEvent;
    import flash.system.System;
@@ -29,7 +28,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
       
       private static var MAX_THEO_VALUE:int = 250;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MemoryPanel));
+      protected static const _log:Logger;
       
       private var _otherData:Dictionary;
       
@@ -97,7 +96,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this._memGraph.bitmapData.lock();
          this._memGraph.bitmapData.scroll(-1,0);
          this._memGraph.bitmapData.fillRect(new Rectangle(FpsManagerConst.BOX_WIDTH - 1,1,1,FpsManagerConst.BOX_HEIGHT),16711680);
-         for each (mo in this._otherData)
+         for each(mo in this._otherData)
          {
             if((!(mo == null)) && (mo.selected))
             {
@@ -124,7 +123,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
       
       public function clearOtherGraph() : void {
          var mo:MonitoredObject = null;
-         for each (mo in this._otherData)
+         for each(mo in this._otherData)
          {
             if(mo != null)
             {
@@ -155,7 +154,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this.drawLine(o.data,o.limits);
       }
       
-      private function drawLine(pData:Vector.<Number>, pLimits:Vector.<Number>, pColor:uint=16711680) : void {
+      private function drawLine(pData:Vector.<Number>, pLimits:Vector.<Number>, pColor:uint = 16711680) : void {
          var currentLimit:* = NaN;
          var previousLimit:* = NaN;
          var px:int = 0;
@@ -178,7 +177,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          }
       }
       
-      public function updateGc(max_memory:Number=0) : void {
+      public function updateGc(max_memory:Number = 0) : void {
          if(max_memory > 0)
          {
             MAX_THEO_VALUE = Math.ceil(max_memory);
@@ -186,7 +185,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this._infosTf.text = "GC " + FpsManagerUtils.getTimeFromNow(this.lastGc);
       }
       
-      private function getGraphValue(pData:Vector.<Number>, ind:int, pLimit:int=-1) : int {
+      private function getGraphValue(pData:Vector.<Number>, ind:int, pLimit:int = -1) : int {
          if(pLimit == -1)
          {
             pLimit = pLimit = FpsManagerUtils.getVectorMaxValue(pData);
@@ -197,13 +196,11 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          {
             value = 1;
          }
-         else
+         else if(value > bottom)
          {
-            if(value > bottom)
-            {
-               value = bottom;
-            }
+            value = bottom;
          }
+         
          return value;
       }
       

@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6390;
       }
       
-      public function initAllianceMembershipMessage(allianceInfo:AllianceInformations=null, enabled:Boolean=false) : AllianceMembershipMessage {
+      public function initAllianceMembershipMessage(allianceInfo:AllianceInformations = null, enabled:Boolean = false) : AllianceMembershipMessage {
          super.initAllianceJoinedMessage(allianceInfo,enabled);
          this._isInitialized = true;
          return this;

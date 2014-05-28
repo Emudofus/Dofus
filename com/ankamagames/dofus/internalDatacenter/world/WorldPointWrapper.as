@@ -13,7 +13,7 @@ package com.ankamagames.dofus.internalDatacenter.world
    public class WorldPointWrapper extends WorldPoint implements IDataCenter
    {
       
-      public function WorldPointWrapper(mapid:uint, fixedOutdoor:Boolean=false, outx:int=0, outy:int=0) {
+      public function WorldPointWrapper(mapid:uint, fixedOutdoor:Boolean = false, outx:int = 0, outy:int = 0) {
          var mapInfo:Object = null;
          super();
          mapId = mapid;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.internalDatacenter.world
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(WorldPointWrapper));
+      protected static const _log:Logger;
       
       public var outdoorMapId:uint;
       

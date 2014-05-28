@@ -29,6 +29,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
             case AllianceRightsBitEnum.ALLIANCE_RIGHT_BOSS:
                hasThisRight = alliance.isBoss;
                break;
+            default:
+               hasThisRight = true;
          }
          switch(_operator.text)
          {
@@ -36,6 +38,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
                return hasThisRight;
             case ItemCriterionOperator.DIFFERENT:
                return !hasThisRight;
+            default:
+               return false;
          }
       }
       

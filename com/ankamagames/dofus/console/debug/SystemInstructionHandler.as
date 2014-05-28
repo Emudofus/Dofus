@@ -25,10 +25,12 @@ package com.ankamagames.dofus.console.debug
          {
             case "getuid":
                return "Get the client flashkey.";
+            default:
+               return "No help for command \'" + cmd + "\'";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

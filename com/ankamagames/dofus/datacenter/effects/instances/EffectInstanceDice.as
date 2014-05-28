@@ -68,19 +68,17 @@ package com.ankamagames.dofus.datacenter.effects.instances
             this.diceSide = this.diceSide + term.diceSide;
             forceDescriptionRefresh();
          }
+         else if(term is EffectInstanceInteger)
+         {
+            this.diceNum = this.diceNum + term.value;
+            this.diceSide = !(this.diceSide == 0)?this.diceSide + term.value:0;
+            forceDescriptionRefresh();
+         }
          else
          {
-            if(term is EffectInstanceInteger)
-            {
-               this.diceNum = this.diceNum + term.value;
-               this.diceSide = !(this.diceSide == 0)?this.diceSide + term.value:0;
-               forceDescriptionRefresh();
-            }
-            else
-            {
-               _log.error(term + " cannot be added to EffectInstanceDice.");
-            }
+            _log.error(term + " cannot be added to EffectInstanceDice.");
          }
+         
          return this;
       }
    }

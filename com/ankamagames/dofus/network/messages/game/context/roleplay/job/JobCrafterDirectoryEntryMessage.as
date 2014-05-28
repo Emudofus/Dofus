@@ -8,7 +8,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
-   import __AS3__.vec.*;
    
    public class JobCrafterDirectoryEntryMessage extends NetworkMessage implements INetworkMessage
    {
@@ -38,7 +37,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 6044;
       }
       
-      public function initJobCrafterDirectoryEntryMessage(playerInfo:JobCrafterDirectoryEntryPlayerInfo=null, jobInfoList:Vector.<JobCrafterDirectoryEntryJobInfo>=null, playerLook:EntityLook=null) : JobCrafterDirectoryEntryMessage {
+      public function initJobCrafterDirectoryEntryMessage(playerInfo:JobCrafterDirectoryEntryPlayerInfo = null, jobInfoList:Vector.<JobCrafterDirectoryEntryJobInfo> = null, playerLook:EntityLook = null) : JobCrafterDirectoryEntryMessage {
          this.playerInfo = playerInfo;
          this.jobInfoList = jobInfoList;
          this.playerLook = playerLook;

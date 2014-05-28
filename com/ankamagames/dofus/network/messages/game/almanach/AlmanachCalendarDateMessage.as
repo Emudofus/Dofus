@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.almanach
          return 6341;
       }
       
-      public function initAlmanachCalendarDateMessage(date:int=0) : AlmanachCalendarDateMessage {
+      public function initAlmanachCalendarDateMessage(date:int = 0) : AlmanachCalendarDateMessage {
          this.date = date;
          this._isInitialized = true;
          return this;

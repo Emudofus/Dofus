@@ -25,14 +25,14 @@ package com.ankamagames.dofus.console.debug
                console.output("ENTER_FRAME listeners count : " + EnterFrameDispatcher.enterFrameListenerCount);
                console.output("Controled listeners :");
                ctrlDic = EnterFrameDispatcher.controledEnterFrameListeners;
-               for (cefl in ctrlDic)
+               for(cefl in ctrlDic)
                {
                   cname = ctrlDic[cefl]["name"];
                   console.output("  - " + cname);
                }
                console.output("Real time listeners :");
                rtDic = EnterFrameDispatcher.realTimeEnterFrameListeners;
-               for (refl in rtDic)
+               for(refl in rtDic)
                {
                   rname = rtDic[refl];
                   console.output("  - " + rname);
@@ -46,10 +46,12 @@ package com.ankamagames.dofus.console.debug
          {
             case "enterframecount":
                return "Count the ENTER_FRAME listeners.";
+            default:
+               return "Unknown command";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

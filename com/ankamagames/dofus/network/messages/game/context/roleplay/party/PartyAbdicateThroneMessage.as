@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6080;
       }
       
-      public function initPartyAbdicateThroneMessage(partyId:uint=0, playerId:uint=0) : PartyAbdicateThroneMessage {
+      public function initPartyAbdicateThroneMessage(partyId:uint = 0, playerId:uint = 0) : PartyAbdicateThroneMessage {
          super.initAbstractPartyMessage(partyId);
          this.playerId = playerId;
          this._isInitialized = true;

@@ -15,7 +15,7 @@ package com.ankamagames.dofus.externalnotification
    public class ExternalNotificationWindow extends NativeWindow
    {
       
-      public function ExternalNotificationWindow(pNotificationType:int, pClientId:String, pId:String, pContent:Object, pWinOpts:NativeWindowInitOptions, pHookName:String=null, pHookParams:Array=null) {
+      public function ExternalNotificationWindow(pNotificationType:int, pClientId:String, pId:String, pContent:Object, pWinOpts:NativeWindowInitOptions, pHookName:String = null, pHookParams:Array = null) {
          this._notificationType = pNotificationType;
          this._id = pId;
          this._clientId = pClientId;
@@ -36,7 +36,7 @@ package com.ankamagames.dofus.externalnotification
       
       private static const DEBUG:Boolean = false;
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(ExternalNotificationWindow));
+      private static const _log:Logger;
       
       private static function log(pMsg:Object) : void {
          if(DEBUG)

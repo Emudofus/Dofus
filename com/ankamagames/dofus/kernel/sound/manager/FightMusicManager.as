@@ -3,7 +3,6 @@ package com.ankamagames.dofus.kernel.sound.manager
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.ambientSounds.AmbientSound;
    import com.ankamagames.jerakine.BalanceManager.BalanceManager;
    import com.ankamagames.tubul.interfaces.ISound;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          this.init();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(FightMusicManager));
+      private static const _log:Logger;
       
       private var _fightMusics:Vector.<AmbientSound>;
       
@@ -62,7 +61,7 @@ package com.ankamagames.dofus.kernel.sound.manager
          var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
          if(entitiesFrame)
          {
-            for each (entity in entitiesFrame.getEntitiesDictionnary())
+            for each(entity in entitiesFrame.getEntitiesDictionnary())
             {
                if(entity is GameFightMonsterInformations)
                {
@@ -147,12 +146,12 @@ package com.ankamagames.dofus.kernel.sound.manager
          else
          {
             logText = "Cette map contient les musiques de combat : ";
-            for each (asound in this._fightMusics)
+            for each(asound in this._fightMusics)
             {
                logText = logText + (asound.id + ", ");
             }
             logText = " et les musiques de boss d\'id : ";
-            for each (asound in this._bossMusics)
+            for each(asound in this._bossMusics)
             {
                logText = logText + (asound.id + ", ");
             }
@@ -164,12 +163,12 @@ package com.ankamagames.dofus.kernel.sound.manager
          var ambientSound:AmbientSound = null;
          var rnd:* = 0;
          var count:int = 0;
-         for each (ambientSound in this._fightMusics)
+         for each(ambientSound in this._fightMusics)
          {
             count++;
          }
          rnd = int(Math.random() * count);
-         for each (ambientSound in this._fightMusics)
+         for each(ambientSound in this._fightMusics)
          {
             if(rnd == 0)
             {
@@ -179,12 +178,12 @@ package com.ankamagames.dofus.kernel.sound.manager
             rnd--;
          }
          count = 0;
-         for each (ambientSound in this._bossMusics)
+         for each(ambientSound in this._bossMusics)
          {
             count++;
          }
          rnd = int(Math.random() * count);
-         for each (ambientSound in this._bossMusics)
+         for each(ambientSound in this._bossMusics)
          {
             if(rnd == 0)
             {

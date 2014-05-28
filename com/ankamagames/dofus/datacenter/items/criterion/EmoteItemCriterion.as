@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
       override public function get isRespected() : Boolean {
          var id:* = 0;
          var emoticonList:Array = (Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame).emotes;
-         for each (id in emoticonList)
+         for each(id in emoticonList)
          {
             if(id == _criterionValue)
             {
@@ -43,7 +43,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
       override protected function getCriterion() : int {
          var id:* = 0;
          var emoticonList:Array = (Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame).emotes;
-         for each (id in emoticonList)
+         for each(id in emoticonList)
          {
             if(id == _criterionValue)
             {

@@ -5,7 +5,7 @@ package com.ankamagames.jerakine.types.events
    public class ErrorReportedEvent extends Event
    {
       
-      public function ErrorReportedEvent(error:Error, text:String, pShowPopup:Boolean=true) {
+      public function ErrorReportedEvent(error:Error, text:String, pShowPopup:Boolean = true) {
          super(ERROR,false,false);
          this._error = error;
          this._text = text;

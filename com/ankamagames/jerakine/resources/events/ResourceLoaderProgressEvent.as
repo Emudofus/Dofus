@@ -6,7 +6,7 @@ package com.ankamagames.jerakine.resources.events
    public class ResourceLoaderProgressEvent extends ResourceEvent
    {
       
-      public function ResourceLoaderProgressEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function ResourceLoaderProgressEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

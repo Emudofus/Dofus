@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5968;
       }
       
-      public function initMountSetMessage(mountData:MountClientData=null) : MountSetMessage {
+      public function initMountSetMessage(mountData:MountClientData = null) : MountSetMessage {
          this.mountData = mountData;
          this._isInitialized = true;
          return this;

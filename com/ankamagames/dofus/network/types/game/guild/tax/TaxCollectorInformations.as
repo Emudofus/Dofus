@@ -5,7 +5,6 @@ package com.ankamagames.dofus.network.types.game.guild.tax
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
-   import __AS3__.vec.*;
    
    public class TaxCollectorInformations extends Object implements INetworkType
    {
@@ -43,7 +42,7 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          return 167;
       }
       
-      public function initTaxCollectorInformations(uniqueId:int=0, firtNameId:uint=0, lastNameId:uint=0, additionalInfos:AdditionalTaxCollectorInformations=null, worldX:int=0, worldY:int=0, subAreaId:uint=0, state:uint=0, look:EntityLook=null, complements:Vector.<TaxCollectorComplementaryInformations>=null) : TaxCollectorInformations {
+      public function initTaxCollectorInformations(uniqueId:int = 0, firtNameId:uint = 0, lastNameId:uint = 0, additionalInfos:AdditionalTaxCollectorInformations = null, worldX:int = 0, worldY:int = 0, subAreaId:uint = 0, state:uint = 0, look:EntityLook = null, complements:Vector.<TaxCollectorComplementaryInformations> = null) : TaxCollectorInformations {
          this.uniqueId = uniqueId;
          this.firtNameId = firtNameId;
          this.lastNameId = lastNameId;

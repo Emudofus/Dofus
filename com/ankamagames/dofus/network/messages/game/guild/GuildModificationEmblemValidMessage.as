@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6328;
       }
       
-      public function initGuildModificationEmblemValidMessage(guildEmblem:GuildEmblem=null) : GuildModificationEmblemValidMessage {
+      public function initGuildModificationEmblemValidMessage(guildEmblem:GuildEmblem = null) : GuildModificationEmblemValidMessage {
          this.guildEmblem = guildEmblem;
          this._isInitialized = true;
          return this;

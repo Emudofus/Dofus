@@ -33,7 +33,7 @@ package com.ankamagames.berilia.types.graphic
    public class UiRootContainer extends GraphicContainer
    {
       
-      public function UiRootContainer(stage:Stage, uiData:UiData, root:Sprite=null) {
+      public function UiRootContainer(stage:Stage, uiData:UiData, root:Sprite = null) {
          super();
          this._stage = stage;
          this._root = root;
@@ -51,9 +51,9 @@ package com.ankamagames.berilia.types.graphic
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UiRootContainer));
+      protected static const _log:Logger;
       
       private var _aNamedElements:Array;
       
@@ -217,7 +217,7 @@ package com.ankamagames.berilia.types.graphic
       }
       
       public function removeElement(sName:String) : void {
-         delete this._aNamedElements[[sName]];
+         delete this._aNamedElements[sName];
       }
       
       public function getElement(sName:String) : GraphicContainer {
@@ -240,7 +240,7 @@ package com.ankamagames.berilia.types.graphic
          {
             return;
          }
-         for each (elem in this._aFinalizeElements)
+         for each(elem in this._aFinalizeElements)
          {
             if(!elem.finalized)
             {
@@ -273,15 +273,13 @@ package com.ankamagames.berilia.types.graphic
             {
                destroyNow = true;
             }
-            else
+            else if(this._renderAsk)
             {
-               if(this._renderAsk)
-               {
-                  this.render();
-               }
+               this.render();
             }
+            
             this._ready = true;
-            for each (cb in this._waitingFctCall)
+            for each(cb in this._waitingFctCall)
             {
                cb.exec();
             }
@@ -291,6 +289,8 @@ package com.ankamagames.berilia.types.graphic
          this.visible = this._tempVisible;
          if(destroyNow)
          {
+            _log.error("UI " + name + " has encountered an exception and must be unloaded.");
+            _log.warn("" + ErrorManager.lastExceptionStacktrace);
             Berilia.getInstance().unloadUi(name);
          }
       }
@@ -337,7 +337,7 @@ package com.ankamagames.berilia.types.graphic
             i++;
          }
          this.updateLinkedUi();
-         for each (pfc in this._aPostFinalizeElement)
+         for each(pfc in this._aPostFinalizeElement)
          {
             pfc.finalize();
          }
@@ -364,7 +364,7 @@ package com.ankamagames.berilia.types.graphic
          {
             return;
          }
-         delete this._aGraphicElementIndex[[sName]];
+         delete this._aGraphicElementIndex[sName];
          this.removeElement(sName);
       }
       
@@ -381,7 +381,7 @@ package com.ankamagames.berilia.types.graphic
             ge = this._aGraphicLocationStack[i];
             if((!(ge == null)) && (ge.sprite.name == sName))
             {
-               delete this._aGraphicLocationStack[[i]];
+               delete this._aGraphicLocationStack[i];
                break;
             }
             i++;
@@ -391,7 +391,7 @@ package com.ankamagames.berilia.types.graphic
          {
             if((!(this._aSizeStack[i] == null)) && (this._aSizeStack[i].name == sName))
             {
-               delete this._aSizeStack[[i]];
+               delete this._aSizeStack[i];
                break;
             }
             i++;
@@ -456,12 +456,12 @@ package com.ankamagames.berilia.types.graphic
       }
       
       public function removeLinkedUi(uiName:String) : void {
-         delete this._linkedUi[[uiName]];
+         delete this._linkedUi[uiName];
       }
       
       public function updateLinkedUi() : void {
          var ui:String = null;
-         for each (ui in this._linkedUi)
+         for each(ui in this._linkedUi)
          {
             if(Berilia.getInstance().getUi(this._linkedUi[ui]))
             {
@@ -500,7 +500,7 @@ package com.ankamagames.berilia.types.graphic
          }
          else
          {
-            for each (r in this.radioGroup)
+            for each(r in this.radioGroup)
             {
                RadioGroup(r).destroy();
             }
@@ -547,13 +547,11 @@ package com.ankamagames.berilia.types.graphic
                   {
                      ge.sprite.width = int(ge.size.x * StageShareManager.startWidth);
                   }
-                  else
+                  else if(GraphicContainer(ge.sprite).getParent())
                   {
-                     if(GraphicContainer(ge.sprite).getParent())
-                     {
-                        ge.sprite.width = int(ge.size.x * GraphicContainer(ge.sprite).getParent().width);
-                     }
+                     ge.sprite.width = int(ge.size.x * GraphicContainer(ge.sprite).getParent().width);
                   }
+                  
                }
                if((!isNaN(ge.size.y)) && (ge.size.yUnit == GraphicSize.SIZE_PRC))
                {
@@ -561,13 +559,11 @@ package com.ankamagames.berilia.types.graphic
                   {
                      ge.sprite.height = int(ge.size.y * StageShareManager.startHeight);
                   }
-                  else
+                  else if(GraphicContainer(ge.sprite).getParent())
                   {
-                     if(GraphicContainer(ge.sprite).getParent())
-                     {
-                        ge.sprite.height = int(ge.size.y * GraphicContainer(ge.sprite).getParent().height);
-                     }
+                     ge.sprite.height = int(ge.size.y * GraphicContainer(ge.sprite).getParent().height);
                   }
+                  
                }
             }
             i++;
@@ -663,6 +659,45 @@ package com.ankamagames.berilia.types.graphic
                   pModificator.x = glLocation.getOffsetX() + (pTarget.x - pRef.x);
                   pModificator.y = glLocation.getOffsetY() + (pTarget.y - pRef.y);
                   break;
+               default:
+                  if(this.isRegisteredId(glLocation.getRelativeTo()))
+                  {
+                     ref = this._aGraphicElementIndex[glLocation.getRelativeTo()].sprite;
+                  }
+                  else if(Berilia.getInstance().getUi(glLocation.getRelativeTo()))
+                  {
+                     ref = Berilia.getInstance().getUi(glLocation.getRelativeTo());
+                     UiRootContainer(ref).addLinkedUi(name);
+                     doTarget = ref;
+                  }
+                  else if(glLocation.getRelativeTo().indexOf(".") != -1)
+                  {
+                     uiTarget = glLocation.getRelativeTo().split(".");
+                     ui = Berilia.getInstance().getUi(uiTarget[0]);
+                     if(!ui)
+                     {
+                        _log.warn("[Warning] UI " + uiTarget[0] + " does not exist (found " + glLocation.getRelativeTo() + " in " + name + ")");
+                        return null;
+                     }
+                     if(!ui.getElementById(uiTarget[1]))
+                     {
+                        _log.warn("[Warning] UI " + uiTarget[0] + " does not contain element [" + uiTarget[1] + "] (found " + glLocation.getRelativeTo() + " in " + name + ")");
+                        return null;
+                     }
+                     ref = ui.getElementById(uiTarget[1]).sprite;
+                     pRef = doTarget.localToGlobal(new Point(doTarget.x,doTarget.y));
+                     GraphicContainer(ref).getUi().addLinkedUi(name);
+                  }
+                  else
+                  {
+                     _log.warn("[Warning] " + glLocation.getRelativeTo() + " is unknow graphic element reference");
+                     return null;
+                  }
+                  
+                  
+                  pTarget = doTarget.localToGlobal(new Point(ref.x,ref.y));
+                  pModificator.x = glLocation.getOffsetX() + (pTarget.x - pRef.x);
+                  pModificator.y = glLocation.getOffsetY() + (pTarget.y - pRef.y);
             }
             if(glLocation.offsetXType == LocationTypeEnum.LOCATION_TYPE_ABSOLUTE)
             {
@@ -690,6 +725,12 @@ package com.ankamagames.berilia.types.graphic
             case GraphicLocation.REF_TOP:
                doRelative = this;
                break;
+            default:
+               doRelative = ref;
+               if(doRelative == doTarget)
+               {
+                  _log.warn("[Warning] Wrong relative position : " + doRelative.name + " refer to himself");
+               }
          }
          pModificator = this.getOffsetModificator(glLocation.getRelativePoint(),doRelative);
          ptStart.x = ptStart.x + pModificator.x;

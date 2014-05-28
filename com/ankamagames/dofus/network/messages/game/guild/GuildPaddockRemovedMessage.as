@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5955;
       }
       
-      public function initGuildPaddockRemovedMessage(paddockId:int=0) : GuildPaddockRemovedMessage {
+      public function initGuildPaddockRemovedMessage(paddockId:int = 0) : GuildPaddockRemovedMessage {
          this.paddockId = paddockId;
          this._isInitialized = true;
          return this;

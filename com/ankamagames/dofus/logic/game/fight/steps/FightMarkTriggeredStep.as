@@ -51,6 +51,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
                this.addProjectile(1017);
                evt = FightEventEnum.FIGHTER_TRIGGERED_TRAP;
                break;
+            default:
+               _log.warn("Unknown mark type triggered (" + mi.markType + ").");
          }
          FightEventsHelper.sendFightEvent(evt,[this._fighterId,this._casterId,mi.associatedSpell.id],0,castingSpellId);
          executeCallbacks();

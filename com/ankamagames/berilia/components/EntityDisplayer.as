@@ -40,15 +40,15 @@ package com.ankamagames.berilia.components
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
       public static var lookAdaptater:Function;
       
-      private static const _subEntitiesBehaviors:Dictionary = new Dictionary();
+      private static const _subEntitiesBehaviors:Dictionary;
       
-      private static const _animationModifier:Dictionary = new Dictionary();
+      private static const _animationModifier:Dictionary;
       
-      private static const _skinModifier:Dictionary = new Dictionary();
+      private static const _skinModifier:Dictionary;
       
       public static function setSubEntityDefaultBehavior(category:uint, behavior:ISubEntityBehavior) : void {
          _subEntitiesBehaviors[category] = behavior;
@@ -121,17 +121,15 @@ package com.ankamagames.berilia.components
          {
             look = lookAdaptater(rawLook);
          }
+         else if(rawLook is TiphonEntityLook)
+         {
+            look = rawLook as TiphonEntityLook;
+         }
          else
          {
-            if(rawLook is TiphonEntityLook)
-            {
-               look = rawLook as TiphonEntityLook;
-            }
-            else
-            {
-               throw new ArgumentError();
-            }
+            throw new ArgumentError();
          }
+         
          if(this._entity)
          {
             this._entity.visible = !(look == null);
@@ -146,13 +144,11 @@ package com.ankamagames.berilia.components
             {
                look.resetSubEntities();
             }
-            else
+            else if(this.clearAuras)
             {
-               if(this.clearAuras)
-               {
-                  look.removeSubEntity(6);
-               }
+               look.removeSubEntity(6);
             }
+            
          }
          if((look) && (this._lookUpdate))
          {
@@ -401,25 +397,23 @@ package com.ankamagames.berilia.components
                {
                   TiphonSprite(this._entity).setAnimationAndDirection("AnimStatique",this._direction);
                }
+               else if(this._animation == "AnimArtwork")
+               {
+                  TiphonSprite(this._entity).setAnimationAndDirection("AnimArtwork",this._direction);
+               }
                else
                {
-                  if(this._animation == "AnimArtwork")
-                  {
-                     TiphonSprite(this._entity).setAnimationAndDirection("AnimArtwork",this._direction);
-                  }
-                  else
-                  {
-                     seq.addStep(new SetDirectionStep(TiphonSprite(this._entity),this._direction));
-                     seq.addStep(new PlayAnimationStep(TiphonSprite(this._entity),this._animation,false));
-                     seq.addStep(new SetAnimationStep(TiphonSprite(this._entity),"AnimStatique"));
-                     seq.start();
-                  }
+                  seq.addStep(new SetDirectionStep(TiphonSprite(this._entity),this._direction));
+                  seq.addStep(new PlayAnimationStep(TiphonSprite(this._entity),this._animation,false));
+                  seq.addStep(new SetAnimationStep(TiphonSprite(this._entity),"AnimStatique"));
+                  seq.start();
                }
+               
             }
          }
       }
       
-      public function equipCharacter(list:Array, numDelete:int=0) : void {
+      public function equipCharacter(list:Array, numDelete:int = 0) : void {
          var base:Array = null;
          var tel:TiphonEntityLook = null;
          var bones:Array = null;
@@ -432,30 +426,26 @@ package com.ankamagames.berilia.components
                list.unshift(base[1].split(","));
                base[1] = list.join(",");
             }
-            else
+            else if(numDelete < base[1].length)
             {
-               if(numDelete < base[1].length)
+               bones = base[1].split(",");
+               k = 0;
+               while(k < numDelete)
                {
-                  bones = base[1].split(",");
-                  k = 0;
-                  while(k < numDelete)
-                  {
-                     bones.pop();
-                     k++;
-                  }
-                  base[1] = bones.join(",");
+                  bones.pop();
+                  k++;
                }
+               base[1] = bones.join(",");
             }
+            
             tel = TiphonEntityLook.fromString(base.join("|"));
             this._entity.look.updateFrom(tel);
          }
-         else
+         else if((!this._entity) && (list.length))
          {
-            if((!this._entity) && (list.length))
-            {
-               this._waitingForEquipement = list;
-            }
+            this._waitingForEquipement = list;
          }
+         
       }
       
       public function getSlotPosition(name:String) : Point {
@@ -515,7 +505,7 @@ package com.ankamagames.berilia.components
          }
          if(this._cache)
          {
-            for each (ts in this._cache)
+            for each(ts in this._cache)
             {
                ts.destroy();
             }
@@ -525,7 +515,7 @@ package com.ankamagames.berilia.components
          EnterFrameDispatcher.removeEventListener(this.onFade);
          removeEventListener(MouseEvent.MOUSE_OVER,this.mouseOver);
          removeEventListener(MouseEvent.MOUSE_OUT,this.mouseOut);
-         for each (behavior in _subEntitiesBehaviors)
+         for each(behavior in _subEntitiesBehaviors)
          {
             if(behavior)
             {
@@ -584,7 +574,7 @@ package com.ankamagames.berilia.components
          {
             this._entity.skinModifier = _skinModifier[this._entity.look.getBone()];
          }
-         for (cat in _subEntitiesBehaviors)
+         for(cat in _subEntitiesBehaviors)
          {
             if(_subEntitiesBehaviors[cat])
             {
@@ -631,7 +621,7 @@ package com.ankamagames.berilia.components
          }
       }
       
-      private function needUpdate(e:Event=null) : void {
+      private function needUpdate(e:Event = null) : void {
          var cat:* = undefined;
          var key:String = null;
          EnterFrameDispatcher.removeEventListener(this.needUpdate);
@@ -668,7 +658,7 @@ package com.ankamagames.berilia.components
          }
          this._originalScaleX = (this._entity as TiphonSprite).look.getScaleX();
          this._originalScaleY = (this._entity as TiphonSprite).look.getScaleY();
-         for (cat in _subEntitiesBehaviors)
+         for(cat in _subEntitiesBehaviors)
          {
             if(_subEntitiesBehaviors[cat])
             {

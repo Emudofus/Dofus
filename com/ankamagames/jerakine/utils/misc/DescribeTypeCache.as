@@ -12,17 +12,17 @@ package com.ankamagames.jerakine.utils.misc
          super();
       }
       
-      private static var _classDesc:Dictionary = new Dictionary();
+      private static var _classDesc:Dictionary;
       
-      private static var _variables:Dictionary = new Dictionary();
+      private static var _variables:Dictionary;
       
-      private static var _variablesAndAccessor:Dictionary = new Dictionary();
+      private static var _variablesAndAccessor:Dictionary;
       
-      private static var _tags:Dictionary = new Dictionary();
+      private static var _tags:Dictionary;
       
-      private static var _consts:Dictionary = new Dictionary();
+      private static var _consts:Dictionary;
       
-      public static function typeDescription(o:Object, useCache:Boolean=true) : XML {
+      public static function typeDescription(o:Object, useCache:Boolean = true) : XML {
          if(!useCache)
          {
             return describeType(o);
@@ -35,7 +35,7 @@ package com.ankamagames.jerakine.utils.misc
          return _classDesc[c];
       }
       
-      public static function getVariables(o:Object, onlyVar:Boolean=false, useCache:Boolean=true, skipUselessVars:Boolean=false) : Array {
+      public static function getVariables(o:Object, onlyVar:Boolean = false, useCache:Boolean = true, skipUselessVars:Boolean = false) : Array {
          var variables:Array = null;
          var description:XML = null;
          var variableNode:XML = null;
@@ -65,7 +65,7 @@ package com.ankamagames.jerakine.utils.misc
          {
             try
             {
-               for (key in o)
+               for(key in o)
                {
                   variables.push(key);
                }
@@ -74,7 +74,7 @@ package com.ankamagames.jerakine.utils.misc
             {
             }
          }
-         for each (variableNode in description..variable)
+         for each(variableNode in description..variable)
          {
             varName = variableNode.@name.toString();
             if((!(varName == "MEMORY_LOG")) && (!(varName == "FLAG")) && (varName.indexOf("PATTERN") == -1) && (varName.indexOf("OFFSET") == -1))
@@ -84,7 +84,7 @@ package com.ankamagames.jerakine.utils.misc
          }
          if(!onlyVar)
          {
-            for each (accessorNode in description..accessor)
+            for each(accessorNode in description..accessor)
             {
                if(skipUselessVars)
                {
@@ -128,7 +128,7 @@ package com.ankamagames.jerakine.utils.misc
          }
          _tags[className] = new Dictionary();
          var description:XML = typeDescription(o);
-         for each (tagNode in description..metadata)
+         for each(tagNode in description..metadata)
          {
             objectName = tagNode.parent().@name;
             if(!_tags[className][objectName])
@@ -137,7 +137,7 @@ package com.ankamagames.jerakine.utils.misc
             }
             _tags[className][objectName][tagNode.@name.toString()] = true;
          }
-         for each (node in description..variable)
+         for each(node in description..variable)
          {
             objectName = node.@name;
             if(!_tags[className][objectName])
@@ -145,7 +145,7 @@ package com.ankamagames.jerakine.utils.misc
                _tags[className][objectName] = new Dictionary();
             }
          }
-         for each (node in description..method)
+         for each(node in description..method)
          {
             objectName = node.@name;
             if(!_tags[className][objectName])
@@ -165,7 +165,7 @@ package com.ankamagames.jerakine.utils.misc
          }
          _consts[className] = new Dictionary();
          var description:XML = typeDescription(o);
-         for each (cst in description..constant)
+         for each(cst in description..constant)
          {
             _consts[className][cst.@name.toString()] = cst.@type.toString();
          }
@@ -175,7 +175,7 @@ package com.ankamagames.jerakine.utils.misc
       public static function getConstantName(type:Class, value:*) : String {
          var constName:String = null;
          var constants:Dictionary = getConstants(type);
-         for (constName in constants)
+         for(constName in constants)
          {
             if(type[constName] === value)
             {

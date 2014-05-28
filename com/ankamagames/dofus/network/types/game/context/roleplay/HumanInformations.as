@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
 {
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.character.restriction.ActorRestrictionsInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
@@ -28,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 157;
       }
       
-      public function initHumanInformations(restrictions:ActorRestrictionsInformations=null, sex:Boolean=false, options:Vector.<HumanOption>=null) : HumanInformations {
+      public function initHumanInformations(restrictions:ActorRestrictionsInformations = null, sex:Boolean = false, options:Vector.<HumanOption> = null) : HumanInformations {
          this.restrictions = restrictions;
          this.sex = sex;
          this.options = options;

@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.job.JobExperience;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
          return 5809;
       }
       
-      public function initJobExperienceMultiUpdateMessage(experiencesUpdate:Vector.<JobExperience>=null) : JobExperienceMultiUpdateMessage {
+      public function initJobExperienceMultiUpdateMessage(experiencesUpdate:Vector.<JobExperience> = null) : JobExperienceMultiUpdateMessage {
          this.experiencesUpdate = experiencesUpdate;
          this._isInitialized = true;
          return this;

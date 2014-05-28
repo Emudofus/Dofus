@@ -13,9 +13,9 @@ package com.ankamagames.berilia.utils
          super();
       }
       
-      private static var _log:Logger = Log.getLogger(getQualifiedClassName(UriCacheFactory));
+      private static var _log:Logger;
       
-      private static var _aCache:Array = new Array();
+      private static var _aCache:Array;
       
       public static function init(path:String, cacheClass:ICache) : ICache {
          _aCache[path] = cacheClass;
@@ -25,7 +25,7 @@ package com.ankamagames.berilia.utils
       public static function getCacheFromUri(uri:Uri) : ICache {
          var key:String = null;
          var currentPath:String = uri.normalizedUri;
-         for (key in _aCache)
+         for(key in _aCache)
          {
             if(currentPath.indexOf(key) != -1)
             {

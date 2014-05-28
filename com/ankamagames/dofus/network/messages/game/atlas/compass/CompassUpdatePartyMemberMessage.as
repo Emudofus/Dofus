@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.atlas.compass
          return 5589;
       }
       
-      public function initCompassUpdatePartyMemberMessage(type:uint=0, coords:MapCoordinates=null, memberId:uint=0) : CompassUpdatePartyMemberMessage {
+      public function initCompassUpdatePartyMemberMessage(type:uint = 0, coords:MapCoordinates = null, memberId:uint = 0) : CompassUpdatePartyMemberMessage {
          super.initCompassUpdateMessage(type,coords);
          this.memberId = memberId;
          this._isInitialized = true;

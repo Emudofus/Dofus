@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6256;
       }
       
-      public function initPartyInvitationCancelledForGuestMessage(partyId:uint=0, cancelerId:uint=0) : PartyInvitationCancelledForGuestMessage {
+      public function initPartyInvitationCancelledForGuestMessage(partyId:uint = 0, cancelerId:uint = 0) : PartyInvitationCancelledForGuestMessage {
          super.initAbstractPartyMessage(partyId);
          this.cancelerId = cancelerId;
          this._isInitialized = true;

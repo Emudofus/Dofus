@@ -40,6 +40,7 @@ package com.ankamagames.jerakine.handlers
       
       public function HumanInputHandler() {
          this._debugOverSprite = new Dictionary(true);
+         this.random = new ParkMillerCarta();
          super();
          if(_self != null)
          {
@@ -56,7 +57,7 @@ package com.ankamagames.jerakine.handlers
       
       private static const DOUBLE_CLICK_DELAY:uint = 500;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(HumanInputHandler));
+      protected static const _log:Logger;
       
       public static function getInstance() : HumanInputHandler {
          if(_self == null)
@@ -84,7 +85,7 @@ package com.ankamagames.jerakine.handlers
       
       private var _debugOverSprite:Dictionary;
       
-      private const random:ParkMillerCarta = new ParkMillerCarta();
+      private const random:ParkMillerCarta;
       
       public function get debugOver() : Boolean {
          return this._debugOver;
@@ -94,7 +95,7 @@ package com.ankamagames.jerakine.handlers
          var sprite:* = undefined;
          if((this._debugOver) && (!value))
          {
-            for (sprite in this._debugOverSprite)
+            for(sprite in this._debugOverSprite)
             {
                if(sprite.parent)
                {
@@ -127,7 +128,7 @@ package com.ankamagames.jerakine.handlers
          this.registerListeners();
       }
       
-      public function unregisterListeners(target:Stage=null) : void {
+      public function unregisterListeners(target:Stage = null) : void {
          if(target == null)
          {
             target = StageShareManager.stage;
@@ -152,7 +153,7 @@ package com.ankamagames.jerakine.handlers
          target.removeEventListener(KeyboardEvent.KEY_UP,this.onKeyUp,false);
       }
       
-      public function registerListeners(target:Stage=null) : void {
+      public function registerListeners(target:Stage = null) : void {
          if(target == null)
          {
             target = StageShareManager.stage;
@@ -189,18 +190,16 @@ package com.ankamagames.jerakine.handlers
             this._lastSingleClick = time;
             this._lastDoucleClick = 0;
          }
+         else if(time - this._lastSingleClick < DOUBLE_CLICK_DELAY)
+         {
+            this._handler.process(GenericPool.get(MouseDoubleClickMessage,me.target,me));
+            this._lastDoucleClick = time;
+         }
          else
          {
-            if(time - this._lastSingleClick < DOUBLE_CLICK_DELAY)
-            {
-               this._handler.process(GenericPool.get(MouseDoubleClickMessage,me.target,me));
-               this._lastDoucleClick = time;
-            }
-            else
-            {
-               this._handler.process(GenericPool.get(MouseClickMessage,me.target,me));
-            }
+            this._handler.process(GenericPool.get(MouseClickMessage,me.target,me));
          }
+         
       }
       
       private function onMouseWheel(me:MouseEvent) : void {

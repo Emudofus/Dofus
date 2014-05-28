@@ -5,7 +5,7 @@ package com.hurlant.crypto.symmetric
    public class PKCS5 extends Object implements IPad
    {
       
-      public function PKCS5(blockSize:uint=0) {
+      public function PKCS5(blockSize:uint = 0) {
          super();
          this.blockSize = blockSize;
       }

@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          return 6210;
       }
       
-      public function initInventoryPresetItemUpdateRequestMessage(presetId:uint=0, position:uint=63, objUid:uint=0) : InventoryPresetItemUpdateRequestMessage {
+      public function initInventoryPresetItemUpdateRequestMessage(presetId:uint = 0, position:uint = 63, objUid:uint = 0) : InventoryPresetItemUpdateRequestMessage {
          this.presetId = presetId;
          this.position = position;
          this.objUid = objUid;

@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          return 5686;
       }
       
-      public function initLifePointsRegenEndMessage(lifePoints:uint=0, maxLifePoints:uint=0, lifePointsGained:uint=0) : LifePointsRegenEndMessage {
+      public function initLifePointsRegenEndMessage(lifePoints:uint = 0, maxLifePoints:uint = 0, lifePointsGained:uint = 0) : LifePointsRegenEndMessage {
          super.initUpdateLifePointsMessage(lifePoints,maxLifePoints);
          this.lifePointsGained = lifePointsGained;
          this._isInitialized = true;

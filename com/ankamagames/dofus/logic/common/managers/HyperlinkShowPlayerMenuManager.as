@@ -20,7 +20,7 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
-      public static function showPlayerMenu(playerName:String, playerId:int=0, timestamp:Number=0, fingerprint:String=null, chan:uint=0) : void {
+      public static function showPlayerMenu(playerName:String, playerId:int = 0, timestamp:Number = 0, fingerprint:String = null, chan:uint = 0) : void {
          var playerInfo:GameRolePlayCharacterInformations = null;
          var _modContextMenu:Object = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
          var roleplayEntitiesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
@@ -47,7 +47,7 @@ package com.ankamagames.dofus.logic.common.managers
          }
       }
       
-      public static function getPlayerName(playerName:String, playerId:int=0, timestamp:Number=0, fingerprint:String=null, chan:uint=0) : String {
+      public static function getPlayerName(playerName:String, playerId:int = 0, timestamp:Number = 0, fingerprint:String = null, chan:uint = 0) : String {
          var priority:* = 0;
          switch(chan)
          {
@@ -61,12 +61,14 @@ package com.ankamagames.dofus.logic.common.managers
             case ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE:
                priority = 4;
                break;
+            default:
+               priority = 1;
          }
          ChatAutocompleteNameManager.getInstance().addEntry(playerName,priority);
          return playerName;
       }
       
-      public static function rollOverPlayer(pX:int, pY:int, playerName:String, playerId:int=0, timestamp:Number=0, fingerprint:String=null, chan:uint=0) : void {
+      public static function rollOverPlayer(pX:int, pY:int, playerName:String, playerId:int = 0, timestamp:Number = 0, fingerprint:String = null, chan:uint = 0) : void {
          var target:Rectangle = new Rectangle(pX,pY,10,10);
          var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.player"));
          TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);

@@ -19,6 +19,8 @@ package com.ankamagames.tubul.factory
                return new LocalizedBus(pId,pName);
             case EnumTypeBus.UNLOCALIZED_BUS:
                return new UnlocalizedBus(pId,pName);
+            default:
+               throw new ArgumentError("Unknown audio bus type " + pType + ". See EnumTypeBus !");
          }
       }
    }

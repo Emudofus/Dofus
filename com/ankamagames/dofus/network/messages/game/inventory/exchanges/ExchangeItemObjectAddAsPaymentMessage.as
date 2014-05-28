@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5766;
       }
       
-      public function initExchangeItemObjectAddAsPaymentMessage(paymentType:int=0, bAdd:Boolean=false, objectToMoveId:uint=0, quantity:uint=0) : ExchangeItemObjectAddAsPaymentMessage {
+      public function initExchangeItemObjectAddAsPaymentMessage(paymentType:int = 0, bAdd:Boolean = false, objectToMoveId:uint = 0, quantity:uint = 0) : ExchangeItemObjectAddAsPaymentMessage {
          this.paymentType = paymentType;
          this.bAdd = bAdd;
          this.objectToMoveId = objectToMoveId;

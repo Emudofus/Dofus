@@ -73,7 +73,7 @@ package com.ankamagames.dofus.misc.utils.frames
       
       private var _currentCameraZoom:int;
       
-      private function addScriptLine(line:String, overrideRunningStatus:Boolean=false) : void {
+      private function addScriptLine(line:String, overrideRunningStatus:Boolean = false) : void {
          var time:* = 0;
          if((!this._paused) && (this._running) || (overrideRunningStatus))
          {
@@ -280,13 +280,14 @@ package com.ankamagames.dofus.misc.utils.frames
                this._currentCell = comsg.cell;
                return false;
             case msg is MouseWheelMessage:
+            default:
                return false;
          }
          this.createLine("player",cmd,param,useQuote);
          return false;
       }
       
-      public function cameraZoom(value:Number, centerOnCharacter:Boolean=false) : void {
+      public function cameraZoom(value:Number, centerOnCharacter:Boolean = false) : void {
          var param:String = null;
          var sysApi:SystemApi = new SystemApi();
          if((value <= 0) || (value > AtouinConstants.MAX_ZOOM))

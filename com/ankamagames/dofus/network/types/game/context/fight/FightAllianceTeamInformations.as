@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.context.fight
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -20,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 439;
       }
       
-      public function initFightAllianceTeamInformations(teamId:uint=2, leaderId:int=0, teamSide:int=0, teamTypeId:uint=0, nbWaves:uint=0, teamMembers:Vector.<FightTeamMemberInformations>=null, relation:uint=0) : FightAllianceTeamInformations {
+      public function initFightAllianceTeamInformations(teamId:uint = 2, leaderId:int = 0, teamSide:int = 0, teamTypeId:uint = 0, nbWaves:uint = 0, teamMembers:Vector.<FightTeamMemberInformations> = null, relation:uint = 0) : FightAllianceTeamInformations {
          super.initFightTeamInformations(teamId,leaderId,teamSide,teamTypeId,nbWaves,teamMembers);
          this.relation = relation;
          return this;

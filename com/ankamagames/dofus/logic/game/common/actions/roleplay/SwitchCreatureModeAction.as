@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions.roleplay
          super();
       }
       
-      public static function create(pActivated:Boolean=false) : SwitchCreatureModeAction {
+      public static function create(pActivated:Boolean = false) : SwitchCreatureModeAction {
          var a:SwitchCreatureModeAction = new SwitchCreatureModeAction();
          a.isActivated = pActivated;
          return a;

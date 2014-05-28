@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.common.actions
          super();
       }
       
-      public static function create(pMsg:String="") : ResetGameAction {
+      public static function create(pMsg:String = "") : ResetGameAction {
          var a:ResetGameAction = new ResetGameAction();
          a.messageToShow = pMsg;
          return a;

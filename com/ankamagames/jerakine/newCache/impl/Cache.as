@@ -13,7 +13,7 @@ package com.ankamagames.jerakine.newCache.impl
          this._gc.cache = this;
       }
       
-      private static var _namedCacheIndex:Array = new Array();
+      private static var _namedCacheIndex:Array;
       
       public static function create(bounds:uint, gc:ICacheGarbageCollector, name:String) : Cache {
          var cache:Cache = null;
@@ -39,7 +39,7 @@ package com.ankamagames.jerakine.newCache.impl
       override public function destroy() : void {
          if(this._name)
          {
-            delete _namedCacheIndex[[this._name]];
+            delete _namedCacheIndex[this._name];
          }
          super.destroy();
       }

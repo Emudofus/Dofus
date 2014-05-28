@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -34,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
          return 5617;
       }
       
-      public function initNpcDialogQuestionMessage(messageId:uint=0, dialogParams:Vector.<String>=null, visibleReplies:Vector.<uint>=null) : NpcDialogQuestionMessage {
+      public function initNpcDialogQuestionMessage(messageId:uint = 0, dialogParams:Vector.<String> = null, visibleReplies:Vector.<uint> = null) : NpcDialogQuestionMessage {
          this.messageId = messageId;
          this.dialogParams = dialogParams;
          this.visibleReplies = visibleReplies;

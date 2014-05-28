@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 46;
       }
       
-      public function initGameFightCharacterInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, name:String="", status:PlayerStatus=null, level:uint=0, alignmentInfos:ActorAlignmentInformations=null, breed:int=0) : GameFightCharacterInformations {
+      public function initGameFightCharacterInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, teamId:uint = 2, wave:uint = 0, alive:Boolean = false, stats:GameFightMinimalStats = null, name:String = "", status:PlayerStatus = null, level:uint = 0, alignmentInfos:ActorAlignmentInformations = null, breed:int = 0) : GameFightCharacterInformations {
          super.initGameFightFighterNamedInformations(contextualId,look,disposition,teamId,wave,alive,stats,name,status);
          this.level = level;
          this.alignmentInfos = alignmentInfos;

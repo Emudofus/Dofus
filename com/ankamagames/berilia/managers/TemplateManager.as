@@ -35,7 +35,7 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TemplateManager));
+      protected static const _log:Logger;
       
       private static var _self:TemplateManager;
       

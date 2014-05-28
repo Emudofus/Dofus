@@ -32,10 +32,12 @@ package com.ankamagames.dofus.console.debug
                return "Print the status of the current connection (if any).";
             case "inspecttraffic":
                return "Show detailled informations about network activities.";
+            default:
+               return "No help for command \'" + cmd + "\'";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

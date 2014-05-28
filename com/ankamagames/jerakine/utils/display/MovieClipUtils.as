@@ -13,7 +13,7 @@ package com.ankamagames.jerakine.utils.display
          super();
       }
       
-      private static var _asynchClip:Dictionary = new Dictionary(true);
+      private static var _asynchClip:Dictionary;
       
       private static var _isAsync:Boolean;
       
@@ -71,11 +71,11 @@ package com.ankamagames.jerakine.utils.display
          var frame:* = undefined;
          var clipToStop:DisplayObject = null;
          var allDone:Boolean = true;
-         for (clip in _asynchClip)
+         for(clip in _asynchClip)
          {
             if(clip)
             {
-               for (frame in _asynchClip[clip])
+               for(frame in _asynchClip[clip])
                {
                   if(!_asynchClip[clip][frame])
                   {
@@ -84,20 +84,18 @@ package com.ankamagames.jerakine.utils.display
                      {
                         missing = true;
                      }
-                     else
+                     else if(clipToStop is DisplayObjectContainer)
                      {
-                        if(clipToStop is DisplayObjectContainer)
-                        {
-                           _isAsync = true;
-                           stopMovieClip(clipToStop as DisplayObjectContainer);
-                           _isAsync = false;
-                        }
+                        _isAsync = true;
+                        stopMovieClip(clipToStop as DisplayObjectContainer);
+                        _isAsync = false;
                      }
+                     
                   }
                }
                if(!missing)
                {
-                  delete _asynchClip[[clip]];
+                  delete _asynchClip[clip];
                }
                else
                {

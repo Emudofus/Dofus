@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6270;
       }
       
-      public function initPartyLoyaltyStatusMessage(partyId:uint=0, loyal:Boolean=false) : PartyLoyaltyStatusMessage {
+      public function initPartyLoyaltyStatusMessage(partyId:uint = 0, loyal:Boolean = false) : PartyLoyaltyStatusMessage {
          super.initAbstractPartyMessage(partyId);
          this.loyal = loyal;
          this._isInitialized = true;

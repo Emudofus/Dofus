@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses.guil
          return 5703;
       }
       
-      public function initHouseGuildRightsMessage(houseId:uint=0, guildInfo:GuildInformations=null, rights:uint=0) : HouseGuildRightsMessage {
+      public function initHouseGuildRightsMessage(houseId:uint = 0, guildInfo:GuildInformations = null, rights:uint = 0) : HouseGuildRightsMessage {
          this.houseId = houseId;
          this.guildInfo = guildInfo;
          this.rights = rights;

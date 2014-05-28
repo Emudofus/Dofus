@@ -42,7 +42,7 @@ package com.ankamagames.dofus.logic.shield
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SecureModeManager));
+      protected static const _log:Logger;
       
       private static const VALIDATECODE_CODEEXPIRE:String = "CODEEXPIRE";
       
@@ -124,57 +124,151 @@ package com.ankamagames.dofus.logic.shield
       }
       
       private function initRPC() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc1_:* = false;
+         var _loc2_:* = true;
+         if((BuildInfos.BUILD_TYPE == BuildTypeEnum.DEBUG) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.INTERNAL) || (BuildInfos.BUILD_TYPE == BuildTypeEnum.TESTING))
+         {
+            RPC_URL = "http://api.ankama.lan/ankama/shield.json";
+         }
+         else
+         {
+            RPC_URL = "https://api.ankama.com/ankama/shield.json";
+         }
+         this._rpcManager = new RpcServiceManager(RPC_URL,"json");
+         this._rpcManager.addEventListener(RpcEvent.EVENT_DATA,this.onRpcData);
+         this._rpcManager.addEventListener(RpcEvent.EVENT_ERROR,this.onRpcData);
       }
       
       private function getUsername() : String {
-         var _loc1_:* = false;
-         var _loc2_:* = true;
-         if(_loc2_)
-         {
-         }
+         var _loc1_:* = true;
+         var _loc2_:* = false;
          return AuthentificationManager.getInstance().username.toLowerCase().split("|")[0];
       }
       
       private function parseRpcValidateResponse(response:Object, method:String) : Object {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc6_:* = false;
+         var _loc7_:* = true;
+         var success:* = false;
+         var result:Object = new Object();
+         result.error = response.error;
+         result.fatal = false;
+         result.retry = false;
+         result.text = "";
+         switch(response.error)
+         {
+            case VALIDATECODE_CODEEXPIRE:
+               result.text = I18n.getUiText("ui.secureMode.error.checkCode.expire");
+               result.fatal = true;
+               break;
+            case VALIDATECODE_CODEBADCODE:
+               result.text = I18n.getUiText("ui.secureMode.error.checkCode.403");
+               result.retry = true;
+               break;
+            case VALIDATECODE_CODENOTFOUND:
+               result.text = I18n.getUiText("ui.secureMode.error.checkCode.404") + " (1)";
+               result.fatal = true;
+               break;
+            case VALIDATECODE_SECURITY:
+               result.text = I18n.getUiText("ui.secureMode.error.checkCode.security");
+               result.fatal = true;
+               break;
+            case VALIDATECODE_TOOMANYCERTIFICATE:
+               result.text = I18n.getUiText("ui.secureMode.error.checkCode.413");
+               result.fatal = true;
+               break;
+            case VALIDATECODE_NOTAVAILABLE:
+               result.text = I18n.getUiText("ui.secureMode.error.checkCode.202");
+               result.fatal = true;
+               break;
+            case ACCOUNT_AUTHENTIFICATION_FAILED:
+               result.text = I18n.getUiText("ui.secureMode.error.checkCode.404") + " (2)";
+               result.fatal = true;
+               break;
+            default:
+               result.text = response.error;
+               result.fatal = true;
+         }
+         if((response.certificate) && (response.id))
+         {
+            success = this.addCertificate(response.id,response.certificate,this.shieldLevel);
+            if(!success)
+            {
+               result.text = I18n.getUiText("ui.secureMode.error.checkCode.202.fatal");
+               result.fatal = true;
+            }
+         }
+         return result;
       }
       
       private function parseRpcASkCodeResponse(response:Object, method:String) : Object {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc5_:* = false;
+         var _loc6_:* = true;
+         var result:Object = new Object();
+         result.error = !result.error;
+         result.fatal = false;
+         result.retry = false;
+         result.text = "";
+         if(!response.error)
+         {
+            result.domain = response.domain;
+            result.error = false;
+         }
+         if(!response.error)
+         {
+            return result;
+         }
+         return result;
       }
       
       private function getCertifFolder(version:uint) : File {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc5_:* = true;
+         var _loc6_:* = false;
+         var f:File = null;
+         var tmp:Array = File.applicationStorageDirectory.nativePath.split(File.separator);
+         tmp.pop();
+         tmp.pop();
+         var parentDir:String = tmp.join(File.separator);
+         if(version == 1)
+         {
+            f = new File(parentDir + File.separator + "AnkamaCertificates/");
+         }
+         if(version == 2)
+         {
+            f = new File(parentDir + File.separator + "AnkamaCertificates/v2-RELEASE");
+         }
+         f.createDirectory();
+         return f;
       }
       
-      private function addCertificate(id:uint, content:String, secureLevel:uint=2) : Boolean {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+      private function addCertificate(id:uint, content:String, secureLevel:uint = 2) : Boolean {
+         var _loc6_:* = false;
+         var _loc7_:* = true;
+         var f:File = null;
+         var fs:FileStream = null;
+         var cert:ShieldCertifcate = null;
+         try
+         {
+            f = this.getCertifFolder(2);
+            f = f.resolvePath(MD5.hash(this.getUsername()));
+            fs = new FileStream();
+            fs.open(f,FileMode.WRITE);
+            cert = new ShieldCertifcate();
+            cert.id = id;
+            cert.version = 3;
+            cert.content = content;
+            cert.secureLevel = secureLevel;
+            fs.writeBytes(cert.serialize());
+            fs.close();
+            return true;
+         }
+         catch(e:Error)
+         {
+            if(!_loc6_)
+            {
+               ErrorManager.addError("Impossible de créer le fichier de certificat.",e);
+            }
+         }
+         return false;
       }
       
       public function checkMigrate() : void {
@@ -187,12 +281,34 @@ package com.ankamagames.dofus.logic.shield
       }
       
       private function getCertificateFile() : File {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc3_:* = true;
+         var _loc4_:* = false;
+         var userName:String = null;
+         var f:File = null;
+         try
+         {
+            userName = this.getUsername();
+            f = this.getCertifFolder(2).resolvePath(MD5.hash(userName));
+            if(!f.exists)
+            {
+               f = this.getCertifFolder(1).resolvePath(MD5.hash(userName));
+            }
+            if(f.exists)
+            {
+               return f;
+            }
+         }
+         catch(e:Error)
+         {
+            if(_loc3_)
+            {
+               if(_loc3_)
+               {
+               }
+               _log.error("Erreur lors de la recherche du certifcat : ");
+            }
+         }
+         return null;
       }
       
       public function retreiveCertificate() : TrustCertificate {
@@ -220,58 +336,55 @@ package com.ankamagames.dofus.logic.shield
       }
       
       private function onRpcData(e:RpcEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc3_:* = true;
+         var _loc4_:* = false;
+         if((e.type == RpcEvent.EVENT_ERROR) && (!e.result))
+         {
+            this._methodsCallback[e.method](
+               {
+                  "error":true,
+                  "fatal":true,
+                  "text":I18n.getUiText("ui.secureMode.error.checkCode.503")
+               });
+            return;
+         }
+         if(e.method == RPC_METHOD_SECURITY_CODE)
+         {
+            this._methodsCallback[e.method](this.parseRpcASkCodeResponse(e.result,e.method));
+         }
+         if(e.method == RPC_METHOD_VALIDATE_CODE)
+         {
+            this._methodsCallback[e.method](this.parseRpcValidateResponse(e.result,e.method));
+         }
+         if(e.method == RPC_METHOD_MIGRATE)
+         {
+            if(e.result.success)
+            {
+               this.migrationSuccess(e.result);
+            }
+            else
+            {
+               _log.error("Impossible de migrer le certificat : " + e.result.error);
+            }
+         }
       }
       
       private function migrate(iCertificateId:uint, oldCertif:String) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc4_:* = false;
+         var _loc5_:* = true;
+         var fooCertif:ShieldCertifcate = new ShieldCertifcate();
+         fooCertif.secureLevel = this.shieldLevel;
+         this._rpcManager.callMethod(RPC_METHOD_MIGRATE,[this.getUsername(),AuthentificationManager.getInstance().ankamaPortalKey,1,2,iCertificateId,oldCertif,fooCertif.hash,fooCertif.reverseHash]);
       }
       
       private function migrationSuccess(result:Object) : void {
+         var _loc3_:* = false;
+         var _loc4_:* = true;
          var f:File = this.getCertificateFile();
-         if(!_loc4_)
+         if(f.exists)
          {
-            if(f.exists)
-            {
-               if(_loc3_)
-               {
-                  if(_loc4_)
-                  {
-                     while(_loc4_)
-                     {
-                        break;
-                     }
-                     return;
-                  }
-               }
-            }
-            while(true)
-            {
-               this.addCertificate(result.id,result.certificate);
-            }
          }
-         while(true)
-         {
-            if(!_loc4_)
-            {
-               if(_loc4_)
-               {
-                  this.addCertificate(result.id,result.certificate);
-                  continue;
-               }
-            }
-            return;
-         }
+         this.addCertificate(result.id,result.certificate);
       }
    }
 }

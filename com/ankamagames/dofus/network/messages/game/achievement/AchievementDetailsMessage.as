@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6378;
       }
       
-      public function initAchievementDetailsMessage(achievement:Achievement=null) : AchievementDetailsMessage {
+      public function initAchievementDetailsMessage(achievement:Achievement = null) : AchievementDetailsMessage {
          this.achievement = achievement;
          this._isInitialized = true;
          return this;

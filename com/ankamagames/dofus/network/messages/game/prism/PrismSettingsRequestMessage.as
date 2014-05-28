@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 6437;
       }
       
-      public function initPrismSettingsRequestMessage(subAreaId:uint=0, startDefenseTime:uint=0) : PrismSettingsRequestMessage {
+      public function initPrismSettingsRequestMessage(subAreaId:uint = 0, startDefenseTime:uint = 0) : PrismSettingsRequestMessage {
          this.subAreaId = subAreaId;
          this.startDefenseTime = startDefenseTime;
          this._isInitialized = true;

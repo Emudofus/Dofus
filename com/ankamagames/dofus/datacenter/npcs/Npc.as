@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.npcs
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    
    public class Npc extends Object implements IDataCenter
@@ -15,7 +14,7 @@ package com.ankamagames.dofus.datacenter.npcs
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Npc));
+      protected static const _log:Logger;
       
       public static const MODULE:String = "Npcs";
       

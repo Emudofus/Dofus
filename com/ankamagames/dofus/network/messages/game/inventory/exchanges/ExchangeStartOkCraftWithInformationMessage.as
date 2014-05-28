@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5941;
       }
       
-      public function initExchangeStartOkCraftWithInformationMessage(nbCase:uint=0, skillId:uint=0) : ExchangeStartOkCraftWithInformationMessage {
+      public function initExchangeStartOkCraftWithInformationMessage(nbCase:uint = 0, skillId:uint = 0) : ExchangeStartOkCraftWithInformationMessage {
          this.nbCase = nbCase;
          this.skillId = skillId;
          this._isInitialized = true;

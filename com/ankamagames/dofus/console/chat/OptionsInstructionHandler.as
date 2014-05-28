@@ -37,10 +37,12 @@ package com.ankamagames.dofus.console.chat
                return I18n.getUiText("ui.chat.console.help.tab");
             case "clear":
                return I18n.getUiText("ui.chat.console.help.clear");
+            default:
+               return I18n.getUiText("ui.chat.console.noHelp",[cmd]);
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

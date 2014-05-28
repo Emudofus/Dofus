@@ -5,7 +5,7 @@ package com.hurlant.util.der
    public dynamic class Sequence extends Array implements IAsn1Type
    {
       
-      public function Sequence(type:uint=48, length:uint=0) {
+      public function Sequence(type:uint = 48, length:uint = 0) {
          super();
          this.type = type;
          this.len = length;
@@ -45,35 +45,12 @@ package com.hurlant.util.der
       }
       
       public function toString() : String {
-         var found:* = false;
-         var key:String = null;
-         var s:String = DER.indent;
-         DER.indent = DER.indent + "    ";
-         var t:String = "";
-         var i:int = 0;
-         while(i < length)
-         {
-            if(this[i] != null)
-            {
-               found = false;
-               for (key in this)
-               {
-                  if((!(i.toString() == key)) && (this[i] == this[key]))
-                  {
-                     t = t + (key + ": " + this[i] + "\n");
-                     found = true;
-                     break;
-                  }
-               }
-               if(!found)
-               {
-                  t = t + (this[i] + "\n");
-               }
-            }
-            i++;
-         }
-         DER.indent = s;
-         return DER.indent + "Sequence[" + this.type + "][" + this.len + "][\n" + t + "\n" + s + "]";
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function findAttributeValue(oid:String) : IAsn1Type {
@@ -81,7 +58,7 @@ package com.hurlant.util.der
          var child:* = undefined;
          var tmp:* = undefined;
          var id:ObjectIdentifier = null;
-         for each (set in this)
+         for each(set in this)
          {
             if(set is Set)
             {

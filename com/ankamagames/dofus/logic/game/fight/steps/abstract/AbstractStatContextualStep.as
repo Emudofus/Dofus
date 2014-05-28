@@ -13,7 +13,7 @@ package com.ankamagames.dofus.logic.game.fight.steps.abstract
    public class AbstractStatContextualStep extends AbstractSequencable
    {
       
-      public function AbstractStatContextualStep(color:uint, value:String, targetId:int, blocking:Boolean=true) {
+      public function AbstractStatContextualStep(color:uint, value:String, targetId:int, blocking:Boolean = true) {
          super();
          this._color = color;
          this._value = value;

@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.alignments
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    
    public class AlignmentRank extends Object implements IDataCenter
@@ -17,7 +16,7 @@ package com.ankamagames.dofus.datacenter.alignments
       
       public static const MODULE:String = "AlignmentRank";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlignmentRank));
+      protected static const _log:Logger;
       
       public static function getAlignmentRankById(id:int) : AlignmentRank {
          return GameData.getObject(MODULE,id) as AlignmentRank;

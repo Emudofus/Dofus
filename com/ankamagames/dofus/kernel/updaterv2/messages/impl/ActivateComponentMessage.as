@@ -7,7 +7,7 @@ package com.ankamagames.dofus.kernel.updaterv2.messages.impl
    public class ActivateComponentMessage extends Object implements IUpdaterOutputMessage
    {
       
-      public function ActivateComponentMessage(component:String, activate:Boolean=true, project:String="game") {
+      public function ActivateComponentMessage(component:String, activate:Boolean = true, project:String = "game") {
          super();
          this._component = component;
          this._project = project;

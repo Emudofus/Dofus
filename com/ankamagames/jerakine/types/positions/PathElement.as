@@ -3,7 +3,7 @@ package com.ankamagames.jerakine.types.positions
    public class PathElement extends Object
    {
       
-      public function PathElement(step:MapPoint=null, orientation:uint=0) {
+      public function PathElement(step:MapPoint = null, orientation:uint = 0) {
          super();
          if(!step)
          {

@@ -4,7 +4,6 @@ package com.ankamagames.dofus.network.messages.game.context.fight
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
    import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMark;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 6069;
       }
       
-      public function initGameFightSpectateMessage(effects:Vector.<FightDispellableEffectExtendedInformations>=null, marks:Vector.<GameActionMark>=null, gameTurn:uint=0) : GameFightSpectateMessage {
+      public function initGameFightSpectateMessage(effects:Vector.<FightDispellableEffectExtendedInformations> = null, marks:Vector.<GameActionMark> = null, gameTurn:uint = 0) : GameFightSpectateMessage {
          this.effects = effects;
          this.marks = marks;
          this.gameTurn = gameTurn;

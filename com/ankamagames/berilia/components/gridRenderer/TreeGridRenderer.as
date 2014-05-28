@@ -104,7 +104,7 @@ package com.ankamagames.berilia.components.gridRenderer
          this._grid = g;
       }
       
-      public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0) : DisplayObject {
+      public function render(data:*, index:uint, selected:Boolean, subIndex:uint = 0) : DisplayObject {
          var treeData:TreeData = null;
          var raw:Sprite = new Sprite();
          raw.mouseEnabled = false;
@@ -123,17 +123,15 @@ package com.ankamagames.berilia.components.gridRenderer
                texture.uri = this._expendBtnUri;
                texture.buttonMode = true;
             }
+            else if(treeData.parent.children.indexOf(treeData) == treeData.parent.children.length - 1)
+            {
+               texture.uri = this._endItemUri;
+            }
             else
             {
-               if(treeData.parent.children.indexOf(treeData) == treeData.parent.children.length - 1)
-               {
-                  texture.uri = this._endItemUri;
-               }
-               else
-               {
-                  texture.uri = this._simpleItemUri;
-               }
+               texture.uri = this._simpleItemUri;
             }
+            
             if(treeData.expend)
             {
                texture.gotoAndStop = "selected";
@@ -195,7 +193,7 @@ package com.ankamagames.berilia.components.gridRenderer
          return 1;
       }
       
-      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint = 0) : void {
          var treeData:TreeData = null;
          var texture:Texture = null;
          var label:Label = null;
@@ -220,17 +218,15 @@ package com.ankamagames.berilia.components.gridRenderer
                      texture.gotoAndStop = "normal";
                   }
                }
+               else if(treeData.parent.children.indexOf(treeData) == treeData.parent.children.length - 1)
+               {
+                  texture.uri = this._endItemUri;
+               }
                else
                {
-                  if(treeData.parent.children.indexOf(treeData) == treeData.parent.children.length - 1)
-                  {
-                     texture.uri = this._endItemUri;
-                  }
-                  else
-                  {
-                     texture.uri = this._simpleItemUri;
-                  }
+                  texture.uri = this._simpleItemUri;
                }
+               
                label.x = texture.x + texture.width + 3;
                label.width = this._grid.slotWidth - label.x;
                label.css = this._cssUri;
@@ -359,7 +355,7 @@ package com.ankamagames.berilia.components.gridRenderer
          var data:TreeData = this._indexRef[e.target.parent];
          data.expend = !data.expend;
          Tree(this._grid).rerender();
-         for each (listener in Berilia.getInstance().UISoundListeners)
+         for each(listener in Berilia.getInstance().UISoundListeners)
          {
             listener.playUISound("16004");
          }

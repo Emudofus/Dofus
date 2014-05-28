@@ -10,7 +10,7 @@ package com.ankamagames.jerakine.handlers.messages.mouse
          super();
       }
       
-      public static function create(target:InteractiveObject, mouseEvent:MouseEvent, instance:MouseMessage=null) : MouseMiddleClickMessage {
+      public static function create(target:InteractiveObject, mouseEvent:MouseEvent, instance:MouseMessage = null) : MouseMiddleClickMessage {
          if(!instance)
          {
             instance = new MouseMiddleClickMessage();

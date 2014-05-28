@@ -9,17 +9,17 @@ package com.ankamagames.jerakine.logger
       
       public static const TRACE:uint = 1;
       
-      public static const DEBUG:uint = 1 << 1;
+      public static const DEBUG:uint;
       
-      public static const INFO:uint = 1 << 2;
+      public static const INFO:uint;
       
-      public static const WARN:uint = 1 << 3;
+      public static const WARN:uint;
       
-      public static const ERROR:uint = 1 << 4;
+      public static const ERROR:uint;
       
-      public static const FATAL:uint = 1 << 5;
+      public static const FATAL:uint;
       
-      public static const COMMANDS:uint = 1 << 6;
+      public static const COMMANDS:uint;
       
       public static function getString(level:uint) : String {
          switch(level)
@@ -36,6 +36,8 @@ package com.ankamagames.jerakine.logger
                return "ERROR";
             case FATAL:
                return "FATAL";
+            default:
+               return "UNKNOWN";
          }
       }
    }

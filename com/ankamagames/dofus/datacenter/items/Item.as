@@ -7,7 +7,6 @@ package com.ankamagames.dofus.datacenter.items
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.dofus.datacenter.items.criterion.GroupItemCriterion;
@@ -27,15 +26,15 @@ package com.ankamagames.dofus.datacenter.items
       
       public static const MODULE:String = "Items";
       
-      private static const SUPERTYPE_NOT_EQUIPABLE:Array = [9,14,15,16,17,18,6,19,21,20,8,22];
+      private static const SUPERTYPE_NOT_EQUIPABLE:Array;
       
-      private static const FILTER_EQUIPEMENT:Array = [false,true,true,true,true,true,false,true,true,false,true,true,true,true,false,false,false,false,false,false,false,false,true,true];
+      private static const FILTER_EQUIPEMENT:Array;
       
-      private static const FILTER_CONSUMABLES:Array = [false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+      private static const FILTER_CONSUMABLES:Array;
       
-      private static const FILTER_RESSOURCES:Array = [false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+      private static const FILTER_RESSOURCES:Array;
       
-      private static const FILTER_QUEST:Array = [false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false];
+      private static const FILTER_QUEST:Array;
       
       public static const EQUIPEMENT_CATEGORY:uint = 0;
       
@@ -47,9 +46,9 @@ package com.ankamagames.dofus.datacenter.items
       
       public static const OTHER_CATEGORY:uint = 4;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Item));
+      protected static const _log:Logger;
       
-      public static function getItemById(id:uint, returnDefaultItemIfNull:Boolean=true) : Item {
+      public static function getItemById(id:uint, returnDefaultItemIfNull:Boolean = true) : Item {
          var item:Item = GameData.getObject(MODULE,id) as Item;
          if((item) || (!returnDefaultItemIfNull))
          {
@@ -250,6 +249,8 @@ package com.ankamagames.dofus.datacenter.items
                return RESSOURCES_CATEGORY;
             case FILTER_QUEST[this.type.superTypeId]:
                return QUEST_CATEGORY;
+            default:
+               return OTHER_CATEGORY;
          }
       }
       

@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.paddock
          return 184;
       }
       
-      public function initMountInformationsForPaddock(modelId:int=0, name:String="", ownerName:String="") : MountInformationsForPaddock {
+      public function initMountInformationsForPaddock(modelId:int = 0, name:String = "", ownerName:String = "") : MountInformationsForPaddock {
          this.modelId = modelId;
          this.name = name;
          this.ownerName = ownerName;

@@ -17,7 +17,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(CustomAnimStatiqueAnimationModifier));
+      private static const _log:Logger;
       
       public var randomStatique:Boolean;
       
@@ -44,7 +44,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                      statics = new Array();
                      if(lib)
                      {
-                        for each (anim in lib.getDefinitions())
+                        for each(anim in lib.getDefinitions())
                         {
                            if(anim.indexOf(AnimationEnum.ANIM_STATIQUE + pLook.firstSkin.toString()) == 0)
                            {
@@ -85,6 +85,8 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                      return animDeathName;
                   }
                }
+               return pAnimation;
+            default:
                return pAnimation;
          }
       }

@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 5737;
       }
       
-      public function initHouseSoldMessage(houseId:uint=0, realPrice:uint=0, buyerName:String="") : HouseSoldMessage {
+      public function initHouseSoldMessage(houseId:uint = 0, realPrice:uint = 0, buyerName:String = "") : HouseSoldMessage {
          this.houseId = houseId;
          this.realPrice = realPrice;
          this.buyerName = buyerName;

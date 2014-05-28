@@ -13,9 +13,9 @@ package com.ankamagames.jerakine.logger.targets
          super();
       }
       
-      private static var _socket:XMLSocket = new XMLSocket();
+      private static var _socket:XMLSocket;
       
-      private static var _history:Array = new Array();
+      private static var _history:Array;
       
       private static var _connecting:Boolean = false;
       
@@ -71,13 +71,15 @@ package com.ankamagames.jerakine.logger.targets
                return "error";
             case LogLevel.FATAL:
                return "fatal";
+            default:
+               return "severe";
          }
       }
       
       private static function onSocket(e:Event) : void {
          var o:LoggerHistoryElement = null;
          _connecting = false;
-         for each (o in _history)
+         for each(o in _history)
          {
             send(o.level,o.message);
          }

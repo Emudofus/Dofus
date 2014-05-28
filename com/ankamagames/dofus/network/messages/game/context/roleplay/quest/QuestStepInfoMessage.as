@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
          return 5625;
       }
       
-      public function initQuestStepInfoMessage(infos:QuestActiveInformations=null) : QuestStepInfoMessage {
+      public function initQuestStepInfoMessage(infos:QuestActiveInformations = null) : QuestStepInfoMessage {
          this.infos = infos;
          this._isInitialized = true;
          return this;

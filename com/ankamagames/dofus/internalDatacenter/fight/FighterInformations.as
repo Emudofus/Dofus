@@ -55,6 +55,9 @@ package com.ankamagames.dofus.internalDatacenter.fight
             case TeamEnum.TEAM_SPECTATOR:
                this._team = "spectator";
                break;
+            default:
+               _log.warn("Unknown teamId " + fighterInfos.teamId + " ?!");
+               this._team = "unknown";
          }
          this._wave = fighterInfos.wave;
          this._lifePoints = fighterInfos.stats.lifePoints;
@@ -81,7 +84,7 @@ package com.ankamagames.dofus.internalDatacenter.fight
          this._waterFixedResist = fighterInfos.stats.waterElementReduction;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FighterInformations));
+      protected static const _log:Logger;
       
       private var _fighterId:int;
       

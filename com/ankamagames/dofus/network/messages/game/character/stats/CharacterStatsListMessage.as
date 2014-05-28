@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.character.stats
          return 500;
       }
       
-      public function initCharacterStatsListMessage(stats:CharacterCharacteristicsInformations=null) : CharacterStatsListMessage {
+      public function initCharacterStatsListMessage(stats:CharacterCharacteristicsInformations = null) : CharacterStatsListMessage {
          this.stats = stats;
          this._isInitialized = true;
          return this;

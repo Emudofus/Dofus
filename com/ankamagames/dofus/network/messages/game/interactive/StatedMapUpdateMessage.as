@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.interactive
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.interactive.StatedElement;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.interactive
          return 5716;
       }
       
-      public function initStatedMapUpdateMessage(statedElements:Vector.<StatedElement>=null) : StatedMapUpdateMessage {
+      public function initStatedMapUpdateMessage(statedElements:Vector.<StatedElement> = null) : StatedMapUpdateMessage {
          this.statedElements = statedElements;
          this._isInitialized = true;
          return this;

@@ -133,18 +133,16 @@ package com.ankamagames.tubul.types.sounds
          {
             volume = 1;
          }
+         else if(dist <= this._range)
+         {
+            newVolume = (this._range - dist) / (this._range - this._saturationRange);
+            volume = newVolume;
+         }
          else
          {
-            if(dist <= this._range)
-            {
-               newVolume = (this._range - dist) / (this._range - this._saturationRange);
-               volume = newVolume;
-            }
-            else
-            {
-               volume = 0;
-            }
+            volume = 0;
          }
+         
          var posXMapCenter:Number = 640;
          this.pan = this._position.x / posXMapCenter - 1;
          if(_soundLoaded)

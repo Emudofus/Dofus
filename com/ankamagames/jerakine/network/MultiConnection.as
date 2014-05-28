@@ -67,70 +67,24 @@ package com.ankamagames.jerakine.network
       }
       
       public function addConnection(conn:IServerConnection, id:String) : void {
-         var e:* = undefined;
-         if(this._connectionById[id])
-         {
-            this.removeConnection(id);
-         }
-         if(this._idByConnection[conn])
-         {
-            this.removeConnection(conn);
-         }
-         this._connectionById[id] = conn;
-         this._idByConnection[conn] = id;
-         this._connectionCount++;
-         conn.handler = new MessageWatcher(this.proccessMsg,conn.handler,conn);
-         for each (e in DescribeTypeCache.typeDescription(conn)..metadata.(@name == "Event").arg.(@key == "").@value)
-         {
-            IEventDispatcher(conn).addEventListener(e.toString(),this.onSubConnectionEvent);
-         }
-         if(conn.connected)
-         {
-            this._connectionConnectedCount++;
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function removeConnection(idOrConnection:*) : Boolean {
-         var id:String = null;
-         var conn:IServerConnection = null;
-         var e:* = undefined;
-         if(idOrConnection is String)
-         {
-            id = idOrConnection;
-            conn = this.getSubConnection(idOrConnection);
-         }
-         if(idOrConnection is IServerConnection)
-         {
-            id = this._idByConnection[idOrConnection];
-            conn = idOrConnection;
-         }
-         if(!conn)
-         {
-            return false;
-         }
-         for each (e in DescribeTypeCache.typeDescription(conn)..metadata.(@name == "Event").arg.(@key == "").@value)
-         {
-            IEventDispatcher(conn).removeEventListener(e.toString(),this.onSubConnectionEvent);
-         }
-         this._connectionCount--;
-         if(conn.connected)
-         {
-            this._connectionConnectedCount--;
-         }
-         if(this._mainConnection == conn)
-         {
-            this._mainConnection = null;
-         }
-         delete this._connectionById[[id]];
-         delete this._idByConnection[[conn]];
-         if(conn.handler is MultiConnection)
-         {
-            conn.handler = MessageWatcher(conn.handler).handler;
-         }
-         return true;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
-      public function getSubConnection(idOrMessageOrEvent:*=null) : IServerConnection {
+      public function getSubConnection(idOrMessageOrEvent:* = null) : IServerConnection {
          if(idOrMessageOrEvent is String)
          {
             return this._connectionById[idOrMessageOrEvent];
@@ -146,12 +100,12 @@ package com.ankamagames.jerakine.network
          throw new TypeError("Can\'t handle " + idOrMessageOrEvent + " class");
       }
       
-      public function getConnectionId(idOrMessageOrEvent:*=null) : String {
+      public function getConnectionId(idOrMessageOrEvent:* = null) : String {
          var conn:IServerConnection = this.getSubConnection(idOrMessageOrEvent);
          return this._idByConnection[conn];
       }
       
-      public function getPauseBuffer(id:String=null) : Array {
+      public function getPauseBuffer(id:String = null) : Array {
          var mergedPauseBuffer:Array = null;
          var conn:IServerConnection = null;
          if((id) && (this._connectionById[id]))
@@ -161,7 +115,7 @@ package com.ankamagames.jerakine.network
          if(!id)
          {
             mergedPauseBuffer = [];
-            for each (conn in this._connectionById)
+            for each(conn in this._connectionById)
             {
                mergedPauseBuffer = mergedPauseBuffer.concat(conn.pauseBuffer);
             }
@@ -170,7 +124,7 @@ package com.ankamagames.jerakine.network
          return null;
       }
       
-      public function close(id:String=null) : void {
+      public function close(id:String = null) : void {
          var connection:IServerConnection = null;
          if(id)
          {
@@ -180,13 +134,13 @@ package com.ankamagames.jerakine.network
             }
             return;
          }
-         for each (connection in this._connectionById)
+         for each(connection in this._connectionById)
          {
             connection.close();
          }
       }
       
-      public function pause(id:String=null) : void {
+      public function pause(id:String = null) : void {
          var connection:IServerConnection = null;
          if(id)
          {
@@ -196,13 +150,13 @@ package com.ankamagames.jerakine.network
             }
             return;
          }
-         for each (connection in this._connectionById)
+         for each(connection in this._connectionById)
          {
             connection.pause();
          }
       }
       
-      public function resume(id:String=null) : void {
+      public function resume(id:String = null) : void {
          var connection:IServerConnection = null;
          if(id)
          {
@@ -212,7 +166,7 @@ package com.ankamagames.jerakine.network
             }
             return;
          }
-         for each (connection in this._connectionById)
+         for each(connection in this._connectionById)
          {
             connection.resume();
          }
@@ -223,13 +177,11 @@ package com.ankamagames.jerakine.network
          {
             this.getSubConnection(this._messageRouter.getConnectionId(msg)).send(msg);
          }
-         else
+         else if(this._mainConnection)
          {
-            if(this._mainConnection)
-            {
-               this._mainConnection.send(msg);
-            }
+            this._mainConnection.send(msg);
          }
+         
          if(hasEventListener(NetworkSentEvent.EVENT_SENT))
          {
             dispatchEvent(new NetworkSentEvent(NetworkSentEvent.EVENT_SENT,msg));

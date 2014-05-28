@@ -46,15 +46,15 @@ package com.ankamagames.dofus.modules.utils
          }
       }
       
-      private static const ERROR_SPACE:IOError = new IOError("Not enough space free",1);
+      private static const ERROR_SPACE:IOError;
       
-      private static const ERROR_FILE_NUM:IOError = new IOError("Maximum number of files reaches",2);
+      private static const ERROR_FILE_NUM:IOError;
       
-      private static const ERROR_FILE_NOT_EXISTS:IOError = new IOError("File does not exist",3);
+      private static const ERROR_FILE_NOT_EXISTS:IOError;
       
-      private static const AUTHORIZED_URL_CHAR_REGEXPR:RegExp = new RegExp(new RegExp("[^a-zA-Z0-9-_\\/]","mg"));
+      private static const AUTHORIZED_URL_CHAR_REGEXPR:RegExp;
       
-      public static const MAX_SIZE:uint = 10 * Math.pow(2,20);
+      public static const MAX_SIZE:uint;
       
       public static const MODULE_FILE_HEADER:String = "Ankama DOFUS 2 module File";
       
@@ -71,7 +71,7 @@ package com.ankamagames.dofus.modules.utils
             parts = url.replace(new RegExp("\\.","g"),"").replace(new RegExp("\\\\","g"),"/").split("/");
             haveToBeCreated = 0;
             testedPath = module.storagePath;
-            for each (part in parts)
+            for each(part in parts)
             {
                testedPath = testedPath + ("/" + part);
                if(!new File(testedPath).exists)
@@ -147,7 +147,7 @@ package com.ankamagames.dofus.modules.utils
          this._fs.close();
       }
       
-      public function readBytes(bytes:ByteArray, offset:uint=0, length:uint=0) : void {
+      public function readBytes(bytes:ByteArray, offset:uint = 0, length:uint = 0) : void {
          this._fs.readBytes(bytes,offset,length);
       }
       
@@ -203,20 +203,18 @@ package com.ankamagames.dofus.modules.utils
          throw new IllegalOperationError();
       }
       
-      public function writeBytes(bytes:ByteArray, offset:uint=0, length:uint=0) : void {
+      public function writeBytes(bytes:ByteArray, offset:uint = 0, length:uint = 0) : void {
          if(length == 0)
          {
             if(!this.check(bytes.bytesAvailable - offset))
             {
                throw ERROR_SPACE;
             }
-            else
+            else if(!this.check(Math.min(bytes.bytesAvailable,length) - offset))
             {
-               if(!this.check(Math.min(bytes.bytesAvailable,length) - offset))
-               {
-                  throw ERROR_SPACE;
-               }
+               throw ERROR_SPACE;
             }
+            
          }
          this._fs.writeBytes(bytes,offset,length);
          this.update();

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5518;
       }
       
-      public function initExchangeObjectMoveMessage(objectUID:uint=0, quantity:int=0) : ExchangeObjectMoveMessage {
+      public function initExchangeObjectMoveMessage(objectUID:uint = 0, quantity:int = 0) : ExchangeObjectMoveMessage {
          this.objectUID = objectUID;
          this.quantity = quantity;
          this._isInitialized = true;

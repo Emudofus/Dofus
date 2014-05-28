@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.ActorOrientation;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 6155;
       }
       
-      public function initGameMapChangeOrientationsMessage(orientations:Vector.<ActorOrientation>=null) : GameMapChangeOrientationsMessage {
+      public function initGameMapChangeOrientationsMessage(orientations:Vector.<ActorOrientation> = null) : GameMapChangeOrientationsMessage {
          this.orientations = orientations;
          this._isInitialized = true;
          return this;

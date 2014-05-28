@@ -38,7 +38,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
       override public function get isRespected() : Boolean {
          var knownJob:KnownJob = null;
          var kj:KnownJob = null;
-         for each (kj in PlayedCharacterManager.getInstance().jobs)
+         for each(kj in PlayedCharacterManager.getInstance().jobs)
          {
             if(kj.jobDescription.jobId == this._jobId)
             {
@@ -52,13 +52,11 @@ package com.ankamagames.dofus.datacenter.items.criterion
                return true;
             }
          }
-         else
+         else if(knownJob)
          {
-            if(knownJob)
-            {
-               return true;
-            }
+            return true;
          }
+         
          return false;
       }
       

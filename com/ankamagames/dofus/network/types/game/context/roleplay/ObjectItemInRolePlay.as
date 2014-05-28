@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 198;
       }
       
-      public function initObjectItemInRolePlay(cellId:uint=0, objectGID:uint=0) : ObjectItemInRolePlay {
+      public function initObjectItemInRolePlay(cellId:uint = 0, objectGID:uint = 0) : ObjectItemInRolePlay {
          this.cellId = cellId;
          this.objectGID = objectGID;
          return this;

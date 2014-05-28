@@ -5,7 +5,6 @@ package com.ankamagames.atouin.types
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.atouin.utils.IZoneRenderer;
    import com.ankamagames.jerakine.types.zones.IZone;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.types.Color;
    import com.ankamagames.atouin.managers.MapDisplayManager;
    
@@ -16,7 +15,7 @@ package com.ankamagames.atouin.types
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Selection));
+      protected static const _log:Logger;
       
       private var _mapId:uint;
       
@@ -46,7 +45,7 @@ package com.ankamagames.atouin.types
          return this._mapId;
       }
       
-      public function update(pUpdateStrata:Boolean=false) : void {
+      public function update(pUpdateStrata:Boolean = false) : void {
          if(this.renderer)
          {
             this.renderer.render(this.cells,this.color,MapDisplayManager.getInstance().getDataMapContainer(),this.alpha,pUpdateStrata);
@@ -54,7 +53,7 @@ package com.ankamagames.atouin.types
          this.visible = true;
       }
       
-      public function remove(aCells:Vector.<uint>=null) : void {
+      public function remove(aCells:Vector.<uint> = null) : void {
          if(this.renderer)
          {
             if(!aCells)

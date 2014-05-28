@@ -5,7 +5,7 @@ package com.ankamagames.jerakine.entities.messages
    public class EntityMouseOverMessage extends EntityInteractionMessage
    {
       
-      public function EntityMouseOverMessage(entity:IInteractive, virtual:Boolean=false) {
+      public function EntityMouseOverMessage(entity:IInteractive, virtual:Boolean = false) {
          super(entity);
          this.virtual = virtual;
       }

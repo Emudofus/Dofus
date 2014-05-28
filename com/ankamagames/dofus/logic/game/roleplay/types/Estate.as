@@ -54,36 +54,34 @@ package com.ankamagames.dofus.logic.game.roleplay.types
             this.price = house.price;
             this.infos = house;
          }
-         else
+         else if(estate is PaddockInformationsForSell)
          {
-            if(estate is PaddockInformationsForSell)
+            paddock = estate as PaddockInformationsForSell;
+            subAreap = SubArea.getSubAreaById(paddock.subAreaId);
+            this.name = I18n.getUiText("ui.mount.paddockWithRoom",[paddock.nbMount]);
+            if(subAreap)
             {
-               paddock = estate as PaddockInformationsForSell;
-               subAreap = SubArea.getSubAreaById(paddock.subAreaId);
-               this.name = I18n.getUiText("ui.mount.paddockWithRoom",[paddock.nbMount]);
-               if(subAreap)
-               {
-                  areap = Area.getAreaById(subAreap.areaId);
-                  if(!areap)
-                  {
-                     this.area = "-";
-                  }
-                  else
-                  {
-                     this.area = areap.name;
-                  }
-               }
-               else
+               areap = Area.getAreaById(subAreap.areaId);
+               if(!areap)
                {
                   this.area = "-";
                }
-               this.price = paddock.price;
-               this.infos = paddock;
+               else
+               {
+                  this.area = areap.name;
+               }
             }
+            else
+            {
+               this.area = "-";
+            }
+            this.price = paddock.price;
+            this.infos = paddock;
          }
+         
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Estate));
+      protected static const _log:Logger;
       
       public var name:String;
       

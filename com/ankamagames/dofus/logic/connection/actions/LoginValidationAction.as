@@ -10,7 +10,7 @@ package com.ankamagames.dofus.logic.connection.actions
          super();
       }
       
-      public static function create(username:String, password:String, autoSelectServer:Boolean, serverId:uint=0) : LoginValidationAction {
+      public static function create(username:String, password:String, autoSelectServer:Boolean, serverId:uint = 0) : LoginValidationAction {
          var a:LoginValidationAction = new LoginValidationAction();
          a.password = password;
          a.username = username;

@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.social
          return 5935;
       }
       
-      public function initContactLookRequestByIdMessage(requestId:uint=0, contactType:uint=0, playerId:uint=0) : ContactLookRequestByIdMessage {
+      public function initContactLookRequestByIdMessage(requestId:uint = 0, contactType:uint = 0, playerId:uint = 0) : ContactLookRequestByIdMessage {
          super.initContactLookRequestMessage(requestId,contactType);
          this.playerId = playerId;
          this._isInitialized = true;

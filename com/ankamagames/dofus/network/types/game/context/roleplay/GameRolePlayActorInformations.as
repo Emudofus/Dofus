@@ -20,7 +20,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 141;
       }
       
-      public function initGameRolePlayActorInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null) : GameRolePlayActorInformations {
+      public function initGameRolePlayActorInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null) : GameRolePlayActorInformations {
          super.initGameContextActorInformations(contextualId,look,disposition);
          return this;
       }

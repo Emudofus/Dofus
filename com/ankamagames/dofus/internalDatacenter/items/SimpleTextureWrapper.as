@@ -15,7 +15,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(SimpleTextureWrapper));
+      private static const _log:Logger;
       
       public static function create(uri:Uri) : SimpleTextureWrapper {
          var simpleTextureWrapper:SimpleTextureWrapper = new SimpleTextureWrapper();

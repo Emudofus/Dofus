@@ -8,7 +8,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
    import com.ankamagames.dofus.network.types.game.interactive.StatedElement;
    import com.ankamagames.dofus.network.types.game.interactive.MapObstacle;
    import com.ankamagames.dofus.network.types.game.context.fight.FightCommonInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -55,7 +54,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 226;
       }
       
-      public function initMapComplementaryInformationsDataMessage(subAreaId:uint=0, mapId:uint=0, houses:Vector.<HouseInformations>=null, actors:Vector.<GameRolePlayActorInformations>=null, interactiveElements:Vector.<InteractiveElement>=null, statedElements:Vector.<StatedElement>=null, obstacles:Vector.<MapObstacle>=null, fights:Vector.<FightCommonInformations>=null) : MapComplementaryInformationsDataMessage {
+      public function initMapComplementaryInformationsDataMessage(subAreaId:uint = 0, mapId:uint = 0, houses:Vector.<HouseInformations> = null, actors:Vector.<GameRolePlayActorInformations> = null, interactiveElements:Vector.<InteractiveElement> = null, statedElements:Vector.<StatedElement> = null, obstacles:Vector.<MapObstacle> = null, fights:Vector.<FightCommonInformations> = null) : MapComplementaryInformationsDataMessage {
          this.subAreaId = subAreaId;
          this.mapId = mapId;
          this.houses = houses;

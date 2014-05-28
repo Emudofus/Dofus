@@ -17,7 +17,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.types.enums.StackActionEnum;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.common.actions.RemoveBehaviorToStackAction;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import com.ankamagames.dofus.logic.game.roleplay.messages.InteractiveElementActivationMessage;
    import com.ankamagames.atouin.messages.CellClickMessage;
@@ -45,15 +44,15 @@ package com.ankamagames.dofus.logic.game.common.frames
          this.initStopMessages();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StackManagementFrame));
+      protected static const _log:Logger;
       
       private static const LIMIT:int = 100;
       
       private static const KEY_CODE:uint = 16;
       
-      private static const BEHAVIOR_LIST:Array = [MoveBehavior,InteractiveElementBehavior,ChangeMapBehavior];
+      private static const BEHAVIOR_LIST:Array;
       
-      private static const ACTION_MESSAGES:Array = ["InteractiveElementActivationMessage","CellClickMessage","AdjacentMapClickMessage"];
+      private static const ACTION_MESSAGES:Array;
       
       private var _stackInputMessage:Vector.<AbstractBehavior>;
       
@@ -96,7 +95,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          }
       }
       
-      public function onKeyUp(pEvt:KeyboardEvent=null) : void {
+      public function onKeyUp(pEvt:KeyboardEvent = null) : void {
          var m:RemoveBehaviorToStackAction = null;
          var keyCode:uint = pEvt == null?KEY_CODE:pEvt.keyCode;
          if((this._keyDown) && (keyCode == KEY_CODE))
@@ -111,7 +110,7 @@ package com.ankamagames.dofus.logic.game.common.frames
       private function getInputMessageAlreadyWatched(vector:Vector.<AbstractBehavior>, inpt:Class) : AbstractBehavior {
          var oldInput:AbstractBehavior = null;
          var behaviorStr:String = getQualifiedClassName(inpt);
-         for each (oldInput in vector)
+         for each(oldInput in vector)
          {
             if(getQualifiedClassName(oldInput) == behaviorStr)
             {
@@ -131,7 +130,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             tmpVector = this._stackInputMessage.concat();
          }
          this._stackInputMessage = new Vector.<AbstractBehavior>();
-         for each (c in BEHAVIOR_LIST)
+         for each(c in BEHAVIOR_LIST)
          {
             b = new c();
             if((newMode == AbstractBehavior.NORMAL) || (newMode == AbstractBehavior.ALWAYS) && (b.type == AbstractBehavior.ALWAYS))
@@ -203,7 +202,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          {
             case msg is AddBehaviorToStackAction:
                abtsmsg = msg as AddBehaviorToStackAction;
-               for each (_loc19_ in abtsmsg.behavior)
+               for each(_loc19_ in abtsmsg.behavior)
                {
                   switch(b)
                   {
@@ -213,6 +212,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                         continue;
                      case StackActionEnum.HARVEST:
                         this.addBehaviorToInputStack(new InteractiveElementBehavior());
+                        continue;
+                     default:
                         continue;
                   }
                }
@@ -229,6 +230,89 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is EmptyStackAction:
                this.emptyStack();
                return true;
+            default:
+               msgClassName = getQualifiedClassName(msg).split("::")[1];
+               ieNotAvailableAnymore = (msgClassName == "InteractiveUsedMessage") || (msgClassName == "InteractiveUseErrorMessage");
+               if((this._paused) && ((!(ACTION_MESSAGES.indexOf(msgClassName) == -1)) || (ieNotAvailableAnymore)))
+               {
+                  for each(behavior in this._stackOutputMessage)
+                  {
+                     switch(true)
+                     {
+                        case behavior is MoveBehavior:
+                           moveBehavior = behavior as MoveBehavior;
+                           if((msg is CellClickMessage) && ((msg as CellClickMessage).cellId == moveBehavior.getMapPoint().cellId))
+                           {
+                              this._waitingMessage = msg;
+                              return false;
+                           }
+                           continue;
+                        case behavior is ChangeMapBehavior:
+                           changeMapBehavior = behavior as ChangeMapBehavior;
+                           if((msg is AdjacentMapClickMessage) && ((msg as AdjacentMapClickMessage).cellId == changeMapBehavior.getMapPoint().cellId))
+                           {
+                              this._waitingMessage = msg;
+                              return false;
+                           }
+                           continue;
+                        case behavior is InteractiveElementBehavior:
+                           ieBehavior = behavior as InteractiveElementBehavior;
+                           if((msg is InteractiveElementActivationMessage) && ((msg as InteractiveElementActivationMessage).interactiveElement.elementId == ieBehavior.interactiveElement.elementId))
+                           {
+                              this._waitingMessage = msg;
+                              return false;
+                           }
+                           if((ieNotAvailableAnymore) && (ieBehavior.interactiveElement.elementId == (msg as Object).elemId))
+                           {
+                              ieBehavior.processOutputMessage(msg,this._currentMode);
+                              this.removeCheckPoint(ieBehavior);
+                              ieBehaviorIndex = this._stackOutputMessage.indexOf(ieBehavior);
+                              ieam = this._waitingMessage as InteractiveElementActivationMessage;
+                              if((ieam) && (ieam.interactiveElement.elementId == ieBehavior.interactiveElement.elementId))
+                              {
+                                 this._waitingMessage = null;
+                              }
+                              if(ieBehaviorIndex != -1)
+                              {
+                                 this._stackOutputMessage.splice(ieBehaviorIndex,1);
+                                 return false;
+                              }
+                           }
+                           continue;
+                        default:
+                           continue;
+                     }
+                  }
+                  return false;
+               }
+               for each(elem in this._stackInputMessage)
+               {
+                  elem.checkAvailability(msg);
+               }
+               if(this._stopMessages.indexOf(msgClassName) != -1)
+               {
+                  stop = true;
+                  if(msg is EmotePlayMessage)
+                  {
+                     if((msg as EmotePlayMessage).actorId != PlayedCharacterManager.getInstance().id)
+                     {
+                        stop = false;
+                     }
+                  }
+                  if(stop)
+                  {
+                     this.emptyStack();
+                     return false;
+                  }
+               }
+               if(this._ignoredMsg.indexOf(msg) != -1)
+               {
+                  this._ignoredMsg.splice(this._ignoredMsg.indexOf(msg),1);
+                  return false;
+               }
+               catchInputMsg = this.processStackInputMessages(msg);
+               catchOutputMsg = this.processStackOutputMessages(msg);
+               return catchInputMsg;
          }
       }
       
@@ -242,7 +326,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          {
             this._limitReached = true;
          }
-         for each (elem in this._stackInputMessage)
+         for each(elem in this._stackInputMessage)
          {
             if(elem.processInputMessage(pMsg,this._currentMode))
             {
@@ -267,13 +351,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                         {
                            tchatMessage = I18n.getUiText("ui.stack.stop");
                         }
-                        else
+                        else if(this._limitReached)
                         {
-                           if(this._limitReached)
-                           {
-                              tchatMessage = I18n.getUiText("ui.stack.limit",[LIMIT]);
-                           }
+                           tchatMessage = I18n.getUiText("ui.stack.limit",[LIMIT]);
                         }
+                        
                         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,tchatMessage,ChatFrame.RED_CHANNEL_ID,TimeManager.getInstance().getTimestamp());
                         return true;
                      }
@@ -317,7 +399,7 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       private function getSameInOutputList(copy:AbstractBehavior) : AbstractBehavior {
          var be:AbstractBehavior = null;
-         for each (be in this._stackOutputMessage)
+         for each(be in this._stackOutputMessage)
          {
             if((be.getMapPoint()) && (be.getMapPoint().cellId == copy.getMapPoint().cellId))
             {
@@ -353,28 +435,26 @@ package com.ankamagames.dofus.logic.game.common.frames
                   this.removeCheckPoint(currentStackElement);
                }
             }
-            else
+            else if(currentStackElement.pendingMessage != null)
             {
-               if(currentStackElement.pendingMessage != null)
+               while(this._stackOutputMessage.length > 0)
                {
-                  while(this._stackOutputMessage.length > 0)
+                  currentStackElement = this._stackOutputMessage[0];
+                  if(currentStackElement.isAvailableToProcess(pMsg))
                   {
-                     currentStackElement = this._stackOutputMessage[0];
-                     if(currentStackElement.isAvailableToProcess(pMsg))
-                     {
-                        this._ignoredMsg.push(currentStackElement.pendingMessage);
-                        currentStackElement.processMessageToWorker();
-                        break;
-                     }
-                     this.removeCheckPoint(currentStackElement);
-                     this._stackOutputMessage.splice(this._stackOutputMessage.indexOf(currentStackElement),1);
-                     if((this._limitReached) && (this._stackOutputMessage.length < LIMIT))
-                     {
-                        this._limitReached = false;
-                     }
+                     this._ignoredMsg.push(currentStackElement.pendingMessage);
+                     currentStackElement.processMessageToWorker();
+                     break;
+                  }
+                  this.removeCheckPoint(currentStackElement);
+                  this._stackOutputMessage.splice(this._stackOutputMessage.indexOf(currentStackElement),1);
+                  if((this._limitReached) && (this._stackOutputMessage.length < LIMIT))
+                  {
+                     this._limitReached = false;
                   }
                }
             }
+            
             return currentStackElement.isMessageCatchable(pMsg);
          }
          return false;
@@ -385,7 +465,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          stackElement.removeIcon();
          if(this._checkPointList.length > 0)
          {
-            for each (ch in this._checkPointList)
+            for each(ch in this._checkPointList)
             {
                if((stackElement.getMapPoint()) && (stackElement.getMapPoint().cellId == ch.position.cellId))
                {
@@ -397,7 +477,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          }
       }
       
-      private function emptyStack(all:Boolean=true) : void {
+      private function emptyStack(all:Boolean = true) : void {
          var outputMessage:AbstractBehavior = null;
          var checkpoint:CheckPointEntity = null;
          if((this._stackOutputMessage.length == 1) && (this._stackOutputMessage[0].actionStarted == false))
@@ -407,7 +487,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             this._stackOutputMessage = new Vector.<AbstractBehavior>();
          }
          var cpy:Vector.<AbstractBehavior> = this._stackOutputMessage.concat();
-         for each (outputMessage in cpy)
+         for each(outputMessage in cpy)
          {
             if((all) || (!(cpy.indexOf(outputMessage) == 0)) || (cpy.indexOf(outputMessage) == 0) && (!outputMessage.actionStarted))
             {
@@ -417,7 +497,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             }
          }
          cpy = null;
-         for each (checkpoint in this._checkPointList)
+         for each(checkpoint in this._checkPointList)
          {
             EntitiesDisplayManager.getInstance().removeEntity(checkpoint);
          }
@@ -432,11 +512,11 @@ package com.ankamagames.dofus.logic.game.common.frames
          this.initStackInputMessages(AbstractBehavior.ALWAYS);
       }
       
-      private function addBehaviorToInputStack(behavior:AbstractBehavior, pIsActive:Boolean=true) : void {
+      private function addBehaviorToInputStack(behavior:AbstractBehavior, pIsActive:Boolean = true) : void {
          var typeOfOtherBehavior:String = null;
          var b:AbstractBehavior = null;
          var typeOfNewBehavior:String = getQualifiedClassName(behavior);
-         for each (b in this._stackInputMessage)
+         for each(b in this._stackInputMessage)
          {
             typeOfOtherBehavior = getQualifiedClassName(b);
             if(typeOfNewBehavior == typeOfOtherBehavior)

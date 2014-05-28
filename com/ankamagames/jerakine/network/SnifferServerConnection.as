@@ -5,7 +5,7 @@ package com.ankamagames.jerakine.network
    public class SnifferServerConnection extends ServerConnection implements IServerConnection
    {
       
-      public function SnifferServerConnection(host:String=null, port:int=0) {
+      public function SnifferServerConnection(host:String = null, port:int = 0) {
          super(null,0);
          if((!(host == null)) && (!(port == 0)))
          {

@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.inventory.preset
          return 354;
       }
       
-      public function initPresetItem(position:uint=63, objGid:uint=0, objUid:uint=0) : PresetItem {
+      public function initPresetItem(position:uint = 63, objGid:uint = 0, objUid:uint = 0) : PresetItem {
          this.position = position;
          this.objGid = objGid;
          this.objUid = objUid;

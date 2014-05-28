@@ -19,7 +19,7 @@ package com.ankamagames.dofus.datacenter.misc
       public static function getPackByName(name:String) : Pack {
          var pack:Pack = null;
          var packs:Array = getAllPacks();
-         for each (pack in packs)
+         for each(pack in packs)
          {
             if(name == pack.name)
             {

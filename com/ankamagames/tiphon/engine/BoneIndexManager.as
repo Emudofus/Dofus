@@ -35,7 +35,7 @@ package com.ankamagames.tiphon.engine
          }
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(BoneIndexManager));
+      private static const _log:Logger;
       
       private static var _self:BoneIndexManager;
       
@@ -124,7 +124,7 @@ package com.ankamagames.tiphon.engine
             return null;
          }
          var list:Array = new Array();
-         for (anim in animationsList)
+         for(anim in animationsList)
          {
             list.push(anim);
          }
@@ -140,7 +140,7 @@ package com.ankamagames.tiphon.engine
          var folder:String = FileUtils.getFilePath(e.uri.uri);
          var xml:XML = e.resource as XML;
          var subXml:Array = new Array();
-         for each (group in xml..group)
+         for each(group in xml..group)
          {
             uri = new Uri(folder + "/" + group.@id.toString() + ".xml");
             uri.tag = parseInt(group.@id.toString());
@@ -155,9 +155,9 @@ package com.ankamagames.tiphon.engine
          var animClass:XML = null;
          var animInfo:Array = null;
          var xml:XML = e.resource as XML;
-         for each (file in xml..file)
+         for each(file in xml..file)
          {
-            for each (animClass in file..resource)
+            for each(animClass in file..resource)
             {
                className = animClass.@name.toString();
                if(className.indexOf("Anim") != -1)

@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 5902;
       }
       
-      public function initPrismFightDefendersSwapMessage(subAreaId:uint=0, fightId:Number=0, fighterId1:uint=0, fighterId2:uint=0) : PrismFightDefendersSwapMessage {
+      public function initPrismFightDefendersSwapMessage(subAreaId:uint = 0, fightId:Number = 0, fighterId1:uint = 0, fighterId2:uint = 0) : PrismFightDefendersSwapMessage {
          this.subAreaId = subAreaId;
          this.fightId = fightId;
          this.fighterId1 = fighterId1;

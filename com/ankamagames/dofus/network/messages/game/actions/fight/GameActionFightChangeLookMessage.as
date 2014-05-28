@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 5532;
       }
       
-      public function initGameActionFightChangeLookMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, entityLook:EntityLook=null) : GameActionFightChangeLookMessage {
+      public function initGameActionFightChangeLookMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, entityLook:EntityLook = null) : GameActionFightChangeLookMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this.entityLook = entityLook;

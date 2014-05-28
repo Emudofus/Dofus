@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 5637;
       }
       
-      public function initGameContextRefreshEntityLookMessage(id:int=0, look:EntityLook=null) : GameContextRefreshEntityLookMessage {
+      public function initGameContextRefreshEntityLookMessage(id:int = 0, look:EntityLook = null) : GameContextRefreshEntityLookMessage {
          this.id = id;
          this.look = look;
          this._isInitialized = true;

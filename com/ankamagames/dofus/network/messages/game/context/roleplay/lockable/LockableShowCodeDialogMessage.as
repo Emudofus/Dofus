@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
          return 5740;
       }
       
-      public function initLockableShowCodeDialogMessage(changeOrUse:Boolean=false, codeSize:uint=0) : LockableShowCodeDialogMessage {
+      public function initLockableShowCodeDialogMessage(changeOrUse:Boolean = false, codeSize:uint = 0) : LockableShowCodeDialogMessage {
          this.changeOrUse = changeOrUse;
          this.codeSize = codeSize;
          this._isInitialized = true;

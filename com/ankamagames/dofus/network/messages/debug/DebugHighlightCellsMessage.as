@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.debug
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.debug
          return 2001;
       }
       
-      public function initDebugHighlightCellsMessage(color:int=0, cells:Vector.<uint>=null) : DebugHighlightCellsMessage {
+      public function initDebugHighlightCellsMessage(color:int = 0, cells:Vector.<uint> = null) : DebugHighlightCellsMessage {
          this.color = color;
          this.cells = cells;
          this._isInitialized = true;

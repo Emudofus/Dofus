@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
          return 6152;
       }
       
-      public function initDungeonEnteredMessage(dungeonId:uint=0) : DungeonEnteredMessage {
+      public function initDungeonEnteredMessage(dungeonId:uint = 0) : DungeonEnteredMessage {
          this.dungeonId = dungeonId;
          this._isInitialized = true;
          return this;

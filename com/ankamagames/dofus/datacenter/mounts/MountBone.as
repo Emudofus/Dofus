@@ -19,7 +19,7 @@ package com.ankamagames.dofus.datacenter.mounts
          if(!_ids)
          {
             _ids = new Array();
-            for each (b in getMountBones())
+            for each(b in getMountBones())
             {
                _ids.push(b.id);
             }

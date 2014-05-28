@@ -12,19 +12,19 @@ package com.ankamagames.jerakine.utils.misc
          super();
       }
       
-      private static var times:Array = [];
+      private static var times:Array;
       
-      private static var labels:Array = [];
+      private static var labels:Array;
       
       private static var level:int = 0;
       
       private static var indent:String = "";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Chrono));
+      protected static const _log:Logger;
       
       public static var show_total_time:Boolean = true;
       
-      public static function start(label:String="") : void {
+      public static function start(label:String = "") : void {
          var label:String = label.length?label:"Chrono " + times.length;
          times.push(getTimer());
          labels.push(label);

@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 861;
       }
       
-      public function initChatClientMultiMessage(content:String="", channel:uint=0) : ChatClientMultiMessage {
+      public function initChatClientMultiMessage(content:String = "", channel:uint = 0) : ChatClientMultiMessage {
          super.initChatAbstractClientMessage(content);
          this.channel = channel;
          this._isInitialized = true;

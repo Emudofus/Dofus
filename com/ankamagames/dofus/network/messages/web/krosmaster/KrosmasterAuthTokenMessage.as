@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.web.krosmaster
          return 6351;
       }
       
-      public function initKrosmasterAuthTokenMessage(token:String="") : KrosmasterAuthTokenMessage {
+      public function initKrosmasterAuthTokenMessage(token:String = "") : KrosmasterAuthTokenMessage {
          this.token = token;
          this._isInitialized = true;
          return this;

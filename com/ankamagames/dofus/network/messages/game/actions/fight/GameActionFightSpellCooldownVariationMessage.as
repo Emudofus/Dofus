@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6219;
       }
       
-      public function initGameActionFightSpellCooldownVariationMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, spellId:uint=0, value:int=0) : GameActionFightSpellCooldownVariationMessage {
+      public function initGameActionFightSpellCooldownVariationMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, spellId:uint = 0, value:int = 0) : GameActionFightSpellCooldownVariationMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this.spellId = spellId;

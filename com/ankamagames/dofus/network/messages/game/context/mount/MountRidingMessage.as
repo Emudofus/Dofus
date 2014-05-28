@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5967;
       }
       
-      public function initMountRidingMessage(isRiding:Boolean=false) : MountRidingMessage {
+      public function initMountRidingMessage(isRiding:Boolean = false) : MountRidingMessage {
          this.isRiding = isRiding;
          this._isInitialized = true;
          return this;

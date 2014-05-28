@@ -23,7 +23,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(NpcDialogFrame));
+      protected static const _log:Logger;
       
       public function get priority() : int {
          return Priority.NORMAL;
@@ -48,6 +48,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   Kernel.getWorker().removeFrame(this);
                }
                return true;
+            default:
+               return false;
          }
       }
       

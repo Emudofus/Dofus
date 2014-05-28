@@ -7,7 +7,6 @@ package com.ankamagames.dofus.misc.utils
    import flash.events.MouseEvent;
    import flash.events.KeyboardEvent;
    import flash.display.DisplayObject;
-   import __AS3__.vec.*;
    import flash.ui.Keyboard;
    import flash.desktop.Clipboard;
    import flash.desktop.ClipboardFormats;
@@ -81,7 +80,7 @@ package com.ankamagames.dofus.misc.utils
       
       private function onRollout(arg:*) : void {
          var item:InteractiveItem = null;
-         for each (item in this._lastTarget)
+         for each(item in this._lastTarget)
          {
             item.cleanHighlight();
          }
@@ -127,7 +126,7 @@ package com.ankamagames.dofus.misc.utils
                changeBeriliaInteraction();
             },true,true,false));
             tooltipStr = tooltipStr + "<br/>-----------------------";
-            for each (s in this._currentShortCut)
+            for each(s in this._currentShortCut)
             {
                tooltipStr = tooltipStr + ("<br/>" + s.toString());
             }
@@ -214,7 +213,7 @@ package com.ankamagames.dofus.misc.utils
          }
          else
          {
-            for (current in this._berilaChangedInteraction)
+            for(current in this._berilaChangedInteraction)
             {
                if((current is InteractiveObject) && (this._berilaChangedInteraction[current] == 1) || (this._berilaChangedInteraction[current] == 3))
                {
@@ -257,7 +256,7 @@ package com.ankamagames.dofus.misc.utils
          var s:ShortcutItem = null;
          if((this._lastTarget) && (this._lastTarget.length) && (this._currentShortCut))
          {
-            for each (s in this._currentShortCut)
+            for each(s in this._currentShortCut)
             {
                if((s.ctrl == e.ctrlKey) && (s.shift == e.shiftKey) && (s.alt == e.altKey) && (s.key == e.keyCode))
                {
@@ -313,7 +312,6 @@ class ShortcutItem extends Object
 }
 import flash.display.Shape;
 import flash.geom.ColorTransform;
-import __AS3__.vec.Vector;
 import flash.display.DisplayObject;
 import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
@@ -325,13 +323,13 @@ class InteractiveItem extends Object
       super();
    }
    
-   protected static var _highlightShape:Shape = new Shape();
+   protected static var _highlightShape:Shape;
    
-   protected static var _highlightShape2:Shape = new Shape();
+   protected static var _highlightShape2:Shape;
    
-   protected static var _highlightEffect:ColorTransform = new ColorTransform(1.2,1.2,1.2);
+   protected static var _highlightEffect:ColorTransform;
    
-   protected static var _normalEffect:ColorTransform = new ColorTransform(1,1,1);
+   protected static var _normalEffect:ColorTransform;
    
    public var shortcuts:Vector.<ShortcutItem>;
    
@@ -360,7 +358,6 @@ import com.ankamagames.berilia.types.data.BeriliaUiElementSound;
 import avmplus.getQualifiedClassName;
 import com.ankamagames.berilia.managers.UiSoundManager;
 import com.ankamagames.berilia.types.graphic.GraphicContainer;
-import __AS3__.vec.*;
 import flash.ui.Keyboard;
 
 class InteractiveItemUi extends InteractiveItem
@@ -395,7 +392,7 @@ class InteractiveItemUi extends InteractiveItem
       var elem:InteractiveItem = null;
       var firstElem:Boolean = index == 0;
       var firstUi:Boolean = true;
-      for each (elem in elements)
+      for each(elem in elements)
       {
          if(elem.target == target)
          {
@@ -421,25 +418,21 @@ class InteractiveItemUi extends InteractiveItem
             _highlightShape2.graphics.endFill();
          }
       }
-      else
+      else if(!firstElem)
       {
-         if(!firstElem)
-         {
-            StageShareManager.stage.addChild(_highlightShape);
-            pos = target.getBounds(StageShareManager.stage);
-            _highlightShape.graphics.clear();
-            _highlightShape.graphics.lineStyle(3,0,0.7);
-            _highlightShape.graphics.beginFill(16711680,0.0);
-            _highlightShape.graphics.drawRect(pos.left,pos.top,pos.width,pos.height);
-            _highlightShape.graphics.endFill();
-         }
-         else
-         {
-            if((target is Grid) || (target is ComboBox))
-            {
-            }
-         }
+         StageShareManager.stage.addChild(_highlightShape);
+         pos = target.getBounds(StageShareManager.stage);
+         _highlightShape.graphics.clear();
+         _highlightShape.graphics.lineStyle(3,0,0.7);
+         _highlightShape.graphics.beginFill(16711680,0.0);
+         _highlightShape.graphics.drawRect(pos.left,pos.top,pos.width,pos.height);
+         _highlightShape.graphics.endFill();
       }
+      else if((target is Grid) || (target is ComboBox))
+      {
+      }
+      
+      
    }
    
    override public function cleanHighlight() : void {
@@ -488,7 +481,7 @@ class InteractiveItemUi extends InteractiveItem
          str = str + ("<b>Sons : </b>" + (soundParams.length?"":"Aucun") + "");
          if(soundParams.length)
          {
-            for each (soundParam in soundParams)
+            for each(soundParam in soundParams)
             {
                str = str + ("<br/>&nbsp;&nbsp;&nbsp; - " + soundParam.hook + " : " + soundParam.file);
             }
@@ -505,7 +498,6 @@ import com.ankamagames.atouin.utils.DataMapProvider;
 import com.ankamagames.atouin.data.map.CellData;
 import com.ankamagames.atouin.managers.MapDisplayManager;
 import com.ankamagames.jerakine.types.zones.Custom;
-import __AS3__.vec.*;
 import com.ankamagames.atouin.managers.SelectionManager;
 import flash.ui.Keyboard;
 
@@ -522,7 +514,7 @@ class InteractiveItemCell extends InteractiveItem
    
    private static var SELECTION_NAME:String = "InteractiveItemCellHighlight";
    
-   private static var _selection:Selection = new Selection();
+   private static var _selection:Selection;
    
    override public function tooltip() : String {
       var cellId:uint = Object(target).cellId;
@@ -570,7 +562,6 @@ import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpc
 import flash.ui.Keyboard;
 import flash.net.navigateToURL;
 import flash.net.URLRequest;
-import __AS3__.vec.*;
 
 class InteractiveItemEntity extends InteractiveItem
 {
@@ -624,7 +615,7 @@ class InteractiveItemEntity extends InteractiveItem
                str = str + ("look: " + npc.look);
                if((npc.actions) && (npc.actions.length > 0))
                {
-                  for each (action in npc.actions)
+                  for each(action in npc.actions)
                   {
                      npcAction = NpcAction.getNpcActionById(action);
                      str = str + ("<br/> Skill : " + npcAction.name + " (id: " + npcAction.id + ")");
@@ -643,7 +634,7 @@ class InteractiveItemEntity extends InteractiveItem
                monsterGroup = info as GameRolePlayGroupMonsterInformations;
                monsters = Vector.<MonsterInGroupLightInformations>([monsterGroup.staticInfos.mainCreatureLightInfos]);
                monsters = monsters.concat(monsterGroup.staticInfos.underlings);
-               for each (m in monsters)
+               for each(m in monsters)
                {
                   monster = Monster.getMonsterById(m.creatureGenericId);
                   str = str + ("<br/> " + monster.name + " (id: " + monster.id + ", lvl: " + monster.getMonsterGrade(m.grade).level + ", look: " + monster.look + ")");
@@ -658,7 +649,6 @@ import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
 import com.ankamagames.dofus.network.types.game.interactive.InteractiveElementSkill;
 import com.ankamagames.dofus.kernel.Kernel;
 import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
-import __AS3__.vec.*;
 import com.ankamagames.atouin.Atouin;
 import com.ankamagames.dofus.datacenter.jobs.Skill;
 import flash.ui.Keyboard;
@@ -687,17 +677,17 @@ class InteractiveItemElement extends InteractiveItem
       }
       var interactiveElementList:Vector.<InteractiveElement> = entitiesFrame.interactiveElements;
       var matches:Vector.<InteractiveElement> = new Vector.<InteractiveElement>();
-      for each (ie in interactiveElementList)
+      for each(ie in interactiveElementList)
       {
          if(Atouin.getInstance().getIdentifiedElement(ie.elementId) == target)
          {
             this._cmd = "click( InteractiveElementHelper.get( " + ie.elementId + " ) );";
             str = "<b><font color=\'#2A49AA\'>Element " + ie.elementId + "</font></b>";
-            for each (skill in ie.enabledSkills)
+            for each(skill in ie.enabledSkills)
             {
                str = str + ("<br/> Skill : " + Skill.getSkillById(skill.skillId).name + " (id: " + Skill.getSkillById(skill.skillId).id + ")");
             }
-            for each (skill in ie.disabledSkills)
+            for each(skill in ie.disabledSkills)
             {
                str = str + ("<br/> Skill disable : " + Skill.getSkillById(skill.skillId).name + " (id: " + Skill.getSkillById(skill.skillId).id + ")");
             }
@@ -711,7 +701,6 @@ import com.ankamagames.atouin.types.FrustumShape;
 import com.ankamagames.atouin.managers.FrustumManager;
 import com.ankamagames.jerakine.types.enums.DirectionsEnum;
 import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
-import __AS3__.vec.*;
 import flash.ui.Keyboard;
 
 class InteractiveItemMapBorder extends InteractiveItem

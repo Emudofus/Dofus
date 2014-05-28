@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 449;
       }
       
-      public function initHumanOptionObjectUse(delayTypeId:uint=0, delayEndTime:Number=0, objectGID:uint=0) : HumanOptionObjectUse {
+      public function initHumanOptionObjectUse(delayTypeId:uint = 0, delayEndTime:Number = 0, objectGID:uint = 0) : HumanOptionObjectUse {
          this.delayTypeId = delayTypeId;
          this.delayEndTime = delayEndTime;
          this.objectGID = objectGID;

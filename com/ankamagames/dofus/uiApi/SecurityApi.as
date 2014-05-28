@@ -14,7 +14,7 @@ package com.ankamagames.dofus.uiApi
          SecureModeManager.getInstance().askCode(callback);
       }
       
-      public static function sendSecureModeCode(code:String, callback:Function, computerName:String=null) : void {
+      public static function sendSecureModeCode(code:String, callback:Function, computerName:String = null) : void {
          SecureModeManager.getInstance().computerName = computerName;
          SecureModeManager.getInstance().sendCode(code,callback);
       }

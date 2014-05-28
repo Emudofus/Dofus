@@ -3,7 +3,6 @@ package com.ankamagames.dofus.datacenter.sounds
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
    import flash.utils.Dictionary;
-   import __AS3__.vec.*;
    
    public class SoundBones extends Object implements IDataCenter
    {
@@ -47,14 +46,14 @@ package com.ankamagames.dofus.datacenter.sounds
          });
       }
       
-      public function getSoundAnimationByLabel(animationName:String, label:String=null) : Vector.<SoundAnimation> {
+      public function getSoundAnimationByLabel(animationName:String, label:String = null) : Vector.<SoundAnimation> {
          var sa:SoundAnimation = null;
          if(this._cacheDictionary == null)
          {
             this.makeCacheDictionary();
          }
          var ret:Vector.<SoundAnimation> = new Vector.<SoundAnimation>();
-         for each (sa in this._cacheDictionary[animationName])
+         for each(sa in this._cacheDictionary[animationName])
          {
             if((sa.label == label) || (label == null) && (sa.label == "null"))
             {
@@ -64,7 +63,7 @@ package com.ankamagames.dofus.datacenter.sounds
          return ret;
       }
       
-      public function getRandomSoundAnimation(animationName:String, label:String=null) : SoundAnimation {
+      public function getRandomSoundAnimation(animationName:String, label:String = null) : SoundAnimation {
          var list:Vector.<SoundAnimation> = this.getSoundAnimationByLabel(animationName,label);
          var rnd:int = int(Math.random() % list.length);
          var sa:SoundAnimation = list[rnd];
@@ -74,7 +73,7 @@ package com.ankamagames.dofus.datacenter.sounds
       private function makeCacheDictionary() : void {
          var i:String = null;
          this._cacheDictionary = new Dictionary();
-         for (i in this.keys)
+         for(i in this.keys)
          {
             this._cacheDictionary[this.keys[i]] = this.values[i];
          }

@@ -31,7 +31,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
          this._monsterName = Monster.getMonsterById(this._monsterId).name;
       }
       
-      private static const ID_SOUL_STONE:Array = [7010,10417,10418];
+      private static const ID_SOUL_STONE:Array;
       
       private var _quantityMonster:uint = 1;
       
@@ -42,9 +42,9 @@ package com.ankamagames.dofus.datacenter.items.criterion
       override public function get isRespected() : Boolean {
          var iw:ItemWrapper = null;
          var soulStoneId:uint = 0;
-         for each (iw in InventoryManager.getInstance().realInventory)
+         for each(iw in InventoryManager.getInstance().realInventory)
          {
-            for each (soulStoneId in ID_SOUL_STONE)
+            for each(soulStoneId in ID_SOUL_STONE)
             {
                if(iw.objectGID == soulStoneId)
                {

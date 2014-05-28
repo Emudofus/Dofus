@@ -11,7 +11,7 @@ package com.ankamagames.jerakine.types
    public class Color extends Object implements IExternalizable
    {
       
-      public function Color(color:uint=0) {
+      public function Color(color:uint = 0) {
          super();
          this.parseColor(color);
       }
@@ -53,6 +53,8 @@ package com.ankamagames.jerakine.types
                return motherColor.tetradScheme.toHex() as Array;
             case ColorGenerationMethodsEnum.FLIPPED_COMPOUND:
                return motherColor.flippedCompoundScheme.toHex() as Array;
+            default:
+               return [-1,-1,-1,-1,-1,-1];
          }
       }
       

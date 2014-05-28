@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6015;
       }
       
-      public function initExchangeItemAutoCraftRemainingMessage(count:uint=0) : ExchangeItemAutoCraftRemainingMessage {
+      public function initExchangeItemAutoCraftRemainingMessage(count:uint = 0) : ExchangeItemAutoCraftRemainingMessage {
          this.count = count;
          this._isInitialized = true;
          return this;

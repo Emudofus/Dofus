@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
          return 5961;
       }
       
-      public function initTeleportRequestMessage(teleporterType:uint=0, mapId:uint=0) : TeleportRequestMessage {
+      public function initTeleportRequestMessage(teleporterType:uint = 0, mapId:uint = 0) : TeleportRequestMessage {
          this.teleporterType = teleporterType;
          this.mapId = mapId;
          this._isInitialized = true;

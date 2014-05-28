@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 5533;
       }
       
-      public function initGameActionFightDispellMessage(actionId:uint=0, sourceId:int=0, targetId:int=0) : GameActionFightDispellMessage {
+      public function initGameActionFightDispellMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0) : GameActionFightDispellMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this._isInitialized = true;

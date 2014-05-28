@@ -123,13 +123,13 @@ package com.ankamagames.dofus.misc.interClient
       
       private static const APP_ID_TAG:String = "id";
       
-      private static const APP_ID:String = "DofusAppId" + BuildInfos.BUILD_TYPE + "_";
+      private static const APP_ID:String;
       
-      private static const APP_INFO:String = "D2Info" + BuildInfos.BUILD_TYPE;
+      private static const APP_INFO:String;
       
       private static var COMMON_FOLDER:String;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AppIdModifier));
+      protected static const _log:Logger;
       
       public static function getInstance() : AppIdModifier {
          return _self;
@@ -173,7 +173,7 @@ package com.ankamagames.dofus.misc.interClient
          }
       }
       
-      private function updateTs(e:*=null) : void {
+      private function updateTs(e:* = null) : void {
          var currentTimestamp:Number = NaN;
          var idFile:File = null;
          var idFileStream:FileStream = null;

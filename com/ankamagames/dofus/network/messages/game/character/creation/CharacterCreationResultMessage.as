@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.character.creation
          return 161;
       }
       
-      public function initCharacterCreationResultMessage(result:uint=1) : CharacterCreationResultMessage {
+      public function initCharacterCreationResultMessage(result:uint = 1) : CharacterCreationResultMessage {
          this.result = result;
          this._isInitialized = true;
          return this;

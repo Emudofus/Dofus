@@ -28,7 +28,6 @@ package com.ankamagames.dofus.misc.utils.errormanager
    import com.ankamagames.jerakine.logger.LogEvent;
    import flash.display.BitmapData;
    import flash.geom.Matrix;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.fight.FighterInformations;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
@@ -55,7 +54,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
    public class DofusErrorHandler extends Object
    {
       
-      public function DofusErrorHandler(pAutoInit:Boolean=true) {
+      public function DofusErrorHandler(pAutoInit:Boolean = true) {
          super();
          if(pAutoInit)
          {
@@ -67,13 +66,13 @@ package com.ankamagames.dofus.misc.utils.errormanager
       
       public static var maxStackTracelength:uint = 1000;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DofusErrorHandler));
+      protected static const _log:Logger;
       
       private static var _logBuffer:TemporaryBufferTarget;
       
       private static var _lastError:uint;
       
-      private static var _manualActivation:CustomSharedObject = CustomSharedObject.getLocal("BugReport");
+      private static var _manualActivation:CustomSharedObject;
       
       private static var _self:DofusErrorHandler;
       
@@ -134,11 +133,6 @@ package com.ankamagames.dofus.misc.utils.errormanager
          {
             _log.info("Impossible de supprimer le fichier de debug : " + e.message);
          }
-         return;
-         if((debugFile) && (debugFile.exists))
-         {
-            debugFile.deleteFile();
-         }
       }
       
       private function initData() : void {
@@ -169,6 +163,17 @@ package com.ankamagames.dofus.misc.utils.errormanager
                this._localSaveReport = true;
                this._distantSaveReport = true;
                break;
+            default:
+               this.activeSOS();
+               this.activeLogBuffer();
+               this.activeDebugMode();
+               this.activeShortcut();
+               if(AirScanner.isStreamingVersion())
+               {
+                  this.activeGlobalExceptionCatch(true);
+               }
+               this._localSaveReport = true;
+               this._distantSaveReport = true;
          }
          this.createEmptyLog4As();
       }
@@ -181,13 +186,11 @@ package com.ankamagames.dofus.misc.utils.errormanager
                this.onError(new ErrorReportedEvent(null,"Manual bug report"));
             }
          }
-         else
+         else if(e.keyCode == Keyboard.F11)
          {
-            if(e.keyCode == Keyboard.F11)
-            {
-               this.onError(new ErrorReportedEvent(null,"Manual bug report"));
-            }
+            this.onError(new ErrorReportedEvent(null,"Manual bug report"));
          }
+         
       }
       
       public function activeDebugMode() : void {
@@ -218,6 +221,8 @@ package com.ankamagames.dofus.misc.utils.errormanager
             case OperatingSystem.WINDOWS:
                debugFile = File.applicationDirectory.resolvePath("META-INF/AIR/debug");
                break;
+            default:
+               return null;
          }
          return new File(debugFile.nativePath);
       }
@@ -270,7 +275,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
          Log.addTarget(_logBuffer);
       }
       
-      public function activeShortcut(e:Event=null) : void {
+      public function activeShortcut(e:Event = null) : void {
          if(Dofus.getInstance().stage)
          {
             Dofus.getInstance().stage.addEventListener(KeyboardEvent.KEY_UP,this.onKeyUp);
@@ -319,7 +324,7 @@ package com.ankamagames.dofus.misc.utils.errormanager
             stackTrace = "";
             realStacktrace = error.getStackTrace();
             tmp = realStacktrace.split("\n");
-            for each (line in tmp)
+            for each(line in tmp)
             {
                if((line.indexOf("ErrorManager") == -1) || (line.indexOf("addError") == -1))
                {
@@ -394,204 +399,12 @@ package com.ankamagames.dofus.misc.utils.errormanager
       }
       
       public function getReportInfo(error:Error, txt:String) : Object {
-         var date:Date = null;
-         var o:Object = null;
-         var userNameData:Array = null;
-         var currentMap:WorldPointWrapper = null;
-         var obstacles:Array = null;
-         var entities:Array = null;
-         var los:Array = null;
-         var cellId:uint = 0;
-         var mp:MapPoint = null;
-         var entityInfoProvider:Object = null;
-         var htmlBuffer:String = null;
-         var logs:Array = null;
-         var log:LogEvent = null;
-         var screenshot:BitmapData = null;
-         var m:Matrix = null;
-         var fighterBuffer:String = null;
-         var fighters:Vector.<int> = null;
-         var fighterId:int = 0;
-         var fighterInfos:FighterInformations = null;
-         var entitiesOnCell:Array = null;
-         var entity:IEntity = null;
-         var entityInfo:GameContextActorInformations = null;
-         var entityInfoData:Array = null;
-         var entityInfoDataStr:String = null;
-         var key:String = null;
-         var rpFrame:RoleplayEntitiesFrame = null;
-         var interactiveElements:Vector.<InteractiveElement> = null;
-         var ie:InteractiveElement = null;
-         var ieInfoData:Array = null;
-         var iePos:MapPoint = null;
-         var ieInfoDataStr:String = null;
-         var keyIe:String = null;
-         try
-         {
-            date = new Date();
-            o = new Object();
-            o.flashVersion = Capabilities.version;
-            o.os = Capabilities.os;
-            o.time = date.hours + ":" + date.minutes + ":" + date.seconds;
-            o.date = date.date + "/" + (date.month + 1) + "/" + date.fullYear;
-            o.buildType = BuildTypeParser.getTypeName(BuildInfos.BUILD_TYPE);
-            if(AirScanner.isStreamingVersion())
-            {
-               o.buildType = o.buildType + " STREAMING";
-            }
-            else
-            {
-               o.appPath = File.applicationDirectory.nativePath;
-            }
-            o.buildVersion = BuildInfos.BUILD_VERSION;
-            if(_logBuffer)
-            {
-               htmlBuffer = "";
-               logs = _logBuffer.getBuffer();
-               for each (log in logs)
-               {
-                  if((log is TextLogEvent) && (log.level > 0))
-                  {
-                     htmlBuffer = htmlBuffer + ("\t\t\t<li class=\"l_" + log.level + "\">" + log.message + "</li>\n");
-                  }
-               }
-               o.logSos = htmlBuffer;
-            }
-            o.errorMsg = txt;
-            if(error)
-            {
-               o.stacktrace = error.getStackTrace();
-            }
-            userNameData = File.documentsDirectory.nativePath.split(File.separator);
-            switch(SystemManager.getSingleton().os)
-            {
-               case OperatingSystem.WINDOWS:
-                  o.user = userNameData[2];
-                  break;
-               case OperatingSystem.LINUX:
-                  o.user = userNameData[2];
-                  break;
-               case OperatingSystem.MAC_OS:
-                  o.user = userNameData[2];
-                  break;
-            }
-            o.multicompte = !InterClientManager.getInstance().isAlone;
-            if(getTimer() - _lastError > 500)
-            {
-               screenshot = new BitmapData(640,512,false);
-               m = new Matrix();
-               m.scale(0.5,0.5);
-               screenshot.draw(StageShareManager.stage,m,null,null,null,true);
-               o.screenshot = screenshot;
-               o.mouseX = StageShareManager.mouseX;
-               o.mouseY = StageShareManager.mouseY;
-            }
-            if(PlayerManager.getInstance().nickname)
-            {
-               o.account = PlayerManager.getInstance().nickname + " (id: " + PlayerManager.getInstance().accountId + ")";
-            }
-            o.accountId = PlayerManager.getInstance().accountId;
-            o.serverId = PlayerManager.getInstance().server.id;
-            if(!PlayerManager.getInstance().server)
-            {
-               return o;
-            }
-            o.server = PlayerManager.getInstance().server.name + " (id: " + PlayerManager.getInstance().server.id + ")";
-            if(!PlayedCharacterManager.getInstance().infos)
-            {
-               return o;
-            }
-            o.character = PlayedCharacterManager.getInstance().infos.name + " (id: " + PlayedCharacterManager.getInstance().id + ")";
-            o.characterId = PlayedCharacterManager.getInstance().id;
-            currentMap = PlayedCharacterManager.getInstance().currentMap;
-            if(currentMap == null)
-            {
-               return o;
-            }
-            o.mapId = currentMap.mapId + " (" + currentMap.x + "/" + currentMap.y + ")";
-            o.look = EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook).toString();
-            o.idMap = currentMap.mapId;
-            obstacles = [];
-            entities = [];
-            los = [];
-            o.wasFighting = !(this.getFightFrame() == null);
-            if(o.wasFighting)
-            {
-               fighterBuffer = "";
-               fighters = this.getFightFrame().battleFrame.fightersList;
-               for each (fighterId in fighters)
-               {
-                  fighterInfos = new FighterInformations(fighterId);
-                  fighterBuffer = fighterBuffer + ("<li><b>" + this.getFightFrame().getFighterName(fighterId) + "</b>, id: " + fighterId + ", lvl: " + this.getFightFrame().getFighterLevel(fighterId) + ", team: " + fighterInfos.team + ", vie: " + fighterInfos.lifePoints + ", pa:" + fighterInfos.actionPoints + ", pm:" + fighterInfos.movementPoints + ", cell:" + FightEntitiesFrame.getCurrentInstance().getEntityInfos(fighterId).disposition.cellId + "</li>");
-               }
-               o.fighterList = fighterBuffer;
-               o.currentPlayer = this.getFightFrame().getFighterName(this.getFightFrame().battleFrame.currentPlayerId);
-            }
-            if(!o.wasFighting)
-            {
-               entityInfoProvider = Kernel.getWorker().getFrame(RoleplayEntitiesFrame);
-            }
-            else
-            {
-               entityInfoProvider = this.getFightFrame();
-            }
-            cellId = 0;
-            while(cellId < AtouinConstants.MAP_CELLS_COUNT)
-            {
-               mp = MapPoint.fromCellId(cellId);
-               obstacles.push(DataMapProvider.getInstance().pointMov(mp.x,mp.y,true)?1:0);
-               los.push(DataMapProvider.getInstance().pointLos(mp.x,mp.y,true)?1:0);
-               entitiesOnCell = EntitiesManager.getInstance().getEntitiesOnCell(mp.cellId);
-               if((entityInfoProvider) && (entitiesOnCell.length))
-               {
-                  for each (entity in entitiesOnCell)
-                  {
-                     entityInfo = entityInfoProvider.getEntityInfos(entity.id);
-                     entityInfoData = DescribeTypeCache.getVariables(entityInfo,true);
-                     entityInfoDataStr = "{cell:" + cellId + ",className:\'" + getQualifiedClassName(entityInfo).split("::").pop() + "\'";
-                     for each (key in entityInfoData)
-                     {
-                        if((entityInfo[key] is int) || (entityInfo[key] is uint) || (entityInfo[key] is Number) || (entityInfo[key] is Boolean) || (entityInfo[key] is String))
-                        {
-                           entityInfoDataStr = entityInfoDataStr + ("," + key + ":\"" + entityInfo[key] + "\"");
-                        }
-                     }
-                     entities.push(entityInfoDataStr + "}");
-                  }
-               }
-               cellId++;
-            }
-            if(!o.wasFighting)
-            {
-               rpFrame = entityInfoProvider as RoleplayEntitiesFrame;
-               if(rpFrame)
-               {
-                  interactiveElements = rpFrame.interactiveElements;
-                  for each (ie in interactiveElements)
-                  {
-                     ieInfoData = DescribeTypeCache.getVariables(ie,true);
-                     iePos = Atouin.getInstance().getIdentifiedElementPosition(ie.elementId);
-                     ieInfoDataStr = "{cell:" + iePos.cellId + ",className:\'" + getQualifiedClassName(ie).split("::").pop() + "\'";
-                     for each (keyIe in ieInfoData)
-                     {
-                        if((ie[keyIe] is int) || (ie[keyIe] is uint) || (ie[keyIe] is Number) || (ie[keyIe] is Boolean) || (ie[keyIe] is String))
-                        {
-                           ieInfoDataStr = ieInfoDataStr + ("," + keyIe + ":\"" + ie[keyIe] + "\"");
-                        }
-                     }
-                     entities.push(ieInfoDataStr + "}");
-                  }
-               }
-            }
-            o.obstacles = obstacles.join(",");
-            o.entities = entities.join(",");
-            o.los = los.join(",");
-         }
-         catch(e:Error)
-         {
-            _log.error("Error lors du rapport de bug... " + e.message + "\nErreur d\'origine :" + (error?error.message:txt));
-         }
-         return o;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function getFightFrame() : FightContextFrame {

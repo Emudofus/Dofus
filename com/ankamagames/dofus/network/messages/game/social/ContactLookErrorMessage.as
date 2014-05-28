@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.social
          return 6045;
       }
       
-      public function initContactLookErrorMessage(requestId:uint=0) : ContactLookErrorMessage {
+      public function initContactLookErrorMessage(requestId:uint = 0) : ContactLookErrorMessage {
          this.requestId = requestId;
          this._isInitialized = true;
          return this;

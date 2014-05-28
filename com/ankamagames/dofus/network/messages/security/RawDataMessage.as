@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.messages.security
          return 6253;
       }
       
-      public function initRawDataMessage(content:ByteArray=null) : RawDataMessage {
+      public function initRawDataMessage(content:ByteArray = null) : RawDataMessage {
          this.content = content;
          this._isInitialized = true;
          return this;

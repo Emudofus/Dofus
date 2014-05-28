@@ -16,7 +16,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       private static const TYPE_PRISM:int = 1;
       
-      public static function create(pType:int, pId:int, pAllies:Array=null, pEnemies:Array=null, fightTime:int=2147483647, waitTimeForPlacement:Number=0, nbPositionPerTeam:uint=5) : SocialEntityInFightWrapper {
+      public static function create(pType:int, pId:int, pAllies:Array = null, pEnemies:Array = null, fightTime:int = 2147483647, waitTimeForPlacement:Number = 0, nbPositionPerTeam:uint = 5) : SocialEntityInFightWrapper {
          var item:SocialEntityInFightWrapper = null;
          var ally:CharacterMinimalPlusLookInformations = null;
          var enemy:CharacterMinimalPlusLookInformations = null;
@@ -28,11 +28,11 @@ package com.ankamagames.dofus.internalDatacenter.guild
          item.fightTime = fightTime;
          item.waitTimeForPlacement = waitTimeForPlacement;
          item.nbPositionPerTeam = nbPositionPerTeam;
-         for each (ally in pAllies)
+         for each(ally in pAllies)
          {
             item.allyCharactersInformations.push(SocialFightersWrapper.create(0,ally));
          }
-         for each (enemy in pEnemies)
+         for each(enemy in pEnemies)
          {
             item.enemyCharactersInformations.push(SocialFightersWrapper.create(1,enemy));
          }
@@ -53,7 +53,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       public var nbPositionPerTeam:uint;
       
-      public function update(pType:int, pId:int, pAllies:Array, pEnemies:Array, pFightTime:int=2147483647, pWaitTimeForPlacement:Number=0, pNbPositionPerTeam:uint=5) : void {
+      public function update(pType:int, pId:int, pAllies:Array, pEnemies:Array, pFightTime:int = 2147483647, pWaitTimeForPlacement:Number = 0, pNbPositionPerTeam:uint = 5) : void {
          var ally:CharacterMinimalPlusLookInformations = null;
          var enemy:CharacterMinimalPlusLookInformations = null;
          this.typeId = pType;
@@ -63,11 +63,11 @@ package com.ankamagames.dofus.internalDatacenter.guild
          this.nbPositionPerTeam = pNbPositionPerTeam;
          this.allyCharactersInformations = new Array();
          this.enemyCharactersInformations = new Array();
-         for each (ally in pAllies)
+         for each(ally in pAllies)
          {
             this.allyCharactersInformations.push(SocialFightersWrapper.create(0,ally));
          }
-         for each (enemy in pEnemies)
+         for each(enemy in pEnemies)
          {
             this.enemyCharactersInformations.push(SocialFightersWrapper.create(1,enemy));
          }

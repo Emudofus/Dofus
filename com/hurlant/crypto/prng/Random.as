@@ -10,7 +10,7 @@ package com.hurlant.crypto.prng
    public class Random extends Object
    {
       
-      public function Random(prng:Class=null) {
+      public function Random(prng:Class = null) {
          var t:uint = 0;
          super();
          if(prng == null)
@@ -43,11 +43,12 @@ package com.hurlant.crypto.prng
       
       private var seeded:Boolean = false;
       
-      public function seed(x:int=0) : void {
+      public function seed(x:int = 0) : void {
          if(x == 0)
          {
             x = new Date().getTime();
          }
+         var _loc2_:* = this.pptr++;
          this.pool[_loc2_] = this.pool[_loc2_] ^ x & 255;
          this.pool[this.pptr++] = this.pool[_loc3_] ^ x >> 8 & 255;
          this.pool[this.pptr++] = this.pool[_loc4_] ^ x >> 16 & 255;
@@ -64,7 +65,7 @@ package com.hurlant.crypto.prng
          b.writeUnsignedInt(getTimer());
          b.writeUnsignedInt(new Date().getTime());
          var a:Array = Font.enumerateFonts(true);
-         for each (f in a)
+         for each(f in a)
          {
             b.writeUTF(f.fontName);
             b.writeUTF(f.fontStyle);

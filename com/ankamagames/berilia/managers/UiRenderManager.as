@@ -59,7 +59,7 @@ package com.ankamagames.berilia.managers
          }
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
       private static var _self:UiRenderManager;
       
@@ -69,7 +69,7 @@ package com.ankamagames.berilia.managers
       
       private static const DATASTORE_CATEGORY_VERSION:String = "uiVersion";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UiRenderManager));
+      protected static const _log:Logger;
       
       public static function getInstance() : UiRenderManager {
          if(_self == null)
@@ -87,7 +87,7 @@ package com.ankamagames.berilia.managers
       
       private var _lastRenderStart:uint;
       
-      public function loadUi(uiData:UiData, spContainer:UiRootContainer, oProperties:*=null, checkCache:Boolean=true) : void {
+      public function loadUi(uiData:UiData, spContainer:UiRootContainer, oProperties:* = null, checkCache:Boolean = true) : void {
          var uiRenderer:PoolableUiRenderer = null;
          var sId:String = uiData.file;
          if(!sId)
@@ -132,17 +132,15 @@ package com.ankamagames.berilia.managers
             uiRenderer.script = uiData.uiClass;
             uiRenderer.fileRender(uiData.file,sId,spContainer,oProperties);
          }
-         else
+         else if(uiData.xml)
          {
-            if(uiData.xml)
-            {
-               this._lastRenderStart = getTimer();
-               uiRenderer = PoolsManager.getInstance().getUiRendererPool().checkOut() as PoolableUiRenderer;
-               uiRenderer.addEventListener(Event.COMPLETE,this.onUiRender);
-               uiRenderer.script = uiData.uiClass;
-               uiRenderer.xmlRender(uiData.xml,sId,spContainer,oProperties);
-            }
+            this._lastRenderStart = getTimer();
+            uiRenderer = PoolsManager.getInstance().getUiRendererPool().checkOut() as PoolableUiRenderer;
+            uiRenderer.addEventListener(Event.COMPLETE,this.onUiRender);
+            uiRenderer.script = uiData.uiClass;
+            uiRenderer.xmlRender(uiData.xml,sId,spContainer,oProperties);
          }
+         
       }
       
       public function clearCache() : void {
@@ -154,8 +152,8 @@ package com.ankamagames.berilia.managers
       }
       
       public function clearCacheFromId(id:String) : void {
-         delete this._aCache[[id]];
-         delete this._aVersion[[id]];
+         delete this._aCache[id];
+         delete this._aVersion[id];
          StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_VERSION,DATASTORE_CATEGORY_VERSION,this._aVersion);
          StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_DEFINITION,DATASTORE_CATEGORY_CACHE,this._aCache);
       }
@@ -185,11 +183,11 @@ package com.ankamagames.berilia.managers
       public function cancelRender(uiData:UiData) : void {
          if(uiData)
          {
-            delete this._aRendering[[uiData.file]];
+            delete this._aRendering[uiData.file];
          }
       }
       
-      private function processWaitingUi(sId:String, checkCache:Boolean=true) : void {
+      private function processWaitingUi(sId:String, checkCache:Boolean = true) : void {
          var currentUi:RenderQueueItem = null;
          if(!this._aRendering[sId])
          {
@@ -201,12 +199,12 @@ package com.ankamagames.berilia.managers
             this._lastRenderStart = getTimer();
             this.loadUi(currentUi.uiData,currentUi.container,currentUi.properties,checkCache);
          }
-         delete this._aRendering[[sId]];
+         delete this._aRendering[sId];
       }
       
       private function onUiRender(e:UiRenderEvent) : void {
          var uiDef:UiDefinition = e.uiRenderer.uiDefinition;
-         if((((!(e.uiTarget.uiData.module is PreCompiledUiModule)) && (uiDef)) && (uiDef.useCache)) && (!this._aCache[uiDef.name]) && (BeriliaConstants.USE_UI_CACHE))
+         if((!(e.uiTarget.uiData.module is PreCompiledUiModule) && uiDef && uiDef.useCache) && (!this._aCache[uiDef.name]) && (BeriliaConstants.USE_UI_CACHE))
          {
             this._aCache[uiDef.name] = uiDef;
             StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_DEFINITION,DATASTORE_CATEGORY_CACHE,this._aCache);

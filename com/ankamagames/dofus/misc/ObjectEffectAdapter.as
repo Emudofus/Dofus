@@ -32,7 +32,7 @@ package com.ankamagames.dofus.misc
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ObjectEffectAdapter));
+      protected static const _log:Logger;
       
       public static function fromNetwork(oe:ObjectEffect) : EffectInstance {
          var effect:EffectInstance = null;
@@ -49,81 +49,84 @@ package com.ankamagames.dofus.misc
             level = 1;
             do
             {
-                  incLevel = IncarnationLevel.getIncarnationLevelByIdAndLevel(ObjectEffectDice(oe).diceNum,level);
-                  if(incLevel)
-                  {
-                     floor = incLevel.requiredXp;
-                  }
-                  level++;
-                  incLevelPlusOne = IncarnationLevel.getIncarnationLevelByIdAndLevel(ObjectEffectDice(oe).diceNum,level);
-                  if(incLevelPlusOne)
-                  {
-                     nextFloor = incLevelPlusOne.requiredXp;
-                  }
-               }while((nextFloor < EffectInstanceDate(effect).month) && (level < 51));
-               
-               level = level - 1;
-               EffectInstanceDate(effect).day = level;
-               EffectInstanceDate(effect).hour = 0;
-               EffectInstanceDate(effect).minute = 0;
-            }
-            else
-            {
-               switch(true)
+               incLevel = IncarnationLevel.getIncarnationLevelByIdAndLevel(ObjectEffectDice(oe).diceNum,level);
+               if(incLevel)
                {
-                  case oe is ObjectEffectString:
-                     effect = new EffectInstanceString();
-                     EffectInstanceString(effect).text = ObjectEffectString(oe).value;
-                     break;
-                  case oe is ObjectEffectInteger:
-                     effect = new EffectInstanceInteger();
-                     EffectInstanceInteger(effect).value = ObjectEffectInteger(oe).value;
-                     break;
-                  case oe is ObjectEffectMinMax:
-                     effect = new EffectInstanceMinMax();
-                     EffectInstanceMinMax(effect).min = ObjectEffectMinMax(oe).min;
-                     EffectInstanceMinMax(effect).max = ObjectEffectMinMax(oe).max;
-                     break;
-                  case oe is ObjectEffectDice:
-                     effect = new EffectInstanceDice();
-                     EffectInstanceDice(effect).diceNum = ObjectEffectDice(oe).diceNum;
-                     EffectInstanceDice(effect).diceSide = ObjectEffectDice(oe).diceSide;
-                     EffectInstanceDice(effect).value = ObjectEffectDice(oe).diceConst;
-                     break;
-                  case oe is ObjectEffectDate:
-                     effect = new EffectInstanceDate();
-                     EffectInstanceDate(effect).year = ObjectEffectDate(oe).year;
-                     EffectInstanceDate(effect).month = ObjectEffectDate(oe).month + 1;
-                     EffectInstanceDate(effect).day = ObjectEffectDate(oe).day;
-                     EffectInstanceDate(effect).hour = ObjectEffectDate(oe).hour;
-                     EffectInstanceDate(effect).minute = ObjectEffectDate(oe).minute;
-                     break;
-                  case oe is ObjectEffectDuration:
-                     effect = new EffectInstanceDuration();
-                     EffectInstanceDuration(effect).days = ObjectEffectDuration(oe).days;
-                     EffectInstanceDuration(effect).hours = ObjectEffectDuration(oe).hours;
-                     EffectInstanceDuration(effect).minutes = ObjectEffectDuration(oe).minutes;
-                     break;
-                  case oe is ObjectEffectLadder:
-                     effect = new EffectInstanceLadder();
-                     EffectInstanceLadder(effect).monsterFamilyId = ObjectEffectLadder(oe).monsterFamilyId;
-                     EffectInstanceLadder(effect).monsterCount = ObjectEffectLadder(oe).monsterCount;
-                     break;
-                  case oe is ObjectEffectCreature:
-                     effect = new EffectInstanceCreature();
-                     EffectInstanceCreature(effect).monsterFamilyId = ObjectEffectCreature(oe).monsterFamilyId;
-                     break;
-                  case oe is ObjectEffectMount:
-                     effect = new EffectInstanceMount();
-                     EffectInstanceMount(effect).date = ObjectEffectMount(oe).date;
-                     EffectInstanceMount(effect).modelId = ObjectEffectMount(oe).modelId;
-                     EffectInstanceMount(effect).mountId = ObjectEffectMount(oe).mountId;
-                     break;
+                  floor = incLevel.requiredXp;
+               }
+               level++;
+               incLevelPlusOne = IncarnationLevel.getIncarnationLevelByIdAndLevel(ObjectEffectDice(oe).diceNum,level);
+               if(incLevelPlusOne)
+               {
+                  nextFloor = incLevelPlusOne.requiredXp;
                }
             }
-            effect.effectId = oe.actionId;
-            effect.duration = 0;
-            return effect;
+            while((nextFloor < EffectInstanceDate(effect).month) && (level < 51));
+            
+            level = level - 1;
+            EffectInstanceDate(effect).day = level;
+            EffectInstanceDate(effect).hour = 0;
+            EffectInstanceDate(effect).minute = 0;
          }
+         else
+         {
+            switch(true)
+            {
+               case oe is ObjectEffectString:
+                  effect = new EffectInstanceString();
+                  EffectInstanceString(effect).text = ObjectEffectString(oe).value;
+                  break;
+               case oe is ObjectEffectInteger:
+                  effect = new EffectInstanceInteger();
+                  EffectInstanceInteger(effect).value = ObjectEffectInteger(oe).value;
+                  break;
+               case oe is ObjectEffectMinMax:
+                  effect = new EffectInstanceMinMax();
+                  EffectInstanceMinMax(effect).min = ObjectEffectMinMax(oe).min;
+                  EffectInstanceMinMax(effect).max = ObjectEffectMinMax(oe).max;
+                  break;
+               case oe is ObjectEffectDice:
+                  effect = new EffectInstanceDice();
+                  EffectInstanceDice(effect).diceNum = ObjectEffectDice(oe).diceNum;
+                  EffectInstanceDice(effect).diceSide = ObjectEffectDice(oe).diceSide;
+                  EffectInstanceDice(effect).value = ObjectEffectDice(oe).diceConst;
+                  break;
+               case oe is ObjectEffectDate:
+                  effect = new EffectInstanceDate();
+                  EffectInstanceDate(effect).year = ObjectEffectDate(oe).year;
+                  EffectInstanceDate(effect).month = ObjectEffectDate(oe).month + 1;
+                  EffectInstanceDate(effect).day = ObjectEffectDate(oe).day;
+                  EffectInstanceDate(effect).hour = ObjectEffectDate(oe).hour;
+                  EffectInstanceDate(effect).minute = ObjectEffectDate(oe).minute;
+                  break;
+               case oe is ObjectEffectDuration:
+                  effect = new EffectInstanceDuration();
+                  EffectInstanceDuration(effect).days = ObjectEffectDuration(oe).days;
+                  EffectInstanceDuration(effect).hours = ObjectEffectDuration(oe).hours;
+                  EffectInstanceDuration(effect).minutes = ObjectEffectDuration(oe).minutes;
+                  break;
+               case oe is ObjectEffectLadder:
+                  effect = new EffectInstanceLadder();
+                  EffectInstanceLadder(effect).monsterFamilyId = ObjectEffectLadder(oe).monsterFamilyId;
+                  EffectInstanceLadder(effect).monsterCount = ObjectEffectLadder(oe).monsterCount;
+                  break;
+               case oe is ObjectEffectCreature:
+                  effect = new EffectInstanceCreature();
+                  EffectInstanceCreature(effect).monsterFamilyId = ObjectEffectCreature(oe).monsterFamilyId;
+                  break;
+               case oe is ObjectEffectMount:
+                  effect = new EffectInstanceMount();
+                  EffectInstanceMount(effect).date = ObjectEffectMount(oe).date;
+                  EffectInstanceMount(effect).modelId = ObjectEffectMount(oe).modelId;
+                  EffectInstanceMount(effect).mountId = ObjectEffectMount(oe).mountId;
+                  break;
+               default:
+                  effect = new EffectInstance();
+            }
+         }
+         effect.effectId = oe.actionId;
+         effect.duration = 0;
+         return effect;
       }
    }
+}

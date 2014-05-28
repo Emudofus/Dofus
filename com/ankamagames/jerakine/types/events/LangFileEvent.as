@@ -5,7 +5,7 @@ package com.ankamagames.jerakine.types.events
    public class LangFileEvent extends Event
    {
       
-      public function LangFileEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, sUrl:String=null, sUrlProvider:String=null) {
+      public function LangFileEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, sUrl:String = null, sUrlProvider:String = null) {
          super(type,bubbles,cancelable);
          this._sUrl = sUrl;
          this._sUrlProvider = sUrlProvider;

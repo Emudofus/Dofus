@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.quest
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import flash.geom.Point;
    import com.ankamagames.dofus.datacenter.npcs.NpcMessage;
    
@@ -16,7 +15,7 @@ package com.ankamagames.dofus.datacenter.quest
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(QuestObjective));
+      protected static const _log:Logger;
       
       public static const MODULE:String = "QuestObjectives";
       

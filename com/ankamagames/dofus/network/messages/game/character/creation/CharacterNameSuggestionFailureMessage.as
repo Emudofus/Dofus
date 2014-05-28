@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.character.creation
          return 164;
       }
       
-      public function initCharacterNameSuggestionFailureMessage(reason:uint=1) : CharacterNameSuggestionFailureMessage {
+      public function initCharacterNameSuggestionFailureMessage(reason:uint = 1) : CharacterNameSuggestionFailureMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

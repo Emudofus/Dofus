@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.mount
          return 356;
       }
       
-      public function initUpdateMountBoost(type:int=0) : UpdateMountBoost {
+      public function initUpdateMountBoost(type:int = 0) : UpdateMountBoost {
          this.type = type;
          return this;
       }

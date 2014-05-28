@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.common.actions
          super();
       }
       
-      public static function create(pMsg:String="") : OpenPopupAction {
+      public static function create(pMsg:String = "") : OpenPopupAction {
          var s:OpenPopupAction = new OpenPopupAction();
          s.messageToShow = pMsg;
          return s;

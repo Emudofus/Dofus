@@ -5,7 +5,7 @@ package com.ankamagames.berilia.components.messages
    public class SelectItemMessage extends ComponentMessage
    {
       
-      public function SelectItemMessage(target:InteractiveObject, selectMethod:uint=7, isNewSelection:Boolean=true) {
+      public function SelectItemMessage(target:InteractiveObject, selectMethod:uint = 7, isNewSelection:Boolean = true) {
          super(target);
          this._method = selectMethod;
          this._isNewSelection = isNewSelection;

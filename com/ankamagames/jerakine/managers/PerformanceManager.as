@@ -19,13 +19,13 @@ package com.ankamagames.jerakine.managers
       
       public static var optimize:Boolean = false;
       
-      public static var performance:int = NORMAL;
+      public static var performance:int = 2;
       
       public static const BASE_FRAMERATE:int = 50;
       
-      public static var maxFrameRate:int = BASE_FRAMERATE;
+      public static var maxFrameRate:int = 50;
       
-      public static var frameDuration:Number = 1000 / maxFrameRate;
+      public static var frameDuration:Number;
       
       private static var _totalFrames:int = 0;
       
@@ -60,17 +60,15 @@ package com.ankamagames.jerakine.managers
             {
                performance = NORMAL;
             }
+            else if(_framesTime < optimalCondition * 1.15)
+            {
+               performance = LIMITED;
+            }
             else
             {
-               if(_framesTime < optimalCondition * 1.15)
-               {
-                  performance = LIMITED;
-               }
-               else
-               {
-                  performance = CRITICAL;
-               }
+               performance = CRITICAL;
             }
+            
             _framesTime = 0;
          }
          else

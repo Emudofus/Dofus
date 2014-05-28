@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3013;
       }
       
-      public function initObjectUseOnCellMessage(objectUID:uint=0, cells:uint=0) : ObjectUseOnCellMessage {
+      public function initObjectUseOnCellMessage(objectUID:uint = 0, cells:uint = 0) : ObjectUseOnCellMessage {
          super.initObjectUseMessage(objectUID);
          this.cells = cells;
          this._isInitialized = true;

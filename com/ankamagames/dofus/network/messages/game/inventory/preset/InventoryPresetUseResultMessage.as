@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.preset
          return 6163;
       }
       
-      public function initInventoryPresetUseResultMessage(presetId:uint=0, code:uint=3, unlinkedPosition:Vector.<uint>=null) : InventoryPresetUseResultMessage {
+      public function initInventoryPresetUseResultMessage(presetId:uint = 0, code:uint = 3, unlinkedPosition:Vector.<uint> = null) : InventoryPresetUseResultMessage {
          this.presetId = presetId;
          this.code = code;
          this.unlinkedPosition = unlinkedPosition;

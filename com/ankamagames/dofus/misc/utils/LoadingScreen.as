@@ -29,7 +29,6 @@ package com.ankamagames.dofus.misc.utils
    import flash.net.navigateToURL;
    import flash.net.URLRequest;
    import com.ankamagames.dofus.kernel.Kernel;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
@@ -40,7 +39,7 @@ package com.ankamagames.dofus.misc.utils
    public class LoadingScreen extends UiRootContainer implements FinalizableUIComponent, IResourceObserver
    {
       
-      public function LoadingScreen(showBigVersion:Boolean=false, beforeLogin:Boolean=false) {
+      public function LoadingScreen(showBigVersion:Boolean = false, beforeLogin:Boolean = false) {
          var adapter:BitmapAdapter = null;
          this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
          this._levelColor = new Array(8158332,9216860,11556943,16737792);
@@ -234,7 +233,7 @@ package com.ankamagames.dofus.misc.utils
          }
          if((!this._backgroundBitmap) && (!this._customLoadingScreen))
          {
-            this._backgroundBitmap = this._backgroundContainer.addChild(new Capabilities.language == "ja"?this._defaultBackground:this._background()) as Bitmap;
+            this._backgroundBitmap = this._backgroundContainer.addChild(new (Capabilities.language == "ja"?this._defaultBackground:this._background)()) as Bitmap;
             this._backgroundBitmap.smoothing = true;
          }
          addChild(this._backgroundContainer);
@@ -246,7 +245,7 @@ package com.ankamagames.dofus.misc.utils
          {
             if((!this._foregroundBitmap) && (!this._customLoadingScreen))
             {
-               this._foregroundBitmap = this._foregroundContainer.addChild(new Capabilities.language == "ja"?this._defaultForeground:this._foreground()) as Bitmap;
+               this._foregroundBitmap = this._foregroundContainer.addChild(new (Capabilities.language == "ja"?this._defaultForeground:this._foreground)()) as Bitmap;
                this._foregroundBitmap.smoothing = true;
             }
          }
@@ -284,6 +283,10 @@ package com.ankamagames.dofus.misc.utils
                logo.x = 8;
                logo.y = 8;
                break;
+            default:
+               logo = new this._logoFr();
+               logo.x = 8;
+               logo.y = -30;
          }
          logo.smoothing = true;
          addChild(logo);
@@ -334,88 +337,12 @@ package com.ankamagames.dofus.misc.utils
       }
       
       private function displayAchievmentProgressBar(achievmentsInfo:AchievementListMessage) : void {
-         var randomIndex:* = NaN;
-         var category:AchievementCategory = null;
-         var tempCat:AchievementCategory = null;
-         var tempId:uint = 0;
-         var font:String = null;
-         var achievementsCategories:Array = AchievementCategory.getAchievementCategories();
-         var isAParent:Boolean = false;
-         while(!isAParent)
-         {
-            randomIndex = Math.round(Math.random() * (achievementsCategories.length - 1));
-            category = achievementsCategories[randomIndex];
-            if(category.parentId > 0)
-            {
-               achievementsCategories.splice(randomIndex,1);
-            }
-            else
-            {
-               isAParent = true;
-            }
-         }
-         achievementsCategories = AchievementCategory.getAchievementCategories();
-         var finishedAchievement:int = 0;
-         var totalAchievement:int = 0;
-         for each (tempCat in achievementsCategories)
-         {
-            if((tempCat.parentId == category.id) || (tempCat.id == category.id))
-            {
-               for each (tempId in tempCat.achievementIds)
-               {
-                  if(achievmentsInfo.finishedAchievementsIds.indexOf(tempId) != -1)
-                  {
-                     finishedAchievement++;
-                  }
-                  totalAchievement++;
-               }
-            }
-         }
-         this._progressBar = new this._txProgressBar();
-         this._progressBarBackground = new this._txProgressBarBackground();
-         this._achievementLabel = new TextField();
-         this._achievementNumbersLabel = new TextField();
-         this._tipsBackgroundBitmap.y = this._tipsBackgroundBitmap.y - 18;
-         this._tipsBackgroundBitmap.height = this._tipsBackgroundBitmap.height - 200;
-         this._tipsTextField.y = this._tipsBackgroundBitmap.y + 10;
-         font = FontManager.initialized?FontManager.getInstance().getFontClassName("Tahoma"):"Tahoma";
-         this._achievementLabel.x = this._tipsBackgroundBitmap.x;
-         this._achievementLabel.defaultTextFormat = new TextFormat(font,19,16777215,null,null,null,null,null,"center");
-         this._achievementLabel.embedFonts = true;
-         this._achievementLabel.selectable = false;
-         this._achievementLabel.visible = true;
-         this._achievementLabel.multiline = false;
-         this._achievementLabel.text = I18n.getUiText("ui.achievement.achievement") + I18n.getUiText("ui.common.colon") + category.name;
-         this._achievementLabel.autoSize = TextFieldAutoSize.LEFT;
-         this._achievementNumbersLabel.defaultTextFormat = new TextFormat(font,19,16777215,null,null,null,null,null,"center");
-         this._achievementNumbersLabel.embedFonts = true;
-         this._achievementNumbersLabel.selectable = false;
-         this._achievementNumbersLabel.visible = true;
-         this._achievementNumbersLabel.multiline = false;
-         this._achievementNumbersLabel.text = finishedAchievement + " / " + totalAchievement;
-         this._achievementNumbersLabel.autoSize = TextFieldAutoSize.LEFT;
-         this._achievementNumbersLabel.x = this._tipsBackgroundBitmap.x + this._tipsBackgroundBitmap.width - this._achievementNumbersLabel.width;
-         this._progressBarBackground.height = -3;
-         this._progressBarBackground.x = this._achievementLabel.x + this._achievementLabel.width + 5;
-         this._progressBarBackground.y = this._tipsBackgroundBitmap.y + this._tipsBackgroundBitmap.height + 5;
-         this._achievementLabel.y = this._progressBarBackground.y - this._achievementLabel.height / 4;
-         this._achievementLabel.height = this._progressBarBackground.height;
-         this._achievementNumbersLabel.height = this._progressBarBackground.height;
-         this._achievementNumbersLabel.y = this._progressBarBackground.y - this._achievementNumbersLabel.height / 4;
-         this._progressBar.x = this._progressBarBackground.x;
-         this._progressBar.y = this._progressBarBackground.y;
-         this._progressBarBackground.width = this._tipsBackgroundBitmap.x + this._tipsBackgroundBitmap.width - this._achievementNumbersLabel.width - this._progressBarBackground.x - 5;
-         var colorTransfom:ColorTransform = new ColorTransform();
-         colorTransfom.color = uint(category.color);
-         this._progressBar.transform.colorTransform = colorTransfom;
-         var achievementPercent:Number = finishedAchievement / totalAchievement;
-         this._progressBar.width = achievementPercent * this._progressBarBackground.width;
-         this._progressBar.visible = true;
-         this._progressBarBackground.visible = true;
-         addChild(this._progressBarBackground);
-         addChild(this._progressBar);
-         addChild(this._achievementLabel);
-         addChild(this._achievementNumbersLabel);
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function log(text:String, level:uint) : void {

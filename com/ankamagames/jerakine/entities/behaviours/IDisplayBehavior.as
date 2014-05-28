@@ -8,7 +8,7 @@ package com.ankamagames.jerakine.entities.behaviours
       
       function getAbsoluteBounds(param1:IDisplayable) : IRectangle;
       
-      function display(param1:IDisplayable, param2:uint=0) : void;
+      function display(param1:IDisplayable, param2:uint = 0) : void;
       
       function remove(param1:IDisplayable) : void;
    }

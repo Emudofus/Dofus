@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions
          return 957;
       }
       
-      public function initGameActionAcknowledgementMessage(valid:Boolean=false, actionId:int=0) : GameActionAcknowledgementMessage {
+      public function initGameActionAcknowledgementMessage(valid:Boolean = false, actionId:int = 0) : GameActionAcknowledgementMessage {
          this.valid = valid;
          this.actionId = actionId;
          this._isInitialized = true;

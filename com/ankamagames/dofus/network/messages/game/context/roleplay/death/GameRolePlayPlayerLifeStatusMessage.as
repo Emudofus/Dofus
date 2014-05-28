@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.death
          return 5996;
       }
       
-      public function initGameRolePlayPlayerLifeStatusMessage(state:uint=0) : GameRolePlayPlayerLifeStatusMessage {
+      public function initGameRolePlayPlayerLifeStatusMessage(state:uint = 0) : GameRolePlayPlayerLifeStatusMessage {
          this.state = state;
          this._isInitialized = true;
          return this;

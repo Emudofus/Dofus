@@ -26,7 +26,6 @@ package com.ankamagames.berilia.frames
    import com.ankamagames.jerakine.replay.LogTypeEnum;
    import com.ankamagames.jerakine.replay.KeyboardShortcut;
    import flash.events.Event;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.system.AirScanner;
    
    public class ShortcutsFrame extends Object implements Frame
@@ -36,7 +35,7 @@ package com.ankamagames.berilia.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ShortcutsFrame));
+      protected static const _log:Logger;
       
       public static var shiftKey:Boolean = false;
       
@@ -94,6 +93,9 @@ package com.ankamagames.berilia.frames
                ctrlKey = kumsg.keyboardEvent.ctrlKey;
                altKey = kumsg.keyboardEvent.altKey;
                return this.handleMessage(kumsg);
+            default:
+               this._isProcessingDirectInteraction = false;
+               return false;
          }
       }
       
@@ -108,14 +110,12 @@ package com.ankamagames.berilia.frames
          {
             this._lastCtrlKey = true;
          }
-         else
+         else if(this._lastCtrlKey)
          {
-            if(this._lastCtrlKey)
-            {
-               this._lastCtrlKey = false;
-               return false;
-            }
+            this._lastCtrlKey = false;
+            return false;
          }
+         
          this._isProcessingDirectInteraction = true;
          var sShortcut:String = BindsManager.getInstance().getShortcutString(pKeyboardMessage.keyboardEvent.keyCode,this.getCharCode(pKeyboardMessage));
          if((FocusHandler.getInstance().getFocus() is TextField) && (Berilia.getInstance().useIME) && (IME.enabled))
@@ -195,17 +195,15 @@ package com.ankamagames.berilia.frames
          {
             charCode = 39;
          }
+         else if((pKeyboardMessage.keyboardEvent.shiftKey) && (pKeyboardMessage.keyboardEvent.keyCode == 54))
+         {
+            charCode = 45;
+         }
          else
          {
-            if((pKeyboardMessage.keyboardEvent.shiftKey) && (pKeyboardMessage.keyboardEvent.keyCode == 54))
-            {
-               charCode = 45;
-            }
-            else
-            {
-               charCode = pKeyboardMessage.keyboardEvent.charCode;
-            }
+            charCode = pKeyboardMessage.keyboardEvent.charCode;
          }
+         
          return charCode;
       }
       

@@ -15,7 +15,7 @@ package com.ankamagames.jerakine.handlers.messages
          super();
       }
       
-      public static function create(target:InteractiveObject, nativeEvent:Event, instance:HumanInputMessage=null) : HumanInputMessage {
+      public static function create(target:InteractiveObject, nativeEvent:Event, instance:HumanInputMessage = null) : HumanInputMessage {
          if(!instance)
          {
             instance = new HumanInputMessage();
@@ -55,18 +55,16 @@ package com.ankamagames.jerakine.handlers.messages
          {
             throw new InvalidCancelError("Can\'t cancel a bubbling message.");
          }
+         else if((this._canceled) && (!value))
+         {
+            throw new InvalidCancelError("Can\'t uncancel a canceled message.");
+         }
          else
          {
-            if((this._canceled) && (!value))
-            {
-               throw new InvalidCancelError("Can\'t uncancel a canceled message.");
-            }
-            else
-            {
-               this._canceled = value;
-               return;
-            }
+            this._canceled = value;
+            return;
          }
+         
       }
       
       public function get actions() : Array {

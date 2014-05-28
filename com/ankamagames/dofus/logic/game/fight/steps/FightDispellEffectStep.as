@@ -53,7 +53,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          }
       }
       
-      public function stepFinished(step:ISequencable, withTimout:Boolean=false) : void {
+      public function stepFinished(step:ISequencable, withTimout:Boolean = false) : void {
          this._virtualStep.removeListener(this);
          executeCallbacks();
       }

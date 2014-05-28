@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 5750;
       }
       
-      public function initMapRunningFightDetailsRequestMessage(fightId:uint=0) : MapRunningFightDetailsRequestMessage {
+      public function initMapRunningFightDetailsRequestMessage(fightId:uint = 0) : MapRunningFightDetailsRequestMessage {
          this.fightId = fightId;
          this._isInitialized = true;
          return this;

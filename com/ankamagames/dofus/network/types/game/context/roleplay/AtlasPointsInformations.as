@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
 {
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.context.MapCoordinatesExtended;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -24,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 175;
       }
       
-      public function initAtlasPointsInformations(type:uint=0, coords:Vector.<MapCoordinatesExtended>=null) : AtlasPointsInformations {
+      public function initAtlasPointsInformations(type:uint = 0, coords:Vector.<MapCoordinatesExtended> = null) : AtlasPointsInformations {
          this.type = type;
          this.coords = coords;
          return this;

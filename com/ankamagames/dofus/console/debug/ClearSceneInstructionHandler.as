@@ -19,33 +19,60 @@ package com.ankamagames.dofus.console.debug
       }
       
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var scene:DisplayObjectContainer = null;
+         var count:uint = 0;
+         var o:* = undefined;
+         switch(cmd)
+         {
+            case "clearscene":
+               if(args.length > 0)
+               {
+                  console.output("No arguments needed.");
+               }
+               scene = Dofus.getInstance().getWorldContainer();
+               while(scene.numChildren > 0)
+               {
+                  scene.removeChildAt(0);
+               }
+               console.output("Scene cleared.");
+               break;
+            case "clearentities":
+               count = 0;
+               for each(o in EntitiesManager.getInstance().entities)
+               {
+                  count++;
+               }
+               console.output("EntitiesManager : " + count + " entities");
+               Atouin.getInstance().clearEntities();
+               Atouin.getInstance().display(PlayedCharacterManager.getInstance().currentMap);
+               System.gc();
+               setTimeout(this.asynchInfo,2000,console);
+               break;
+         }
       }
       
       private function asynchInfo(console:ConsoleHandler) : void {
          var sprite:* = undefined;
          var ts:Dictionary = TiphonSprite.MEMORY_LOG;
-         for (sprite in ts)
+         for(sprite in ts)
          {
             console.output(sprite + " : " + TiphonSprite(sprite).look);
          }
       }
       
       public function getHelp(cmd:String) : String {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         switch(cmd)
+         {
+            case "clearscene":
+               return "Clear the World Scene.";
+            case "clearentities":
+               return "Clear all entities from the scene.";
+            default:
+               return "No help for command \'" + cmd + "\'";
+         }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

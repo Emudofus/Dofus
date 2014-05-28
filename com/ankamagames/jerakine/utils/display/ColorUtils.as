@@ -49,20 +49,16 @@ package com.ankamagames.jerakine.utils.display
             {
                hue = deltaB - deltaG;
             }
-            else
+            else if(g == max)
             {
-               if(g == max)
-               {
-                  hue = 1 / 3 + deltaR - deltaB;
-               }
-               else
-               {
-                  if(b == max)
-                  {
-                     hue = 2 / 3 + deltaG - deltaR;
-                  }
-               }
+               hue = 1 / 3 + deltaR - deltaB;
             }
+            else if(b == max)
+            {
+               hue = 2 / 3 + deltaG - deltaR;
+            }
+            
+            
             if(hue < 0)
             {
                hue++;

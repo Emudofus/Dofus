@@ -14,7 +14,6 @@ package com.ankamagames.dofus.logic.game.common.managers
    import com.ankamagames.dofus.network.types.game.prism.PrismFightersInformation;
    import flash.utils.getTimer;
    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.internalDatacenter.guild.SocialFightersWrapper;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.SocialHookList;
@@ -45,7 +44,7 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       private static var _self:TaxCollectorsManager;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TaxCollectorsManager));
+      protected static const _log:Logger;
       
       public static function getInstance() : TaxCollectorsManager {
          if(_self == null)
@@ -104,7 +103,7 @@ package com.ankamagames.dofus.logic.game.common.managers
       public function setTaxCollectors(tcList:Vector.<TaxCollectorInformations>) : void {
          var tc:TaxCollectorInformations = null;
          this._taxCollectors = new Dictionary();
-         for each (tc in tcList)
+         for each(tc in tcList)
          {
             this._taxCollectors[tc.uniqueId] = TaxCollectorWrapper.create(tc);
          }
@@ -114,18 +113,40 @@ package com.ankamagames.dofus.logic.game.common.managers
          /*
           * Decompilation error
           * Code may be obfuscated
-          * Error type: ExecutionException
+          * Error type: TranslateException
           */
          throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function setPrismsInFight(pList:Vector.<PrismFightersInformation>) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var allies:Array = null;
+         var enemies:Array = null;
+         var char:Object = null;
+         var fightTime:* = 0;
+         var pfi:PrismFightersInformation = null;
+         this._prismsInFight = new Dictionary();
+         for each(pfi in pList)
+         {
+            allies = new Array();
+            enemies = new Array();
+            for each(char in pfi.allyCharactersInformations)
+            {
+               allies.push(char);
+            }
+            for each(char in pfi.enemyCharactersInformations)
+            {
+               enemies.push(char);
+            }
+            fightTime = pfi.waitingForHelpInfo.timeLeftBeforeFight * 100 + getTimer();
+            if(this._prismsInFight[pfi.subAreaId])
+            {
+               this._prismsInFight[pfi.subAreaId].update(TYPE_PRISM,pfi.subAreaId,allies,enemies,fightTime,pfi.waitingForHelpInfo.waitTimeForPlacement * 100,pfi.waitingForHelpInfo.nbPositionForDefensors);
+            }
+            else
+            {
+               this._prismsInFight[pfi.subAreaId] = SocialEntityInFightWrapper.create(TYPE_PRISM,pfi.subAreaId,allies,enemies,fightTime,pfi.waitingForHelpInfo.waitTimeForPlacement * 100,pfi.waitingForHelpInfo.nbPositionForDefensors);
+            }
+         }
       }
       
       public function updateGuild(pMaxTaxCollectorsCount:int, pTaxCollectorsCount:int, pTaxCollectorLifePoints:int, pTaxCollectorDamagesBonuses:int, pTaxCollectorPods:int, pTaxCollectorProspecting:int, pTaxCollectorWisdom:int) : void {
@@ -154,7 +175,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          {
             if(taxCollector.state == TaxCollectorStateEnum.STATE_COLLECTING)
             {
-               delete this._guildTaxCollectorsInFight[[taxCollector.uniqueId]];
+               delete this._guildTaxCollectorsInFight[taxCollector.uniqueId];
             }
             else
             {
@@ -167,7 +188,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          }
          if(taxCollector.state != TaxCollectorStateEnum.STATE_WAITING_FOR_HELP)
          {
-            delete this._allTaxCollectorsInPreFight[[taxCollector.uniqueId]];
+            delete this._allTaxCollectorsInPreFight[taxCollector.uniqueId];
          }
          else
          {
@@ -182,11 +203,11 @@ package com.ankamagames.dofus.logic.game.common.managers
          var fightTime:* = 0;
          var allies:Array = new Array();
          var enemies:Array = new Array();
-         for each (char in prism.allyCharactersInformations)
+         for each(char in prism.allyCharactersInformations)
          {
             allies.push(char);
          }
-         for each (char in prism.enemyCharactersInformations)
+         for each(char in prism.enemyCharactersInformations)
          {
             enemies.push(char);
          }
@@ -194,28 +215,26 @@ package com.ankamagames.dofus.logic.game.common.managers
          this._prismsInFight[prism.subAreaId] = SocialEntityInFightWrapper.create(TYPE_PRISM,prism.subAreaId,allies,enemies,fightTime,prism.waitingForHelpInfo.waitTimeForPlacement * 100,prism.waitingForHelpInfo.nbPositionForDefensors);
       }
       
-      public function addFighter(pType:int, pFightId:int, pPlayerInfo:CharacterMinimalPlusLookInformations, ally:Boolean, pDispatchHook:Boolean=true) : void {
+      public function addFighter(pType:int, pFightId:int, pPlayerInfo:CharacterMinimalPlusLookInformations, ally:Boolean, pDispatchHook:Boolean = true) : void {
          var entity:SocialEntityInFightWrapper = null;
          var entitiesToUpdate:Array = new Array();
          if(pType == TYPE_PRISM)
          {
             entitiesToUpdate.push(this._prismsInFight[pFightId]);
          }
-         else
+         else if(pType == TYPE_TAX_COLLECTOR)
          {
-            if(pType == TYPE_TAX_COLLECTOR)
+            if(this._guildTaxCollectorsInFight[pFightId])
             {
-               if(this._guildTaxCollectorsInFight[pFightId])
-               {
-                  entitiesToUpdate.push(this._guildTaxCollectorsInFight[pFightId]);
-               }
-               if(this._allTaxCollectorsInPreFight[pFightId])
-               {
-                  entitiesToUpdate.push(this._allTaxCollectorsInPreFight[pFightId]);
-               }
+               entitiesToUpdate.push(this._guildTaxCollectorsInFight[pFightId]);
+            }
+            if(this._allTaxCollectorsInPreFight[pFightId])
+            {
+               entitiesToUpdate.push(this._allTaxCollectorsInPreFight[pFightId]);
             }
          }
-         for each (entity in entitiesToUpdate)
+         
+         for each(entity in entitiesToUpdate)
          {
             if(ally)
             {
@@ -255,7 +274,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          }
       }
       
-      public function removeFighter(pType:int, pFightId:int, pPlayerId:int, ally:Boolean, pDispatchHook:Boolean=true) : void {
+      public function removeFighter(pType:int, pFightId:int, pPlayerId:int, ally:Boolean, pDispatchHook:Boolean = true) : void {
          var index:uint = 0;
          var entity:SocialEntityInFightWrapper = null;
          var allyFighter:SocialFightersWrapper = null;
@@ -265,31 +284,29 @@ package com.ankamagames.dofus.logic.game.common.managers
          {
             entitiesToUpdate.push(this._prismsInFight[pFightId]);
          }
-         else
+         else if(pType == TYPE_TAX_COLLECTOR)
          {
-            if(pType == TYPE_TAX_COLLECTOR)
+            if(this._guildTaxCollectorsInFight[pFightId])
             {
-               if(this._guildTaxCollectorsInFight[pFightId])
-               {
-                  entitiesToUpdate.push(this._guildTaxCollectorsInFight[pFightId]);
-               }
-               if(this._allTaxCollectorsInPreFight[pFightId])
-               {
-                  entitiesToUpdate.push(this._allTaxCollectorsInPreFight[pFightId]);
-               }
+               entitiesToUpdate.push(this._guildTaxCollectorsInFight[pFightId]);
+            }
+            if(this._allTaxCollectorsInPreFight[pFightId])
+            {
+               entitiesToUpdate.push(this._allTaxCollectorsInPreFight[pFightId]);
             }
          }
+         
          if(entitiesToUpdate.length == 0)
          {
             _log.error("Error ! Fighter " + pPlayerId + " cannot be removed from unknown fight " + pFightId + ".");
             return;
          }
-         for each (entity in entitiesToUpdate)
+         for each(entity in entitiesToUpdate)
          {
             index = 0;
             if(ally)
             {
-               for each (allyFighter in entity.allyCharactersInformations)
+               for each(allyFighter in entity.allyCharactersInformations)
                {
                   if(allyFighter.playerCharactersInformations.id == pPlayerId)
                   {
@@ -301,7 +318,7 @@ package com.ankamagames.dofus.logic.game.common.managers
             }
             else
             {
-               for each (enemyFighter in entity.enemyCharactersInformations)
+               for each(enemyFighter in entity.enemyCharactersInformations)
                {
                   if(enemyFighter.playerCharactersInformations.id == pPlayerId)
                   {

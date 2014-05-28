@@ -28,7 +28,7 @@ package com.ankamagames.jerakine.data
          }
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(I18nFileAccessor));
+      private static const _log:Logger;
       
       private static var _self:I18nFileAccessor;
       
@@ -59,76 +59,12 @@ package com.ankamagames.jerakine.data
       private var _directBuffer:ByteArray;
       
       public function init(fileUri:Uri) : void {
-         var key:* = 0;
-         var pointer:* = 0;
-         var diacriticalText:* = false;
-         var position:uint = 0;
-         var textKey:String = null;
-         var nativeFile:File = fileUri.toFile();
-         if((!nativeFile) || (!nativeFile.exists))
-         {
-            throw new Error("I18n file not readable.");
-         }
-         else
-         {
-            this._stream = new FileStream();
-            this._stream.endian = Endian.BIG_ENDIAN;
-            this._stream.open(nativeFile,FileMode.READ);
-            this._indexes = new Dictionary();
-            this._unDiacriticalIndex = new Dictionary();
-            this._textIndexes = new Dictionary();
-            this._textIndexesOverride = new Dictionary();
-            this._textSortIndex = new Dictionary();
-            this._textCount = 0;
-            indexesPointer = this._stream.readInt();
-            keyCount = 0;
-            this._stream.position = indexesPointer;
-            indexesLength = this._stream.readInt();
-            i = 0;
-            while(i < indexesLength)
-            {
-               key = this._stream.readInt();
-               diacriticalText = this._stream.readBoolean();
-               pointer = this._stream.readInt();
-               this._indexes[key] = pointer;
-               keyCount++;
-               if(diacriticalText)
-               {
-                  keyCount++;
-                  i = i + 4;
-                  this._unDiacriticalIndex[key] = this._stream.readInt();
-               }
-               else
-               {
-                  this._unDiacriticalIndex[key] = pointer;
-               }
-               i = i + 9;
-            }
-            indexesLength = this._stream.readInt();
-            while(indexesLength > 0)
-            {
-               position = this._stream.position;
-               textKey = this._stream.readUTF();
-               pointer = this._stream.readInt();
-               this._textCount++;
-               this._textIndexes[textKey] = pointer;
-               indexesLength = indexesLength - (this._stream.position - position);
-            }
-            indexesLength = this._stream.readInt();
-            i = 0;
-            while(indexesLength > 0)
-            {
-               position = this._stream.position;
-               this._textSortIndex[this._stream.readInt()] = ++i;
-               indexesLength = indexesLength - (this._stream.position - position);
-            }
-            for (textKey in this._textIndexes)
-            {
-               LangManager.getInstance().setEntry(textKey,this.getNamedText(textKey));
-            }
-            _log.debug("Initialized !");
-            return;
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function overrideId(oldId:uint, newId:uint) : void {
@@ -164,7 +100,7 @@ package com.ankamagames.jerakine.data
             try
             {
                content = new XML(rawContent);
-               for each (override in content..override)
+               for each(override in content..override)
                {
                   if((override.@type.toString() == "") || (override.@type.toString() == "ui"))
                   {

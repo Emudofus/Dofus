@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.types.connection
          return 25;
       }
       
-      public function initGameServerInformations(id:uint=0, status:uint=1, completion:uint=0, isSelectable:Boolean=false, charactersCount:uint=0, date:Number=0) : GameServerInformations {
+      public function initGameServerInformations(id:uint = 0, status:uint = 1, completion:uint = 0, isSelectable:Boolean = false, charactersCount:uint = 0, date:Number = 0) : GameServerInformations {
          this.id = id;
          this.status = status;
          this.completion = completion;

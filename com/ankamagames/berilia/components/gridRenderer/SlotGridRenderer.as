@@ -123,7 +123,7 @@ package com.ankamagames.berilia.components.gridRenderer
          this._grid = g;
       }
       
-      public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0) : DisplayObject {
+      public function render(data:*, index:uint, selected:Boolean, subIndex:uint = 0) : DisplayObject {
          var slotData:* = SecureCenter.unsecure(data);
          var slot:Slot = new Slot();
          slot.name = this._grid.getUi().name + "::" + this._grid.name + "::item" + index;
@@ -172,7 +172,7 @@ package com.ankamagames.berilia.components.gridRenderer
          }
          var dp:Array = new Array();
          var addData:Boolean = true;
-         for each (data in this._grid.dataProvider)
+         for each(data in this._grid.dataProvider)
          {
             if(data != target.data)
             {
@@ -190,7 +190,7 @@ package com.ankamagames.berilia.components.gridRenderer
          return true;
       }
       
-      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint = 0) : void {
          var slot:Slot = null;
          if(dispObj is Slot)
          {

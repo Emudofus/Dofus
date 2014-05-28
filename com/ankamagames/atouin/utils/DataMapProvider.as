@@ -26,7 +26,7 @@ package com.ankamagames.atouin.utils
       
       private static const TOLERANCE_ELEVATION:int = 11;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DataMapProvider));
+      protected static const _log:Logger;
       
       private static var _self:DataMapProvider;
       
@@ -57,7 +57,7 @@ package com.ankamagames.atouin.utils
       
       private var _specialEffects:Dictionary;
       
-      public function pointLos(x:int, y:int, bAllowTroughEntity:Boolean=true) : Boolean {
+      public function pointLos(x:int, y:int, bAllowTroughEntity:Boolean = true) : Boolean {
          var cellEntities:Array = null;
          var o:IObstacle = null;
          var cellId:uint = MapPoint.fromCoords(x,y).cellId;
@@ -71,7 +71,7 @@ package com.ankamagames.atouin.utils
             cellEntities = EntitiesManager.getInstance().getEntitiesOnCell(cellId,IObstacle);
             if(cellEntities.length)
             {
-               for each (o in cellEntities)
+               for each(o in cellEntities)
                {
                   if(!IObstacle(o).canSeeThrough())
                   {
@@ -99,7 +99,7 @@ package com.ankamagames.atouin.utils
          return false;
       }
       
-      public function pointMov(x:int, y:int, bAllowTroughEntity:Boolean=true, previousCellId:int=-1) : Boolean {
+      public function pointMov(x:int, y:int, bAllowTroughEntity:Boolean = true, previousCellId:int = -1) : Boolean {
          var useNewSystem:* = false;
          var cellId:uint = 0;
          var cellData:CellData = null;
@@ -132,7 +132,7 @@ package com.ankamagames.atouin.utils
                cellEntities = EntitiesManager.getInstance().getEntitiesOnCell(cellId,IObstacle);
                if(cellEntities.length)
                {
-                  for each (o in cellEntities)
+                  for each(o in cellEntities)
                   {
                      if(!IObstacle(o).canSeeThrough())
                      {
@@ -149,13 +149,13 @@ package com.ankamagames.atouin.utils
          return mov;
       }
       
-      public function pointCanStop(x:int, y:int, bAllowTroughEntity:Boolean=true) : Boolean {
+      public function pointCanStop(x:int, y:int, bAllowTroughEntity:Boolean = true) : Boolean {
          var cellId:uint = MapPoint.fromCoords(x,y).cellId;
          var cellData:CellData = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId]);
          return (this.pointMov(x,y,bAllowTroughEntity)) && ((this.isInFight) || (!cellData.nonWalkableDuringRP));
       }
       
-      public function pointWeight(x:int, y:int, bAllowTroughEntity:Boolean=true) : Number {
+      public function pointWeight(x:int, y:int, bAllowTroughEntity:Boolean = true) : Number {
          var entity:IEntity = null;
          var weight:Number = 1;
          var speed:int = this.getCellSpeed(MapPoint.fromCoords(x,y).cellId);
@@ -231,7 +231,7 @@ package com.ankamagames.atouin.utils
          var cellEntities:Array = EntitiesManager.getInstance().getEntitiesOnCell(MapPoint.fromCoords(x,y).cellId,IObstacle);
          if(cellEntities.length)
          {
-            for each (o in cellEntities)
+            for each(o in cellEntities)
             {
                if(!IObstacle(o).canSeeThrough())
                {

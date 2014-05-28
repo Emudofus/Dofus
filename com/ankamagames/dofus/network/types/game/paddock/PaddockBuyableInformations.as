@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.paddock
          return 130;
       }
       
-      public function initPaddockBuyableInformations(maxOutdoorMount:uint=0, maxItems:uint=0, price:uint=0, locked:Boolean=false) : PaddockBuyableInformations {
+      public function initPaddockBuyableInformations(maxOutdoorMount:uint = 0, maxItems:uint = 0, price:uint = 0, locked:Boolean = false) : PaddockBuyableInformations {
          super.initPaddockInformations(maxOutdoorMount,maxItems);
          this.price = price;
          this.locked = locked;

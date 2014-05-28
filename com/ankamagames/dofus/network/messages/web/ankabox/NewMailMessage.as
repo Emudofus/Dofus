@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.web.ankabox
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -28,7 +27,7 @@ package com.ankamagames.dofus.network.messages.web.ankabox
          return 6292;
       }
       
-      public function initNewMailMessage(unread:uint=0, total:uint=0, sendersAccountId:Vector.<uint>=null) : NewMailMessage {
+      public function initNewMailMessage(unread:uint = 0, total:uint = 0, sendersAccountId:Vector.<uint> = null) : NewMailMessage {
          super.initMailStatusMessage(unread,total);
          this.sendersAccountId = sendersAccountId;
          this._isInitialized = true;

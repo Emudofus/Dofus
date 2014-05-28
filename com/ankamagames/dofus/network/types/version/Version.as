@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.types.version
          return 11;
       }
       
-      public function initVersion(major:uint=0, minor:uint=0, release:uint=0, revision:uint=0, patch:uint=0, buildType:uint=0) : Version {
+      public function initVersion(major:uint = 0, minor:uint = 0, release:uint = 0, revision:uint = 0, patch:uint = 0, buildType:uint = 0) : Version {
          this.major = major;
          this.minor = minor;
          this.release = release;

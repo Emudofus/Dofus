@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3029;
       }
       
-      public function initObjectModifiedMessage(object:ObjectItem=null) : ObjectModifiedMessage {
+      public function initObjectModifiedMessage(object:ObjectItem = null) : ObjectModifiedMessage {
          this.object = object;
          this._isInitialized = true;
          return this;

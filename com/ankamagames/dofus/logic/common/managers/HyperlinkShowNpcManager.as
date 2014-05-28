@@ -17,7 +17,7 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
-      public static function showNpc(npcId:int, loop:int=0) : MovieClip {
+      public static function showNpc(npcId:int, loop:int = 0) : MovieClip {
          var list:Dictionary = null;
          var npc:Object = null;
          var graphicCell:GraphicCell = null;
@@ -26,7 +26,7 @@ package com.ankamagames.dofus.logic.common.managers
          if(abstractEntitiesFrame)
          {
             list = abstractEntitiesFrame.getEntitiesDictionnary();
-            for each (npc in list)
+            for each(npc in list)
             {
                if((npc is GameRolePlayNpcInformations) && ((npc.npcId == npcId) || (npcId == -1)))
                {

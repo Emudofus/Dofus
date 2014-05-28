@@ -5,7 +5,6 @@ package com.ankamagames.tiphon.engine
    import flash.events.TimerEvent;
    import com.ankamagames.tiphon.types.ScriptedAnimation;
    import flash.events.Event;
-   import __AS3__.vec.*;
    import flash.utils.getTimer;
    import flash.display.MovieClip;
    import com.ankamagames.jerakine.utils.display.FpsControler;
@@ -21,15 +20,15 @@ package com.ankamagames.tiphon.engine
          super();
       }
       
-      private static var _tiphonGarbageCollectorTimer:Timer = new Timer(60000);
+      private static var _tiphonGarbageCollectorTimer:Timer;
       
-      private static var _oldScriptedAnimation:Dictionary = new Dictionary(true);
+      private static var _oldScriptedAnimation:Dictionary;
       
       public static function init() : void {
          _tiphonGarbageCollectorTimer.addEventListener(TimerEvent.TIMER,onTiphonGarbageCollector);
       }
       
-      public static function addOldScriptedAnimation(scriptedAnimation:ScriptedAnimation, destroyNow:Boolean=false) : void {
+      public static function addOldScriptedAnimation(scriptedAnimation:ScriptedAnimation, destroyNow:Boolean = false) : void {
       }
       
       private static function onTiphonGarbageCollector(e:Event) : void {
@@ -39,7 +38,7 @@ package com.ankamagames.tiphon.engine
          var scriptedAnimation:ScriptedAnimation = null;
          var destroyedScriptedAnimation:Vector.<ScriptedAnimation> = new Vector.<ScriptedAnimation>();
          var time:int = getTimer();
-         for (object in _oldScriptedAnimation)
+         for(object in _oldScriptedAnimation)
          {
             scriptedAnimation = object as ScriptedAnimation;
             if(time - _oldScriptedAnimation[scriptedAnimation] > 300000)
@@ -52,7 +51,7 @@ package com.ankamagames.tiphon.engine
          num = destroyedScriptedAnimation.length;
          while(++i < num)
          {
-            delete _oldScriptedAnimation[[destroyedScriptedAnimation[i]]];
+            delete _oldScriptedAnimation[destroyedScriptedAnimation[i]];
          }
       }
       
@@ -103,27 +102,21 @@ package com.ankamagames.tiphon.engine
                {
                   destroyScriptedAnimation(clip as ScriptedAnimation);
                }
-               else
+               else if(child is MovieClip)
                {
-                  if(child is MovieClip)
-                  {
-                     eraseMovieClip(child as MovieClip);
-                  }
-                  else
-                  {
-                     if(child is DisplayObjectContainer)
-                     {
-                        eraseFrame(child as DisplayObjectContainer);
-                     }
-                     else
-                     {
-                        if(child is Shape)
-                        {
-                           (child as Shape).graphics.clear();
-                        }
-                     }
-                  }
+                  eraseMovieClip(child as MovieClip);
                }
+               else if(child is DisplayObjectContainer)
+               {
+                  eraseFrame(child as DisplayObjectContainer);
+               }
+               else if(child is Shape)
+               {
+                  (child as Shape).graphics.clear();
+               }
+               
+               
+               
             }
          }
       }

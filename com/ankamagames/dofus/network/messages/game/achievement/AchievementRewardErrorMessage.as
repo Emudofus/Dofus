@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6375;
       }
       
-      public function initAchievementRewardErrorMessage(achievementId:int=0) : AchievementRewardErrorMessage {
+      public function initAchievementRewardErrorMessage(achievementId:int = 0) : AchievementRewardErrorMessage {
          this.achievementId = achievementId;
          this._isInitialized = true;
          return this;

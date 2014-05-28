@@ -4,7 +4,6 @@ package com.ankamagames.jerakine.data
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import flash.utils.IDataInput;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.enum.GameDataTypeEnum;
    import flash.utils.getDefinitionByName;
    
@@ -16,9 +15,9 @@ package com.ankamagames.jerakine.data
          this.name = fieldName;
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(GameDataField));
+      private static const _log:Logger;
       
-      private static const NULL_IDENTIFIER:int = -1431655766;
+      private static const NULL_IDENTIFIER:int = -1.431655766E9;
       
       public var name:String;
       
@@ -57,10 +56,16 @@ package com.ankamagames.jerakine.data
                this._innerTypeNames.push(stream.readUTF());
                this._innerReadMethods.unshift(this.getReadMethod(stream.readInt(),stream));
                return this.readVector;
+            default:
+               if(type > 0)
+               {
+                  return this.readObject;
+               }
+               throw new Error("Unknown type \'" + type + "\'.");
          }
       }
       
-      private function readVector(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+      private function readVector(moduleName:String, stream:IDataInput, innerIndex:uint = 0) : * {
          var len:uint = stream.readInt();
          var vectorTypeName:String = this._innerTypeNames[innerIndex];
          var content:* = new getDefinitionByName(vectorTypeName)(len,true);
@@ -73,7 +78,7 @@ package com.ankamagames.jerakine.data
          return content;
       }
       
-      private function readObject(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+      private function readObject(moduleName:String, stream:IDataInput, innerIndex:uint = 0) : * {
          var classIdentifier:int = stream.readInt();
          if(classIdentifier == NULL_IDENTIFIER)
          {
@@ -83,15 +88,15 @@ package com.ankamagames.jerakine.data
          return classDefinition.read(moduleName,stream);
       }
       
-      private function readInteger(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+      private function readInteger(moduleName:String, stream:IDataInput, innerIndex:uint = 0) : * {
          return stream.readInt();
       }
       
-      private function readBoolean(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+      private function readBoolean(moduleName:String, stream:IDataInput, innerIndex:uint = 0) : * {
          return stream.readBoolean();
       }
       
-      private function readString(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+      private function readString(moduleName:String, stream:IDataInput, innerIndex:uint = 0) : * {
          var result:* = stream.readUTF();
          if(result == "null")
          {
@@ -100,15 +105,15 @@ package com.ankamagames.jerakine.data
          return result;
       }
       
-      private function readNumber(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+      private function readNumber(moduleName:String, stream:IDataInput, innerIndex:uint = 0) : * {
          return stream.readDouble();
       }
       
-      private function readI18n(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+      private function readI18n(moduleName:String, stream:IDataInput, innerIndex:uint = 0) : * {
          return stream.readInt();
       }
       
-      private function readUnsignedInteger(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+      private function readUnsignedInteger(moduleName:String, stream:IDataInput, innerIndex:uint = 0) : * {
          return stream.readUnsignedInt();
       }
    }

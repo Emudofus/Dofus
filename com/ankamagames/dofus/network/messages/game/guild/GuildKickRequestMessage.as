@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5887;
       }
       
-      public function initGuildKickRequestMessage(kickedId:uint=0) : GuildKickRequestMessage {
+      public function initGuildKickRequestMessage(kickedId:uint = 0) : GuildKickRequestMessage {
          this.kickedId = kickedId;
          this._isInitialized = true;
          return this;

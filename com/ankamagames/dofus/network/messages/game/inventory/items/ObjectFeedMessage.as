@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6290;
       }
       
-      public function initObjectFeedMessage(objectUID:uint=0, foodUID:uint=0, foodQuantity:uint=0) : ObjectFeedMessage {
+      public function initObjectFeedMessage(objectUID:uint = 0, foodUID:uint = 0, foodQuantity:uint = 0) : ObjectFeedMessage {
          this.objectUID = objectUID;
          this.foodUID = foodUID;
          this.foodQuantity = foodQuantity;

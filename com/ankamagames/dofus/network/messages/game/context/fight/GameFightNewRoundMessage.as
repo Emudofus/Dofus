@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 6239;
       }
       
-      public function initGameFightNewRoundMessage(roundNumber:uint=0) : GameFightNewRoundMessage {
+      public function initGameFightNewRoundMessage(roundNumber:uint = 0) : GameFightNewRoundMessage {
          this.roundNumber = roundNumber;
          this._isInitialized = true;
          return this;

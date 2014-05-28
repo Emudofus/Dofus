@@ -17,7 +17,7 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
-      private static var _questList:Array = new Array();
+      private static var _questList:Array;
       
       private static var _questId:uint = 0;
       
@@ -46,7 +46,7 @@ package com.ankamagames.dofus.logic.common.managers
          return "[null]";
       }
       
-      public static function rollOver(pX:int, pY:int, objectGID:uint, questId:uint=0) : void {
+      public static function rollOver(pX:int, pY:int, objectGID:uint, questId:uint = 0) : void {
          var target:Rectangle = new Rectangle(pX,pY,10,10);
          var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.quest"));
          TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);

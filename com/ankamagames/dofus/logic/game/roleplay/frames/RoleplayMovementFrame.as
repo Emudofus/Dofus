@@ -48,7 +48,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RoleplayMovementFrame));
+      protected static const _log:Logger;
       
       private static const CONSECUTIVE_MOVEMENT_DELAY:uint = 250;
       
@@ -111,11 +111,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                }
                rpEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
                tiphonSpr = movedEntity as TiphonSprite;
-               if(((tiphonSpr) && (!rpEntitiesFrame.isCreatureMode)) && (tiphonSpr.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0)) && (!tiphonSpr.getSubEntityBehavior(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER)))
+               if((tiphonSpr && !rpEntitiesFrame.isCreatureMode) && (tiphonSpr.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0)) && (!tiphonSpr.getSubEntityBehavior(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER)))
                {
                   tiphonSpr.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,new RiderBehavior());
                }
-               delete rpEntitiesFrame.lastStaticAnimations[[gmmmsg.actorId]];
+               delete rpEntitiesFrame.lastStaticAnimations[gmmmsg.actorId];
                TooltipManager.hide("smiley" + gmmmsg.actorId);
                TooltipManager.hide("msg" + gmmmsg.actorId);
                if(movedEntity.id == PlayedCharacterManager.getInstance().id)
@@ -165,6 +165,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         case this._followingMessage is PlayerFightRequestAction:
                            Kernel.getWorker().process(this._followingMessage);
                            break;
+                        default:
+                           ConnectionsHandler.getConnection().send(this._followingMessage);
                      }
                      this._followingMessage = null;
                   }
@@ -193,6 +195,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   _log.warn("Received a teleportation request for a non-existing entity. Aborting.");
                }
                return true;
+            default:
+               return false;
          }
       }
       
@@ -285,7 +289,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       function activateSkill(skillInstanceId:uint, ie:InteractiveElement) : void {
          var iurmsg:InteractiveUseRequestMessage = null;
          var rpInteractivesFrame:RoleplayInteractivesFrame = Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame;
-         if(((rpInteractivesFrame) && (!(rpInteractivesFrame.currentRequestedElementId == ie.elementId))) && (!rpInteractivesFrame.usingInteractive) && (!rpInteractivesFrame.isElementChangingState(ie.elementId)))
+         if((rpInteractivesFrame && !(rpInteractivesFrame.currentRequestedElementId == ie.elementId)) && (!rpInteractivesFrame.usingInteractive) && (!rpInteractivesFrame.isElementChangingState(ie.elementId)))
          {
             rpInteractivesFrame.currentRequestedElementId = ie.elementId;
             iurmsg = new InteractiveUseRequestMessage();

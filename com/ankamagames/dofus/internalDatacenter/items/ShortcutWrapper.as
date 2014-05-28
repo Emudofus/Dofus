@@ -20,8 +20,6 @@ package com.ankamagames.dofus.internalDatacenter.items
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    
-   use namespace flash_proxy;
-   
    public class ShortcutWrapper extends Proxy implements ISlotData, IDataCenter
    {
       
@@ -29,7 +27,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(ShortcutWrapper));
+      private static const _log:Logger;
       
       private static const TYPE_ITEM_WRAPPER:int = 0;
       
@@ -47,7 +45,7 @@ package com.ankamagames.dofus.internalDatacenter.items
       
       private static var _properties:Array;
       
-      public static function create(slot:uint, id:uint, type:uint=0, gid:uint=0) : ShortcutWrapper {
+      public static function create(slot:uint, id:uint, type:uint = 0, gid:uint = 0) : ShortcutWrapper {
          var itemWrapper:ItemWrapper = null;
          var emoteWrapper:EmoteWrapper = null;
          var rpEmoteFrame:EmoticonFrame = null;
@@ -291,84 +289,78 @@ package com.ankamagames.dofus.internalDatacenter.items
                }
             }
          }
-         else
+         else if(this.type == TYPE_PRESET_WRAPPER)
          {
-            if(this.type == TYPE_PRESET_WRAPPER)
+            presetWrapper = InventoryManager.getInstance().presets[this.id];
+            if(!presetWrapper)
             {
-               presetWrapper = InventoryManager.getInstance().presets[this.id];
-               if(!presetWrapper)
-               {
-                  _log.debug("Null preset " + this.id + " - " + this.gid);
-               }
-               else
-               {
-                  try
-                  {
-                     return presetWrapper[name];
-                  }
-                  catch(e:Error)
-                  {
-                     if(e.getStackTrace())
-                     {
-                        _log.error("Preset " + id + " " + name + " : " + e.getStackTrace());
-                     }
-                     return "Error_on_preset_" + name;
-                  }
-               }
+               _log.debug("Null preset " + this.id + " - " + this.gid);
             }
             else
             {
-               if(this.type == TYPE_EMOTE_WRAPPER)
+               try
                {
-                  emoteWrapper = EmoteWrapper.getEmoteWrapperById(this.id);
-                  if(!emoteWrapper)
-                  {
-                     _log.debug("Null emote " + this.id);
-                  }
-                  else
-                  {
-                     try
-                     {
-                        return emoteWrapper[name];
-                     }
-                     catch(e:Error)
-                     {
-                        if(e.getStackTrace())
-                        {
-                           _log.error("Emote " + id + " " + name + " : " + e.getStackTrace());
-                        }
-                        return "Error_on_emote_" + name;
-                     }
-                  }
+                  return presetWrapper[name];
                }
-               else
+               catch(e:Error)
                {
-                  if(this.type == TYPE_SPELL_WRAPPER)
+                  if(e.getStackTrace())
                   {
-                     spellWrapper = SpellWrapper.getFirstSpellWrapperById(this.id,this.getCharaId());
-                     if(!spellWrapper)
-                     {
-                        _log.debug("Null preset " + this.id + " - " + this.gid);
-                     }
-                     else
-                     {
-                        try
-                        {
-                           return presetWrapper[name];
-                        }
-                        catch(e:Error)
-                        {
-                           if(e.getStackTrace())
-                           {
-                              _log.error("Preset " + id + " " + name + " : " + e.getStackTrace());
-                           }
-                           return "Error_on_preset_" + name;
-                        }
-                     }
+                     _log.error("Preset " + id + " " + name + " : " + e.getStackTrace());
                   }
+                  return "Error_on_preset_" + name;
                }
             }
          }
+         else if(this.type == TYPE_EMOTE_WRAPPER)
+         {
+            emoteWrapper = EmoteWrapper.getEmoteWrapperById(this.id);
+            if(!emoteWrapper)
+            {
+               _log.debug("Null emote " + this.id);
+            }
+            else
+            {
+               try
+               {
+                  return emoteWrapper[name];
+               }
+               catch(e:Error)
+               {
+                  if(e.getStackTrace())
+                  {
+                     _log.error("Emote " + id + " " + name + " : " + e.getStackTrace());
+                  }
+                  return "Error_on_emote_" + name;
+               }
+            }
+         }
+         else if(this.type == TYPE_SPELL_WRAPPER)
+         {
+            spellWrapper = SpellWrapper.getFirstSpellWrapperById(this.id,this.getCharaId());
+            if(!spellWrapper)
+            {
+               _log.debug("Null preset " + this.id + " - " + this.gid);
+            }
+            else
+            {
+               try
+               {
+                  return presetWrapper[name];
+               }
+               catch(e:Error)
+               {
+                  if(e.getStackTrace())
+                  {
+                     _log.error("Preset " + id + " " + name + " : " + e.getStackTrace());
+                  }
+                  return "Error_on_preset_" + name;
+               }
+            }
+         }
+         
+         
+         
          return "Error on getProperty " + name;
       }
       
@@ -398,7 +390,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          return false;
       }
       
-      public function update(slot:uint, id:uint, type:uint=0, gid:uint=0) : void {
+      public function update(slot:uint, id:uint, type:uint = 0, gid:uint = 0) : void {
          var itemWrapper:ItemWrapper = null;
          var rpEmoteFrame:EmoticonFrame = null;
          if((!(this.id == id)) || (!(this.type == type)))
@@ -443,7 +435,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          }
       }
       
-      public function getIconUri(pngMode:Boolean=true) : Uri {
+      public function getIconUri(pngMode:Boolean = true) : Uri {
          var itemWrapper:ItemWrapper = null;
          var fakeItemWrapper:ItemWrapper = null;
          var presetWrapper:PresetWrapper = null;
@@ -490,70 +482,62 @@ package com.ankamagames.dofus.internalDatacenter.items
                }
             }
          }
-         else
+         else if(this.type == TYPE_PRESET_WRAPPER)
          {
-            if(this.type == TYPE_PRESET_WRAPPER)
+            presetWrapper = InventoryManager.getInstance().presets[this.id];
+            if(presetWrapper)
             {
-               presetWrapper = InventoryManager.getInstance().presets[this.id];
-               if(presetWrapper)
-               {
-                  this._uri = presetWrapper.iconUri;
-                  this._uriFullsize = presetWrapper.fullSizeIconUri;
-               }
-               else
-               {
-                  this._uri = this._uriFullsize = null;
-               }
+               this._uri = presetWrapper.iconUri;
+               this._uriFullsize = presetWrapper.fullSizeIconUri;
             }
             else
             {
-               if(this.type == TYPE_SPELL_WRAPPER)
-               {
-                  spellWrapper = SpellWrapper.getFirstSpellWrapperById(this.id,this.getCharaId());
-                  if(spellWrapper)
-                  {
-                     this._uri = spellWrapper.iconUri;
-                     this._uriFullsize = spellWrapper.fullSizeIconUri;
-                  }
-                  else
-                  {
-                     this._uri = this._uriFullsize = null;
-                  }
-               }
-               else
-               {
-                  if(this.type == TYPE_SMILEY_WRAPPER)
-                  {
-                     smileyWrapper = SmileyWrapper.getSmileyWrapperById(this.id);
-                     if(smileyWrapper)
-                     {
-                        this._uri = smileyWrapper.iconUri;
-                        this._uriFullsize = smileyWrapper.fullSizeIconUri;
-                     }
-                     else
-                     {
-                        this._uri = this._uriFullsize = null;
-                     }
-                  }
-                  else
-                  {
-                     if(this.type == TYPE_EMOTE_WRAPPER)
-                     {
-                        emoteWrapper = EmoteWrapper.getEmoteWrapperById(this.id);
-                        if(emoteWrapper)
-                        {
-                           this._uri = emoteWrapper.iconUri;
-                           this._uriFullsize = emoteWrapper.fullSizeIconUri;
-                        }
-                        else
-                        {
-                           this._uri = this._uriFullsize = null;
-                        }
-                     }
-                  }
-               }
+               this._uri = this._uriFullsize = null;
             }
          }
+         else if(this.type == TYPE_SPELL_WRAPPER)
+         {
+            spellWrapper = SpellWrapper.getFirstSpellWrapperById(this.id,this.getCharaId());
+            if(spellWrapper)
+            {
+               this._uri = spellWrapper.iconUri;
+               this._uriFullsize = spellWrapper.fullSizeIconUri;
+            }
+            else
+            {
+               this._uri = this._uriFullsize = null;
+            }
+         }
+         else if(this.type == TYPE_SMILEY_WRAPPER)
+         {
+            smileyWrapper = SmileyWrapper.getSmileyWrapperById(this.id);
+            if(smileyWrapper)
+            {
+               this._uri = smileyWrapper.iconUri;
+               this._uriFullsize = smileyWrapper.fullSizeIconUri;
+            }
+            else
+            {
+               this._uri = this._uriFullsize = null;
+            }
+         }
+         else if(this.type == TYPE_EMOTE_WRAPPER)
+         {
+            emoteWrapper = EmoteWrapper.getEmoteWrapperById(this.id);
+            if(emoteWrapper)
+            {
+               this._uri = emoteWrapper.iconUri;
+               this._uriFullsize = emoteWrapper.fullSizeIconUri;
+            }
+            else
+            {
+               this._uri = this._uriFullsize = null;
+            }
+         }
+         
+         
+         
+         
          if((pngMode) && (this._uri))
          {
             return this._uri;
@@ -582,7 +566,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          if(this.type == TYPE_SPELL_WRAPPER)
          {
             spellWrappers = SpellWrapper.getSpellWrappersById(this.id,this.getCharaId());
-            for each (spellWrapper in spellWrappers)
+            for each(spellWrapper in spellWrappers)
             {
                if(spellWrapper)
                {
@@ -591,18 +575,16 @@ package com.ankamagames.dofus.internalDatacenter.items
                }
             }
          }
-         else
+         else if(this.type == TYPE_EMOTE_WRAPPER)
          {
-            if(this.type == TYPE_EMOTE_WRAPPER)
+            emoteWrapper = EmoteWrapper.getEmoteWrapperById(this.id);
+            if(emoteWrapper)
             {
-               emoteWrapper = EmoteWrapper.getEmoteWrapperById(this.id);
-               if(emoteWrapper)
-               {
-                  emoteWrapper.addHolder(h);
-                  emoteWrapper.setLinkedSlotData(this);
-               }
+               emoteWrapper.addHolder(h);
+               emoteWrapper.setLinkedSlotData(this);
             }
          }
+         
       }
       
       public function removeHolder(h:ISlotDataHolder) : void {

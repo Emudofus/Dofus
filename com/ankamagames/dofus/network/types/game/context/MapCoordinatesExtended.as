@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.context
          return 176;
       }
       
-      public function initMapCoordinatesExtended(worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0) : MapCoordinatesExtended {
+      public function initMapCoordinatesExtended(worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:uint = 0) : MapCoordinatesExtended {
          super.initMapCoordinatesAndId(worldX,worldY,mapId);
          this.subAreaId = subAreaId;
          return this;

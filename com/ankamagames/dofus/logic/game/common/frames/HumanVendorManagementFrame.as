@@ -38,7 +38,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          this._shopStock = new Array();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(HumanVendorManagementFrame));
+      protected static const _log:Logger;
       
       private var _success:Boolean = false;
       
@@ -99,7 +99,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
                playerName = (player as GameRolePlayMerchantInformations).name;
                this._shopStock = new Array();
-               for each (objectToSell in esohvmsg.objectsInfos)
+               for each(objectToSell in esohvmsg.objectsInfos)
                {
                   iwrapper = ItemWrapper.create(0,objectToSell.objectUID,objectToSell.objectGID,objectToSell.quantity,objectToSell.effects);
                   this._shopStock.push(
@@ -114,7 +114,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                esostmsg = msg as ExchangeShopStockStartedMessage;
                PlayedCharacterManager.getInstance().isInExchange = true;
                this._shopStock = new Array();
-               for each (object in esostmsg.objectsInfos)
+               for each(object in esostmsg.objectsInfos)
                {
                   iw = ItemWrapper.create(0,object.objectUID,object.objectGID,object.quantity,object.effects,false);
                   cat = Item.getItemById(iw.objectGID).category;
@@ -192,7 +192,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is ExchangeShopStockMultiMovementUpdatedMessage:
                essmmumsg = msg as ExchangeShopStockMultiMovementUpdatedMessage;
-               for each (objectInfo in essmmumsg.objectInfoList)
+               for each(objectInfo in essmmumsg.objectInfoList)
                {
                   itemWrapper = ItemWrapper.create(0,objectInfo.objectUID,essmamsg.objectInfo.objectGID,objectInfo.quantity,objectInfo.effects,false);
                   newItem2 = true;
@@ -227,7 +227,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is ExchangeShopStockMultiMovementRemovedMessage:
                essmmrmsg = msg as ExchangeShopStockMultiMovementRemovedMessage;
                loop6:
-               for each (objectId in essmmrmsg.objectIdList)
+               for each(objectId in essmmrmsg.objectIdList)
                {
                   i = 0;
                   while(i < this._shopStock.length)
@@ -254,6 +254,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                   Kernel.getWorker().removeFrame(this);
                }
                return true;
+            default:
+               return false;
          }
       }
       

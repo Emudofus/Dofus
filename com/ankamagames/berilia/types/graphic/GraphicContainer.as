@@ -52,9 +52,9 @@ package com.ankamagames.berilia.types.graphic
          doubleClickEnabled = true;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GraphicContainer));
+      protected static const _log:Logger;
       
       protected var __width:uint;
       
@@ -410,14 +410,12 @@ package com.ankamagames.berilia.types.graphic
                this._shadow = new DropShadowFilter(3,90,nColor,1,10,10,0.61,BitmapFilterQuality.HIGH);
                filters = [this._shadow];
             }
-            else
+            else if((nColor == -1) && (this._shadow))
             {
-               if((nColor == -1) && (this._shadow))
-               {
-                  this._shadow = null;
-                  filters = [];
-               }
+               this._shadow = null;
+               filters = [];
             }
+            
          }
       }
       
@@ -429,7 +427,7 @@ package com.ankamagames.berilia.types.graphic
          return this.getTopParent(this);
       }
       
-      public function setAdvancedGlow(nColor:uint, nAlpha:Number=1, nBlurX:Number=6.0, nBlurY:Number=6.0, nStrength:Number=2) : void {
+      public function setAdvancedGlow(nColor:uint, nAlpha:Number = 1, nBlurX:Number = 6.0, nBlurY:Number = 6.0, nStrength:Number = 2) : void {
       }
       
       public function clearFilters() : void {
@@ -519,13 +517,11 @@ package com.ankamagames.berilia.types.graphic
             {
                transform.colorTransform = new ColorTransform(0.6,0.6,0.6,1);
             }
-            else
+            else if(!this.disabled)
             {
-               if(!this.disabled)
-               {
-                  transform.colorTransform = new ColorTransform(1,1,1,1);
-               }
+               transform.colorTransform = new ColorTransform(1,1,1,1);
             }
+            
          }
          this._bGreyedOut = bool;
       }
@@ -553,7 +549,7 @@ package com.ankamagames.berilia.types.graphic
       override public function set mouseEnabled(v:Boolean) : void {
          var ctr:DisplayObjectContainer = null;
          super.mouseEnabled = v;
-         for each (ctr in this._aStrata)
+         for each(ctr in this._aStrata)
          {
             ctr.mouseEnabled = v;
          }
@@ -603,7 +599,7 @@ package com.ankamagames.berilia.types.graphic
          this.__removed = true;
       }
       
-      public function addContent(child:GraphicContainer, index:int=-1) : GraphicContainer {
+      public function addContent(child:GraphicContainer, index:int = -1) : GraphicContainer {
          if(index == -1)
          {
             this.getStrata(0).addChild(child);
@@ -651,17 +647,15 @@ package com.ankamagames.berilia.types.graphic
             {
                doCurrent = GraphicContainer(doCurrent)._uiRootContainer;
             }
+            else if(doCurrent.parent is Sprite)
+            {
+               doCurrent = Sprite(doCurrent.parent);
+            }
             else
             {
-               if(doCurrent.parent is Sprite)
-               {
-                  doCurrent = Sprite(doCurrent.parent);
-               }
-               else
-               {
-                  doCurrent = null;
-               }
+               doCurrent = null;
             }
+            
          }
          if(doCurrent == null)
          {
@@ -730,175 +724,178 @@ package com.ankamagames.berilia.types.graphic
          var parent:DisplayObject = this;
          do
          {
-               parent = parent.parent;
-            }while((!(parent is IDragAndDropHandler)) && (parent.parent));
-            
-            if(parent is IDragAndDropHandler)
-            {
-               return (parent as IDragAndDropHandler).dropValidator(target,data,source);
-            }
-            return false;
+            parent = parent.parent;
          }
+         while((!(parent is IDragAndDropHandler)) && (parent.parent));
          
-         private function defaultProcessDropFunction(target:*, data:*, source:*) : void {
-            var parent:DisplayObject = this;
-            do
+         if(parent is IDragAndDropHandler)
+         {
+            return (parent as IDragAndDropHandler).dropValidator(target,data,source);
+         }
+         return false;
+      }
+      
+      private function defaultProcessDropFunction(target:*, data:*, source:*) : void {
+         var parent:DisplayObject = this;
+         do
+         {
+            parent = parent.parent;
+         }
+         while((!(parent is IDragAndDropHandler)) && (parent.parent));
+         
+         if(parent is IDragAndDropHandler)
+         {
+            (parent as IDragAndDropHandler).processDrop(target,data,source);
+         }
+      }
+      
+      private function defaultRemoveDropSourceFunction(target:*) : void {
+         var parent:DisplayObject = this;
+         do
+         {
+            parent = parent.parent;
+         }
+         while((!(parent is IDragAndDropHandler)) && (parent.parent));
+         
+         if(parent is IDragAndDropHandler)
+         {
+            (parent as IDragAndDropHandler).removeDropSource(target);
+         }
+      }
+      
+      override public function localToGlobal(point:Point) : Point {
+         var target:DisplayObject = this;
+         var coord:Point = point;
+         while((target) && (target.parent))
+         {
+            coord.x = coord.x + target.parent.x;
+            coord.y = coord.y + target.parent.y;
+            target = target.parent;
+         }
+         return coord;
+      }
+      
+      protected function destroy(target:DisplayObjectContainer) : void {
+         var item:DisplayObject = null;
+         if((!target) || (target is MovieClip) && (MovieClip(target).totalFrames > 1))
+         {
+            return;
+         }
+         var index:uint = 0;
+         var num:int = target.numChildren;
+         while(target.numChildren)
+         {
+            item = target.removeChildAt(0);
+            if(item is TiphonSprite)
             {
-                  parent = parent.parent;
-               }while((!(parent is IDragAndDropHandler)) && (parent.parent));
-               
-               if(parent is IDragAndDropHandler)
-               {
-                  (parent as IDragAndDropHandler).processDrop(target,data,source);
-               }
+               (item as TiphonSprite).destroy();
             }
-            
-            private function defaultRemoveDropSourceFunction(target:*) : void {
-               var parent:DisplayObject = this;
-               do
+            else
+            {
+               if(item is GraphicContainer)
                {
-                     parent = parent.parent;
-                  }while((!(parent is IDragAndDropHandler)) && (parent.parent));
-                  
-                  if(parent is IDragAndDropHandler)
-                  {
-                     (parent as IDragAndDropHandler).removeDropSource(target);
-                  }
+                  (item as GraphicContainer).remove();
                }
-               
-               override public function localToGlobal(point:Point) : Point {
-                  var target:DisplayObject = this;
-                  var coord:Point = point;
-                  while((target) && (target.parent))
-                  {
-                     coord.x = coord.x + target.parent.x;
-                     coord.y = coord.y + target.parent.y;
-                     target = target.parent;
-                  }
-                  return coord;
-               }
-               
-               protected function destroy(target:DisplayObjectContainer) : void {
-                  var item:DisplayObject = null;
-                  if((!target) || (target is MovieClip) && (MovieClip(target).totalFrames > 1))
-                  {
-                     return;
-                  }
-                  var index:uint = 0;
-                  var num:int = target.numChildren;
-                  while(target.numChildren)
-                  {
-                     item = target.removeChildAt(0);
-                     if(item is TiphonSprite)
-                     {
-                        (item as TiphonSprite).destroy();
-                     }
-                     else
-                     {
-                        if(item is GraphicContainer)
-                        {
-                           (item as GraphicContainer).remove();
-                        }
-                        if(item is DisplayObjectContainer)
-                        {
-                           this.destroy(item as DisplayObjectContainer);
-                        }
-                     }
-                  }
-               }
-               
-               public function free() : void {
-                  this.__width = 0;
-                  this.__widthReal = 0;
-                  this.__height = 0;
-                  this.__heightReal = 0;
-                  this.__removed = false;
-                  this._bgColor = -1;
-                  this._bgAlpha = 1;
-                  this.minSize = null;
-                  this.maxSize = null;
-                  this._scale = 1;
-                  this._sLinkedTo = null;
-                  this._bDisabled = false;
-                  this._shadow = null;
-                  this._luminosity = 1;
-                  this._bgCornerRadius = 0;
-                  this._nMouseX = 0;
-                  this._nMouseY = 0;
-                  this._nStartWidth = 0;
-                  this._nStartHeight = 0;
-                  this._nLastWidth = 0;
-                  this._nLastHeight = 0;
-                  this._shResizeBorder = null;
-                  this._bUseSimpleResize = false;
-                  this._uiRootContainer = null;
-               }
-               
-               override public function contains(child:DisplayObject) : Boolean {
-                  return super.contains(child);
-               }
-               
-               private function onEnterFrame(e:Event) : void {
-                  var w:int = this._nStartWidth + StageShareManager.mouseX - this._nMouseX;
-                  var h:int = this._nStartHeight + StageShareManager.mouseY - this._nMouseY;
-                  if(this.minSize != null)
-                  {
-                     if((!isNaN(this.minSize.x)) && (w < this.minSize.x))
-                     {
-                        w = this.minSize.x;
-                     }
-                     if((!isNaN(this.minSize.y)) && (h < this.minSize.y))
-                     {
-                        h = this.minSize.y;
-                     }
-                  }
-                  if(this.maxSize != null)
-                  {
-                     if((!isNaN(this.maxSize.x)) && (w > this.maxSize.x))
-                     {
-                        w = this.maxSize.x;
-                     }
-                     if((!isNaN(this.maxSize.y)) && (h > this.maxSize.y))
-                     {
-                        h = this.maxSize.y;
-                     }
-                  }
-                  this.width = w;
-                  this.height = h;
-                  if((!(this._nLastWidth == this.width)) || (!(this._nLastHeight == this.height)))
-                  {
-                     if(this._bUseSimpleResize)
-                     {
-                        this._shResizeBorder.graphics.clear();
-                        this._shResizeBorder.graphics.beginFill(16777215,0.05);
-                        this._shResizeBorder.graphics.lineStyle(1,0,0.2);
-                        this._shResizeBorder.graphics.drawRect(0,0,this.width,this.height);
-                        this._shResizeBorder.graphics.endFill();
-                     }
-                     else
-                     {
-                        try
-                        {
-                           this.getUi().render();
-                        }
-                        catch(err:Error)
-                        {
-                        }
-                     }
-                     this._nLastWidth = this.width;
-                     this._nLastHeight = this.height;
-                  }
-               }
-               
-               protected function canProcessMessage(pMsg:Message) : Boolean {
-                  if(this._bSoftDisabled)
-                  {
-                     if(!((pMsg is ItemRollOutMessage) || (pMsg is ItemRollOverMessage) || (pMsg is MouseOverMessage) || (pMsg is MouseOutMessage)))
-                     {
-                        return false;
-                     }
-                  }
-                  return true;
+               if(item is DisplayObjectContainer)
+               {
+                  this.destroy(item as DisplayObjectContainer);
                }
             }
          }
+      }
+      
+      public function free() : void {
+         this.__width = 0;
+         this.__widthReal = 0;
+         this.__height = 0;
+         this.__heightReal = 0;
+         this.__removed = false;
+         this._bgColor = -1;
+         this._bgAlpha = 1;
+         this.minSize = null;
+         this.maxSize = null;
+         this._scale = 1;
+         this._sLinkedTo = null;
+         this._bDisabled = false;
+         this._shadow = null;
+         this._luminosity = 1;
+         this._bgCornerRadius = 0;
+         this._nMouseX = 0;
+         this._nMouseY = 0;
+         this._nStartWidth = 0;
+         this._nStartHeight = 0;
+         this._nLastWidth = 0;
+         this._nLastHeight = 0;
+         this._shResizeBorder = null;
+         this._bUseSimpleResize = false;
+         this._uiRootContainer = null;
+      }
+      
+      override public function contains(child:DisplayObject) : Boolean {
+         return super.contains(child);
+      }
+      
+      private function onEnterFrame(e:Event) : void {
+         var w:int = this._nStartWidth + StageShareManager.mouseX - this._nMouseX;
+         var h:int = this._nStartHeight + StageShareManager.mouseY - this._nMouseY;
+         if(this.minSize != null)
+         {
+            if((!isNaN(this.minSize.x)) && (w < this.minSize.x))
+            {
+               w = this.minSize.x;
+            }
+            if((!isNaN(this.minSize.y)) && (h < this.minSize.y))
+            {
+               h = this.minSize.y;
+            }
+         }
+         if(this.maxSize != null)
+         {
+            if((!isNaN(this.maxSize.x)) && (w > this.maxSize.x))
+            {
+               w = this.maxSize.x;
+            }
+            if((!isNaN(this.maxSize.y)) && (h > this.maxSize.y))
+            {
+               h = this.maxSize.y;
+            }
+         }
+         this.width = w;
+         this.height = h;
+         if((!(this._nLastWidth == this.width)) || (!(this._nLastHeight == this.height)))
+         {
+            if(this._bUseSimpleResize)
+            {
+               this._shResizeBorder.graphics.clear();
+               this._shResizeBorder.graphics.beginFill(16777215,0.05);
+               this._shResizeBorder.graphics.lineStyle(1,0,0.2);
+               this._shResizeBorder.graphics.drawRect(0,0,this.width,this.height);
+               this._shResizeBorder.graphics.endFill();
+            }
+            else
+            {
+               try
+               {
+                  this.getUi().render();
+               }
+               catch(err:Error)
+               {
+               }
+            }
+            this._nLastWidth = this.width;
+            this._nLastHeight = this.height;
+         }
+      }
+      
+      protected function canProcessMessage(pMsg:Message) : Boolean {
+         if(this._bSoftDisabled)
+         {
+            if(!((pMsg is ItemRollOutMessage) || (pMsg is ItemRollOverMessage) || (pMsg is MouseOverMessage) || (pMsg is MouseOutMessage)))
+            {
+               return false;
+            }
+         }
+         return true;
+      }
+   }
+}

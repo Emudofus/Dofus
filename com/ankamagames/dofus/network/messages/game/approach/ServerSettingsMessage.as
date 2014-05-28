@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.approach
          return 6340;
       }
       
-      public function initServerSettingsMessage(lang:String="", community:uint=0, gameType:uint=0) : ServerSettingsMessage {
+      public function initServerSettingsMessage(lang:String = "", community:uint = 0, gameType:uint = 0) : ServerSettingsMessage {
          this.lang = lang;
          this.community = community;
          this.gameType = gameType;

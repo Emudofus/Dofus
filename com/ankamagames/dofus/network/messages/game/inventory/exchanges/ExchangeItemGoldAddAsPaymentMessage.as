@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5770;
       }
       
-      public function initExchangeItemGoldAddAsPaymentMessage(paymentType:int=0, quantity:uint=0) : ExchangeItemGoldAddAsPaymentMessage {
+      public function initExchangeItemGoldAddAsPaymentMessage(paymentType:int = 0, quantity:uint = 0) : ExchangeItemGoldAddAsPaymentMessage {
          this.paymentType = paymentType;
          this.quantity = quantity;
          this._isInitialized = true;

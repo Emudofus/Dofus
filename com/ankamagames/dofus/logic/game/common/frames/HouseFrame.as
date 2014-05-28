@@ -51,7 +51,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(HouseFrame));
+      protected static const _log:Logger;
       
       private var _houseDialogFrame:HouseDialogFrame;
       
@@ -213,6 +213,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                lcrmsg = msg as LockableCodeResultMessage;
                KernelEventsManager.getInstance().processCallback(HookList.LockableCodeResult,lcrmsg.result);
                return true;
+            default:
+               return false;
          }
       }
       
@@ -223,7 +225,7 @@ package com.ankamagames.dofus.logic.game.common.frames
       private function getHouseInformations(houseID:uint) : HouseWrapper {
          var hi:HouseWrapper = null;
          var houseList:Dictionary = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).housesInformations;
-         for each (hi in houseList)
+         for each(hi in houseList)
          {
             if(hi.houseId == houseID)
             {

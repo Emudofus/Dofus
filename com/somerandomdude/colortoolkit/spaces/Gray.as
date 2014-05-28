@@ -5,7 +5,7 @@ package com.somerandomdude.colortoolkit.spaces
    public class Gray extends CoreColor implements IColorSpace
    {
       
-      public function Gray(gray:Number=0) {
+      public function Gray(gray:Number = 0) {
          super();
          this.gray = gray;
          this._grayscale = this.convertGrayValuetoHex(gray);

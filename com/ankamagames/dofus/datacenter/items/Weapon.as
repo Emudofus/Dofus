@@ -22,7 +22,7 @@ package com.ankamagames.dofus.datacenter.items
          var item:Item = null;
          var items:Array = Item.getItems();
          var result:Array = new Array();
-         for each (item in items)
+         for each(item in items)
          {
             if(item.isWeapon)
             {

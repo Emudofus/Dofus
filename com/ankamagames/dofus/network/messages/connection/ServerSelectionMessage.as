@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 40;
       }
       
-      public function initServerSelectionMessage(serverId:int=0) : ServerSelectionMessage {
+      public function initServerSelectionMessage(serverId:int = 0) : ServerSelectionMessage {
          this.serverId = serverId;
          this._isInitialized = true;
          return this;

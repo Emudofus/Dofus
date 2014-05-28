@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5915;
       }
       
-      public function initTaxCollectorMovementRemoveMessage(collectorId:int=0) : TaxCollectorMovementRemoveMessage {
+      public function initTaxCollectorMovementRemoveMessage(collectorId:int = 0) : TaxCollectorMovementRemoveMessage {
          this.collectorId = collectorId;
          this._isInitialized = true;
          return this;

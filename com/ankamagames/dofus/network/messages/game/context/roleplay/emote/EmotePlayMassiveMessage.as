@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.context.roleplay.emote
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -28,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.emote
          return 5691;
       }
       
-      public function initEmotePlayMassiveMessage(emoteId:uint=0, emoteStartTime:Number=0, actorIds:Vector.<int>=null) : EmotePlayMassiveMessage {
+      public function initEmotePlayMassiveMessage(emoteId:uint = 0, emoteStartTime:Number = 0, actorIds:Vector.<int> = null) : EmotePlayMassiveMessage {
          super.initEmotePlayAbstractMessage(emoteId,emoteStartTime);
          this.actorIds = actorIds;
          this._isInitialized = true;

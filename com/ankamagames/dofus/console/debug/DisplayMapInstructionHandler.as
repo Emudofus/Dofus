@@ -21,7 +21,7 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DisplayMapInstructionHandler));
+      protected static const _log:Logger;
       
       private var _console:ConsoleHandler;
       
@@ -90,27 +90,21 @@ package com.ankamagames.dofus.console.debug
                {
                   console.output("Ground cache : disabled");
                }
-               else
+               else if(cacheMode == 1)
                {
-                  if(cacheMode == 1)
-                  {
-                     console.output("Ground cache : High");
-                  }
-                  else
-                  {
-                     if(cacheMode == 2)
-                     {
-                        console.output("Ground cache : Medium");
-                     }
-                     else
-                     {
-                        if(cacheMode == 3)
-                        {
-                           console.output("Ground cache : Low");
-                        }
-                     }
-                  }
+                  console.output("Ground cache : High");
                }
+               else if(cacheMode == 2)
+               {
+                  console.output("Ground cache : Medium");
+               }
+               else if(cacheMode == 3)
+               {
+                  console.output("Ground cache : Low");
+               }
+               
+               
+               
                break;
          }
       }
@@ -132,10 +126,12 @@ package com.ankamagames.dofus.console.debug
                return "Set ground cache.\n<li>0 --> Disabled</li><li>1 --> High</li><li>2 --> Medium</li><li>3 --> Low</li>";
             case "mapid":
                return "Get the current map id.";
+            default:
+               return "No help for command \'" + cmd + "\'";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

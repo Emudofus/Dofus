@@ -35,10 +35,12 @@ package com.ankamagames.berilia.managers
             case INLINE_CSS_VERSION:
                htmlVersion = val;
                break;
+            default:
+               htmlVersion = OLD_FASHION;
          }
       }
       
-      public static function addTag(pText:String, pBalise:String, pStyle:Object=null) : String {
+      public static function addTag(pText:String, pBalise:String, pStyle:Object = null) : String {
          if(htmlVersion == INLINE_CSS_VERSION)
          {
             if(isTagValide(pBalise))
@@ -67,7 +69,7 @@ package com.ankamagames.berilia.managers
          return formateStyleWithTags(pText,pStyle);
       }
       
-      private static function formateStyleWithInlineCss(pStyle:Object=null) : String {
+      private static function formateStyleWithInlineCss(pStyle:Object = null) : String {
          var htmlText:String = "";
          if(pStyle != null)
          {
@@ -89,7 +91,7 @@ package com.ankamagames.berilia.managers
          return htmlText;
       }
       
-      private static function formateStyleWithTags(pText:String, pStyle:Object=null) : String {
+      private static function formateStyleWithTags(pText:String, pStyle:Object = null) : String {
          var htmlText:String = "";
          if(pStyle != null)
          {
@@ -152,11 +154,13 @@ package com.ankamagames.berilia.managers
                   hexaColor = pColor.replace("0x","#");
                }
                break;
+            default:
+               hexaColor = "#FF0000";
          }
          return hexaColor;
       }
       
-      public static function addLink(pText:String, pHref:String="", pStyle:Object=null, pForceInlineCss:Boolean=false) : String {
+      public static function addLink(pText:String, pHref:String = "", pStyle:Object = null, pForceInlineCss:Boolean = false) : String {
          if((htmlVersion == INLINE_CSS_VERSION) || (pForceInlineCss))
          {
             if(pStyle != null)
@@ -168,7 +172,7 @@ package com.ankamagames.berilia.managers
          return "<" + LINK + " href=\'" + pHref + "\'><b>" + pText + "</b></" + LINK + ">";
       }
       
-      public static function removeStyle(pText:String, pBalise:String, pAllOccurrences:Boolean=false) : String {
+      public static function removeStyle(pText:String, pBalise:String, pAllOccurrences:Boolean = false) : String {
          return pText;
       }
       
@@ -181,6 +185,8 @@ package com.ankamagames.berilia.managers
          {
             case SPAN:
                return true;
+            default:
+               return false;
          }
       }
       
@@ -189,7 +195,7 @@ package com.ankamagames.berilia.managers
          var tab2:Array = null;
          var style:Array = new Array();
          var tab1:Array = val.split(";");
-         for each (val1 in tab1)
+         for each(val1 in tab1)
          {
             tab2 = val1.split(":");
             if(tab2[0] != "")

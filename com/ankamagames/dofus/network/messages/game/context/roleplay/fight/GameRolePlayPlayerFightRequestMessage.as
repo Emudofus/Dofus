@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          return 5731;
       }
       
-      public function initGameRolePlayPlayerFightRequestMessage(targetId:uint=0, targetCellId:int=0, friendly:Boolean=false) : GameRolePlayPlayerFightRequestMessage {
+      public function initGameRolePlayPlayerFightRequestMessage(targetId:uint = 0, targetCellId:int = 0, friendly:Boolean = false) : GameRolePlayPlayerFightRequestMessage {
          this.targetId = targetId;
          this.targetCellId = targetCellId;
          this.friendly = friendly;

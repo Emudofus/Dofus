@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.paddock
          return 131;
       }
       
-      public function initPaddockPrivateInformations(maxOutdoorMount:uint=0, maxItems:uint=0, price:uint=0, locked:Boolean=false, guildId:int=0, guildInfo:GuildInformations=null) : PaddockPrivateInformations {
+      public function initPaddockPrivateInformations(maxOutdoorMount:uint = 0, maxItems:uint = 0, price:uint = 0, locked:Boolean = false, guildId:int = 0, guildInfo:GuildInformations = null) : PaddockPrivateInformations {
          super.initPaddockAbandonnedInformations(maxOutdoorMount,maxItems,price,locked,guildId);
          this.guildInfo = guildInfo;
          return this;

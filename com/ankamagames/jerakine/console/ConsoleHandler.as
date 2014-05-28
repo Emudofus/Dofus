@@ -12,7 +12,7 @@ package com.ankamagames.jerakine.console
    public class ConsoleHandler extends Object implements MessageHandler, ConsoleInstructionHandler
    {
       
-      public function ConsoleHandler(outputHandler:MessageHandler, displayExecutionTime:Boolean=true, hideCommandsWithoutHelp:Boolean=false) {
+      public function ConsoleHandler(outputHandler:MessageHandler, displayExecutionTime:Boolean = true, hideCommandsWithoutHelp:Boolean = false) {
          super();
          this._outputHandler = outputHandler;
          this._handlers = new Dictionary();
@@ -21,7 +21,7 @@ package com.ankamagames.jerakine.console
          this._handlers["help"] = this;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ConsoleHandler));
+      protected static const _log:Logger;
       
       private var _name:String;
       
@@ -58,7 +58,7 @@ package com.ankamagames.jerakine.console
          return false;
       }
       
-      public function output(text:String, type:uint=0) : void {
+      public function output(text:String, type:uint = 0) : void {
          this._outputHandler.process(new ConsoleOutputMessage(this._name,text,type));
       }
       
@@ -66,7 +66,7 @@ package com.ankamagames.jerakine.console
          var s:String = null;
          if(cmd is Array)
          {
-            for each (s in cmd)
+            for each(s in cmd)
             {
                if(s)
                {
@@ -74,13 +74,11 @@ package com.ankamagames.jerakine.console
                }
             }
          }
-         else
+         else if(cmd)
          {
-            if(cmd)
-            {
-               this._handlers[String(cmd)] = handler;
-            }
+            this._handlers[String(cmd)] = handler;
          }
+         
       }
       
       public function changeOutputHandler(outputHandler:MessageHandler) : void {
@@ -88,7 +86,7 @@ package com.ankamagames.jerakine.console
       }
       
       public function removeHandler(cmd:String) : void {
-         delete this._handlers[[cmd]];
+         delete this._handlers[cmd];
       }
       
       public function isHandled(cmd:String) : Boolean {
@@ -96,45 +94,12 @@ package com.ankamagames.jerakine.console
       }
       
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
-         var commands:Array = null;
-         var sCmd:String = null;
-         var cmdHelp:String = null;
-         var handler:ConsoleInstructionHandler = null;
-         switch(cmd)
-         {
-            case "help":
-               if(args.length == 0)
-               {
-                  console.output(I18n.getUiText("ui.console.generalHelp",[this._name]));
-                  commands = new Array();
-                  for (cmd in this._handlers)
-                  {
-                     commands.push(cmd);
-                  }
-                  commands.sort();
-                  for each (sCmd in commands)
-                  {
-                     cmdHelp = (this._handlers[sCmd] as ConsoleInstructionHandler).getHelp(sCmd);
-                     if((cmdHelp) || (!this._hideCommandsWithoutHelp))
-                     {
-                        console.output("  - <b>" + sCmd + "</b>: " + cmdHelp);
-                     }
-                  }
-               }
-               else
-               {
-                  handler = this._handlers[args[0]];
-                  if(handler)
-                  {
-                     console.output("<b>" + sCmd + "</b>: " + handler.getHelp(args[0]));
-                  }
-                  else
-                  {
-                     console.output(I18n.getUiText("ui.console.unknownCommand",[args[0]]));
-                  }
-               }
-               break;
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function getHelp(cmd:String) : String {
@@ -142,6 +107,8 @@ package com.ankamagames.jerakine.console
          {
             case "help":
                return I18n.getUiText("ui.console.displayhelp");
+            default:
+               return I18n.getUiText("ui.chat.console.noHelp",[cmd]);
          }
       }
       
@@ -154,7 +121,7 @@ package com.ankamagames.jerakine.console
          return null;
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
       
@@ -168,7 +135,7 @@ package com.ankamagames.jerakine.console
          var splittedCmd:Array = cmd.split(" ");
          if(splittedCmd.length == 1)
          {
-            for (sCmd in this._handlers)
+            for(sCmd in this._handlers)
             {
                if(sCmd.indexOf(cmd) == 0)
                {
@@ -193,7 +160,7 @@ package com.ankamagames.jerakine.console
                {
                   break;
                }
-               for each (sCmd in aMatch)
+               for each(sCmd in aMatch)
                {
                   bMatch = (bMatch) && (sCmd.indexOf(aMatch[0].substr(0,i)) == 0);
                   if(!bMatch)
@@ -221,7 +188,7 @@ package com.ankamagames.jerakine.console
       public function getAutoCompletePossibilities(cmd:String) : Array {
          var sCmd:String = null;
          var aMatch:Array = new Array();
-         for (sCmd in this._handlers)
+         for(sCmd in this._handlers)
          {
             if(sCmd.indexOf(cmd) == 0)
             {
@@ -239,7 +206,7 @@ package com.ankamagames.jerakine.console
          if(cih)
          {
             allPossibilities = cih.getParamPossibilities(cmd,paramIndex,currentParams);
-            for each (possibility in allPossibilities)
+            for each(possibility in allPossibilities)
             {
                if(possibility.toLowerCase().indexOf(currentParams[paramIndex].toLowerCase()) == 0)
                {

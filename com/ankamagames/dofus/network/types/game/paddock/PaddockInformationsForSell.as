@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.types.game.paddock
          return 222;
       }
       
-      public function initPaddockInformationsForSell(guildOwner:String="", worldX:int=0, worldY:int=0, subAreaId:uint=0, nbMount:int=0, nbObject:int=0, price:uint=0) : PaddockInformationsForSell {
+      public function initPaddockInformationsForSell(guildOwner:String = "", worldX:int = 0, worldY:int = 0, subAreaId:uint = 0, nbMount:int = 0, nbObject:int = 0, price:uint = 0) : PaddockInformationsForSell {
          this.guildOwner = guildOwner;
          this.worldX = worldX;
          this.worldY = worldY;

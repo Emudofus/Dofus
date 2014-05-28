@@ -10,7 +10,7 @@ package com.ankamagames.dofus.types.entities
    public class CheckPointEntity extends Sprite implements IEntity, IDisplayable
    {
       
-      public function CheckPointEntity(spr:Sprite=null, pos:MapPoint=null) {
+      public function CheckPointEntity(spr:Sprite = null, pos:MapPoint = null) {
          super();
          this._position = pos;
          if(spr != null)
@@ -59,7 +59,7 @@ package com.ankamagames.dofus.types.entities
          return this._displayed;
       }
       
-      public function display(strata:uint=0) : void {
+      public function display(strata:uint = 0) : void {
          this._displayed = true;
       }
       

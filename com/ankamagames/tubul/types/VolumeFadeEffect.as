@@ -14,14 +14,14 @@ package com.ankamagames.tubul.types
    public class VolumeFadeEffect extends EventDispatcher
    {
       
-      public function VolumeFadeEffect(pBeginningFadeValue:Number=0, pEndingFadeValue:Number=1, pFadeTime:Number=0) {
+      public function VolumeFadeEffect(pBeginningFadeValue:Number = 0, pEndingFadeValue:Number = 1, pFadeTime:Number = 0) {
          super();
          this._beginningValue = pBeginningFadeValue;
          this._endingValue = pEndingFadeValue;
          this._timeFade = pFadeTime;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(VolumeFadeEffect));
+      protected static const _log:Logger;
       
       private var _running:Boolean = false;
       
@@ -59,7 +59,7 @@ package com.ankamagames.tubul.types
          this._soundSource = pISoundSource;
       }
       
-      public function start(pUseBeginningValue:Boolean=true) : void {
+      public function start(pUseBeginningValue:Boolean = true) : void {
          var logInfo:String = null;
          if(this.soundSource == null)
          {

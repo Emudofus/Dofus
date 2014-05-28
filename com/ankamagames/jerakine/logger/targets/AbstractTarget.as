@@ -53,7 +53,7 @@ package com.ankamagames.jerakine.logger.targets
       
       private function checkIsFiltersValid(filters:Array) : Boolean {
          var filter:LogTargetFilter = null;
-         for each (filter in filters)
+         for each(filter in filters)
          {
             if(!this.checkIsFilterValid(filter.target))
             {
@@ -83,7 +83,7 @@ package com.ankamagames.jerakine.logger.targets
          var passing:Boolean = false;
          if(this._filters.length > 0)
          {
-            for each (filter in this._filters)
+            for each(filter in this._filters)
             {
                reg = new RegExp(filter.target.replace("*",".*"),"i");
                testResult = reg.test(e.category);

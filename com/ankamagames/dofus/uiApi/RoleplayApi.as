@@ -67,7 +67,7 @@ package com.ankamagames.dofus.uiApi
       public function getSpellToForgetList() : Array {
          var spell:SpellWrapper = null;
          var spellList:Array = new Array();
-         for each (spell in PlayedCharacterManager.getInstance().spellsInventory)
+         for each(spell in PlayedCharacterManager.getInstance().spellsInventory)
          {
             if(spell.spellLevel > 1)
             {
@@ -127,7 +127,7 @@ package com.ankamagames.dofus.uiApi
          var entity:IEntity = null;
          var infos:GameRolePlayNamedActorInformations = null;
          var roleplayContextFrame:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-         for each (entity in EntitiesManager.getInstance().entities)
+         for each(entity in EntitiesManager.getInstance().entities)
          {
             infos = roleplayContextFrame.entitiesFrame.getEntityInfos(entity.id) as GameRolePlayNamedActorInformations;
             if((infos) && (name == infos.name))

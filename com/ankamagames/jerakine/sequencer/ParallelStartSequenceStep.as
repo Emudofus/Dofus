@@ -8,14 +8,14 @@ package com.ankamagames.jerakine.sequencer
    public class ParallelStartSequenceStep extends AbstractSequencable implements ISubSequenceSequencable
    {
       
-      public function ParallelStartSequenceStep(aSequence:Array, waitAllSequenceEnd:Boolean=true, waitFirstEndSequence:Boolean=false) {
+      public function ParallelStartSequenceStep(aSequence:Array, waitAllSequenceEnd:Boolean = true, waitFirstEndSequence:Boolean = false) {
          super();
          this._aSequence = aSequence;
          this._waitAllSequenceEnd = waitAllSequenceEnd;
          this._waitFirstEndSequence = waitFirstEndSequence;
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(ParallelStartSequenceStep));
+      private static const _log:Logger;
       
       private var _aSequence:Array;
       
@@ -54,16 +54,14 @@ package com.ankamagames.jerakine.sequencer
             executeCallbacks();
             dispatchEvent(new SequencerEvent(SequencerEvent.SEQUENCE_END));
          }
-         else
+         else if(!this._waitAllSequenceEnd)
          {
-            if(!this._waitAllSequenceEnd)
+            if(this._sequenceEndCount == 1)
             {
-               if(this._sequenceEndCount == 1)
-               {
-                  executeCallbacks();
-               }
+               executeCallbacks();
             }
          }
+         
       }
    }
 }

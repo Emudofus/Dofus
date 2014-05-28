@@ -31,7 +31,7 @@ package com.ankamagames.dofus.console.debug
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UiHandlerInstructionHandler));
+      protected static const _log:Logger;
       
       private var _uiInspector:Inspector;
       
@@ -61,14 +61,14 @@ package com.ankamagames.dofus.console.debug
                {
                   count = 0;
                   uiList = [];
-                  for (i in Berilia.getInstance().uiList)
+                  for(i in Berilia.getInstance().uiList)
                   {
                      if(Berilia.getInstance().uiList[i].name != "Console")
                      {
                         uiList.push(Berilia.getInstance().uiList[i].name);
                      }
                   }
-                  for each (i in uiList)
+                  for each(i in uiList)
                   {
                      Berilia.getInstance().unloadUi(i);
                   }
@@ -97,7 +97,7 @@ package com.ankamagames.dofus.console.debug
             case "uilist":
                currentUiList = Berilia.getInstance().uiList;
                uiOutput = [];
-               for (uiName in currentUiList)
+               for(uiName in currentUiList)
                {
                   ui = UiRootContainer(currentUiList[uiName]).uiData;
                   uiOutput.push([uiName,ui.name,ui.uiClassName,ui.module.id,ui.module.trusted]);
@@ -113,14 +113,14 @@ package com.ankamagames.dofus.console.debug
             case "modulelist":
                ml = [];
                m = UiModuleManager.getInstance().getModules();
-               for each (mod in m)
+               for each(mod in m)
                {
                   ml.push([mod.id,mod.author,mod.trusted,true]);
                }
                m = UiModuleManager.getInstance().disabledModules;
                if(m.length)
                {
-                  for each (mod in m)
+                  for each(mod in m)
                   {
                      ml.push([mod.id,mod.author,mod.trusted,false]);
                   }
@@ -205,7 +205,7 @@ package com.ankamagames.dofus.console.debug
          var type:String = null;
          var properties:Array = DescribeTypeCache.getVariables(target).concat();
          properties.sort();
-         for each (property in properties)
+         for each(property in properties)
          {
             try
             {
@@ -261,10 +261,12 @@ package com.ankamagames.dofus.console.debug
                return "Display the property list of an UI element (UI or Component), usage /inspectuielement uiName (elementName)";
             case "inspectuielementsos":
                return "Display the property list of an UI element (UI or Component) to SOS, usage /inspectuielement uiName (elementName)";
+            default:
+               return "No help for command \'" + cmd + "\'";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          var i:String = null;
          var possibilities:Array = [];
          switch(cmd)
@@ -272,7 +274,7 @@ package com.ankamagames.dofus.console.debug
             case "unloadui":
                if(paramIndex == 0)
                {
-                  for (i in Berilia.getInstance().uiList)
+                  for(i in Berilia.getInstance().uiList)
                   {
                      possibilities.push(Berilia.getInstance().uiList[i].name);
                   }

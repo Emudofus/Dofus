@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.messages.authorized
          return 5662;
       }
       
-      public function initAdminQuietCommandMessage(content:String="") : AdminQuietCommandMessage {
+      public function initAdminQuietCommandMessage(content:String = "") : AdminQuietCommandMessage {
          super.initAdminCommandMessage(content);
          this._isInitialized = true;
          return this;

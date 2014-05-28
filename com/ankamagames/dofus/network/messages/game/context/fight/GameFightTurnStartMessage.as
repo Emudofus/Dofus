@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 714;
       }
       
-      public function initGameFightTurnStartMessage(id:int=0, waitTime:uint=0) : GameFightTurnStartMessage {
+      public function initGameFightTurnStartMessage(id:int = 0, waitTime:uint = 0) : GameFightTurnStartMessage {
          this.id = id;
          this.waitTime = waitTime;
          this._isInitialized = true;

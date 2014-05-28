@@ -5,11 +5,11 @@ package com.ankamagames.jerakine.pools
    public class PoolableRectangle extends Rectangle implements Poolable
    {
       
-      public function PoolableRectangle(x:Number=0, y:Number=0, width:Number=0, height:Number=0) {
+      public function PoolableRectangle(x:Number = 0, y:Number = 0, width:Number = 0, height:Number = 0) {
          super(x,y,width,height);
       }
       
-      public function renew(x:Number=0, y:Number=0, width:Number=0, height:Number=0) : PoolableRectangle {
+      public function renew(x:Number = 0, y:Number = 0, width:Number = 0, height:Number = 0) : PoolableRectangle {
          this.x = x;
          this.y = y;
          this.width = width;

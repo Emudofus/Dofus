@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
          return 6284;
       }
       
-      public function initGameRolePlayArenaRegistrationStatusMessage(registered:Boolean=false, step:uint=0, battleMode:uint=3) : GameRolePlayArenaRegistrationStatusMessage {
+      public function initGameRolePlayArenaRegistrationStatusMessage(registered:Boolean = false, step:uint = 0, battleMode:uint = 3) : GameRolePlayArenaRegistrationStatusMessage {
          this.registered = registered;
          this.step = step;
          this.battleMode = battleMode;

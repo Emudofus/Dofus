@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.character
          return 163;
       }
       
-      public function initCharacterMinimalPlusLookInformations(id:uint=0, level:uint=0, name:String="", entityLook:EntityLook=null) : CharacterMinimalPlusLookInformations {
+      public function initCharacterMinimalPlusLookInformations(id:uint = 0, level:uint = 0, name:String = "", entityLook:EntityLook = null) : CharacterMinimalPlusLookInformations {
          super.initCharacterMinimalInformations(id,level,name);
          this.entityLook = entityLook;
          return this;

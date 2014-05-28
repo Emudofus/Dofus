@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.interactive
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
@@ -29,7 +28,7 @@ package com.ankamagames.dofus.network.types.game.interactive
          return 80;
       }
       
-      public function initInteractiveElement(elementId:uint=0, elementTypeId:int=0, enabledSkills:Vector.<InteractiveElementSkill>=null, disabledSkills:Vector.<InteractiveElementSkill>=null) : InteractiveElement {
+      public function initInteractiveElement(elementId:uint = 0, elementTypeId:int = 0, enabledSkills:Vector.<InteractiveElementSkill> = null, disabledSkills:Vector.<InteractiveElementSkill> = null) : InteractiveElement {
          this.elementId = elementId;
          this.elementTypeId = elementTypeId;
          this.enabledSkills = enabledSkills;

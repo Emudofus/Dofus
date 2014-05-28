@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.house
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -37,7 +36,7 @@ package com.ankamagames.dofus.network.types.game.house
          return 170;
       }
       
-      public function initHouseInformationsForGuild(houseId:uint=0, modelId:uint=0, ownerName:String="", worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0, skillListIds:Vector.<int>=null, guildshareParams:uint=0) : HouseInformationsForGuild {
+      public function initHouseInformationsForGuild(houseId:uint = 0, modelId:uint = 0, ownerName:String = "", worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:uint = 0, skillListIds:Vector.<int> = null, guildshareParams:uint = 0) : HouseInformationsForGuild {
          this.houseId = houseId;
          this.modelId = modelId;
          this.ownerName = ownerName;

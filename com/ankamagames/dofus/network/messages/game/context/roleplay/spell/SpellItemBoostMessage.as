@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
          return 6011;
       }
       
-      public function initSpellItemBoostMessage(statId:uint=0, spellId:uint=0, value:int=0) : SpellItemBoostMessage {
+      public function initSpellItemBoostMessage(statId:uint = 0, spellId:uint = 0, value:int = 0) : SpellItemBoostMessage {
          this.statId = statId;
          this.spellId = spellId;
          this.value = value;

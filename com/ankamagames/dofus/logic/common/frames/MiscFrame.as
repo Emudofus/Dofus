@@ -5,7 +5,6 @@ package com.ankamagames.dofus.logic.common.frames
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import flash.utils.Dictionary;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.house.AccountHouseInformations;
    import flash.display.Stage;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
@@ -45,7 +44,7 @@ package com.ankamagames.dofus.logic.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MiscFrame));
+      protected static const _log:Logger;
       
       private static const SERVER_CONST_TIME_BEFORE_DISCONNECTION:int = 1;
       
@@ -199,36 +198,10 @@ package com.ankamagames.dofus.logic.common.frames
                      value = "-1";
                   }
                }
-               finally
-               {
-                  if(fileStream)
-                  {
-                     fileStream.close();
-                  }
-                  if(value == "")
-                  {
-                     if(cfrmsg.type == 0)
-                     {
-                        value = fileByte.length.toString();
-                     }
-                     else
-                     {
-                        if(cfrmsg.type == 1)
-                        {
-                           value = MD5.hash(fileByte.toString());
-                        }
-                     }
-                  }
-                  cfmsg = new CheckFileMessage();
-                  cfmsg.initCheckFileMessage(filenameHash,cfrmsg.type,value);
-                  ConnectionsHandler.getConnection().send(cfmsg);
-                  return true;
-               }
-               return false;
             case msg is ServerOptionalFeaturesMessage:
                sofmsg = msg as ServerOptionalFeaturesMessage;
                this._optionalAuthorizedFeatures = new Array();
-               for each (featureId in sofmsg.features)
+               for each(featureId in sofmsg.features)
                {
                   this._optionalAuthorizedFeatures.push(featureId);
                }
@@ -242,30 +215,26 @@ package com.ankamagames.dofus.logic.common.frames
             case msg is ServerSessionConstantsMessage:
                sscmsg = msg as ServerSessionConstantsMessage;
                this._serverSessionConstants = new Dictionary(true);
-               for each (constant in sscmsg.variables)
+               for each(constant in sscmsg.variables)
                {
                   if(constant is ServerSessionConstantInteger)
                   {
                      this._serverSessionConstants[constant.id] = (constant as ServerSessionConstantInteger).value;
                   }
+                  else if(constant is ServerSessionConstantLong)
+                  {
+                     this._serverSessionConstants[constant.id] = (constant as ServerSessionConstantLong).value;
+                  }
+                  else if(constant is ServerSessionConstantString)
+                  {
+                     this._serverSessionConstants[constant.id] = (constant as ServerSessionConstantString).value;
+                  }
                   else
                   {
-                     if(constant is ServerSessionConstantLong)
-                     {
-                        this._serverSessionConstants[constant.id] = (constant as ServerSessionConstantLong).value;
-                     }
-                     else
-                     {
-                        if(constant is ServerSessionConstantString)
-                        {
-                           this._serverSessionConstants[constant.id] = (constant as ServerSessionConstantString).value;
-                        }
-                        else
-                        {
-                           this._serverSessionConstants[constant.id] = null;
-                        }
-                     }
+                     this._serverSessionConstants[constant.id] = null;
                   }
+                  
+                  
                }
                return true;
             case msg is AccountHouseMessage:
@@ -273,6 +242,8 @@ package com.ankamagames.dofus.logic.common.frames
                this._accountHouses = ahm.houses;
                KernelEventsManager.getInstance().processCallback(HookList.HouseInformations,ahm.houses);
                return true;
+            default:
+               return false;
          }
       }
       

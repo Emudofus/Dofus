@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 6311;
       }
       
-      public function initGameActionFightLifePointsGainMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, delta:uint=0) : GameActionFightLifePointsGainMessage {
+      public function initGameActionFightLifePointsGainMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, delta:uint = 0) : GameActionFightLifePointsGainMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this.delta = delta;

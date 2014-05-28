@@ -1,13 +1,12 @@
 package com.ankamagames.dofus.internalDatacenter.communication
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    
    public class ChatSentenceWithSource extends BasicChatSentence implements IDataCenter
    {
       
-      public function ChatSentenceWithSource(id:uint, baseMsg:String, msg:String, channel:uint=0, time:Number=0, finger:String="", senderId:uint=0, senderName:String="", objects:Vector.<ItemWrapper>=null, admin:Boolean=false) {
+      public function ChatSentenceWithSource(id:uint, baseMsg:String, msg:String, channel:uint = 0, time:Number = 0, finger:String = "", senderId:uint = 0, senderName:String = "", objects:Vector.<ItemWrapper> = null, admin:Boolean = false) {
          super(id,baseMsg,msg,channel,time,finger);
          this._senderId = senderId;
          this._senderName = senderName;

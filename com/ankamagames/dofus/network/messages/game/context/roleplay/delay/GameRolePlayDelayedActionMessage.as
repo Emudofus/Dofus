@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.delay
          return 6153;
       }
       
-      public function initGameRolePlayDelayedActionMessage(delayedCharacterId:int=0, delayTypeId:uint=0, delayEndTime:Number=0) : GameRolePlayDelayedActionMessage {
+      public function initGameRolePlayDelayedActionMessage(delayedCharacterId:int = 0, delayTypeId:uint = 0, delayEndTime:Number = 0) : GameRolePlayDelayedActionMessage {
          this.delayedCharacterId = delayedCharacterId;
          this.delayTypeId = delayTypeId;
          this.delayEndTime = delayEndTime;

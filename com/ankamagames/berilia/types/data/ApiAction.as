@@ -31,9 +31,9 @@ package com.ankamagames.berilia.types.data
          }
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static var _apiActionNameList:Array = new Array();
+      protected static var _apiActionNameList:Array;
       
       public static function getApiActionByName(name:String) : ApiAction {
          return _apiActionNameList[name];

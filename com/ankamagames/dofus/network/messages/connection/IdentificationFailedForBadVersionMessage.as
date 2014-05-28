@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 21;
       }
       
-      public function initIdentificationFailedForBadVersionMessage(reason:uint=99, requiredVersion:Version=null) : IdentificationFailedForBadVersionMessage {
+      public function initIdentificationFailedForBadVersionMessage(reason:uint = 99, requiredVersion:Version = null) : IdentificationFailedForBadVersionMessage {
          super.initIdentificationFailedMessage(reason);
          this.requiredVersion = requiredVersion;
          this._isInitialized = true;

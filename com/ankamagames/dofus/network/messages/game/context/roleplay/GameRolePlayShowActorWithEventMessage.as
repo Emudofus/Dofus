@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 6407;
       }
       
-      public function initGameRolePlayShowActorWithEventMessage(informations:GameRolePlayActorInformations=null, actorEventId:uint=0) : GameRolePlayShowActorWithEventMessage {
+      public function initGameRolePlayShowActorWithEventMessage(informations:GameRolePlayActorInformations = null, actorEventId:uint = 0) : GameRolePlayShowActorWithEventMessage {
          super.initGameRolePlayShowActorMessage(informations);
          this.actorEventId = actorEventId;
          this._isInitialized = true;

@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.fight.FightExternalInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 5743;
       }
       
-      public function initMapRunningFightListMessage(fights:Vector.<FightExternalInformations>=null) : MapRunningFightListMessage {
+      public function initMapRunningFightListMessage(fights:Vector.<FightExternalInformations> = null) : MapRunningFightListMessage {
          this.fights = fights;
          this._isInitialized = true;
          return this;

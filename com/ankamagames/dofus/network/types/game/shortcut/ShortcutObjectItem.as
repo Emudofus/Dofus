@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.shortcut
          return 371;
       }
       
-      public function initShortcutObjectItem(slot:uint=0, itemUID:int=0, itemGID:int=0) : ShortcutObjectItem {
+      public function initShortcutObjectItem(slot:uint = 0, itemUID:int = 0, itemGID:int = 0) : ShortcutObjectItem {
          super.initShortcutObject(slot);
          this.itemUID = itemUID;
          this.itemGID = itemGID;

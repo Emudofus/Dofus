@@ -10,7 +10,7 @@ package com.ankamagames.berilia.types.shortcut
          this._description = description;
       }
       
-      private static var _caterogies:Array = new Array();
+      private static var _caterogies:Array;
       
       public static function create(name:String, description:String) : ShortcutCategory {
          var sc:ShortcutCategory = _caterogies[name];
@@ -18,13 +18,11 @@ package com.ankamagames.berilia.types.shortcut
          {
             sc = new ShortcutCategory(name,description);
          }
-         else
+         else if(!_caterogies[name].description)
          {
-            if(!_caterogies[name].description)
-            {
-               _caterogies[name]._description = description;
-            }
+            _caterogies[name]._description = description;
          }
+         
          return sc;
       }
       

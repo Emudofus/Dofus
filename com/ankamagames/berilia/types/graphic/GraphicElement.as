@@ -24,11 +24,11 @@ package com.ankamagames.berilia.types.graphic
          this.size = new GraphicSize();
       }
       
-      private static var _aGEIndex:Array = new Array();
+      private static var _aGEIndex:Array;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GraphicElement));
+      protected static const _log:Logger;
       
-      public static function getGraphicElement(spSprite:GraphicContainer, aLocations:Array, sName:String=null) : GraphicElement {
+      public static function getGraphicElement(spSprite:GraphicContainer, aLocations:Array, sName:String = null) : GraphicElement {
          var ge:GraphicElement = null;
          if((sName == null) || (_aGEIndex[sName] == null))
          {

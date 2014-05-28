@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.logic.common.managers
 {
    import com.ankamagames.jerakine.types.Uri;
-   import __AS3__.vec.*;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.ChatHookList;
    import com.ankamagames.jerakine.utils.system.SystemManager;
@@ -27,7 +26,7 @@ package com.ankamagames.dofus.logic.common.managers
       
       private var _notificationList:Vector.<Notification>;
       
-      public function showNotification(pTitle:String, pContent:String, pType:uint=0) : void {
+      public function showNotification(pTitle:String, pContent:String, pType:uint = 0) : void {
          var notif:Notification = new Notification();
          notif.title = pTitle;
          notif.contentText = pContent;
@@ -35,7 +34,7 @@ package com.ankamagames.dofus.logic.common.managers
          this.openNotification(notif);
       }
       
-      public function prepareNotification(pTitle:String, pContent:String, pType:uint=0, pNotificationName:String="", pNotifyUser:Boolean=false) : uint {
+      public function prepareNotification(pTitle:String, pContent:String, pType:uint = 0, pNotificationName:String = "", pNotifyUser:Boolean = false) : uint {
          var notif:Notification = new Notification();
          notif.title = pTitle;
          notif.contentText = pContent;
@@ -44,33 +43,33 @@ package com.ankamagames.dofus.logic.common.managers
          return this._notificationList.push(notif) - 1;
       }
       
-      public function addButtonToNotification(pId:uint, pTitle:String, pAction:String, pParams:Object=null, pForceClose:Boolean=false, pWidth:Number=0, pHeight:Number=0, pType:String="action") : void {
+      public function addButtonToNotification(pId:uint, pTitle:String, pAction:String, pParams:Object = null, pForceClose:Boolean = false, pWidth:Number = 0, pHeight:Number = 0, pType:String = "action") : void {
          var notif:Notification = this.getNotification(pId);
          notif.addButton(pTitle,pAction,pParams,pForceClose,pWidth,pHeight,pType);
       }
       
-      public function addCallbackToNotification(pId:uint, pAction:String, pParams:Object=null, pType:String="action") : void {
+      public function addCallbackToNotification(pId:uint, pAction:String, pParams:Object = null, pType:String = "action") : void {
          var notif:Notification = this.getNotification(pId);
          notif.callback = pAction;
          notif.callbackParams = pParams;
          notif.callbackType = pType;
       }
       
-      public function addImageToNotification(pId:uint, pClip:Uri, pX:Number=0, pY:Number=0, pWidth:Number=-1, pHeight:Number=-1, pLabel:String="", pTips:String="") : void {
+      public function addImageToNotification(pId:uint, pClip:Uri, pX:Number = 0, pY:Number = 0, pWidth:Number = -1, pHeight:Number = -1, pLabel:String = "", pTips:String = "") : void {
          var notif:Notification = this.getNotification(pId);
          notif.addImage(pClip,pLabel,pTips,pX,pY,pWidth,pHeight);
       }
       
-      public function addTimerToNotification(pId:uint, pTime:uint, pPauseOnOver:Boolean=false, pBlockCallbackOnClose:Boolean=false, pNotify:Boolean=true) : void {
+      public function addTimerToNotification(pId:uint, pTime:uint, pPauseOnOver:Boolean = false, pBlockCallbackOnClose:Boolean = false, pNotify:Boolean = true) : void {
          var notif:Notification = this.getNotification(pId);
          notif.setTimer(pTime,pPauseOnOver,pBlockCallbackOnClose,pNotify);
       }
       
-      public function sendNotification(notificationId:int=-1) : void {
+      public function sendNotification(notificationId:int = -1) : void {
          var n:Notification = null;
          if(notificationId == -1)
          {
-            for each (n in this._notificationList)
+            for each(n in this._notificationList)
             {
                if(n)
                {
@@ -79,14 +78,12 @@ package com.ankamagames.dofus.logic.common.managers
             }
             this._notificationList = new Vector.<NotificationManager>();
          }
-         else
+         else if((notificationId >= 0) && (notificationId < this._notificationList.length) && (!(this._notificationList[notificationId] == null)))
          {
-            if((notificationId >= 0) && (notificationId < this._notificationList.length) && (!(this._notificationList[notificationId] == null)))
-            {
-               this.openNotification(this._notificationList[notificationId] as NotificationManager);
-               this._notificationList.splice(notificationId,1);
-            }
+            this.openNotification(this._notificationList[notificationId] as NotificationManager);
+            this._notificationList.splice(notificationId,1);
          }
+         
       }
       
       public function clearAllNotification() : void {
@@ -105,7 +102,7 @@ package com.ankamagames.dofus.logic.common.managers
          }
       }
       
-      public function closeNotification(pName:String, pBlockCallback:Boolean=false) : void {
+      public function closeNotification(pName:String, pBlockCallback:Boolean = false) : void {
          KernelEventsManager.getInstance().processCallback(HookList.CloseNotification,pName,pBlockCallback);
       }
       
@@ -182,7 +179,7 @@ class Notification extends Object
       return this._imageList;
    }
    
-   public function addButton(pTitle:String, pAction:String, pParams:Object=null, pForceClose:Boolean=false, pWidth:Number=0, pHeight:Number=0, pType:String="action") : void {
+   public function addButton(pTitle:String, pAction:String, pParams:Object = null, pForceClose:Boolean = false, pWidth:Number = 0, pHeight:Number = 0, pType:String = "action") : void {
       var btn:Object = new Object();
       btn.label = pTitle;
       btn.action = pAction;
@@ -195,7 +192,7 @@ class Notification extends Object
       this._buttonList.push(btn);
    }
    
-   public function addImage(pClip:Uri, pLabel:String="", pTips:String="", pX:Number=-1, pY:Number=-1, pWidth:Number=-1, pHeight:Number=-1) : void {
+   public function addImage(pClip:Uri, pLabel:String = "", pTips:String = "", pX:Number = -1, pY:Number = -1, pWidth:Number = -1, pHeight:Number = -1) : void {
       var img:Object = new Object();
       img.uri = pClip;
       img.label = pLabel;
@@ -209,7 +206,7 @@ class Notification extends Object
       this._imageList.push(img);
    }
    
-   public function setTimer(val:uint, pause:Boolean=false, pBlockCallbackOnClose:Boolean=false, pNotify:Boolean=true) : void {
+   public function setTimer(val:uint, pause:Boolean = false, pBlockCallbackOnClose:Boolean = false, pNotify:Boolean = true) : void {
       this._duration = val * 1000;
       this.startTime = 0;
       this.pauseOnOver = pause;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 6159;
       }
       
-      public function initGuildMemberSetWarnOnConnectionMessage(enable:Boolean=false) : GuildMemberSetWarnOnConnectionMessage {
+      public function initGuildMemberSetWarnOnConnectionMessage(enable:Boolean = false) : GuildMemberSetWarnOnConnectionMessage {
          this.enable = enable;
          this._isInitialized = true;
          return this;

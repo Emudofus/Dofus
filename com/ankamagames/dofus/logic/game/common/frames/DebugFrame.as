@@ -10,7 +10,6 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.debug.DebugInClientMessage;
    import com.ankamagames.atouin.managers.SelectionManager;
    import com.ankamagames.dofus.network.enums.DebugLevelEnum;
-   import __AS3__.vec.Vector;
    import com.ankamagames.atouin.types.Selection;
    import com.ankamagames.atouin.renderers.ZoneDARenderer;
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
@@ -25,7 +24,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DebugFrame));
+      protected static const _log:Logger;
       
       private var _sName:String;
       
@@ -50,7 +49,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is DebugClearHighlightCellsMessage:
                dchcmsg = msg as DebugClearHighlightCellsMessage;
-               for each (s in this._aZones)
+               for each(s in this._aZones)
                {
                   SelectionManager.getInstance().getSelection(s).remove();
                }
@@ -79,6 +78,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                      break;
                }
                return true;
+            default:
+               return false;
          }
       }
       

@@ -1,7 +1,6 @@
 package com.ankamagames.tiphon.types.cache
 {
    import com.ankamagames.tiphon.types.ScriptedAnimation;
-   import __AS3__.vec.*;
    
    public class AnimCache extends Object
    {
@@ -24,24 +23,20 @@ package com.ankamagames.tiphon.types.cache
          {
             directionModified = 1;
          }
+         else if(direction == 4)
+         {
+            directionModified = 0;
+         }
+         else if(direction == 5)
+         {
+            directionModified = 7;
+         }
          else
          {
-            if(direction == 4)
-            {
-               directionModified = 0;
-            }
-            else
-            {
-               if(direction == 5)
-               {
-                  directionModified = 7;
-               }
-               else
-               {
-                  directionModified = direction;
-               }
-            }
+            directionModified = direction;
          }
+         
+         
          var animList:Vector.<ScriptedAnimation> = this._directions[directionModified];
          if(animList.length)
          {
@@ -56,24 +51,20 @@ package com.ankamagames.tiphon.types.cache
          {
             directionModified = 1;
          }
+         else if(direction == 4)
+         {
+            directionModified = 0;
+         }
+         else if(direction == 5)
+         {
+            directionModified = 7;
+         }
          else
          {
-            if(direction == 4)
-            {
-               directionModified = 0;
-            }
-            else
-            {
-               if(direction == 5)
-               {
-                  directionModified = 7;
-               }
-               else
-               {
-                  directionModified = direction;
-               }
-            }
+            directionModified = direction;
          }
+         
+         
          this._directions[directionModified].push(scriptedAnimation);
       }
    }

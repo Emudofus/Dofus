@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.queues
          return 10;
       }
       
-      public function initLoginQueueStatusMessage(position:uint=0, total:uint=0) : LoginQueueStatusMessage {
+      public function initLoginQueueStatusMessage(position:uint = 0, total:uint = 0) : LoginQueueStatusMessage {
          this.position = position;
          this.total = total;
          this._isInitialized = true;

@@ -35,7 +35,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 6137;
       }
       
-      public function initHouseToSellFilterMessage(areaId:int=0, atLeastNbRoom:uint=0, atLeastNbChest:uint=0, skillRequested:uint=0, maxPrice:uint=0) : HouseToSellFilterMessage {
+      public function initHouseToSellFilterMessage(areaId:int = 0, atLeastNbRoom:uint = 0, atLeastNbChest:uint = 0, skillRequested:uint = 0, maxPrice:uint = 0) : HouseToSellFilterMessage {
          this.areaId = areaId;
          this.atLeastNbRoom = atLeastNbRoom;
          this.atLeastNbChest = atLeastNbChest;

@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6461;
       }
       
-      public function initMimicryObjectErrorMessage(reason:int=0, preview:Boolean=false, errorCode:int=0) : MimicryObjectErrorMessage {
+      public function initMimicryObjectErrorMessage(reason:int = 0, preview:Boolean = false, errorCode:int = 0) : MimicryObjectErrorMessage {
          super.initObjectErrorMessage(reason);
          this.preview = preview;
          this.errorCode = errorCode;

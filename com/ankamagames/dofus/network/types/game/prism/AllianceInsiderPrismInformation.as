@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.prism
          return 431;
       }
       
-      public function initAllianceInsiderPrismInformation(typeId:uint=0, state:uint=1, nextVulnerabilityDate:uint=0, placementDate:uint=0, rewardTokenCount:uint=0, lastTimeSlotModificationDate:uint=0, lastTimeSlotModificationAuthorGuildId:uint=0, lastTimeSlotModificationAuthorId:uint=0, lastTimeSlotModificationAuthorName:String="", hasTeleporterModule:Boolean=false) : AllianceInsiderPrismInformation {
+      public function initAllianceInsiderPrismInformation(typeId:uint = 0, state:uint = 1, nextVulnerabilityDate:uint = 0, placementDate:uint = 0, rewardTokenCount:uint = 0, lastTimeSlotModificationDate:uint = 0, lastTimeSlotModificationAuthorGuildId:uint = 0, lastTimeSlotModificationAuthorId:uint = 0, lastTimeSlotModificationAuthorName:String = "", hasTeleporterModule:Boolean = false) : AllianceInsiderPrismInformation {
          super.initPrismInformation(typeId,state,nextVulnerabilityDate,placementDate,rewardTokenCount);
          this.lastTimeSlotModificationDate = lastTimeSlotModificationDate;
          this.lastTimeSlotModificationAuthorGuildId = lastTimeSlotModificationAuthorGuildId;

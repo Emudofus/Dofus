@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 177;
       }
       
-      public function initBasicDateMessage(day:uint=0, month:uint=0, year:uint=0) : BasicDateMessage {
+      public function initBasicDateMessage(day:uint = 0, month:uint = 0, year:uint = 0) : BasicDateMessage {
          this.day = day;
          this.month = month;
          this.year = year;

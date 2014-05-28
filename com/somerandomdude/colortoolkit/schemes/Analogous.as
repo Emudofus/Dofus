@@ -6,7 +6,7 @@ package com.somerandomdude.colortoolkit.schemes
    public class Analogous extends ColorWheelScheme implements IColorScheme
    {
       
-      public function Analogous(primaryColor:int, angle:Number=10, contrast:Number=25) {
+      public function Analogous(primaryColor:int, angle:Number = 10, contrast:Number = 25) {
          this._angle = angle;
          this._contrast = contrast;
          super(primaryColor);

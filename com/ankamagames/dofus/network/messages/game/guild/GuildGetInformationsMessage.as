@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5550;
       }
       
-      public function initGuildGetInformationsMessage(infoType:uint=0) : GuildGetInformationsMessage {
+      public function initGuildGetInformationsMessage(infoType:uint = 0) : GuildGetInformationsMessage {
          this.infoType = infoType;
          this._isInitialized = true;
          return this;

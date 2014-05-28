@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.spells
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    
    public class Spell extends Object implements IDataCenter
@@ -16,7 +15,7 @@ package com.ankamagames.dofus.datacenter.spells
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Spell));
+      protected static const _log:Logger;
       
       public static const MODULE:String = "Spells";
       
@@ -97,7 +96,7 @@ package com.ankamagames.dofus.datacenter.spells
          return this._spellLevels[level];
       }
       
-      public function getScriptId(critical:Boolean=false) : int {
+      public function getScriptId(critical:Boolean = false) : int {
          if((critical) && (this.scriptIdCritical))
          {
             return this.scriptIdCritical;
@@ -105,7 +104,7 @@ package com.ankamagames.dofus.datacenter.spells
          return this.scriptId;
       }
       
-      public function getParamByName(name:String, critical:Boolean=false) : * {
+      public function getParamByName(name:String, critical:Boolean = false) : * {
          var tmp:Array = null;
          var tmp2:Array = null;
          var param:String = null;
@@ -117,7 +116,7 @@ package com.ankamagames.dofus.datacenter.spells
                if(this.scriptParamsCritical)
                {
                   tmp = this.scriptParamsCritical.split(",");
-                  for each (param in tmp)
+                  for each(param in tmp)
                   {
                      tmp2 = param.split(":");
                      this._indexedCriticalParam[tmp2[0]] = this.getValue(tmp2[1]);
@@ -132,7 +131,7 @@ package com.ankamagames.dofus.datacenter.spells
             if(this.scriptParams)
             {
                tmp = this.scriptParams.split(",");
-               for each (param in tmp)
+               for each(param in tmp)
                {
                   tmp2 = param.split(":");
                   this._indexedParam[tmp2[0]] = this.getValue(tmp2[1]);

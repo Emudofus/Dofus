@@ -1,6 +1,5 @@
 package com.ankamagames.jerakine.utils.misc
 {
-   import __AS3__.vec.*;
    import flash.utils.ByteArray;
    import flash.display.BitmapData;
    import flash.events.Event;
@@ -11,13 +10,16 @@ package com.ankamagames.jerakine.utils.misc
    public class AsyncJPGEncoder extends Object
    {
       
-      public function AsyncJPGEncoder(quality:int=50) {
+      public function AsyncJPGEncoder(quality:int = 50) {
+         this.ZigZag = Vector.<int>([0,1,5,6,14,15,27,28,2,4,7,13,16,26,29,42,3,8,12,17,25,30,41,43,9,11,18,24,31,40,44,53,10,19,23,32,39,45,52,54,20,22,33,38,46,51,55,60,21,34,37,47,50,56,59,61,35,36,48,49,57,58,62,63]);
          this.YTable = new Vector.<int>(64,true);
          this.UVTable = new Vector.<int>(64,true);
          this.outputfDCTQuant = new Vector.<int>(64,true);
          this.fdtbl_Y = new Vector.<Number>(64,true);
          this.fdtbl_UV = new Vector.<Number>(64,true);
+         this.aasf = Vector.<Number>([1,1.387039845,1.306562965,1.175875602,1,0.785694958,0.5411961,0.275899379]);
          this.YQT = Vector.<int>([16,11,10,16,24,40,51,61,12,12,14,19,26,58,60,55,14,13,16,24,40,57,69,56,14,17,22,29,51,87,80,62,18,22,37,56,68,109,103,77,24,35,55,64,81,104,113,92,49,64,78,87,103,121,120,101,72,92,95,98,112,100,103,99]);
+         this.UVQT = Vector.<int>([17,18,24,47,99,99,99,99,18,21,26,66,99,99,99,99,24,26,56,99,99,99,99,99,47,66,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99]);
          this.std_dc_luminance_nrcodes = Vector.<int>([0,0,1,5,1,1,1,1,1,1,0,0,0,0,0,0,0]);
          this.std_dc_luminance_values = Vector.<int>([0,1,2,3,4,5,6,7,8,9,10,11]);
          this.std_ac_luminance_nrcodes = Vector.<int>([0,0,2,1,3,3,2,4,3,5,5,4,4,0,0,1,125]);
@@ -45,7 +47,7 @@ package com.ankamagames.jerakine.utils.misc
          this.init();
       }
       
-      private const ZigZag:Vector.<int> = Vector.<int>([0,1,5,6,14,15,27,28,2,4,7,13,16,26,29,42,3,8,12,17,25,30,41,43,9,11,18,24,31,40,44,53,10,19,23,32,39,45,52,54,20,22,33,38,46,51,55,60,21,34,37,47,50,56,59,61,35,36,48,49,57,58,62,63]);
+      private const ZigZag:Vector.<int>;
       
       private var YTable:Vector.<int>;
       
@@ -59,11 +61,11 @@ package com.ankamagames.jerakine.utils.misc
       
       private var sf:int;
       
-      private const aasf:Vector.<Number> = Vector.<Number>([1,1.387039845,1.306562965,1.175875602,1,0.785694958,0.5411961,0.275899379]);
+      private const aasf:Vector.<Number>;
       
       private var YQT:Vector.<int>;
       
-      private const UVQT:Vector.<int> = Vector.<int>([17,18,24,47,99,99,99,99,18,21,26,66,99,99,99,99,24,26,56,99,99,99,99,99,47,66,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99,99]);
+      private const UVQT:Vector.<int>;
       
       private function initQuantTables(sf:int) : void {
          var i:* = 0;
@@ -80,13 +82,11 @@ package com.ankamagames.jerakine.utils.misc
             {
                t = 1;
             }
-            else
+            else if(t > 255)
             {
-               if(t > 255)
-               {
-                  t = 255;
-               }
+               t = 255;
             }
+            
             this.YTable[this.ZigZag[i]] = t;
             i++;
          }
@@ -98,13 +98,11 @@ package com.ankamagames.jerakine.utils.misc
             {
                u = 1;
             }
-            else
+            else if(u > 255)
             {
-               if(u > 255)
-               {
-                  u = 255;
-               }
+               u = 255;
             }
+            
             this.UVTable[this.ZigZag[i]] = u;
             i++;
          }
@@ -133,28 +131,12 @@ package com.ankamagames.jerakine.utils.misc
       private var UVAC_HT:Vector.<BitString>;
       
       private function computeHuffmanTbl(nrcodes:Vector.<int>, std_table:Vector.<int>) : Vector.<BitString> {
-         var bitString:BitString = null;
-         var j:* = 0;
-         var codevalue:int = 0;
-         var pos_in_table:int = 0;
-         var HT:Vector.<BitString> = new Vector.<BitString>(251,true);
-         var k:int = 1;
-         while(k <= 16)
-         {
-            j = 1;
-            while(j <= nrcodes[k])
-            {
-               HT[std_table[pos_in_table]] = bitString = new BitString();
-               bitString.val = codevalue;
-               bitString.len = k;
-               pos_in_table++;
-               codevalue++;
-               j++;
-            }
-            codevalue = codevalue << 1;
-            k++;
-         }
-         return HT;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private var std_dc_luminance_nrcodes:Vector.<int>;
@@ -193,7 +175,7 @@ package com.ankamagames.jerakine.utils.misc
          var nrupper:int = 2;
          var I15:int = 15;
          var cat:int = 1;
-         while(cat <= I15)
+         while(true)
          {
             nr = nrlower;
             while(nr < nrupper)
@@ -463,12 +445,64 @@ package com.ankamagames.jerakine.utils.misc
       }
       
       private function writeDHT() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var i:* = 0;
+         this.byteout.writeShort(65476);
+         this.byteout.writeShort(418);
+         this.byteout.writeByte(0);
+         var I11:int = 11;
+         var I16:int = 16;
+         var I161:int = 161;
+         i = 0;
+         while(i < I16)
+         {
+            this.byteout.writeByte(this.std_dc_luminance_nrcodes[int(i + 1)]);
+            i++;
+         }
+         i = 0;
+         while(i <= I11)
+         {
+            this.byteout.writeByte(this.std_dc_luminance_values[int(i)]);
+            i++;
+         }
+         this.byteout.writeByte(16);
+         i = 0;
+         while(i < I16)
+         {
+            this.byteout.writeByte(this.std_ac_luminance_nrcodes[int(i + 1)]);
+            i++;
+         }
+         i = 0;
+         while(i <= I161)
+         {
+            this.byteout.writeByte(this.std_ac_luminance_values[int(i)]);
+            i++;
+         }
+         this.byteout.writeByte(1);
+         i = 0;
+         while(i < I16)
+         {
+            this.byteout.writeByte(this.std_dc_chrominance_nrcodes[int(i + 1)]);
+            i++;
+         }
+         i = 0;
+         while(i <= I11)
+         {
+            this.byteout.writeByte(this.std_dc_chrominance_values[int(i)]);
+            i++;
+         }
+         this.byteout.writeByte(17);
+         i = 0;
+         while(i < I16)
+         {
+            this.byteout.writeByte(this.std_ac_chrominance_nrcodes[int(i + 1)]);
+            i++;
+         }
+         i = 0;
+         while(i <= I161)
+         {
+            this.byteout.writeByte(this.std_ac_chrominance_values[int(i)]);
+            i++;
+         }
       }
       
       private function writeSOS() : void {
@@ -489,12 +523,75 @@ package com.ankamagames.jerakine.utils.misc
       var DU:Vector.<int>;
       
       private function processDU(CDU:Vector.<Number>, fdtbl:Vector.<Number>, DC:Number, HTDC:Vector.<BitString>, HTAC:Vector.<BitString>) : Number {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: ExecutionException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var pos:* = 0;
+         var lng:* = 0;
+         var startpos:* = 0;
+         var nrzeroes:* = 0;
+         var nrmarker:* = 0;
+         var EOB:BitString = HTAC[0];
+         var M16zeroes:BitString = HTAC[240];
+         var I16:int = 16;
+         var I63:int = 63;
+         var I64:int = 64;
+         var DU_DCT:Vector.<int> = this.fDCTQuant(CDU,fdtbl);
+         var j:int = 0;
+         while(j < I64)
+         {
+            this.DU[this.ZigZag[j]] = DU_DCT[j];
+            j++;
+         }
+         var Diff:int = this.DU[0] - DC;
+         var DC:Number = this.DU[0];
+         if(Diff == 0)
+         {
+            this.writeBits(HTDC[0]);
+         }
+         else
+         {
+            pos = int(32767 + Diff);
+            this.writeBits(HTDC[this.category[pos]]);
+            this.writeBits(this.bitcode[pos]);
+         }
+         var end0pos:int = 63;
+         while((end0pos > 0) && (this.DU[end0pos] == 0))
+         {
+            end0pos--;
+         }
+         if(end0pos == 0)
+         {
+            this.writeBits(EOB);
+            return DC;
+         }
+         var i:int = 1;
+         while(i <= end0pos)
+         {
+            startpos = i;
+            while((this.DU[i] == 0) && (i <= end0pos))
+            {
+               i++;
+            }
+            nrzeroes = i - startpos;
+            if(nrzeroes >= I16)
+            {
+               lng = nrzeroes >> 4;
+               nrmarker = 1;
+               while(nrmarker <= lng)
+               {
+                  this.writeBits(M16zeroes);
+                  nrmarker++;
+               }
+               nrzeroes = int(nrzeroes & 15);
+            }
+            pos = int(32767 + this.DU[i]);
+            this.writeBits(HTAC[int((nrzeroes << 4) + this.category[pos])]);
+            this.writeBits(this.bitcode[pos]);
+            i++;
+         }
+         if(end0pos != I63)
+         {
+            this.writeBits(EOB);
+         }
+         return DC;
       }
       
       private var YDU:Vector.<Number>;
@@ -512,7 +609,7 @@ package com.ankamagames.jerakine.utils.misc
          var pos:int = 0;
          var I8:int = 8;
          var y:int = 0;
-         while(y < I8)
+         while(true)
          {
             x = 0;
             while(x < I8)
@@ -565,31 +662,31 @@ package com.ankamagames.jerakine.utils.misc
                this._ypos = this._ypos + 8;
                if(this._ypos >= this._height)
                {
-                  EnterFrameDispatcher.removeEventListener(this.process);
-                  this.endProcess();
-                  return;
+                  break;
                }
             }
             if(getTimer() - currentTime > this._maxTime)
             {
-               break;
+               lastTime = currentTime - this._lastFrame;
+               this._lastFrame = currentTime;
+               if(lastTime > 20)
+               {
+                  this._maxTime = this._maxTime - 2;
+                  if(this._maxTime < 1)
+                  {
+                     this._maxTime = 1;
+                  }
+               }
+               else
+               {
+                  this._maxTime++;
+               }
+               FpsManager.getInstance().stopTracking("processJPG");
+               return;
             }
          }
-         var lastTime:int = currentTime - this._lastFrame;
-         this._lastFrame = currentTime;
-         if(lastTime > 20)
-         {
-            this._maxTime = this._maxTime - 2;
-            if(this._maxTime < 1)
-            {
-               this._maxTime = 1;
-            }
-         }
-         else
-         {
-            this._maxTime++;
-         }
-         FpsManager.getInstance().stopTracking("processJPG");
+         EnterFrameDispatcher.removeEventListener(this.process);
+         this.endProcess();
       }
       
       private var _width:int;

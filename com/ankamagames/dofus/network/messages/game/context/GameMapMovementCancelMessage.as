@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 953;
       }
       
-      public function initGameMapMovementCancelMessage(cellId:uint=0) : GameMapMovementCancelMessage {
+      public function initGameMapMovementCancelMessage(cellId:uint = 0) : GameMapMovementCancelMessage {
          this.cellId = cellId;
          this._isInitialized = true;
          return this;

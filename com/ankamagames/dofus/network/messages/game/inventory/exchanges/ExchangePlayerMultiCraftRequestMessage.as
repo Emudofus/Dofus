@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5784;
       }
       
-      public function initExchangePlayerMultiCraftRequestMessage(exchangeType:int=0, target:uint=0, skillId:uint=0) : ExchangePlayerMultiCraftRequestMessage {
+      public function initExchangePlayerMultiCraftRequestMessage(exchangeType:int = 0, target:uint = 0, skillId:uint = 0) : ExchangePlayerMultiCraftRequestMessage {
          super.initExchangeRequestMessage(exchangeType);
          this.target = target;
          this.skillId = skillId;

@@ -49,7 +49,7 @@ package com.ankamagames.berilia.components
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
       protected static const SEARCH_DELAY:int = 1000;
       
@@ -362,6 +362,8 @@ package com.ankamagames.berilia.components
                   case SelectMethodEnum.AUTO:
                   case SelectMethodEnum.MANUAL:
                      break;
+                  default:
+                     this.showList(false);
                }
                break;
             case msg is MouseDownMessage:
@@ -373,13 +375,11 @@ package com.ankamagames.berilia.components
                      this._list.moveTo(this._list.selectedIndex);
                   }
                }
-               else
+               else if(MouseDownMessage(msg).target == this._button)
                {
-                  if(MouseDownMessage(msg).target == this._button)
-                  {
-                     this.showList(false);
-                  }
+                  this.showList(false);
                }
+               
                this._searchString = "";
                break;
             case msg is MouseWheelMessage:
@@ -461,14 +461,14 @@ package com.ankamagames.berilia.components
          {
             if(show)
             {
-               for each (listener in Berilia.getInstance().UISoundListeners)
+               for each(listener in Berilia.getInstance().UISoundListeners)
                {
                   listener.playUISound("16012");
                }
             }
             else
             {
-               for each (listener2 in Berilia.getInstance().UISoundListeners)
+               for each(listener2 in Berilia.getInstance().UISoundListeners)
                {
                   listener2.playUISound("16013");
                }
@@ -479,7 +479,7 @@ package com.ankamagames.berilia.components
          this._previousState = show;
       }
       
-      protected function searchStringInCB(searchPhrase:String, startIndex:int=0) : void {
+      protected function searchStringInCB(searchPhrase:String, startIndex:int = 0) : void {
          var i:* = 0;
          this._searchTimer.reset();
          this._searchTimer.start();

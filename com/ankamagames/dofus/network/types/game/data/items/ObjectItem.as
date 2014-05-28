@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.types.game.data.items
 {
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.types.game.data.items
          return 37;
       }
       
-      public function initObjectItem(position:uint=63, objectGID:uint=0, effects:Vector.<ObjectEffect>=null, objectUID:uint=0, quantity:uint=0) : ObjectItem {
+      public function initObjectItem(position:uint = 63, objectGID:uint = 0, effects:Vector.<ObjectEffect> = null, objectUID:uint = 0, quantity:uint = 0) : ObjectItem {
          this.position = position;
          this.objectGID = objectGID;
          this.effects = effects;

@@ -51,6 +51,8 @@ package com.ankamagames.jerakine.data
                _dataFilesLoaded = true;
                _loadedFileCount++;
                break;
+            default:
+               super.onLoaded(e);
          }
       }
    }

@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.internalDatacenter.spells
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
    import com.ankamagames.dofus.datacenter.effects.Effect;
@@ -18,7 +17,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
          var category:* = 0;
          super();
          this._categories = new Array();
-         for each (buff in buffs)
+         for each(buff in buffs)
          {
             effect = buff.effects;
             effectData = Effect.getEffectById(effect.effectId);
@@ -48,7 +47,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
       public function get categories() : Array {
          var c:String = null;
          var cat:Array = new Array();
-         for (c in this._categories)
+         for(c in this._categories)
          {
             if((this._categories[c].length > 0) && (cat[c] == null))
             {
@@ -74,7 +73,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
          {
             this._categories[category] = new Array();
          }
-         for each (b in this._categories[category])
+         for each(b in this._categories[category])
          {
             e = Effect.getEffectById(buff.actionId);
             if((e.useDice) && (b.actionId == buff.actionId) && (buff.trigger == false) && (!(buff is StateBuff)))

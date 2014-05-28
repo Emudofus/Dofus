@@ -23,24 +23,22 @@ package com.ankamagames.jerakine.cache
             this._nWarnMemory = warn;
             this._nMaxMemory = max;
          }
+         else if(this._nCheckMemorySystem == CHECK_OBJECT_COUNT)
+         {
+            this._nWarnCount = warn;
+            this._nMaxCount = max;
+         }
          else
          {
-            if(this._nCheckMemorySystem == CHECK_OBJECT_COUNT)
-            {
-               this._nWarnCount = warn;
-               this._nMaxCount = max;
-            }
-            else
-            {
-               _log.error("ERROR ! You have to choose a cache size verification system. Objects\'s counter will be used by default.");
-               this._nCheckMemorySystem = CHECK_OBJECT_COUNT;
-               this._nWarnCount = 750;
-               this._nMaxCount = 1000;
-            }
+            _log.error("ERROR ! You have to choose a cache size verification system. Objects\'s counter will be used by default.");
+            this._nCheckMemorySystem = CHECK_OBJECT_COUNT;
+            this._nWarnCount = 750;
+            this._nMaxCount = 1000;
          }
+         
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Cache));
+      protected static const _log:Logger;
       
       public static const CHECK_SYSTEM_MEMORY:uint = 1;
       
@@ -161,19 +159,12 @@ package com.ankamagames.jerakine.cache
       }
       
       public function clear() : void {
-         var o:ICachable = null;
-         var s:String = null;
-         for (s in this._dicIndexObject)
-         {
-            o = this._dicIndexObject[s];
-            if(o)
-            {
-               delete this._dicCache[[o]];
-               delete this._dicIndexObject[[this.getIndex(o)]];
-               this._nObjectCount--;
-               o.destroy();
-            }
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       public function containsCachable(type:Class, name:String) : Boolean {
@@ -236,7 +227,7 @@ package com.ankamagames.jerakine.cache
          var s:String = null;
          var _oldestObj:* = undefined;
          var minDate:int = getTimer();
-         for (s in this._dicIndexObject)
+         for(s in this._dicIndexObject)
          {
             if(!ICachable(this._dicIndexObject[s]).inUse)
             {
@@ -250,8 +241,8 @@ package com.ankamagames.jerakine.cache
          if((!(_oldestObj == null)) && (!(_oldestObj["name"] == null)))
          {
             _log.error("Objet " + _oldestObj["name"] + " supprimé du cache.");
-            delete this._dicCache[[_oldestObj]];
-            delete this._dicIndexObject[[this.getIndex(_oldestObj)]];
+            delete this._dicCache[_oldestObj];
+            delete this._dicIndexObject[this.getIndex(_oldestObj)];
             _oldestObj["destroy"]();
             this._nObjectCount--;
             return true;

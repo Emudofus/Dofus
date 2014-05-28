@@ -12,9 +12,9 @@ package com.ankamagames.jerakine.console
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ConsolesManager));
+      protected static const _log:Logger;
       
-      private static var _consoles:Dictionary = new Dictionary();
+      private static var _consoles:Dictionary;
       
       public static function getConsole(id:String) : ConsoleHandler {
          return _consoles[id];

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 6453;
       }
       
-      public function initPrismFightRemovedMessage(subAreaId:uint=0) : PrismFightRemovedMessage {
+      public function initPrismFightRemovedMessage(subAreaId:uint = 0) : PrismFightRemovedMessage {
          this.subAreaId = subAreaId;
          this._isInitialized = true;
          return this;

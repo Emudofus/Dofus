@@ -14,9 +14,9 @@ package com.ankamagames.dofus.types.data
          }
       }
       
-      private static var _cmdList:Array = [];
+      private static var _cmdList:Array;
       
-      private static var _cmdByName:Array = [];
+      private static var _cmdByName:Array;
       
       public static function get commandList() : Array {
          return _cmdList;
@@ -28,7 +28,7 @@ package com.ankamagames.dofus.types.data
          var bMatch:* = false;
          var i:uint = 0;
          var aMatch:Array = new Array();
-         for (sCmd in _cmdByName)
+         for(sCmd in _cmdByName)
          {
             if(sCmd.indexOf(cmd) == 0)
             {
@@ -46,7 +46,7 @@ package com.ankamagames.dofus.types.data
                {
                   break;
                }
-               for each (sCmd in aMatch)
+               for each(sCmd in aMatch)
                {
                   bMatch = (bMatch) && (sCmd.indexOf(aMatch[0].substr(0,i)) == 0);
                   if(!bMatch)
@@ -70,7 +70,7 @@ package com.ankamagames.dofus.types.data
       public static function getAutoCompletePossibilities(cmd:String) : Array {
          var sCmd:String = null;
          var aMatch:Array = new Array();
-         for (sCmd in _cmdByName)
+         for(sCmd in _cmdByName)
          {
             if(sCmd.indexOf(cmd) == 0)
             {

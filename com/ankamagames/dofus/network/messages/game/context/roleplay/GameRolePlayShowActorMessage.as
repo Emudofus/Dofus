@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 5632;
       }
       
-      public function initGameRolePlayShowActorMessage(informations:GameRolePlayActorInformations=null) : GameRolePlayShowActorMessage {
+      public function initGameRolePlayShowActorMessage(informations:GameRolePlayActorInformations = null) : GameRolePlayShowActorMessage {
          this.informations = informations;
          this._isInitialized = true;
          return this;

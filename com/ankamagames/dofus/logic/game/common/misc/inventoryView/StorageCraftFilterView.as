@@ -20,10 +20,10 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          super(hookLock);
          var recipies:Array = Recipe.getAllRecipesForSkillId(skillId,slotCount);
          this._ingredients = new Dictionary();
-         for each (recipe in recipies)
+         for each(recipe in recipies)
          {
             selected = false;
-            for each (id in recipe.recipe.ingredientIds)
+            for each(id in recipe.recipe.ingredientIds)
             {
                this._ingredients[id] = true;
             }

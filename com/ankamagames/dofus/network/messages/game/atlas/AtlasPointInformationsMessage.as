@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.atlas
          return 5956;
       }
       
-      public function initAtlasPointInformationsMessage(type:AtlasPointsInformations=null) : AtlasPointInformationsMessage {
+      public function initAtlasPointInformationsMessage(type:AtlasPointsInformations = null) : AtlasPointInformationsMessage {
          this.type = type;
          this._isInitialized = true;
          return this;

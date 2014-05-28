@@ -18,7 +18,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
       
       public static const DIFFERENT:String = "!";
       
-      public static const OPERATORS_LIST:Array = [SUPERIOR,INFERIOR,EQUAL,DIFFERENT,"#","~","s","S","e","E","v","i","X","/"];
+      public static const OPERATORS_LIST:Array;
       
       private var _operator:String;
       

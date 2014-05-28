@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
          return 6495;
       }
       
-      public function initPortalDialogQuestionMessage(availableUseLeft:uint=0, closeDate:uint=0) : PortalDialogQuestionMessage {
+      public function initPortalDialogQuestionMessage(availableUseLeft:uint = 0, closeDate:uint = 0) : PortalDialogQuestionMessage {
          this.availableUseLeft = availableUseLeft;
          this.closeDate = closeDate;
          this._isInitialized = true;

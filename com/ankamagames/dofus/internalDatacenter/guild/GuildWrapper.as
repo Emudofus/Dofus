@@ -8,7 +8,6 @@ package com.ankamagames.dofus.internalDatacenter.guild
    import com.ankamagames.dofus.network.types.game.social.AlliancedGuildFactSheetInformations;
    import com.ankamagames.dofus.network.types.game.guild.GuildEmblem;
    import com.ankamagames.jerakine.data.I18n;
-   import __AS3__.vec.*;
    
    public class GuildWrapper extends Object implements IDataCenter
    {
@@ -17,7 +16,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          super();
       }
       
-      private static var _ref:Dictionary = new Dictionary();
+      private static var _ref:Dictionary;
       
       public static const IS_BOSS:String = "isBoss";
       
@@ -55,9 +54,9 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       public static const TALK_IN_ALLIANCE_CHANNEL:String = "talkInAllianceChannel";
       
-      public static const guildRights:Array = new Array(IS_BOSS,MANAGE_GUILD_BOOSTS,MANAGE_RIGHTS,MANAGE_LIGHT_RIGHTS,INVITE_NEW_MEMBERS,BAN_MEMBERS,MANAGE_XP_CONTRIBUTION,MANAGE_RANKS,HIRE_TAX_COLLECTOR,MANAGE_MY_XP_CONTRIBUTION,COLLECT,USE_FARMS,ORGANIZE_FARMS,TAKE_OTHERS_RIDES_IN_FARM,PRIORITIZE_DEFENSE,COLLECT_MY_TAX_COLLECTORS,SET_ALLIANCE_PRISM,TALK_IN_ALLIANCE_CHANNEL);
+      public static const guildRights:Array;
       
-      public static var _rightDictionnary:Dictionary = new Dictionary();
+      public static var _rightDictionnary:Dictionary;
       
       public static function clearCache() : void {
          _ref = new Dictionary();
@@ -83,23 +82,21 @@ package com.ankamagames.dofus.internalDatacenter.guild
             o.leaderId = gvi.leaderId;
             o.nbMembers = gvi.nbMembers;
          }
-         else
+         else if(msg is BasicGuildInformations)
          {
-            if(msg is BasicGuildInformations)
+            o._guildName = BasicGuildInformations(msg).guildName;
+            if(msg is GuildInformations)
             {
-               o._guildName = BasicGuildInformations(msg).guildName;
-               if(msg is GuildInformations)
-               {
-                  o.backEmblem = EmblemWrapper.fromNetwork(GuildInformations(msg).guildEmblem,true);
-                  o.upEmblem = EmblemWrapper.fromNetwork(GuildInformations(msg).guildEmblem,false);
-               }
-               if(msg is AlliancedGuildFactSheetInformations)
-               {
-                  o.alliance = AllianceWrapper.getFromNetwork(AlliancedGuildFactSheetInformations(msg).allianceInfos);
-                  o.allianceTag = o.alliance.allianceTag;
-               }
+               o.backEmblem = EmblemWrapper.fromNetwork(GuildInformations(msg).guildEmblem,true);
+               o.upEmblem = EmblemWrapper.fromNetwork(GuildInformations(msg).guildEmblem,false);
+            }
+            if(msg is AlliancedGuildFactSheetInformations)
+            {
+               o.alliance = AllianceWrapper.getFromNetwork(AlliancedGuildFactSheetInformations(msg).allianceInfos);
+               o.allianceTag = o.alliance.allianceTag;
             }
          }
+         
          return o;
       }
       
@@ -128,10 +125,10 @@ package com.ankamagames.dofus.internalDatacenter.guild
          var wantToSet:* = false;
          var pRight:String = null;
          var rightNumber:Number = 0;
-         for each (right in guildRights)
+         for each(right in guildRights)
          {
             wantToSet = false;
-            for each (pRight in pRightsIDs)
+            for each(pRight in pRightsIDs)
             {
                if(pRight == right)
                {

@@ -34,7 +34,7 @@ package com.ankamagames.dofus.datacenter.effects
       
       private static const UNKNOWN_NAME:String = "???";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EffectInstance));
+      protected static const _log:Logger;
       
       private static const UNDEFINED_CATEGORY:int = -2;
       
@@ -515,24 +515,20 @@ package com.ankamagames.dofus.datacenter.effects
                   {
                      aTmp[0] = I18n.getUiText("ui.petWeight.fat",[aTmp[1]]);
                   }
+                  else if(aTmp[2] > 6)
+                  {
+                     aTmp[0] = I18n.getUiText("ui.petWeight.lean",[aTmp[2]]);
+                  }
+                  else if((this is EffectInstanceInteger) && (aTmp[0] > 6))
+                  {
+                     aTmp[0] = I18n.getUiText("ui.petWeight.lean",[aTmp[0]]);
+                  }
                   else
                   {
-                     if(aTmp[2] > 6)
-                     {
-                        aTmp[0] = I18n.getUiText("ui.petWeight.lean",[aTmp[2]]);
-                     }
-                     else
-                     {
-                        if((this is EffectInstanceInteger) && (aTmp[0] > 6))
-                        {
-                           aTmp[0] = I18n.getUiText("ui.petWeight.lean",[aTmp[0]]);
-                        }
-                        else
-                        {
-                           aTmp[0] = I18n.getUiText("ui.petWeight.nominal");
-                        }
-                     }
+                     aTmp[0] = I18n.getUiText("ui.petWeight.nominal");
                   }
+                  
+                  
                   break;
                case 807:
                   if(aTmp[0])
@@ -603,6 +599,8 @@ package com.ankamagames.dofus.datacenter.effects
                      case LanguageEnum.LANG_EN:
                         aTmp[0] = nMonth + "/" + nDay + "/" + nYear + " " + nHours + ":" + nMinutes;
                         break;
+                     default:
+                        aTmp[0] = nMonth + "/" + nDay + "/" + nYear + " " + nHours + ":" + nMinutes;
                   }
                   break;
             }

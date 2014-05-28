@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5803;
       }
       
-      public function initExchangeBidHouseTypeMessage(type:uint=0) : ExchangeBidHouseTypeMessage {
+      public function initExchangeBidHouseTypeMessage(type:uint = 0) : ExchangeBidHouseTypeMessage {
          this.type = type;
          this._isInitialized = true;
          return this;

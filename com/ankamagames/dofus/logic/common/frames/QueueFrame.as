@@ -18,7 +18,7 @@ package com.ankamagames.dofus.logic.common.frames
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(QueueFrame));
+      protected static const _log:Logger;
       
       public function get priority() : int {
          return Priority.NORMAL;
@@ -41,11 +41,18 @@ package com.ankamagames.dofus.logic.common.frames
                qsMsg = msg as QueueStatusMessage;
                KernelEventsManager.getInstance().processCallback(HookList.QueueStatus,qsMsg.position,qsMsg.total);
                return true;
+            default:
+               return false;
          }
       }
       
       public function pulled() : Boolean {
-         return true;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: NullPointerException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
    }
 }

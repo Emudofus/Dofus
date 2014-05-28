@@ -5,7 +5,7 @@ package com.somerandomdude.colortoolkit.spaces
    public class RGB extends CoreColor implements IColorSpace
    {
       
-      public function RGB(r:Number=0, g:Number=0, b:Number=0) {
+      public function RGB(r:Number = 0, g:Number = 0, b:Number = 0) {
          super();
          this._red = Math.min(255,Math.max(r,0));
          this._green = Math.min(255,Math.max(g,0));

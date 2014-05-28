@@ -38,10 +38,12 @@ package com.ankamagames.dofus.console.debug
                return "Calculate the CRC32 checksum of a given string.";
             case "md5":
                return "Calculate the MD5 hash of a given string.";
+            default:
+               return "No help for command \'" + cmd + "\'";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

@@ -196,7 +196,7 @@ package com.ankamagames.berilia.components
          }
          else
          {
-            delete this._manualExternalLink[[linkPattern]];
+            delete this._manualExternalLink[linkPattern];
          }
          this.modifyDOM(this._htmlLoader.window.document);
       }
@@ -290,7 +290,7 @@ package com.ankamagames.berilia.components
       private function removeHtmlEvent() : void {
          var link:Object = null;
          var input:Object = null;
-         for each (link in this._linkList)
+         for each(link in this._linkList)
          {
             try
             {
@@ -301,7 +301,7 @@ package com.ankamagames.berilia.components
                continue;
             }
          }
-         for each (input in this._inputList)
+         for each(input in this._inputList)
          {
             try
             {
@@ -364,7 +364,7 @@ package com.ankamagames.berilia.components
       
       private function isManualExternalLink(link:String) : Boolean {
          var pattern:RegExp = null;
-         for each (pattern in this._manualExternalLink)
+         for each(pattern in this._manualExternalLink)
          {
             if(link.match(pattern).length)
             {

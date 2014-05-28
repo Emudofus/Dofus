@@ -16,7 +16,7 @@ package com.ankamagames.dofus.misc.utils
    public class RpcServiceManager extends EventDispatcher
    {
       
-      public function RpcServiceManager(pServiceName:String="", pType:String="") {
+      public function RpcServiceManager(pServiceName:String = "", pType:String = "") {
          super();
          if(pServiceName != "")
          {
@@ -28,7 +28,7 @@ package com.ankamagames.dofus.misc.utils
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RpcServiceManager));
+      protected static const _log:Logger;
       
       public static const SERVER_ERROR:String = "InternalServerError";
       
@@ -95,6 +95,8 @@ package com.ankamagames.dofus.misc.utils
                case "object":
                   _log.error((!(de.error.type == null)?de.error.type:de.error.code) + " -> " + de.error.message);
                   break;
+               default:
+                  _log.error("ERROR RPC SERVICE: " + de.error);
             }
             return false;
          }
@@ -181,8 +183,8 @@ package com.ankamagames.dofus.misc.utils
                break;
             case "xmlrpc":
             case "xml":
+            default:
                this._type = "xml";
-               break;
          }
       }
       

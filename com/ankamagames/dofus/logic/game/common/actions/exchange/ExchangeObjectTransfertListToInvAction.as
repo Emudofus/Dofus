@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.logic.game.common.actions.exchange
 {
    import com.ankamagames.jerakine.handlers.messages.Action;
-   import __AS3__.vec.Vector;
    
    public class ExchangeObjectTransfertListToInvAction extends Object implements Action
    {

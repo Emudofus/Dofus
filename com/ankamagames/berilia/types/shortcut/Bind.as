@@ -6,7 +6,7 @@ package com.ankamagames.berilia.types.shortcut
    public class Bind extends Object implements IDataCenter
    {
       
-      public function Bind(sKey:String=null, targetedShortcut:String="", bAlt:Boolean=false, bCtrl:Boolean=false, bShift:Boolean=false) {
+      public function Bind(sKey:String = null, targetedShortcut:String = "", bAlt:Boolean = false, bCtrl:Boolean = false, bShift:Boolean = false) {
          super();
          if(sKey)
          {
@@ -60,7 +60,7 @@ package com.ankamagames.berilia.types.shortcut
       }
       
       public function equals(s:Bind) : Boolean {
-         return (((s) && (s.key == null && this.key == null || !(this.key == null) && !(s.key == null) && s.key.toLocaleUpperCase() == this.key.toLocaleUpperCase())) && (s.alt == this.alt)) && (s.ctrl == this.ctrl) && (s.shift == this.shift);
+         return (s && (s.key == null && this.key == null || !(this.key == null) && !(s.key == null) && s.key.toLocaleUpperCase() == this.key.toLocaleUpperCase()) && s.alt == this.alt) && (s.ctrl == this.ctrl) && (s.shift == this.shift);
       }
       
       public function reset() : void {

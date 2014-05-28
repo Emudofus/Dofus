@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.common.basic
          return 182;
       }
       
-      public function initBasicPingMessage(quiet:Boolean=false) : BasicPingMessage {
+      public function initBasicPingMessage(quiet:Boolean = false) : BasicPingMessage {
          this.quiet = quiet;
          this._isInitialized = true;
          return this;

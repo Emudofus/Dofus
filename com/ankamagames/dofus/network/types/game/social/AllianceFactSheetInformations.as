@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.social
          return 421;
       }
       
-      public function initAllianceFactSheetInformations(allianceId:uint=0, allianceTag:String="", allianceName:String="", allianceEmblem:GuildEmblem=null, creationDate:uint=0) : AllianceFactSheetInformations {
+      public function initAllianceFactSheetInformations(allianceId:uint = 0, allianceTag:String = "", allianceName:String = "", allianceEmblem:GuildEmblem = null, creationDate:uint = 0) : AllianceFactSheetInformations {
          super.initAllianceInformations(allianceId,allianceTag,allianceName,allianceEmblem);
          this.creationDate = creationDate;
          return this;

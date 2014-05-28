@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 48;
       }
       
-      public function initGameFightTaxCollectorInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, firstNameId:uint=0, lastNameId:uint=0, level:uint=0) : GameFightTaxCollectorInformations {
+      public function initGameFightTaxCollectorInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, teamId:uint = 2, wave:uint = 0, alive:Boolean = false, stats:GameFightMinimalStats = null, firstNameId:uint = 0, lastNameId:uint = 0, level:uint = 0) : GameFightTaxCollectorInformations {
          super.initGameFightAIInformations(contextualId,look,disposition,teamId,wave,alive,stats);
          this.firstNameId = firstNameId;
          this.lastNameId = lastNameId;

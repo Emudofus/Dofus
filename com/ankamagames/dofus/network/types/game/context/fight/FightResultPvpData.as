@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 190;
       }
       
-      public function initFightResultPvpData(grade:uint=0, minHonorForGrade:uint=0, maxHonorForGrade:uint=0, honor:uint=0, honorDelta:int=0) : FightResultPvpData {
+      public function initFightResultPvpData(grade:uint = 0, minHonorForGrade:uint = 0, maxHonorForGrade:uint = 0, honor:uint = 0, honorDelta:int = 0) : FightResultPvpData {
          this.grade = grade;
          this.minHonorForGrade = minHonorForGrade;
          this.maxHonorForGrade = maxHonorForGrade;

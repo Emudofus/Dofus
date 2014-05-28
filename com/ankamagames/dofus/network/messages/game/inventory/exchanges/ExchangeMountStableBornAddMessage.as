@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5966;
       }
       
-      public function initExchangeMountStableBornAddMessage(mountDescription:MountClientData=null) : ExchangeMountStableBornAddMessage {
+      public function initExchangeMountStableBornAddMessage(mountDescription:MountClientData = null) : ExchangeMountStableBornAddMessage {
          super.initExchangeMountStableAddMessage(mountDescription);
          this._isInitialized = true;
          return this;

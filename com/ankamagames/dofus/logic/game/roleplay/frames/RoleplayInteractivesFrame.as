@@ -47,7 +47,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.network.enums.MapObstacleStateEnum;
    import com.ankamagames.dofus.logic.game.roleplay.messages.InteractiveElementMouseOutMessage;
    import flash.utils.clearTimeout;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.entities.interfaces.IMovable;
    import flash.display.InteractiveObject;
    import flash.events.MouseEvent;
@@ -112,41 +111,41 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          }
       }
       
-      private static const INTERACTIVE_CURSOR_0:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_0;
+      private static const INTERACTIVE_CURSOR_0:Class;
       
-      private static const INTERACTIVE_CURSOR_1:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_1;
+      private static const INTERACTIVE_CURSOR_1:Class;
       
-      private static const INTERACTIVE_CURSOR_2:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_2;
+      private static const INTERACTIVE_CURSOR_2:Class;
       
-      private static const INTERACTIVE_CURSOR_3:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_3;
+      private static const INTERACTIVE_CURSOR_3:Class;
       
-      private static const INTERACTIVE_CURSOR_4:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_4;
+      private static const INTERACTIVE_CURSOR_4:Class;
       
-      private static const INTERACTIVE_CURSOR_5:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_5;
+      private static const INTERACTIVE_CURSOR_5:Class;
       
-      private static const INTERACTIVE_CURSOR_6:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_6;
+      private static const INTERACTIVE_CURSOR_6:Class;
       
-      private static const INTERACTIVE_CURSOR_7:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_7;
+      private static const INTERACTIVE_CURSOR_7:Class;
       
-      private static const INTERACTIVE_CURSOR_8:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_8;
+      private static const INTERACTIVE_CURSOR_8:Class;
       
-      private static const INTERACTIVE_CURSOR_9:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_9;
+      private static const INTERACTIVE_CURSOR_9:Class;
       
-      private static const INTERACTIVE_CURSOR_10:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_10;
+      private static const INTERACTIVE_CURSOR_10:Class;
       
-      private static const INTERACTIVE_CURSOR_DISABLED:Class = RoleplayInteractivesFrame_INTERACTIVE_CURSOR_DISABLED;
+      private static const INTERACTIVE_CURSOR_DISABLED:Class;
       
-      private static var cursorList:Array = new Array();
+      private static var cursorList:Array;
       
       private static var cursorClassList:Array;
       
-      private static const INTERACTIVE_CURSOR_OFFSET:Point = new Point(0,0);
+      private static const INTERACTIVE_CURSOR_OFFSET:Point;
       
       private static const INTERACTIVE_CURSOR_NAME:String = "interactiveCursor";
       
       private static const LUMINOSITY_FACTOR:Number = 1.2;
       
-      private static const LUMINOSITY_EFFECTS:ColorMatrixFilter = new ColorMatrixFilter([LUMINOSITY_FACTOR,0,0,0,0,0,LUMINOSITY_FACTOR,0,0,0,0,0,LUMINOSITY_FACTOR,0,0,0,0,0,1,0]);
+      private static const LUMINOSITY_EFFECTS:ColorMatrixFilter;
       
       private static const ALPHA_MODIFICATOR:Number = 0.2;
       
@@ -158,9 +157,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       
       public static var currentlyHighlighted:Sprite;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RoleplayInteractivesFrame));
+      protected static const _log:Logger;
       
-      public static function getCursor(id:int, pEnabled:Boolean=true, pCache:Boolean=true) : Sprite {
+      public static function getCursor(id:int, pEnabled:Boolean = true, pCache:Boolean = true) : Sprite {
          var cross:Sprite = null;
          var cursor:Sprite = null;
          var cursorClass:Class = null;
@@ -204,13 +203,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             {
                cursor.addChild(cross);
             }
-            else
+            else if(cursor.numChildren > 1)
             {
-               if(cursor.numChildren > 1)
-               {
-                  cursor.removeChildAt(0);
-               }
+               cursor.removeChildAt(0);
             }
+            
             return cursor;
          }
          return new INTERACTIVE_CURSOR_0();
@@ -314,19 +311,17 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             case msg is InteractiveMapUpdateMessage:
                imumsg = msg as InteractiveMapUpdateMessage;
                this.clear();
-               for each (ie in imumsg.interactiveElements)
+               for each(ie in imumsg.interactiveElements)
                {
                   if(ie.enabledSkills.length)
                   {
                      this.registerInteractive(ie,ie.enabledSkills[0].skillId);
                   }
-                  else
+                  else if(ie.disabledSkills.length)
                   {
-                     if(ie.disabledSkills.length)
-                     {
-                        this.registerInteractive(ie,ie.disabledSkills[0].skillId);
-                     }
+                     this.registerInteractive(ie,ie.disabledSkills[0].skillId);
                   }
+                  
                }
                return true;
             case msg is InteractiveElementUpdatedMessage:
@@ -335,17 +330,15 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                {
                   this.registerInteractive(ieumsg.interactiveElement,ieumsg.interactiveElement.enabledSkills[0].skillId);
                }
+               else if(ieumsg.interactiveElement.disabledSkills.length)
+               {
+                  this.registerInteractive(ieumsg.interactiveElement,ieumsg.interactiveElement.disabledSkills[0].skillId);
+               }
                else
                {
-                  if(ieumsg.interactiveElement.disabledSkills.length)
-                  {
-                     this.registerInteractive(ieumsg.interactiveElement,ieumsg.interactiveElement.disabledSkills[0].skillId);
-                  }
-                  else
-                  {
-                     this.removeInteractive(ieumsg.interactiveElement);
-                  }
+                  this.removeInteractive(ieumsg.interactiveElement);
                }
+               
                return true;
             case msg is InteractiveUsedMessage:
                iumsg = msg as InteractiveUsedMessage;
@@ -428,7 +421,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                return true;
             case msg is StatedMapUpdateMessage:
                smumsg = msg as StatedMapUpdateMessage;
-               for each (se in smumsg.statedElements)
+               for each(se in smumsg.statedElements)
                {
                   this.updateStatedElement(se,true);
                }
@@ -439,7 +432,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                return true;
             case msg is MapObstacleUpdateMessage:
                moumsg = msg as MapObstacleUpdateMessage;
-               for each (mo in moumsg.obstacles)
+               for each(mo in moumsg.obstacles)
                {
                   InteractiveCellManager.getInstance().updateCell(mo.obstacleCellId,mo.state == MapObstacleStateEnum.OBSTACLE_OPENED);
                }
@@ -447,7 +440,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             case msg is InteractiveUseEndedMessage:
                iuemsg = InteractiveUseEndedMessage(msg);
                this.interactiveUsageFinished(this._entities[iuemsg.elemId],iuemsg.elemId,iuemsg.skillId);
-               delete this._entities[[iuemsg.elemId]];
+               delete this._entities[iuemsg.elemId];
                return true;
             case msg is InteractiveElementMouseOverMessage:
                iemimsg = msg as InteractiveElementMouseOverMessage;
@@ -461,6 +454,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                this.resetInteractiveApparence();
                currentlyHighlighted = null;
                return false;
+            default:
+               return false;
          }
       }
       
@@ -469,7 +464,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       public function pulled() : Boolean {
          var sprite:* = undefined;
          var ts:TiphonSprite = null;
-         for (sprite in this._collectableSpritesToBeStopped)
+         for(sprite in this._collectableSpritesToBeStopped)
          {
             ts = sprite as TiphonSprite;
             if(ts)
@@ -494,11 +489,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       public function clear() : void {
          var timeout:* = 0;
          var obj:Object = null;
-         for each (timeout in this._currentUsages)
+         for each(timeout in this._currentUsages)
          {
             clearTimeout(timeout);
          }
-         for each (obj in this._ie)
+         for each(obj in this._ie)
          {
             this.removeInteractive(obj.element as InteractiveElement);
          }
@@ -507,7 +502,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       public function getInteractiveElementsCells() : Vector.<uint> {
          var cellObj:Object = null;
          var cells:Vector.<uint> = new Vector.<uint>();
-         for each (cellObj in this._ie)
+         for each(cellObj in this._ie)
          {
             if(cellObj != null)
             {
@@ -524,7 +519,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       public function isElementChangingState(pElementId:int) : Boolean {
          var animData:Object = null;
          var changing:Boolean = false;
-         for each (animData in this._statedElementsTargetAnimation)
+         for each(animData in this._statedElementsTargetAnimation)
          {
             if(animData.elemId == pElementId)
             {
@@ -601,7 +596,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          if(entitiesFrame)
          {
             found = false;
-            for (s in entitiesFrame.interactiveElements)
+            for(s in entitiesFrame.interactiveElements)
             {
                cie = entitiesFrame.interactiveElements[int(s)];
                if(cie.elementId == ie.elementId)
@@ -654,10 +649,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          {
             this.resetInteractiveApparence();
          }
-         delete this._ie[[interactiveElement]];
+         delete this._ie[interactiveElement];
       }
       
-      private function updateStatedElement(se:StatedElement, global:Boolean=false) : void {
+      private function updateStatedElement(se:StatedElement, global:Boolean = false) : void {
          var interactive:Interactive = null;
          var worldObject:InteractiveObject = Atouin.getInstance().getIdentifiedElement(se.elementId);
          if(!worldObject)
@@ -695,7 +690,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          }
          else
          {
-            delete this._collectableSpritesToBeStopped[[ts]];
+            delete this._collectableSpritesToBeStopped[ts];
          }
          ts.setAnimationAndDirection("AnimState" + se.elementState,0,global);
       }
@@ -727,7 +722,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          return null;
       }
       
-      private function highlightInteractiveApparence(ie:Sprite, firstSkill:int, pSkillIsEnabled:Boolean=true) : void {
+      private function highlightInteractiveApparence(ie:Sprite, firstSkill:int, pSkillIsEnabled:Boolean = true) : void {
          var lcd:LinkedCursorData = null;
          var infos:Object = this._ie[ie];
          if(!infos)
@@ -761,7 +756,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          currentlyHighlighted = ie;
       }
       
-      private function resetInteractiveApparence(removeIcon:Boolean=true) : void {
+      private function resetInteractiveApparence(removeIcon:Boolean = true) : void {
          if(currentlyHighlighted == null)
          {
             return;
@@ -770,13 +765,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          {
             FiltersManager.getInstance().removeEffect((currentlyHighlighted.getChildAt(0) as TiphonSprite).rawAnimation,LUMINOSITY_EFFECTS);
          }
-         else
+         else if(removeIcon)
          {
-            if(removeIcon)
-            {
-               FiltersManager.getInstance().removeEffect(currentlyHighlighted,LUMINOSITY_EFFECTS);
-            }
+            FiltersManager.getInstance().removeEffect(currentlyHighlighted,LUMINOSITY_EFFECTS);
          }
+         
          if(removeIcon)
          {
             LinkedCursorSpriteManager.getInstance().removeItem(INTERACTIVE_CURSOR_NAME);
@@ -812,150 +805,12 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       }
       
       private function click(me:MouseEvent) : void {
-         var skillNameStr:String = null;
-         var enabledSkill:InteractiveElementSkill = null;
-         var jobsApi:JobsApi = null;
-         var skillDisabledData:Skill = null;
-         var jobsDetails:Array = null;
-         var disabledSkill:InteractiveElementSkill = null;
-         var nbSkillsAvailable:* = 0;
-         var skillIndex:* = 0;
-         var skill:Object = null;
-         var details:Object = null;
-         var knownJob:KnownJob = null;
-         var currentJobLevel:* = 0;
-         var weapon:WeaponWrapper = null;
-         var job:Job = null;
-         var isAlreadyChecked:* = false;
-         var j:Object = null;
-         if((!this.roleplayWorldFrame) || (!this.roleplayContextFrame.hasWorldInteraction))
-         {
-            return;
-         }
-         TooltipManager.hide();
-         var ie:Object = this._ie[me.target as Sprite];
-         var interactive:Interactive = null;
-         if(ie.element.elementTypeId > 0)
-         {
-            interactive = Interactive.getInteractiveById(ie.element.elementTypeId);
-         }
-         var skills:Array = [];
-         for each (enabledSkill in ie.element.enabledSkills)
-         {
-            if(enabledSkill is InteractiveElementNamedSkill)
-            {
-               skillNameStr = SkillName.getSkillNameById((enabledSkill as InteractiveElementNamedSkill).nameId).name;
-            }
-            else
-            {
-               skillNameStr = Skill.getSkillById(enabledSkill.skillId).name;
-            }
-            skills.push(
-               {
-                  "id":enabledSkill.skillId,
-                  "instanceId":enabledSkill.skillInstanceUid,
-                  "name":skillNameStr,
-                  "enabled":true
-               });
-         }
-         jobsApi = new JobsApi();
-         jobsDetails = new Array();
-         for each (disabledSkill in ie.element.disabledSkills)
-         {
-            if(disabledSkill is InteractiveElementNamedSkill)
-            {
-               skillNameStr = SkillName.getSkillNameById((disabledSkill as InteractiveElementNamedSkill).nameId).name;
-            }
-            else
-            {
-               skillNameStr = Skill.getSkillById(disabledSkill.skillId).name;
-            }
-            skillDisabledData = Skill.getSkillById(disabledSkill.skillId);
-            skillNameStr = skillDisabledData.name;
-            if(skillDisabledData.parentJobId != 1)
-            {
-               knownJob = jobsApi.getKnownJob(skillDisabledData.parentJobId);
-               if(knownJob == null)
-               {
-                  details = new Object();
-                  details.job = skillDisabledData.parentJob.name;
-                  details.jobId = skillDisabledData.parentJob.id;
-                  details.type = "job";
-                  details.value = [skillDisabledData.parentJob.name];
-               }
-               else
-               {
-                  currentJobLevel = knownJob.jobExperience.jobLevel;
-                  if(currentJobLevel < skillDisabledData.levelMin)
-                  {
-                     details = new Object();
-                     details.job = skillDisabledData.parentJob.name;
-                     details.jobId = skillDisabledData.parentJob.id;
-                     details.type = "level";
-                     details.value = [skillDisabledData.parentJob.name,skillDisabledData.levelMin,currentJobLevel];
-                  }
-                  else
-                  {
-                     weapon = PlayedCharacterApi.getWeapon();
-                     job = skillDisabledData.parentJob;
-                     if((weapon == null) || (job.toolIds.indexOf(weapon.id) == -1))
-                     {
-                        details = new Object();
-                        details.job = skillDisabledData.parentJob.name;
-                        details.jobId = skillDisabledData.parentJob.id;
-                        details.type = "tool";
-                        details.value = [skillDisabledData.parentJob.name];
-                     }
-                  }
-               }
-               if(details != null)
-               {
-                  isAlreadyChecked = false;
-                  for each (j in jobsDetails)
-                  {
-                     if(j.jobId == details.jobId)
-                     {
-                        isAlreadyChecked = true;
-                        break;
-                     }
-                  }
-                  if(!isAlreadyChecked)
-                  {
-                     jobsDetails.push(details);
-                  }
-               }
-               skills.push(
-                  {
-                     "id":disabledSkill.skillId,
-                     "instanceId":disabledSkill.skillInstanceUid,
-                     "name":skillNameStr,
-                     "enabled":false
-                  });
-            }
-         }
-         nbSkillsAvailable = 0;
-         for each (skill in skills)
-         {
-            if(skill.enabled)
-            {
-               skillIndex = skills.indexOf(skill);
-               nbSkillsAvailable++;
-            }
-         }
-         if(nbSkillsAvailable == 1)
-         {
-            this.skillClicked(ie,skills[skillIndex].instanceId);
-            return;
-         }
-         if((nbSkillsAvailable > 0) && (skills.length > 1))
-         {
-            this._modContextMenu = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
-            this._modContextMenu.createContextMenu(MenusFactory.create(skills,"skill",[ie,interactive]));
-         }
-         if(nbSkillsAvailable == 0)
-         {
-            this.showInteractiveElementNotification(jobsDetails);
-         }
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function showInteractiveElementNotification(dataTab:Array) : void {
@@ -980,7 +835,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             {
                noToolsStr = "";
                noLvlStr = "";
-               for each (data in jobKnown)
+               for each(data in jobKnown)
                {
                   if(data.type == "level")
                   {
@@ -988,15 +843,13 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                      noLvlStr = noLvlStr + I18n.getUiText("ui.skill.levelLowJob",data.value);
                      noLvlStr = noLvlStr + (jobKnown.length > 1?"</li>":"");
                   }
-                  else
+                  else if(data.type == "tool")
                   {
-                     if(data.type == "tool")
-                     {
-                        noToolsStr = noToolsStr + (jobKnown.length > 1?"<li>":"");
-                        noToolsStr = noToolsStr + data.value[0];
-                        noToolsStr = noToolsStr + (jobKnown.length > 1?"</li>":"");
-                     }
+                     noToolsStr = noToolsStr + (jobKnown.length > 1?"<li>":"");
+                     noToolsStr = noToolsStr + data.value[0];
+                     noToolsStr = noToolsStr + (jobKnown.length > 1?"</li>":"");
                   }
+                  
                }
                if(noLvlStr != "")
                {
@@ -1021,7 +874,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   npcCoords = mapApi.getMapCoords(83889152);
                }
                jobsNotKnown = "";
-               for each (data in dataTab)
+               for each(data in dataTab)
                {
                   jobsNotKnown = jobsNotKnown + ((dataTab.length > 1?"<li>":"") + data.value[0] + (dataTab.length > 1?"</li>":""));
                }
@@ -1047,7 +900,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       private function getJobKnown(data:Array) : Array {
          var pb:Object = null;
          var newData:Array = new Array();
-         for each (pb in data)
+         for each(pb in data)
          {
             if(pb.type != "job")
             {
@@ -1066,6 +919,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                return I18n.getUiText("ui.skill.levelLow",data);
             case "tool":
                return I18n.getUiText("ui.skill.toolNeeded",data);
+            default:
+               return null;
          }
       }
       
@@ -1108,7 +963,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             {
                Kernel.getWorker().process(new InteractiveElementMouseOverMessage(this._ie[currentlyHighlighted].element,currentlyHighlighted));
             }
-            delete this._statedElementsTargetAnimation[[ts]];
+            delete this._statedElementsTargetAnimation[ts];
          }
       }
    }

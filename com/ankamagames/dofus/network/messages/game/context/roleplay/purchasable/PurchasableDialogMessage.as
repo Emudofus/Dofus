@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.purchasable
          return 5739;
       }
       
-      public function initPurchasableDialogMessage(buyOrSell:Boolean=false, purchasableId:uint=0, price:uint=0) : PurchasableDialogMessage {
+      public function initPurchasableDialogMessage(buyOrSell:Boolean = false, purchasableId:uint = 0, price:uint = 0) : PurchasableDialogMessage {
          this.buyOrSell = buyOrSell;
          this.purchasableId = purchasableId;
          this.price = price;

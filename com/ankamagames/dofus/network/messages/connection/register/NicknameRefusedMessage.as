@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.connection.register
          return 5638;
       }
       
-      public function initNicknameRefusedMessage(reason:uint=99) : NicknameRefusedMessage {
+      public function initNicknameRefusedMessage(reason:uint = 99) : NicknameRefusedMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

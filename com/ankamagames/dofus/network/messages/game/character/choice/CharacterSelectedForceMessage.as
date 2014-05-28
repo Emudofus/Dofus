@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 6068;
       }
       
-      public function initCharacterSelectedForceMessage(id:int=0) : CharacterSelectedForceMessage {
+      public function initCharacterSelectedForceMessage(id:int = 0) : CharacterSelectedForceMessage {
          this.id = id;
          this._isInitialized = true;
          return this;

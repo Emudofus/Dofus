@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.atlas.compass
          return 6013;
       }
       
-      public function initCompassUpdatePvpSeekMessage(type:uint=0, coords:MapCoordinates=null, memberId:uint=0, memberName:String="") : CompassUpdatePvpSeekMessage {
+      public function initCompassUpdatePvpSeekMessage(type:uint = 0, coords:MapCoordinates = null, memberId:uint = 0, memberName:String = "") : CompassUpdatePvpSeekMessage {
          super.initCompassUpdateMessage(type,coords);
          this.memberId = memberId;
          this.memberName = memberName;

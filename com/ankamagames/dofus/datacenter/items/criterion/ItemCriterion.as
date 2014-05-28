@@ -4,7 +4,6 @@ package com.ankamagames.dofus.datacenter.items.criterion
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.jerakine.utils.misc.StringUtils;
@@ -19,7 +18,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
          this.getInfos();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ItemCriterion));
+      protected static const _log:Logger;
       
       protected var _serverCriterionForm:String;
       
@@ -72,6 +71,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
             case "Ct":
                readableCriterionRef = I18n.getUiText("ui.stats.takleEvade");
                break;
+            default:
+               readableCriterionRef = StringUtils.replace(this._criterionRef,["CS","Cs","CV","Cv","CA","Ca","CI","Ci","CW","Cw","CC","Cc","CA","PG","PJ","Pj","PM","PA","PN","PE","<NO>","PS","PR","PL","PK","Pg","Pr","Ps","Pa","PP","PZ","CM","Qa"],I18n.getUiText("ui.item.characteristics").split(","));
          }
          return readableCriterionRef + " " + this._operator.text + " " + this._criterionValue;
       }
@@ -87,7 +88,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
       
       protected function getInfos() : void {
          var operator:String = null;
-         for each (operator in ItemCriterionOperator.OPERATORS_LIST)
+         for each(operator in ItemCriterionOperator.OPERATORS_LIST)
          {
             if(this._serverCriterionForm.indexOf(operator) == 2)
             {

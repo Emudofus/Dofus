@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.chat
          return 880;
       }
       
-      public function initChatAbstractServerMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="") : ChatAbstractServerMessage {
+      public function initChatAbstractServerMessage(channel:uint = 0, content:String = "", timestamp:uint = 0, fingerprint:String = "") : ChatAbstractServerMessage {
          this.channel = channel;
          this.content = content;
          this.timestamp = timestamp;

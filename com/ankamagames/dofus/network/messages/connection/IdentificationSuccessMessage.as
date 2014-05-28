@@ -44,7 +44,7 @@ package com.ankamagames.dofus.network.messages.connection
          return 22;
       }
       
-      public function initIdentificationSuccessMessage(login:String="", nickname:String="", accountId:uint=0, communityId:uint=0, hasRights:Boolean=false, secretQuestion:String="", subscriptionEndDate:Number=0, wasAlreadyConnected:Boolean=false, accountCreation:Number=0) : IdentificationSuccessMessage {
+      public function initIdentificationSuccessMessage(login:String = "", nickname:String = "", accountId:uint = 0, communityId:uint = 0, hasRights:Boolean = false, secretQuestion:String = "", subscriptionEndDate:Number = 0, wasAlreadyConnected:Boolean = false, accountCreation:Number = 0) : IdentificationSuccessMessage {
          this.login = login;
          this.nickname = nickname;
          this.accountId = accountId;

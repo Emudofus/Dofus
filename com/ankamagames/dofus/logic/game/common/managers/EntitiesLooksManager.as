@@ -37,7 +37,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(EntitiesLooksManager));
+      private static const _log:Logger;
       
       private static var _self:EntitiesLooksManager;
       
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          var breed:Breed = null;
          var bone:uint = pLook.getBone();
          var breeds:Array = Breed.getBreeds();
-         for each (breed in breeds)
+         for each(breed in breeds)
          {
             if(breed.creatureBonesId == bone)
             {
@@ -109,7 +109,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          var incarnations:Array = Incarnation.getAllIncarnation();
          var entityLookStr:String = pLook.toString();
          var boneId:String = entityLookStr.slice(1,entityLookStr.indexOf("|"));
-         for each (incarnation in incarnations)
+         for each(incarnation in incarnations)
          {
             boneIdMale = incarnation.lookMale.slice(1,incarnation.lookMale.indexOf("|"));
             boneIdFemale = incarnation.lookFemale.slice(1,incarnation.lookFemale.indexOf("|"));
@@ -126,7 +126,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          return char?char.look.clone():null;
       }
       
-      public function getRealTiphonEntityLook(pEntityId:int, pWithoutMount:Boolean=false) : TiphonEntityLook {
+      public function getRealTiphonEntityLook(pEntityId:int, pWithoutMount:Boolean = false) : TiphonEntityLook {
          var entityLook:EntityLook = null;
          var infos:GameContextActorInformations = null;
          var riderLook:TiphonEntityLook = null;
@@ -163,12 +163,12 @@ package com.ankamagames.dofus.logic.game.common.managers
          return infos?this.getLookFromContextInfos(infos,true):null;
       }
       
-      public function getLookFromContext(pEntityId:int, pForceCreature:Boolean=false) : TiphonEntityLook {
+      public function getLookFromContext(pEntityId:int, pForceCreature:Boolean = false) : TiphonEntityLook {
          var infos:GameContextActorInformations = this._entitiesFrame?this._entitiesFrame.getEntityInfos(pEntityId):null;
          return infos?this.getLookFromContextInfos(infos,pForceCreature):null;
       }
       
-      public function getLookFromContextInfos(pInfos:GameContextActorInformations, pForceCreature:Boolean=false) : TiphonEntityLook {
+      public function getLookFromContextInfos(pInfos:GameContextActorInformations, pForceCreature:Boolean = false) : TiphonEntityLook {
          var gfci:GameFightCompanionInformations = null;
          var companion:Companion = null;
          var gfmi:GameFightMonsterInformations = null;
@@ -198,23 +198,21 @@ package com.ankamagames.dofus.logic.game.common.managers
                      {
                         breedId = Breed.getBreedFromSkin(charLook.firstSkin).id;
                      }
-                     else
+                     else if(!boneCorrect)
                      {
-                        if(!boneCorrect)
+                        switch(charLook.getBone())
                         {
-                           switch(charLook.getBone())
-                           {
-                              case 453:
-                                 breedId = 12;
-                                 break;
-                              case 706:
-                              case 1504:
-                              case 1509:
-                                 look.setBone(CreatureBoneType.getPlayerIncarnationCreatureBone());
-                                 break;
-                           }
+                           case 453:
+                              breedId = 12;
+                              break;
+                           case 706:
+                           case 1504:
+                           case 1509:
+                              look.setBone(CreatureBoneType.getPlayerIncarnationCreatureBone());
+                              break;
                         }
                      }
+                     
                      if(breedId > 0)
                      {
                         look.setBone(Breed.getBreedById(breedId).creatureBonesId);
@@ -251,24 +249,20 @@ package com.ankamagames.dofus.logic.game.common.managers
                   {
                      fightCreatureBone = CreatureBoneType.getMonsterInvocationCreatureBone();
                   }
+                  else if(m.isBoss)
+                  {
+                     fightCreatureBone = CreatureBoneType.getBossMonsterCreatureBone();
+                  }
+                  else if(isPrism)
+                  {
+                     fightCreatureBone = CreatureBoneType.getPrismCreatureBone();
+                  }
                   else
                   {
-                     if(m.isBoss)
-                     {
-                        fightCreatureBone = CreatureBoneType.getBossMonsterCreatureBone();
-                     }
-                     else
-                     {
-                        if(isPrism)
-                        {
-                           fightCreatureBone = CreatureBoneType.getPrismCreatureBone();
-                        }
-                        else
-                        {
-                           fightCreatureBone = CreatureBoneType.getMonsterCreatureBone();
-                        }
-                     }
+                     fightCreatureBone = CreatureBoneType.getMonsterCreatureBone();
                   }
+                  
+                  
                   look.setBone(fightCreatureBone);
                   break;
                case pInfos is GameRolePlayActorInformations:

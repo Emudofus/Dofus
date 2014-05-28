@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6423;
       }
       
-      public function initAllianceFactsErrorMessage(allianceId:uint=0) : AllianceFactsErrorMessage {
+      public function initAllianceFactsErrorMessage(allianceId:uint = 0) : AllianceFactsErrorMessage {
          this.allianceId = allianceId;
          this._isInitialized = true;
          return this;

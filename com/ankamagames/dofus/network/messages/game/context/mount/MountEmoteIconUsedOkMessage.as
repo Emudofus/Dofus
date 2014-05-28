@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 5978;
       }
       
-      public function initMountEmoteIconUsedOkMessage(mountId:int=0, reactionType:uint=0) : MountEmoteIconUsedOkMessage {
+      public function initMountEmoteIconUsedOkMessage(mountId:int = 0, reactionType:uint = 0) : MountEmoteIconUsedOkMessage {
          this.mountId = mountId;
          this.reactionType = reactionType;
          this._isInitialized = true;

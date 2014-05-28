@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6004;
       }
       
-      public function initExchangeObjectUseInWorkshopMessage(objectUID:uint=0, quantity:int=0) : ExchangeObjectUseInWorkshopMessage {
+      public function initExchangeObjectUseInWorkshopMessage(objectUID:uint = 0, quantity:int = 0) : ExchangeObjectUseInWorkshopMessage {
          this.objectUID = objectUID;
          this.quantity = quantity;
          this._isInitialized = true;

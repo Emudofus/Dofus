@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
          return 6308;
       }
       
-      public function initMountReleasedMessage(mountId:Number=0) : MountReleasedMessage {
+      public function initMountReleasedMessage(mountId:Number = 0) : MountReleasedMessage {
          this.mountId = mountId;
          this._isInitialized = true;
          return this;

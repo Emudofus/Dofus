@@ -20,7 +20,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 409;
       }
       
-      public function initHumanOptionGuild(guildInformations:GuildInformations=null) : HumanOptionGuild {
+      public function initHumanOptionGuild(guildInformations:GuildInformations = null) : HumanOptionGuild {
          this.guildInformations = guildInformations;
          return this;
       }

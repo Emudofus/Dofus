@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions
          super();
       }
       
-      public static function create(pType:uint, pForceOpen:String="") : OpenSmileysAction {
+      public static function create(pType:uint, pForceOpen:String = "") : OpenSmileysAction {
          var a:OpenSmileysAction = new OpenSmileysAction();
          a.type = pType;
          a.forceOpen = pForceOpen;

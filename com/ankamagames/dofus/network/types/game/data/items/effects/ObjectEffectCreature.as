@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 71;
       }
       
-      public function initObjectEffectCreature(actionId:uint=0, monsterFamilyId:uint=0) : ObjectEffectCreature {
+      public function initObjectEffectCreature(actionId:uint = 0, monsterFamilyId:uint = 0) : ObjectEffectCreature {
          super.initObjectEffect(actionId);
          this.monsterFamilyId = monsterFamilyId;
          return this;

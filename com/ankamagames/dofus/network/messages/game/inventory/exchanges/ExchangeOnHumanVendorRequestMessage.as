@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5772;
       }
       
-      public function initExchangeOnHumanVendorRequestMessage(humanVendorId:uint=0, humanVendorCell:uint=0) : ExchangeOnHumanVendorRequestMessage {
+      public function initExchangeOnHumanVendorRequestMessage(humanVendorId:uint = 0, humanVendorCell:uint = 0) : ExchangeOnHumanVendorRequestMessage {
          this.humanVendorId = humanVendorId;
          this.humanVendorCell = humanVendorCell;
          this._isInitialized = true;

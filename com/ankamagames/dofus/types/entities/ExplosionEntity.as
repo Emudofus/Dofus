@@ -24,7 +24,7 @@ package com.ankamagames.dofus.types.entities
    public class ExplosionEntity extends Sprite implements IEntity
    {
       
-      public function ExplosionEntity(fxUri:Uri, startColors:Array, particleCount:uint=40, explode:Boolean=false, type:uint=2) {
+      public function ExplosionEntity(fxUri:Uri, startColors:Array, particleCount:uint = 40, explode:Boolean = false, type:uint = 2) {
          var c:uint = 0;
          var t:ColorTransform = null;
          this._renderer = new DisplayObjectRenderer();
@@ -36,7 +36,7 @@ package com.ankamagames.dofus.types.entities
          if((startColors) && (startColors.length))
          {
             this._transformColor = [];
-            for each (c in startColors)
+            for each(c in startColors)
             {
                t = new ColorTransform();
                t.color = c;
@@ -50,23 +50,21 @@ package com.ankamagames.dofus.types.entities
          {
             MAX_PARTICLES = 0;
          }
+         else if(OptionManager.getOptionManager("dofus").dofusQuality >= 2)
+         {
+            MAX_PARTICLES = 800;
+         }
          else
          {
-            if(OptionManager.getOptionManager("dofus").dofusQuality >= 2)
-            {
-               MAX_PARTICLES = 800;
-            }
-            else
-            {
-               MAX_PARTICLES = 400;
-            }
+            MAX_PARTICLES = 400;
          }
+         
          this._fxLoader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
          this._fxLoader.addEventListener(ResourceLoadedEvent.LOADED,this.onResourceReady);
          this._fxLoader.load(fxUri);
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ExplosionEntity));
+      protected static const _log:Logger;
       
       public static const TYPE_CLASSIC:uint = 0;
       
@@ -80,11 +78,11 @@ package com.ankamagames.dofus.types.entities
       
       private static var _running:Boolean;
       
-      private static var _particules:Dictionary = new Dictionary();
+      private static var _particules:Dictionary;
       
       private static function onFrame(e:Event) : void {
          var p:IParticule = null;
-         for each (p in _particules)
+         for each(p in _particules)
          {
             p.update();
          }
@@ -125,7 +123,7 @@ package com.ankamagames.dofus.types.entities
          addEventListener(Event.ADDED_TO_STAGE,this.onAdded);
       }
       
-      private function createParticle(container:DisplayObjectContainer, count:uint, transformColor:Array, type:uint, subExplosionRatio:Number, fxClass:Array, deathCallback:Function, xStart:Number=0, yStart:Number=0) : void {
+      private function createParticle(container:DisplayObjectContainer, count:uint, transformColor:Array, type:uint, subExplosionRatio:Number, fxClass:Array, deathCallback:Function, xStart:Number = 0, yStart:Number = 0) : void {
          var p:DisplayObject = null;
          var pType:uint = 0;
          var colorIndex:uint = 0;
@@ -186,7 +184,7 @@ package com.ankamagames.dofus.types.entities
          {
             particule.sprite.parent.removeChild(particule.sprite);
          }
-         delete _particules[[particule.sprite]];
+         delete _particules[particule.sprite];
          CURRENT_PARTICLES--;
          if(mustExplose)
          {

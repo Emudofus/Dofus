@@ -3,7 +3,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
    public class FightEvent extends Object
    {
       
-      public function FightEvent(pName:String, pParams:Array, pTargetId:int, pCheckParams:int, pCastingSpellId:int, pOrder:int=-1, pFirstParamToCheck:int=1) {
+      public function FightEvent(pName:String, pParams:Array, pTargetId:int, pCheckParams:int, pCastingSpellId:int, pOrder:int = -1, pFirstParamToCheck:int = 1) {
          super();
          this.name = pName;
          this.targetId = pTargetId;

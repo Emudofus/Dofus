@@ -6,7 +6,7 @@ package com.ankamagames.tubul.events
    public class PlaylistEvent extends Event
    {
       
-      public function PlaylistEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+      public function PlaylistEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) {
          super(type,bubbles,cancelable);
       }
       

@@ -32,7 +32,7 @@ package com.ankamagames.dofus.console.chat
                if(args.length > 0)
                {
                   message = "";
-                  for each (s in args)
+                  for each(s in args)
                   {
                      message = message + (s + " ");
                   }
@@ -87,10 +87,12 @@ package com.ankamagames.dofus.console.chat
                return "- /" + I18n.getUiText("ui.chat.status.availiable").toLocaleLowerCase() + I18n.getUiText("ui.common.colon") + I18n.getUiText("ui.chat.status.availiabletooltip");
             case "release":
                return I18n.getUiText("ui.common.freeSoul");
+            default:
+               return I18n.getUiText("ui.chat.console.noHelp",[cmd]);
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

@@ -9,7 +9,6 @@ package com.ankamagames.tubul.types
    import flash.utils.Dictionary;
    import flash.utils.ByteArray;
    import flash.events.Event;
-   import __AS3__.vec.*;
    import flash.events.SampleDataEvent;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.utils.getTimer;
@@ -30,7 +29,7 @@ package com.ankamagames.tubul.types
       
       public static const MAXIMAL_LENGTH_TO_MERGE:uint = 10000;
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(SoundMerger));
+      private static const _log:Logger;
       
       private var _output:Sound;
       
@@ -67,13 +66,11 @@ package com.ankamagames.tubul.types
                this.setSilence(true);
             }
          }
-         else
+         else if(this._directlyPlayed[sw])
          {
-            if(this._directlyPlayed[sw])
-            {
-               this.directStop(sw);
-            }
+            this.directStop(sw);
          }
+         
       }
       
       private function init() : void {
@@ -115,7 +112,7 @@ package com.ankamagames.tubul.types
          if(this._directlyPlayed[sw] != null)
          {
             this._directChannels[this._directlyPlayed[sw]] = null;
-            delete this._directChannels[[this._directlyPlayed[sw]]];
+            delete this._directChannels[this._directlyPlayed[sw]];
          }
          this._directlyPlayed[sw] = directChannel;
          this._directChannels[directChannel] = sw;
@@ -125,7 +122,7 @@ package com.ankamagames.tubul.types
          }
       }
       
-      private function directStop(sw:SoundWrapper, eventDispatched:Boolean=false) : void {
+      private function directStop(sw:SoundWrapper, eventDispatched:Boolean = false) : void {
          var directChannel:SoundChannel = this._directlyPlayed[sw];
          directChannel.removeEventListener(Event.SOUND_COMPLETE,this.directSoundComplete);
          directChannel.stop();
@@ -134,8 +131,8 @@ package com.ankamagames.tubul.types
          {
             sw.dispatchEvent(new Event(Event.SOUND_COMPLETE));
          }
-         delete this._directlyPlayed[[sw]];
-         delete this._directChannels[[directChannel]];
+         delete this._directlyPlayed[sw];
+         delete this._directChannels[directChannel];
          if((StageShareManager.stage.hasEventListener(Event.ENTER_FRAME)) && (this._directChannels.length == 0))
          {
             StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
@@ -143,183 +140,44 @@ package com.ankamagames.tubul.types
       }
       
       private function sampleData(sde:SampleDataEvent) : void {
-         var previousPosition:uint = 0;
-         var samplesRemaining:* = NaN;
-         var samplesExtracted:* = NaN;
-         var cutValueR:* = NaN;
-         var cutValueL:* = NaN;
-         var cutSamples:uint = 0;
-         var cuttingPosition:uint = 0;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
+      }
+      
+      private function sampleSilence(sde:SampleDataEvent) : void {
          var i:uint = 0;
-         var j:uint = 0;
-         var k:uint = 0;
-         var baHolder:ByteArray = null;
-         var sw:SoundWrapper = null;
-         var extractFinished:* = false;
-         var l:* = NaN;
-         var r:* = NaN;
-         var sl:* = NaN;
-         var sr:* = NaN;
-         var firstPass:* = false;
-         var startSampleData:uint = getTimer();
-         var out:ByteArray = sde.data;
-         j = 0;
-         while(j < this._soundsCount)
+         while(i < SILENCE_SAMPLES_BUFFER_SIZE)
          {
-            sw = this._sounds[j] as SoundWrapper;
-            if(!sw._extractFinished)
-            {
-               samplesRemaining = DATA_SAMPLES_BUFFER_SIZE;
-               previousPosition = sw.soundData.position;
-               firstPass = true;
-               do
-               {
-                     if((previousPosition == 0) && (firstPass))
-                     {
-                        samplesExtracted = sw.sound.extract(sw.soundData,samplesRemaining,0);
-                     }
-                     else
-                     {
-                        samplesExtracted = sw.sound.extract(sw.soundData,samplesRemaining);
-                     }
-                     firstPass = false;
-                     extractFinished = !(samplesExtracted == samplesRemaining);
-                     if((!sw.hadBeenCut) && ((sw.loops == 0) || (sw.loops > 1)))
-                     {
-                        sw.currentLoop++;
-                        sw.soundData.position = cuttingPosition;
-                        i = 0;
-                        while(i < samplesExtracted)
-                        {
-                           cutValueR = sw.soundData.readFloat();
-                           cutValueL = sw.soundData.readFloat();
-                           if((cutValueR > 0.001) || (cutValueR < -0.001) || (cutValueL > 0.001) || (cutValueL < -0.001))
-                           {
-                              sw.hadBeenCut = true;
-                              break;
-                           }
-                           i++;
-                        }
-                        cutSamples = i + 1;
-                        i = i + 1;
-                        while(i < samplesExtracted)
-                        {
-                           this._cuttingBytes.writeFloat(sw.soundData.readFloat());
-                           this._cuttingBytes.writeFloat(sw.soundData.readFloat());
-                           i++;
-                        }
-                        if(this._cuttingBytes.length > 0)
-                        {
-                           samplesRemaining = samplesRemaining + cutSamples;
-                           baHolder = sw.soundData;
-                           sw.soundData = this._cuttingBytes;
-                           this._cuttingBytes = baHolder;
-                           this._cuttingBytes.clear();
-                        }
-                        else
-                        {
-                           cuttingPosition = cuttingPosition + DATA_SAMPLES_BUFFER_SIZE * 8;
-                           samplesRemaining = samplesRemaining + DATA_SAMPLES_BUFFER_SIZE;
-                        }
-                     }
-                     if(extractFinished)
-                     {
-                        sw.extractFinished();
-                        break;
-                     }
-                     samplesRemaining = samplesRemaining - samplesExtracted;
-                  }while(samplesRemaining > 0);
-                  
-                  sw.soundData.position = previousPosition;
-               }
-               j++;
-            }
-            i = 0;
-            while(i < DATA_SAMPLES_BUFFER_SIZE)
-            {
-               l = r = 0.0;
-               j = 0;
-               while(j < this._soundsCount)
-               {
-                  if(i == 0)
-                  {
-                     sw.checkSoundPosition();
-                  }
-                  sw = this._sounds[j] as SoundWrapper;
-                  if(sw.soundData.bytesAvailable < 8)
-                  {
-                     if((sw.loops == 0) || (sw.loops > 1) && (sw.currentLoop + 1 < sw.loops))
-                     {
-                        sw.soundData.position = 0;
-                        sw.currentLoop++;
-                     }
-                     else
-                     {
-                        this.removeSound(sw);
-                        break;
-                     }
-                  }
-                  else
-                  {
-                     sl = sw.soundData.readFloat() * sw._volume * (1 - sw._pan);
-                     sr = sw.soundData.readFloat() * sw._volume * (1 + sw._pan);
-                     l = l + (sl * sw._leftToLeft + sr * sw._rightToLeft);
-                     r = r + (sl * sw._leftToRight + sr * sw._rightToRight);
-                  }
-                  j++;
-               }
-               if(l > 1)
-               {
-                  l = 1;
-               }
-               if(l < -1)
-               {
-                  l = -1;
-               }
-               if(r > 1)
-               {
-                  r = 1;
-               }
-               if(r < -1)
-               {
-                  r = -1;
-               }
-               out.writeFloat(l);
-               out.writeFloat(r);
-               i++;
-            }
+            sde.data.writeFloat(0);
+            sde.data.writeFloat(0);
+            i++;
          }
-         
-         private function sampleSilence(sde:SampleDataEvent) : void {
-            var i:uint = 0;
-            while(i < SILENCE_SAMPLES_BUFFER_SIZE)
-            {
-               sde.data.writeFloat(0);
-               sde.data.writeFloat(0);
-               i++;
-            }
+      }
+      
+      private function directSoundComplete(e:Event) : void {
+         var sw:SoundWrapper = this._directChannels[e.target];
+         sw.currentLoop++;
+         if((sw.currentLoop < sw.loops) || (sw.loops == 0))
+         {
+            this.directPlay(sw,sw.loops);
          }
-         
-         private function directSoundComplete(e:Event) : void {
-            var sw:SoundWrapper = this._directChannels[e.target];
-            sw.currentLoop++;
-            if((sw.currentLoop < sw.loops) || (sw.loops == 0))
-            {
-               this.directPlay(sw,sw.loops);
-            }
-            else
-            {
-               this.directStop(sw,true);
-               sw.dispatchEvent(e);
-            }
+         else
+         {
+            this.directStop(sw,true);
+            sw.dispatchEvent(e);
          }
-         
-         private function onEnterFrame(pEvent:Event) : void {
-            var sw:SoundWrapper = null;
-            for each (sw in this._directChannels)
-            {
-               sw.checkSoundPosition();
-            }
+      }
+      
+      private function onEnterFrame(pEvent:Event) : void {
+         var sw:SoundWrapper = null;
+         for each(sw in this._directChannels)
+         {
+            sw.checkSoundPosition();
          }
       }
    }
+}

@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.inventory.preset
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -27,7 +26,7 @@ package com.ankamagames.dofus.network.types.game.inventory.preset
          return 355;
       }
       
-      public function initPreset(presetId:uint=0, symbolId:uint=0, mount:Boolean=false, objects:Vector.<PresetItem>=null) : Preset {
+      public function initPreset(presetId:uint = 0, symbolId:uint = 0, mount:Boolean = false, objects:Vector.<PresetItem> = null) : Preset {
          this.presetId = presetId;
          this.symbolId = symbolId;
          this.mount = mount;

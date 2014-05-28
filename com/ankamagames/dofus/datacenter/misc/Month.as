@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.misc
       
       public static const MODULE:String = "Months";
       
-      private static var _log:Logger = Log.getLogger(getQualifiedClassName(Month));
+      private static var _log:Logger;
       
       public static function getMonthById(id:int) : Month {
          return GameData.getObject(MODULE,id) as Month;

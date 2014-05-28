@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 156;
       }
       
-      public function initGameRolePlayNpcInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, npcId:uint=0, sex:Boolean=false, specialArtworkId:uint=0) : GameRolePlayNpcInformations {
+      public function initGameRolePlayNpcInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, npcId:uint = 0, sex:Boolean = false, specialArtworkId:uint = 0) : GameRolePlayNpcInformations {
          super.initGameRolePlayActorInformations(contextualId,look,disposition);
          this.npcId = npcId;
          this.sex = sex;

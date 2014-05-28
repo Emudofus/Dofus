@@ -10,7 +10,7 @@ package com.hurlant.util.der
          registerClassAlias("com.hurlant.util.der.ObjectIdentifier",ObjectIdentifier);
       }
       
-      public function ObjectIdentifier(type:uint=0, length:uint=0, b:*=null) {
+      public function ObjectIdentifier(type:uint = 0, length:uint = 0, b:* = null) {
          super();
          this.type = type;
          this.len = length;
@@ -18,17 +18,15 @@ package com.hurlant.util.der
          {
             this.parse(b as ByteArray);
          }
+         else if(b is String)
+         {
+            this.generate(b as String);
+         }
          else
          {
-            if(b is String)
-            {
-               this.generate(b as String);
-            }
-            else
-            {
-               throw new Error("Invalid call to new ObjectIdentifier");
-            }
+            throw new Error("Invalid call to new ObjectIdentifier");
          }
+         
       }
       
       private var type:uint;
@@ -83,37 +81,31 @@ package com.hurlant.util.der
             {
                tmp.push(v);
             }
+            else if(v < 128 * 128)
+            {
+               tmp.push(v >> 7 | 128);
+               tmp.push(v & 127);
+            }
+            else if(v < 128 * 128 * 128)
+            {
+               tmp.push(v >> 14 | 128);
+               tmp.push(v >> 7 & 127 | 128);
+               tmp.push(v & 127);
+            }
+            else if(v < 128 * 128 * 128 * 128)
+            {
+               tmp.push(v >> 21 | 128);
+               tmp.push(v >> 14 & 127 | 128);
+               tmp.push(v >> 7 & 127 | 128);
+               tmp.push(v & 127);
+            }
             else
             {
-               if(v < 128 * 128)
-               {
-                  tmp.push(v >> 7 | 128);
-                  tmp.push(v & 127);
-               }
-               else
-               {
-                  if(v < 128 * 128 * 128)
-                  {
-                     tmp.push(v >> 14 | 128);
-                     tmp.push(v >> 7 & 127 | 128);
-                     tmp.push(v & 127);
-                  }
-                  else
-                  {
-                     if(v < 128 * 128 * 128 * 128)
-                     {
-                        tmp.push(v >> 21 | 128);
-                        tmp.push(v >> 14 & 127 | 128);
-                        tmp.push(v >> 7 & 127 | 128);
-                        tmp.push(v & 127);
-                     }
-                     else
-                     {
-                        throw new Error("OID element bigger than we thought. :(");
-                     }
-                  }
-               }
+               throw new Error("OID element bigger than we thought. :(");
             }
+            
+            
+            
             i++;
          }
          this.len = tmp.length;

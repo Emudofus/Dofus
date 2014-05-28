@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.basic
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 780;
       }
       
-      public function initTextInformationMessage(msgType:uint=0, msgId:uint=0, parameters:Vector.<String>=null) : TextInformationMessage {
+      public function initTextInformationMessage(msgType:uint = 0, msgId:uint = 0, parameters:Vector.<String> = null) : TextInformationMessage {
          this.msgType = msgType;
          this.msgId = msgId;
          this.parameters = parameters;

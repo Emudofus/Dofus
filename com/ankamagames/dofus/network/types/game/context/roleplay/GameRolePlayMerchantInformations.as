@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
    import com.ankamagames.jerakine.network.INetworkType;
    import com.ankamagames.dofus.network.types.game.look.EntityLook;
    import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
@@ -26,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 129;
       }
       
-      public function initGameRolePlayMerchantInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, name:String="", sellType:uint=0, options:Vector.<HumanOption>=null) : GameRolePlayMerchantInformations {
+      public function initGameRolePlayMerchantInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, name:String = "", sellType:uint = 0, options:Vector.<HumanOption> = null) : GameRolePlayMerchantInformations {
          super.initGameRolePlayNamedActorInformations(contextualId,look,disposition,name);
          this.sellType = sellType;
          this.options = options;

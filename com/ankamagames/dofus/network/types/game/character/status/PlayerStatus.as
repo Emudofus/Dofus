@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.character.status
          return 415;
       }
       
-      public function initPlayerStatus(statusId:uint=1) : PlayerStatus {
+      public function initPlayerStatus(statusId:uint = 1) : PlayerStatus {
          this.statusId = statusId;
          return this;
       }

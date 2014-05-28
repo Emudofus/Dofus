@@ -29,7 +29,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
    public class FightDeathStep extends AbstractSequencable implements IFightStep
    {
       
-      public function FightDeathStep(entityId:int, naturalDeath:Boolean=true) {
+      public function FightDeathStep(entityId:int, naturalDeath:Boolean = true) {
          super();
          this._entityId = entityId;
          this._naturalDeath = naturalDeath;
@@ -134,7 +134,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          }
       }
       
-      private function deathTimeOut(e:Event=null) : void {
+      private function deathTimeOut(e:Event = null) : void {
          if(this._deathSubSequence)
          {
             this._deathSubSequence.removeEventListener(SequencerEvent.SEQUENCE_TIMEOUT,this.deathTimeOut);
@@ -142,7 +142,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
          this._timeOut = true;
       }
       
-      private function deathFinished(e:Event=null) : void {
+      private function deathFinished(e:Event = null) : void {
          if(this._deathSubSequence)
          {
             this._deathSubSequence.removeEventListener(SequencerEvent.SEQUENCE_END,this.deathFinished);

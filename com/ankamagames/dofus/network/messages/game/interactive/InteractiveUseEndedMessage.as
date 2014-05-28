@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.interactive
          return 6112;
       }
       
-      public function initInteractiveUseEndedMessage(elemId:uint=0, skillId:uint=0) : InteractiveUseEndedMessage {
+      public function initInteractiveUseEndedMessage(elemId:uint = 0, skillId:uint = 0) : InteractiveUseEndedMessage {
          this.elemId = elemId;
          this.skillId = skillId;
          this._isInitialized = true;

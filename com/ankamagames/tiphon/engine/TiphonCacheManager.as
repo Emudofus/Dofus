@@ -16,7 +16,6 @@ package com.ankamagames.tiphon.engine
    import com.ankamagames.jerakine.managers.PerformanceManager;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.*;
    
    public class TiphonCacheManager extends Object
    {
@@ -25,11 +24,11 @@ package com.ankamagames.tiphon.engine
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(TiphonCacheManager));
+      private static const _log:Logger;
       
-      public static const _cacheList:Dictionary = new Dictionary();
+      public static const _cacheList:Dictionary;
       
-      private static const _spritesListToRender:Vector.<SpriteCacheInfo> = new Vector.<SpriteCacheInfo>();
+      private static const _spritesListToRender:Vector.<SpriteCacheInfo>;
       
       private static var _processing:Boolean = false;
       
@@ -146,17 +145,15 @@ package com.ankamagames.tiphon.engine
                {
                   _waitRender = 20;
                }
+               else if(PerformanceManager.performance == PerformanceManager.LIMITED)
+               {
+                  _waitRender = 200;
+               }
                else
                {
-                  if(PerformanceManager.performance == PerformanceManager.LIMITED)
-                  {
-                     _waitRender = 200;
-                  }
-                  else
-                  {
-                     _waitRender = 500;
-                  }
+                  _waitRender = 500;
                }
+               
             }
          }
          else

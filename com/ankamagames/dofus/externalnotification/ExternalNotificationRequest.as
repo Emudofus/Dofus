@@ -5,7 +5,7 @@ package com.ankamagames.dofus.externalnotification
    public class ExternalNotificationRequest extends Object
    {
       
-      public function ExternalNotificationRequest(pNotificationType:int, pClientId:String, pOtherClientsIds:Array, pId:String, pShowMode:int, pUiName:String, pDisplayData:Object, pSoundId:String, pPlaySound:Boolean, pNotify:Boolean, pHookName:String=null, pHookParams:Array=null) {
+      public function ExternalNotificationRequest(pNotificationType:int, pClientId:String, pOtherClientsIds:Array, pId:String, pShowMode:int, pUiName:String, pDisplayData:Object, pSoundId:String, pPlaySound:Boolean, pNotify:Boolean, pHookName:String = null, pHookParams:Array = null) {
          super();
          this._notificationType = pNotificationType;
          this._clientId = pClientId;

@@ -44,10 +44,12 @@ package com.ankamagames.dofus.console.debug
          {
             case "jptest":
                return "test japanese characters set";
+            default:
+               return "Unknown command";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

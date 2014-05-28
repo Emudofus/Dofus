@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyInvitationMemberInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyGuestInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6262;
       }
       
-      public function initPartyInvitationDungeonDetailsMessage(partyId:uint=0, partyType:uint=0, fromId:uint=0, fromName:String="", leaderId:uint=0, members:Vector.<PartyInvitationMemberInformations>=null, guests:Vector.<PartyGuestInformations>=null, dungeonId:uint=0, playersDungeonReady:Vector.<Boolean>=null) : PartyInvitationDungeonDetailsMessage {
+      public function initPartyInvitationDungeonDetailsMessage(partyId:uint = 0, partyType:uint = 0, fromId:uint = 0, fromName:String = "", leaderId:uint = 0, members:Vector.<PartyInvitationMemberInformations> = null, guests:Vector.<PartyGuestInformations> = null, dungeonId:uint = 0, playersDungeonReady:Vector.<Boolean> = null) : PartyInvitationDungeonDetailsMessage {
          super.initPartyInvitationDetailsMessage(partyId,partyType,fromId,fromName,leaderId,members,guests);
          this.dungeonId = dungeonId;
          this.playersDungeonReady = playersDungeonReady;

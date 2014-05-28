@@ -18,7 +18,6 @@ package com.ankamagames.jerakine.replay
    import com.ankamagames.jerakine.messages.IDontLogThisMessage;
    import flash.utils.getTimer;
    import com.ankamagames.jerakine.handlers.messages.Action;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
    import flash.utils.getDefinitionByName;
    import com.ankamagames.jerakine.types.CustomSharedObject;
@@ -53,20 +52,18 @@ package com.ankamagames.jerakine.replay
             sizeLimit = Math.pow(2,20) * 8 * 4;
             try
             {
-               for each (deleteFile in log_files)
+               for each(deleteFile in log_files)
                {
                   if((today.getTime() - deleteFile.modificationDate.getTime() > twoDay) && (!(deleteFile.url.indexOf("log_") == -1)) && (deleteFile.extension == "d2l"))
                   {
                      deleteFile.deleteFile();
                   }
-                  else
+                  else if((deleteFile.size > mega) && (deleteFile.size > maxSize) && (deleteFile.size < sizeLimit) && (!LogUploadManager.getInstance().hasBeenAlreadySend(deleteFile.name)))
                   {
-                     if((deleteFile.size > mega) && (deleteFile.size > maxSize) && (deleteFile.size < sizeLimit) && (!LogUploadManager.getInstance().hasBeenAlreadySend(deleteFile.name)))
-                     {
-                        maxFile = deleteFile;
-                        maxSize = deleteFile.size;
-                     }
+                     maxFile = deleteFile;
+                     maxSize = deleteFile.size;
                   }
+                  
                }
             }
             catch(e:Error)
@@ -103,7 +100,7 @@ package com.ankamagames.jerakine.replay
       
       public static const STRING:int = -5;
       
-      public static const NULL_IDENTIFIER:int = -1431655766;
+      public static const NULL_IDENTIFIER:int = -1.431655766E9;
       
       private static const NO_LOG_STRING:String = "NoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLog";
       
@@ -123,7 +120,7 @@ package com.ankamagames.jerakine.replay
          return _logEnable;
       }
       
-      public static function getInstance(allowLogUpload:Boolean=false) : LogFrame {
+      public static function getInstance(allowLogUpload:Boolean = false) : LogFrame {
          if(!_self)
          {
             _self = new LogFrame(allowLogUpload);
@@ -298,7 +295,7 @@ package com.ankamagames.jerakine.replay
          {
             output.writeInt(this.getClassIndex(getQualifiedClassName(o)));
          }
-         for each (fieldData in field)
+         for each(fieldData in field)
          {
             fieldName = this._reverseStringRef[fieldData.fieldNameId];
             switch(fieldData.type)
@@ -350,6 +347,9 @@ package com.ankamagames.jerakine.replay
                      }
                   }
                   continue;
+               default:
+                  this.writeObject(output,o[fieldName]);
+                  continue;
             }
          }
          return output.length;
@@ -364,7 +364,7 @@ package com.ankamagames.jerakine.replay
          {
             fieldList = new Array();
             varCount = 0;
-            for (fieldName in o)
+            for(fieldName in o)
             {
                varCount++;
                if(o[fieldName] != null)
@@ -388,28 +388,12 @@ package com.ankamagames.jerakine.replay
       }
       
       private function getClassIndex(className:String) : int {
-         var varCount:uint = 0;
-         var variable:XML = null;
-         if(this._classIndex[className])
-         {
-            return this._classIndex[className];
-         }
-         var fieldList:Array = new Array();
-         var desc:XML = DescribeTypeCache.typeDescription(getDefinitionByName(className) as Class);
-         for each (variable in desc..factory..variable)
-         {
-            fieldList[varCount] = new LogClassField(this.getStringIndex(variable.@name.toString()),this.getClassIndex(variable.@type.toString()),XMLList(variable..metadata.(@name == "Transient")).length());
-            varCount++;
-         }
-         for each (variable in desc..accessor.(@access == "readwrite"))
-         {
-            fieldList[varCount] = new LogClassField(this.getStringIndex(variable.@name.toString()),this.getClassIndex(variable.@type.toString()),XMLList(variable..metadata.(@name == "Transient")).length());
-            varCount++;
-         }
-         this._classRef[className] = fieldList;
-         this._classIndex[className] = ++this._classCount;
-         this.writeClassDefinition(this._classCount,className,varCount,fieldList);
-         return this._classCount;
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function writeClassDefinition(classId:int, className:String, varCount:uint, fieldList:Array) : void {
@@ -419,7 +403,7 @@ package com.ankamagames.jerakine.replay
          this._logStream.writeUnsignedInt(classId);
          this._logStream.writeUnsignedInt(classNameId);
          this._logStream.writeShort(varCount);
-         for each (field in fieldList)
+         for each(field in fieldList)
          {
             this._logStream.writeUnsignedInt(field.fieldNameId);
             this._logStream.writeShort(field.type);

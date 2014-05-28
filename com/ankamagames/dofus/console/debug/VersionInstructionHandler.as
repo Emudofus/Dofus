@@ -34,6 +34,8 @@ package com.ankamagames.dofus.console.debug
                   case undefined:
                      console.output("DOFUS v" + BuildInfos.BUILD_VERSION + " (" + BuildTypeParser.getTypeName(BuildInfos.BUILD_TYPE) + ")");
                      break;
+                  default:
+                     console.output("Unknown argument : " + args[0]);
                }
                break;
          }
@@ -44,10 +46,12 @@ package com.ankamagames.dofus.console.debug
          {
             case "version":
                return "Get the client version.";
+            default:
+               return "No help for command \'" + cmd + "\'";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

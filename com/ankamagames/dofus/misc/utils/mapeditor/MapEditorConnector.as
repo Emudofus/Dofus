@@ -79,13 +79,11 @@ package com.ankamagames.dofus.misc.utils.mapeditor
             {
                this.parseHead();
             }
-            else
+            else if(this._parsingState == this.STEP_BODY)
             {
-               if(this._parsingState == this.STEP_BODY)
-               {
-                  this.parseBody();
-               }
+               this.parseBody();
             }
+            
          }
       }
       

@@ -38,6 +38,8 @@ package com.ankamagames.dofus.kernel
                case PROTOCOL_TOO_NEW:
                   errorMsg = "The client protocol version (which is " + args[0] + ") is too new for the server.\n" + "The server can handle clients up to protocol version " + args[1] + ".";
                   break;
+               default:
+                  errorMsg = "Unknown error " + errorId;
             }
          }
          catch(e:Error)

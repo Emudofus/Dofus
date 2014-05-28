@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.types.game.character.choice
 {
    import com.ankamagames.dofus.network.types.game.character.AbstractCharacterInformation;
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -22,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.character.choice
          return 212;
       }
       
-      public function initCharacterToRecolorInformation(id:uint=0, colors:Vector.<int>=null) : CharacterToRecolorInformation {
+      public function initCharacterToRecolorInformation(id:uint = 0, colors:Vector.<int> = null) : CharacterToRecolorInformation {
          super.initAbstractCharacterInformation(id);
          this.colors = colors;
          return this;

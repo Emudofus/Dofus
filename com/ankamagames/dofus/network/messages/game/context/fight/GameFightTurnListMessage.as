@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.fight
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 713;
       }
       
-      public function initGameFightTurnListMessage(ids:Vector.<int>=null, deadsIds:Vector.<int>=null) : GameFightTurnListMessage {
+      public function initGameFightTurnListMessage(ids:Vector.<int> = null, deadsIds:Vector.<int> = null) : GameFightTurnListMessage {
          this.ids = ids;
          this.deadsIds = deadsIds;
          this._isInitialized = true;

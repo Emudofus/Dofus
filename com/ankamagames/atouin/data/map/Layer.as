@@ -22,7 +22,7 @@ package com.ankamagames.atouin.data.map
       
       public static const LAYER_ADDITIONAL_DECOR:uint = 3;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Layer));
+      protected static const _log:Logger;
       
       public var layerId:int;
       

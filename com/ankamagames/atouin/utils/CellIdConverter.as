@@ -10,7 +10,7 @@ package com.ankamagames.atouin.utils
          super();
       }
       
-      public static var CELLPOS:Array = new Array();
+      public static var CELLPOS:Array;
       
       private static var _bInit:Boolean = false;
       

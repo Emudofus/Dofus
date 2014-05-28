@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 383;
       }
       
-      public function initGameRolePlayNpcWithQuestInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, npcId:uint=0, sex:Boolean=false, specialArtworkId:uint=0, questFlag:GameRolePlayNpcQuestFlag=null) : GameRolePlayNpcWithQuestInformations {
+      public function initGameRolePlayNpcWithQuestInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, npcId:uint = 0, sex:Boolean = false, specialArtworkId:uint = 0, questFlag:GameRolePlayNpcQuestFlag = null) : GameRolePlayNpcWithQuestInformations {
          super.initGameRolePlayNpcInformations(contextualId,look,disposition,npcId,sex,specialArtworkId);
          this.questFlag = questFlag;
          return this;

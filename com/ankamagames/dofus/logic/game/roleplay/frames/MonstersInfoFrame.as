@@ -35,7 +35,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.berilia.types.LocationEnum;
    import com.ankamagames.berilia.enums.StrataEnum;
-   import __AS3__.vec.*;
    
    public class MonstersInfoFrame extends Object implements Frame
    {
@@ -47,7 +46,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(MonstersInfoFrame));
+      private static const _log:Logger;
       
       private var _sysApi:SystemApi;
       
@@ -89,9 +88,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       
       public function pulled() : Boolean {
          var monsterId:* = undefined;
-         for (monsterId in this._tooltipsCacheNames)
+         for(monsterId in this._tooltipsCacheNames)
          {
-            delete this._tooltipsCacheNames[[monsterId]];
+            delete this._tooltipsCacheNames[monsterId];
          }
          this.removeTooltips();
          this._movingGroups.length = 0;
@@ -160,7 +159,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                break;
             case pMsg is GameContextRemoveElementMessage:
                gcrem = pMsg as GameContextRemoveElementMessage;
-               delete this._tooltipsCacheNames[[gcrem.id]];
+               delete this._tooltipsCacheNames[gcrem.id];
                TooltipManager.hide("MonstersInfo_" + gcrem.id);
                break;
             case pMsg is EntityMovementStartMessage:
@@ -198,7 +197,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          return Priority.HIGH;
       }
       
-      public function update(pForceRefresh:Boolean=false) : void {
+      public function update(pForceRefresh:Boolean = false) : void {
          var i:* = 0;
          var monsterId:* = 0;
          var len:int = this._roleplayEntitiesFrame.monstersIds.length;
@@ -282,13 +281,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             {
                this._roleplayWorldFrame.process(new EntityMouseOverMessage(entity,true));
             }
-            else
+            else if(TooltipManager.isVisible("entity_" + this._mouseOverMonsterId))
             {
-               if(TooltipManager.isVisible("entity_" + this._mouseOverMonsterId))
-               {
-                  this._roleplayWorldFrame.process(new EntityMouseOutMessage(entity));
-               }
+               this._roleplayWorldFrame.process(new EntityMouseOutMessage(entity));
             }
+            
          }
       }
       
@@ -296,7 +293,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var monsterId:* = 0;
          if(this._movingGroups.length > 0)
          {
-            for each (monsterId in this._movingGroups)
+            for each(monsterId in this._movingGroups)
             {
                if(monsterId == this._mouseOverRootMonsterId)
                {
@@ -309,15 +306,15 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          }
       }
       
-      private function removeTooltips(pDeleteCache:Boolean=true) : void {
+      private function removeTooltips(pDeleteCache:Boolean = true) : void {
          var monsterId:* = 0;
          if((this._roleplayEntitiesFrame) && (this._roleplayEntitiesFrame.monstersIds.length > 0))
          {
-            for each (monsterId in this._roleplayEntitiesFrame.monstersIds)
+            for each(monsterId in this._roleplayEntitiesFrame.monstersIds)
             {
                if(pDeleteCache)
                {
-                  delete this._tooltipsCacheNames[[monsterId]];
+                  delete this._tooltipsCacheNames[monsterId];
                }
                TooltipManager.hide("MonstersInfo_" + monsterId);
                TooltipManager.hide("tooltipOverEntity_" + monsterId);
@@ -325,7 +322,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          }
       }
       
-      private function showToolTip(pMonsterId:int, pCacheName:String=null) : void {
+      private function showToolTip(pMonsterId:int, pCacheName:String = null) : void {
          var offset:* = 0;
          var ac:AnimatedCharacter = null;
          var data:GameRolePlayGroupMonsterInformations = null;
@@ -348,13 +345,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             {
                ac.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityAnimationRendered);
             }
-            else
+            else if(data)
             {
-               if(data)
-               {
-                  TooltipManager.show(data,entity.absoluteBounds,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),false,"MonstersInfo_" + entity.id,LocationEnum.POINT_BOTTOM,LocationEnum.POINT_TOP,offset,true,null,null,null,this._tooltipsCacheNames[entity.id],false,StrataEnum.STRATA_WORLD,this._sysApi.getCurrentZoom());
-               }
+               TooltipManager.show(data,entity.absoluteBounds,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),false,"MonstersInfo_" + entity.id,LocationEnum.POINT_BOTTOM,LocationEnum.POINT_TOP,offset,true,null,null,null,this._tooltipsCacheNames[entity.id],false,StrataEnum.STRATA_WORLD,this._sysApi.getCurrentZoom());
             }
+            
          }
       }
    }

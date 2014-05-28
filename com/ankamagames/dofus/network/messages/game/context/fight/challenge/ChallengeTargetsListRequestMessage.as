@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
          return 5614;
       }
       
-      public function initChallengeTargetsListRequestMessage(challengeId:uint=0) : ChallengeTargetsListRequestMessage {
+      public function initChallengeTargetsListRequestMessage(challengeId:uint = 0) : ChallengeTargetsListRequestMessage {
          this.challengeId = challengeId;
          this._isInitialized = true;
          return this;

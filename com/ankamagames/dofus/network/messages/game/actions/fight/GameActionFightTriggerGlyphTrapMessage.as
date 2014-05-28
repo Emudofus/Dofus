@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 5741;
       }
       
-      public function initGameActionFightTriggerGlyphTrapMessage(actionId:uint=0, sourceId:int=0, markId:int=0, triggeringCharacterId:int=0, triggeredSpellId:uint=0) : GameActionFightTriggerGlyphTrapMessage {
+      public function initGameActionFightTriggerGlyphTrapMessage(actionId:uint = 0, sourceId:int = 0, markId:int = 0, triggeringCharacterId:int = 0, triggeredSpellId:uint = 0) : GameActionFightTriggerGlyphTrapMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.markId = markId;
          this.triggeringCharacterId = triggeringCharacterId;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5712;
       }
       
-      public function initGuildHouseTeleportRequestMessage(houseId:uint=0) : GuildHouseTeleportRequestMessage {
+      public function initGuildHouseTeleportRequestMessage(houseId:uint = 0) : GuildHouseTeleportRequestMessage {
          this.houseId = houseId;
          this._isInitialized = true;
          return this;

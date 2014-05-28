@@ -12,7 +12,7 @@ package com.ankamagames.dofus.console.chat
       }
       
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
-         if(false?0:0)
+         if(0)
          {
          }
       }
@@ -40,10 +40,12 @@ package com.ankamagames.dofus.console.chat
                return I18n.getUiText("ui.chat.console.help.sellbuymessage");
             case "m":
                return I18n.getUiText("ui.chat.console.help.meetmessage");
+            default:
+               return I18n.getUiText("ui.chat.console.noHelp",[cmd]);
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

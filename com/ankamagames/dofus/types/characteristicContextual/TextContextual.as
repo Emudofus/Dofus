@@ -14,7 +14,7 @@ package com.ankamagames.dofus.types.characteristicContextual
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TextContextual));
+      protected static const _log:Logger;
       
       private var _tText:String;
       

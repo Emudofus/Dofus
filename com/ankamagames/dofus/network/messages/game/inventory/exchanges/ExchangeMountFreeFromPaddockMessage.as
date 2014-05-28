@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6055;
       }
       
-      public function initExchangeMountFreeFromPaddockMessage(name:String="", worldX:int=0, worldY:int=0, liberator:String="") : ExchangeMountFreeFromPaddockMessage {
+      public function initExchangeMountFreeFromPaddockMessage(name:String = "", worldX:int = 0, worldY:int = 0, liberator:String = "") : ExchangeMountFreeFromPaddockMessage {
          this.name = name;
          this.worldX = worldX;
          this.worldY = worldY;

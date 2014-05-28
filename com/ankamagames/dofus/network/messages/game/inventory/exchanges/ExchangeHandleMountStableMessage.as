@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5965;
       }
       
-      public function initExchangeHandleMountStableMessage(actionType:int=0, rideId:uint=0) : ExchangeHandleMountStableMessage {
+      public function initExchangeHandleMountStableMessage(actionType:int = 0, rideId:uint = 0) : ExchangeHandleMountStableMessage {
          this.actionType = actionType;
          this.rideId = rideId;
          this._isInitialized = true;

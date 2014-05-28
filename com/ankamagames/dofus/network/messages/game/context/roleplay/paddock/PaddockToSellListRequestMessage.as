@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
          return 6141;
       }
       
-      public function initPaddockToSellListRequestMessage(pageIndex:uint=0) : PaddockToSellListRequestMessage {
+      public function initPaddockToSellListRequestMessage(pageIndex:uint = 0) : PaddockToSellListRequestMessage {
          this.pageIndex = pageIndex;
          this._isInitialized = true;
          return this;

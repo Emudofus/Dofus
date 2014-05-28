@@ -8,7 +8,6 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
-   import __AS3__.vec.*;
    
    public class PartyMemberInformations extends CharacterBaseInformations implements INetworkType
    {
@@ -49,7 +48,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          return 90;
       }
       
-      public function initPartyMemberInformations(id:uint=0, level:uint=0, name:String="", entityLook:EntityLook=null, breed:int=0, sex:Boolean=false, lifePoints:uint=0, maxLifePoints:uint=0, prospecting:uint=0, regenRate:uint=0, initiative:uint=0, alignmentSide:int=0, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0, status:PlayerStatus=null, companions:Vector.<PartyCompanionMemberInformations>=null) : PartyMemberInformations {
+      public function initPartyMemberInformations(id:uint = 0, level:uint = 0, name:String = "", entityLook:EntityLook = null, breed:int = 0, sex:Boolean = false, lifePoints:uint = 0, maxLifePoints:uint = 0, prospecting:uint = 0, regenRate:uint = 0, initiative:uint = 0, alignmentSide:int = 0, worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:uint = 0, status:PlayerStatus = null, companions:Vector.<PartyCompanionMemberInformations> = null) : PartyMemberInformations {
          super.initCharacterBaseInformations(id,level,name,entityLook,breed,sex);
          this.lifePoints = lifePoints;
          this.maxLifePoints = maxLifePoints;

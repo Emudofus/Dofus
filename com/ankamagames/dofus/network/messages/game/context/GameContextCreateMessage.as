@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context
          return 200;
       }
       
-      public function initGameContextCreateMessage(context:uint=1) : GameContextCreateMessage {
+      public function initGameContextCreateMessage(context:uint = 1) : GameContextCreateMessage {
          this.context = context;
          this._isInitialized = true;
          return this;

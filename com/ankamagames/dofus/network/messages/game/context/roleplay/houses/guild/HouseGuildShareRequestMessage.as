@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses.guil
          return 5704;
       }
       
-      public function initHouseGuildShareRequestMessage(enable:Boolean=false, rights:uint=0) : HouseGuildShareRequestMessage {
+      public function initHouseGuildShareRequestMessage(enable:Boolean = false, rights:uint = 0) : HouseGuildShareRequestMessage {
          this.enable = enable;
          this.rights = rights;
          this._isInitialized = true;

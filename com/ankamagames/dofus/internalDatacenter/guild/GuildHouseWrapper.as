@@ -6,7 +6,6 @@ package com.ankamagames.dofus.internalDatacenter.guild
    import com.ankamagames.dofus.datacenter.houses.House;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.jobs.Skill;
    import com.ankamagames.jerakine.data.I18n;
    
@@ -18,7 +17,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GuildHouseWrapper));
+      protected static const _log:Logger;
       
       public static function create(pHouseInformationsForGuild:HouseInformationsForGuild) : GuildHouseWrapper {
          var item:GuildHouseWrapper = new GuildHouseWrapper();
@@ -97,7 +96,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
       public function get skillListString() : Vector.<String> {
          var id:* = 0;
          var sls:Vector.<String> = new Vector.<String>();
-         for each (id in this.skillListIds)
+         for each(id in this.skillListIds)
          {
             sls.push(Skill.getSkillById(id).name);
          }

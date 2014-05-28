@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterLightInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
          return 5751;
       }
       
-      public function initMapRunningFightDetailsMessage(fightId:uint=0, attackers:Vector.<GameFightFighterLightInformations>=null, defenders:Vector.<GameFightFighterLightInformations>=null) : MapRunningFightDetailsMessage {
+      public function initMapRunningFightDetailsMessage(fightId:uint = 0, attackers:Vector.<GameFightFighterLightInformations> = null, defenders:Vector.<GameFightFighterLightInformations> = null) : MapRunningFightDetailsMessage {
          this.fightId = fightId;
          this.attackers = attackers;
          this.defenders = defenders;

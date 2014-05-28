@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.world
    import com.ankamagames.jerakine.logger.Logger;
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.data.GameData;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.types.enums.DataStoreEnum;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
@@ -21,7 +20,7 @@ package com.ankamagames.dofus.datacenter.world
       
       public static const MODULE:String = "MapPositions";
       
-      private static const DST:DataStoreType = new DataStoreType(MODULE,true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_COMPUTER);
+      private static const DST:DataStoreType;
       
       private static const CAPABILITY_ALLOW_CHALLENGE:int = 1;
       
@@ -49,7 +48,7 @@ package com.ankamagames.dofus.datacenter.world
       
       private static const CAPABILITY_ALLOW_FIGHT_CHALLENGES:int = 4096;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MapPosition));
+      protected static const _log:Logger;
       
       private static var _mapPositions:Dictionary;
       
@@ -60,7 +59,7 @@ package com.ankamagames.dofus.datacenter.world
          {
             _mapPositions = new Dictionary();
             mapPositions = getMapPositions();
-            for each (_mapPositions[mapPos.id] in mapPositions)
+            for each(_mapPositions[mapPos.id] in mapPositions)
             {
             }
          }

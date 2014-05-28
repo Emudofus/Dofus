@@ -49,7 +49,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
    import com.ankamagames.jerakine.types.zones.Custom;
    import com.ankamagames.jerakine.types.positions.MapPoint;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.enums.TeamEnum;
    
    public class FightPreparationFrame extends Object implements Frame
@@ -60,11 +59,11 @@ package com.ankamagames.dofus.logic.game.fight.frames
          this._fightContextFrame = fightContextFrame;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightPreparationFrame));
+      protected static const _log:Logger;
       
-      private static const COLOR_CHALLENGER:Color = new Color(14492160);
+      private static const COLOR_CHALLENGER:Color;
       
-      private static const COLOR_DEFENDER:Color = new Color(8925);
+      private static const COLOR_DEFENDER:Color;
       
       public static const SELECTION_CHALLENGER:String = "FightPlacementChallengerTeam";
       
@@ -150,7 +149,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                return true;
             case msg is CellClickMessage:
                ccmsg = msg as CellClickMessage;
-               for each (entity in EntitiesManager.getInstance().getEntitiesOnCell(ccmsg.cellId))
+               for each(entity in EntitiesManager.getInstance().getEntitiesOnCell(ccmsg.cellId))
                {
                   if((entity is AnimatedCharacter) && (!(entity as AnimatedCharacter).isMoving))
                   {
@@ -169,31 +168,27 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   {
                      menu = MenusFactory.create(fighterInfos as GameFightCharacterInformations,"player",[cellEntity]);
                   }
+                  else if(fighterInfos is GameFightCompanionInformations)
+                  {
+                     menu = MenusFactory.create(fighterInfos as GameFightCompanionInformations,"companion",[cellEntity]);
+                  }
                   else
                   {
-                     if(fighterInfos is GameFightCompanionInformations)
-                     {
-                        menu = MenusFactory.create(fighterInfos as GameFightCompanionInformations,"companion",[cellEntity]);
-                     }
-                     else
-                     {
-                        return true;
-                     }
+                     return true;
                   }
+                  
                   if(menu)
                   {
                      modContextMenu.createContextMenu(menu);
                   }
                }
-               else
+               else if(this.isValidPlacementCell(ccmsg.cellId,this._playerTeam))
                {
-                  if(this.isValidPlacementCell(ccmsg.cellId,this._playerTeam))
-                  {
-                     gfpprmsg = new GameFightPlacementPositionRequestMessage();
-                     gfpprmsg.initGameFightPlacementPositionRequestMessage(ccmsg.cellId);
-                     ConnectionsHandler.getConnection().send(gfpprmsg);
-                  }
+                  gfpprmsg = new GameFightPlacementPositionRequestMessage();
+                  gfpprmsg.initGameFightPlacementPositionRequestMessage(ccmsg.cellId);
+                  ConnectionsHandler.getConnection().send(gfpprmsg);
                }
+               
                return true;
             case msg is GameFightPlacementPositionRequestAction:
                gfppra = msg as GameFightPlacementPositionRequestAction;
@@ -224,17 +219,15 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   {
                      menu = MenusFactory.create(fighter,"player",[clickedEntity]);
                   }
+                  else if(fighterInfos is GameFightCompanionInformations)
+                  {
+                     menu = MenusFactory.create(fighter,"companion",[clickedEntity]);
+                  }
                   else
                   {
-                     if(fighterInfos is GameFightCompanionInformations)
-                     {
-                        menu = MenusFactory.create(fighter,"companion",[clickedEntity]);
-                     }
-                     else
-                     {
-                        return true;
-                     }
+                     return true;
                   }
+                  
                   if(menu)
                   {
                      modContextMenu.createContextMenu(menu);
@@ -251,7 +244,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                gfutmsg = msg as GameFightUpdateTeamMessage;
                gfutmsg_myId = PlayedCharacterManager.getInstance().id;
                alreadyInTeam = false;
-               for each (teamMember in gfutmsg.team.teamMembers)
+               for each(teamMember in gfutmsg.team.teamMembers)
                {
                   if(teamMember.id == gfutmsg_myId)
                   {
@@ -294,6 +287,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
                this.displayZone(SELECTION_CHALLENGER,this._challengerPositions,COLOR_CHALLENGER);
                this.displayZone(SELECTION_DEFENDER,this._defenderPositions,COLOR_DEFENDER);
                return true;
+            default:
+               return false;
          }
       }
       

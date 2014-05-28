@@ -13,7 +13,6 @@ package com.ankamagames.dofus.logic.game.fight.miscs
    import com.ankamagames.jerakine.types.positions.MapPoint;
    import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.dofus.kernel.Kernel;
@@ -32,17 +31,17 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PushUtil));
+      protected static const _log:Logger;
       
-      private static var _updatedEntitiesPositions:Dictionary = new Dictionary();
+      private static var _updatedEntitiesPositions:Dictionary;
       
-      private static var _pushSpells:Vector.<int> = new Vector.<int>(0);
+      private static var _pushSpells:Vector.<int>;
       
       public static function reset() : void {
          var entityId:* = undefined;
-         for (entityId in _updatedEntitiesPositions)
+         for(entityId in _updatedEntitiesPositions)
          {
-            delete _updatedEntitiesPositions[[entityId]];
+            delete _updatedEntitiesPositions[entityId];
          }
          _pushSpells.length = 0;
       }
@@ -59,7 +58,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          var direction:* = 0;
          var entitiesInDirection:Vector.<IEntity> = null;
          var newSpell:* = false;
-         for each (effi in pSpell.effects)
+         for each(effi in pSpell.effects)
          {
             if(effi.effectId == 5)
             {
@@ -84,7 +83,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
             _pushSpells.push(pSpell.id);
             newSpell = true;
          }
-         for each (cellId in spellZoneCells)
+         for each(cellId in spellZoneCells)
          {
             if((!(cellId == pCasterCell)) || (!(pCasterCell == pSpellImpactCell)))
             {
@@ -177,7 +176,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          var getPushedEntity:Function = function(pEntityId:int):PushedEntity
          {
             var pe:PushedEntity = null;
-            for each (pe in pushedEntities)
+            for each(pe in pushedEntities)
             {
                if(pe.id == pEntityId)
                {
@@ -189,7 +188,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          var isEntityInSpellZone:Function = function(pEntity:int):Boolean
          {
             var e:IEntity = null;
-            for each (e in entities)
+            for each(e in entities)
             {
                if(e.id == pEntity)
                {
@@ -233,14 +232,12 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                      previousCell = cellMp;
                      nextCell = cellMp.getNearestCellInDirection(pDirection);
                   }
-                  else
+                  else if(nextCell)
                   {
-                     if(nextCell)
-                     {
-                        previousCell = nextCell;
-                        nextCell = nextCell.getNearestCellInDirection(pDirection);
-                     }
+                     previousCell = nextCell;
+                     nextCell = nextCell.getNearestCellInDirection(pDirection);
                   }
+                  
                   if(nextCell)
                   {
                      if(isBlockingCell(nextCell.cellId))
@@ -272,13 +269,11 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                            }
                            pushedIndex++;
                         }
-                        else
+                        else if(j == 0)
                         {
-                           if(j == 0)
-                           {
-                              break;
-                           }
+                           break;
                         }
+                        
                         if(!entityInSpellZone)
                         {
                            cell = nextCell.getNearestCellInDirection(pDirection);
@@ -288,27 +283,23 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                            }
                         }
                      }
-                     else
+                     else if((!(j == pPushForce - 1)) && ((!nextCellEntity) || (!(entities.indexOf(nextCellEntity) == -1))) && (isPathBlocked(nextCell.cellId,getCellIdInDirection(cellMp.cellId,pPushForce,pDirection),pDirection)))
                      {
-                        if((!(j == pPushForce - 1)) && ((!nextCellEntity) || (!(entities.indexOf(nextCellEntity) == -1))) && (isPathBlocked(nextCell.cellId,getCellIdInDirection(cellMp.cellId,pPushForce,pDirection),pDirection)))
+                        if(!emptyCells)
                         {
-                           if(!emptyCells)
-                           {
-                              emptyCells = new Vector.<int>(0);
-                           }
-                           if(emptyCells.indexOf(nextCell.cellId) == -1)
-                           {
-                              emptyCells.push(nextCell.cellId);
-                           }
+                           emptyCells = new Vector.<int>(0);
                         }
-                        else
+                        if(emptyCells.indexOf(nextCell.cellId) == -1)
                         {
-                           if(!isPathBlocked(cellMp.cellId,getCellIdInDirection(cellMp.cellId,pPushForce,pDirection),pDirection))
-                           {
-                              pushingEntity.force = 0;
-                           }
+                           emptyCells.push(nextCell.cellId);
                         }
                      }
+                     else if(!isPathBlocked(cellMp.cellId,getCellIdInDirection(cellMp.cellId,pPushForce,pDirection),pDirection))
+                     {
+                        pushingEntity.force = 0;
+                     }
+                     
+                     
                      if(pushingEntity.force == 0)
                      {
                         break;
@@ -325,7 +316,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
             forceReduction = emptyCells.length;
             if(forceReduction > 0)
             {
-               for each (pushedEntity in pushedEntities)
+               for each(pushedEntity in pushedEntities)
                {
                   pushedEntity.force = pushedEntity.force - forceReduction;
                }
@@ -342,21 +333,27 @@ package com.ankamagames.dofus.logic.game.fight.miscs
       public static function isPathBlocked(pStartCell:int, pEndCell:int, pDirection:int) : Boolean {
          var pathBlocked:* = false;
          var cellMp:MapPoint = MapPoint.fromCellId(pStartCell);
-         while((cellMp) && (!pathBlocked))
+         while(true)
          {
-            cellMp = cellMp.getNearestCellInDirection(pDirection);
-            if(cellMp)
+            if((cellMp) && (!pathBlocked))
             {
-               pathBlocked = isBlockingCell(cellMp.cellId);
-               if(cellMp.cellId == pEndCell)
+               cellMp = cellMp.getNearestCellInDirection(pDirection);
+               if(cellMp)
+               {
+                  pathBlocked = isBlockingCell(cellMp.cellId);
+                  if(cellMp.cellId != pEndCell)
+                  {
+                     continue;
+                  }
+               }
+               else
                {
                   break;
                }
-               continue;
             }
-            return true;
+            return pathBlocked;
          }
-         return pathBlocked;
+         return true;
       }
       
       public static function getCellIdInDirection(pStartCell:int, pLength:int, pDirection:int) : int {

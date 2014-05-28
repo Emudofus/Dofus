@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.achievement
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -26,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.achievement
          return 363;
       }
       
-      public function initAchievement(id:uint=0, finishedObjective:Vector.<AchievementObjective>=null, startedObjectives:Vector.<AchievementStartedObjective>=null) : Achievement {
+      public function initAchievement(id:uint = 0, finishedObjective:Vector.<AchievementObjective> = null, startedObjectives:Vector.<AchievementStartedObjective> = null) : Achievement {
          this.id = id;
          this.finishedObjective = finishedObjective;
          this.startedObjectives = startedObjectives;

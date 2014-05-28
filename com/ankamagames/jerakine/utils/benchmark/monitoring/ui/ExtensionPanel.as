@@ -72,11 +72,11 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this._memoryState.lastGc = val;
       }
       
-      public function watchObject(o:Object, pColor:uint, pIncrementParents:Boolean=false) : void {
+      public function watchObject(o:Object, pColor:uint, pIncrementParents:Boolean = false) : void {
          this._leakState.watchObject(o,pColor,pIncrementParents);
       }
       
-      public function updateGc(max_memory:Number=0) : void {
+      public function updateGc(max_memory:Number = 0) : void {
          this._memoryState.updateGc(max_memory);
       }
    }

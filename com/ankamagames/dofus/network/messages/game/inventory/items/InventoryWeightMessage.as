@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3009;
       }
       
-      public function initInventoryWeightMessage(weight:uint=0, weightMax:uint=0) : InventoryWeightMessage {
+      public function initInventoryWeightMessage(weight:uint = 0, weightMax:uint = 0) : InventoryWeightMessage {
          this.weight = weight;
          this.weightMax = weightMax;
          this._isInitialized = true;

@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.tinsel
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -36,7 +35,7 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          return 6367;
       }
       
-      public function initTitlesAndOrnamentsListMessage(titles:Vector.<uint>=null, ornaments:Vector.<uint>=null, activeTitle:uint=0, activeOrnament:uint=0) : TitlesAndOrnamentsListMessage {
+      public function initTitlesAndOrnamentsListMessage(titles:Vector.<uint> = null, ornaments:Vector.<uint> = null, activeTitle:uint = 0, activeOrnament:uint = 0) : TitlesAndOrnamentsListMessage {
          this.titles = titles;
          this.ornaments = ornaments;
          this.activeTitle = activeTitle;

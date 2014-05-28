@@ -27,11 +27,11 @@ package com.ankamagames.atouin.entities.behaviours.movements
          }
       }
       
-      private static const LINEAR_VELOCITY:Number = 1 / 400;
+      private static const LINEAR_VELOCITY:Number = 0.0025;
       
-      private static const HORIZONTAL_DIAGONAL_VELOCITY:Number = 1 / 500;
+      private static const HORIZONTAL_DIAGONAL_VELOCITY:Number = 0.002;
       
-      private static const VERTICAL_DIAGONAL_VELOCITY:Number = 1 / 450;
+      private static const VERTICAL_DIAGONAL_VELOCITY:Number = 0.0022222222222222222;
       
       private static const ANIMATION:String = "FX";
       
@@ -67,7 +67,7 @@ package com.ankamagames.atouin.entities.behaviours.movements
          return ANIMATION;
       }
       
-      override public function move(entity:IMovable, path:MovementPath, callback:Function=null) : void {
+      override public function move(entity:IMovable, path:MovementPath, callback:Function = null) : void {
          var tweenData:TweenEntityData = new TweenEntityData();
          tweenData.path = path;
          tweenData.entity = entity;

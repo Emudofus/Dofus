@@ -27,7 +27,7 @@ package com.ankamagames.berilia.components
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(VideoPlayer));
+      protected static const _log:Logger;
       
       private var _finalized:Boolean;
       
@@ -285,22 +285,20 @@ package com.ankamagames.berilia.components
                this.connect();
                this.play();
             }
-            else
+            else if(videoRatio < playerRatio)
             {
-               if(videoRatio < playerRatio)
+               this.stop();
+               if(this._video.parent)
                {
-                  this.stop();
-                  if(this._video.parent)
-                  {
-                     removeChild(this._video);
-                  }
-                  width = height * videoRatio;
-                  x = (1280 - width) / 2;
-                  this.finalize();
-                  this.connect();
-                  this.play();
+                  removeChild(this._video);
                }
+               width = height * videoRatio;
+               x = (1280 - width) / 2;
+               this.finalize();
+               this.connect();
+               this.play();
             }
+            
          }
       }
    }

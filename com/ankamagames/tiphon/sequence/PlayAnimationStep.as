@@ -13,7 +13,7 @@ package com.ankamagames.tiphon.sequence
    public class PlayAnimationStep extends AbstractSequencable
    {
       
-      public function PlayAnimationStep(target:TiphonSprite, animationName:String, backToLastAnimationAtEnd:Boolean=true, waitEvent:Boolean=true, eventEnd:String="animation_event_end", loop:int=1, endAnimationName:String="") {
+      public function PlayAnimationStep(target:TiphonSprite, animationName:String, backToLastAnimationAtEnd:Boolean = true, waitEvent:Boolean = true, eventEnd:String = "animation_event_end", loop:int = 1, endAnimationName:String = "") {
          super();
          this._endEvent = eventEnd;
          this._target = target;
@@ -24,7 +24,7 @@ package com.ankamagames.tiphon.sequence
          this._endAnimationName = endAnimationName;
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayAnimationStep));
+      private static const _log:Logger;
       
       private var _target:TiphonSprite;
       
@@ -87,7 +87,7 @@ package com.ankamagames.tiphon.sequence
          var directions:Array = this._target.getAvaibleDirection(this._animationName,true);
          if(!directions[this._target.getDirection()])
          {
-            for (s in directions)
+            for(s in directions)
             {
                if(directions[s])
                {
@@ -125,7 +125,7 @@ package com.ankamagames.tiphon.sequence
          var subEntities:Array = this._target.getSubEntitiesList();
          if((!playingAnim) && (subEntities.length > 0))
          {
-            for each (subEntity in subEntities)
+            for each(subEntity in subEntities)
             {
                if(subEntity.isPlayingAnimation())
                {

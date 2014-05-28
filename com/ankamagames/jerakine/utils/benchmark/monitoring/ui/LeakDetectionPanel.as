@@ -4,7 +4,6 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
    import com.ankamagames.jerakine.utils.benchmark.monitoring.FpsManagerConst;
    import flash.utils.Dictionary;
    import flash.text.TextField;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.utils.benchmark.monitoring.List;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.utils.benchmark.monitoring.MonitoredObject;
@@ -29,7 +28,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          this.drawBG();
       }
       
-      private static const WIDTH:int = FpsManagerConst.BOX_WIDTH;
+      private static const WIDTH:int = 250;
       
       private static const HEIGHT:int = 300;
       
@@ -47,7 +46,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          graphics.endFill();
       }
       
-      public function watchObject(o:Object, pColor:uint, incrementParents:Boolean=false) : void {
+      public function watchObject(o:Object, pColor:uint, incrementParents:Boolean = false) : void {
          var list:List = null;
          var firstList:List = null;
          var secondList:List = null;
@@ -63,7 +62,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
                list = new List(objectName);
                firstList = list;
                type = describeType(o);
-               for each (ex in type.extendsClass)
+               for each(ex in type.extendsClass)
                {
                   c = ex.@type.toString().split("::")[1];
                   if(this._listDataObject[c] != null)
@@ -83,13 +82,11 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
                this.updateParents(list,mObject);
             }
          }
-         else
+         else if(mObject.color == 16777215)
          {
-            if(mObject.color == 16777215)
-            {
-               mObject.color = pColor;
-            }
+            mObject.color = pColor;
          }
+         
          mObject.addNewValue(o);
       }
       
@@ -99,53 +96,54 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
          {
             do
             {
-                  if(list.value != null)
-                  {
-                     this.updateParent(list.value.toString(),o,list.next);
-                  }
-               }while((list = list.next) != null);
-               
-            }
-         }
-         
-         private function updateParent(pName:String, pValue:Object, pList:List) : void {
-            var mObject:MonitoredObject = this._listDataObject[pName];
-            if(mObject == null)
-            {
-               mObject = new MonitoredObject(pName,16777215,pList);
-               this._listDataObject[pName] = mObject;
-            }
-            mObject.addNewValue(pValue);
-         }
-         
-         public function updateData() : void {
-            var mo:MonitoredObject = null;
-            var str:String = "";
-            for each (mo in this._listDataObject)
-            {
-               mo.update();
-               str = str + ("<font face=\'Verdana\' size=\'15\' color=\'#" + mo.color.toString(16) + "\' >");
-               if(mo.selected)
+               if(list.value != null)
                {
-                  str = str + "(*) ";
+                  this.updateParent(list.value.toString(),o,list.next);
                }
-               str = str + ("<a href=\'event:" + mo.name + "\'>[" + mo.name + "]</a> : " + FpsManagerUtils.countKeys(mo.list));
-               str = str + "</font>\n";
             }
-            this._dataTf.htmlText = str;
-            this._dataTf.width = this._dataTf.textWidth + 10;
-            this.drawBG();
-         }
-         
-         private function linkHandler(pEvt:TextEvent) : void {
-            var mo:MonitoredObject = this._listDataObject[pEvt.text];
-            if(mo == null)
-            {
-               return;
-            }
-            var evt:FpsManagerEvent = new FpsManagerEvent("follow");
-            evt.data = mo;
-            dispatchEvent(evt);
+            while((list = list.next) != null);
+            
          }
       }
+      
+      private function updateParent(pName:String, pValue:Object, pList:List) : void {
+         var mObject:MonitoredObject = this._listDataObject[pName];
+         if(mObject == null)
+         {
+            mObject = new MonitoredObject(pName,16777215,pList);
+            this._listDataObject[pName] = mObject;
+         }
+         mObject.addNewValue(pValue);
+      }
+      
+      public function updateData() : void {
+         var mo:MonitoredObject = null;
+         var str:String = "";
+         for each(mo in this._listDataObject)
+         {
+            mo.update();
+            str = str + ("<font face=\'Verdana\' size=\'15\' color=\'#" + mo.color.toString(16) + "\' >");
+            if(mo.selected)
+            {
+               str = str + "(*) ";
+            }
+            str = str + ("<a href=\'event:" + mo.name + "\'>[" + mo.name + "]</a> : " + FpsManagerUtils.countKeys(mo.list));
+            str = str + "</font>\n";
+         }
+         this._dataTf.htmlText = str;
+         this._dataTf.width = this._dataTf.textWidth + 10;
+         this.drawBG();
+      }
+      
+      private function linkHandler(pEvt:TextEvent) : void {
+         var mo:MonitoredObject = this._listDataObject[pEvt.text];
+         if(mo == null)
+         {
+            return;
+         }
+         var evt:FpsManagerEvent = new FpsManagerEvent("follow");
+         evt.data = mo;
+         dispatchEvent(evt);
+      }
    }
+}

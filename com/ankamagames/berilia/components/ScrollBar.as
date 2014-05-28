@@ -31,15 +31,16 @@ package com.ankamagames.berilia.components
    {
       
       public function ScrollBar() {
+         this._common = XmlConfig.getInstance().getEntry("config.ui.skin");
          super();
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ScrollBar));
+      protected static const _log:Logger;
       
-      private const _common:String = XmlConfig.getInstance().getEntry("config.ui.skin");
+      private const _common:String;
       
       private var _nWidth:uint = 16;
       
@@ -405,17 +406,15 @@ package com.ankamagames.berilia.components
             this._texMin.finalize();
             addChild(this._gcMin);
          }
+         else if(this._bVertical)
+         {
+            this._texMin.width = this._squareEdge;
+         }
          else
          {
-            if(this._bVertical)
-            {
-               this._texMin.width = this._squareEdge;
-            }
-            else
-            {
-               this._texMin.height = this._squareEdge;
-            }
+            this._texMin.height = this._squareEdge;
          }
+         
          if(!this._texMax.finalized)
          {
             if(this._bVertical)
@@ -588,7 +587,7 @@ package com.ankamagames.berilia.components
                switch(MouseDownMessage(msg).target)
                {
                   case this._gcMax:
-                     for each (listener in Berilia.getInstance().UISoundListeners)
+                     for each(listener in Berilia.getInstance().UISoundListeners)
                      {
                         listener.playUISound("16015");
                      }
@@ -610,7 +609,7 @@ package com.ankamagames.berilia.components
                      EnterFrameDispatcher.addEventListener(this.onBottomArrowDown,"ScrollBarBottomArrow");
                      break;
                   case this._gcMin:
-                     for each (listener2 in Berilia.getInstance().UISoundListeners)
+                     for each(listener2 in Berilia.getInstance().UISoundListeners)
                      {
                         listener2.playUISound("16014");
                      }
@@ -703,6 +702,9 @@ package com.ankamagames.berilia.components
             case msg is MouseWheelMessage:
                addEventListener(MouseEvent.MOUSE_WHEEL,this.onWheel);
                return true;
+            default:
+               PoolsManager.getInstance().getRectanglePool().checkIn(pr);
+               return false;
          }
       }
       
@@ -787,7 +789,7 @@ package com.ankamagames.berilia.components
          this._nDecelerateScroll++;
       }
       
-      public function onWheel(e:Object, dispatchEvt:Boolean=true) : void {
+      public function onWheel(e:Object, dispatchEvt:Boolean = true) : void {
          this._nCurrentPos = this._nCurrentPos - this._nScrollStep * e.delta * this._nScrollSpeed;
          if(this._nCurrentPos > this._nBoxPosMax)
          {
@@ -835,13 +837,11 @@ package com.ankamagames.berilia.components
          {
             this._texMin.gotoAndStop = this._bDisabled?StatesEnum.STATE_DISABLED_STRING.toLowerCase():StatesEnum.STATE_NORMAL_STRING.toLowerCase();
          }
-         else
+         else if(e.target == this._texMax)
          {
-            if(e.target == this._texMax)
-            {
-               this._texMax.gotoAndStop = this._bDisabled?StatesEnum.STATE_DISABLED_STRING.toLowerCase():StatesEnum.STATE_NORMAL_STRING.toLowerCase();
-            }
+            this._texMax.gotoAndStop = this._bDisabled?StatesEnum.STATE_DISABLED_STRING.toLowerCase():StatesEnum.STATE_NORMAL_STRING.toLowerCase();
          }
+         
       }
    }
 }

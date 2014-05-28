@@ -5,7 +5,7 @@ package com.ankamagames.dofus.types.data
    public class ItemTooltipInfo extends Object
    {
       
-      public function ItemTooltipInfo(itemWrapper:ItemWrapper, shortcutKey:String=null) {
+      public function ItemTooltipInfo(itemWrapper:ItemWrapper, shortcutKey:String = null) {
          super();
          this.itemWrapper = itemWrapper;
          this.shortcutKey = shortcutKey;

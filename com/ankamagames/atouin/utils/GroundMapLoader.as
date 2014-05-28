@@ -53,7 +53,7 @@ package com.ankamagames.atouin.utils
          }
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(GroundMapLoader));
+      private static const _log:Logger;
       
       public static function loadGroundMap(map:Map, file:File, callBack:Function, errorCallBack:Function) : void {
       }
@@ -94,16 +94,6 @@ package com.ankamagames.atouin.utils
             }
             onError(null);
          }
-         return;
-         if((this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_LOW_QUALITY) || (this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_MEDIUM_QUALITY))
-         {
-            bitmap.width = AtouinConstants.RESOLUTION_HIGH_QUALITY.x;
-            bitmap.height = AtouinConstants.RESOLUTION_HIGH_QUALITY.y;
-         }
-         this._loader.contentLoaderInfo.removeEventListener(Event.INIT,this.onJPGReady);
-         this._loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR,this.onError);
-         this._loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS,this.onProgress);
-         this._callBack(bitmap);
       }
       
       private function onError(e:Event) : void {

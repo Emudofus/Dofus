@@ -15,7 +15,7 @@ package com.ankamagames.jerakine.lua
    public class LuaPlayer extends EventDispatcher implements IScriptsPlayer
    {
       
-      public function LuaPlayer(pDispatchMessages:Boolean=true) {
+      public function LuaPlayer(pDispatchMessages:Boolean = true) {
          super();
          this._luaAlchemy = new LuaAlchemy();
          this._dispatchMessages = pDispatchMessages;
@@ -129,13 +129,11 @@ package com.ankamagames.jerakine.lua
                {
                   this.onScriptComplete();
                }
-               else
+               else if(this._seqApi)
                {
-                  if(this._seqApi)
-                  {
-                     this._seqApi.addCompleteCallback(this.onScriptComplete);
-                  }
+                  this._seqApi.addCompleteCallback(this.onScriptComplete);
                }
+               
             }
             else
             {

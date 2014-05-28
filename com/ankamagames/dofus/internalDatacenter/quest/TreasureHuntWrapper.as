@@ -5,7 +5,6 @@ package com.ankamagames.dofus.internalDatacenter.quest
    import com.ankamagames.dofus.types.enums.TreasureHuntStepTypeEnum;
    import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFollowDirectionToPOI;
    import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFollowDirection;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFight;
    
    public class TreasureHuntWrapper extends Object implements IDataCenter
@@ -25,7 +24,7 @@ package com.ankamagames.dofus.internalDatacenter.quest
          item.availableRetryCount = availableRetryCount;
          var startStep:TreasureHuntStepWrapper = TreasureHuntStepWrapper.create(TreasureHuntStepTypeEnum.START,0,startMapId,0);
          item.stepList.push(startStep);
-         for each (step in stepList)
+         for each(step in stepList)
          {
             if(step is TreasureHuntStepFollowDirectionToPOI)
             {
@@ -59,19 +58,17 @@ package com.ankamagames.dofus.internalDatacenter.quest
          this.stepList = new Vector.<TreasureHuntStepWrapper>();
          var startStep:TreasureHuntStepWrapper = TreasureHuntStepWrapper.create(TreasureHuntStepTypeEnum.START,0,startMapId,0);
          this.stepList.push(startStep);
-         for each (step in stepList)
+         for each(step in stepList)
          {
             if(step is TreasureHuntStepFollowDirectionToPOI)
             {
                this.stepList.push(TreasureHuntStepWrapper.create(TreasureHuntStepTypeEnum.DIRECTION_TO_POI,(step as TreasureHuntStepFollowDirectionToPOI).direction,0,(step as TreasureHuntStepFollowDirectionToPOI).poiLabelId));
             }
-            else
+            else if(step is TreasureHuntStepFight)
             {
-               if(step is TreasureHuntStepFight)
-               {
-                  this.stepList.push(TreasureHuntStepWrapper.create(TreasureHuntStepTypeEnum.FIGHT,0,0,0));
-               }
+               this.stepList.push(TreasureHuntStepWrapper.create(TreasureHuntStepTypeEnum.FIGHT,0,0,0));
             }
+            
          }
       }
    }

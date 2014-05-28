@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6031;
       }
       
-      public function initExchangeRemovedPaymentForCraftMessage(onlySuccess:Boolean=false, objectUID:uint=0) : ExchangeRemovedPaymentForCraftMessage {
+      public function initExchangeRemovedPaymentForCraftMessage(onlySuccess:Boolean = false, objectUID:uint = 0) : ExchangeRemovedPaymentForCraftMessage {
          this.onlySuccess = onlySuccess;
          this.objectUID = objectUID;
          this._isInitialized = true;

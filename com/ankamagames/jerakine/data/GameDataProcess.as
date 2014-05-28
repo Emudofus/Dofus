@@ -2,7 +2,6 @@ package com.ankamagames.jerakine.data
 {
    import flash.utils.Dictionary;
    import flash.utils.IDataInput;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.enum.GameDataTypeEnum;
    import flash.utils.ByteArray;
    import flash.filesystem.FileStream;
@@ -140,7 +139,7 @@ package com.ankamagames.jerakine.data
          return result;
       }
       
-      public function sort(fieldNames:*, ids:Vector.<uint>, ascending:*=true) : Vector.<uint> {
+      public function sort(fieldNames:*, ids:Vector.<uint>, ascending:* = true) : Vector.<uint> {
          ids.sort(this.getSortFunction(fieldNames,ascending));
          return ids;
       }

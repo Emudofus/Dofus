@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.tinsel
          return 6366;
       }
       
-      public function initTitleSelectedMessage(titleId:uint=0) : TitleSelectedMessage {
+      public function initTitleSelectedMessage(titleId:uint = 0) : TitleSelectedMessage {
          this.titleId = titleId;
          this._isInitialized = true;
          return this;

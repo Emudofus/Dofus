@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.pvp
          return 6058;
       }
       
-      public function initAlignmentRankUpdateMessage(alignmentRank:uint=0, verbose:Boolean=false) : AlignmentRankUpdateMessage {
+      public function initAlignmentRankUpdateMessage(alignmentRank:uint = 0, verbose:Boolean = false) : AlignmentRankUpdateMessage {
          this.alignmentRank = alignmentRank;
          this.verbose = verbose;
          this._isInitialized = true;

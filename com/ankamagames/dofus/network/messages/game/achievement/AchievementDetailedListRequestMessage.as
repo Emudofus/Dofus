@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.achievement
          return 6357;
       }
       
-      public function initAchievementDetailedListRequestMessage(categoryId:uint=0) : AchievementDetailedListRequestMessage {
+      public function initAchievementDetailedListRequestMessage(categoryId:uint = 0) : AchievementDetailedListRequestMessage {
          this.categoryId = categoryId;
          this._isInitialized = true;
          return this;

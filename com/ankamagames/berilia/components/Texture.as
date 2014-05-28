@@ -52,7 +52,7 @@ package com.ankamagames.berilia.components
          MEMORY_LOG[this] = 1;
       }
       
-      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+      public static var MEMORY_LOG:Dictionary;
       
       private var _log:Logger;
       
@@ -268,7 +268,7 @@ package com.ankamagames.berilia.components
       private function hasLabel(mv:MovieClip, lbl:String) : Boolean {
          var label:FrameLabel = null;
          var labels:Array = mv.currentLabels;
-         for each (label in labels)
+         for each(label in labels)
          {
             if(lbl == label.name)
             {
@@ -375,14 +375,12 @@ package com.ankamagames.berilia.components
                i++;
             }
          }
-         else
+         else if(this._child is MovieClip)
          {
-            if(this._child is MovieClip)
-            {
-               mc = this._child as MovieClip;
-               t = mc.totalFrames;
-            }
+            mc = this._child as MovieClip;
+            t = mc.totalFrames;
          }
+         
          return t;
       }
       
@@ -404,17 +402,15 @@ package com.ankamagames.berilia.components
                i++;
             }
          }
-         else
+         else if(this._child is MovieClip)
          {
-            if(this._child is MovieClip)
-            {
-               mc = this._child as MovieClip;
-               mc.gotoAndPlay(frameNumber);
-            }
+            mc = this._child as MovieClip;
+            mc.gotoAndPlay(frameNumber);
          }
+         
       }
       
-      public function colorTransform(colorTransform:ColorTransform, depth:int=0) : void {
+      public function colorTransform(colorTransform:ColorTransform, depth:int = 0) : void {
          var currentChild:DisplayObjectContainer = null;
          var i:* = 0;
          var child:DisplayObject = null;
@@ -422,34 +418,32 @@ package com.ankamagames.berilia.components
          {
             transform.colorTransform = colorTransform;
          }
-         else
+         else if(this._child is DisplayObjectContainer)
          {
-            if(this._child is DisplayObjectContainer)
+            currentChild = this._child as DisplayObjectContainer;
+            i = 0;
+            while(i < depth)
             {
-               currentChild = this._child as DisplayObjectContainer;
-               i = 0;
-               while(i < depth)
+               if(currentChild.numChildren > 0)
                {
-                  if(currentChild.numChildren > 0)
+                  child = currentChild.getChildAt(0);
+                  if(child is DisplayObjectContainer)
                   {
-                     child = currentChild.getChildAt(0);
-                     if(child is DisplayObjectContainer)
-                     {
-                        currentChild = child as DisplayObjectContainer;
-                        i++;
-                        continue;
-                     }
-                     break;
+                     currentChild = child as DisplayObjectContainer;
+                     i++;
+                     continue;
                   }
                   break;
                }
-               currentChild.transform.colorTransform = colorTransform;
+               break;
             }
-            else
-            {
-               transform.colorTransform = colorTransform;
-            }
+            currentChild.transform.colorTransform = colorTransform;
          }
+         else
+         {
+            transform.colorTransform = colorTransform;
+         }
+         
       }
       
       public function get roundCornerRadius() : uint {
@@ -546,75 +540,71 @@ package com.ankamagames.berilia.components
                Berilia.getInstance().handler.process(new TextureReadyMessage(this));
             }
          }
-         else
+         else if(this._uri)
          {
-            if(this._uri)
+            if(!this._loader)
             {
-               if(!this._loader)
+               this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
+               this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onLoaded,false,0,true);
+               this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onFailed,false,0,true);
+            }
+            else
+            {
+               this._loader.cancel();
+            }
+            if(this._uri.subPath)
+            {
+               if((this._uri.protocol == "mod") || (this._uri.protocol == "theme") || (this._uri.protocol == "pak") || (this._uri.protocol == "d2p") || (this._uri.protocol == "pak2") || (this._uri.protocol == "d2pOld"))
                {
-                  this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
-                  this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onLoaded,false,0,true);
-                  this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onFailed,false,0,true);
+                  realUri = new Uri(this._uri.normalizedUri);
                }
-               else
+               else if((AirScanner.hasAir()) && (!(this._uri.protocol == "httpc")))
                {
-                  this._loader.cancel();
-               }
-               if(this._uri.subPath)
-               {
-                  if((this._uri.protocol == "mod") || (this._uri.protocol == "theme") || (this._uri.protocol == "pak") || (this._uri.protocol == "d2p") || (this._uri.protocol == "pak2") || (this._uri.protocol == "d2pOld"))
-                  {
-                     realUri = new Uri(this._uri.normalizedUri);
-                  }
-                  else
-                  {
-                     if((AirScanner.hasAir()) && (!(this._uri.protocol == "httpc")))
-                     {
-                        realUri = new Uri(this._uri.path);
-                     }
-                     else
-                     {
-                        realUri = this._uri;
-                     }
-                  }
-                  realUri.loaderContext = this._uri.loaderContext;
-                  this._realUri = realUri;
-                  if(!((this._uri.protocol == "pak") || (this._uri.protocol == "d2p") || (this._uri.protocol == "pak2") || (this._uri.protocol == "dp2Old")))
-                  {
-                     forcedAdapter = AdvancedSwfAdapter;
-                  }
+                  realUri = new Uri(this._uri.path);
                }
                else
                {
                   realUri = this._uri;
                }
-               if((this._uri.protocol == "httpc") && (this.defaultBitmapData) && (!this._loader.isInCache(this.uri)))
+               
+               realUri.loaderContext = this._uri.loaderContext;
+               this._realUri = realUri;
+               if(!((this._uri.protocol == "pak") || (this._uri.protocol == "d2p") || (this._uri.protocol == "pak2") || (this._uri.protocol == "dp2Old")))
                {
-                  this.loadBitmapData(this.defaultBitmapData);
+                  forcedAdapter = AdvancedSwfAdapter;
                }
-               if(hasEventListener(Event.INIT))
-               {
-                  dispatchEvent(new Event(Event.INIT));
-               }
-               this._loader.load(realUri,this._useCache?UriCacheFactory.getCacheFromUri(realUri):null,forcedAdapter);
             }
             else
             {
-               if(this._child)
+               realUri = this._uri;
+            }
+            if((this._uri.protocol == "httpc") && (this.defaultBitmapData) && (!this._loader.isInCache(this.uri)))
+            {
+               this.loadBitmapData(this.defaultBitmapData);
+            }
+            if(hasEventListener(Event.INIT))
+            {
+               dispatchEvent(new Event(Event.INIT));
+            }
+            this._loader.load(realUri,this._useCache?UriCacheFactory.getCacheFromUri(realUri):null,forcedAdapter);
+         }
+         else
+         {
+            if(this._child)
+            {
+               while(numChildren)
                {
-                  while(numChildren)
-                  {
-                     removeChildAt(0);
-                  }
-                  this._child = null;
+                  removeChildAt(0);
                }
-               this._finalized = true;
-               if(getUi())
-               {
-                  getUi().iAmFinalized(this);
-               }
+               this._child = null;
+            }
+            this._finalized = true;
+            if(getUi())
+            {
+               getUi().iAmFinalized(this);
             }
          }
+         
       }
       
       private function organize() : void {
@@ -659,27 +649,21 @@ package com.ankamagames.berilia.components
                {
                   ratio = this._forcedHeight / this._child.height;
                }
-               else
+               else if(isNaN(this._forcedHeight))
                {
-                  if(isNaN(this._forcedHeight))
-                  {
-                     ratio = this._forcedWidth / this._child.width;
-                  }
-                  else
-                  {
-                     if(this._forcedHeight > this._forcedWidth)
-                     {
-                        ratio = this._child.width / this._forcedWidth;
-                     }
-                     else
-                     {
-                        if(this._forcedHeight < this._forcedWidth)
-                        {
-                           ratio = this._child.height / this._forcedHeight;
-                        }
-                     }
-                  }
+                  ratio = this._forcedWidth / this._child.width;
                }
+               else if(this._forcedHeight > this._forcedWidth)
+               {
+                  ratio = this._child.width / this._forcedWidth;
+               }
+               else if(this._forcedHeight < this._forcedWidth)
+               {
+                  ratio = this._child.height / this._forcedHeight;
+               }
+               
+               
+               
                this._child.scaleX = this._child.scaleY = ratio;
             }
          }
@@ -710,16 +694,14 @@ package com.ankamagames.berilia.components
                getUi().iAmFinalized(this);
             }
          }
-         else
+         else if((rerender) || (true))
          {
-            if((rerender) || (true))
+            if(getUi())
             {
-               if(getUi())
-               {
-                  getUi().iAmFinalized(this);
-               }
+               getUi().iAmFinalized(this);
             }
          }
+         
       }
       
       private function initMask() : void {
@@ -784,48 +766,44 @@ package com.ankamagames.berilia.components
                (this._child as MovieClip).stop();
             }
          }
-         else
+         else if(rle.resourceType == ResourceType.RESOURCE_BITMAP)
          {
-            if(rle.resourceType == ResourceType.RESOURCE_BITMAP)
+            this._child = addChild(new Bitmap(rle.resource,"auto",true));
+         }
+         else if(rle.resourceType == ResourceType.RESOURCE_ASWF)
+         {
+            aswf = ASwf(rle.resource);
+            if(this._uri.subPath)
             {
-               this._child = addChild(new Bitmap(rle.resource,"auto",true));
+               try
+               {
+                  this._child = addChild(new (aswf.applicationDomain.getDefinition(this._uri.subPath) as Class)() as DisplayObject);
+               }
+               catch(e:Error)
+               {
+                  error = new ResourceErrorEvent(ResourceErrorEvent.ERROR);
+                  error.errorCode = ResourceErrorCode.SUB_RESOURCE_NOT_FOUND;
+                  error.uri = _uri;
+                  error.errorMsg = "Sub ressource \'" + _uri.subPath + "\' not found";
+                  onFailed(error);
+                  return;
+               }
             }
             else
             {
-               if(rle.resourceType == ResourceType.RESOURCE_ASWF)
+               this._child = addChild(aswf.content);
+               if(this._child is MovieClip)
                {
-                  aswf = ASwf(rle.resource);
-                  if(this._uri.subPath)
-                  {
-                     try
-                     {
-                        this._child = addChild(new aswf.applicationDomain.getDefinition(this._uri.subPath) as Class() as DisplayObject);
-                     }
-                     catch(e:Error)
-                     {
-                        error = new ResourceErrorEvent(ResourceErrorEvent.ERROR);
-                        error.errorCode = ResourceErrorCode.SUB_RESOURCE_NOT_FOUND;
-                        error.uri = _uri;
-                        error.errorMsg = "Sub ressource \'" + _uri.subPath + "\' not found";
-                        onFailed(error);
-                        return;
-                     }
-                  }
-                  else
-                  {
-                     this._child = addChild(aswf.content);
-                     if(this._child is MovieClip)
-                     {
-                        (this._child as MovieClip).stop();
-                     }
-                  }
-               }
-               else
-               {
-                  throw new IllegalOperationError("A Texture component can\'t display a non-displayable resource.");
+                  (this._child as MovieClip).stop();
                }
             }
          }
+         else
+         {
+            throw new IllegalOperationError("A Texture component can\'t display a non-displayable resource.");
+         }
+         
+         
          if(this._child != null)
          {
             this._startBounds = this._child.getBounds(this);

@@ -25,7 +25,7 @@ package com.ankamagames.dofus.network.types.game.character.alignment
          return 202;
       }
       
-      public function initActorExtendedAlignmentInformations(alignmentSide:int=0, alignmentValue:uint=0, alignmentGrade:uint=0, characterPower:uint=0, honor:uint=0, honorGradeFloor:uint=0, honorNextGradeFloor:uint=0, aggressable:uint=0) : ActorExtendedAlignmentInformations {
+      public function initActorExtendedAlignmentInformations(alignmentSide:int = 0, alignmentValue:uint = 0, alignmentGrade:uint = 0, characterPower:uint = 0, honor:uint = 0, honorGradeFloor:uint = 0, honorNextGradeFloor:uint = 0, aggressable:uint = 0) : ActorExtendedAlignmentInformations {
          super.initActorAlignmentInformations(alignmentSide,alignmentValue,alignmentGrade,characterPower);
          this.honor = honor;
          this.honorGradeFloor = honorGradeFloor;

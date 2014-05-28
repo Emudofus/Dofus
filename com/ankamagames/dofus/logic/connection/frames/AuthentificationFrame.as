@@ -69,7 +69,7 @@ package com.ankamagames.dofus.logic.connection.frames
    public class AuthentificationFrame extends Object implements Frame
    {
       
-      public function AuthentificationFrame(dispatchModuleHook:Boolean=true) {
+      public function AuthentificationFrame(dispatchModuleHook:Boolean = true) {
          this.commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
          super();
          this._dispatchModuleHook = dispatchModuleHook;
@@ -80,7 +80,7 @@ package com.ankamagames.dofus.logic.connection.frames
          this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onLoad);
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AuthentificationFrame));
+      protected static const _log:Logger;
       
       private static var _lastTicket:String;
       
@@ -132,12 +132,27 @@ package com.ankamagames.dofus.logic.connection.frames
       private var _streamingBetaAccess:Boolean = false;
       
       private function onStreamingBetaAuthentification(e:Event) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc3_:* = false;
+         var _loc4_:* = true;
+         var commonMod2:Object = null;
+         if(SpecialBetaAuthentification(e.target).haveAccess)
+         {
+            this._streamingBetaAccess = true;
+            this.process(this._lva);
+         }
+         else
+         {
+            if(UiModuleManager.getInstance().isDevMode)
+            {
+               UiModuleManager.getInstance().isDevMode = false;
+               this.process(this._lva);
+               return;
+            }
+            this._streamingBetaAccess = false;
+            KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed,0);
+            commonMod2 = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+            commonMod2.openPopup(I18n.getUiText("ui.popup.information"),"You are trying to access to a private beta but your account is not allowed.If you wish have an access, please contact Ankama.",[I18n.getUiText("ui.common.ok")]);
+         }
       }
       
       public function process(msg:Message) : Boolean {
@@ -211,7 +226,7 @@ package com.ankamagames.dofus.logic.connection.frames
                this._lastLoginHash = MD5.hash(lva.username);
                connexionPorts = new Array();
                ports = XmlConfig.getInstance().getEntry("config.connection.port");
-               for each (porc in ports.split(","))
+               for each(porc in ports.split(","))
                {
                   connexionPorts.push(int(porc));
                }
@@ -246,7 +261,7 @@ package com.ankamagames.dofus.logic.connection.frames
                }
                connexionHosts = connectionHostsEntry.split(",");
                tmpHosts = [];
-               for each (tmpHost in connexionHosts)
+               for each(tmpHost in connexionHosts)
                {
                   tmpHosts.push(
                      {
@@ -256,7 +271,7 @@ package com.ankamagames.dofus.logic.connection.frames
                }
                tmpHosts.sortOn("random",Array.NUMERIC);
                connexionHosts = [];
-               for each (randomHost in tmpHosts)
+               for each(randomHost in tmpHosts)
                {
                   connexionHosts.push(randomHost.host);
                }
@@ -264,9 +279,9 @@ package com.ankamagames.dofus.logic.connection.frames
                defaultPort = uint(StoreDataManager.getInstance().getData(dst,"connectionPortDefault"));
                this._connexionSequence = [];
                firstConnexionSequence = [];
-               for each (host in connexionHosts)
+               for each(host in connexionHosts)
                {
-                  for each (port in connexionPorts)
+                  for each(port in connexionPorts)
                   {
                      if(defaultPort == port)
                      {
@@ -295,7 +310,7 @@ package com.ankamagames.dofus.logic.connection.frames
                      rawParam = Base64.decode(rawParam);
                      params = [];
                      tmp = rawParam.split(",");
-                     for each (param in tmp)
+                     for each(param in tmp)
                      {
                         tmp2 = param.split(":");
                         params[tmp2[0]] = tmp2[1];
@@ -409,16 +424,14 @@ package com.ankamagames.dofus.logic.connection.frames
                      KernelEventsManager.getInstance().processCallback(HookList.AgreementsRequired,files);
                   }
                }
-               else
+               else if(updaterV2)
                {
-                  if(updaterV2)
+                  if(PartManagerV2.getInstance().hasComponent("admin"))
                   {
-                     if(PartManagerV2.getInstance().hasComponent("admin"))
-                     {
-                        PartManagerV2.getInstance().activateComponent("admin",false);
-                     }
+                     PartManagerV2.getInstance().activateComponent("admin",false);
                   }
                }
+               
                StoreUserDataManager.getInstance().savePlayerData();
                Kernel.getWorker().removeFrame(this);
                Kernel.getWorker().addFrame(new ChangeCharacterFrame());
@@ -508,6 +521,8 @@ package com.ankamagames.dofus.logic.connection.frames
                uri2.loaderContext = this._contextLoader;
                this._loader.load(uri2);
                return true;
+            default:
+               return false;
          }
       }
       
@@ -519,30 +534,144 @@ package com.ankamagames.dofus.logic.connection.frames
       }
       
       private function processInvokeArgs() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc3_:* = true;
+         var _loc4_:* = false;
+         var value:String = null;
+         var lvwta:LoginValidationWithTicketAction = null;
+         if(CommandLineArguments.getInstance().hasArgument("ticket"))
+         {
+            value = CommandLineArguments.getInstance().getArgument("ticket");
+            if(_lastTicket == value)
+            {
+               return;
+            }
+            _log.info("Use ticket from launch param\'s");
+            _lastTicket = value;
+            lvwta = LoginValidationWithTicketAction.create(value,true);
+            this.process(lvwta);
+         }
       }
       
       private function onLoad(e:ResourceLoadedEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var xml:XML = null;
+         var xmlString:String = null;
+         var i:int = 0;
+         var gift:XML = null;
+         var subGift:SubscriberGift = null;
+         var text:String = null;
+         var link:String = null;
+         var id:uint = 0;
+         var news:XML = null;
+         var subGiftList:Array = new Array();
+         try
+         {
+            xml = e.resource;
+            xmlString = xml.toXMLString();
+         }
+         catch(error:Error)
+         {
+            if(_loc6_)
+            {
+               if(!_loc6_)
+               {
+                  while(_loc5_)
+                  {
+                     break;
+                  }
+                  return;
+               }
+               while(true)
+               {
+                  if(_loc6_)
+                  {
+                     if(!_loc5_)
+                     {
+                        if(_loc6_)
+                        {
+                           if(_loc6_)
+                           {
+                              if(_loc5_)
+                              {
+                              }
+                           }
+                        }
+                        if(_loc6_)
+                        {
+                        }
+                     }
+                     if(_loc5_)
+                     {
+                     }
+                  }
+                  _log.error("Cannot read xml ");
+               }
+            }
+            while(true)
+            {
+               if(!_loc5_)
+               {
+                  if(_loc5_)
+                  {
+                     if(_loc6_)
+                     {
+                        if(!_loc5_)
+                        {
+                           if(_loc6_)
+                           {
+                              if(_loc6_)
+                              {
+                                 if(_loc5_)
+                                 {
+                                 }
+                              }
+                           }
+                           if(_loc6_)
+                           {
+                           }
+                        }
+                        if(_loc5_)
+                        {
+                        }
+                     }
+                     _log.error("Cannot read xml ");
+                     continue;
+                  }
+               }
+               return;
+            }
+         }
+         if(xmlString.substring(1,17) == "subscribersGifts")
+         {
+            i = 0;
+            for each(gift in xml..gift)
+            {
+               i++;
+               subGift = new SubscriberGift(i,gift.description,gift.uri,gift.link);
+               subGiftList.push(subGift);
+            }
+            KernelEventsManager.getInstance().processCallback(HookList.SubscribersList,subGiftList);
+         }
+         else if(xmlString.substring(1,9) == "newsList")
+         {
+            id = 0;
+            for each(news in xml..news)
+            {
+               if(news.@id > id)
+               {
+                  text = news.text;
+                  link = news.link;
+                  id = news.@id;
+               }
+            }
+            KernelEventsManager.getInstance().processCallback(HookList.NewsLogin,text,link);
+         }
+         
       }
       
       private function onLoadError(e:ResourceErrorEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: EmptyStackException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var _loc2_:* = false;
+         var _loc3_:* = true;
+         _log.error("Cannot load xml " + e.uri + "(" + e.errorMsg + ")");
       }
    }
 }

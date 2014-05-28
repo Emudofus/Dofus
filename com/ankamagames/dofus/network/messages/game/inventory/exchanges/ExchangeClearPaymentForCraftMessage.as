@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 6145;
       }
       
-      public function initExchangeClearPaymentForCraftMessage(paymentType:int=0) : ExchangeClearPaymentForCraftMessage {
+      public function initExchangeClearPaymentForCraftMessage(paymentType:int = 0) : ExchangeClearPaymentForCraftMessage {
          this.paymentType = paymentType;
          this._isInitialized = true;
          return this;

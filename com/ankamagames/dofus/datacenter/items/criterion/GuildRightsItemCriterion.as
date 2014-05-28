@@ -86,6 +86,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
                return hasThisRight;
             case ItemCriterionOperator.DIFFERENT:
                return !hasThisRight;
+            default:
+               return false;
          }
       }
       

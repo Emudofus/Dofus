@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.ui
          return 6459;
       }
       
-      public function initClientUIOpenedMessage(type:uint=0) : ClientUIOpenedMessage {
+      public function initClientUIOpenedMessage(type:uint = 0) : ClientUIOpenedMessage {
          this.type = type;
          this._isInitialized = true;
          return this;

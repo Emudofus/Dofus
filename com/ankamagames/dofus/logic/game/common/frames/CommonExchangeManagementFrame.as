@@ -40,7 +40,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          this._numCurrentSequence = 0;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CommonExchangeManagementFrame));
+      protected static const _log:Logger;
       
       private var _exchangeType:uint;
       
@@ -178,6 +178,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
                KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeKamaModified,ekmmsg.quantity,ekmmsg.remote);
                return true;
+            default:
+               return false;
          }
       }
       

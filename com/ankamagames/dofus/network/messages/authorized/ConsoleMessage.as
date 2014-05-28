@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.authorized
          return 75;
       }
       
-      public function initConsoleMessage(type:uint=0, content:String="") : ConsoleMessage {
+      public function initConsoleMessage(type:uint = 0, content:String = "") : ConsoleMessage {
          this.type = type;
          this.content = content;
          this._isInitialized = true;

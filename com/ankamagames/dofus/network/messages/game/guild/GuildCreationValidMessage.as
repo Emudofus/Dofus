@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5546;
       }
       
-      public function initGuildCreationValidMessage(guildName:String="", guildEmblem:GuildEmblem=null) : GuildCreationValidMessage {
+      public function initGuildCreationValidMessage(guildName:String = "", guildEmblem:GuildEmblem = null) : GuildCreationValidMessage {
          this.guildName = guildName;
          this.guildEmblem = guildEmblem;
          this._isInitialized = true;

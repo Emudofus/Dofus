@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight.character
          return 5864;
       }
       
-      public function initGameFightShowFighterMessage(informations:GameFightFighterInformations=null) : GameFightShowFighterMessage {
+      public function initGameFightShowFighterMessage(informations:GameFightFighterInformations = null) : GameFightShowFighterMessage {
          this.informations = informations;
          this._isInitialized = true;
          return this;

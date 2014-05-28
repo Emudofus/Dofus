@@ -6,7 +6,6 @@ package com.ankamagames.dofus.logic.game.roleplay.types
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberInformations;
    import com.ankamagames.dofus.datacenter.monsters.Monster;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberCompanionInformations;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberWithAllianceCharacterInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberCharacterInformations;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberMonsterInformations;
@@ -87,7 +86,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
                if((this._waitingCompanions) && (this._waitingCompanions[fighter.id]))
                {
                   this.fighters.push(this.getCompanionFighter(fighter,this._waitingCompanions[fighter.id].id,this._waitingCompanions[fighter.id].genericId));
-                  delete this._waitingCompanions[[fighter.id]];
+                  delete this._waitingCompanions[fighter.id];
                }
             }
             i++;
@@ -108,7 +107,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
 class Fighter extends Object
 {
    
-   function Fighter(pId:int, pName:String, pLevel:uint, pAllianceTagName:String=null) {
+   function Fighter(pId:int, pName:String, pLevel:uint, pAllianceTagName:String = null) {
       super();
       this._id = pId;
       this.name = pName;

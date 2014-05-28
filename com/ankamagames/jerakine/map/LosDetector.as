@@ -2,7 +2,6 @@ package com.ankamagames.jerakine.map
 {
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.types.positions.MapPoint;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.utils.display.Dofus1Line;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
@@ -14,7 +13,7 @@ package com.ankamagames.jerakine.map
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LosDetector));
+      protected static const _log:Logger;
       
       public static function getCell(mapData:IDataMapProvider, range:Vector.<uint>, refPosition:MapPoint) : Vector.<uint> {
          var i:uint = 0;
@@ -63,24 +62,20 @@ package com.ankamagames.jerakine.map
                         {
                            los = false;
                         }
+                        else if((line[j].x + line[j].y == refPosition.x + refPosition.y) || (line[j].x - line[j].y == refPosition.x - refPosition.y))
+                        {
+                           los = (los) && (mapData.pointLos(Math.floor(line[j].x),Math.floor(line[j].y),true));
+                        }
+                        else if(tested[currentPoint] == null)
+                        {
+                           los = (los) && (mapData.pointLos(Math.floor(line[j].x),Math.floor(line[j].y),true));
+                        }
                         else
                         {
-                           if((line[j].x + line[j].y == refPosition.x + refPosition.y) || (line[j].x - line[j].y == refPosition.x - refPosition.y))
-                           {
-                              los = (los) && (mapData.pointLos(Math.floor(line[j].x),Math.floor(line[j].y),true));
-                           }
-                           else
-                           {
-                              if(tested[currentPoint] == null)
-                              {
-                                 los = (los) && (mapData.pointLos(Math.floor(line[j].x),Math.floor(line[j].y),true));
-                              }
-                              else
-                              {
-                                 los = (los) && (tested[currentPoint]);
-                              }
-                           }
+                           los = (los) && (tested[currentPoint]);
                         }
+                        
+                        
                      }
                      j++;
                   }

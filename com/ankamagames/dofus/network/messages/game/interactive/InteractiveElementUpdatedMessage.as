@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.interactive
          return 5708;
       }
       
-      public function initInteractiveElementUpdatedMessage(interactiveElement:InteractiveElement=null) : InteractiveElementUpdatedMessage {
+      public function initInteractiveElementUpdatedMessage(interactiveElement:InteractiveElement = null) : InteractiveElementUpdatedMessage {
          this.interactiveElement = interactiveElement;
          this._isInitialized = true;
          return this;

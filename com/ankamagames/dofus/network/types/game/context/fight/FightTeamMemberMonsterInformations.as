@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
          return 6;
       }
       
-      public function initFightTeamMemberMonsterInformations(id:int=0, monsterId:int=0, grade:uint=0) : FightTeamMemberMonsterInformations {
+      public function initFightTeamMemberMonsterInformations(id:int = 0, monsterId:int = 0, grade:uint = 0) : FightTeamMemberMonsterInformations {
          super.initFightTeamMemberInformations(id);
          this.monsterId = monsterId;
          this.grade = grade;

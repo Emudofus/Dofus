@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 73;
       }
       
-      public function initObjectEffectDice(actionId:uint=0, diceNum:uint=0, diceSide:uint=0, diceConst:uint=0) : ObjectEffectDice {
+      public function initObjectEffectDice(actionId:uint = 0, diceNum:uint = 0, diceSide:uint = 0, diceConst:uint = 0) : ObjectEffectDice {
          super.initObjectEffect(actionId);
          this.diceNum = diceNum;
          this.diceSide = diceSide;

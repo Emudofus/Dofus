@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.messages.game.alliance
 {
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.social.AllianceFactSheetInformations;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
@@ -26,7 +25,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
          return 6427;
       }
       
-      public function initAlliancePartialListMessage(alliances:Vector.<AllianceFactSheetInformations>=null) : AlliancePartialListMessage {
+      public function initAlliancePartialListMessage(alliances:Vector.<AllianceFactSheetInformations> = null) : AlliancePartialListMessage {
          super.initAllianceListMessage(alliances);
          this._isInitialized = true;
          return this;

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3025;
       }
       
-      public function initObjectAddedMessage(object:ObjectItem=null) : ObjectAddedMessage {
+      public function initObjectAddedMessage(object:ObjectItem = null) : ObjectAddedMessage {
          this.object = object;
          this._isInitialized = true;
          return this;

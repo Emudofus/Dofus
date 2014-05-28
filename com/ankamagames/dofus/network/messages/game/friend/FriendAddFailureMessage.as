@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 5600;
       }
       
-      public function initFriendAddFailureMessage(reason:uint=0) : FriendAddFailureMessage {
+      public function initFriendAddFailureMessage(reason:uint = 0) : FriendAddFailureMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

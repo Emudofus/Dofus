@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.script
          return 6053;
       }
       
-      public function initCinematicMessage(cinematicId:uint=0) : CinematicMessage {
+      public function initCinematicMessage(cinematicId:uint = 0) : CinematicMessage {
          this.cinematicId = cinematicId;
          this._isInitialized = true;
          return this;

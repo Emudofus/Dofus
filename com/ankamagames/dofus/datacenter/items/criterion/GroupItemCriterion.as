@@ -4,7 +4,6 @@ package com.ankamagames.dofus.datacenter.items.criterion
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.jerakine.utils.misc.StringUtils;
    
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
          this.createNewGroups();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GroupItemCriterion));
+      protected static const _log:Logger;
       
       public static function create(pCriteria:Vector.<IItemCriterion>, pOperators:Vector.<String>) : GroupItemCriterion {
          var pair:* = undefined;
@@ -75,7 +74,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
       public function get inlineCriteria() : Vector.<IItemCriterion> {
          var criterion:IItemCriterion = null;
          var criteria:Vector.<IItemCriterion> = new Vector.<IItemCriterion>();
-         for each (criterion in this._criteria)
+         for each(criterion in this._criteria)
          {
             criteria = criteria.concat(criterion.inlineCriteria);
          }
@@ -99,7 +98,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
          }
          if(this._operators[0] == "|")
          {
-            for each (criterion in this._criteria)
+            for each(criterion in this._criteria)
             {
                if(criterion.isRespected)
                {
@@ -108,7 +107,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
             }
             return false;
          }
-         for each (criterion in this._criteria)
+         for each(criterion in this._criteria)
          {
             if(!criterion.isRespected)
             {
@@ -168,11 +167,11 @@ package com.ankamagames.dofus.datacenter.items.criterion
          }
          var copyCriteria:Vector.<IItemCriterion> = new Vector.<IItemCriterion>();
          var copyOperators:Vector.<String> = new Vector.<String>();
-         for each (crit in this._criteria)
+         for each(crit in this._criteria)
          {
             copyCriteria.push(crit.clone());
          }
-         for each (ope in this._operators)
+         for each(ope in this._operators)
          {
             copyOperators.push(ope);
          }
@@ -280,56 +279,54 @@ package com.ankamagames.dofus.datacenter.items.criterion
                {
                   exit = true;
                }
-               else
+               else if(next == CRITERION)
                {
-                  if(next == CRITERION)
+                  criterion2 = this.getFirstCriterion(searchingString);
+                  if(!criterion2)
                   {
-                     criterion2 = this.getFirstCriterion(searchingString);
-                     if(!criterion2)
+                     indexOfNextCriterion2 = searchingString.indexOf("&");
+                     if(indexOfNextCriterion2 == -1)
                      {
-                        indexOfNextCriterion2 = searchingString.indexOf("&");
-                        if(indexOfNextCriterion2 == -1)
-                        {
-                           indexOfNextCriterion2 = searchingString.indexOf("|");
-                        }
-                        if(indexOfNextCriterion2 == -1)
-                        {
-                           searchingString = "";
-                        }
-                        else
-                        {
-                           searchingString = searchingString.slice(indexOfNextCriterion2 + 1);
-                        }
+                        indexOfNextCriterion2 = searchingString.indexOf("|");
+                     }
+                     if(indexOfNextCriterion2 == -1)
+                     {
+                        searchingString = "";
                      }
                      else
                      {
-                        this._criteria.push(criterion2);
-                        next = OPERATOR;
-                        index2 = searchingString.indexOf(criterion2.basicText);
-                        firstPart = searchingString.slice(0,index2);
-                        secondPart = searchingString.slice(index2 + criterion2.basicText.length);
-                        searchingString = firstPart + secondPart;
-                     }
-                     if(!searchingString)
-                     {
-                        exit = true;
+                        searchingString = searchingString.slice(indexOfNextCriterion2 + 1);
                      }
                   }
                   else
                   {
-                     operator = searchingString.slice(0,1);
-                     if(!operator)
-                     {
-                        exit = true;
-                     }
-                     else
-                     {
-                        this._operators.push(operator);
-                        next = CRITERION;
-                        searchingString = searchingString.slice(1);
-                     }
+                     this._criteria.push(criterion2);
+                     next = OPERATOR;
+                     index2 = searchingString.indexOf(criterion2.basicText);
+                     firstPart = searchingString.slice(0,index2);
+                     secondPart = searchingString.slice(index2 + criterion2.basicText.length);
+                     searchingString = firstPart + secondPart;
+                  }
+                  if(!searchingString)
+                  {
+                     exit = true;
                   }
                }
+               else
+               {
+                  operator = searchingString.slice(0,1);
+                  if(!operator)
+                  {
+                     exit = true;
+                  }
+                  else
+                  {
+                     this._operators.push(operator);
+                     next = CRITERION;
+                     searchingString = searchingString.slice(1);
+                  }
+               }
+               
             }
             this._singleOperatorType = this.checkSingleOperatorType(this._operators);
          }
@@ -344,7 +341,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
          var op:String = null;
          if(pOperators.length > 0)
          {
-            for each (op in pOperators)
+            for each(op in pOperators)
             {
                if(op != pOperators[0])
                {
@@ -378,17 +375,15 @@ package com.ankamagames.dofus.datacenter.items.criterion
             {
                criterion = ItemCriterionFactory.create(pCriteria);
             }
+            else if(((ANDindex < ORindex) || (ORindex == -1)) && (!(ANDindex == -1)))
+            {
+               criterion = ItemCriterionFactory.create(pCriteria.split("&")[0]);
+            }
             else
             {
-               if(((ANDindex < ORindex) || (ORindex == -1)) && (!(ANDindex == -1)))
-               {
-                  criterion = ItemCriterionFactory.create(pCriteria.split("&")[0]);
-               }
-               else
-               {
-                  criterion = ItemCriterionFactory.create(pCriteria.split("|")[0]);
-               }
+               criterion = ItemCriterionFactory.create(pCriteria.split("|")[0]);
             }
+            
          }
          return criterion;
       }

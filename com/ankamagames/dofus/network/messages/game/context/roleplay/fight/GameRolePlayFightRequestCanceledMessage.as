@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
          return 5822;
       }
       
-      public function initGameRolePlayFightRequestCanceledMessage(fightId:int=0, sourceId:uint=0, targetId:int=0) : GameRolePlayFightRequestCanceledMessage {
+      public function initGameRolePlayFightRequestCanceledMessage(fightId:int = 0, sourceId:uint = 0, targetId:int = 0) : GameRolePlayFightRequestCanceledMessage {
          this.fightId = fightId;
          this.sourceId = sourceId;
          this.targetId = targetId;

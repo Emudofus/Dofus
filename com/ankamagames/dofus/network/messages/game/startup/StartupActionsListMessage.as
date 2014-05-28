@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.startup
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.startup.StartupActionAddObject;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -30,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.startup
          return 1301;
       }
       
-      public function initStartupActionsListMessage(actions:Vector.<StartupActionAddObject>=null) : StartupActionsListMessage {
+      public function initStartupActionsListMessage(actions:Vector.<StartupActionAddObject> = null) : StartupActionsListMessage {
          this.actions = actions;
          this._isInitialized = true;
          return this;

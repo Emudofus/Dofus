@@ -11,9 +11,9 @@ package com.ankamagames.jerakine.script.api
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LoggingApi));
+      protected static const _log:Logger;
       
-      public static function Trace(msg:*, level:uint=0) : void {
+      public static function Trace(msg:*, level:uint = 0) : void {
          var str:String = "" + (!(msg == null)?msg:"NULL");
          _log.log(level,str);
       }

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
          return 5828;
       }
       
-      public function initGameActionFightDodgePointLossMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, amount:uint=0) : GameActionFightDodgePointLossMessage {
+      public function initGameActionFightDodgePointLossMessage(actionId:uint = 0, sourceId:int = 0, targetId:int = 0, amount:uint = 0) : GameActionFightDodgePointLossMessage {
          super.initAbstractGameActionMessage(actionId,sourceId);
          this.targetId = targetId;
          this.amount = amount;

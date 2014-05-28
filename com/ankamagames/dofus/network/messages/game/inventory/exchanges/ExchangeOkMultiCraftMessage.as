@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5768;
       }
       
-      public function initExchangeOkMultiCraftMessage(initiatorId:uint=0, otherId:uint=0, role:int=0) : ExchangeOkMultiCraftMessage {
+      public function initExchangeOkMultiCraftMessage(initiatorId:uint = 0, otherId:uint = 0, role:int = 0) : ExchangeOkMultiCraftMessage {
          this.initiatorId = initiatorId;
          this.otherId = otherId;
          this.role = role;

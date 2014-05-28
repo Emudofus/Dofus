@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
          return 1700;
       }
       
-      public function initValidateSpellForgetMessage(spellId:uint=0) : ValidateSpellForgetMessage {
+      public function initValidateSpellForgetMessage(spellId:uint = 0) : ValidateSpellForgetMessage {
          this.spellId = spellId;
          this._isInitialized = true;
          return this;

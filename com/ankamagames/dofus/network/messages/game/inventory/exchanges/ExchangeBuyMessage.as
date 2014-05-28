@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5774;
       }
       
-      public function initExchangeBuyMessage(objectToBuyId:uint=0, quantity:uint=0) : ExchangeBuyMessage {
+      public function initExchangeBuyMessage(objectToBuyId:uint = 0, quantity:uint = 0) : ExchangeBuyMessage {
          this.objectToBuyId = objectToBuyId;
          this.quantity = quantity;
          this._isInitialized = true;

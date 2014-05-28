@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.guild
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.BasicNamedAllianceInformations;
    import com.ankamagames.dofus.network.types.game.social.GuildFactSheetInformations;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalInformations;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 6422;
       }
       
-      public function initGuildInAllianceFactsMessage(infos:GuildFactSheetInformations=null, creationDate:uint=0, nbTaxCollectors:uint=0, enabled:Boolean=false, members:Vector.<CharacterMinimalInformations>=null, allianceInfos:BasicNamedAllianceInformations=null) : GuildInAllianceFactsMessage {
+      public function initGuildInAllianceFactsMessage(infos:GuildFactSheetInformations = null, creationDate:uint = 0, nbTaxCollectors:uint = 0, enabled:Boolean = false, members:Vector.<CharacterMinimalInformations> = null, allianceInfos:BasicNamedAllianceInformations = null) : GuildInAllianceFactsMessage {
          super.initGuildFactsMessage(infos,creationDate,nbTaxCollectors,enabled,members);
          this.allianceInfos = allianceInfos;
          this._isInitialized = true;

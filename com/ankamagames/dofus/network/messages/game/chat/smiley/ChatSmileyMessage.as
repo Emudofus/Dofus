@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.chat.smiley
          return 801;
       }
       
-      public function initChatSmileyMessage(entityId:int=0, smileyId:uint=0, accountId:uint=0) : ChatSmileyMessage {
+      public function initChatSmileyMessage(entityId:int = 0, smileyId:uint = 0, accountId:uint = 0) : ChatSmileyMessage {
          this.entityId = entityId;
          this.smileyId = smileyId;
          this.accountId = accountId;

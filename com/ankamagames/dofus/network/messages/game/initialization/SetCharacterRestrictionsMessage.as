@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.initialization
          return 170;
       }
       
-      public function initSetCharacterRestrictionsMessage(restrictions:ActorRestrictionsInformations=null) : SetCharacterRestrictionsMessage {
+      public function initSetCharacterRestrictionsMessage(restrictions:ActorRestrictionsInformations = null) : SetCharacterRestrictionsMessage {
          this.restrictions = restrictions;
          this._isInitialized = true;
          return this;

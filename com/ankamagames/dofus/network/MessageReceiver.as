@@ -626,9 +626,9 @@ package com.ankamagames.dofus.network
          super();
       }
       
-      private static const _log:Logger = Log.getLogger(getQualifiedClassName(MessageReceiver));
+      private static const _log:Logger;
       
-      private static const _messagesTypes:Dictionary = new Dictionary();
+      private static const _messagesTypes:Dictionary;
       
       public static function register() : void {
          StoreDataManager.getInstance().registerClass(new NetworkDataContainerMessage(),true,true);

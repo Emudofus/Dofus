@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 6441;
       }
       
-      public function initPrismsListRegisterMessage(listen:uint=0) : PrismsListRegisterMessage {
+      public function initPrismsListRegisterMessage(listen:uint = 0) : PrismsListRegisterMessage {
          this.listen = listen;
          this._isInitialized = true;
          return this;

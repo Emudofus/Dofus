@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6261;
       }
       
-      public function initPartyDeletedMessage(partyId:uint=0) : PartyDeletedMessage {
+      public function initPartyDeletedMessage(partyId:uint = 0) : PartyDeletedMessage {
          super.initAbstractPartyMessage(partyId);
          this._isInitialized = true;
          return this;

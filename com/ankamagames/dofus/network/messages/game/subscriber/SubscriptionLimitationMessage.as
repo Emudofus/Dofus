@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.subscriber
          return 5542;
       }
       
-      public function initSubscriptionLimitationMessage(reason:uint=0) : SubscriptionLimitationMessage {
+      public function initSubscriptionLimitationMessage(reason:uint = 0) : SubscriptionLimitationMessage {
          this.reason = reason;
          this._isInitialized = true;
          return this;

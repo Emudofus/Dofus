@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6458;
       }
       
-      public function initMimicryObjectPreviewMessage(result:ObjectItem=null) : MimicryObjectPreviewMessage {
+      public function initMimicryObjectPreviewMessage(result:ObjectItem = null) : MimicryObjectPreviewMessage {
          this.result = result;
          this._isInitialized = true;
          return this;

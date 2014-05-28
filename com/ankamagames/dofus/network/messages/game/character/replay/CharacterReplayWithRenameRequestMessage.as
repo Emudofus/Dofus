@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.character.replay
          return 6122;
       }
       
-      public function initCharacterReplayWithRenameRequestMessage(characterId:uint=0, name:String="") : CharacterReplayWithRenameRequestMessage {
+      public function initCharacterReplayWithRenameRequestMessage(characterId:uint = 0, name:String = "") : CharacterReplayWithRenameRequestMessage {
          super.initCharacterReplayRequestMessage(characterId);
          this.name = name;
          this._isInitialized = true;

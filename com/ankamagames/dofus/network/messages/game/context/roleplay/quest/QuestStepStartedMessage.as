@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
          return 6096;
       }
       
-      public function initQuestStepStartedMessage(questId:uint=0, stepId:uint=0) : QuestStepStartedMessage {
+      public function initQuestStepStartedMessage(questId:uint = 0, stepId:uint = 0) : QuestStepStartedMessage {
          this.questId = questId;
          this.stepId = stepId;
          this._isInitialized = true;

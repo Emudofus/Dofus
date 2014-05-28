@@ -32,7 +32,7 @@ package com.ankamagames.dofus.network.messages.game.shortcut
          return 6229;
       }
       
-      public function initShortcutBarRefreshMessage(barType:uint=0, shortcut:Shortcut=null) : ShortcutBarRefreshMessage {
+      public function initShortcutBarRefreshMessage(barType:uint = 0, shortcut:Shortcut = null) : ShortcutBarRefreshMessage {
          this.barType = barType;
          this.shortcut = shortcut;
          this._isInitialized = true;

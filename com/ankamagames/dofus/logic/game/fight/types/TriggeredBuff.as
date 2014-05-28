@@ -6,7 +6,7 @@ package com.ankamagames.dofus.logic.game.fight.types
    public class TriggeredBuff extends BasicBuff
    {
       
-      public function TriggeredBuff(effect:FightTriggeredEffect=null, castingSpell:CastingSpell=null, actionId:uint=0) {
+      public function TriggeredBuff(effect:FightTriggeredEffect = null, castingSpell:CastingSpell = null, actionId:uint = 0) {
          if(effect)
          {
             super(effect,castingSpell,actionId,effect.param1,effect.param2,effect.param3);
@@ -30,25 +30,23 @@ package com.ankamagames.dofus.logic.game.fight.types
                param1 = min;
                param2 = param3 = 0;
             }
+            else if(min > max)
+            {
+               param1 = max;
+               param2 = min;
+               param3 = 0;
+            }
             else
             {
-               if(min > max)
-               {
-                  param1 = max;
-                  param2 = min;
-                  param3 = 0;
-               }
-               else
-               {
-                  param1 = min;
-                  param2 = max;
-                  param3 = 0;
-               }
+               param1 = min;
+               param2 = max;
+               param3 = 0;
             }
+            
          }
       }
       
-      override public function clone(id:int=0) : BasicBuff {
+      override public function clone(id:int = 0) : BasicBuff {
          var tb:TriggeredBuff = new TriggeredBuff();
          tb.id = uid;
          tb.uid = uid;
@@ -74,7 +72,7 @@ package com.ankamagames.dofus.logic.game.fight.types
          return true;
       }
       
-      override public function incrementDuration(delta:int, dispellEffect:Boolean=false) : Boolean {
+      override public function incrementDuration(delta:int, dispellEffect:Boolean = false) : Boolean {
          if((this.delay > 0) && (!dispellEffect))
          {
             if(this.delay + delta >= 0)

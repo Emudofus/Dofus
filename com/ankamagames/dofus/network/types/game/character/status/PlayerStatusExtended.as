@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.character.status
          return 414;
       }
       
-      public function initPlayerStatusExtended(statusId:uint=1, message:String="") : PlayerStatusExtended {
+      public function initPlayerStatusExtended(statusId:uint = 1, message:String = "") : PlayerStatusExtended {
          super.initPlayerStatus(statusId);
          this.message = message;
          return this;

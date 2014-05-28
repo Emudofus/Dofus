@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5909;
       }
       
-      public function initExchangeShopStockMovementUpdatedMessage(objectInfo:ObjectItemToSell=null) : ExchangeShopStockMovementUpdatedMessage {
+      public function initExchangeShopStockMovementUpdatedMessage(objectInfo:ObjectItemToSell = null) : ExchangeShopStockMovementUpdatedMessage {
          this.objectInfo = objectInfo;
          this._isInitialized = true;
          return this;

@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.guild
          return 5554;
       }
       
-      public function initGuildCreationResultMessage(result:uint=0) : GuildCreationResultMessage {
+      public function initGuildCreationResultMessage(result:uint = 0) : GuildCreationResultMessage {
          this.result = result;
          this._isInitialized = true;
          return this;

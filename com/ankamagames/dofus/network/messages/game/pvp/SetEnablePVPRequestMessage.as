@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.pvp
          return 1810;
       }
       
-      public function initSetEnablePVPRequestMessage(enable:Boolean=false) : SetEnablePVPRequestMessage {
+      public function initSetEnablePVPRequestMessage(enable:Boolean = false) : SetEnablePVPRequestMessage {
          this.enable = enable;
          this._isInitialized = true;
          return this;

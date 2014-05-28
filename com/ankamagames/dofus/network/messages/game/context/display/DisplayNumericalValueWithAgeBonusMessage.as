@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.game.context.display
          return 6361;
       }
       
-      public function initDisplayNumericalValueWithAgeBonusMessage(entityId:int=0, value:int=0, type:uint=0, valueOfBonus:int=0) : DisplayNumericalValueWithAgeBonusMessage {
+      public function initDisplayNumericalValueWithAgeBonusMessage(entityId:int = 0, value:int = 0, type:uint = 0, valueOfBonus:int = 0) : DisplayNumericalValueWithAgeBonusMessage {
          super.initDisplayNumericalValueMessage(entityId,value,type);
          this.valueOfBonus = valueOfBonus;
          this._isInitialized = true;

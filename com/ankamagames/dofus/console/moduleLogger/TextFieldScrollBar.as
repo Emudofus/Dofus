@@ -2,7 +2,6 @@ package com.ankamagames.dofus.console.moduleLogger
 {
    import flash.display.Sprite;
    import flash.text.TextField;
-   import __AS3__.vec.Vector;
    import flash.display.Shape;
    import flash.events.Event;
    import flash.events.MouseEvent;
@@ -51,7 +50,7 @@ package com.ankamagames.dofus.console.moduleLogger
          this._lines = lines;
       }
       
-      public function resize(numLines:int=0) : void {
+      public function resize(numLines:int = 0) : void {
          if(numLines)
          {
             this._numLines = numLines;
@@ -88,14 +87,12 @@ package com.ankamagames.dofus.console.moduleLogger
          {
             value = 0;
          }
-         else
+         else if(value >= this._lines.length - this._numLines)
          {
-            if(value >= this._lines.length - this._numLines)
-            {
-               this._scrollAtEnd = true;
-               value = this._lines.length - this._numLines;
-            }
+            this._scrollAtEnd = true;
+            value = this._lines.length - this._numLines;
          }
+         
          this._textField.htmlText = this._lines.slice(value,value + this._numLines).join("\n");
          this._scroll = value;
          this._maxScroll = this._lines.length - this._numLines;
@@ -196,13 +193,11 @@ package com.ankamagames.dofus.console.moduleLogger
          {
             value = 0;
          }
-         else
+         else if(value > maxValue)
          {
-            if(value > maxValue)
-            {
-               value = maxValue;
-            }
+            value = maxValue;
          }
+         
          this._scrollBar.y = value;
          this.updateTextPosition();
          mouseEvent.updateAfterEvent();

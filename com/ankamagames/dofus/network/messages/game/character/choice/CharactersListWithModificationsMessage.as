@@ -4,7 +4,6 @@ package com.ankamagames.dofus.network.messages.game.character.choice
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRecolorInformation;
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRelookInformation;
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -40,7 +39,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
          return 6120;
       }
       
-      public function initCharactersListWithModificationsMessage(characters:Vector.<CharacterBaseInformations>=null, hasStartupActions:Boolean=false, charactersToRecolor:Vector.<CharacterToRecolorInformation>=null, charactersToRename:Vector.<int>=null, unusableCharacters:Vector.<int>=null, charactersToRelook:Vector.<CharacterToRelookInformation>=null) : CharactersListWithModificationsMessage {
+      public function initCharactersListWithModificationsMessage(characters:Vector.<CharacterBaseInformations> = null, hasStartupActions:Boolean = false, charactersToRecolor:Vector.<CharacterToRecolorInformation> = null, charactersToRename:Vector.<int> = null, unusableCharacters:Vector.<int> = null, charactersToRelook:Vector.<CharacterToRelookInformation> = null) : CharactersListWithModificationsMessage {
          super.initCharactersListMessage(characters,hasStartupActions);
          this.charactersToRecolor = charactersToRecolor;
          this.charactersToRename = charactersToRename;

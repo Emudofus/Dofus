@@ -25,40 +25,32 @@ package com.ankamagames.dofus.console.moduleLogger
             {
                this.displayLog(object as String,args[1]);
             }
+            else if(object is Hook)
+            {
+               this.displayHookInformations(object as Hook,args[1]);
+            }
+            else if(object is Action)
+            {
+               this.displayActionInformations(object as Action);
+            }
+            else if(object is Message)
+            {
+               this.displayInteractionMessage(object as Message,args[1]);
+            }
+            else if(object is Bind)
+            {
+               this.displayBind(object as Bind,args[1]);
+            }
             else
             {
-               if(object is Hook)
-               {
-                  this.displayHookInformations(object as Hook,args[1]);
-               }
-               else
-               {
-                  if(object is Action)
-                  {
-                     this.displayActionInformations(object as Action);
-                  }
-                  else
-                  {
-                     if(object is Message)
-                     {
-                        this.displayInteractionMessage(object as Message,args[1]);
-                     }
-                     else
-                     {
-                        if(object is Bind)
-                        {
-                           this.displayBind(object as Bind,args[1]);
-                        }
-                        else
-                        {
-                           this.name = "trace";
-                           this.textInfo = object as String;
-                           this.type = LOG;
-                        }
-                     }
-                  }
-               }
+               this.name = "trace";
+               this.textInfo = object as String;
+               this.type = LOG;
             }
+            
+            
+            
+            
          }
          catch(e:Error)
          {
@@ -66,45 +58,6 @@ package com.ankamagames.dofus.console.moduleLogger
             {
                name = "trace";
                textInfo = "<span class=\'red\'>" + e.getStackTrace() + "</span>";
-            }
-         }
-         return;
-         if((object is String) && (args.length == 2))
-         {
-            this.displayLog(object as String,args[1]);
-         }
-         else
-         {
-            if(object is Hook)
-            {
-               this.displayHookInformations(object as Hook,args[1]);
-            }
-            else
-            {
-               if(object is Action)
-               {
-                  this.displayActionInformations(object as Action);
-               }
-               else
-               {
-                  if(object is Message)
-                  {
-                     this.displayInteractionMessage(object as Message,args[1]);
-                  }
-                  else
-                  {
-                     if(object is Bind)
-                     {
-                        this.displayBind(object as Bind,args[1]);
-                     }
-                     else
-                     {
-                        this.name = "trace";
-                        this.textInfo = object as String;
-                        this.type = LOG;
-                     }
-                  }
-               }
             }
          }
       }
@@ -213,53 +166,41 @@ package com.ankamagames.dofus.console.moduleLogger
          {
             finalText = "<span class=\'blue\'>";
          }
+         else if(level == LogLevel.TRACE)
+         {
+            finalText = "<span class=\'green\'>";
+         }
+         else if(level == LogLevel.INFO)
+         {
+            finalText = "<span class=\'yellow\'>";
+         }
+         else if(level == LogLevel.WARN)
+         {
+            finalText = "<span class=\'orange\'>";
+         }
+         else if(level == LogLevel.ERROR)
+         {
+            finalText = "<span class=\'red\'>";
+         }
+         else if(level == LogLevel.FATAL)
+         {
+            finalText = "<span class=\'red+\'>";
+         }
+         else if(level == LOG_CHAT)
+         {
+            this.logType = LOG_CHAT;
+            finalText = "<span class=\'white\'>";
+         }
          else
          {
-            if(level == LogLevel.TRACE)
-            {
-               finalText = "<span class=\'green\'>";
-            }
-            else
-            {
-               if(level == LogLevel.INFO)
-               {
-                  finalText = "<span class=\'yellow\'>";
-               }
-               else
-               {
-                  if(level == LogLevel.WARN)
-                  {
-                     finalText = "<span class=\'orange\'>";
-                  }
-                  else
-                  {
-                     if(level == LogLevel.ERROR)
-                     {
-                        finalText = "<span class=\'red\'>";
-                     }
-                     else
-                     {
-                        if(level == LogLevel.FATAL)
-                        {
-                           finalText = "<span class=\'red+\'>";
-                        }
-                        else
-                        {
-                           if(level == LOG_CHAT)
-                           {
-                              this.logType = LOG_CHAT;
-                              finalText = "<span class=\'white\'>";
-                           }
-                           else
-                           {
-                              finalText = "<span class=\'gray\'>";
-                           }
-                        }
-                     }
-                  }
-               }
-            }
+            finalText = "<span class=\'gray\'>";
          }
+         
+         
+         
+         
+         
+         
          finalText = finalText + ("[" + this.getDate() + "] " + text + "</span>");
          this.textInfo = finalText;
       }
@@ -275,7 +216,7 @@ package com.ankamagames.dofus.console.moduleLogger
          var text:String = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'pink\'> ACTION : <a href=\'event:@" + this.name + "\'>" + this.name + "</a></span>" + "<span class=\'gray\'>";
          var infos:XML = describeType(action);
          var variables:XMLList = infos.elements("variable");
-         for each (variable in variables)
+         for each(variable in variables)
          {
             name = variable.attribute("name");
             typel = variable.attribute("type");

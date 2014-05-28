@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 418;
       }
       
-      public function initBasicNamedAllianceInformations(allianceId:uint=0, allianceTag:String="", allianceName:String="") : BasicNamedAllianceInformations {
+      public function initBasicNamedAllianceInformations(allianceId:uint = 0, allianceTag:String = "", allianceName:String = "") : BasicNamedAllianceInformations {
          super.initBasicAllianceInformations(allianceId,allianceTag);
          this.allianceName = allianceName;
          return this;

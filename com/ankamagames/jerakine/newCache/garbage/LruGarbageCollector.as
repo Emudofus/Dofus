@@ -38,7 +38,7 @@ package com.ankamagames.jerakine.newCache.garbage
          var obj:* = undefined;
          var poke:* = undefined;
          var elements:Array = new Array();
-         for (obj in this._usageCount)
+         for(obj in this._usageCount)
          {
             elements.push(
                {

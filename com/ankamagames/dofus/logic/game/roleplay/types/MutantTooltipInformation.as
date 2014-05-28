@@ -17,7 +17,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
          this.infos = pInfos;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MutantTooltipInformation));
+      protected static const _log:Logger;
       
       private var _cssUri:String;
       

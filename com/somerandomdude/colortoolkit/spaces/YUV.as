@@ -5,7 +5,7 @@ package com.somerandomdude.colortoolkit.spaces
    public class YUV extends CoreColor implements IColorSpace
    {
       
-      public function YUV(y:Number=0, u:Number=0, v:Number=0) {
+      public function YUV(y:Number = 0, u:Number = 0, v:Number = 0) {
          super();
          this._y = y;
          this._u = u;

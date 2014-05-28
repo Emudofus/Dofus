@@ -30,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.friend
          return 6356;
       }
       
-      public function initSpouseInformationsMessage(spouse:FriendSpouseInformations=null) : SpouseInformationsMessage {
+      public function initSpouseInformationsMessage(spouse:FriendSpouseInformations = null) : SpouseInformationsMessage {
          this.spouse = spouse;
          this._isInitialized = true;
          return this;

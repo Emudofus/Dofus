@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6017;
       }
       
-      public function initObjectFoundWhileRecoltingMessage(genericId:uint=0, quantity:uint=0, ressourceGenericId:uint=0) : ObjectFoundWhileRecoltingMessage {
+      public function initObjectFoundWhileRecoltingMessage(genericId:uint = 0, quantity:uint = 0, ressourceGenericId:uint = 0) : ObjectFoundWhileRecoltingMessage {
          this.genericId = genericId;
          this.quantity = quantity;
          this.ressourceGenericId = ressourceGenericId;

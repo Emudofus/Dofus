@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
          return 5669;
       }
       
-      public function initLockableStateUpdateStorageMessage(locked:Boolean=false, mapId:int=0, elementId:uint=0) : LockableStateUpdateStorageMessage {
+      public function initLockableStateUpdateStorageMessage(locked:Boolean = false, mapId:int = 0, elementId:uint = 0) : LockableStateUpdateStorageMessage {
          super.initLockableStateUpdateAbstractMessage(locked);
          this.mapId = mapId;
          this.elementId = elementId;

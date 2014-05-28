@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.server.basic
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -33,7 +32,7 @@ package com.ankamagames.dofus.network.messages.server.basic
          return 189;
       }
       
-      public function initSystemMessageDisplayMessage(hangUp:Boolean=false, msgId:uint=0, parameters:Vector.<String>=null) : SystemMessageDisplayMessage {
+      public function initSystemMessageDisplayMessage(hangUp:Boolean = false, msgId:uint = 0, parameters:Vector.<String> = null) : SystemMessageDisplayMessage {
          this.hangUp = hangUp;
          this.msgId = msgId;
          this.parameters = parameters;

@@ -17,7 +17,6 @@ package com.ankamagames.dofus.logic.game.fight.managers
    import com.ankamagames.atouin.managers.MapDisplayManager;
    import com.ankamagames.atouin.managers.InteractiveCellManager;
    import com.ankamagames.atouin.managers.SelectionManager;
-   import __AS3__.vec.*;
    import com.ankamagames.atouin.utils.CellIdConverter;
    import com.ankamagames.atouin.renderers.ZoneClipRenderer;
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
@@ -46,13 +45,13 @@ package com.ankamagames.dofus.logic.game.fight.managers
          this._dmp = DataMapProvider.getInstance();
       }
       
-      private static var SWF_LIB:String = XmlConfig.getInstance().getEntry("config.ui.skin").concat("assets_tacticmod.swf");
+      private static var SWF_LIB:String;
       
-      private static var TILES_REACHABLE:Array = ["Dalle01"];
+      private static var TILES_REACHABLE:Array;
       
-      private static var TILES_NO_MVT:Array = ["BlocageMvt"];
+      private static var TILES_NO_MVT:Array;
       
-      private static var TILES_NO_VIEW:Array = ["BlocageLDV"];
+      private static var TILES_NO_VIEW:Array;
       
       private static var SHOW_BLOC_MOVE:Boolean = false;
       
@@ -132,295 +131,13 @@ package com.ankamagames.dofus.logic.game.fight.managers
       
       private var _background:Sprite;
       
-      public function show(pPoint:WorldPointWrapper, openByTerminal:Boolean=false) : void {
-         var i:* = 0;
-         var len:* = 0;
-         var scaleZone:Vector.<uint> = null;
-         var cellData:CellData = null;
-         var cellRef:CellReference = null;
-         var zone:* = 0;
-         var cellPoint:MapPoint = null;
-         var cellInteractionCtr:DisplayObjectContainer = null;
-         var canMov:* = false;
-         var canLos:* = false;
-         var nonWalkableDuringFight:* = false;
-         var nonWalkableDuringRp:* = false;
-         var tmpZonesList:Array = null;
-         var o:Object = null;
-         var pt:Point = null;
-         var zonesMaxY:* = 0;
-         var zonesMinY:* = 0;
-         var zonesMaxX:* = 0;
-         var zonesMinX:* = 0;
-         var z:Object = null;
-         if(!openByTerminal)
-         {
-            this._debugMode = false;
-            SHOW_BLOC_MOVE = false;
-         }
-         else
-         {
-            this._debugMode = true;
-            SHOW_BLOC_MOVE = true;
-         }
-         if(this._roleplayInteractivesFrame == null)
-         {
-            this._roleplayInteractivesFrame = Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame;
-         }
-         if(this._tacticModeActivated)
-         {
-            return;
-         }
-         this._tacticModeActivated = true;
-         KernelEventsManager.getInstance().processCallback(HookList.ShowTacticMode,true);
-         if((this._debugMode) && (this._debugCache) || (((!this._debugMode) && (this._currentMapId)) && (this._currentMapId == pPoint.mapId)) && (this._cellsRef.length > 0))
-         {
-            if((this._cellsRef == null) || (this._cellsRef[0] == null))
-            {
-               this._cellsRef = MapDisplayManager.getInstance().getDataMapContainer().getCell();
-               this._cellsData = MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells;
-            }
-            len = this._cellsRef.length;
-            if((!this._debugMode) || (this._debugMode) && (this._flattenCells))
-            {
-               i = 0;
-               while(i < len)
-               {
-                  if(this._cellsRef[i] != null)
-                  {
-                     this._cellsRef[i].visible = true;
-                     this._cellsRef[i].visible = false;
-                     if(this._cellsData[i].floor != 0)
-                     {
-                        cellInteractionCtr = InteractiveCellManager.getInstance().getCell(this._cellsRef[i].id);
-                        cellInteractionCtr.y = this._cellsRef[i].elevation + this._cellsData[i].floor;
-                        this.updateEntitiesOnCell(i);
-                     }
-                  }
-                  i = i + 1;
-               }
-            }
-            SelectionManager.getInstance().addSelection(this._tacticReachableRangeSelection,"tacticReachableRange",0);
-            if((!this._debugMode) || (this._showBlockMvt))
-            {
-               SelectionManager.getInstance().addSelection(this._tacticUnreachableRangeSelection,"tacticUnreachableRange",0);
-            }
-            if((SHOW_BLOC_MOVE) && (this._nbMov > this._nbLos))
-            {
-               SelectionManager.getInstance().addSelection(this._tacticOtherSelection,"tacticOtherRange",0);
-            }
-            else
-            {
-               if((!SHOW_BLOC_MOVE) && (this._tacticOtherSelection) && (!(SelectionManager.getInstance().getSelection("tacticOtherRange") == null)))
-               {
-                  SelectionManager.getInstance().getSelection("tacticOtherRange").remove();
-               }
-            }
-            if((this._debugMode) && (this._fightZone))
-            {
-               if(this._showFightZone)
-               {
-                  SelectionManager.getInstance().addSelection(this._fightZone,"debugSelection",this._debugCellId);
-               }
-               else
-               {
-                  SelectionManager.getInstance().getSelection("debugSelection").remove();
-               }
-            }
-            if((this._debugMode) && (this._scaleZone))
-            {
-               if(this._showScaleZone)
-               {
-                  SelectionManager.getInstance().addSelection(this._scaleZone,"scaleZone",this._debugCellId);
-               }
-               else
-               {
-                  SelectionManager.getInstance().getSelection("scaleZone").remove();
-               }
-            }
-            if((this._debugMode) && (this._interactiveCellsZone))
-            {
-               if(this._showInteractiveCells)
-               {
-                  SelectionManager.getInstance().addSelection(this._interactiveCellsZone,"interactiveCellsZone",this._debugCellId);
-               }
-               else
-               {
-                  SelectionManager.getInstance().getSelection("interactiveCellsZone").remove();
-               }
-            }
-         }
-         else
-         {
-            this._currentMapId = pPoint.mapId;
-            this._reachablePath = new Vector.<uint>();
-            this._unreachablePath = new Vector.<uint>();
-            this._otherPath = new Vector.<uint>();
-            scaleZone = new Vector.<uint>();
-            this._cellsRef = MapDisplayManager.getInstance().getDataMapContainer().getCell();
-            this._cellsData = MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells;
-            len = this._cellsRef.length;
-            this._cellZones = new Vector.<int>(len);
-            this._currentNbZone = 0;
-            this._nbMov = 0;
-            this._nbLos = 0;
-            i = 0;
-            while(i < len)
-            {
-               cellRef = this._cellsRef[i];
-               cellData = this._cellsData[i];
-               cellRef.visible = true;
-               cellRef.visible = false;
-               if(!cellRef.isDisabled)
-               {
-                  zone = this.getCellZone(i);
-                  cellPoint = MapPoint.fromCellId(i);
-                  canMov = (this._dmp.pointMov(cellPoint.x,cellPoint.y)) && ((this._debugMode) || (!this._debugMode) && (!this._dmp.farmCell(cellPoint.x,cellPoint.y)));
-                  canLos = this._dmp.pointLos(cellPoint.x,cellPoint.y);
-                  nonWalkableDuringFight = cellData.nonWalkableDuringFight;
-                  nonWalkableDuringRp = cellData.nonWalkableDuringRP;
-                  if(cellData.moveZone)
-                  {
-                     scaleZone.push(cellRef.id);
-                  }
-                  if(((!this._debugMode) || (this._debugMode) && (this._flattenCells)) && (!(cellData.floor == 0)))
-                  {
-                     cellInteractionCtr = InteractiveCellManager.getInstance().getCell(cellRef.id);
-                     cellInteractionCtr.y = cellRef.elevation + cellData.floor;
-                     this.updateEntitiesOnCell(i);
-                  }
-                  if(this.canMoveOnThisCell(canMov,nonWalkableDuringFight,nonWalkableDuringRp))
-                  {
-                     if(zone > 0)
-                     {
-                        this._cellZones[i] = zone;
-                     }
-                     else
-                     {
-                        this._currentNbZone++;
-                        this._cellZones[i] = this._currentNbZone;
-                     }
-                  }
-                  else
-                  {
-                     if((canLos) && (!this.canMoveOnThisCell(canMov,nonWalkableDuringFight,nonWalkableDuringRp)))
-                     {
-                        this._cellZones[i] = 0;
-                     }
-                     else
-                     {
-                        if((!canLos) && (!this.canMoveOnThisCell(canMov,nonWalkableDuringFight,nonWalkableDuringRp)))
-                        {
-                           this._cellZones[i] = -1;
-                        }
-                     }
-                  }
-               }
-               i = i + 1;
-            }
-            this.updateCellWithRealCellZone();
-            tmpZonesList = new Array();
-            this._zones = new Array();
-            i = 0;
-            while(i < len)
-            {
-               switch(this._cellZones[i])
-               {
-                  case -1:
-                     this._unreachablePath.push(i);
-                     break;
-                  case 0:
-                     if((SHOW_BLOC_MOVE) && (this.getInformations(i)[0]))
-                     {
-                        this._otherPath.push(i);
-                        this._nbLos++;
-                     }
-                     break;
-               }
-               i = i + 1;
-            }
-            this._currentNbZone = tmpZonesList.length;
-            tmpZonesList = null;
-            for each (z in this._zones)
-            {
-               if(!zonesMaxX)
-               {
-                  zonesMaxX = z.maxX;
-               }
-               else
-               {
-                  zonesMaxX = Math.max(zonesMaxX,z.maxX);
-               }
-               if(!zonesMinY)
-               {
-                  zonesMinX = z.minX;
-               }
-               else
-               {
-                  zonesMinX = Math.min(zonesMinX,z.minX);
-               }
-               if(!zonesMaxY)
-               {
-                  zonesMaxY = z.maxY;
-               }
-               else
-               {
-                  zonesMaxY = Math.max(zonesMaxY,z.maxY);
-               }
-               if(!zonesMinY)
-               {
-                  zonesMinY = z.minY;
-               }
-               else
-               {
-                  zonesMinY = Math.min(zonesMinY,z.minY);
-               }
-            }
-            this.clearUnneededCells(zonesMaxX,zonesMaxY,zonesMinX,zonesMinY);
-            this._tacticReachableRangeSelection = new Selection();
-            this._tacticReachableRangeSelection.renderer = new ZoneClipRenderer(PlacementStrataEnums.STRATA_NO_Z_ORDER,SWF_LIB,TILES_REACHABLE,TILES_REACHABLE.length > 1?this._currentMapId:-1,SHOW_BLOC_MOVE);
-            this._tacticReachableRangeSelection.zone = new Custom(this._reachablePath);
-            SelectionManager.getInstance().addSelection(this._tacticReachableRangeSelection,"tacticReachableRange",0);
-            if((!this._debugMode) || (this._showBlockMvt))
-            {
-               this._tacticUnreachableRangeSelection = new Selection();
-               this._tacticUnreachableRangeSelection.renderer = new ZoneClipRenderer(PlacementStrataEnums.STRATA_AREA,SWF_LIB,TILES_NO_VIEW,TILES_NO_VIEW.length > 1?this._currentMapId:-1,SHOW_BLOC_MOVE);
-               this._tacticUnreachableRangeSelection.zone = new Custom(this._unreachablePath);
-               SelectionManager.getInstance().addSelection(this._tacticUnreachableRangeSelection,"tacticUnreachableRange",0);
-            }
-            if((this._nbMov > this._nbLos) && (SHOW_BLOC_MOVE) || (this._debugMode))
-            {
-               this._tacticOtherSelection = new Selection();
-               this._tacticOtherSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_NO_Z_ORDER);
-               this._tacticOtherSelection.color = new Color(717337);
-               this._tacticOtherSelection.zone = new Custom(this._otherPath);
-            }
-            if((this._debugMode) && (this._showScaleZone))
-            {
-               this._scaleZone = new Selection();
-               this._scaleZone.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_NO_Z_ORDER);
-               this._scaleZone.color = new Color(5085175);
-               this._scaleZone.zone = new Custom(scaleZone);
-               SelectionManager.getInstance().addSelection(this._scaleZone,"scaleZone",this._debugCellId);
-            }
-            if((this._debugMode) && (this._showFightZone))
-            {
-               SelectionManager.getInstance().addSelection(this._fightZone,"debugSelection",this._debugCellId);
-            }
-            if((this._debugMode) && (this._showInteractiveCells))
-            {
-               this._interactiveCellsZone = new Selection();
-               this._interactiveCellsZone.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_NO_Z_ORDER);
-               this._interactiveCellsZone.color = new Color(16777215);
-               this._interactiveCellsZone.zone = new Custom(this._roleplayInteractivesFrame.getInteractiveElementsCells());
-               SelectionManager.getInstance().addSelection(this._interactiveCellsZone,"interactiveCellsZone",this._debugCellId);
-            }
-         }
-         MapDisplayManager.getInstance().hideBackgroundForTacticMode(true);
-         if(SHOW_BACKGROUND)
-         {
-            this.loadBackground();
-         }
+      public function show(pPoint:WorldPointWrapper, openByTerminal:Boolean = false) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function canMoveOnThisCell(canMov:Boolean, nonWalkableDuringFight:Boolean, nonWalkableDuringRp:Boolean) : Boolean {
@@ -439,7 +156,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          return true;
       }
       
-      public function hide(force:Boolean=false) : void {
+      public function hide(force:Boolean = false) : void {
          var s:Selection = null;
          var cellRef:CellReference = null;
          var cellData:CellData = null;
@@ -528,7 +245,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          var characterEntity:AnimatedCharacter = null;
          var e:IEntity = null;
          var entities:Array = EntitiesManager.getInstance().getEntitiesOnCell(cellId);
-         for each (e in entities)
+         for each(e in entities)
          {
             characterEntity = DofusEntities.getEntity(e.id) as AnimatedCharacter;
             if(characterEntity)
@@ -746,27 +463,21 @@ package com.ankamagames.dofus.logic.game.fight.managers
          {
             zone = this._cellZones[cellId - 1];
          }
-         else
+         else if((cellId - 28 > 0) && (this._cellZones[cellId - 28] > 0))
          {
-            if((cellId - 28 > 0) && (this._cellZones[cellId - 28] > 0))
-            {
-               zone = this._cellZones[cellId - 28];
-            }
-            else
-            {
-               if((!isEvenRow) && (!isRightCol) && (cellId - 13 > 0) && (this._cellZones[cellId - 13] > 0))
-               {
-                  zone = this._cellZones[cellId - 13];
-               }
-               else
-               {
-                  if((isEvenRow) && ((!isLeftCol) || (isLeftCol) && (!isEvenRow)) && (cellId - 14 > 0) && (this._cellZones[cellId - 14] > 0))
-                  {
-                     zone = this._cellZones[cellId - 14];
-                  }
-               }
-            }
+            zone = this._cellZones[cellId - 28];
          }
+         else if((!isEvenRow) && (!isRightCol) && (cellId - 13 > 0) && (this._cellZones[cellId - 13] > 0))
+         {
+            zone = this._cellZones[cellId - 13];
+         }
+         else if((isEvenRow) && ((!isLeftCol) || (isLeftCol) && (!isEvenRow)) && (cellId - 14 > 0) && (this._cellZones[cellId - 14] > 0))
+         {
+            zone = this._cellZones[cellId - 14];
+         }
+         
+         
+         
          return zone;
       }
       
@@ -920,7 +631,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          }
       }
       
-      private function onBackgroundLoaded(pEvt:ResourceLoadedEvent=null) : void {
+      private function onBackgroundLoaded(pEvt:ResourceLoadedEvent = null) : void {
          pEvt.currentTarget.removeEventListener(ResourceLoadedEvent.LOADED,this.onBackgroundLoaded);
          var appDomain:ApplicationDomain = pEvt.resource.applicationDomain;
          this._background = new appDomain.getDefinition("BG")() as Sprite;
@@ -928,7 +639,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
          MapDisplayManager.getInstance().renderer.container.addChildAt(this._background,0);
       }
       
-      public function setDebugMode(pShowFightZone:Boolean=false, pUseCache:Boolean=false, pDebugType:int=0, pShowInteractiveCells:Boolean=false, pShowScaleZone:Boolean=false, pFlattenCells:Boolean=true, pShowBlockMvt:Boolean=true) : void {
+      public function setDebugMode(pShowFightZone:Boolean = false, pUseCache:Boolean = false, pDebugType:int = 0, pShowInteractiveCells:Boolean = false, pShowScaleZone:Boolean = false, pFlattenCells:Boolean = true, pShowBlockMvt:Boolean = true) : void {
          this._showFightZone = pShowFightZone;
          this._debugCache = pUseCache;
          this._debugType = pDebugType;

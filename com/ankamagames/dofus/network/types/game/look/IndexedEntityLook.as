@@ -22,7 +22,7 @@ package com.ankamagames.dofus.network.types.game.look
          return 405;
       }
       
-      public function initIndexedEntityLook(look:EntityLook=null, index:uint=0) : IndexedEntityLook {
+      public function initIndexedEntityLook(look:EntityLook = null, index:uint = 0) : IndexedEntityLook {
          this.look = look;
          this.index = index;
          return this;

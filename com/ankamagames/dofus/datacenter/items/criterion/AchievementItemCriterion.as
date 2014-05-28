@@ -3,7 +3,6 @@ package com.ankamagames.dofus.datacenter.items.criterion
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.common.frames.QuestFrame;
-   import __AS3__.vec.Vector;
    import com.ankamagames.dofus.datacenter.quest.Achievement;
    import com.ankamagames.jerakine.data.I18n;
    
@@ -17,7 +16,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
       override public function get isRespected() : Boolean {
          var id:* = 0;
          var achievementFinishedList:Vector.<uint> = (Kernel.getWorker().getFrame(QuestFrame) as QuestFrame).finishedAchievementsIds;
-         for each (id in achievementFinishedList)
+         for each(id in achievementFinishedList)
          {
             if(id == _criterionValue)
             {
@@ -45,7 +44,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
       override protected function getCriterion() : int {
          var id:* = 0;
          var achievementFinishedList:Vector.<uint> = (Kernel.getWorker().getFrame(QuestFrame) as QuestFrame).finishedAchievementsIds;
-         for each (id in achievementFinishedList)
+         for each(id in achievementFinishedList)
          {
             if(id == _criterionValue)
             {

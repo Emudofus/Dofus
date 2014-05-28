@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          return 5904;
       }
       
-      public function initExchangeStartedBidBuyerMessage(buyerDescriptor:SellerBuyerDescriptor=null) : ExchangeStartedBidBuyerMessage {
+      public function initExchangeStartedBidBuyerMessage(buyerDescriptor:SellerBuyerDescriptor = null) : ExchangeStartedBidBuyerMessage {
          this.buyerDescriptor = buyerDescriptor;
          this._isInitialized = true;
          return this;

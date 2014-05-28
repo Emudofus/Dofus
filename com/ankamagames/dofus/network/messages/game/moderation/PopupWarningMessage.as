@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.moderation
          return 6134;
       }
       
-      public function initPopupWarningMessage(lockDuration:uint=0, author:String="", content:String="") : PopupWarningMessage {
+      public function initPopupWarningMessage(lockDuration:uint = 0, author:String = "", content:String = "") : PopupWarningMessage {
          this.lockDuration = lockDuration;
          this.author = author;
          this.content = content;

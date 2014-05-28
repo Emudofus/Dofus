@@ -23,6 +23,8 @@ package com.ankamagames.tiphon.display
             case 7:
                animationName = spriteHandler.getAnimation() + "_5";
                break;
+            default:
+               animationName = spriteHandler.getAnimation() + "_" + spriteHandler.getDirection();
          }
          if(spriteHandler != null)
          {
@@ -30,9 +32,9 @@ package com.ankamagames.tiphon.display
          }
       }
       
-      private static var _events:Dictionary = new Dictionary(true);
+      private static var _events:Dictionary;
       
-      override public function gotoAndStop(frame:Object, scene:String=null) : void {
+      override public function gotoAndStop(frame:Object, scene:String = null) : void {
          var targetFrame:uint = frame as uint;
          if(targetFrame > 0)
          {
@@ -41,7 +43,7 @@ package com.ankamagames.tiphon.display
          this.displayFrame(targetFrame % _totalFrames);
       }
       
-      override public function gotoAndPlay(frame:Object, scene:String=null) : void {
+      override public function gotoAndPlay(frame:Object, scene:String = null) : void {
          this.gotoAndStop(frame,scene);
          play();
       }

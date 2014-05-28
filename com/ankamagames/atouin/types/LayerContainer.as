@@ -14,7 +14,7 @@ package com.ankamagames.atouin.types
          name = "layer" + nId;
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LayerContainer));
+      protected static const _log:Logger;
       
       private var _nLayerId:int;
       

@@ -21,11 +21,11 @@ package com.ankamagames.dofus.logic.common.managers
       
       private static var _itemId:int = 0;
       
-      private static var _itemList:Array = new Array();
+      private static var _itemList:Array;
       
       public static var lastItemTooltipId:int = -1;
       
-      public static function showItem(objectGID:uint, objectUID:uint=0) : void {
+      public static function showItem(objectGID:uint, objectUID:uint = 0) : void {
          var itemWrapper:ItemWrapper = InventoryManager.getInstance().inventory.getItem(objectUID);
          if(itemWrapper)
          {
@@ -53,7 +53,7 @@ package com.ankamagames.dofus.logic.common.managers
          KernelEventsManager.getInstance().processCallback(ChatHookList.AddItemHyperlink,_itemList[id]);
       }
       
-      public static function getItemName(objectGID:uint, objectUID:uint=0) : String {
+      public static function getItemName(objectGID:uint, objectUID:uint = 0) : String {
          var item:Item = Item.getItemById(objectGID);
          if(item)
          {
@@ -69,7 +69,7 @@ package com.ankamagames.dofus.logic.common.managers
          return code;
       }
       
-      public static function rollOver(pX:int, pY:int, objectGID:uint, objectUID:uint=0) : void {
+      public static function rollOver(pX:int, pY:int, objectGID:uint, objectUID:uint = 0) : void {
          var target:Rectangle = new Rectangle(pX,pY,10,10);
          var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.object"));
          TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);

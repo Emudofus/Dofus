@@ -41,7 +41,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
          return 5918;
       }
       
-      public function initTaxCollectorAttackedMessage(firstNameId:uint=0, lastNameId:uint=0, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0, guild:BasicGuildInformations=null) : TaxCollectorAttackedMessage {
+      public function initTaxCollectorAttackedMessage(firstNameId:uint = 0, lastNameId:uint = 0, worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:uint = 0, guild:BasicGuildInformations = null) : TaxCollectorAttackedMessage {
          this.firstNameId = firstNameId;
          this.lastNameId = lastNameId;
          this.worldX = worldX;

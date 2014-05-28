@@ -24,7 +24,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          return 161;
       }
       
-      public function initGameRolePlayPrismInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, prism:PrismInformation=null) : GameRolePlayPrismInformations {
+      public function initGameRolePlayPrismInformations(contextualId:int = 0, look:EntityLook = null, disposition:EntityDispositionInformations = null, prism:PrismInformation = null) : GameRolePlayPrismInformations {
          super.initGameRolePlayActorInformations(contextualId,look,disposition);
          this.prism = prism;
          return this;

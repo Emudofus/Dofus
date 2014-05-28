@@ -16,7 +16,7 @@ package com.somerandomdude.colortoolkit
          super();
       }
       
-      private static var rybWheel:Array = [[0,0],[15,8],[30,17],[45,26],[60,34],[75,41],[90,48],[105,54],[120,60],[135,81],[150,103],[165,123],[180,138],[195,155],[210,171],[225,187],[240,204],[255,219],[270,234],[285,251],[300,267],[315,282],[330,298],[345,329],[360,0]];
+      private static var rybWheel:Array;
       
       public static function setColorOpaque(color:int) : int {
          return 4.27819008E9 | (color >> 16 & 255) << 16 | (color >> 8 & 255) << 8 | color & 255;

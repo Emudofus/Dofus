@@ -22,12 +22,13 @@ package com.ankamagames.jerakine.data
    {
       
       public function DataUpdateManager() {
+         this._log = Log.getLogger(getQualifiedClassName(DataUpdateManager));
          super();
       }
       
-      public static const SQL_MODE:Boolean = XmlConfig.getInstance().getEntry("config.data.SQLMode") == "true";
+      public static const SQL_MODE:Boolean;
       
-      protected const _log:Logger = Log.getLogger(getQualifiedClassName(DataUpdateManager));
+      protected const _log:Logger;
       
       protected var _loader:IResourceLoader;
       
@@ -47,7 +48,7 @@ package com.ankamagames.jerakine.data
       
       private var _datastoreList:Array;
       
-      public function init(metaFileListe:Uri, clearAll:Boolean=false) : void {
+      public function init(metaFileListe:Uri, clearAll:Boolean = false) : void {
          this._metaFileListe = metaFileListe;
          this._storeKey = "version_" + this._metaFileListe.uri;
          this._clearAll = clearAll;
@@ -88,7 +89,7 @@ package com.ankamagames.jerakine.data
          {
             case "meta":
                meta = LangMetaData.fromXml(e.resource,e.uri.uri,this.checkFileVersion);
-               for (file in meta.clearFile)
+               for(file in meta.clearFile)
                {
                   uri = new Uri(FileUtils.getFilePath(e.uri.path) + "/" + file);
                   uri.tag = 

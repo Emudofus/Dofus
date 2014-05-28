@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.quest
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    import com.ankamagames.jerakine.data.I18n;
    
    public class Achievement extends Object implements IDataCenter
@@ -15,7 +14,7 @@ package com.ankamagames.dofus.datacenter.quest
          super();
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Achievement));
+      protected static const _log:Logger;
       
       public static const MODULE:String = "Achievements";
       

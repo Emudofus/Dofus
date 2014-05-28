@@ -1,7 +1,6 @@
 package com.ankamagames.dofus.network.types.game.interactive
 {
    import com.ankamagames.jerakine.network.INetworkType;
-   import __AS3__.vec.Vector;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
@@ -20,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.interactive
          return 398;
       }
       
-      public function initInteractiveElementWithAgeBonus(elementId:uint=0, elementTypeId:int=0, enabledSkills:Vector.<InteractiveElementSkill>=null, disabledSkills:Vector.<InteractiveElementSkill>=null, ageBonus:int=0) : InteractiveElementWithAgeBonus {
+      public function initInteractiveElementWithAgeBonus(elementId:uint = 0, elementTypeId:int = 0, enabledSkills:Vector.<InteractiveElementSkill> = null, disabledSkills:Vector.<InteractiveElementSkill> = null, ageBonus:int = 0) : InteractiveElementWithAgeBonus {
          super.initInteractiveElement(elementId,elementTypeId,enabledSkills,disabledSkills);
          this.ageBonus = ageBonus;
          return this;

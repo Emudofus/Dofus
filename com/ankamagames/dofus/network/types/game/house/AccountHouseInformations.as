@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.types.game.house
          return 390;
       }
       
-      public function initAccountHouseInformations(houseId:uint=0, modelId:uint=0, worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0) : AccountHouseInformations {
+      public function initAccountHouseInformations(houseId:uint = 0, modelId:uint = 0, worldX:int = 0, worldY:int = 0, mapId:int = 0, subAreaId:uint = 0) : AccountHouseInformations {
          this.houseId = houseId;
          this.modelId = modelId;
          this.worldX = worldX;

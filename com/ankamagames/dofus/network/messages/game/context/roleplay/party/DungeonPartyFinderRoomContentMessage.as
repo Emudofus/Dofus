@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.DungeonPartyFinderPlayer;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -32,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6247;
       }
       
-      public function initDungeonPartyFinderRoomContentMessage(dungeonId:uint=0, players:Vector.<DungeonPartyFinderPlayer>=null) : DungeonPartyFinderRoomContentMessage {
+      public function initDungeonPartyFinderRoomContentMessage(dungeonId:uint = 0, players:Vector.<DungeonPartyFinderPlayer> = null) : DungeonPartyFinderRoomContentMessage {
          this.dungeonId = dungeonId;
          this.players = players;
          this._isInitialized = true;

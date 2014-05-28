@@ -3,7 +3,6 @@ package com.ankamagames.dofus.datacenter.livingObjects
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.data.GameData;
-   import __AS3__.vec.*;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    
@@ -16,7 +15,7 @@ package com.ankamagames.dofus.datacenter.livingObjects
       
       public static const MODULE:String = "LivingObjectSkinJntMood";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpeakingItemText));
+      protected static const _log:Logger;
       
       public static function getLivingObjectSkin(objectId:int, moodId:int, skinId:int) : int {
          var losjm:LivingObjectSkinJntMood = GameData.getObject(MODULE,objectId) as LivingObjectSkinJntMood;

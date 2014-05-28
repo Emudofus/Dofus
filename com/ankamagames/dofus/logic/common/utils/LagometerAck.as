@@ -5,7 +5,6 @@ package com.ankamagames.dofus.logic.common.utils
    import com.ankamagames.dofus.kernel.Kernel;
    import flash.utils.getTimer;
    import com.ankamagames.dofus.network.messages.game.basic.BasicAckMessage;
-   import __AS3__.vec.*;
    import com.ankamagames.dofus.datacenter.misc.OptionalFeature;
    
    public class LagometerAck extends Lagometer
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.logic.common.utils
          this._msgTimeStack.length = 0;
       }
       
-      override public function ping(msg:INetworkMessage=null) : void {
+      override public function ping(msg:INetworkMessage = null) : void {
          var f:MiscFrame = null;
          if(!this._active)
          {
@@ -54,7 +53,7 @@ package com.ankamagames.dofus.logic.common.utils
          this._msgTimeStack.push(getTimer());
       }
       
-      override public function pong(msg:INetworkMessage=null) : void {
+      override public function pong(msg:INetworkMessage = null) : void {
          var latency:uint = 0;
          if(!this._active)
          {

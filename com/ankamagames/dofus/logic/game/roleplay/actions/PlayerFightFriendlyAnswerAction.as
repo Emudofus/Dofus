@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.roleplay.actions
          super();
       }
       
-      public static function create(accept:Boolean=true) : PlayerFightFriendlyAnswerAction {
+      public static function create(accept:Boolean = true) : PlayerFightFriendlyAnswerAction {
          var o:PlayerFightFriendlyAnswerAction = new PlayerFightFriendlyAnswerAction();
          o.accept = accept;
          return o;

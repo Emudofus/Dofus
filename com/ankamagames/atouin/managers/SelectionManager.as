@@ -9,7 +9,6 @@ package com.ankamagames.atouin.managers
    import com.ankamagames.atouin.AtouinConstants;
    import com.ankamagames.atouin.renderers.ZoneDARenderer;
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
-   import __AS3__.vec.*;
    import com.ankamagames.atouin.utils.errors.AtouinError;
    
    public class SelectionManager extends Object
@@ -30,7 +29,7 @@ package com.ankamagames.atouin.managers
       
       private static var _self:SelectionManager;
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SelectionManager));
+      protected static const _log:Logger;
       
       public static function getInstance() : SelectionManager {
          if(!_self)
@@ -47,7 +46,7 @@ package com.ankamagames.atouin.managers
          Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
       }
       
-      public function addSelection(s:Selection, name:String, cellId:uint=561.0) : void {
+      public function addSelection(s:Selection, name:String, cellId:uint = 561.0) : void {
          if(this._aSelection[name])
          {
             Selection(this._aSelection[name]).remove();
@@ -63,7 +62,7 @@ package com.ankamagames.atouin.managers
          return this._aSelection[name];
       }
       
-      public function update(name:String, cellId:uint=0, updateStrata:Boolean=false) : void {
+      public function update(name:String, cellId:uint = 0, updateStrata:Boolean = false) : void {
          var aCell:Vector.<uint> = null;
          var aOldCells:Vector.<uint> = null;
          var s:Selection = this.getSelection(name);
@@ -106,7 +105,7 @@ package com.ankamagames.atouin.managers
          var renderer:ZoneDARenderer = null;
          if(pEvent.propertyName == "transparentOverlayMode")
          {
-            for each (s in this._aSelection)
+            for each(s in this._aSelection)
             {
                renderer = s.renderer as ZoneDARenderer;
                if((renderer) && (s.visible) && (!renderer.fixedStrata))
@@ -128,7 +127,7 @@ package com.ankamagames.atouin.managers
       private function diff(a1:Vector.<uint>, a2:Vector.<uint>) : Vector.<uint> {
          var elem:* = undefined;
          var res:Vector.<uint> = new Vector.<uint>();
-         for each (elem in a2)
+         for each(elem in a2)
          {
             if(-1 == a1.indexOf(elem))
             {

@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 6030;
       }
       
-      public function initGoldAddedMessage(gold:GoldItem=null) : GoldAddedMessage {
+      public function initGoldAddedMessage(gold:GoldItem = null) : GoldAddedMessage {
          this.gold = gold;
          this._isInitialized = true;
          return this;

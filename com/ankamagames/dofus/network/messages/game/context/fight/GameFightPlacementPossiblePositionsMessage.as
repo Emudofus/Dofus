@@ -2,7 +2,6 @@ package com.ankamagames.dofus.network.messages.game.context.fight
 {
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -34,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 703;
       }
       
-      public function initGameFightPlacementPossiblePositionsMessage(positionsForChallengers:Vector.<uint>=null, positionsForDefenders:Vector.<uint>=null, teamNumber:uint=2) : GameFightPlacementPossiblePositionsMessage {
+      public function initGameFightPlacementPossiblePositionsMessage(positionsForChallengers:Vector.<uint> = null, positionsForDefenders:Vector.<uint> = null, teamNumber:uint = 2) : GameFightPlacementPossiblePositionsMessage {
          this.positionsForChallengers = positionsForChallengers;
          this.positionsForDefenders = positionsForDefenders;
          this.teamNumber = teamNumber;

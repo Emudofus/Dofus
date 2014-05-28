@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
          return 6139;
       }
       
-      public function initHouseToSellListRequestMessage(pageIndex:uint=0) : HouseToSellListRequestMessage {
+      public function initHouseToSellListRequestMessage(pageIndex:uint = 0) : HouseToSellListRequestMessage {
          this.pageIndex = pageIndex;
          this._isInitialized = true;
          return this;

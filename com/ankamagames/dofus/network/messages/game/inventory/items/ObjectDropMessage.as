@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
          return 3005;
       }
       
-      public function initObjectDropMessage(objectUID:uint=0, quantity:uint=0) : ObjectDropMessage {
+      public function initObjectDropMessage(objectUID:uint = 0, quantity:uint = 0) : ObjectDropMessage {
          this.objectUID = objectUID;
          this.quantity = quantity;
          this._isInitialized = true;

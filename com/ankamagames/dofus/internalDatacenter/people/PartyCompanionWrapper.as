@@ -9,7 +9,7 @@ package com.ankamagames.dofus.internalDatacenter.people
    public class PartyCompanionWrapper extends PartyMemberWrapper implements IDataCenter
    {
       
-      public function PartyCompanionWrapper(masterId:int, masterName:String, companionGenericId:int, isMember:Boolean, level:int=0, entityLook:EntityLook=null, lifePoints:int=0, maxLifePoints:int=0, maxInitiative:int=0, prospecting:int=0, regenRate:int=0) {
+      public function PartyCompanionWrapper(masterId:int, masterName:String, companionGenericId:int, isMember:Boolean, level:int = 0, entityLook:EntityLook = null, lifePoints:int = 0, maxLifePoints:int = 0, maxInitiative:int = 0, prospecting:int = 0, regenRate:int = 0) {
          var name:String = null;
          var genericName:String = Companion.getCompanionById(companionGenericId).name;
          if(masterId != PlayedCharacterManager.getInstance().id)

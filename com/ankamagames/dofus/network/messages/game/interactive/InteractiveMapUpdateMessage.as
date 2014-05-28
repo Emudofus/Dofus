@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.interactive
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -31,7 +30,7 @@ package com.ankamagames.dofus.network.messages.game.interactive
          return 5002;
       }
       
-      public function initInteractiveMapUpdateMessage(interactiveElements:Vector.<InteractiveElement>=null) : InteractiveMapUpdateMessage {
+      public function initInteractiveMapUpdateMessage(interactiveElements:Vector.<InteractiveElement> = null) : InteractiveMapUpdateMessage {
          this.interactiveElements = interactiveElements;
          this._isInitialized = true;
          return this;

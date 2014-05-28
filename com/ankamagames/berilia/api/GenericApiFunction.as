@@ -20,7 +20,7 @@ package com.ankamagames.berilia.api
             var arg:* = undefined;
             var accessKey:* = SecureCenter.ACCESS_KEY;
             var i:* = 0;
-            for each (arg in args)
+            for each(arg in args)
             {
                if(arg == accessKey)
                {

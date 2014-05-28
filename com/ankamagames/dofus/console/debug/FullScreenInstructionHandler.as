@@ -34,19 +34,17 @@ package com.ankamagames.dofus.console.debug
                      }
                   }
                }
-               else
+               else if(args.length == 2)
                {
-                  if(args.length == 2)
+                  if(AirScanner.hasAir())
                   {
-                     if(AirScanner.hasAir())
-                     {
-                        resX = uint(args[0]);
-                        resY = uint(args[1]);
-                        StageShareManager.stage.fullScreenSourceRect = new Rectangle(0,0,resX,resY);
-                        StageShareManager.stage.displayState = StageDisplayState["FULL_SCREEN_INTERACTIVE"];
-                     }
+                     resX = uint(args[0]);
+                     resY = uint(args[1]);
+                     StageShareManager.stage.fullScreenSourceRect = new Rectangle(0,0,resX,resY);
+                     StageShareManager.stage.displayState = StageDisplayState["FULL_SCREEN_INTERACTIVE"];
                   }
                }
+               
                break;
          }
       }
@@ -56,10 +54,12 @@ package com.ankamagames.dofus.console.debug
          {
             case "fullscreen":
                return "Toggle the full-screen display mode.";
+            default:
+               return "Unknown command";
          }
       }
       
-      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+      public function getParamPossibilities(cmd:String, paramIndex:uint = 0, currentParams:Array = null) : Array {
          return [];
       }
    }

@@ -3,7 +3,6 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestActiveInformations;
-   import __AS3__.vec.*;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -37,7 +36,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
          return 5626;
       }
       
-      public function initQuestListMessage(finishedQuestsIds:Vector.<uint>=null, finishedQuestsCounts:Vector.<uint>=null, activeQuests:Vector.<QuestActiveInformations>=null) : QuestListMessage {
+      public function initQuestListMessage(finishedQuestsIds:Vector.<uint> = null, finishedQuestsCounts:Vector.<uint> = null, activeQuests:Vector.<QuestActiveInformations> = null) : QuestListMessage {
          this.finishedQuestsIds = finishedQuestsIds;
          this.finishedQuestsCounts = finishedQuestsCounts;
          this.activeQuests = activeQuests;

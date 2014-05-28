@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.types.game.fight
          return 186;
       }
       
-      public function initProtectedEntityWaitingForHelpInfo(timeLeftBeforeFight:int=0, waitTimeForPlacement:int=0, nbPositionForDefensors:uint=0) : ProtectedEntityWaitingForHelpInfo {
+      public function initProtectedEntityWaitingForHelpInfo(timeLeftBeforeFight:int = 0, waitTimeForPlacement:int = 0, nbPositionForDefensors:uint = 0) : ProtectedEntityWaitingForHelpInfo {
          this.timeLeftBeforeFight = timeLeftBeforeFight;
          this.waitTimeForPlacement = waitTimeForPlacement;
          this.nbPositionForDefensors = nbPositionForDefensors;

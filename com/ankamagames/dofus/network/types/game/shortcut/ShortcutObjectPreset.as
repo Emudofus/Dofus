@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.shortcut
          return 370;
       }
       
-      public function initShortcutObjectPreset(slot:uint=0, presetId:uint=0) : ShortcutObjectPreset {
+      public function initShortcutObjectPreset(slot:uint = 0, presetId:uint = 0) : ShortcutObjectPreset {
          super.initShortcutObject(slot);
          this.presetId = presetId;
          return this;

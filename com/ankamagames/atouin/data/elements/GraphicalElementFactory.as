@@ -30,6 +30,9 @@ package com.ankamagames.atouin.data.elements
                return new ParticlesGraphicalElementData(elementId,elementType);
             case GraphicalElementTypes.BLENDED:
                return new BlendedGraphicalElementData(elementId,elementType);
+            default:
+               ErrorManager.addError("Unknown graphical element data type " + elementType + " for element " + elementId + "!",false);
+               return null;
          }
       }
    }

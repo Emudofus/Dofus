@@ -33,7 +33,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 5927;
       }
       
-      public function initGameFightOptionStateUpdateMessage(fightId:uint=0, teamId:uint=2, option:uint=3, state:Boolean=false) : GameFightOptionStateUpdateMessage {
+      public function initGameFightOptionStateUpdateMessage(fightId:uint = 0, teamId:uint = 2, option:uint = 3, state:Boolean = false) : GameFightOptionStateUpdateMessage {
          this.fightId = fightId;
          this.teamId = teamId;
          this.option = option;

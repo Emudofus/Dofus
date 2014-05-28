@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.paddock
          return 132;
       }
       
-      public function initPaddockInformations(maxOutdoorMount:uint=0, maxItems:uint=0) : PaddockInformations {
+      public function initPaddockInformations(maxOutdoorMount:uint = 0, maxItems:uint = 0) : PaddockInformations {
          this.maxOutdoorMount = maxOutdoorMount;
          this.maxItems = maxItems;
          return this;

@@ -2,7 +2,6 @@ package com.ankamagames.dofus.logic.game.common.managers
 {
    import com.ankamagames.dofus.uiApi.PlayedCharacterApi;
    import flash.utils.Dictionary;
-   import __AS3__.vec.*;
    
    public class ChatAutocompleteNameManager extends Object
    {
@@ -80,7 +79,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          var ret:Vector.<String> = new Vector.<String>();
          this._subStringCache = subString;
          this._cache = ret;
-         for each (entry in list)
+         for each(entry in list)
          {
             name = entry.name;
             lcName = name.toLowerCase();

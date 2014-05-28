@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.types.game.mount
          return 168;
       }
       
-      public function initItemDurability(durability:int=0, durabilityMax:int=0) : ItemDurability {
+      public function initItemDurability(durability:int = 0, durabilityMax:int = 0) : ItemDurability {
          this.durability = durability;
          this.durabilityMax = durabilityMax;
          return this;

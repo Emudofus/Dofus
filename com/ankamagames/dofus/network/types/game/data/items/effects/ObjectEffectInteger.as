@@ -19,7 +19,7 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          return 70;
       }
       
-      public function initObjectEffectInteger(actionId:uint=0, value:uint=0) : ObjectEffectInteger {
+      public function initObjectEffectInteger(actionId:uint = 0, value:uint = 0) : ObjectEffectInteger {
          super.initObjectEffect(actionId);
          this.value = value;
          return this;

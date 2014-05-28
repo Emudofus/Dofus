@@ -5,7 +5,6 @@ package com.ankamagames.dofus.datacenter.communication
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import __AS3__.vec.Vector;
    
    public class Smiley extends Object implements IDataCenter
    {
@@ -16,7 +15,7 @@ package com.ankamagames.dofus.datacenter.communication
       
       public static const MODULE:String = "Smileys";
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Smiley));
+      protected static const _log:Logger;
       
       public static function getSmileyById(id:int) : Smiley {
          return GameData.getObject(MODULE,id) as Smiley;

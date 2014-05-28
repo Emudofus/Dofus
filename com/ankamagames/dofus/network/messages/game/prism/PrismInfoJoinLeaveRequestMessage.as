@@ -27,7 +27,7 @@ package com.ankamagames.dofus.network.messages.game.prism
          return 5844;
       }
       
-      public function initPrismInfoJoinLeaveRequestMessage(join:Boolean=false) : PrismInfoJoinLeaveRequestMessage {
+      public function initPrismInfoJoinLeaveRequestMessage(join:Boolean = false) : PrismInfoJoinLeaveRequestMessage {
          this.join = join;
          this._isInitialized = true;
          return this;

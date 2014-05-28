@@ -35,7 +35,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
          return 6301;
       }
       
-      public function initGameRolePlayArenaUpdatePlayerInfosMessage(rank:uint=0, bestDailyRank:uint=0, bestRank:uint=0, victoryCount:uint=0, arenaFightcount:uint=0) : GameRolePlayArenaUpdatePlayerInfosMessage {
+      public function initGameRolePlayArenaUpdatePlayerInfosMessage(rank:uint = 0, bestDailyRank:uint = 0, bestRank:uint = 0, victoryCount:uint = 0, arenaFightcount:uint = 0) : GameRolePlayArenaUpdatePlayerInfosMessage {
          this.rank = rank;
          this.bestDailyRank = bestDailyRank;
          this.bestRank = bestRank;

@@ -7,7 +7,6 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    import com.ankamagames.dofus.network.ProtocolTypeManager;
-   import __AS3__.vec.*;
    
    public class PartyGuestInformations extends Object implements INetworkType
    {
@@ -41,7 +40,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
          return 374;
       }
       
-      public function initPartyGuestInformations(guestId:uint=0, hostId:uint=0, name:String="", guestLook:EntityLook=null, breed:int=0, sex:Boolean=false, status:PlayerStatus=null, companions:Vector.<PartyCompanionBaseInformations>=null) : PartyGuestInformations {
+      public function initPartyGuestInformations(guestId:uint = 0, hostId:uint = 0, name:String = "", guestLook:EntityLook = null, breed:int = 0, sex:Boolean = false, status:PlayerStatus = null, companions:Vector.<PartyCompanionBaseInformations> = null) : PartyGuestInformations {
          this.guestId = guestId;
          this.hostId = hostId;
          this.name = name;
