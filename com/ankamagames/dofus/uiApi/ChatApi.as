@@ -14,9 +14,13 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.berilia.factories.HyperlinkFactory;
    import com.ankamagames.dofus.logic.common.managers.HyperlinkItemManager;
    import com.ankamagames.dofus.logic.game.common.managers.ChatAutocompleteNameManager;
+   import com.ankamagames.dofus.logic.common.managers.HyperlinkShowGuildManager;
+   import com.ankamagames.dofus.logic.common.managers.HyperlinkShowAllianceManager;
    import com.ankamagames.berilia.managers.HtmlManager;
    import com.ankamagames.jerakine.logger.ModuleLogger;
    import com.ankamagames.dofus.console.moduleLogger.TypeMessage;
+   import com.ankamagames.jerakine.managers.OptionManager;
+   import com.ankamagames.dofus.console.moduleLogger.Console;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    
@@ -168,12 +172,27 @@ package com.ankamagames.dofus.uiApi
          return ChatAutocompleteNameManager.getInstance().autocomplete(subString,count);
       }
       
+      public function getGuildLink(pGuild:*, pText:String = null) : String {
+         return HyperlinkShowGuildManager.getLink(pGuild,pText);
+      }
+      
+      public function getAllianceLink(pAlliance:*, pText:String = null, pLinkColor:String = null, pHoverColor:String = null) : String {
+         return HyperlinkShowAllianceManager.getLink(pAlliance,pText,pLinkColor,pHoverColor);
+      }
+      
       public function changeCssHandler(val:String) : void {
          HtmlManager.changeCssHandler(val);
       }
       
       public function logChat(text:String) : void {
          ModuleLogger.log(text,TypeMessage.LOG_CHAT);
+      }
+      
+      public function launchExternalChat() : void {
+         var toggleChat:Boolean = OptionManager.getOptionManager("chat")["chatoutput"];
+         Console.getInstance().display();
+         Console.getInstance().disableLogEvent();
+         OptionManager.getOptionManager("chat")["chatoutput"] = !toggleChat;
       }
       
       public function addHtmlLink(pText:String, pHref:String) : String {

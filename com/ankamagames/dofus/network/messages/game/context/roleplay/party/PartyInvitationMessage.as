@@ -22,6 +22,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
       
       public var partyType:uint = 0;
       
+      public var partyName:String = "";
+      
       public var maxParticipants:uint = 0;
       
       public var fromId:uint = 0;
@@ -34,9 +36,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 5586;
       }
       
-      public function initPartyInvitationMessage(partyId:uint = 0, partyType:uint = 0, maxParticipants:uint = 0, fromId:uint = 0, fromName:String = "", toId:uint = 0) : PartyInvitationMessage {
+      public function initPartyInvitationMessage(partyId:uint = 0, partyType:uint = 0, partyName:String = "", maxParticipants:uint = 0, fromId:uint = 0, fromName:String = "", toId:uint = 0) : PartyInvitationMessage {
          super.initAbstractPartyMessage(partyId);
          this.partyType = partyType;
+         this.partyName = partyName;
          this.maxParticipants = maxParticipants;
          this.fromId = fromId;
          this.fromName = fromName;
@@ -48,6 +51,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
       override public function reset() : void {
          super.reset();
          this.partyType = 0;
+         this.partyName = "";
          this.maxParticipants = 0;
          this.fromId = 0;
          this.fromName = "";
@@ -72,6 +76,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
       public function serializeAs_PartyInvitationMessage(output:IDataOutput) : void {
          super.serializeAs_AbstractPartyMessage(output);
          output.writeByte(this.partyType);
+         output.writeUTF(this.partyName);
          if(this.maxParticipants < 0)
          {
             throw new Error("Forbidden value (" + this.maxParticipants + ") on element maxParticipants.");
@@ -113,6 +118,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          }
          else
          {
+            this.partyName = input.readUTF();
             this.maxParticipants = input.readByte();
             if(this.maxParticipants < 0)
             {

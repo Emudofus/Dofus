@@ -82,6 +82,7 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.datacenter.quest.AchievementReward;
    import com.ankamagames.dofus.datacenter.quest.treasureHunt.PointOfInterest;
    import com.ankamagames.dofus.datacenter.quest.treasureHunt.PointOfInterestCategory;
+   import com.ankamagames.dofus.datacenter.quest.treasureHunt.LegendaryTreasureHunt;
    import com.ankamagames.dofus.datacenter.mounts.Mount;
    import com.ankamagames.dofus.datacenter.mounts.MountBone;
    import com.ankamagames.dofus.datacenter.mounts.MountBehavior;
@@ -291,6 +292,8 @@ package com.ankamagames.dofus.misc.lists
       public static const pointOfInterest:PointOfInterest = null;
       
       public static const pointOfInterestCategory:PointOfInterestCategory = null;
+      
+      public static const legendaryTreasureHunt:LegendaryTreasureHunt = null;
       
       public static const mount:Mount = null;
       

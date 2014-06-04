@@ -31,14 +31,17 @@ package com.ankamagames.dofus.network.messages.game.context.fight
       
       public var gameTurn:uint = 0;
       
+      public var fightStart:uint = 0;
+      
       override public function getMessageId() : uint {
          return 6069;
       }
       
-      public function initGameFightSpectateMessage(effects:Vector.<FightDispellableEffectExtendedInformations> = null, marks:Vector.<GameActionMark> = null, gameTurn:uint = 0) : GameFightSpectateMessage {
+      public function initGameFightSpectateMessage(effects:Vector.<FightDispellableEffectExtendedInformations> = null, marks:Vector.<GameActionMark> = null, gameTurn:uint = 0, fightStart:uint = 0) : GameFightSpectateMessage {
          this.effects = effects;
          this.marks = marks;
          this.gameTurn = gameTurn;
+         this.fightStart = fightStart;
          this._isInitialized = true;
          return this;
       }
@@ -47,6 +50,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this.effects = new Vector.<FightDispellableEffectExtendedInformations>();
          this.marks = new Vector.<GameActionMark>();
          this.gameTurn = 0;
+         this.fightStart = 0;
          this._isInitialized = false;
       }
       
@@ -86,7 +90,15 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          else
          {
             output.writeShort(this.gameTurn);
-            return;
+            if(this.fightStart < 0)
+            {
+               throw new Error("Forbidden value (" + this.fightStart + ") on element fightStart.");
+            }
+            else
+            {
+               output.writeInt(this.fightStart);
+               return;
+            }
          }
       }
       
@@ -122,7 +134,15 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          }
          else
          {
-            return;
+            this.fightStart = input.readInt();
+            if(this.fightStart < 0)
+            {
+               throw new Error("Forbidden value (" + this.fightStart + ") on element of GameFightSpectateMessage.fightStart.");
+            }
+            else
+            {
+               return;
+            }
          }
       }
    }

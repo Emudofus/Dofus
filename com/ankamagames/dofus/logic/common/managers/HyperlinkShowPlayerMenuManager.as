@@ -1,5 +1,6 @@
 package com.ankamagames.dofus.logic.common.managers
 {
+   import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayCharacterInformations;
    import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.dofus.kernel.Kernel;
@@ -12,6 +13,8 @@ package com.ankamagames.dofus.logic.common.managers
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.berilia.managers.TooltipManager;
    import com.ankamagames.berilia.enums.StrataEnum;
+   import com.ankamagames.jerakine.logger.Log;
+   import avmplus.getQualifiedClassName;
    
    public class HyperlinkShowPlayerMenuManager extends Object
    {
@@ -20,9 +23,15 @@ package com.ankamagames.dofus.logic.common.managers
          super();
       }
       
+      protected static const _log:Logger;
+      
       public static function showPlayerMenu(playerName:String, playerId:int = 0, timestamp:Number = 0, fingerprint:String = null, chan:uint = 0) : void {
          var playerInfo:GameRolePlayCharacterInformations = null;
          var _modContextMenu:Object = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
+         if((playerName) && (playerName.indexOf("★") == 0))
+         {
+            playerName = playerName.substr(1);
+         }
          var roleplayEntitiesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
          if((roleplayEntitiesFrame) && (playerId))
          {
@@ -63,6 +72,10 @@ package com.ankamagames.dofus.logic.common.managers
                break;
             default:
                priority = 1;
+         }
+         if((playerName) && (playerName.indexOf("★") == 0))
+         {
+            playerName = playerName.substr(1);
          }
          ChatAutocompleteNameManager.getInstance().addEntry(playerName,priority);
          return playerName;

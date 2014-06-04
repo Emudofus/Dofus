@@ -327,21 +327,21 @@ package com.ankamagames.dofus.network.types.game.character.characteristic
       }
       
       public function serializeAs_CharacterCharacteristicsInformations(output:IDataOutput) : void {
-         if(this.experience < 0)
+         if((this.experience < 0) || (this.experience > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.experience + ") on element experience.");
          }
          else
          {
             output.writeDouble(this.experience);
-            if(this.experienceLevelFloor < 0)
+            if((this.experienceLevelFloor < 0) || (this.experienceLevelFloor > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.experienceLevelFloor + ") on element experienceLevelFloor.");
             }
             else
             {
                output.writeDouble(this.experienceLevelFloor);
-               if(this.experienceNextLevelFloor < 0)
+               if((this.experienceNextLevelFloor < 0) || (this.experienceNextLevelFloor > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.experienceNextLevelFloor + ") on element experienceNextLevelFloor.");
                }
@@ -501,21 +501,21 @@ package com.ankamagames.dofus.network.types.game.character.characteristic
       public function deserializeAs_CharacterCharacteristicsInformations(input:IDataInput) : void {
          var _item73:CharacterSpellModification = null;
          this.experience = input.readDouble();
-         if(this.experience < 0)
+         if((this.experience < 0) || (this.experience > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.experience + ") on element of CharacterCharacteristicsInformations.experience.");
          }
          else
          {
             this.experienceLevelFloor = input.readDouble();
-            if(this.experienceLevelFloor < 0)
+            if((this.experienceLevelFloor < 0) || (this.experienceLevelFloor > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.experienceLevelFloor + ") on element of CharacterCharacteristicsInformations.experienceLevelFloor.");
             }
             else
             {
                this.experienceNextLevelFloor = input.readDouble();
-               if(this.experienceNextLevelFloor < 0)
+               if((this.experienceNextLevelFloor < 0) || (this.experienceNextLevelFloor > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.experienceNextLevelFloor + ") on element of CharacterCharacteristicsInformations.experienceNextLevelFloor.");
                }

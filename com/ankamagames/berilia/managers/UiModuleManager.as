@@ -32,8 +32,8 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.berilia.types.messages.AllModulesLoadedMessage;
    import com.ankamagames.jerakine.resources.adapters.impl.TxtAdapter;
    import com.ankamagames.jerakine.newCache.ICache;
-   import com.ankamagames.jerakine.utils.files.FileUtils;
    import com.ankamagames.berilia.utils.UriCacheFactory;
+   import com.ankamagames.jerakine.utils.files.FileUtils;
    import com.ankamagames.jerakine.newCache.impl.Cache;
    import com.ankamagames.jerakine.newCache.garbage.LruGarbageCollector;
    import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
@@ -46,7 +46,6 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.berilia.types.data.UiData;
    import com.ankamagames.jerakine.resources.ResourceType;
    import com.ankamagames.berilia.types.data.PreCompiledUiModule;
-   import com.ankamagames.jerakine.utils.misc.StringUtils;
    import flash.filesystem.FileMode;
    import by.blooddy.crypto.MD5;
    import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;
@@ -571,8 +570,8 @@ package com.ankamagames.berilia.managers
       }
       
       private function processCachedFiles(files:Array) : void {
-         var _loc8_:* = true;
-         var _loc9_:* = false;
+         var _loc8_:* = false;
+         var _loc9_:* = true;
          var uri:Uri = null;
          var file:Uri = null;
          var c:ICache = null;
@@ -582,8 +581,8 @@ package com.ankamagames.berilia.managers
       }
       
       private function onLoadError(e:ResourceErrorEvent) : void {
-         var _loc5_:* = true;
-         var _loc6_:* = false;
+         var _loc5_:* = false;
+         var _loc6_:* = true;
          _log.error("onLoadError() - " + e.errorMsg);
          var sduri:Uri = new Uri(HttpServer.getInstance().getUrlTo("SharedDefinitions.swf"));
          if(e.uri == sduri)
@@ -621,8 +620,8 @@ package com.ankamagames.berilia.managers
       }
       
       private function onLoad(e:ResourceLoadedEvent) : void {
-         var _loc3_:* = false;
-         var _loc4_:* = true;
+         var _loc3_:* = true;
+         var _loc4_:* = false;
          if(this._resetState)
          {
             return;
@@ -656,8 +655,8 @@ package com.ankamagames.berilia.managers
       }
       
       private function onScriptLoadFail(e:IOErrorEvent, uiModule:UiModule) : void {
-         var _loc5_:* = false;
-         var _loc6_:* = true;
+         var _loc5_:* = true;
+         var _loc6_:* = false;
          _log.error("Le script du module " + uiModule.id + " est introuvable");
          if(!--this._scriptNum)
          {
@@ -814,8 +813,8 @@ package com.ankamagames.berilia.managers
       }
       
       private function onXmlParsingError(e:ParsingErrorEvent) : void {
-         var _loc2_:* = true;
-         var _loc3_:* = false;
+         var _loc2_:* = false;
+         var _loc3_:* = true;
          Berilia.getInstance().handler.process(new UiXmlParsedErrorMessage(e.url,e.msg));
       }
       

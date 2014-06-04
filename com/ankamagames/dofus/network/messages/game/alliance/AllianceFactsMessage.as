@@ -33,14 +33,20 @@ package com.ankamagames.dofus.network.messages.game.alliance
       
       public var controlledSubareaIds:Vector.<uint>;
       
+      public var leaderCharacterId:uint = 0;
+      
+      public var leaderCharacterName:String = "";
+      
       override public function getMessageId() : uint {
          return 6414;
       }
       
-      public function initAllianceFactsMessage(infos:AllianceFactSheetInformations = null, guilds:Vector.<GuildInAllianceInformations> = null, controlledSubareaIds:Vector.<uint> = null) : AllianceFactsMessage {
+      public function initAllianceFactsMessage(infos:AllianceFactSheetInformations = null, guilds:Vector.<GuildInAllianceInformations> = null, controlledSubareaIds:Vector.<uint> = null, leaderCharacterId:uint = 0, leaderCharacterName:String = "") : AllianceFactsMessage {
          this.infos = infos;
          this.guilds = guilds;
          this.controlledSubareaIds = controlledSubareaIds;
+         this.leaderCharacterId = leaderCharacterId;
+         this.leaderCharacterName = leaderCharacterName;
          this._isInitialized = true;
          return this;
       }
@@ -48,6 +54,8 @@ package com.ankamagames.dofus.network.messages.game.alliance
       override public function reset() : void {
          this.infos = new AllianceFactSheetInformations();
          this.controlledSubareaIds = new Vector.<uint>();
+         this.leaderCharacterId = 0;
+         this.leaderCharacterName = "";
          this._isInitialized = false;
       }
       
@@ -90,6 +98,16 @@ package com.ankamagames.dofus.network.messages.game.alliance
                continue;
             }
          }
+         if(this.leaderCharacterId < 0)
+         {
+            throw new Error("Forbidden value (" + this.leaderCharacterId + ") on element leaderCharacterId.");
+         }
+         else
+         {
+            output.writeInt(this.leaderCharacterId);
+            output.writeUTF(this.leaderCharacterName);
+            return;
+         }
       }
       
       public function deserialize(input:IDataInput) : void {
@@ -126,6 +144,16 @@ package com.ankamagames.dofus.network.messages.game.alliance
                _i3++;
                continue;
             }
+         }
+         this.leaderCharacterId = input.readInt();
+         if(this.leaderCharacterId < 0)
+         {
+            throw new Error("Forbidden value (" + this.leaderCharacterId + ") on element of AllianceFactsMessage.leaderCharacterId.");
+         }
+         else
+         {
+            this.leaderCharacterName = input.readUTF();
+            return;
          }
       }
    }

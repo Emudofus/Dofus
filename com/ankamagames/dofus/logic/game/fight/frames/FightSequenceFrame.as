@@ -312,6 +312,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var entityInfosL:GameContextActorInformations = null;
          var gafdmsg:GameActionFightDeathMessage = null;
          var entitiesDictionnary:Dictionary = null;
+         var actorInfo:GameFightFighterInformations = null;
          var playerId:* = 0;
          var sourceInfos:GameFightFighterInformations = null;
          var targetInfos:GameFightFighterInformations = null;
@@ -371,6 +372,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var illusionCreature:Sprite = null;
          var gfsgmsg:GameFightShowFighterMessage = null;
          var summonedCreature:Sprite = null;
+         var nextPlayableCharacterId:* = 0;
          var isBomb:* = false;
          var isCreature:* = false;
          var entityInfosS:GameContextActorInformations = null;
@@ -382,7 +384,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var summonedEntityInfosL:GameFightMonsterInformations = null;
          var monster:Monster = null;
          var gcai:GameContextActorInformations = null;
-         var summonerId:* = 0;
          var summonedEntityInfos:GameFightMonsterInformations = null;
          var summonedFighterEntityInfos:GameFightFighterInformations = null;
          var sb:StateBuff = null;
@@ -676,7 +677,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
                      }
                      
                   }
-                  if((this._fightBattleFrame.slaveId == gafsnmsg.summon.contextualId) || (this._fightBattleFrame.masterId == gafsnmsg.summon.contextualId))
+                  nextPlayableCharacterId = this._fightBattleFrame.getNextPlayableCharacterId();
+                  if((!(this._fightBattleFrame.currentPlayerId == CurrentPlayedFighterManager.getInstance().currentFighterId)) && (!(nextPlayableCharacterId == CurrentPlayedFighterManager.getInstance().currentFighterId)) && (nextPlayableCharacterId == gafsnmsg.summon.contextualId))
                   {
                      this._fightBattleFrame.prepareNextPlayableCharacter();
                   }
@@ -746,8 +748,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
                {
                   if(gcai is GameFightFighterInformations)
                   {
-                     summonerId = (gcai as GameFightFighterInformations).stats.summoner;
-                     if(summonerId == gafdmsg.targetId)
+                     actorInfo = gcai as GameFightFighterInformations;
+                     if((actorInfo.alive) && (actorInfo.stats.summoner == gafdmsg.targetId))
                      {
                         this.pushDeathStep(gcai.contextualId);
                      }
@@ -757,7 +759,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                sourceInfos = this.fightEntitiesFrame.getEntityInfos(gafdmsg.sourceId) as GameFightFighterInformations;
                targetInfos = this.fightEntitiesFrame.getEntityInfos(gafdmsg.targetId) as GameFightFighterInformations;
                playerInfos = this.fightEntitiesFrame.getEntityInfos(playerId) as GameFightFighterInformations;
-               if((this._fightBattleFrame.slaveId == gafdmsg.targetId) || (this._fightBattleFrame.masterId == gafdmsg.targetId))
+               if((!(gafdmsg.targetId == this._fightBattleFrame.currentPlayerId)) && ((this._fightBattleFrame.slaveId == gafdmsg.targetId) || (this._fightBattleFrame.masterId == gafdmsg.targetId)))
                {
                   this._fightBattleFrame.prepareNextPlayableCharacter(gafdmsg.targetId);
                }

@@ -10,6 +10,8 @@ package com.ankamagames.jerakine.handlers
    import flash.events.KeyboardEvent;
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.utils.prng.ParkMillerCarta;
+   import com.ankamagames.jerakine.utils.system.AirScanner;
+   import com.ankamagames.jerakine.managers.LangManager;
    import flash.display.Stage;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.events.MouseEvent;
@@ -17,6 +19,7 @@ package com.ankamagames.jerakine.handlers
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseDoubleClickMessage;
    import flash.utils.getTimer;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseClickMessage;
+   import com.ankamagames.jerakine.messages.Worker;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseWheelMessage;
    import flash.display.DisplayObject;
    import flash.display.Sprite;
@@ -31,6 +34,7 @@ package com.ankamagames.jerakine.handlers
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseReleaseOutsideMessage;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseUpMessage;
    import flash.ui.Keyboard;
+   import flash.display.StageDisplayState;
    import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyDownMessage;
    import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyUpMessage;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
@@ -85,6 +89,8 @@ package com.ankamagames.jerakine.handlers
       
       private var _debugOverSprite:Dictionary;
       
+      private var _useDirectEventMode:Boolean = false;
+      
       private const random:ParkMillerCarta;
       
       public function get debugOver() : Boolean {
@@ -125,6 +131,10 @@ package com.ankamagames.jerakine.handlers
       
       private function initialize() : void {
          this._keyPoll = new KeyPoll();
+         if(AirScanner.isStreamingVersion())
+         {
+            this._useDirectEventMode = LangManager.getInstance().getBooleanEntry("directEventMode");
+         }
          this.registerListeners();
       }
       
@@ -160,7 +170,7 @@ package com.ankamagames.jerakine.handlers
          }
          target.addEventListener(MouseEvent.DOUBLE_CLICK,this.onDoubleClick,true,1,true);
          target.addEventListener(MouseEvent.CLICK,this.onClick,true,1,true);
-         target.addEventListener(MouseEvent.MOUSE_WHEEL,this.onMouseWheel,true,1,true);
+         target.addEventListener(MouseEvent.MOUSE_WHEEL,this.onMouseWheel,false,1,true);
          target.addEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver,true,1,true);
          target.addEventListener(MouseEvent.MOUSE_OUT,this.onMouseOut,true,1,true);
          target.addEventListener(MouseEvent.MOUSE_DOWN,this.onMouseDown,true,1,true);
@@ -195,15 +205,29 @@ package com.ankamagames.jerakine.handlers
             this._handler.process(GenericPool.get(MouseDoubleClickMessage,me.target,me));
             this._lastDoucleClick = time;
          }
-         else
+         else if(!this._useDirectEventMode)
          {
             this._handler.process(GenericPool.get(MouseClickMessage,me.target,me));
          }
+         else if(this._handler is Worker)
+         {
+            Worker(this._handler).processImmediately(GenericPool.get(MouseClickMessage,me.target,me));
+         }
+         
+         
          
       }
       
       private function onMouseWheel(me:MouseEvent) : void {
-         this._handler.process(GenericPool.get(MouseWheelMessage,me.target,me));
+         if(!this._useDirectEventMode)
+         {
+            this._handler.process(GenericPool.get(MouseWheelMessage,me.target,me));
+         }
+         else if(this._handler is Worker)
+         {
+            Worker(this._handler).processImmediately(GenericPool.get(MouseWheelMessage,me.target,me));
+         }
+         
       }
       
       private function onMouseOver(me:MouseEvent) : void {
@@ -289,9 +313,17 @@ package com.ankamagames.jerakine.handlers
       }
       
       private function onKeyDown(ke:KeyboardEvent) : void {
+         if(this._keyPoll.isDown(Keyboard.CONTROL))
+         {
+            ke.ctrlKey = true;
+         }
          if(ke.keyCode == Keyboard.ESCAPE)
          {
             ke.preventDefault();
+            if((AirScanner.isStreamingVersion()) && (StageShareManager.stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE))
+            {
+               return;
+            }
          }
          if(ke.keyCode == 15)
          {
@@ -301,13 +333,33 @@ package com.ankamagames.jerakine.handlers
          {
             ke.preventDefault();
          }
-         this._handler.process(GenericPool.get(KeyboardKeyDownMessage,FocusHandler.getInstance().getFocus(),ke));
+         if(!this._useDirectEventMode)
+         {
+            this._handler.process(GenericPool.get(KeyboardKeyDownMessage,FocusHandler.getInstance().getFocus(),ke));
+         }
+         else if(this._handler is Worker)
+         {
+            Worker(this._handler).processImmediately(GenericPool.get(KeyboardKeyDownMessage,FocusHandler.getInstance().getFocus(),ke));
+         }
+         
       }
       
       private function onKeyUp(ke:KeyboardEvent) : void {
+         if(this._keyPoll.isDown(Keyboard.CONTROL))
+         {
+            ke.ctrlKey = true;
+         }
          if(!this._appleDown)
          {
-            this._handler.process(GenericPool.get(KeyboardKeyUpMessage,FocusHandler.getInstance().getFocus(),ke));
+            if(!this._useDirectEventMode)
+            {
+               this._handler.process(GenericPool.get(KeyboardKeyUpMessage,FocusHandler.getInstance().getFocus(),ke));
+            }
+            else if(this._handler is Worker)
+            {
+               Worker(this._handler).processImmediately(GenericPool.get(KeyboardKeyUpMessage,FocusHandler.getInstance().getFocus(),ke));
+            }
+            
          }
          else
          {

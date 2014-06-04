@@ -47,12 +47,7 @@ package com.ankamagames.dofus.logic.common.frames
       }
       
       public function pulled() : Boolean {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: NullPointerException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         return true;
       }
    }
 }

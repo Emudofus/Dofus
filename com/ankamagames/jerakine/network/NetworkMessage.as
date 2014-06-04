@@ -68,6 +68,8 @@ package com.ankamagames.jerakine.network
       
       private var _instance_id:uint;
       
+      public var receptionTime:int;
+      
       public function get isInitialized() : Boolean {
          throw new AbstractMethodCallError();
       }

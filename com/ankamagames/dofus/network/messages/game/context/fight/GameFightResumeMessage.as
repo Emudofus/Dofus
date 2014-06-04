@@ -34,8 +34,8 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 6067;
       }
       
-      public function initGameFightResumeMessage(effects:Vector.<FightDispellableEffectExtendedInformations> = null, marks:Vector.<GameActionMark> = null, gameTurn:uint = 0, spellCooldowns:Vector.<GameFightSpellCooldown> = null, summonCount:uint = 0, bombCount:uint = 0) : GameFightResumeMessage {
-         super.initGameFightSpectateMessage(effects,marks,gameTurn);
+      public function initGameFightResumeMessage(effects:Vector.<FightDispellableEffectExtendedInformations> = null, marks:Vector.<GameActionMark> = null, gameTurn:uint = 0, fightStart:uint = 0, spellCooldowns:Vector.<GameFightSpellCooldown> = null, summonCount:uint = 0, bombCount:uint = 0) : GameFightResumeMessage {
+         super.initGameFightSpectateMessage(effects,marks,gameTurn,fightStart);
          this.spellCooldowns = spellCooldowns;
          this.summonCount = summonCount;
          this.bombCount = bombCount;

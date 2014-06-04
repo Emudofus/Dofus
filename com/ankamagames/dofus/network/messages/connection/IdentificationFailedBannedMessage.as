@@ -55,7 +55,7 @@ package com.ankamagames.dofus.network.messages.connection
       
       public function serializeAs_IdentificationFailedBannedMessage(output:IDataOutput) : void {
          super.serializeAs_IdentificationFailedMessage(output);
-         if(this.banEndDate < 0)
+         if((this.banEndDate < 0) || (this.banEndDate > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.banEndDate + ") on element banEndDate.");
          }
@@ -73,7 +73,7 @@ package com.ankamagames.dofus.network.messages.connection
       public function deserializeAs_IdentificationFailedBannedMessage(input:IDataInput) : void {
          super.deserialize(input);
          this.banEndDate = input.readDouble();
-         if(this.banEndDate < 0)
+         if((this.banEndDate < 0) || (this.banEndDate > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.banEndDate + ") on element of IdentificationFailedBannedMessage.banEndDate.");
          }

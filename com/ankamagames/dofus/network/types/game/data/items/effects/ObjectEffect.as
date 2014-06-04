@@ -33,12 +33,15 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
       }
       
       public function serializeAs_ObjectEffect(output:IDataOutput) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: NullPointerException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         if(this.actionId < 0)
+         {
+            throw new Error("Forbidden value (" + this.actionId + ") on element actionId.");
+         }
+         else
+         {
+            output.writeShort(this.actionId);
+            return;
+         }
       }
       
       public function deserialize(input:IDataInput) : void {

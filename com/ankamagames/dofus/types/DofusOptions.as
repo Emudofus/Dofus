@@ -59,11 +59,12 @@ package com.ankamagames.dofus.types
          add("warnOnGuildItemAgression",true);
          add("zoomOnMouseWheel",true);
          add("showPermanentTargetsTooltips",false);
-         add("showDamagesPreview",true);
+         add("showDamagesPreview",false);
+         add("spectatorAutoShowCurrentFighterInfo",false);
          add("lastMapUiWasPocket",true);
          add("cartographyPocketPosition",new Point(390,312));
+         add("cartographyPocketSize",new Point(500,440));
          add("cartographyPocketAlpha",0.6);
-         add("cartographyFlags","");
       }
    }
 }

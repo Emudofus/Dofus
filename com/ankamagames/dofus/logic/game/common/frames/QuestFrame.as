@@ -43,8 +43,11 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.achievement.AchievementRewardRequestMessage;
    import com.ankamagames.dofus.network.messages.game.achievement.AchievementRewardSuccessMessage;
    import com.ankamagames.dofus.network.messages.game.achievement.AchievementRewardErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntShowLegendaryUIMessage;
    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntRequestAction;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntLegendaryRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntLegendaryRequestMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntRequestAnswerMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntMessage;
    import com.ankamagames.dofus.internalDatacenter.quest.TreasureHuntWrapper;
@@ -182,8 +185,11 @@ package com.ankamagames.dofus.logic.game.common.frames
          var arsmsg:AchievementRewardSuccessMessage = null;
          var rewardedAchievementIndex:* = 0;
          var aremsg:AchievementRewardErrorMessage = null;
+         var thslumsg:TreasureHuntShowLegendaryUIMessage = null;
          var thra:TreasureHuntRequestAction = null;
          var thrmsg:TreasureHuntRequestMessage = null;
+         var thlra:TreasureHuntLegendaryRequestAction = null;
+         var thlrmsg:TreasureHuntLegendaryRequestMessage = null;
          var thramsg:TreasureHuntRequestAnswerMessage = null;
          var treasureHuntRequestAnswerText:String = null;
          var thmsg:TreasureHuntMessage = null;
@@ -474,11 +480,21 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is AchievementRewardErrorMessage:
                aremsg = msg as AchievementRewardErrorMessage;
                return true;
+            case msg is TreasureHuntShowLegendaryUIMessage:
+               thslumsg = msg as TreasureHuntShowLegendaryUIMessage;
+               KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntLegendaryUiUpdate,thslumsg.availableLegendaryIds);
+               return true;
             case msg is TreasureHuntRequestAction:
                thra = msg as TreasureHuntRequestAction;
                thrmsg = new TreasureHuntRequestMessage();
                thrmsg.initTreasureHuntRequestMessage(thra.level,thra.questType);
                ConnectionsHandler.getConnection().send(thrmsg);
+               return true;
+            case msg is TreasureHuntLegendaryRequestAction:
+               thlra = msg as TreasureHuntLegendaryRequestAction;
+               thlrmsg = new TreasureHuntLegendaryRequestMessage();
+               thlrmsg.initTreasureHuntLegendaryRequestMessage(thlra.legendaryId);
+               ConnectionsHandler.getConnection().send(thlrmsg);
                return true;
             case msg is TreasureHuntRequestAnswerMessage:
                thramsg = msg as TreasureHuntRequestAnswerMessage;
@@ -494,6 +510,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                {
                   treasureHuntRequestAnswerText = I18n.getUiText("ui.popup.impossible_action");
                }
+               else if(thramsg.result == TreasureHuntRequestEnum.TREASURE_HUNT_ERROR_NOT_AVAILABLE)
+               {
+                  treasureHuntRequestAnswerText = I18n.getUiText("ui.treasureHunt.huntNotAvailable");
+               }
+               
                
                
                if(treasureHuntRequestAnswerText)

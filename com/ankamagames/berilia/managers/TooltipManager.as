@@ -83,7 +83,7 @@ package com.ankamagames.berilia.managers
                {
                   tooltipCache.display.x = tooltipCache.display.y = 0;
                   tooltipCache.display.scaleX = tooltipCache.display.scaleY = zoom;
-                  tooltipCache.display.uiClass.main(new TooltipProperties(tooltipCache,autoHide,getTargetRect(target),point,relativePoint,offset,SecureCenter.secure(data),makerParam,zoom,alwaysDisplayed));
+                  tooltipCache.display.uiClass.main(new TooltipProperties(tooltipCache,autoHide,getTargetRect(target),point,relativePoint,offset,SecureCenter.secure(data),makerParam,zoom,alwaysDisplayed,target));
                }
                return tooltipCache;
             }

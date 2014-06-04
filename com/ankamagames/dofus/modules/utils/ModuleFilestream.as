@@ -6,6 +6,7 @@ package com.ankamagames.dofus.modules.utils
    import flash.errors.IOError;
    import flash.filesystem.File;
    import com.ankamagames.berilia.types.data.UiModule;
+   import com.ankamagames.berilia.utils.ModuleFileManager;
    import flash.filesystem.FileStream;
    import flash.utils.ByteArray;
    import flash.errors.IllegalOperationError;

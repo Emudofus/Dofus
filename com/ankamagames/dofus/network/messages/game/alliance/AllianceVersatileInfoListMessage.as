@@ -20,12 +20,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
       private var _isInitialized:Boolean = false;
       
       override public function get isInitialized() : Boolean {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: NullPointerException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         return this._isInitialized;
       }
       
       public var alliances:Vector.<AllianceVersatileInformations>;

@@ -14,16 +14,18 @@ package com.ankamagames.dofus.logic.game.fight.types
    import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
    import com.ankamagames.jerakine.types.zones.IZone;
    import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import com.ankamagames.dofus.logic.game.fight.miscs.DamageUtil;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
+   import com.ankamagames.dofus.datacenter.effects.Effect;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceInteger;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceMinMax;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
-   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.dofus.logic.game.fight.managers.FightersStateManager;
-   import com.ankamagames.dofus.datacenter.effects.Effect;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    
    public class SpellDamageInfo extends Object
@@ -131,6 +133,14 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       public var casterIntelligence:int;
       
+      public var casterLifePointsAfterNormalMinDamage:uint;
+      
+      public var casterLifePointsAfterNormalMaxDamage:uint;
+      
+      public var casterLifePointsAfterCriticalMinDamage:uint;
+      
+      public var casterLifePointsAfterCriticalMaxDamage:uint;
+      
       public var casterStrengthBonus:int;
       
       public var casterChanceBonus:int;
@@ -202,6 +212,10 @@ package com.ankamagames.dofus.logic.game.fight.types
       public var waterDamage:SpellDamage;
       
       public var airDamage:SpellDamage;
+      
+      public var buffDamage:SpellDamage;
+      
+      public var fixedDamage:SpellDamage;
       
       public var spellWeaponCriticalBonus:int;
       

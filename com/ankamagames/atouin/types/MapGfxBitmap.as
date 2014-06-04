@@ -15,7 +15,7 @@ package com.ankamagames.atouin.types
       private var _name:String;
       
       public function get customUnicName() : String {
-         return null;
+         return this._name;
       }
    }
 }

@@ -65,28 +65,28 @@ package com.ankamagames.dofus.network.messages.game.character.stats
       }
       
       public function serializeAs_CharacterExperienceGainMessage(output:IDataOutput) : void {
-         if(this.experienceCharacter < 0)
+         if((this.experienceCharacter < 0) || (this.experienceCharacter > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.experienceCharacter + ") on element experienceCharacter.");
          }
          else
          {
             output.writeDouble(this.experienceCharacter);
-            if(this.experienceMount < 0)
+            if((this.experienceMount < 0) || (this.experienceMount > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.experienceMount + ") on element experienceMount.");
             }
             else
             {
                output.writeDouble(this.experienceMount);
-               if(this.experienceGuild < 0)
+               if((this.experienceGuild < 0) || (this.experienceGuild > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.experienceGuild + ") on element experienceGuild.");
                }
                else
                {
                   output.writeDouble(this.experienceGuild);
-                  if(this.experienceIncarnation < 0)
+                  if((this.experienceIncarnation < 0) || (this.experienceIncarnation > 9.007199254740992E15))
                   {
                      throw new Error("Forbidden value (" + this.experienceIncarnation + ") on element experienceIncarnation.");
                   }
@@ -106,28 +106,28 @@ package com.ankamagames.dofus.network.messages.game.character.stats
       
       public function deserializeAs_CharacterExperienceGainMessage(input:IDataInput) : void {
          this.experienceCharacter = input.readDouble();
-         if(this.experienceCharacter < 0)
+         if((this.experienceCharacter < 0) || (this.experienceCharacter > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.experienceCharacter + ") on element of CharacterExperienceGainMessage.experienceCharacter.");
          }
          else
          {
             this.experienceMount = input.readDouble();
-            if(this.experienceMount < 0)
+            if((this.experienceMount < 0) || (this.experienceMount > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.experienceMount + ") on element of CharacterExperienceGainMessage.experienceMount.");
             }
             else
             {
                this.experienceGuild = input.readDouble();
-               if(this.experienceGuild < 0)
+               if((this.experienceGuild < 0) || (this.experienceGuild > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.experienceGuild + ") on element of CharacterExperienceGainMessage.experienceGuild.");
                }
                else
                {
                   this.experienceIncarnation = input.readDouble();
-                  if(this.experienceIncarnation < 0)
+                  if((this.experienceIncarnation < 0) || (this.experienceIncarnation > 9.007199254740992E15))
                   {
                      throw new Error("Forbidden value (" + this.experienceIncarnation + ") on element of CharacterExperienceGainMessage.experienceIncarnation.");
                   }

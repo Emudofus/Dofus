@@ -16,8 +16,8 @@ package com.ankamagames.dofus.logic.shield
    import com.ankamagames.jerakine.data.I18n;
    import flash.filesystem.File;
    import flash.filesystem.FileStream;
-   import by.blooddy.crypto.MD5;
    import flash.filesystem.FileMode;
+   import by.blooddy.crypto.MD5;
    import com.ankamagames.jerakine.managers.ErrorManager;
    import com.ankamagames.jerakine.managers.StoreDataManager;
    import com.ankamagames.dofus.Constants;
@@ -146,8 +146,8 @@ package com.ankamagames.dofus.logic.shield
       }
       
       private function parseRpcValidateResponse(response:Object, method:String) : Object {
-         var _loc6_:* = false;
-         var _loc7_:* = true;
+         var _loc6_:* = true;
+         var _loc7_:* = false;
          var success:* = false;
          var result:Object = new Object();
          result.error = response.error;
@@ -221,8 +221,8 @@ package com.ankamagames.dofus.logic.shield
       }
       
       private function getCertifFolder(version:uint) : File {
-         var _loc5_:* = true;
-         var _loc6_:* = false;
+         var _loc5_:* = false;
+         var _loc6_:* = true;
          var f:File = null;
          var tmp:Array = File.applicationStorageDirectory.nativePath.split(File.separator);
          tmp.pop();
@@ -300,7 +300,7 @@ package com.ankamagames.dofus.logic.shield
          }
          catch(e:Error)
          {
-            if(_loc3_)
+            if(!_loc4_)
             {
                if(_loc3_)
                {
@@ -336,8 +336,8 @@ package com.ankamagames.dofus.logic.shield
       }
       
       private function onRpcData(e:RpcEvent) : void {
-         var _loc3_:* = true;
-         var _loc4_:* = false;
+         var _loc3_:* = false;
+         var _loc4_:* = true;
          if((e.type == RpcEvent.EVENT_ERROR) && (!e.result))
          {
             this._methodsCallback[e.method](
@@ -370,8 +370,8 @@ package com.ankamagames.dofus.logic.shield
       }
       
       private function migrate(iCertificateId:uint, oldCertif:String) : void {
-         var _loc4_:* = false;
-         var _loc5_:* = true;
+         var _loc4_:* = true;
+         var _loc5_:* = false;
          var fooCertif:ShieldCertifcate = new ShieldCertifcate();
          fooCertif.secureLevel = this.shieldLevel;
          this._rpcManager.callMethod(RPC_METHOD_MIGRATE,[this.getUsername(),AuthentificationManager.getInstance().ankamaPortalKey,1,2,iCertificateId,oldCertif,fooCertif.hash,fooCertif.reverseHash]);

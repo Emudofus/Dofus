@@ -36,7 +36,15 @@ package com.ankamagames.dofus.network.types.game.approach
       
       public function serializeAs_ServerSessionConstantLong(output:IDataOutput) : void {
          super.serializeAs_ServerSessionConstant(output);
-         output.writeDouble(this.value);
+         if((this.value < -9.007199254740992E15) || (this.value > 9.007199254740992E15))
+         {
+            throw new Error("Forbidden value (" + this.value + ") on element value.");
+         }
+         else
+         {
+            output.writeDouble(this.value);
+            return;
+         }
       }
       
       override public function deserialize(input:IDataInput) : void {
@@ -46,6 +54,14 @@ package com.ankamagames.dofus.network.types.game.approach
       public function deserializeAs_ServerSessionConstantLong(input:IDataInput) : void {
          super.deserialize(input);
          this.value = input.readDouble();
+         if((this.value < -9.007199254740992E15) || (this.value > 9.007199254740992E15))
+         {
+            throw new Error("Forbidden value (" + this.value + ") on element of ServerSessionConstantLong.value.");
+         }
+         else
+         {
+            return;
+         }
       }
    }
 }

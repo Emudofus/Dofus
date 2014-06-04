@@ -60,6 +60,7 @@ package com.ankamagames.dofus.kernel
    import com.ankamagames.dofus.logic.game.common.managers.SpeakingItemManager;
    import com.ankamagames.berilia.types.graphic.TimeoutHTMLLoader;
    import com.ankamagames.dofus.externalnotification.ExternalNotificationManager;
+   import com.ankamagames.dofus.logic.game.common.frames.CameraControlFrame;
    import com.ankamagames.jerakine.utils.system.SystemPopupUI;
    import com.ankamagames.atouin.types.AtouinOptions;
    import com.ankamagames.atouin.types.Frustum;
@@ -315,6 +316,7 @@ package com.ankamagames.dofus.kernel
          {
             ExternalNotificationManager.getInstance().reset();
          }
+         _worker.removeFrame(_worker.getFrame(CameraControlFrame));
       }
       
       public function initOptions() : void {

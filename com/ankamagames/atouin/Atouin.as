@@ -15,9 +15,9 @@ package com.ankamagames.atouin
    import com.ankamagames.atouin.messages.MapContainerRollOverMessage;
    import com.ankamagames.atouin.messages.MapContainerRollOutMessage;
    import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
-   import com.ankamagames.atouin.managers.MapDisplayManager;
    import com.ankamagames.atouin.types.Frustum;
    import com.ankamagames.jerakine.types.positions.WorldPoint;
+   import com.ankamagames.atouin.managers.MapDisplayManager;
    import flash.utils.ByteArray;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.atouin.managers.EntitiesManager;
@@ -235,37 +235,11 @@ package com.ankamagames.atouin
          EnterFrameDispatcher.addEventListener(this.removeUpdateCursorSprite,"UpdateCursorSprite",50);
       }
       
-      public function showWorld(b:Boolean, resetAnimations:Boolean = false) : void {
-         if(b)
-         {
-            this._worldContainer.addChild(this._spMapContainer);
-            this._worldContainer.addChild(this._spChgMapContainer);
-            this._worldContainer.addChild(this._spGfxontainer);
-            this._worldContainer.addChild(this._overlayContainer);
-            if((resetAnimations) && (MapDisplayManager.getInstance()) && (MapDisplayManager.getInstance().getDataMapContainer()))
-            {
-               MapDisplayManager.getInstance().getDataMapContainer().updateAllAnimatedElement();
-            }
-         }
-         else
-         {
-            if(this._spMapContainer.parent)
-            {
-               this._worldContainer.removeChild(this._spMapContainer);
-            }
-            if(this._spChgMapContainer.parent)
-            {
-               this._worldContainer.removeChild(this._spChgMapContainer);
-            }
-            if(this._spGfxontainer.parent)
-            {
-               this._worldContainer.removeChild(this._spGfxontainer);
-            }
-            if(this._overlayContainer.parent)
-            {
-               this._worldContainer.removeChild(this._overlayContainer);
-            }
-         }
+      public function showWorld(b:Boolean) : void {
+         this._spMapContainer.visible = b;
+         this._spChgMapContainer.visible = b;
+         this._spGfxontainer.visible = b;
+         this._overlayContainer.visible = b;
       }
       
       public function setFrustrum(f:Frustum) : void {
@@ -319,7 +293,22 @@ package com.ankamagames.atouin
          MapDisplayManager.getInstance().reset();
          EntitiesManager.getInstance().clearEntities();
          this.cancelZoom();
-         this.showWorld(false);
+         if(this._spMapContainer.parent)
+         {
+            this._worldContainer.removeChild(this._spMapContainer);
+         }
+         if(this._spChgMapContainer.parent)
+         {
+            this._worldContainer.removeChild(this._spChgMapContainer);
+         }
+         if(this._spGfxontainer.parent)
+         {
+            this._worldContainer.removeChild(this._spGfxontainer);
+         }
+         if(this._overlayContainer.parent)
+         {
+            this._worldContainer.removeChild(this._overlayContainer);
+         }
       }
       
       public function displayGrid(b:Boolean, pIsInFight:Boolean = false) : void {
@@ -352,6 +341,7 @@ package com.ankamagames.atouin
       
       public function zoom(value:Number, posX:int = 0, posY:int = 0) : void {
          var lastZoom:* = NaN;
+         var mzm:MapZoomMessage = null;
          if(value == 1)
          {
             this._worldContainer.scaleX = 1;
@@ -420,9 +410,9 @@ package com.ankamagames.atouin
                this._worldContainer.y = 876 - 876 * this._currentZoom;
             }
             
+            mzm = new MapZoomMessage(value,posX,posY);
+            Atouin.getInstance().handler.process(mzm);
          }
-         var mzm:MapZoomMessage = new MapZoomMessage(this._currentZoom,posX,posY);
-         Atouin.getInstance().handler.process(mzm);
       }
       
       public function cancelZoom() : void {

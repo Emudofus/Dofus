@@ -6,10 +6,13 @@ package com.ankamagames.dofus.misc.utils
    import flash.utils.getQualifiedClassName;
    import flash.net.URLLoader;
    import flash.net.URLRequest;
+   import flash.utils.Timer;
    import flash.events.Event;
    import com.ankamagames.dofus.types.events.RpcEvent;
-   import com.ankamagames.jerakine.json.JSON;
+   import flash.events.TimerEvent;
+   import flash.events.ErrorEvent;
    import flash.events.IOErrorEvent;
+   import com.ankamagames.jerakine.json.JSON;
    import flash.events.SecurityErrorEvent;
    import flash.net.URLRequestMethod;
    
@@ -18,6 +21,7 @@ package com.ankamagames.dofus.misc.utils
       
       public function RpcServiceManager(pServiceName:String = "", pType:String = "") {
          super();
+         this._busy = false;
          if(pServiceName != "")
          {
             this.service = pServiceName;
@@ -27,6 +31,10 @@ package com.ankamagames.dofus.misc.utils
             this.type = pType;
          }
       }
+      
+      private static const DELAY_BEFORE_TIMED_OUT:int = 1000;
+      
+      private static const RETRY_AFTER_TIMED_OUT:int = 2;
       
       protected static const _log:Logger;
       
@@ -46,7 +54,17 @@ package com.ankamagames.dofus.misc.utils
       
       private var _type:String;
       
+      private var _busy:Boolean;
+      
+      private var _callback:Function;
+      
+      private var _timedOutTimer:Timer;
+      
+      private var _timedOutRetry:int;
+      
       private function onComplete(pEvt:Event) : void {
+         this._busy = false;
+         this.clearTimedOutTimer();
          var value:Boolean = true;
          if(this._type == "json")
          {
@@ -58,13 +76,66 @@ package com.ankamagames.dofus.misc.utils
          }
          if(value)
          {
-            dispatchEvent(new RpcEvent(RpcEvent.EVENT_DATA,this._method,this._result));
-            dispatchEvent(pEvt);
+            if(this._callback != null)
+            {
+               this._callback(true,this.getAllResultData(),this.requestData);
+            }
+            else
+            {
+               dispatchEvent(new RpcEvent(RpcEvent.EVENT_DATA,this._method,this._result));
+               dispatchEvent(pEvt);
+            }
+         }
+         else if(this._callback != null)
+         {
+            this._callback(false,"Error calling method " + this._method,this.requestData);
          }
          else
          {
             dispatchEvent(new RpcEvent(RpcEvent.EVENT_ERROR,this._method,this._result));
             dispatchEvent(new Event(SERVER_ERROR));
+         }
+         
+      }
+      
+      private function onError(pEvt:Event) : void {
+         this._busy = false;
+         this.clearTimedOutTimer();
+         if(this._callback != null)
+         {
+            this._callback(false,pEvt,this.requestData);
+         }
+         else
+         {
+            if(hasEventListener(pEvt.type))
+            {
+               dispatchEvent(pEvt);
+            }
+            dispatchEvent(new RpcEvent(RpcEvent.EVENT_ERROR,this._method,null));
+         }
+      }
+      
+      private function onTimedOut(e:TimerEvent) : void {
+         if(this._busy)
+         {
+            try
+            {
+               this._loader.close();
+            }
+            catch(e:Error)
+            {
+               _log.error("RPC timed out while its loader was already closed");
+            }
+            if(this._timedOutRetry < RETRY_AFTER_TIMED_OUT)
+            {
+               this._timedOutRetry++;
+               _log.debug("RPC timed out, but we try again... retry " + this._timedOutRetry + " / " + RETRY_AFTER_TIMED_OUT + "\nrequest: " + this._request.data);
+               this._timedOutTimer.reset();
+               this._timedOutTimer.start();
+               this._loader.load(this._request);
+               return;
+            }
+            this.onError(new ErrorEvent(IOErrorEvent.NETWORK_ERROR,true,false,"RPC timed out"));
          }
       }
       
@@ -119,6 +190,16 @@ package com.ankamagames.dofus.misc.utils
          return rpcObject;
       }
       
+      private function clearTimedOutTimer() : void {
+         if(this._timedOutTimer)
+         {
+            this._timedOutTimer.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onTimedOut);
+            this._timedOutTimer.stop();
+            this._timedOutTimer = null;
+         }
+         this._timedOutRetry = 0;
+      }
+      
       public function destroy() : void {
          if(this._loader.hasEventListener(Event.COMPLETE))
          {
@@ -130,10 +211,12 @@ package com.ankamagames.dofus.misc.utils
          }
          if(this._loader.hasEventListener(SecurityErrorEvent.SECURITY_ERROR))
          {
-            this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onError);
+            this._loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onError);
          }
+         this.clearTimedOutTimer();
          this._loader = null;
          this._request = null;
+         this._busy = false;
       }
       
       public function getAllResultData() : * {
@@ -148,10 +231,12 @@ package com.ankamagames.dofus.misc.utils
          return this._result[name];
       }
       
-      public function callMethod(name:String, params:*) : void {
+      public function callMethod(name:String, params:*, callback:Function = null) : void {
          var obj:Object = null;
+         this._busy = true;
          this._method = name;
          this._params = params;
+         this._callback = callback;
          if((this._request == null) || (this._loader == null))
          {
             throw new Error("there is no data to handle ...");
@@ -167,8 +252,11 @@ package com.ankamagames.dofus.misc.utils
                case "xml":
                   throw new Error("Not implemented yet");
             }
-            this._request.method = URLRequestMethod.POST;
+            this._timedOutTimer = new Timer(5000,1);
+            this._timedOutTimer.addEventListener(TimerEvent.TIMER_COMPLETE,this.onTimedOut);
+            this._timedOutTimer.start();
             this._loader.load(this._request);
+            _log.debug("callMethod() - " + this._request.data);
             return;
          }
       }
@@ -190,19 +278,33 @@ package com.ankamagames.dofus.misc.utils
       
       public function set service(val:String) : void {
          this._service = val;
-         this._request = new URLRequest(val);
-         this._loader = new URLLoader();
-         this._loader.addEventListener(Event.COMPLETE,this.onComplete);
-         this._loader.addEventListener(IOErrorEvent.IO_ERROR,this.onError);
-         this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onError);
-      }
-      
-      private function onError(pEvt:Event) : void {
-         if(hasEventListener(pEvt.type))
+         this.clearTimedOutTimer();
+         if(!this._request)
          {
-            dispatchEvent(pEvt);
+            this._request = new URLRequest(this._service);
+            this._request.method = URLRequestMethod.POST;
          }
-         dispatchEvent(new RpcEvent(RpcEvent.EVENT_ERROR,this._method,null));
+         else
+         {
+            this._request.url = this._service;
+         }
+         if(!this._loader)
+         {
+            this._loader = new URLLoader();
+            this._loader.addEventListener(Event.COMPLETE,this.onComplete);
+            this._loader.addEventListener(IOErrorEvent.IO_ERROR,this.onError);
+            this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onError);
+         }
+         else
+         {
+            try
+            {
+               this._loader.close();
+            }
+            catch(error:Error)
+            {
+            }
+         }
       }
       
       public function get requestData() : * {
@@ -211,6 +313,10 @@ package com.ankamagames.dofus.misc.utils
             return null;
          }
          return com.ankamagames.jerakine.json.JSON.decode(this._request.data as String);
+      }
+      
+      public function get busy() : Boolean {
+         return this._busy;
       }
    }
 }

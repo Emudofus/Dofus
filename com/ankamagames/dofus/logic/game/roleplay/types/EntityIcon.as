@@ -12,6 +12,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
       public function EntityIcon() {
          super();
          this._icons = new Dictionary(true);
+         mouseEnabled = mouseChildren = false;
       }
       
       private var _icons:Dictionary;

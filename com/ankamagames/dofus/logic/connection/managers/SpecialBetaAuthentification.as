@@ -25,7 +25,7 @@ package com.ankamagames.dofus.logic.connection.managers
          switch(type)
          {
             case STREAMING:
-               forumId.push(1210,1080,1008,1127);
+               forumId.push(1210,1080,1008,1127,1508);
                break;
             case MODULES:
                forumId.push(1127);
@@ -59,8 +59,8 @@ package com.ankamagames.dofus.logic.connection.managers
       }
       
       private function onDataReceived(e:Event) : void {
-         var _loc2_:* = true;
-         var _loc3_:* = false;
+         var _loc2_:* = false;
+         var _loc3_:* = true;
          this._haveAccess = this._rpc.getAllResultData();
          dispatchEvent(new Event(Event.INIT));
       }

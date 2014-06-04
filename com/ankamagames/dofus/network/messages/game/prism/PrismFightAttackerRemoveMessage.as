@@ -68,15 +68,22 @@ package com.ankamagames.dofus.network.messages.game.prism
          else
          {
             output.writeShort(this.subAreaId);
-            output.writeDouble(this.fightId);
-            if(this.fighterToRemoveId < 0)
+            if((this.fightId < -9.007199254740992E15) || (this.fightId > 9.007199254740992E15))
             {
-               throw new Error("Forbidden value (" + this.fighterToRemoveId + ") on element fighterToRemoveId.");
+               throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
             }
             else
             {
-               output.writeInt(this.fighterToRemoveId);
-               return;
+               output.writeDouble(this.fightId);
+               if(this.fighterToRemoveId < 0)
+               {
+                  throw new Error("Forbidden value (" + this.fighterToRemoveId + ") on element fighterToRemoveId.");
+               }
+               else
+               {
+                  output.writeInt(this.fighterToRemoveId);
+                  return;
+               }
             }
          }
       }
@@ -94,14 +101,21 @@ package com.ankamagames.dofus.network.messages.game.prism
          else
          {
             this.fightId = input.readDouble();
-            this.fighterToRemoveId = input.readInt();
-            if(this.fighterToRemoveId < 0)
+            if((this.fightId < -9.007199254740992E15) || (this.fightId > 9.007199254740992E15))
             {
-               throw new Error("Forbidden value (" + this.fighterToRemoveId + ") on element of PrismFightAttackerRemoveMessage.fighterToRemoveId.");
+               throw new Error("Forbidden value (" + this.fightId + ") on element of PrismFightAttackerRemoveMessage.fightId.");
             }
             else
             {
-               return;
+               this.fighterToRemoveId = input.readInt();
+               if(this.fighterToRemoveId < 0)
+               {
+                  throw new Error("Forbidden value (" + this.fighterToRemoveId + ") on element of PrismFightAttackerRemoveMessage.fighterToRemoveId.");
+               }
+               else
+               {
+                  return;
+               }
             }
          }
       }

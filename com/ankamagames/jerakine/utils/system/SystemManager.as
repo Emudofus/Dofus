@@ -1,5 +1,7 @@
 package com.ankamagames.jerakine.utils.system
 {
+   import flash.external.ExternalInterface;
+   import com.ankamagames.jerakine.enum.WebBrowserEnum;
    import flash.display.NativeWindow;
    import flash.desktop.NativeApplication;
    import com.ankamagames.jerakine.enum.OperatingSystem;
@@ -31,6 +33,8 @@ package com.ankamagames.jerakine.utils.system
       
       private var _cpu:String;
       
+      private var _browser:String;
+      
       public function get os() : String {
          return this._os;
       }
@@ -41,6 +45,41 @@ package com.ankamagames.jerakine.utils.system
       
       public function get cpu() : String {
          return this._cpu;
+      }
+      
+      public function get browser() : String {
+         var userAgent:String = null;
+         if(!this._browser)
+         {
+            try
+            {
+               userAgent = (ExternalInterface.call("window.navigator.userAgent.toString") as String).toLowerCase();
+               this._browser = WebBrowserEnum.UNKNOWN;
+               switch(true)
+               {
+                  case !(userAgent.indexOf("chrome") == -1):
+                     this._browser = WebBrowserEnum.CHROME;
+                     break;
+                  case !(userAgent.indexOf("firefox") == -1):
+                     this._browser = WebBrowserEnum.FIREFOX;
+                     break;
+                  case !(userAgent.indexOf("msie") == -1):
+                     this._browser = WebBrowserEnum.INTERNET_EXPLORER;
+                     break;
+                  case !(userAgent.indexOf("safari") == -1):
+                     this._browser = WebBrowserEnum.SAFARI;
+                     break;
+                  case !(userAgent.indexOf("opera") == -1):
+                     this._browser = WebBrowserEnum.OPERA;
+                     break;
+               }
+            }
+            catch(e:Error)
+            {
+               _browser = WebBrowserEnum.NONE;
+            }
+         }
+         return this._browser;
       }
       
       public function notifyUser(always:Boolean = false) : void {

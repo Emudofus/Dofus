@@ -43,6 +43,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.logic.game.common.actions.roleplay.SwitchCreatureModeAction;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSynchronizeMessage;
    import com.ankamagames.dofus.network.messages.game.actions.sequence.SequenceEndMessage;
+   import com.ankamagames.atouin.messages.MapZoomMessage;
    import com.ankamagames.jerakine.types.enums.Priority;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayCharacterInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantInformations;
@@ -63,6 +64,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import flash.geom.Rectangle;
    import com.ankamagames.jerakine.utils.display.Rectangle2;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
    import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
    
    public class InfoEntitiesFrame extends Object implements Frame
@@ -261,6 +263,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                this.updateAllTooltips();
                break;
             case msg is SequenceEndMessage:
+               this.updateAllTooltips();
+               break;
+            case msg is MapZoomMessage:
                this.updateAllTooltips();
                break;
          }
@@ -724,6 +729,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var r1:Rectangle = null;
          var r2:Rectangle2 = null;
          var foot:DisplayObject = null;
+         var rider:TiphonSprite = null;
          var ts:TiphonSprite = DofusEntities.getEntity(entityId) as TiphonSprite;
          if(ts == null)
          {
@@ -738,6 +744,14 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             if(targetBounds.y <= targetBounds.height)
             {
                foot = ts.getSlot("Pied");
+               if(!foot)
+               {
+                  rider = ts.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0) as TiphonSprite;
+                  if(rider)
+                  {
+                     foot = rider.getSlot("Pied");
+                  }
+               }
                if(foot)
                {
                   r1 = foot.getBounds(StageShareManager.stage);

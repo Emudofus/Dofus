@@ -215,6 +215,8 @@ package com.ankamagames.tiphon.display
       
       private var _changeDispatched:Boolean;
       
+      private var _newAnimationStartFrame:int = -1;
+      
       public var destroyed:Boolean = false;
       
       public var overrideNextAnimation:Boolean = false;
@@ -451,7 +453,8 @@ package com.ankamagames.tiphon.display
          return this._currentDirection > 0?this._currentDirection:0;
       }
       
-      public function setAnimation(newAnimation:String) : void {
+      public function setAnimation(newAnimation:String, startFrame:int = -1) : void {
+         this._newAnimationStartFrame = startFrame;
          this.setAnimationAndDirection(newAnimation,this._currentDirection);
       }
       
@@ -1129,6 +1132,12 @@ package com.ankamagames.tiphon.display
          {
             gotoFrame = this._animMovieClip.currentFrame;
          }
+         else if(this._newAnimationStartFrame != -1)
+         {
+            gotoFrame = this._newAnimationStartFrame;
+            this._newAnimationStartFrame = -1;
+         }
+         
          this._lastClassName = this._currentAnimation;
          this.clearAnimation();
          for each(bgElement in this._background)

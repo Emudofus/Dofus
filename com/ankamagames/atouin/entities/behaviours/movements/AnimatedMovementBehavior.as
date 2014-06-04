@@ -5,7 +5,7 @@ package com.ankamagames.atouin.entities.behaviours.movements
    import flash.utils.Dictionary;
    import com.ankamagames.atouin.managers.InteractiveCellManager;
    import com.ankamagames.jerakine.logger.Log;
-   import flash.utils.getQualifiedClassName;
+   import avmplus.getQualifiedClassName;
    import com.ankamagames.jerakine.entities.interfaces.IMovable;
    import com.ankamagames.jerakine.types.positions.MovementPath;
    import com.ankamagames.atouin.types.TweenEntityData;
@@ -257,7 +257,7 @@ package com.ankamagames.atouin.entities.behaviours.movements
             }
             tweenData.velocity = this.getVelocity(tweenData,tweenData.orientation);
             tweenData.nextCell = pe.step;
-            if(this.mustChangeOrientation())
+            if((this.mustChangeOrientation()) && (pe))
             {
                tweenData.orientation = pe.orientation;
             }
@@ -266,7 +266,7 @@ package com.ankamagames.atouin.entities.behaviours.movements
          else if(!tweenData.currentCell.equals(tweenData.path.end))
          {
             tweenData.velocity = this.getVelocity(tweenData,IAnimated(entity).getDirection());
-            if(this.mustChangeOrientation())
+            if((this.mustChangeOrientation()) && (!(tweenData.orientation == -1)))
             {
                IAnimated(entity).setDirection(tweenData.orientation);
             }

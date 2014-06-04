@@ -78,6 +78,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.GameContextRefreshEntityLookMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameMapNoMovementMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameMapMovementMessage;
+   import com.ankamagames.dofus.network.messages.game.context.GameCautiousMapMovementMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameMapChangeOrientationMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameMapChangeOrientationsMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameEntityDispositionMessage;
@@ -103,6 +104,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapFightCountMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightListMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightDetailsMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightDetailsExtendedMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapObstacleUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapComplementaryInformationsDataMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapComplementaryInformationsDataInHouseMessage;
@@ -137,6 +139,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.ShowCellSpectatorMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightStartingMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightJoinMessage;
+   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSpectatorJoinMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightPlacementPossiblePositionsMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightOptionStateUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightUpdateTeamMessage;
@@ -300,6 +303,8 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyDeletedMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyLoyaltyStatusMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyMemberInFightMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyNameUpdateMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyNameSetErrorMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderAvailableDungeonsMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderListenErrorMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderRoomContentMessage;
@@ -603,6 +608,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterInventoryMessage;
    import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterInventoryErrorMessage;
    import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterTransferMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntShowLegendaryUIMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntRequestAnswerMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFinishedMessage;
@@ -705,6 +711,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameContextRefreshEntityLookMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameMapNoMovementMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameMapMovementMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameCautiousMapMovementMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameMapChangeOrientationMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameMapChangeOrientationsMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameEntityDispositionMessage(),true,true);
@@ -730,6 +737,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new MapFightCountMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new MapRunningFightListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new MapRunningFightDetailsMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new MapRunningFightDetailsExtendedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new MapObstacleUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new MapComplementaryInformationsDataMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new MapComplementaryInformationsDataInHouseMessage(),true,true);
@@ -764,6 +772,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new ShowCellSpectatorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightStartingMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightJoinMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameFightSpectatorJoinMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightPlacementPossiblePositionsMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightOptionStateUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameFightUpdateTeamMessage(),true,true);
@@ -927,6 +936,8 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new PartyDeletedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyLoyaltyStatusMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyMemberInFightMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PartyNameUpdateMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PartyNameSetErrorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new DungeonPartyFinderAvailableDungeonsMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new DungeonPartyFinderListenErrorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new DungeonPartyFinderRoomContentMessage(),true,true);
@@ -1230,6 +1241,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new KrosmasterInventoryMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new KrosmasterInventoryErrorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new KrosmasterTransferMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntShowLegendaryUIMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TreasureHuntRequestAnswerMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TreasureHuntMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TreasureHuntFinishedMessage(),true,true);

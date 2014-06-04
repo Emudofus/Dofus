@@ -65,6 +65,8 @@ package com.ankamagames.dofus.datacenter.monsters
       
       public var canBePushed:Boolean;
       
+      public var fastAnimsFun:Boolean;
+      
       private var _name:String;
       
       public function get name() : String {

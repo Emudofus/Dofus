@@ -110,6 +110,8 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       protected static const _log:Logger;
       
+      private static const PRESET_NUMBER:int = 16;
+      
       private var _objectUIDToDrop:int;
       
       private var _objectGIDToDrop:uint;
@@ -276,7 +278,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                      }
                   }
                }
-               presetWrappers = new Array(8);
+               presetWrappers = new Array(PRESET_NUMBER);
                for each(preset in icapmsg.presets)
                {
                   presetWrappers[preset.presetId] = PresetWrapper.create(preset.presetId,preset.symbolId,preset.objects,preset.mount);
@@ -311,7 +313,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                {
                   PlayedCharacterManager.getInstance().characteristics.kamas = icmsg.kamas;
                }
-               InventoryManager.getInstance().presets = new Array(8);
+               InventoryManager.getInstance().presets = new Array(PRESET_NUMBER);
                return true;
             case msg is ObjectAddedMessage:
                oam = msg as ObjectAddedMessage;

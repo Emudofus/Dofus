@@ -1,6 +1,7 @@
 package com.ankamagames.jerakine.newCache.garbage
 {
    import com.ankamagames.jerakine.newCache.ICacheGarbageCollector;
+   import com.ankamagames.jerakine.pools.Pool;
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.newCache.ICache;
    import com.ankamagames.jerakine.interfaces.IDestroyable;
@@ -13,7 +14,13 @@ package com.ankamagames.jerakine.newCache.garbage
       public function LruGarbageCollector() {
          this._usageCount = new Dictionary(true);
          super();
+         if(!_pool)
+         {
+            _pool = new Pool(UsageCountHelper,500,50);
+         }
       }
+      
+      private static var _pool:Pool;
       
       protected var _usageCount:Dictionary;
       
@@ -36,17 +43,19 @@ package com.ankamagames.jerakine.newCache.garbage
       
       public function purge(bounds:uint) : void {
          var obj:* = undefined;
+         var el:UsageCountHelper = null;
          var poke:* = undefined;
          var elements:Array = new Array();
          for(obj in this._usageCount)
          {
-            elements.push(
-               {
-                  "ref":obj,
-                  "count":this._usageCount[obj]
-               });
+            elements.push((_pool.checkOut() as UsageCountHelper).init(obj,this._usageCount[obj]));
          }
          elements.sortOn("count",Array.NUMERIC | Array.DESCENDING);
+         for each(el in elements)
+         {
+            el.free();
+            _pool.checkIn(el);
+         }
          while((this._cache.size > bounds) && (elements.length))
          {
             poke = this._cache.extract(elements.pop().ref);
@@ -64,5 +73,29 @@ package com.ankamagames.jerakine.newCache.garbage
             }
          }
       }
+   }
+}
+import com.ankamagames.jerakine.pools.Poolable;
+
+class UsageCountHelper extends Object implements Poolable
+{
+   
+   function UsageCountHelper() {
+      super();
+   }
+   
+   public var ref:Object;
+   
+   public var count:uint;
+   
+   public function init(ref:Object, count:uint) : UsageCountHelper {
+      this.ref = ref;
+      this.count = count;
+      return this;
+   }
+   
+   public function free() : void {
+      this.ref = null;
+      this.count = 0;
    }
 }

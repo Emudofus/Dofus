@@ -53,7 +53,7 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          else
          {
             output.writeInt(this.kamas);
-            if(this.experience < 0)
+            if((this.experience < 0) || (this.experience > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.experience + ") on element experience.");
             }
@@ -95,7 +95,7 @@ package com.ankamagames.dofus.network.types.game.guild.tax
          else
          {
             this.experience = input.readDouble();
-            if(this.experience < 0)
+            if((this.experience < 0) || (this.experience > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.experience + ") on element of TaxCollectorLootInformations.experience.");
             }

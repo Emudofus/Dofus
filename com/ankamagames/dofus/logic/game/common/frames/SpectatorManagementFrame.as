@@ -12,15 +12,18 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.actions.spectator.MapRunningFightDetailsRequestAction;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightDetailsRequestMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.StopToListenRunningFightRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightDetailsExtendedMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightDetailsMessage;
    import com.ankamagames.dofus.logic.game.common.actions.spectator.JoinAsSpectatorRequestAction;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightJoinRequestMessage;
    import com.ankamagames.dofus.logic.game.common.actions.roleplay.JoinFightRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.spectator.GameFightSpectatePlayerRequestAction;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSpectatePlayerRequestMessage;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.NamedPartyTeam;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.network.enums.TeamEnum;
    import com.ankamagames.dofus.logic.game.common.actions.OpenCurrentFightAction;
    import com.ankamagames.dofus.logic.game.common.actions.spectator.StopToListenRunningFightAction;
    
@@ -64,6 +67,9 @@ package com.ankamagames.dofus.logic.game.common.frames
          var mrfdra:MapRunningFightDetailsRequestAction = null;
          var mrfdrmsg:MapRunningFightDetailsRequestMessage = null;
          var stlrfmsg:StopToListenRunningFightRequestMessage = null;
+         var mrfdemsg:MapRunningFightDetailsExtendedMessage = null;
+         var attackersName:String = null;
+         var defendersName:String = null;
          var mrfdmsg:MapRunningFightDetailsMessage = null;
          var jasra:JoinAsSpectatorRequestAction = null;
          var gfjrmsg:GameFightJoinRequestMessage = null;
@@ -71,6 +77,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          var gfspra:GameFightSpectatePlayerRequestAction = null;
          var gfsprmsg:GameFightSpectatePlayerRequestMessage = null;
          var f:FightExternalInformations = null;
+         var namedTeam:NamedPartyTeam = null;
          switch(true)
          {
             case msg is OpenCurrentFightAction:
@@ -99,9 +106,30 @@ package com.ankamagames.dofus.logic.game.common.frames
                stlrfmsg.initStopToListenRunningFightRequestMessage();
                ConnectionsHandler.getConnection().send(stlrfmsg);
                return true;
+            case msg is MapRunningFightDetailsExtendedMessage:
+               mrfdemsg = msg as MapRunningFightDetailsExtendedMessage;
+               attackersName = "";
+               defendersName = "";
+               for each(namedTeam in mrfdemsg.namedPartyTeams)
+               {
+                  if((namedTeam.partyName) && (!(namedTeam.partyName == "")))
+                  {
+                     if(namedTeam.teamId == TeamEnum.TEAM_CHALLENGER)
+                     {
+                        attackersName = namedTeam.partyName;
+                     }
+                     else if(namedTeam.teamId == TeamEnum.TEAM_DEFENDER)
+                     {
+                        defendersName = namedTeam.partyName;
+                     }
+                     
+                  }
+               }
+               KernelEventsManager.getInstance().processCallback(HookList.MapRunningFightDetails,mrfdemsg.fightId,mrfdemsg.attackers,mrfdemsg.defenders,attackersName,defendersName);
+               return true;
             case msg is MapRunningFightDetailsMessage:
                mrfdmsg = msg as MapRunningFightDetailsMessage;
-               KernelEventsManager.getInstance().processCallback(HookList.MapRunningFightDetails,mrfdmsg.fightId,mrfdmsg.attackers,mrfdmsg.defenders);
+               KernelEventsManager.getInstance().processCallback(HookList.MapRunningFightDetails,mrfdmsg.fightId,mrfdmsg.attackers,mrfdmsg.defenders,"","");
                return true;
             case msg is JoinAsSpectatorRequestAction:
                jasra = msg as JoinAsSpectatorRequestAction;

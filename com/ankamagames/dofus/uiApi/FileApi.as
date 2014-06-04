@@ -9,7 +9,7 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.jerakine.types.Uri;
    import com.ankamagames.dofus.modules.utils.ModuleFilestream;
    import flash.filesystem.File;
-   import com.ankamagames.dofus.modules.utils.ModuleFileManager;
+   import com.ankamagames.berilia.utils.ModuleFileManager;
    import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
    import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
    import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;

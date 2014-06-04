@@ -72,22 +72,29 @@ package com.ankamagames.dofus.network.messages.game.prism
          else
          {
             output.writeShort(this.subAreaId);
-            output.writeDouble(this.fightId);
-            if(this.fighterId1 < 0)
+            if((this.fightId < -9.007199254740992E15) || (this.fightId > 9.007199254740992E15))
             {
-               throw new Error("Forbidden value (" + this.fighterId1 + ") on element fighterId1.");
+               throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
             }
             else
             {
-               output.writeInt(this.fighterId1);
-               if(this.fighterId2 < 0)
+               output.writeDouble(this.fightId);
+               if(this.fighterId1 < 0)
                {
-                  throw new Error("Forbidden value (" + this.fighterId2 + ") on element fighterId2.");
+                  throw new Error("Forbidden value (" + this.fighterId1 + ") on element fighterId1.");
                }
                else
                {
-                  output.writeInt(this.fighterId2);
-                  return;
+                  output.writeInt(this.fighterId1);
+                  if(this.fighterId2 < 0)
+                  {
+                     throw new Error("Forbidden value (" + this.fighterId2 + ") on element fighterId2.");
+                  }
+                  else
+                  {
+                     output.writeInt(this.fighterId2);
+                     return;
+                  }
                }
             }
          }
@@ -106,21 +113,28 @@ package com.ankamagames.dofus.network.messages.game.prism
          else
          {
             this.fightId = input.readDouble();
-            this.fighterId1 = input.readInt();
-            if(this.fighterId1 < 0)
+            if((this.fightId < -9.007199254740992E15) || (this.fightId > 9.007199254740992E15))
             {
-               throw new Error("Forbidden value (" + this.fighterId1 + ") on element of PrismFightDefendersSwapMessage.fighterId1.");
+               throw new Error("Forbidden value (" + this.fightId + ") on element of PrismFightDefendersSwapMessage.fightId.");
             }
             else
             {
-               this.fighterId2 = input.readInt();
-               if(this.fighterId2 < 0)
+               this.fighterId1 = input.readInt();
+               if(this.fighterId1 < 0)
                {
-                  throw new Error("Forbidden value (" + this.fighterId2 + ") on element of PrismFightDefendersSwapMessage.fighterId2.");
+                  throw new Error("Forbidden value (" + this.fighterId1 + ") on element of PrismFightDefendersSwapMessage.fighterId1.");
                }
                else
                {
-                  return;
+                  this.fighterId2 = input.readInt();
+                  if(this.fighterId2 < 0)
+                  {
+                     throw new Error("Forbidden value (" + this.fighterId2 + ") on element of PrismFightDefendersSwapMessage.fighterId2.");
+                  }
+                  else
+                  {
+                     return;
+                  }
                }
             }
          }

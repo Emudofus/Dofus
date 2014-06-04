@@ -16,6 +16,8 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       private var _random:int;
       
+      public var efficiencyMultiplier:Number;
+      
       public var minDamage:int;
       
       public var maxDamage:int;

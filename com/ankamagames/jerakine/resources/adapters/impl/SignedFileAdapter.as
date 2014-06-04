@@ -123,11 +123,15 @@ package com.ankamagames.jerakine.resources.adapters.impl
       }
       
       private function onContentLoad(uri:Uri, resourceType:uint, resource:*) : void {
+         var _loc4_:* = true;
+         var _loc5_:* = false;
          this._resource = resource;
          dispatchSuccess(ResourceType.getName(resourceType),resource);
       }
       
       private function onContentLoadFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         var _loc4_:* = false;
+         var _loc5_:* = true;
          dispatchFailure(errorMsg,errorCode);
       }
    }

@@ -13,6 +13,8 @@ package com.ankamagames.dofus.network.enums
       
       public static const TREASURE_HUNT_ERROR_ALREADY_HAVE_QUEST:uint = 3;
       
+      public static const TREASURE_HUNT_ERROR_NOT_AVAILABLE:uint = 4;
+      
       public static const TREASURE_HUNT_OK:uint = 1;
    }
 }

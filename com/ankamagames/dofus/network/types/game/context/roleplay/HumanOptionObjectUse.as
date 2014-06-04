@@ -43,7 +43,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
       public function serializeAs_HumanOptionObjectUse(output:IDataOutput) : void {
          super.serializeAs_HumanOption(output);
          output.writeByte(this.delayTypeId);
-         if(this.delayEndTime < 0)
+         if((this.delayEndTime < 0) || (this.delayEndTime > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.delayEndTime + ") on element delayEndTime.");
          }
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
          else
          {
             this.delayEndTime = input.readDouble();
-            if(this.delayEndTime < 0)
+            if((this.delayEndTime < 0) || (this.delayEndTime > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.delayEndTime + ") on element of HumanOptionObjectUse.delayEndTime.");
             }

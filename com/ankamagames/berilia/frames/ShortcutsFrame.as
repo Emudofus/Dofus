@@ -209,6 +209,7 @@ package com.ankamagames.berilia.frames
       
       private function onWindowDeactivate(pEvent:Event) : void {
          this._heldShortcuts.length = 0;
+         shiftKey = ctrlKey = altKey = false;
       }
       
       public function pushed() : Boolean {

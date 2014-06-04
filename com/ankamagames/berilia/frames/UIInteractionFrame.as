@@ -8,14 +8,20 @@ package com.ankamagames.berilia.frames
    import flash.display.DisplayObject;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.jerakine.handlers.messages.FocusChangeMessage;
+   import com.ankamagames.berilia.types.graphic.UiRootContainer;
+   import com.ankamagames.berilia.components.Input;
    import com.ankamagames.jerakine.handlers.messages.HumanInputMessage;
    import com.ankamagames.berilia.components.Grid;
    import com.ankamagames.berilia.components.messages.ComponentMessage;
+   import flash.geom.Point;
+   import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyDownMessage;
    import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyUpMessage;
    import com.ankamagames.berilia.UIComponent;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseClickMessage;
    import com.ankamagames.jerakine.handlers.messages.Action;
    import com.ankamagames.berilia.types.event.InstanceEvent;
+   import com.ankamagames.berilia.Berilia;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.berilia.utils.BeriliaHookList;
    import com.ankamagames.berilia.managers.SecureCenter;
@@ -28,7 +34,6 @@ package com.ankamagames.berilia.frames
    import com.ankamagames.jerakine.pools.GenericPool;
    import flash.display.InteractiveObject;
    import flash.events.MouseEvent;
-   import com.ankamagames.berilia.Berilia;
    import com.ankamagames.berilia.components.messages.SelectItemMessage;
    import com.ankamagames.berilia.enums.SelectMethodEnum;
    import com.ankamagames.berilia.components.messages.SelectEmptyItemMessage;
@@ -59,8 +64,8 @@ package com.ankamagames.berilia.frames
    import com.ankamagames.berilia.components.messages.ComponentReadyMessage;
    import com.ankamagames.jerakine.logger.ModuleLogger;
    import com.ankamagames.jerakine.managers.ErrorManager;
-   import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.events.Event;
+   import com.ankamagames.jerakine.utils.system.AirScanner;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseWheelMessage;
    import com.ankamagames.jerakine.utils.misc.CallWithParameters;
    import flash.utils.getTimer;
@@ -85,18 +90,24 @@ package com.ankamagames.berilia.frames
       
       private var _isProcessingDirectInteraction:Boolean;
       
+      private var _warning:InputWarning;
+      
       public function get isProcessingDirectInteraction() : Boolean {
          return this._isProcessingDirectInteraction;
       }
       
       public function process(msg:Message) : Boolean {
          var fcmsg:FocusChangeMessage = null;
+         var uiRootCtr:UiRootContainer = null;
+         var input:Input = null;
          var himsg:HumanInputMessage = null;
          var onlyGrid:* = false;
          var isGrid:* = false;
          var gridInstance:Grid = null;
          var dispatched:* = false;
          var comsg:ComponentMessage = null;
+         var inputPos:Point = null;
+         var kkdmsg:KeyboardKeyDownMessage = null;
          var kkumsg:KeyboardKeyUpMessage = null;
          var uic:UIComponent = null;
          var res:* = false;
@@ -123,9 +134,40 @@ package com.ankamagames.berilia.frames
                   }
                   this.currentDo = this.currentDo.parent;
                }
+               uiRootCtr = this.hierarchy[0] as UiRootContainer;
+               input = this.hierarchy[this.hierarchy.length - 1] as Input;
+               if((this.hierarchy.length > 0 && uiRootCtr) && (input) && (!uiRootCtr.uiData.module.trusted))
+               {
+                  if(!this._warning)
+                  {
+                     this._warning = new InputWarning();
+                  }
+                  Berilia.getInstance().docMain.addChild(this._warning);
+                  this._warning.width = input.width;
+                  inputPos = input.localToGlobal(new Point(input.x,input.y));
+                  this._warning.x = inputPos.x;
+                  this._warning.y = inputPos.y - this._warning.height - 4;
+                  if(this._warning.y < 0)
+                  {
+                     this._warning.y = inputPos.y + input.height + 4;
+                  }
+                  if(this._warning.y + this._warning.height > StageShareManager.startHeight)
+                  {
+                     this._warning.y = (StageShareManager.startHeight - this._warning.height) / 2;
+                  }
+               }
+               else if((this._warning) && (this._warning.parent))
+               {
+                  this._warning.parent.removeChild(this._warning);
+               }
+               
                if(this.hierarchy.length > 0)
                {
                   KernelEventsManager.getInstance().processCallback(BeriliaHookList.FocusChange,SecureCenter.secure(this.hierarchy[this.hierarchy.length - 1]));
+               }
+               else
+               {
+                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.FocusChange,null);
                }
                return true;
             case msg is HumanInputMessage:
@@ -144,10 +186,19 @@ package com.ankamagames.berilia.frames
                if(msg is MouseClickMessage)
                {
                   KernelEventsManager.getInstance().processCallback(BeriliaHookList.MouseClick,SecureCenter.secure(MouseClickMessage(msg).target));
+                  if(!this.hierarchy[this.hierarchy.length - 1])
+                  {
+                     KernelEventsManager.getInstance().processCallback(BeriliaHookList.FocusChange,SecureCenter.secure(MouseClickMessage(msg).target));
+                  }
                }
                if(msg is MouseMiddleClickMessage)
                {
                   KernelEventsManager.getInstance().processCallback(BeriliaHookList.MouseMiddleClick,SecureCenter.secure(MouseMiddleClickMessage(msg).target));
+               }
+               if(msg is KeyboardKeyDownMessage)
+               {
+                  kkdmsg = KeyboardKeyDownMessage(msg);
+                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.KeyDown,SecureCenter.secure(kkdmsg.target),kkdmsg.keyboardEvent.keyCode);
                }
                if(msg is KeyboardKeyUpMessage)
                {
@@ -368,11 +419,24 @@ package com.ankamagames.berilia.frames
       
       public function pushed() : Boolean {
          StageShareManager.stage.addEventListener(Event.RESIZE,this.onStageResize);
+         if(AirScanner.hasAir())
+         {
+            StageShareManager.stage.nativeWindow.addEventListener(Event.DEACTIVATE,this.onWindowDeactivate);
+         }
          return true;
       }
       
       public function pulled() : Boolean {
          StageShareManager.stage.removeEventListener(Event.RESIZE,this.onStageResize);
+         if(AirScanner.hasAir())
+         {
+            StageShareManager.stage.nativeWindow.removeEventListener(Event.DEACTIVATE,this.onWindowDeactivate);
+         }
+         if((this._warning) && (this._warning.parent))
+         {
+            this._warning.parent.removeChild(this._warning);
+         }
+         this._warning = null;
          return true;
       }
       
@@ -426,5 +490,27 @@ package com.ankamagames.berilia.frames
          }
          setTimeout(this.onStageResize,101);
       }
+      
+      private function onWindowDeactivate(pEvent:Event) : void {
+         KernelEventsManager.getInstance().processCallback(BeriliaHookList.FocusChange,null);
+      }
+   }
+}
+import flash.text.TextField;
+import flash.text.TextFieldAutoSize;
+import flash.text.TextFormat;
+import com.ankamagames.jerakine.data.I18n;
+
+class InputWarning extends TextField
+{
+   
+   function InputWarning() {
+      super();
+      background = true;
+      backgroundColor = 7348259;
+      autoSize = TextFieldAutoSize.LEFT;
+      wordWrap = true;
+      defaultTextFormat = new TextFormat("Verdana",12,16777215,true);
+      text = I18n.getUiText("ui.module.input.warning");
    }
 }

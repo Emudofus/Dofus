@@ -60,14 +60,22 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
       }
       
       public function serializeAs_UpdateMountBoostMessage(output:IDataOutput) : void {
-         output.writeDouble(this.rideId);
-         output.writeShort(this.boostToUpdateList.length);
-         var _i2:uint = 0;
-         while(_i2 < this.boostToUpdateList.length)
+         if((this.rideId < -9.007199254740992E15) || (this.rideId > 9.007199254740992E15))
          {
-            output.writeShort((this.boostToUpdateList[_i2] as UpdateMountBoost).getTypeId());
-            (this.boostToUpdateList[_i2] as UpdateMountBoost).serialize(output);
-            _i2++;
+            throw new Error("Forbidden value (" + this.rideId + ") on element rideId.");
+         }
+         else
+         {
+            output.writeDouble(this.rideId);
+            output.writeShort(this.boostToUpdateList.length);
+            _i2 = 0;
+            while(_i2 < this.boostToUpdateList.length)
+            {
+               output.writeShort((this.boostToUpdateList[_i2] as UpdateMountBoost).getTypeId());
+               (this.boostToUpdateList[_i2] as UpdateMountBoost).serialize(output);
+               _i2++;
+            }
+            return;
          }
       }
       
@@ -79,15 +87,23 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
          var _id2:uint = 0;
          var _item2:UpdateMountBoost = null;
          this.rideId = input.readDouble();
-         var _boostToUpdateListLen:uint = input.readUnsignedShort();
-         var _i2:uint = 0;
-         while(_i2 < _boostToUpdateListLen)
+         if((this.rideId < -9.007199254740992E15) || (this.rideId > 9.007199254740992E15))
          {
-            _id2 = input.readUnsignedShort();
-            _item2 = ProtocolTypeManager.getInstance(UpdateMountBoost,_id2);
-            _item2.deserialize(input);
-            this.boostToUpdateList.push(_item2);
-            _i2++;
+            throw new Error("Forbidden value (" + this.rideId + ") on element of UpdateMountBoostMessage.rideId.");
+         }
+         else
+         {
+            _boostToUpdateListLen = input.readUnsignedShort();
+            _i2 = 0;
+            while(_i2 < _boostToUpdateListLen)
+            {
+               _id2 = input.readUnsignedShort();
+               _item2 = ProtocolTypeManager.getInstance(UpdateMountBoost,_id2);
+               _item2.deserialize(input);
+               this.boostToUpdateList.push(_item2);
+               _i2++;
+            }
+            return;
          }
       }
    }

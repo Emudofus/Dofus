@@ -9,7 +9,7 @@ package com.ankamagames.jerakine.entities.interfaces
       
       function getAnimation() : String;
       
-      function setAnimation(param1:String) : void;
+      function setAnimation(param1:String, param2:int = -1) : void;
       
       function setAnimationAndDirection(param1:String, param2:uint, param3:Boolean = false) : void;
    }

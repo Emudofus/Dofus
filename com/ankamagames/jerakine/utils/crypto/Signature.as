@@ -135,6 +135,8 @@ package com.ankamagames.jerakine.utils.crypto
       }
       
       private function traceData(d:ByteArray) : void {
+         var _loc4_:* = false;
+         var _loc5_:* = true;
          var tmp:Array = [];
          var i:uint = 0;
          while(i < d.length)

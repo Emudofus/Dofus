@@ -37,11 +37,13 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
       
       public var restricted:Boolean = false;
       
+      public var partyName:String = "";
+      
       override public function getMessageId() : uint {
          return 5576;
       }
       
-      public function initPartyJoinMessage(partyId:uint = 0, partyType:uint = 0, partyLeaderId:uint = 0, maxParticipants:uint = 0, members:Vector.<PartyMemberInformations> = null, guests:Vector.<PartyGuestInformations> = null, restricted:Boolean = false) : PartyJoinMessage {
+      public function initPartyJoinMessage(partyId:uint = 0, partyType:uint = 0, partyLeaderId:uint = 0, maxParticipants:uint = 0, members:Vector.<PartyMemberInformations> = null, guests:Vector.<PartyGuestInformations> = null, restricted:Boolean = false, partyName:String = "") : PartyJoinMessage {
          super.initAbstractPartyMessage(partyId);
          this.partyType = partyType;
          this.partyLeaderId = partyLeaderId;
@@ -49,6 +51,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          this.members = members;
          this.guests = guests;
          this.restricted = restricted;
+         this.partyName = partyName;
          this._isInitialized = true;
          return this;
       }
@@ -61,6 +64,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          this.members = new Vector.<PartyMemberInformations>();
          this.guests = new Vector.<PartyGuestInformations>();
          this.restricted = false;
+         this.partyName = "";
          this._isInitialized = false;
       }
       
@@ -111,6 +115,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
                   _i5++;
                }
                output.writeBoolean(this.restricted);
+               output.writeUTF(this.partyName);
                return;
             }
          }
@@ -166,6 +171,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
                      _i5++;
                   }
                   this.restricted = input.readBoolean();
+                  this.partyName = input.readUTF();
                   return;
                }
             }

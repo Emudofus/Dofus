@@ -5,7 +5,6 @@ package com.ankamagames.jerakine.resources.adapters.impl
    import com.ankamagames.jerakine.types.ASwf;
    import flash.display.LoaderInfo;
    import com.ankamagames.jerakine.resources.ResourceType;
-   import com.ankamagames.jerakine.utils.system.AirScanner;
    
    public class AdvancedSwfAdapter extends AbstractLoaderAdapter implements IAdapter
    {
@@ -25,14 +24,7 @@ package com.ankamagames.jerakine.resources.adapters.impl
       }
       
       override protected function init(ldr:LoaderInfo) : void {
-         if(AirScanner.hasAir())
-         {
-            this._aswf = new ASwf(ldr.loader.content,ldr.applicationDomain,ldr.width,ldr.height);
-         }
-         else
-         {
-            this._aswf = new ASwf(ldr.loader.content,ldr.applicationDomain,800,600);
-         }
+         this._aswf = new ASwf(ldr.loader.content,ldr.applicationDomain,ldr.width,ldr.height);
          super.init(ldr);
       }
    }

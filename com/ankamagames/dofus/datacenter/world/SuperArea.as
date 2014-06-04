@@ -39,6 +39,8 @@ package com.ankamagames.dofus.datacenter.world
       
       public var worldmapId:uint;
       
+      public var hasWorldMap:Boolean;
+      
       private var _name:String;
       
       private var _worldmap:WorldMap;

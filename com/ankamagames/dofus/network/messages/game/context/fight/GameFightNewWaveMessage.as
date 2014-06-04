@@ -23,7 +23,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
       
       public var id:uint = 0;
       
-      public var teamId:int = 0;
+      public var teamId:uint = 2;
       
       public var nbTurnBeforeNextWave:int = 0;
       
@@ -31,7 +31,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 6490;
       }
       
-      public function initGameFightNewWaveMessage(id:uint = 0, teamId:int = 0, nbTurnBeforeNextWave:int = 0) : GameFightNewWaveMessage {
+      public function initGameFightNewWaveMessage(id:uint = 0, teamId:uint = 2, nbTurnBeforeNextWave:int = 0) : GameFightNewWaveMessage {
          this.id = id;
          this.teamId = teamId;
          this.nbTurnBeforeNextWave = nbTurnBeforeNextWave;
@@ -41,7 +41,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
       
       override public function reset() : void {
          this.id = 0;
-         this.teamId = 0;
+         this.teamId = 2;
          this.nbTurnBeforeNextWave = 0;
          this._isInitialized = false;
       }
@@ -68,7 +68,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          else
          {
             output.writeUnsignedInt(this.id);
-            output.writeInt(this.teamId);
+            output.writeByte(this.teamId);
             output.writeInt(this.nbTurnBeforeNextWave);
             return;
          }
@@ -86,9 +86,16 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          }
          else
          {
-            this.teamId = input.readInt();
-            this.nbTurnBeforeNextWave = input.readInt();
-            return;
+            this.teamId = input.readByte();
+            if(this.teamId < 0)
+            {
+               throw new Error("Forbidden value (" + this.teamId + ") on element of GameFightNewWaveMessage.teamId.");
+            }
+            else
+            {
+               this.nbTurnBeforeNextWave = input.readInt();
+               return;
+            }
          }
       }
    }

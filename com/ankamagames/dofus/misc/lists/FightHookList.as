@@ -46,5 +46,7 @@ package com.ankamagames.dofus.misc.lists
       public static const ShowMonsterArtwork:Hook;
       
       public static const WaveUpdated:Hook;
+      
+      public static const SpectateUpdate:Hook;
    }
 }

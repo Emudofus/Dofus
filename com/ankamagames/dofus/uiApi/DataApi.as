@@ -83,6 +83,7 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.datacenter.spells.SpellPair;
    import com.ankamagames.dofus.datacenter.spells.SpellBomb;
    import com.ankamagames.dofus.datacenter.misc.Pack;
+   import com.ankamagames.dofus.datacenter.quest.treasureHunt.LegendaryTreasureHunt;
    import com.ankamagames.dofus.datacenter.appearance.Title;
    import com.ankamagames.dofus.datacenter.appearance.TitleCategory;
    import com.ankamagames.dofus.datacenter.appearance.Ornament;
@@ -95,6 +96,8 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.datacenter.externalnotifications.ExternalNotification;
    import com.ankamagames.dofus.datacenter.misc.ActionDescription;
    import com.ankamagames.dofus.misc.utils.GameDataQuery;
+   import com.ankamagames.dofus.datacenter.world.Waypoint;
+   import com.ankamagames.dofus.internalDatacenter.taxi.TeleportDestinationWrapper;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    
@@ -668,6 +671,14 @@ package com.ankamagames.dofus.uiApi
          return Pack.getPackById(packId);
       }
       
+      public function getLegendaryTreasureHunt(huntId:uint) : LegendaryTreasureHunt {
+         return LegendaryTreasureHunt.getLegendaryTreasureHuntById(huntId);
+      }
+      
+      public function getLegendaryTreasureHunts() : Array {
+         return LegendaryTreasureHunt.getLegendaryTreasureHunts();
+      }
+      
       public function getTitle(titleId:uint) : Title {
          return Title.getTitleById(titleId);
       }
@@ -762,6 +773,37 @@ package com.ankamagames.dofus.uiApi
       
       public function querySortI18nId(data:*, fields:*, ascending:* = true) : * {
          return GameDataQuery.sortI18n(data,fields,ascending);
+      }
+      
+      public function getAllZaaps() : Array {
+         var waypoint:Waypoint = null;
+         var allZapList:Array = new Array();
+         var allWaypoints:Array = Waypoint.getAllWaypoints();
+         for each(waypoint in allWaypoints)
+         {
+            allZapList.push(new TeleportDestinationWrapper(0,waypoint.mapId,waypoint.subAreaId,0,0,false,null,false));
+         }
+         return allZapList;
+      }
+      
+      public function getUnknowZaaps(knwonZaapList:Array) : Array {
+         var tpd:TeleportDestinationWrapper = null;
+         var knownTpd:* = undefined;
+         var allZaaps:Array = this.getAllZaaps();
+         var knownCoordinates:Array = new Array();
+         var unknowZaaps:Array = new Array();
+         for each(knownTpd in knwonZaapList)
+         {
+            knownCoordinates.push(knownTpd.coord);
+         }
+         for each(tpd in allZaaps)
+         {
+            if(knownCoordinates.indexOf(tpd.coord) == -1)
+            {
+               unknowZaaps.push(tpd);
+            }
+         }
+         return unknowZaaps;
       }
    }
 }

@@ -24,9 +24,10 @@ package com.ankamagames.dofus.modules.utils
    import com.ankamagames.dofus.modules.utils.actions.ModuleInstallRequestAction;
    import com.ankamagames.dofus.modules.utils.actions.ModuleDeleteRequestAction;
    import com.ankamagames.dofus.modules.utils.actions.InstalledModuleInfoRequestAction;
-   import flash.filesystem.FileMode;
+   import com.ankamagames.berilia.utils.ModuleInspector;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
+   import flash.filesystem.FileMode;
    import com.ankamagames.dofus.modules.utils.actions.ModuleInstallConfirmAction;
    import com.ankamagames.dofus.modules.utils.actions.InstalledModuleListRequestAction;
    import com.ankamagames.dofus.modules.utils.actions.ModuleInstallCancelAction;
@@ -116,6 +117,11 @@ package com.ankamagames.dofus.modules.utils
                {
                   dmFile = ModuleInspector.getDmFile(new File(this._modulesDirectory.nativePath + File.separator + moduleId));
                   this._installedModuleDm[moduleId] = dmFile;
+                  if(!dmFile)
+                  {
+                     KernelEventsManager.getInstance().processCallback(HookList.ModuleInstallationError,7);
+                     break;
+                  }
                }
                scriptFile = new File(this._modulesDirectory.nativePath + File.separator + moduleId + File.separator + dmFile.script);
                fs = new FileStream();
@@ -143,9 +149,8 @@ package com.ankamagames.dofus.modules.utils
                this._pendingZipDm = null;
                KernelEventsManager.getInstance().processCallback(HookList.ModuleInstallationProgress,-1);
                return true;
-            default:
-               return false;
          }
+         return false;
       }
       
       public function get priority() : int {
@@ -158,7 +163,14 @@ package com.ankamagames.dofus.modules.utils
          {
             case "json":
                jsonArray = com.ankamagames.jerakine.json.JSON.decode(e.resource,true);
-               this.processJsonList(jsonArray);
+               if(jsonArray is Array)
+               {
+                  this.processJsonList(jsonArray);
+               }
+               else
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.ModuleList,[]);
+               }
                break;
             case "zip":
                this._pendingZipToInstall = e.resource;
@@ -171,6 +183,9 @@ package com.ankamagames.dofus.modules.utils
       
       private function processJsonList(jsonArray:*) : void {
          var moduleEntry:* = undefined;
+         var dmVersionArray:Array = null;
+         var entryVersionArray:Array = null;
+         var i:* = 0;
          var moduleDm:XML = null;
          for each(moduleEntry in jsonArray)
          {
@@ -178,7 +193,26 @@ package com.ankamagames.dofus.modules.utils
             if(moduleDm)
             {
                moduleEntry.exist = true;
-               moduleEntry.upToDate = moduleDm.header.version < moduleEntry.version;
+               moduleEntry.upToDate = true;
+               dmVersionArray = String(moduleDm.header.version).split(".");
+               entryVersionArray = String(moduleEntry.version).split(".");
+               while(dmVersionArray.length < entryVersionArray.length)
+               {
+                  dmVersionArray.push(0);
+               }
+               while(dmVersionArray.length > entryVersionArray.length)
+               {
+                  entryVersionArray.push(0);
+               }
+               i = 0;
+               while(i < dmVersionArray.length)
+               {
+                  if(dmVersionArray[i] < entryVersionArray[i])
+                  {
+                     moduleEntry.upToDate = false;
+                  }
+                  i++;
+               }
                moduleEntry.isEnabled = moduleDm.header.isEnabled;
             }
             else

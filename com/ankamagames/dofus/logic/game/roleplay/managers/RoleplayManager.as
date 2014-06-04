@@ -21,6 +21,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
    import com.ankamagames.atouin.managers.InteractiveCellManager;
    import flash.display.Sprite;
    import com.ankamagames.atouin.managers.EntitiesDisplayManager;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
    
    public class RoleplayManager extends Object implements IDestroyable
@@ -39,6 +40,10 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
       }
       
       private static var _self:RoleplayManager;
+      
+      private static const REWARD_SCALE_CAP:Number = 1.5;
+      
+      private static const REWARD_REDUCED_SCALE:Number = 0.7;
       
       public static function getInstance() : RoleplayManager {
          if(_self == null)
@@ -119,6 +124,30 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
       public function putEntityOnTop(entity:AnimatedCharacter) : void {
          var cellSprite:Sprite = InteractiveCellManager.getInstance().getCell(entity.position.cellId);
          EntitiesDisplayManager.getInstance().orderEntity(entity,cellSprite);
+      }
+      
+      public function getKamasReward(kamasScaleWithPlayerLevel:Boolean = true, optimalLevel:int = -1, kamasRatio:Number = 1, duration:Number = 1, pPlayerLevel:int = -1) : Number {
+         if((pPlayerLevel == -1) && (kamasScaleWithPlayerLevel))
+         {
+            pPlayerLevel = PlayedCharacterManager.getInstance().infos.level;
+         }
+         var lvl:int = kamasScaleWithPlayerLevel?pPlayerLevel:optimalLevel;
+         return (Math.pow(lvl,2) + 20 * lvl - 20) * kamasRatio * duration;
+      }
+      
+      public function getExperienceReward(pPlayerLevel:int, pXpBonus:int, optimalLevel:int = -1, xpRatio:Number = 1, duration:Number = 1) : int {
+         var rewLevel:* = 0;
+         var xpBonus:Number = 1 + pXpBonus / 100;
+         if(pPlayerLevel > optimalLevel)
+         {
+            rewLevel = Math.min(pPlayerLevel,optimalLevel * REWARD_SCALE_CAP);
+            return ((1 - REWARD_REDUCED_SCALE) * this.getFixeExperienceReward(optimalLevel,duration,xpRatio) + REWARD_REDUCED_SCALE * this.getFixeExperienceReward(rewLevel,duration,xpRatio)) * xpBonus;
+         }
+         return this.getFixeExperienceReward(pPlayerLevel,duration,xpRatio) * xpBonus;
+      }
+      
+      private function getFixeExperienceReward(level:int, duration:Number, xpRatio:Number) : Number {
+         return level * Math.pow(100 + 2 * level,2) / 20 * duration * xpRatio;
       }
    }
 }

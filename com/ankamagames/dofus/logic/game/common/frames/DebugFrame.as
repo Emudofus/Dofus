@@ -6,13 +6,16 @@ package com.ankamagames.dofus.logic.game.common.frames
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.debug.DebugHighlightCellsMessage;
-   import com.ankamagames.dofus.network.messages.debug.DebugClearHighlightCellsMessage;
    import com.ankamagames.dofus.network.messages.debug.DebugInClientMessage;
-   import com.ankamagames.atouin.managers.SelectionManager;
+   import com.ankamagames.atouin.managers.MapDisplayManager;
+   import com.ankamagames.atouin.enums.PlacementStrataEnums;
    import com.ankamagames.dofus.network.enums.DebugLevelEnum;
+   import com.ankamagames.dofus.network.messages.debug.DebugClearHighlightCellsMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.CurrentMapMessage;
+   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightJoinMessage;
+   import com.ankamagames.atouin.managers.SelectionManager;
    import com.ankamagames.atouin.types.Selection;
    import com.ankamagames.atouin.renderers.ZoneDARenderer;
-   import com.ankamagames.atouin.enums.PlacementStrataEnums;
    import com.ankamagames.jerakine.types.Color;
    import com.ankamagames.jerakine.types.zones.Custom;
    
@@ -36,24 +39,44 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       public function process(msg:Message) : Boolean {
          var dhcmsg:DebugHighlightCellsMessage = null;
-         var dchcmsg:DebugClearHighlightCellsMessage = null;
+         var cellId:uint = 0;
+         var foregroundCells:Vector.<uint> = null;
+         var normalCells:Vector.<uint> = null;
          var dicmsg:DebugInClientMessage = null;
-         var s:String = null;
          switch(true)
          {
             case msg is DebugHighlightCellsMessage:
                dhcmsg = msg as DebugHighlightCellsMessage;
                this._sName = "debug_zone" + dhcmsg.color + "_" + Math.round(Math.random() * 10000);
-               this.displayZone(this._sName,dhcmsg.cells,dhcmsg.color);
-               this._aZones.push(this._sName);
-               return true;
-            case msg is DebugClearHighlightCellsMessage:
-               dchcmsg = msg as DebugClearHighlightCellsMessage;
-               for each(s in this._aZones)
+               foregroundCells = new Vector.<uint>(0);
+               normalCells = new Vector.<uint>(0);
+               for each(cellId in dhcmsg.cells)
                {
-                  SelectionManager.getInstance().getSelection(s).remove();
+                  if(MapDisplayManager.getInstance().renderer.isCellUnderFixture(cellId))
+                  {
+                     foregroundCells.push(cellId);
+                  }
+                  else
+                  {
+                     normalCells.push(cellId);
+                  }
+               }
+               if(foregroundCells.length > 0)
+               {
+                  this.displayZone(this._sName + "_foreground",foregroundCells,dhcmsg.color,PlacementStrataEnums.STRATA_FOREGROUND);
+                  this._aZones.push(this._sName + "_foreground");
+               }
+               if(normalCells.length > 0)
+               {
+                  this.displayZone(this._sName,normalCells,dhcmsg.color,PlacementStrataEnums.STRATA_MOVEMENT);
+                  this._aZones.push(this._sName);
                }
                return true;
+            case msg is DebugClearHighlightCellsMessage:
+            case msg is CurrentMapMessage:
+            case msg is GameFightJoinMessage:
+               this.clear();
+               return false;
             case msg is DebugInClientMessage:
                dicmsg = msg as DebugInClientMessage;
                switch(dicmsg.level)
@@ -91,9 +114,17 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
-      private function displayZone(name:String, cells:Vector.<uint>, color:uint) : void {
+      private function clear() : void {
+         var sName:String = null;
+         for each(sName in this._aZones)
+         {
+            SelectionManager.getInstance().getSelection(sName).remove();
+         }
+      }
+      
+      private function displayZone(name:String, cells:Vector.<uint>, color:uint, pStrata:uint) : void {
          var s:Selection = new Selection();
-         s.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_MOVEMENT);
+         s.renderer = new ZoneDARenderer(pStrata);
          s.color = new Color(color);
          s.zone = new Custom(cells);
          SelectionManager.getInstance().addSelection(s,name);

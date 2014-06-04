@@ -20,5 +20,7 @@ package com.ankamagames.dofus.network.enums
       public static const SOCIAL_CONTACT_CRAFTER:uint = 5;
       
       public static const SOCIAL_CONTACT_INTERLOCUTOR:uint = 6;
+      
+      public static const SOCIAL_CONTACT_FIGHT:uint = 7;
    }
 }

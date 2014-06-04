@@ -58,6 +58,10 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       public static var _rightDictionnary:Dictionary;
       
+      public static function getGuildById(id:int) : GuildWrapper {
+         return _ref[id];
+      }
+      
       public static function clearCache() : void {
          _ref = new Dictionary();
       }

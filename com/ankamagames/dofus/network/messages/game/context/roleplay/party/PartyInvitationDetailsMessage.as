@@ -26,6 +26,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
       
       public var partyType:uint = 0;
       
+      public var partyName:String = "";
+      
       public var fromId:uint = 0;
       
       public var fromName:String = "";
@@ -40,9 +42,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          return 6263;
       }
       
-      public function initPartyInvitationDetailsMessage(partyId:uint = 0, partyType:uint = 0, fromId:uint = 0, fromName:String = "", leaderId:uint = 0, members:Vector.<PartyInvitationMemberInformations> = null, guests:Vector.<PartyGuestInformations> = null) : PartyInvitationDetailsMessage {
+      public function initPartyInvitationDetailsMessage(partyId:uint = 0, partyType:uint = 0, partyName:String = "", fromId:uint = 0, fromName:String = "", leaderId:uint = 0, members:Vector.<PartyInvitationMemberInformations> = null, guests:Vector.<PartyGuestInformations> = null) : PartyInvitationDetailsMessage {
          super.initAbstractPartyMessage(partyId);
          this.partyType = partyType;
+         this.partyName = partyName;
          this.fromId = fromId;
          this.fromName = fromName;
          this.leaderId = leaderId;
@@ -55,6 +58,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
       override public function reset() : void {
          super.reset();
          this.partyType = 0;
+         this.partyName = "";
          this.fromId = 0;
          this.fromName = "";
          this.leaderId = 0;
@@ -80,6 +84,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
       public function serializeAs_PartyInvitationDetailsMessage(output:IDataOutput) : void {
          super.serializeAs_AbstractPartyMessage(output);
          output.writeByte(this.partyType);
+         output.writeUTF(this.partyName);
          if(this.fromId < 0)
          {
             throw new Error("Forbidden value (" + this.fromId + ") on element fromId.");
@@ -96,18 +101,18 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
             {
                output.writeInt(this.leaderId);
                output.writeShort(this.members.length);
-               _i5 = 0;
-               while(_i5 < this.members.length)
+               _i6 = 0;
+               while(_i6 < this.members.length)
                {
-                  (this.members[_i5] as PartyInvitationMemberInformations).serializeAs_PartyInvitationMemberInformations(output);
-                  _i5++;
+                  (this.members[_i6] as PartyInvitationMemberInformations).serializeAs_PartyInvitationMemberInformations(output);
+                  _i6++;
                }
                output.writeShort(this.guests.length);
-               _i6 = 0;
-               while(_i6 < this.guests.length)
+               _i7 = 0;
+               while(_i7 < this.guests.length)
                {
-                  (this.guests[_i6] as PartyGuestInformations).serializeAs_PartyGuestInformations(output);
-                  _i6++;
+                  (this.guests[_i7] as PartyGuestInformations).serializeAs_PartyGuestInformations(output);
+                  _i7++;
                }
                return;
             }
@@ -119,8 +124,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
       }
       
       public function deserializeAs_PartyInvitationDetailsMessage(input:IDataInput) : void {
-         var _item5:PartyInvitationMemberInformations = null;
-         var _item6:PartyGuestInformations = null;
+         var _item6:PartyInvitationMemberInformations = null;
+         var _item7:PartyGuestInformations = null;
          super.deserialize(input);
          this.partyType = input.readByte();
          if(this.partyType < 0)
@@ -129,6 +134,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
          }
          else
          {
+            this.partyName = input.readUTF();
             this.fromId = input.readInt();
             if(this.fromId < 0)
             {
@@ -145,22 +151,22 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
                else
                {
                   _membersLen = input.readUnsignedShort();
-                  _i5 = 0;
-                  while(_i5 < _membersLen)
+                  _i6 = 0;
+                  while(_i6 < _membersLen)
                   {
-                     _item5 = new PartyInvitationMemberInformations();
-                     _item5.deserialize(input);
-                     this.members.push(_item5);
-                     _i5++;
+                     _item6 = new PartyInvitationMemberInformations();
+                     _item6.deserialize(input);
+                     this.members.push(_item6);
+                     _i6++;
                   }
                   _guestsLen = input.readUnsignedShort();
-                  _i6 = 0;
-                  while(_i6 < _guestsLen)
+                  _i7 = 0;
+                  while(_i7 < _guestsLen)
                   {
-                     _item6 = new PartyGuestInformations();
-                     _item6.deserialize(input);
-                     this.guests.push(_item6);
-                     _i6++;
+                     _item7 = new PartyGuestInformations();
+                     _item7.deserialize(input);
+                     this.guests.push(_item7);
+                     _i7++;
                   }
                   return;
                }

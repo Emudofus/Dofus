@@ -30,6 +30,9 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.berilia.types.tooltip.TooltipRectangle;
    import com.ankamagames.dofus.modules.utils.SpellTooltipSettings;
    import com.ankamagames.dofus.modules.utils.ItemTooltipSettings;
+   import com.ankamagames.berilia.Berilia;
+   import com.ankamagames.berilia.types.LocationEnum;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
    
    public class TooltipApi extends Object implements IApi
    {
@@ -203,6 +206,120 @@ package com.ankamagames.dofus.uiApi
       
       public function createItemSettings() : ItemTooltipSettings {
          return new ItemTooltipSettings();
+      }
+      
+      public function adjustTooltipPositions(tooltipNames:Array, sourceName:String, offset:int = 0) : void {
+         var ui:UiRootContainer = null;
+         var name:String = null;
+         var i:* = 0;
+         var goOnTop:* = false;
+         var lastUi:UiRootContainer = null;
+         var mainColumnTooltips:Array = null;
+         var mainColumnHeight:* = NaN;
+         var mainColumnY:* = NaN;
+         var tooltipUis:Array = new Array();
+         var sourceUi:UiRootContainer = Berilia.getInstance().getUi(sourceName);
+         for each(name in tooltipNames)
+         {
+            ui = Berilia.getInstance().getUi(name);
+            if(ui)
+            {
+               tooltipUis.push(ui);
+            }
+         }
+         i = 0;
+         goOnTop = true;
+         mainColumnTooltips = new Array();
+         mainColumnHeight = 0;
+         mainColumnY = 0;
+         for each(ui in tooltipUis)
+         {
+            if(i == 0)
+            {
+               if(tooltipNames.length == 1)
+               {
+                  if(sourceUi.x - ui.width - offset >= 0)
+                  {
+                     this.placeTooltip(ui,sourceUi,LocationEnum.POINT_TOPRIGHT,LocationEnum.POINT_TOPLEFT,offset,false,0,true);
+                     ui.x = ui.x - offset * 2;
+                  }
+                  else
+                  {
+                     this.placeTooltip(ui,sourceUi,LocationEnum.POINT_TOPLEFT,LocationEnum.POINT_TOPRIGHT,offset,false,0,true);
+                  }
+                  if(ui.y - 41 >= 0)
+                  {
+                     ui.y = ui.y - 41;
+                  }
+                  return;
+               }
+               if(sourceUi.x - ui.width - offset >= 0)
+               {
+                  this.placeTooltip(ui,sourceUi,LocationEnum.POINT_RIGHT,LocationEnum.POINT_LEFT,offset,false,0,true);
+                  ui.x = ui.x - offset * 2;
+               }
+               else
+               {
+                  this.placeTooltip(ui,sourceUi,LocationEnum.POINT_LEFT,LocationEnum.POINT_RIGHT,offset,false,0,true);
+               }
+               mainColumnHeight = mainColumnHeight + (ui.height + offset);
+               mainColumnTooltips.push(ui);
+               mainColumnY = ui.y;
+            }
+            else if(i < 4)
+            {
+               if((goOnTop) && (lastUi.y - ui.height - offset < 0))
+               {
+                  goOnTop = false;
+                  lastUi = tooltipUis[0];
+               }
+               if(goOnTop)
+               {
+                  this.placeTooltip(ui,lastUi,LocationEnum.POINT_BOTTOM,LocationEnum.POINT_TOP,offset,false,0,false);
+                  mainColumnY = ui.y;
+               }
+               else
+               {
+                  this.placeTooltip(ui,lastUi,LocationEnum.POINT_TOP,LocationEnum.POINT_BOTTOM,offset,false,0,false);
+               }
+               ui.x = lastUi.x;
+               mainColumnHeight = mainColumnHeight + (ui.height + offset);
+               mainColumnTooltips.push(ui);
+            }
+            else
+            {
+               if((goOnTop) && (lastUi.y - ui.height - offset < 0))
+               {
+                  goOnTop = false;
+                  lastUi = sourceUi;
+               }
+               if(goOnTop)
+               {
+                  this.placeTooltip(ui,lastUi,LocationEnum.POINT_BOTTOM,LocationEnum.POINT_TOP,offset,false,0,true);
+               }
+               else
+               {
+                  this.placeTooltip(ui,lastUi,LocationEnum.POINT_TOP,LocationEnum.POINT_BOTTOM,offset,false,0,true);
+               }
+               ui.x = lastUi.x;
+            }
+            
+            lastUi = ui;
+            i++;
+            if(i == 4)
+            {
+               goOnTop = true;
+               lastUi = sourceUi;
+            }
+         }
+         if(mainColumnY + mainColumnHeight > StageShareManager.startHeight)
+         {
+            offset = mainColumnY + mainColumnHeight - StageShareManager.startHeight;
+            for each(ui in mainColumnTooltips)
+            {
+               ui.y = ui.y - offset;
+            }
+         }
       }
       
       private function onTooltipReady(pEvent:UiRenderEvent) : void {

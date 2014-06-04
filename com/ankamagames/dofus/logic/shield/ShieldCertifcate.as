@@ -208,11 +208,11 @@ package com.ankamagames.dofus.logic.shield
          }
          catch(e:Error)
          {
-            if(_loc4_)
+            if(!_loc5_)
             {
                if(!_loc4_)
                {
-                  while(_loc5_)
+                  while(!_loc4_)
                   {
                      break;
                   }
@@ -227,7 +227,7 @@ package com.ankamagames.dofus.logic.shield
             {
                if(!_loc5_)
                {
-                  if(_loc5_)
+                  if(!_loc4_)
                   {
                      _log.error("Certificat V2 non valide (clef invalide)");
                      continue;
@@ -241,8 +241,8 @@ package com.ankamagames.dofus.logic.shield
       }
       
       private function getHash(reverse:Boolean = false) : String {
-         var _loc5_:* = false;
-         var _loc6_:* = true;
+         var _loc5_:* = true;
+         var _loc6_:* = false;
          var virtualNetworkRegExpr:RegExp = null;
          var networkInterface:Object = null;
          var interfaces:* = undefined;
@@ -267,7 +267,7 @@ package com.ankamagames.dofus.logic.shield
                }
                catch(e:Error)
                {
-                  if(_loc6_)
+                  if(!_loc6_)
                   {
                      _log.error("User non disponible.");
                   }
@@ -306,7 +306,7 @@ package com.ankamagames.dofus.logic.shield
                }
                catch(e:Error)
                {
-                  if(_loc6_)
+                  if(!_loc6_)
                   {
                      _log.error("Donnée sur la carte réseau non disponible.");
                   }

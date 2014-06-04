@@ -483,6 +483,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          var guildSheet:GuildFactSheetWrapper = null;
          var allianceId:uint = 0;
          var allianceName:String = null;
+         var allianceTag:String = null;
          var gfemsg:GuildFactsErrorMessage = null;
          var cra:CharacterReportAction = null;
          var crm:CharacterReportMessage = null;
@@ -1558,19 +1559,21 @@ package com.ankamagames.dofus.logic.game.common.frames
                guildSheet = this._allGuilds[gfmsg.infos.guildId];
                allianceId = 0;
                allianceName = "";
+               allianceTag = "";
                if(msg is GuildInAllianceFactsMessage)
                {
                   giafmsg = msg as GuildInAllianceFactsMessage;
                   allianceId = giafmsg.allianceInfos.allianceId;
                   allianceName = giafmsg.allianceInfos.allianceName;
+                  allianceTag = giafmsg.allianceInfos.allianceTag;
                }
                if(guildSheet)
                {
-                  guildSheet.update(gfmsg.infos.guildId,gfmsg.infos.guildName,gfmsg.infos.guildEmblem,gfmsg.infos.leaderId,guildSheet.leaderName,gfmsg.infos.guildLevel,gfmsg.infos.nbMembers,gfmsg.creationDate,gfmsg.members,guildSheet.nbConnectedMembers,gfmsg.nbTaxCollectors,guildSheet.lastActivity,gfmsg.enabled,allianceId,allianceName,guildSheet.allianceLeader);
+                  guildSheet.update(gfmsg.infos.guildId,gfmsg.infos.guildName,gfmsg.infos.guildEmblem,gfmsg.infos.leaderId,guildSheet.leaderName,gfmsg.infos.guildLevel,gfmsg.infos.nbMembers,gfmsg.creationDate,gfmsg.members,guildSheet.nbConnectedMembers,gfmsg.nbTaxCollectors,guildSheet.lastActivity,gfmsg.enabled,allianceId,allianceName,allianceTag,guildSheet.allianceLeader);
                }
                else
                {
-                  guildSheet = GuildFactSheetWrapper.create(gfmsg.infos.guildId,gfmsg.infos.guildName,gfmsg.infos.guildEmblem,gfmsg.infos.leaderId,"",gfmsg.infos.guildLevel,gfmsg.infos.nbMembers,gfmsg.creationDate,gfmsg.members,0,gfmsg.nbTaxCollectors,0,gfmsg.enabled,allianceId,allianceName);
+                  guildSheet = GuildFactSheetWrapper.create(gfmsg.infos.guildId,gfmsg.infos.guildName,gfmsg.infos.guildEmblem,gfmsg.infos.leaderId,"",gfmsg.infos.guildLevel,gfmsg.infos.nbMembers,gfmsg.creationDate,gfmsg.members,0,gfmsg.nbTaxCollectors,0,gfmsg.enabled,allianceId,allianceName,allianceTag);
                   this._allGuilds[gfmsg.infos.guildId] = guildSheet;
                }
                KernelEventsManager.getInstance().processCallback(SocialHookList.OpenOneGuild,guildSheet);

@@ -44,6 +44,8 @@ package com.ankamagames.dofus.datacenter.npcs
       
       public var animFunList:Vector.<AnimFunNpcData>;
       
+      public var fastAnimsFun:Boolean;
+      
       private var _name:String;
       
       public function get name() : String {

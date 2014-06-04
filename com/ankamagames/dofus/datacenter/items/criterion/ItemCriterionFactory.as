@@ -92,6 +92,9 @@ package com.ankamagames.dofus.datacenter.items.criterion
             case "Pj":
                criterion = new JobItemCriterion(pServerCriterionForm);
                break;
+            case "Pk":
+               criterion = new BonusSetItemCriterion(pServerCriterionForm);
+               break;
             case "PK":
                criterion = new KamaItemCriterion(pServerCriterionForm);
                break;

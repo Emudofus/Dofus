@@ -112,15 +112,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
       }
       
       public function setCharacteristicsInformations(id:int, characteristics:CharacterCharacteristicsInformations) : void {
-         if(PlayedCharacterManager.getInstance().id == id)
-         {
-            PlayedCharacterManager.getInstance().characteristics = characteristics;
-         }
-         else if(!this._characteristicsInformationsList[id])
-         {
-            this._characteristicsInformationsList[id] = characteristics;
-         }
-         
+         this._characteristicsInformationsList[id] = characteristics;
       }
       
       public function getCharacteristicsInformations(id:int = 0) : CharacterCharacteristicsInformations {

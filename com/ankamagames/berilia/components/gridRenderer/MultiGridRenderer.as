@@ -279,7 +279,7 @@ package com.ankamagames.berilia.components.gridRenderer
          }
          else
          {
-            newElement.setName("elem_m_" + this._grid.name + "_" + Math.random() * 1.0E10);
+            newElement.setName("elem_m_" + this._grid.name + "_" + BasicElement.ID++);
          }
          if(newElement is ContainerElement)
          {

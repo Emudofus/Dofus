@@ -55,9 +55,11 @@ package com.ankamagames.jerakine.newCache.impl
       }
       
       override public function store(ref:*, obj:*) : Boolean {
-         if(_size + 1 > this._bounds)
+         var bb:uint = 0;
+         if((this._bounds) && (_size + 1 > this._bounds))
          {
-            this._gc.purge(this._bounds - 1);
+            bb = this._bounds * 0.7 + 1 >> 0;
+            this._gc.purge(bb);
          }
          super.store(ref,obj);
          this._gc.used(ref);

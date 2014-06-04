@@ -99,7 +99,15 @@ package com.ankamagames.dofus.network.messages.connection
             _i3++;
          }
          output.writeShort(this.serverId);
-         output.writeDouble(this.sessionOptionalSalt);
+         if((this.sessionOptionalSalt < -9.007199254740992E15) || (this.sessionOptionalSalt > 9.007199254740992E15))
+         {
+            throw new Error("Forbidden value (" + this.sessionOptionalSalt + ") on element sessionOptionalSalt.");
+         }
+         else
+         {
+            output.writeDouble(this.sessionOptionalSalt);
+            return;
+         }
       }
       
       public function deserialize(input:IDataInput) : void {
@@ -125,6 +133,14 @@ package com.ankamagames.dofus.network.messages.connection
          }
          this.serverId = input.readShort();
          this.sessionOptionalSalt = input.readDouble();
+         if((this.sessionOptionalSalt < -9.007199254740992E15) || (this.sessionOptionalSalt > 9.007199254740992E15))
+         {
+            throw new Error("Forbidden value (" + this.sessionOptionalSalt + ") on element of IdentificationMessage.sessionOptionalSalt.");
+         }
+         else
+         {
+            return;
+         }
       }
    }
 }

@@ -151,7 +151,7 @@ package com.ankamagames.dofus.logic.connection.frames
             this._streamingBetaAccess = false;
             KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed,0);
             commonMod2 = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-            commonMod2.openPopup(I18n.getUiText("ui.popup.information"),"You are trying to access to a private beta but your account is not allowed.If you wish have an access, please contact Ankama.",[I18n.getUiText("ui.common.ok")]);
+            commonMod2.openPopup(I18n.getUiText("ui.popup.information"),"You are trying to access to a private beta but your account is not allowed.",[I18n.getUiText("ui.common.ok")]);
          }
       }
       
@@ -534,8 +534,8 @@ package com.ankamagames.dofus.logic.connection.frames
       }
       
       private function processInvokeArgs() : void {
-         var _loc3_:* = true;
-         var _loc4_:* = false;
+         var _loc3_:* = false;
+         var _loc4_:* = true;
          var value:String = null;
          var lvwta:LoginValidationWithTicketAction = null;
          if(CommandLineArguments.getInstance().hasArgument("ticket"))
@@ -553,6 +553,7 @@ package com.ankamagames.dofus.logic.connection.frames
       }
       
       private function onLoad(e:ResourceLoadedEvent) : void {
+         var _loc5_:* = false;
          var xml:XML = null;
          var xmlString:String = null;
          var i:int = 0;
@@ -574,7 +575,7 @@ package com.ankamagames.dofus.logic.connection.frames
             {
                if(!_loc6_)
                {
-                  while(_loc5_)
+                  while(!_loc6_)
                   {
                      break;
                   }
@@ -582,49 +583,12 @@ package com.ankamagames.dofus.logic.connection.frames
                }
                while(true)
                {
-                  if(_loc6_)
+                  if(!_loc5_)
                   {
                      if(!_loc5_)
                      {
-                        if(_loc6_)
-                        {
-                           if(_loc6_)
-                           {
-                              if(_loc5_)
-                              {
-                              }
-                           }
-                        }
-                        if(_loc6_)
-                        {
-                        }
-                     }
-                     if(_loc5_)
-                     {
-                     }
-                  }
-                  _log.error("Cannot read xml ");
-               }
-            }
-            while(true)
-            {
-               if(!_loc5_)
-               {
-                  if(_loc5_)
-                  {
-                     if(_loc6_)
-                     {
                         if(!_loc5_)
                         {
-                           if(_loc6_)
-                           {
-                              if(_loc6_)
-                              {
-                                 if(_loc5_)
-                                 {
-                                 }
-                              }
-                           }
                            if(_loc6_)
                            {
                            }
@@ -633,7 +597,55 @@ package com.ankamagames.dofus.logic.connection.frames
                         {
                         }
                      }
-                     _log.error("Cannot read xml ");
+                     if(!_loc5_)
+                     {
+                        ("Cannot read xml " + e.uri).error("(");
+                     }
+                     else
+                     {
+                        _log.error("Cannot read xml " + e.uri);
+                     }
+                  }
+                  if(_loc5_)
+                  {
+                  }
+                  _log.error("Cannot read xml " + error.message);
+               }
+            }
+            while(true)
+            {
+               if(_loc6_)
+               {
+                  if(!_loc6_)
+                  {
+                     if(!_loc5_)
+                     {
+                        if(!_loc5_)
+                        {
+                           if(!_loc5_)
+                           {
+                              if(_loc6_)
+                              {
+                              }
+                           }
+                           if(_loc5_)
+                           {
+                           }
+                        }
+                        if(!_loc5_)
+                        {
+                           ("Cannot read xml " + e.uri).error("(");
+                        }
+                        else
+                        {
+                           _log.error("Cannot read xml " + e.uri);
+                        }
+                        continue;
+                     }
+                     if(_loc5_)
+                     {
+                     }
+                     _log.error("Cannot read xml " + error.message);
                      continue;
                   }
                }

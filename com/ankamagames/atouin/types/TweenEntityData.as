@@ -36,7 +36,7 @@ package com.ankamagames.atouin.types
       
       public var velocity:Number;
       
-      public var orientation:uint;
+      public var orientation:uint = 1.0;
       
       public var currentCellSprite:Sprite;
       

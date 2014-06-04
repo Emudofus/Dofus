@@ -30,6 +30,8 @@ package com.ankamagames.tiphon.sequence
       
       private var _animationName:String;
       
+      private var _startFrame:int = -1;
+      
       private var _loop:int;
       
       private var _endEvent:String;
@@ -58,6 +60,10 @@ package com.ankamagames.tiphon.sequence
       
       public function set waitEvent(v:Boolean) : void {
          this._waitEvent = v;
+      }
+      
+      public function set startFrame(frame:int) : void {
+         this._startFrame = frame;
       }
       
       override public function start() : void {
@@ -96,7 +102,7 @@ package com.ankamagames.tiphon.sequence
                }
             }
          }
-         this._target.setAnimation(this._animationName);
+         this._target.setAnimation(this._animationName,this._startFrame);
          this._lastSpriteAnimation = this._target.getAnimation();
          if(!this._waitEvent)
          {

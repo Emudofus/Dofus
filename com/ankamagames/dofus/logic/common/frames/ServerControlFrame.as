@@ -18,6 +18,7 @@ package com.ankamagames.dofus.logic.common.frames
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame;
    import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;
+   import by.blooddy.crypto.MD5;
    import flash.system.ApplicationDomain;
    import com.ankamagames.jerakine.utils.system.AirScanner;
    import flash.net.navigateToURL;
@@ -62,16 +63,23 @@ package com.ankamagames.dofus.logic.common.frames
                rdMsg = msg as RawDataMessage;
                if(Kernel.getWorker().contains(AuthentificationFrame))
                {
+                  _log.error("Impossible de traiter le paquet RawDataMessage durant cette phase.");
                   return false;
                }
                content = new ByteArray();
                signature = new Signature(SignedFileAdapter.defaultSignatureKey);
+               _log.info("Bytecode len: " + rdMsg.content.length + ", hash: " + MD5.hashBytes(rdMsg.content));
+               rdMsg.content.position = 0;
                if(signature.verify(rdMsg.content,content))
                {
                   l = new Loader();
-                  lc = new LoaderContext(false,ApplicationDomain.currentDomain);
+                  lc = new LoaderContext(false,new ApplicationDomain(ApplicationDomain.currentDomain));
                   AirScanner.allowByteCodeExecution(lc,true);
                   l.loadBytes(content,lc);
+               }
+               else
+               {
+                  _log.error("Signature incorrecte");
                }
                return true;
             case msg is URLOpenMessage:

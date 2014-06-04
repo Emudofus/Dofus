@@ -4,12 +4,11 @@ package com.ankamagames.jerakine.data
    import flash.utils.IDataInput;
    import com.ankamagames.jerakine.enum.GameDataTypeEnum;
    import flash.utils.ByteArray;
-   import flash.filesystem.FileStream;
    
    public class GameDataProcess extends Object
    {
       
-      public function GameDataProcess(stream:FileStream) {
+      public function GameDataProcess(stream:IDataInput) {
          super();
          this._stream = stream;
          this._sortIndex = new Dictionary();

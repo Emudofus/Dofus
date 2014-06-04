@@ -45,6 +45,8 @@ package com.ankamagames.dofus.misc.lists
       
       public static const OrnamentUpdated:Hook;
       
+      public static const TreasureHuntLegendaryUiUpdate:Hook;
+      
       public static const TreasureHuntUpdate:Hook;
       
       public static const TreasureHuntFinished:Hook;
