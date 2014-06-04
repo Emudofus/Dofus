@@ -534,6 +534,7 @@ package com.ankamagames.berilia.managers
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[144] = "(numLock)";
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.INSERT] = "(insert)";
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.END] = "(end)";
+         ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.SHIFT] = "(shift)";
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.F1] = "(F1)";
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.F2] = "(F2)";
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.F3] = "(F3)";

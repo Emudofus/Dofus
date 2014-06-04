@@ -7,7 +7,9 @@ package com.ankamagames.atouin.renderers
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.types.Color;
    import com.ankamagames.atouin.types.DataMapContainer;
+   import com.ankamagames.atouin.data.map.CellData;
    import flash.geom.ColorTransform;
+   import com.ankamagames.atouin.managers.MapDisplayManager;
    import com.ankamagames.atouin.managers.EntitiesDisplayManager;
    import com.ankamagames.atouin.Atouin;
    import com.ankamagames.atouin.enums.PlacementStrataEnums;

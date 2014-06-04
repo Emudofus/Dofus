@@ -119,6 +119,26 @@ package com.ankamagames.dofus.internalDatacenter.quest
                {
                   directionName = I18n.getUiText("ui.treasureHunt.theNorth");
                }
+               else if(this.direction == DirectionsEnum.DOWN_LEFT)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theSouthWest");
+               }
+               else if(this.direction == DirectionsEnum.DOWN_RIGHT)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theSouthEast");
+               }
+               else if(this.direction == DirectionsEnum.UP_LEFT)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theNorthWest");
+               }
+               else if(this.direction == DirectionsEnum.UP_RIGHT)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theNorthEast");
+               }
+               
+               
+               
+               
                
                
                
@@ -142,6 +162,26 @@ package com.ankamagames.dofus.internalDatacenter.quest
                {
                   directionName = I18n.getUiText("ui.treasureHunt.theNorth");
                }
+               else if(this.direction == DirectionsEnum.DOWN_LEFT)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theSouthWest");
+               }
+               else if(this.direction == DirectionsEnum.DOWN_RIGHT)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theSouthEast");
+               }
+               else if(this.direction == DirectionsEnum.UP_LEFT)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theNorthWest");
+               }
+               else if(this.direction == DirectionsEnum.UP_RIGHT)
+               {
+                  directionName = I18n.getUiText("ui.treasureHunt.theNorthEast");
+               }
+               
+               
+               
+               
                
                
                

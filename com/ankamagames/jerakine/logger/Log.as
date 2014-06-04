@@ -152,9 +152,18 @@ package com.ankamagames.jerakine.logger
       }
       
       private static function flushBuffer() : void {
+         var target:AbstractTarget = null;
          var bufferedEvent:LogEvent = null;
          var bufferedEvents:Array = _tempTarget.getBuffer();
          removeTarget(_tempTarget);
+         for each(target in _targets)
+         {
+            if(target is TemporaryBufferTarget)
+            {
+               TemporaryBufferTarget(target).clearBuffer();
+               break;
+            }
+         }
          for each(bufferedEvent in bufferedEvents)
          {
             _dispatcher.dispatchEvent(bufferedEvent.clone());

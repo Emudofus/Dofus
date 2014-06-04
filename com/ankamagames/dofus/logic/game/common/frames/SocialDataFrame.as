@@ -241,17 +241,27 @@ package com.ankamagames.dofus.logic.game.common.frames
       }
       
       private function dispatchGuildList(isUpdate:Boolean = false, isError:Boolean = false) : void {
+         var gw:GuildWrapper = null;
          if((this._waitStaticGuildInfo) || (this._waitVersatileGuildInfo))
          {
             return;
+         }
+         for each(gw in this._guildList)
+         {
+            GuildWrapper.updateRef(gw.guildId,gw);
          }
          KernelEventsManager.getInstance().processCallback(SocialHookList.GuildList,this._guildList,isUpdate,this._guildList == null || isError);
       }
       
       private function dispatchAllianceList(isUpdate:Boolean = false, isError:Boolean = false) : void {
+         var aw:AllianceWrapper = null;
          if((this._waitStaticAllianceInfo) || (this._waitVersatileAllianceInfo))
          {
             return;
+         }
+         for each(aw in this._allianceList)
+         {
+            AllianceWrapper.updateRef(aw.allianceId,aw);
          }
          KernelEventsManager.getInstance().processCallback(SocialHookList.AllianceList,this._allianceList,isUpdate,this._allianceList == null || isError);
       }

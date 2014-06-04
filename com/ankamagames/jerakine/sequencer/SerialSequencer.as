@@ -144,6 +144,7 @@ package com.ankamagames.jerakine.sequencer
             }
          }
          this._aStep = new Array();
+         this._running = false;
       }
       
       override public function toString() : String {

@@ -6,8 +6,11 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
    import flash.filesystem.File;
    import com.ankamagames.jerakine.types.Uri;
+   import flash.filesystem.FileStream;
    import com.ankamagames.jerakine.managers.LangManager;
-   import com.ankamagames.jerakine.utils.misc.StringUtils;
+   import com.ankamagames.jerakine.utils.system.SystemManager;
+   import com.ankamagames.jerakine.enum.OperatingSystem;
+   import flash.filesystem.FileMode;
    import com.ankamagames.jerakine.managers.ErrorManager;
    import com.ankamagames.berilia.Berilia;
    import com.ankamagames.berilia.types.messages.ThemeLoadErrorMessage;
@@ -201,14 +204,18 @@ package com.ankamagames.berilia.managers
       }
       
       private function onDTLoad(e:ResourceLoadedEvent) : void {
-         var thName:String = null;
-         var thDesc:String = null;
-         var th:Theme = null;
-         this._themeCount++;
          var dt:XML = e.resource as XML;
          var dtFileName:String = e.uri.fileName.split(".")[0];
          var folder:Array = e.uri.path.split("/");
          var folderName:String = folder[folder.length - 2];
+         this.loadDT(dt,dtFileName,folderName);
+      }
+      
+      private function loadDT(dt:XML, dtFileName:String, folderName:String) : void {
+         var thName:String = null;
+         var thDesc:String = null;
+         var th:Theme = null;
+         this._themeCount++;
          if(dtFileName == folderName)
          {
             thName = dt.name;

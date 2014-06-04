@@ -25,9 +25,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.TriggerHookList;
    import com.ankamagames.dofus.logic.game.common.managers.MapMovementAdapter;
+   import com.ankamagames.dofus.logic.game.roleplay.managers.AnimFunManager;
    import com.ankamagames.jerakine.entities.interfaces.IMovable;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.logic.game.roleplay.messages.CharacterMovementStoppedMessage;
+   import com.ankamagames.dofus.logic.common.actions.EmptyStackAction;
    import com.ankamagames.dofus.logic.game.roleplay.actions.PlayerFightRequestAction;
    import com.ankamagames.dofus.network.messages.game.context.GameMapNoMovementMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
@@ -124,6 +126,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   KernelEventsManager.getInstance().processCallback(TriggerHookList.PlayerMove);
                }
                entityPath = MapMovementAdapter.getClientMovement(gmmmsg.keyMovements);
+               AnimFunManager.getInstance().cancelAnim(gmmmsg.actorId);
                (movedEntity as IMovable).move(entityPath);
                return true;
             case msg is EntityMovementCompleteMessage:
@@ -152,6 +155,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   canceledMoveMessage = new GameMapMovementCancelMessage();
                   canceledMoveMessage.initGameMapMovementCancelMessage(emsmsg.entity.position.cellId);
                   ConnectionsHandler.getConnection().send(canceledMoveMessage);
+                  Kernel.getWorker().process(EmptyStackAction.create());
                   this._isRequestingMovement = false;
                   if(this._followingMove)
                   {

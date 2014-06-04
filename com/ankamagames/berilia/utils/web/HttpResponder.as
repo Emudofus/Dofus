@@ -7,7 +7,6 @@ package com.ankamagames.berilia.utils.web
    import flash.events.IOErrorEvent;
    import flash.filesystem.File;
    import flash.events.FileListEvent;
-   import com.ankamagames.jerakine.utils.misc.StringUtils;
    import flash.filesystem.FileMode;
    
    public class HttpResponder extends Object
@@ -33,7 +32,6 @@ package com.ankamagames.berilia.utils.web
             relativeFilePath = relativeFilePath.substring(0,relativeFilePath.indexOf("?"));
          }
          var relativeFilePath:String = decodeURI(relativeFilePath);
-         relativeFilePath = StringUtils.convertLatinToUtf(relativeFilePath);
          if((!(relativeFilePath.indexOf("../") == -1)) || (!(relativeFilePath.indexOf("..\\") == -1)))
          {
             this.throw403();

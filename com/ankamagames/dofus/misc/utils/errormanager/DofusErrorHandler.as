@@ -68,6 +68,8 @@ package com.ankamagames.dofus.misc.utils.errormanager
       
       protected static const _log:Logger;
       
+      private static const MANUAL_BUG_REPORT_TXT:String = "Manual bug report";
+      
       private static var _logBuffer:TemporaryBufferTarget;
       
       private static var _lastError:uint;
@@ -183,12 +185,12 @@ package com.ankamagames.dofus.misc.utils.errormanager
          {
             if(e.keyCode == Keyboard.F1)
             {
-               this.onError(new ErrorReportedEvent(null,"Manual bug report"));
+               this.onError(new ErrorReportedEvent(null,MANUAL_BUG_REPORT_TXT));
             }
          }
          else if(e.keyCode == Keyboard.F11)
          {
-            this.onError(new ErrorReportedEvent(null,"Manual bug report"));
+            this.onError(new ErrorReportedEvent(null,MANUAL_BUG_REPORT_TXT));
          }
          
       }

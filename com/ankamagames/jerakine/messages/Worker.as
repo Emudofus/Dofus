@@ -75,6 +75,11 @@ package com.ankamagames.jerakine.messages
          return true;
       }
       
+      public function processImmediately(msg:Message) : Boolean {
+         this.processMessage(msg);
+         return true;
+      }
+      
       public function addFrame(frame:Frame, allowDuplicateFrame:Boolean = false) : void {
          var frameRemoving:* = false;
          var frameAdding:* = false;

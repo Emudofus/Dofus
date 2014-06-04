@@ -14,6 +14,7 @@ package com.ankamagames.dofus.console.debug
    import com.ankamagames.atouin.managers.SelectionManager;
    import com.ankamagames.jerakine.pathfinding.Pathfinding;
    import com.ankamagames.jerakine.utils.display.Dofus1Line;
+   import com.ankamagames.jerakine.utils.display.Dofus2Line;
    
    public class IAInstructionHandler extends Object implements ConsoleInstructionHandler
    {
@@ -39,7 +40,7 @@ package com.ankamagames.dofus.console.debug
          var fromPoint:MapPoint = null;
          var toCell:uint = 0;
          var toPoint:MapPoint = null;
-         var cellsInLine:Array = null;
+         var cellsInLine:* = undefined;
          var i:* = 0;
          var map:IDataMapProvider = DataMapProvider.getInstance();
          switch(cmd)
@@ -104,7 +105,7 @@ package com.ankamagames.dofus.console.debug
                   fromPoint = MapPoint.fromCellId(fromCell);
                   toCell = uint(args[1]);
                   toPoint = MapPoint.fromCellId(toCell);
-                  cellsInLine = Dofus1Line.getLine(fromPoint.x,fromPoint.y,0,toPoint.x,toPoint.y,0);
+                  cellsInLine = Dofus1Line.useDofus2Line?Dofus2Line.getLine(fromPoint.cellId,toPoint.cellId):Dofus1Line.getLine(fromPoint.x,fromPoint.y,0,toPoint.x,toPoint.y,0);
                   cellsSelection = new Selection();
                   cells = new Vector.<uint>();
                   i = 0;

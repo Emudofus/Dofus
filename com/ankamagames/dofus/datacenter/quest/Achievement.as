@@ -6,6 +6,7 @@ package com.ankamagames.dofus.datacenter.quest
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.logic.game.roleplay.managers.RoleplayManager;
    
    public class Achievement extends Object implements IDataCenter
    {
@@ -17,10 +18,6 @@ package com.ankamagames.dofus.datacenter.quest
       protected static const _log:Logger;
       
       public static const MODULE:String = "Achievements";
-      
-      private static const REWARD_SCALE_CAP:Number = 1.5;
-      
-      private static const REWARD_REDUCED_SCALE:Number = 0.7;
       
       public static function getAchievementById(id:int) : Achievement {
          return GameData.getObject(MODULE,id) as Achievement;
@@ -87,23 +84,11 @@ package com.ankamagames.dofus.datacenter.quest
       }
       
       public function getKamasReward(pPlayerLevel:int) : Number {
-         var lvl:int = this.kamasScaleWithPlayerLevel?pPlayerLevel:this.level;
-         return (Math.pow(lvl,2) + 20 * lvl - 20) * this.kamasRatio;
+         return RoleplayManager.getInstance().getKamasReward(this.kamasScaleWithPlayerLevel,this.level,this.kamasRatio,1,pPlayerLevel);
       }
       
-      public function getExperienceReward(pPlayerLevel:int, nXpBonus:int) : Number {
-         var rewLevel:* = 0;
-         var xpBonus:Number = 1 + nXpBonus / 100;
-         if(pPlayerLevel > this.level)
-         {
-            rewLevel = Math.min(pPlayerLevel,this.level * REWARD_SCALE_CAP);
-            return ((1 - REWARD_REDUCED_SCALE) * this.getFixeExperienceReward(this.level) + REWARD_REDUCED_SCALE * this.getFixeExperienceReward(rewLevel)) * xpBonus;
-         }
-         return this.getFixeExperienceReward(pPlayerLevel) * xpBonus;
-      }
-      
-      private function getFixeExperienceReward(level:int) : int {
-         return level * Math.pow(100 + 2 * level,2) / 20 * this.experienceRatio;
+      public function getExperienceReward(pPlayerLevel:int, pXpBonus:int) : Number {
+         return RoleplayManager.getInstance().getExperienceReward(pPlayerLevel,pXpBonus,this.level,this.experienceRatio);
       }
    }
 }

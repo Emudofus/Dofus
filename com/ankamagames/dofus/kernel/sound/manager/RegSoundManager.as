@@ -481,7 +481,12 @@ package com.ankamagames.dofus.kernel.sound.manager
          {
             StageShareManager.stage["nativeWindow"].addEventListener(Event.CLOSE,this.onClose);
          }
-         RegConnectionManager.getInstance().send(ProtocolEnum.SAY_HELLO,RegConnectionManager.getInstance().socketClientID,File.applicationDirectory.nativePath + "/config.xml");
+         var configFile:String = "config.xml";
+         if(File.applicationDirectory.resolvePath("config-custom.xml").exists)
+         {
+            configFile = "config-custom.xml";
+         }
+         RegConnectionManager.getInstance().send(ProtocolEnum.SAY_HELLO,RegConnectionManager.getInstance().socketClientID,File.applicationDirectory.nativePath + "/" + configFile);
       }
       
       private function removeLocalizedSounds() : void {

@@ -51,15 +51,22 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          else
          {
             output.writeInt(this.mountId);
-            output.writeDouble(this.date);
-            if(this.modelId < 0)
+            if((this.date < -9.007199254740992E15) || (this.date > 9.007199254740992E15))
             {
-               throw new Error("Forbidden value (" + this.modelId + ") on element modelId.");
+               throw new Error("Forbidden value (" + this.date + ") on element date.");
             }
             else
             {
-               output.writeShort(this.modelId);
-               return;
+               output.writeDouble(this.date);
+               if(this.modelId < 0)
+               {
+                  throw new Error("Forbidden value (" + this.modelId + ") on element modelId.");
+               }
+               else
+               {
+                  output.writeShort(this.modelId);
+                  return;
+               }
             }
          }
       }
@@ -78,14 +85,21 @@ package com.ankamagames.dofus.network.types.game.data.items.effects
          else
          {
             this.date = input.readDouble();
-            this.modelId = input.readShort();
-            if(this.modelId < 0)
+            if((this.date < -9.007199254740992E15) || (this.date > 9.007199254740992E15))
             {
-               throw new Error("Forbidden value (" + this.modelId + ") on element of ObjectEffectMount.modelId.");
+               throw new Error("Forbidden value (" + this.date + ") on element of ObjectEffectMount.date.");
             }
             else
             {
-               return;
+               this.modelId = input.readShort();
+               if(this.modelId < 0)
+               {
+                  throw new Error("Forbidden value (" + this.modelId + ") on element of ObjectEffectMount.modelId.");
+               }
+               else
+               {
+                  return;
+               }
             }
          }
       }

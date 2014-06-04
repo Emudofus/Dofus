@@ -217,7 +217,7 @@ package com.ankamagames.dofus.uiApi
          return -1;
       }
       
-      public function isMouseOverFighter(fighterId:uint) : Boolean {
+      public function isMouseOverFighter(fighterId:int) : Boolean {
          var fcf:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
          return (this.getFighterInfos(fighterId).disposition.cellId == FightContextFrame.currentCell) || (fcf.timelineOverEntity) && (fighterId == fcf.timelineOverEntityId);
       }

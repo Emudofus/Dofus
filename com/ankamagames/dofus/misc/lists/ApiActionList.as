@@ -99,6 +99,7 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.game.common.actions.party.PartyAllFollowMemberAction;
    import com.ankamagames.dofus.logic.game.common.actions.party.PartyStopFollowingMemberAction;
    import com.ankamagames.dofus.logic.game.common.actions.party.PartyAllStopFollowingMemberAction;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyNameSetRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.party.PartyShowMenuAction;
    import com.ankamagames.dofus.logic.game.common.actions.spectator.MapRunningFightDetailsRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.spectator.StopToListenRunningFightAction;
@@ -126,6 +127,7 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.game.common.actions.quest.AchievementRewardRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.QuestObjectiveValidationAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntLegendaryRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntDigRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.PortalUseRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntGiveUpRequestAction;
@@ -153,6 +155,11 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.game.roleplay.actions.ShortcutBarAddRequestAction;
    import com.ankamagames.dofus.logic.game.roleplay.actions.ShortcutBarRemoveRequestAction;
    import com.ankamagames.dofus.logic.game.roleplay.actions.ShortcutBarSwapRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopAuthentificationRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopFrontPageRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopArticlesListRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopSearchRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopBuyRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterTokenRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterInventoryRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterTransferRequestAction;
@@ -373,6 +380,8 @@ package com.ankamagames.dofus.misc.lists
       
       public static const PartyAllStopFollowingMember:DofusApiAction;
       
+      public static const PartyNameSetRequest:DofusApiAction;
+      
       public static const PartyShowMenu:DofusApiAction;
       
       public static const MapRunningFightDetailsRequest:DofusApiAction;
@@ -427,6 +436,8 @@ package com.ankamagames.dofus.misc.lists
       
       public static const TreasureHuntRequest:DofusApiAction;
       
+      public static const TreasureHuntLegendaryRequest:DofusApiAction;
+      
       public static const TreasureHuntDigRequest:DofusApiAction;
       
       public static const PortalUseRequest:DofusApiAction;
@@ -480,6 +491,16 @@ package com.ankamagames.dofus.misc.lists
       public static const ShortcutBarRemoveRequest:DofusApiAction;
       
       public static const ShortcutBarSwapRequest:DofusApiAction;
+      
+      public static const ShopAuthentificationRequest:DofusApiAction;
+      
+      public static const ShopFrontPageRequest:DofusApiAction;
+      
+      public static const ShopArticlesListRequest:DofusApiAction;
+      
+      public static const ShopSearchRequest:DofusApiAction;
+      
+      public static const ShopBuyRequest:DofusApiAction;
       
       public static const KrosmasterTokenRequest:DofusApiAction;
       

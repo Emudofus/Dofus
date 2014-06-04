@@ -10,6 +10,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import flash.utils.Timer;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import flash.utils.Dictionary;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.NamedPartyTeam;
    import com.ankamagames.jerakine.types.enums.Priority;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.common.frames.PartyManagementFrame;
@@ -50,6 +51,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightUpdateTeamMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSpectateMessage;
+   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSpectatorJoinMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightJoinMessage;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightCarryCharacterMessage;
    import com.ankamagames.atouin.messages.CellOutMessage;
@@ -80,6 +82,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.logic.game.common.messages.FightEndingMessage;
    import com.ankamagames.dofus.internalDatacenter.fight.FightResultEntryWrapper;
    import com.ankamagames.dofus.network.types.game.context.fight.FightResultListEntry;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.NamedPartyTeamWithOutcome;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.network.types.game.interactive.MapObstacle;
    import com.ankamagames.dofus.datacenter.spells.SpellLevel;
@@ -97,6 +100,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.misc.lists.FightHookList;
    import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
    import com.ankamagames.dofus.logic.game.fight.managers.MarkedCellsManager;
+   import com.ankamagames.dofus.network.enums.TeamEnum;
    import com.ankamagames.dofus.logic.game.fight.types.StatBuff;
    import com.ankamagames.dofus.logic.game.fight.types.FightEventEnum;
    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
@@ -218,6 +222,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
       private var _spellDamages:Dictionary;
       
       private var _spellAlreadyTriggered:Boolean;
+      
+      private var _namedPartyTeams:Vector.<NamedPartyTeam>;
       
       public var isFightLeader:Boolean;
       
@@ -426,10 +432,17 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var buff:FightDispellableEffectExtendedInformations = null;
          var gfutmsg:GameFightUpdateTeamMessage = null;
          var gfspmsg:GameFightSpectateMessage = null;
+         var fightStartTime:* = NaN;
+         var attackersName:String = null;
+         var defendersName:String = null;
          var castingSpellPools:Array = null;
          var targetPools:Array = null;
          var durationPools:Array = null;
          var castingSpells:CastingSpell = null;
+         var gfsjmsg:GameFightSpectatorJoinMessage = null;
+         var timeBeforeStart2:* = 0;
+         var attackersName2:String = null;
+         var defendersName2:String = null;
          var gfjmsg:GameFightJoinMessage = null;
          var timeBeforeStart:* = 0;
          var gafccmsg:GameActionFightCarryCharacterMessage = null;
@@ -466,12 +479,14 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var spell:Spell = null;
          var cellZone:GameActionMarkedCell = null;
          var step:AddGlyphGfxStep = null;
+         var namedTeam:NamedPartyTeam = null;
          var buffS:FightDispellableEffectExtendedInformations = null;
          var buffTmpS:BasicBuff = null;
          var markS:GameActionMark = null;
          var spellS:Spell = null;
          var cellZoneS:GameActionMarkedCell = null;
          var stepS:AddGlyphGfxStep = null;
+         var namedTeam2:NamedPartyTeam = null;
          var entity2:IEntity = null;
          var entity:IEntity = null;
          var fightEnding:FightEndingMessage = null;
@@ -481,6 +496,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var winners:Vector.<FightResultEntryWrapper> = null;
          var temp:Array = null;
          var resultEntryTemp:FightResultListEntry = null;
+         var winnersName:String = null;
+         var losersName:String = null;
+         var namedTeamWO:NamedPartyTeamWithOutcome = null;
          var resultsRecap:Object = null;
          var frew:FightResultEntryWrapper = null;
          var id:* = 0;
@@ -642,6 +660,25 @@ package com.ankamagames.dofus.logic.game.fight.frames
                this.tacticModeHandler();
                this._battleFrame.turnsCount = gfspmsg.gameTurn - 1;
                KernelEventsManager.getInstance().processCallback(FightHookList.TurnCountUpdated,gfspmsg.gameTurn - 1);
+               fightStartTime = gfspmsg.fightStart;
+               attackersName = "";
+               defendersName = "";
+               for each(namedTeam in this._namedPartyTeams)
+               {
+                  if((namedTeam.partyName) && (!(namedTeam.partyName == "")))
+                  {
+                     if(namedTeam.teamId == TeamEnum.TEAM_CHALLENGER)
+                     {
+                        attackersName = namedTeam.partyName;
+                     }
+                     else if(namedTeam.teamId == TeamEnum.TEAM_DEFENDER)
+                     {
+                        defendersName = namedTeam.partyName;
+                     }
+                     
+                  }
+               }
+               KernelEventsManager.getInstance().processCallback(FightHookList.SpectateUpdate,fightStartTime,attackersName,defendersName);
                castingSpellPools = [];
                for each(buffS in gfspmsg.effects)
                {
@@ -680,6 +717,49 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   }
                }
                FightEventsHelper.sendAllFightEvent();
+               return true;
+            case msg is GameFightSpectatorJoinMessage:
+               gfsjmsg = msg as GameFightSpectatorJoinMessage;
+               preFightIsActive = !gfsjmsg.isFightStarted;
+               this.fightType = gfsjmsg.fightType;
+               Kernel.getWorker().addFrame(this._entitiesFrame);
+               if(preFightIsActive)
+               {
+                  Kernel.getWorker().addFrame(this._preparationFrame);
+               }
+               else
+               {
+                  Kernel.getWorker().removeFrame(this._preparationFrame);
+                  Kernel.getWorker().addFrame(this._battleFrame);
+                  KernelEventsManager.getInstance().processCallback(HookList.GameFightStart);
+               }
+               PlayedCharacterManager.getInstance().isSpectator = true;
+               PlayedCharacterManager.getInstance().isFighting = true;
+               timeBeforeStart2 = gfsjmsg.timeMaxBeforeFightStart;
+               if((timeBeforeStart2 == 0) && (preFightIsActive))
+               {
+                  timeBeforeStart2 = -1;
+               }
+               KernelEventsManager.getInstance().processCallback(HookList.GameFightJoin,gfsjmsg.canBeCancelled,gfsjmsg.canSayReady,true,timeBeforeStart2,gfsjmsg.fightType);
+               this._namedPartyTeams = gfsjmsg.namedPartyTeams;
+               attackersName2 = "";
+               defendersName2 = "";
+               for each(namedTeam2 in gfsjmsg.namedPartyTeams)
+               {
+                  if((namedTeam2.partyName) && (!(namedTeam2.partyName == "")))
+                  {
+                     if(namedTeam2.teamId == TeamEnum.TEAM_CHALLENGER)
+                     {
+                        attackersName2 = namedTeam2.partyName;
+                     }
+                     else if(namedTeam2.teamId == TeamEnum.TEAM_DEFENDER)
+                     {
+                        defendersName2 = namedTeam2.partyName;
+                     }
+                     
+                  }
+               }
+               KernelEventsManager.getInstance().processCallback(FightHookList.SpectateUpdate,0,attackersName2,defendersName2);
                return true;
          }
       }
@@ -786,6 +866,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
          if((this._currentFighterInfo) && (this._currentFighterInfo.contextualId == id))
          {
             KernelEventsManager.getInstance().processCallback(FightHookList.FighterInfoUpdate,null);
+            if((PlayedCharacterManager.getInstance().isSpectator) && (OptionManager.getOptionManager("dofus")["spectatorAutoShowCurrentFighterInfo"] == true))
+            {
+               KernelEventsManager.getInstance().processCallback(FightHookList.FighterInfoUpdate,FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._battleFrame.currentPlayerId) as GameFightFighterInformations);
+            }
          }
       }
       
@@ -945,6 +1029,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
       private function overEntity(id:int, showRange:Boolean = true) : void {
          var entityId:* = 0;
          var entityInfo:GameFightFighterInformations = null;
+         var showInfos:* = false;
          var inviSelection:Selection = null;
          var pos:* = 0;
          var lastMovPoint:* = 0;
@@ -989,8 +1074,16 @@ package com.ankamagames.dofus.logic.game.fight.frames
          this._currentFighterInfo = infos;
          if(Dofus.getInstance().options.showEntityInfos)
          {
-            this._timerFighterInfo.reset();
-            this._timerFighterInfo.start();
+            showInfos = true;
+            if((PlayedCharacterManager.getInstance().isSpectator) && (OptionManager.getOptionManager("dofus")["spectatorAutoShowCurrentFighterInfo"] == true))
+            {
+               showInfos = !(this._battleFrame.currentPlayerId == id);
+            }
+            if(showInfos)
+            {
+               this._timerFighterInfo.reset();
+               this._timerFighterInfo.start();
+            }
          }
          if(infos.stats.invisibilityState == GameActionFightInvisibilityStateEnum.INVISIBLE)
          {
@@ -1079,6 +1172,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
       
       private function onPropertyChanged(pEvent:PropertyChangeEvent) : void {
          var entityId:* = 0;
+         var showInfos:* = false;
          switch(pEvent.propertyName)
          {
             case "showPermanentTargetsTooltips":
@@ -1092,6 +1186,20 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   else
                   {
                      this.displayEntityTooltip(entityId);
+                  }
+               }
+               break;
+            case "spectatorAutoShowCurrentFighterInfo":
+               if(PlayedCharacterManager.getInstance().isSpectator)
+               {
+                  showInfos = pEvent.propertyValue as Boolean;
+                  if(!showInfos)
+                  {
+                     KernelEventsManager.getInstance().processCallback(FightHookList.FighterInfoUpdate,null);
+                  }
+                  else
+                  {
+                     KernelEventsManager.getInstance().processCallback(FightHookList.FighterInfoUpdate,FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._battleFrame.currentPlayerId) as GameFightFighterInformations);
                   }
                }
                break;

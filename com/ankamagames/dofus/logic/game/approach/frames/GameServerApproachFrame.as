@@ -118,6 +118,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
    import com.ankamagames.dofus.logic.game.common.frames.StackManagementFrame;
    import com.ankamagames.dofus.logic.game.common.frames.ExternalGameFrame;
    import com.ankamagames.dofus.logic.game.common.frames.AveragePricesFrame;
+   import com.ankamagames.dofus.logic.game.common.frames.CameraControlFrame;
    import com.ankamagames.dofus.logic.connection.frames.GameStartingFrame;
    import com.ankamagames.dofus.misc.interClient.InterClientManager;
    import com.ankamagames.jerakine.data.XmlConfig;
@@ -397,7 +398,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                this._charactersList = new Vector.<BasicCharacterWrapper>();
                unusable = false;
                server = PlayerManager.getInstance().server;
-               if(server.gameTypeId == 1)
+               if((server.gameTypeId == 1) || (server.gameTypeId == 4))
                {
                   for each(chi in clmsg.characters)
                   {
@@ -458,7 +459,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                            }
                         }
                      }
-                     if((charToConnect) && ((!(server.gameTypeId == 1)) || (charToConnect.deathState == 0)) && (!SecureModeManager.getInstance().active) && (!this.isCharacterWaitingForChange(charToConnect.id)))
+                     if((charToConnect) && ((!(server.gameTypeId == 1)) && (!(server.gameTypeId == 4)) || (charToConnect.deathState == 0)) && (!SecureModeManager.getInstance().active) && (!this.isCharacterWaitingForChange(charToConnect.id)))
                      {
                         openCharsList = false;
                         this._kernel.processCallback(HookList.CharactersListUpdated,this._charactersList);
@@ -491,7 +492,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
             case msg is BasicCharactersListMessage:
                bclmsg = msg as BasicCharactersListMessage;
                this._charactersList = new Vector.<BasicCharacterWrapper>();
-               if(PlayerManager.getInstance().server.gameTypeId == 1)
+               if((PlayerManager.getInstance().server.gameTypeId == 1) || (PlayerManager.getInstance().server.gameTypeId == 4))
                {
                   for each(bChi in bclmsg.characters)
                   {
@@ -587,7 +588,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                }
                return true;
             case msg is CharacterRecolorSelectionAction:
-               if(PlayerManager.getInstance().server.gameTypeId == 1)
+               if((PlayerManager.getInstance().server.gameTypeId == 1) || (PlayerManager.getInstance().server.gameTypeId == 4))
                {
                   for each(persoc in this._charactersList)
                   {
@@ -644,7 +645,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                }
                return true;
             case msg is CharacterRenameSelectionAction:
-               if(PlayerManager.getInstance().server.gameTypeId == 1)
+               if((PlayerManager.getInstance().server.gameTypeId == 1) || (PlayerManager.getInstance().server.gameTypeId == 4))
                {
                   for each(person in this._charactersList)
                   {
@@ -687,7 +688,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                return true;
             case msg is CharacterRelookSelectionAction:
                crlsa = msg as CharacterRelookSelectionAction;
-               if(PlayerManager.getInstance().server.gameTypeId == 1)
+               if((PlayerManager.getInstance().server.gameTypeId == 1) || (PlayerManager.getInstance().server.gameTypeId == 4))
                {
                   for each(person2 in this._charactersList)
                   {
@@ -876,6 +877,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                Kernel.getWorker().addFrame(new StackManagementFrame());
                Kernel.getWorker().addFrame(new ExternalGameFrame());
                Kernel.getWorker().addFrame(new AveragePricesFrame());
+               Kernel.getWorker().addFrame(new CameraControlFrame());
                Kernel.getWorker().removeFrame(Kernel.getWorker().getFrame(GameStartingFrame));
                Kernel.getWorker().resume();
                ConnectionsHandler.resume();
@@ -942,8 +944,8 @@ package com.ankamagames.dofus.logic.game.approach.frames
             case msg is BasicTimeMessage:
                btmsg = msg as BasicTimeMessage;
                date = new Date();
-               TimeManager.getInstance().serverTimeLag = (btmsg.timestamp + btmsg.timezoneOffset * 60) * 1000 - date.getTime();
-               TimeManager.getInstance().serverUtcTimeLag = btmsg.timestamp * 1000 - date.getTime();
+               TimeManager.getInstance().serverTimeLag = btmsg.timestamp + btmsg.timezoneOffset * 60 * 1000 - date.getTime();
+               TimeManager.getInstance().serverUtcTimeLag = btmsg.timestamp - date.getTime();
                TimeManager.getInstance().timezoneOffset = btmsg.timezoneOffset * 60 * 1000;
                TimeManager.getInstance().dofusTimeYearLag = -1370;
                return true;

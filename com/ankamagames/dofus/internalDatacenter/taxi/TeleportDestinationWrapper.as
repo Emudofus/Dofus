@@ -10,7 +10,7 @@ package com.ankamagames.dofus.internalDatacenter.taxi
    public class TeleportDestinationWrapper extends Object implements IDataCenter
    {
       
-      public function TeleportDestinationWrapper(teleporterGenericType:uint, mapId:uint, subareaId:uint, destType:uint, cost:uint, spawn:Boolean = false, hint:Hint = null) {
+      public function TeleportDestinationWrapper(teleporterGenericType:uint, mapId:uint, subareaId:uint, destType:uint, cost:uint, spawn:Boolean = false, hint:Hint = null, known:Boolean = true) {
          var area:Area = null;
          super();
          this.teleporterType = teleporterGenericType;
@@ -19,6 +19,7 @@ package com.ankamagames.dofus.internalDatacenter.taxi
          this.destinationType = destType;
          this.cost = cost;
          this.spawn = spawn;
+         this.known = known;
          if(this.teleporterType == 1)
          {
             if(hint)
@@ -108,6 +109,8 @@ package com.ankamagames.dofus.internalDatacenter.taxi
       public var cost:uint;
       
       public var spawn:Boolean;
+      
+      public var known:Boolean;
       
       public var subAreaNameId:uint;
       

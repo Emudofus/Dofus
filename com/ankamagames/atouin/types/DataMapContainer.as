@@ -208,14 +208,6 @@ package com.ankamagames.atouin.types
          }
       }
       
-      public function updateAllAnimatedElement() : void {
-         var d:Object = null;
-         for each(d in this._animatedElement)
-         {
-            this.updateAnimatedElement(d);
-         }
-      }
-      
       public function get x() : Number {
          return this._spMap.x;
       }

@@ -53,7 +53,15 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
       }
       
       public function serializeAs_ExchangeMountPaddockRemoveMessage(output:IDataOutput) : void {
-         output.writeDouble(this.mountId);
+         if((this.mountId < -9.007199254740992E15) || (this.mountId > 9.007199254740992E15))
+         {
+            throw new Error("Forbidden value (" + this.mountId + ") on element mountId.");
+         }
+         else
+         {
+            output.writeDouble(this.mountId);
+            return;
+         }
       }
       
       public function deserialize(input:IDataInput) : void {
@@ -62,6 +70,14 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
       
       public function deserializeAs_ExchangeMountPaddockRemoveMessage(input:IDataInput) : void {
          this.mountId = input.readDouble();
+         if((this.mountId < -9.007199254740992E15) || (this.mountId > 9.007199254740992E15))
+         {
+            throw new Error("Forbidden value (" + this.mountId + ") on element of ExchangeMountPaddockRemoveMessage.mountId.");
+         }
+         else
+         {
+            return;
+         }
       }
    }
 }

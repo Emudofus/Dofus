@@ -97,7 +97,7 @@ package com.ankamagames.dofus.network.types.game.guild
          else
          {
             output.writeShort(this.rank);
-            if(this.givenExperience < 0)
+            if((this.givenExperience < 0) || (this.givenExperience > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.givenExperience + ") on element givenExperience.");
             }
@@ -163,7 +163,7 @@ package com.ankamagames.dofus.network.types.game.guild
          else
          {
             this.givenExperience = input.readDouble();
-            if(this.givenExperience < 0)
+            if((this.givenExperience < 0) || (this.givenExperience > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.givenExperience + ") on element of GuildMember.givenExperience.");
             }

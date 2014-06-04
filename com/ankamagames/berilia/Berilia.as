@@ -613,7 +613,7 @@ package com.ankamagames.berilia
          KernelEventsManager.getInstance().processCallback(BeriliaHookList.UiUnloaded,sName);
          dispatchEvent(new UiUnloadEvent(UiUnloadEvent.UNLOAD_UI_COMPLETE,sName));
          var stopTimer:int = getTimer();
-         _log.info(sName + " correctly unloaded in " + (stopTimer - startTimer) + "ms \n" + new Error().getStackTrace());
+         _log.info(sName + " correctly unloaded in " + (stopTimer - startTimer) + "ms");
          return true;
       }
       

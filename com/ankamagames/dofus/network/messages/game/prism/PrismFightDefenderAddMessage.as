@@ -71,10 +71,17 @@ package com.ankamagames.dofus.network.messages.game.prism
          else
          {
             output.writeShort(this.subAreaId);
-            output.writeDouble(this.fightId);
-            output.writeShort(this.defender.getTypeId());
-            this.defender.serialize(output);
-            return;
+            if((this.fightId < -9.007199254740992E15) || (this.fightId > 9.007199254740992E15))
+            {
+               throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+            }
+            else
+            {
+               output.writeDouble(this.fightId);
+               output.writeShort(this.defender.getTypeId());
+               this.defender.serialize(output);
+               return;
+            }
          }
       }
       
@@ -91,10 +98,17 @@ package com.ankamagames.dofus.network.messages.game.prism
          else
          {
             this.fightId = input.readDouble();
-            _id3 = input.readUnsignedShort();
-            this.defender = ProtocolTypeManager.getInstance(CharacterMinimalPlusLookInformations,_id3);
-            this.defender.deserialize(input);
-            return;
+            if((this.fightId < -9.007199254740992E15) || (this.fightId > 9.007199254740992E15))
+            {
+               throw new Error("Forbidden value (" + this.fightId + ") on element of PrismFightDefenderAddMessage.fightId.");
+            }
+            else
+            {
+               _id3 = input.readUnsignedShort();
+               this.defender = ProtocolTypeManager.getInstance(CharacterMinimalPlusLookInformations,_id3);
+               this.defender.deserialize(input);
+               return;
+            }
          }
       }
    }

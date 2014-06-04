@@ -120,7 +120,9 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.berilia.managers.HtmlManager;
    import com.ankamagames.dofus.network.enums.PlayerStateEnum;
    import com.ankamagames.dofus.network.types.game.context.roleplay.BasicGuildInformations;
+   import com.ankamagames.dofus.logic.common.managers.HyperlinkShowGuildManager;
    import com.ankamagames.dofus.network.types.game.context.roleplay.BasicAllianceInformations;
+   import com.ankamagames.dofus.logic.common.managers.HyperlinkShowAllianceManager;
    import com.ankamagames.dofus.logic.game.common.managers.SpeakingItemManager;
    import com.ankamagames.dofus.logic.common.managers.NotificationManager;
    import com.ankamagames.dofus.datacenter.npcs.TaxCollectorFirstname;
@@ -336,6 +338,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          var pwmsg:PopupWarningMessage = null;
          var csmsg:ChatServerMessage = null;
          var bubbleContent:String = null;
+         var showBubble:Boolean = false;
          var newContent:Array = null;
          var thinking:Boolean = false;
          var cscwomsg:ChatServerCopyWithObjectMessage = null;
@@ -735,6 +738,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is ChatServerMessage:
                csmsg = msg as ChatServerMessage;
+               showBubble = true;
                AccountManager.getInstance().setAccount(csmsg.senderName,csmsg.senderAccountId);
                if((!(csmsg.channel == RED_CHANNEL_ID)) && (!(csmsg.channel == ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE)) && ((this.socialFrame.isIgnored(csmsg.senderName,csmsg.senderAccountId)) || (this.socialFrame.isEnemy(csmsg.senderName))))
                {
@@ -766,10 +770,9 @@ package com.ankamagames.dofus.logic.game.common.frames
                   thinking = true;
                   bubbleContent = newContent[1].substr(7);
                }
-               else if((content.charAt(0) == "*") && (content.charAt(content.length - 1) == "*"))
+               else if((content.charAt(0) == "*") && (content.charAt(content.length - 1) == "*") || (content.substr(0,3).toLowerCase() == "/me"))
                {
-                  thinking = true;
-                  bubbleContent = newContent[1].substr(1,content.length - 2);
+                  showBubble = false;
                }
                
                KernelEventsManager.getInstance().processCallback(ChatHookList.ChatServer,csmsg.channel,csmsg.senderId,csmsg.senderName,content,this.getRealTimestamp(csmsg.timestamp),csmsg.fingerprint,false);
@@ -778,7 +781,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                {
                   return true;
                }
-               if(csmsg.channel == ChatActivableChannelsEnum.CHANNEL_GLOBAL)
+               if((csmsg.channel == ChatActivableChannelsEnum.CHANNEL_GLOBAL) && (showBubble))
                {
                   speakerEntity = DofusEntities.getEntity(csmsg.senderId) as IDisplayable;
                   if(speakerEntity == null)
@@ -1077,7 +1080,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is BasicTimeMessage:
                btmsg = msg as BasicTimeMessage;
                date2 = new Date();
-               TimeManager.getInstance().serverTimeLag = (btmsg.timestamp + btmsg.timezoneOffset * 60) * 1000 - date2.getTime();
+               TimeManager.getInstance().serverTimeLag = btmsg.timestamp + btmsg.timezoneOffset * 60 * 1000 - date2.getTime();
                TimeManager.getInstance().timezoneOffset = btmsg.timezoneOffset * 60 * 1000;
                TimeManager.getInstance().dofusTimeYearLag = -1370;
                return true;
@@ -1190,11 +1193,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                   {
                      if(socGroup is BasicGuildInformations)
                      {
-                        text = text + (" " + I18n.getUiText("ui.common.guild") + " {guild," + (socGroup as BasicGuildInformations).guildId + "::" + (socGroup as BasicGuildInformations).guildName + "}");
+                        text = text + (" " + I18n.getUiText("ui.common.guild") + " " + HyperlinkShowGuildManager.getLink(socGroup as BasicGuildInformations,(socGroup as BasicGuildInformations).guildName));
                      }
                      else if(socGroup is BasicAllianceInformations)
                      {
-                        text = text + (", " + I18n.getUiText("ui.common.alliance").toLowerCase() + " {alliance," + (socGroup as BasicAllianceInformations).allianceId + "::[" + (socGroup as BasicAllianceInformations).allianceTag + "]}");
+                        text = text + (", " + I18n.getUiText("ui.common.alliance").toLowerCase() + " " + HyperlinkShowAllianceManager.getLink(socGroup as BasicAllianceInformations,"[" + (socGroup as BasicAllianceInformations).allianceTag + "]"));
                      }
                      
                   }

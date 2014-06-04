@@ -64,13 +64,13 @@ package com.ankamagames.dofus.logic.game.fight.miscs
       
       public static const NONE_ELEMENT:int = 5;
       
-      private static const EFFECTSHAPE_DEFAULT_AREA_SIZE:int = 1;
+      public static const EFFECTSHAPE_DEFAULT_AREA_SIZE:int = 1;
       
-      private static const EFFECTSHAPE_DEFAULT_MIN_AREA_SIZE:int = 0;
+      public static const EFFECTSHAPE_DEFAULT_MIN_AREA_SIZE:int = 0;
       
-      private static const EFFECTSHAPE_DEFAULT_EFFICIENCY:int = 10;
+      public static const EFFECTSHAPE_DEFAULT_EFFICIENCY:int = 10;
       
-      private static const EFFECTSHAPE_DEFAULT_MAX_EFFICIENCY_APPLY:int = 4;
+      public static const EFFECTSHAPE_DEFAULT_MAX_EFFICIENCY_APPLY:int = 4;
       
       private static const DAMAGE_NOT_BOOSTED:int = 1;
       
@@ -126,6 +126,17 @@ package com.ankamagames.dofus.logic.game.fight.miscs
             {
                affected = true;
                break;
+            }
+         }
+         if(!affected)
+         {
+            for each(effi in pSpell.criticalEffect)
+            {
+               if(((effi.category == 2) || (!(HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1)) || (effi.effectId == 5) && (targetCanBePushed)) && (verifySpellEffectMask(pCasterId,pTargetId,effi)))
+               {
+                  affected = true;
+                  break;
+               }
             }
          }
          return affected;
@@ -338,6 +349,10 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          }
          if(targetIsCaster)
          {
+            if(pEffect.effectId == 90)
+            {
+               return true;
+            }
             if(pEffect.targetMask.indexOf("g") == -1)
             {
                targetMaskPattern = "caC";
@@ -388,9 +403,9 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                   switch(exclusiveMask)
                   {
                      case "b":
-                        continue;
+                        break;
                      case "B":
-                        continue;
+                        break;
                      case "e":
                         maskState = parseInt(exclusiveMaskParam);
                         if(exclusiveMaskCasterOnly)
@@ -401,7 +416,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                         {
                            verify = (!targetStates) || (targetStates.indexOf(maskState) == -1);
                         }
-                        continue;
+                        break;
                      case "E":
                         maskState = parseInt(exclusiveMaskParam);
                         if(exclusiveMaskCasterOnly)
@@ -412,42 +427,44 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                         {
                            verify = (targetStates) && (!(targetStates.indexOf(maskState) == -1));
                         }
-                        continue;
+                        break;
                      case "f":
                         verify = (!monsterInfo) || (!(monsterInfo.creatureGenericId == parseInt(exclusiveMaskParam)));
-                        continue;
+                        break;
                      case "F":
                         verify = (monsterInfo) && (monsterInfo.creatureGenericId == parseInt(exclusiveMaskParam));
-                        continue;
+                        break;
                      case "z":
-                        continue;
+                        break;
                      case "Z":
-                        continue;
+                        break;
                      case "K":
-                        continue;
+                        break;
                      case "o":
-                        continue;
+                        break;
                      case "O":
                         verify = (!(pTriggeringSpellCasterId == 0)) && (pTargetId == pTriggeringSpellCasterId);
-                        continue;
+                        break;
                      case "p":
-                        continue;
+                        break;
                      case "P":
-                        continue;
+                        break;
                      case "T":
-                        continue;
+                        break;
                      case "W":
-                        continue;
+                        break;
                      case "U":
-                        continue;
+                        break;
                      case "v":
                         verify = targetInfos.stats.lifePoints / targetInfos.stats.maxLifePoints * 100 > parseInt(exclusiveMaskParam);
-                        continue;
+                        break;
                      case "V":
                         verify = targetInfos.stats.lifePoints / targetInfos.stats.maxLifePoints * 100 <= parseInt(exclusiveMaskParam);
-                        continue;
-                     default:
-                        continue;
+                        break;
+                  }
+                  if(!verify)
+                  {
+                     return false;
                   }
                }
             }
@@ -552,6 +569,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                distance = getSquareDistance(pSpellImpactCell,pTargetCell);
                break;
             case SpellShapeEnum.minus:
+            case SpellShapeEnum.plus:
             case SpellShapeEnum.U:
                distance = getDistance(pSpellImpactCell,pTargetCell) / 2;
                break;

@@ -9,6 +9,8 @@ package com.ankamagames.berilia.types.uiDefinition
          super();
       }
       
+      public static var ID:uint = 10000;
+      
       public var name:String;
       
       public var strata:uint = 1;

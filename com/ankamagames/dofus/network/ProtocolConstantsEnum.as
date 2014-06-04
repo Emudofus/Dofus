@@ -43,6 +43,10 @@ package com.ankamagames.dofus.network
       
       public static const MAX_ALLIANCETAG_LEN:int = 5;
       
+      public static const MIN_PARTY_NAME_LEN:int = 0;
+      
+      public static const MAX_PARTY_NAME_LEN:int = 25;
+      
       public static const MAX_PLAYER_COLOR:int = 5;
       
       public static const MAX_ENTITY_COLOR:int = 8;

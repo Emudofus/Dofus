@@ -53,7 +53,15 @@ package com.ankamagames.dofus.network.messages.game.context.mount
       }
       
       public function serializeAs_MountReleasedMessage(output:IDataOutput) : void {
-         output.writeDouble(this.mountId);
+         if((this.mountId < -9.007199254740992E15) || (this.mountId > 9.007199254740992E15))
+         {
+            throw new Error("Forbidden value (" + this.mountId + ") on element mountId.");
+         }
+         else
+         {
+            output.writeDouble(this.mountId);
+            return;
+         }
       }
       
       public function deserialize(input:IDataInput) : void {
@@ -62,6 +70,14 @@ package com.ankamagames.dofus.network.messages.game.context.mount
       
       public function deserializeAs_MountReleasedMessage(input:IDataInput) : void {
          this.mountId = input.readDouble();
+         if((this.mountId < -9.007199254740992E15) || (this.mountId > 9.007199254740992E15))
+         {
+            throw new Error("Forbidden value (" + this.mountId + ") on element of MountReleasedMessage.mountId.");
+         }
+         else
+         {
+            return;
+         }
       }
    }
 }

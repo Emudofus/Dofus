@@ -156,6 +156,10 @@ package com.ankamagames.berilia.components
       
       public var gridLineThickness:Number = 0.5;
       
+      public function get mapContainerBounds() : Rectangle {
+         return new Rectangle(this._mapContainer.x,this._mapContainer.y,this._mapContainer.width,this._mapContainer.height);
+      }
+      
       public function get finalized() : Boolean {
          return this._finalized;
       }
@@ -1173,12 +1177,12 @@ package com.ankamagames.berilia.components
          this._areaShapesContainer = new Sprite();
          this._areaShapesContainer.mouseEnabled = false;
          this._mapContainer.addChild(this._areaShapesContainer);
-         this._groupsContainer = new Sprite();
-         this._groupsContainer.mouseEnabled = false;
-         this._mapContainer.addChild(this._groupsContainer);
          this._layersContainer = new Sprite();
          this._mapContainer.addChild(this._layersContainer);
          this._layersContainer.mouseEnabled = false;
+         this._groupsContainer = new Sprite();
+         this._groupsContainer.mouseEnabled = false;
+         this._mapContainer.addChild(this._groupsContainer);
          if(this._enable3DMode)
          {
             t3d = new Sprite();
@@ -1362,7 +1366,6 @@ package com.ankamagames.berilia.components
                   
                   if((this._openedMapGroupElement) && (!this._openedMapGroupElement.opened) && (this._openedMapGroupElement.icons.length > 1))
                   {
-                     this._openedMapGroupElement.parent.addChild(this._openedMapGroupElement);
                      this._openedMapGroupElement.open();
                   }
                   if((!(movmsg.target is MapGroupElement)) && ((!this._openedMapGroupElement) || (this._openedMapGroupElement.icons.length > 1)))

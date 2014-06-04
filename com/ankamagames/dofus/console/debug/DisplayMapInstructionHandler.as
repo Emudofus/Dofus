@@ -6,12 +6,13 @@ package com.ankamagames.dofus.console.debug
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.console.ConsoleHandler;
    import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.types.positions.WorldPoint;
    import com.hurlant.util.Hex;
    import com.ankamagames.atouin.managers.MapDisplayManager;
    import com.ankamagames.atouin.utils.map.getWorldPointFromMapId;
-   import com.ankamagames.jerakine.types.positions.WorldPoint;
    import com.ankamagames.atouin.utils.map.getMapIdFromCoord;
    import com.ankamagames.atouin.Atouin;
+   import com.ankamagames.dofus.internalDatacenter.world.WorldPointWrapper;
    import com.ankamagames.atouin.managers.InteractiveCellManager;
    
    public class DisplayMapInstructionHandler extends Object implements ConsoleInstructionHandler
@@ -27,6 +28,8 @@ package com.ankamagames.dofus.console.debug
       
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
          var decryptionKey:ByteArray = null;
+         var worldPoint:WorldPoint = null;
+         var outputStr:String = null;
          var cacheMode:* = 0;
          this._console = console;
          switch(cmd)
@@ -62,7 +65,16 @@ package com.ankamagames.dofus.console.debug
                Atouin.getInstance().display(new WorldPoint());
                break;
             case "mapid":
-               console.output("Current map : " + MapDisplayManager.getInstance().currentMapPoint.x + "/" + MapDisplayManager.getInstance().currentMapPoint.y + " (map id : " + MapDisplayManager.getInstance().currentMapPoint.mapId + ")");
+               worldPoint = MapDisplayManager.getInstance().currentMapPoint;
+               if(worldPoint is WorldPointWrapper)
+               {
+                  outputStr = "Current map : " + worldPoint.x + "/" + worldPoint.y + " (relative : " + WorldPointWrapper(worldPoint).outdoorX + "/" + WorldPointWrapper(worldPoint).outdoorY + "), map id : " + worldPoint.mapId;
+               }
+               else
+               {
+                  outputStr = "Current map : " + worldPoint.x + "/" + worldPoint.y + ", map id : " + worldPoint.mapId;
+               }
+               console.output(outputStr);
                break;
             case "showcellid":
                Atouin.getInstance().options.showCellIdOnOver = !Atouin.getInstance().options.showCellIdOnOver;

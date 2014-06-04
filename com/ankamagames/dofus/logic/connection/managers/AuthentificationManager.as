@@ -15,10 +15,11 @@ package com.ankamagames.dofus.logic.connection.managers
    import by.blooddy.crypto.MD5;
    import com.ankamagames.dofus.network.messages.connection.IdentificationMessage;
    import com.ankamagames.dofus.network.messages.connection.IdentificationAccountForceMessage;
-   import com.ankamagames.dofus.logic.connection.actions.LoginValidationWithTicketAction;
-   import com.ankamagames.jerakine.data.XmlConfig;
    import com.ankamagames.dofus.BuildInfos;
    import com.ankamagames.jerakine.utils.system.AirScanner;
+   import com.ankamagames.dofus.network.enums.BuildTypeEnum;
+   import com.ankamagames.dofus.logic.connection.actions.LoginValidationWithTicketAction;
+   import com.ankamagames.jerakine.data.XmlConfig;
    import com.ankamagames.dofus.network.enums.ClientInstallTypeEnum;
    import com.ankamagames.dofus.network.enums.ClientTechnologyEnum;
    import com.ankamagames.jerakine.utils.crypto.RSA;
@@ -62,7 +63,7 @@ package com.ankamagames.dofus.logic.connection.managers
       
       private var _verifyKey:Class;
       
-      public var gameServerTicket:String;
+      private var _gameServerTicket:String;
       
       public var ankamaPortalKey:String;
       
@@ -71,6 +72,14 @@ package com.ankamagames.dofus.logic.connection.managers
       public var nextToken:String;
       
       public var tokenMode:Boolean = false;
+      
+      public function get gameServerTicket() : String {
+         return this._gameServerTicket;
+      }
+      
+      public function set gameServerTicket(value:String) : void {
+         this._gameServerTicket = value;
+      }
       
       public function get salt() : String {
          return this._salt;
@@ -123,6 +132,11 @@ package com.ankamagames.dofus.logic.connection.managers
          var token:String = null;
          var login:Array = null;
          var iafmsg:IdentificationAccountForceMessage = null;
+         var buildType:uint = BuildInfos.BUILD_VERSION.buildType;
+         if((AirScanner.isStreamingVersion()) && (BuildInfos.BUILD_VERSION.buildType == BuildTypeEnum.BETA))
+         {
+            buildType = BuildTypeEnum.RELEASE;
+         }
          if(this._lva.username.indexOf("|") == -1)
          {
             imsg = new IdentificationMessage();
@@ -138,14 +152,14 @@ package com.ankamagames.dofus.logic.connection.managers
                this.ankamaPortalKey = this.cipherMd5String(this._lva.password);
                imsg.initIdentificationMessage(imsg.version,XmlConfig.getInstance().getEntry("config.lang.current"),this.cipherRsa(this._lva.username,this._lva.password,this._certificate),this._lva.serverId,this._lva.autoSelectServer,!(this._certificate == null),false);
             }
-            imsg.version.initVersionExtended(BuildInfos.BUILD_VERSION.major,BuildInfos.BUILD_VERSION.minor,BuildInfos.BUILD_VERSION.release,BuildInfos.BUILD_REVISION,BuildInfos.BUILD_PATCH,BuildInfos.BUILD_VERSION.buildType,AirScanner.isStreamingVersion()?ClientInstallTypeEnum.CLIENT_STREAMING:ClientInstallTypeEnum.CLIENT_BUNDLE,AirScanner.hasAir()?ClientTechnologyEnum.CLIENT_AIR:ClientTechnologyEnum.CLIENT_FLASH);
+            imsg.version.initVersionExtended(BuildInfos.BUILD_VERSION.major,BuildInfos.BUILD_VERSION.minor,BuildInfos.BUILD_VERSION.release,BuildInfos.BUILD_REVISION,BuildInfos.BUILD_PATCH,buildType,AirScanner.isStreamingVersion()?ClientInstallTypeEnum.CLIENT_STREAMING:ClientInstallTypeEnum.CLIENT_BUNDLE,AirScanner.hasAir()?ClientTechnologyEnum.CLIENT_AIR:ClientTechnologyEnum.CLIENT_FLASH);
             return imsg;
          }
          this.ankamaPortalKey = this.cipherMd5String(this._lva.password);
          login = this._lva.username.split("|");
          iafmsg = new IdentificationAccountForceMessage();
          iafmsg.initIdentificationAccountForceMessage(iafmsg.version,XmlConfig.getInstance().getEntry("config.lang.current"),this.cipherRsa(login[0],this._lva.password,this._certificate),this._lva.serverId,this._lva.autoSelectServer,!(this._certificate == null),false,0,login[1]);
-         iafmsg.version.initVersionExtended(BuildInfos.BUILD_VERSION.major,BuildInfos.BUILD_VERSION.minor,BuildInfos.BUILD_VERSION.release,BuildInfos.BUILD_REVISION,BuildInfos.BUILD_PATCH,BuildInfos.BUILD_VERSION.buildType,AirScanner.isStreamingVersion()?ClientInstallTypeEnum.CLIENT_STREAMING:ClientInstallTypeEnum.CLIENT_BUNDLE,AirScanner.hasAir()?ClientTechnologyEnum.CLIENT_AIR:ClientTechnologyEnum.CLIENT_FLASH);
+         iafmsg.version.initVersionExtended(BuildInfos.BUILD_VERSION.major,BuildInfos.BUILD_VERSION.minor,BuildInfos.BUILD_VERSION.release,BuildInfos.BUILD_REVISION,BuildInfos.BUILD_PATCH,buildType,AirScanner.isStreamingVersion()?ClientInstallTypeEnum.CLIENT_STREAMING:ClientInstallTypeEnum.CLIENT_BUNDLE,AirScanner.hasAir()?ClientTechnologyEnum.CLIENT_AIR:ClientTechnologyEnum.CLIENT_FLASH);
          return iafmsg;
       }
       

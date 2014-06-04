@@ -381,7 +381,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                   this._alliancesOnTheHill.push(allianceOnTheHill);
                   i++;
                }
-               KernelEventsManager.getInstance().processCallback(AlignmentHookList.KohUpdate,this._alliancesOnTheHill,kumsg.allianceMapWinner,kumsg.allianceMapWinnerScore,kumsg.allianceMapMyAllianceScore);
+               KernelEventsManager.getInstance().processCallback(AlignmentHookList.KohUpdate,this._alliancesOnTheHill,kumsg.allianceMapWinner,kumsg.allianceMapWinnerScore,kumsg.allianceMapMyAllianceScore,kumsg.nextTickTime);
                return true;
             case msg is AllianceCreationStartedMessage:
                Kernel.getWorker().addFrame(this._allianceDialogFrame);
@@ -531,11 +531,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                   guildSheetForA = afsocialFrame.getGuildById(giai.guildId);
                   if(guildSheetForA)
                   {
-                     guildSheetForA.update(giai.guildId,giai.guildName,giai.guildEmblem,guildSheetForA.leaderId,guildSheetForA.leaderName,giai.guildLevel,giai.nbMembers,guildSheetForA.creationDate,guildSheetForA.members,guildSheetForA.nbConnectedMembers,guildSheetForA.nbTaxCollectors,guildSheetForA.lastActivity,giai.enabled,afmsg.infos.allianceId,afmsg.infos.allianceName,first);
+                     guildSheetForA.update(giai.guildId,giai.guildName,giai.guildEmblem,guildSheetForA.leaderId,guildSheetForA.leaderName,giai.guildLevel,giai.nbMembers,guildSheetForA.creationDate,guildSheetForA.members,guildSheetForA.nbConnectedMembers,guildSheetForA.nbTaxCollectors,guildSheetForA.lastActivity,giai.enabled,afmsg.infos.allianceId,afmsg.infos.allianceName,afmsg.infos.allianceTag,first);
                   }
                   else
                   {
-                     guildSheetForA = GuildFactSheetWrapper.create(giai.guildId,giai.guildName,giai.guildEmblem,0,"",giai.guildLevel,giai.nbMembers,0,null,0,0,0,giai.enabled,afmsg.infos.allianceId,afmsg.infos.allianceName,first);
+                     guildSheetForA = GuildFactSheetWrapper.create(giai.guildId,giai.guildName,giai.guildEmblem,0,"",giai.guildLevel,giai.nbMembers,0,null,0,0,0,giai.enabled,afmsg.infos.allianceId,afmsg.infos.allianceName,afmsg.infos.allianceTag,first);
                   }
                   nbAllianceMembers = nbAllianceMembers + giai.nbMembers;
                   afsocialFrame.updateGuildById(giai.guildId,guildSheetForA);
@@ -543,11 +543,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                }
                if(allianceSheet)
                {
-                  allianceSheet.update(afmsg.infos.allianceId,afmsg.infos.allianceTag,afmsg.infos.allianceName,afmsg.infos.allianceEmblem,afmsg.infos.creationDate,allianceGuilds.length,nbAllianceMembers,allianceGuilds,afmsg.controlledSubareaIds);
+                  allianceSheet.update(afmsg.infos.allianceId,afmsg.infos.allianceTag,afmsg.infos.allianceName,afmsg.infos.allianceEmblem,afmsg.infos.creationDate,allianceGuilds.length,nbAllianceMembers,allianceGuilds,afmsg.controlledSubareaIds,afmsg.leaderCharacterId,afmsg.leaderCharacterName);
                }
                else
                {
-                  allianceSheet = AllianceWrapper.create(afmsg.infos.allianceId,afmsg.infos.allianceTag,afmsg.infos.allianceName,afmsg.infos.allianceEmblem,afmsg.infos.creationDate,allianceGuilds.length,nbAllianceMembers,allianceGuilds,afmsg.controlledSubareaIds);
+                  allianceSheet = AllianceWrapper.create(afmsg.infos.allianceId,afmsg.infos.allianceTag,afmsg.infos.allianceName,afmsg.infos.allianceEmblem,afmsg.infos.creationDate,allianceGuilds.length,nbAllianceMembers,allianceGuilds,afmsg.controlledSubareaIds,afmsg.leaderCharacterId,afmsg.leaderCharacterName);
                   this._allAlliances[afmsg.infos.allianceId] = allianceSheet;
                }
                KernelEventsManager.getInstance().processCallback(SocialHookList.OpenOneAlliance,allianceSheet);
@@ -580,11 +580,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                   guildSheetForMyA = aisocialFrame.getGuildById(gifsi.guildId);
                   if(guildSheetForMyA)
                   {
-                     guildSheetForMyA.update(gifsi.guildId,gifsi.guildName,gifsi.guildEmblem,gifsi.leaderId,gifsi.leaderName,gifsi.guildLevel,gifsi.nbMembers,guildSheetForMyA.creationDate,guildSheetForMyA.members,gifsi.nbConnectedMembers,gifsi.nbTaxCollectors,gifsi.lastActivity,gifsi.enabled,aiimsg.allianceInfos.allianceId,aiimsg.allianceInfos.allianceName,first);
+                     guildSheetForMyA.update(gifsi.guildId,gifsi.guildName,gifsi.guildEmblem,gifsi.leaderId,gifsi.leaderName,gifsi.guildLevel,gifsi.nbMembers,guildSheetForMyA.creationDate,guildSheetForMyA.members,gifsi.nbConnectedMembers,gifsi.nbTaxCollectors,gifsi.lastActivity,gifsi.enabled,aiimsg.allianceInfos.allianceId,aiimsg.allianceInfos.allianceName,aiimsg.allianceInfos.allianceTag,first);
                   }
                   else
                   {
-                     guildSheetForMyA = GuildFactSheetWrapper.create(gifsi.guildId,gifsi.guildName,gifsi.guildEmblem,gifsi.leaderId,gifsi.leaderName,gifsi.guildLevel,gifsi.nbMembers,0,null,gifsi.nbConnectedMembers,gifsi.nbTaxCollectors,gifsi.lastActivity,gifsi.enabled,aiimsg.allianceInfos.allianceId,aiimsg.allianceInfos.allianceName,first);
+                     guildSheetForMyA = GuildFactSheetWrapper.create(gifsi.guildId,gifsi.guildName,gifsi.guildEmblem,gifsi.leaderId,gifsi.leaderName,gifsi.guildLevel,gifsi.nbMembers,0,null,gifsi.nbConnectedMembers,gifsi.nbTaxCollectors,gifsi.lastActivity,gifsi.enabled,aiimsg.allianceInfos.allianceId,aiimsg.allianceInfos.allianceName,aiimsg.allianceInfos.allianceTag,first);
                   }
                   nbMembersInAlliance = nbMembersInAlliance + gifsi.nbMembers;
                   aisocialFrame.updateGuildById(gifsi.guildId,guildSheetForMyA);

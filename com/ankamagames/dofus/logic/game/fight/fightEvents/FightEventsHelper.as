@@ -122,6 +122,20 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
          {
             fightEvent.params.push(_lastSpellId);
          }
+         if(fightEvent.name == FightEventEnum.FIGHTER_LIFE_LOSS)
+         {
+            i = 0;
+            while(i < num)
+            {
+               event = _events[i][0];
+               if((event.name == FightEventEnum.FIGHTER_REDUCED_DAMAGES) && (event.castingSpellId == fightEvent.castingSpellId) && (event.targetId == fightEvent.targetId))
+               {
+                  groupByType = false;
+                  break;
+               }
+               i++;
+            }
+         }
          if(groupByType)
          {
             i = 0;

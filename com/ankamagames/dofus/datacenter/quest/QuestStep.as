@@ -5,6 +5,7 @@ package com.ankamagames.dofus.datacenter.quest
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.logic.game.roleplay.managers.RoleplayManager;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.dofus.datacenter.npcs.NpcMessage;
@@ -19,10 +20,6 @@ package com.ankamagames.dofus.datacenter.quest
       protected static const _log:Logger;
       
       public static const MODULE:String = "QuestSteps";
-      
-      private static const REWARD_SCALE_CAP:Number = 1.5;
-      
-      private static const REWARD_REDUCED_SCALE:Number = 0.7;
       
       public static function getQuestStepById(id:int) : QuestStep {
          return GameData.getObject(MODULE,id) as QuestStep;
@@ -53,11 +50,11 @@ package com.ankamagames.dofus.datacenter.quest
       public var xpRatio:Number;
       
       public function get experienceReward() : uint {
-         return this.getExperienceReward(PlayedCharacterManager.getInstance().infos.level,PlayedCharacterManager.getInstance().experiencePercent);
+         return RoleplayManager.getInstance().getExperienceReward(PlayedCharacterManager.getInstance().infos.level,PlayedCharacterManager.getInstance().experiencePercent,this.optimalLevel,this.xpRatio,this.duration);
       }
       
       public function get kamasReward() : uint {
-         return this.getKamasReward(PlayedCharacterManager.getInstance().infos.level);
+         return RoleplayManager.getInstance().getKamasReward(this.kamasScaleWithPlayerLevel,this.optimalLevel,this.kamasRatio,this.duration);
       }
       
       public function get itemsReward() : Vector.<Vector.<uint>> {
@@ -156,24 +153,12 @@ package com.ankamagames.dofus.datacenter.quest
          }
       }
       
-      public function getKamasReward(pPlayerLevel:int) : int {
-         var lvl:int = this.kamasScaleWithPlayerLevel?pPlayerLevel:this.optimalLevel;
-         return (Math.pow(lvl,2) + 20 * lvl - 20) * this.kamasRatio * this.duration;
+      public function getKamasReward(pPlayerLevel:int) : Number {
+         return RoleplayManager.getInstance().getKamasReward(this.kamasScaleWithPlayerLevel,this.optimalLevel,this.kamasRatio,this.duration,pPlayerLevel);
       }
       
-      public function getExperienceReward(pPlayerLevel:int, pXpBonus:int) : int {
-         var rewLevel:* = 0;
-         var xpBonus:Number = 1 + pXpBonus / 100;
-         if(pPlayerLevel > this.optimalLevel)
-         {
-            rewLevel = Math.min(pPlayerLevel,this.optimalLevel * REWARD_SCALE_CAP);
-            return ((1 - REWARD_REDUCED_SCALE) * this.getFixeExperienceReward(this.optimalLevel) + REWARD_REDUCED_SCALE * this.getFixeExperienceReward(rewLevel)) * xpBonus;
-         }
-         return this.getFixeExperienceReward(pPlayerLevel) * xpBonus;
-      }
-      
-      private function getFixeExperienceReward(level:int) : int {
-         return level * Math.pow(100 + 2 * level,2) / 20 * this.duration * this.xpRatio;
+      public function getExperienceReward(pPlayerLevel:int, pXpBonus:int) : Number {
+         return RoleplayManager.getInstance().getExperienceReward(pPlayerLevel,pXpBonus,this.optimalLevel,this.xpRatio,this.duration);
       }
    }
 }

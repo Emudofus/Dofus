@@ -10,6 +10,7 @@ package com.ankamagames.dofus.types.sequences
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.tiphon.events.TiphonEvent;
    import com.ankamagames.jerakine.enum.AddGfxModeEnum;
+   import com.ankamagames.atouin.managers.MapDisplayManager;
    import com.ankamagames.atouin.enums.PlacementStrataEnums;
    import flash.events.Event;
    import flash.events.TimerEvent;
@@ -88,7 +89,11 @@ package com.ankamagames.dofus.types.sequences
                break;
          }
          this._entity.position = MapPoint.fromCellId(this._cellId);
-         if(this._popUnderPlayer)
+         if(MapDisplayManager.getInstance().renderer.isCellUnderFixture(this._cellId))
+         {
+            this._entity.display(PlacementStrataEnums.STRATA_FOREGROUND);
+         }
+         else if(this._popUnderPlayer)
          {
             this._entity.display(PlacementStrataEnums.STRATA_SPELL_BACKGROUND);
          }
@@ -96,6 +101,7 @@ package com.ankamagames.dofus.types.sequences
          {
             this._entity.display(PlacementStrataEnums.STRATA_SPELL_FOREGROUND);
          }
+         
          this._entity.y = this._entity.y + this._yOffset;
       }
       

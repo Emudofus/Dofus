@@ -73,6 +73,8 @@ package com.ankamagames.dofus.internalDatacenter.guild
          aw.nbMembers = 0;
          aw.enabled = false;
          aw.guilds.length = 0;
+         aw.leaderCharacterId = o.leaderCharacterId;
+         aw.leaderCharacterName = o.leaderCharacterName;
          var i:uint = 0;
          while(i < o.guilds.length)
          {
@@ -132,13 +134,15 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return aw;
       }
       
-      public static function create(pAllianceId:uint, pAllianceTag:String, pAllianceName:String, pAllianceEmblem:GuildEmblem, creationDate:Number = 0, nbGuilds:uint = 0, nbMembers:uint = 0, guilds:Vector.<GuildFactSheetWrapper> = null, prismIds:Vector.<uint> = null) : AllianceWrapper {
+      public static function create(pAllianceId:uint, pAllianceTag:String, pAllianceName:String, pAllianceEmblem:GuildEmblem, creationDate:Number = 0, nbGuilds:uint = 0, nbMembers:uint = 0, guilds:Vector.<GuildFactSheetWrapper> = null, prismIds:Vector.<uint> = null, pAllianceLeaderId:int = 0, pAllianceLeaderName:String = "") : AllianceWrapper {
          var item:AllianceWrapper = null;
          var g:GuildFactSheetWrapper = null;
          item = new AllianceWrapper();
          item.allianceId = pAllianceId;
          item._allianceTag = pAllianceTag;
          item._allianceName = pAllianceName;
+         item.leaderCharacterId = pAllianceLeaderId;
+         item.leaderCharacterName = pAllianceLeaderName;
          if(pAllianceEmblem != null)
          {
             item.upEmblem = EmblemWrapper.create(pAllianceEmblem.symbolShape,EmblemWrapper.UP,pAllianceEmblem.symbolColor);
@@ -213,6 +217,10 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       public var leaderGuildId:uint = 0;
       
+      public var leaderCharacterId:uint = 0;
+      
+      public var leaderCharacterName:String = "";
+      
       public var guilds:Vector.<GuildFactSheetWrapper>;
       
       public var prismIds:Vector.<uint>;
@@ -262,17 +270,19 @@ package com.ankamagames.dofus.internalDatacenter.guild
       }
       
       public function clone() : AllianceWrapper {
-         var wrapper:AllianceWrapper = create(this.allianceId,this.allianceTag,this.allianceName,null,this.creationDate,this.nbGuilds,this.nbMembers,this.guilds,this.prismIds);
+         var wrapper:AllianceWrapper = create(this.allianceId,this.allianceTag,this.allianceName,null,this.creationDate,this.nbGuilds,this.nbMembers,this.guilds,this.prismIds,this.leaderCharacterId,this.leaderCharacterName);
          wrapper.upEmblem = this.upEmblem;
          wrapper.backEmblem = this.backEmblem;
          return wrapper;
       }
       
-      public function update(pAllianceId:uint, pAllianceTag:String, pAllianceName:String, pAllianceEmblem:GuildEmblem, creationDate:Number = 0, nbGuilds:uint = 0, nbMembers:uint = 0, guilds:Vector.<GuildFactSheetWrapper> = null, prismIds:Vector.<uint> = null) : void {
+      public function update(pAllianceId:uint, pAllianceTag:String, pAllianceName:String, pAllianceEmblem:GuildEmblem, creationDate:Number = 0, nbGuilds:uint = 0, nbMembers:uint = 0, guilds:Vector.<GuildFactSheetWrapper> = null, prismIds:Vector.<uint> = null, pAllianceLeaderId:int = 0, pAllianceLeaderName:String = "") : void {
          var g:GuildFactSheetWrapper = null;
          this.allianceId = pAllianceId;
          this._allianceTag = pAllianceTag;
          this._allianceName = pAllianceName;
+         this.leaderCharacterId = pAllianceLeaderId;
+         this.leaderCharacterName = pAllianceLeaderName;
          this.upEmblem.update(pAllianceEmblem.symbolShape,EmblemWrapper.UP,pAllianceEmblem.symbolColor);
          this.backEmblem.update(pAllianceEmblem.backgroundShape,EmblemWrapper.BACK,pAllianceEmblem.backgroundColor);
          this.creationDate = creationDate;

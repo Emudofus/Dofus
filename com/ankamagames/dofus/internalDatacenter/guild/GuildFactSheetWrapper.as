@@ -18,7 +18,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
       
       protected static const _log:Logger;
       
-      public static function create(guildId:uint, guildName:String, guildEmblem:GuildEmblem, leaderId:uint, leaderName:String, guildLevel:uint, nbMembers:uint, creationDate:Number, members:Vector.<CharacterMinimalInformations>, nbConnectedMembers:uint = 0, nbTaxCollectors:uint = 0, lastActivity:Number = 0, enabled:Boolean = true, allianceId:uint = 0, allianceName:String = "", allianceLeader:Boolean = false) : GuildFactSheetWrapper {
+      public static function create(guildId:uint, guildName:String, guildEmblem:GuildEmblem, leaderId:uint, leaderName:String, guildLevel:uint, nbMembers:uint, creationDate:Number, members:Vector.<CharacterMinimalInformations>, nbConnectedMembers:uint = 0, nbTaxCollectors:uint = 0, lastActivity:Number = 0, enabled:Boolean = true, allianceId:uint = 0, allianceName:String = "", allianceTag:String = "", allianceLeader:Boolean = false) : GuildFactSheetWrapper {
          var nowDate:Date = null;
          var item:GuildFactSheetWrapper = new GuildFactSheetWrapper();
          item.guildId = guildId;
@@ -36,6 +36,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          item._leaderName = leaderName;
          item.allianceId = allianceId;
          item._allianceName = allianceName;
+         item._allianceTag = allianceTag;
          item.allianceLeader = allianceLeader;
          item.nbConnectedMembers = nbConnectedMembers;
          item.nbTaxCollectors = nbTaxCollectors;
@@ -58,6 +59,8 @@ package com.ankamagames.dofus.internalDatacenter.guild
       private var _leaderName:String = "";
       
       private var _allianceName:String;
+      
+      private var _allianceTag:String;
       
       public var guildId:uint;
       
@@ -109,6 +112,14 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return this._allianceName;
       }
       
+      public function get allianceTag() : String {
+         if(this._allianceTag == "#TAG#")
+         {
+            return I18n.getUiText("ui.alliance.noTag");
+         }
+         return this._allianceTag;
+      }
+      
       public function get leaderName() : String {
          if((this._leaderName == "") && (this.members) && (this.members.length > 0))
          {
@@ -117,7 +128,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          return this._leaderName;
       }
       
-      public function update(guildId:uint, guildName:String, guildEmblem:GuildEmblem, leaderId:uint, leaderName:String, guildLevel:uint, nbMembers:uint, creationDate:Number, members:Vector.<CharacterMinimalInformations>, nbConnectedMembers:uint = 0, nbTaxCollectors:uint = 0, lastActivity:Number = 0, enabled:Boolean = true, allianceId:uint = 0, allianceName:String = "", allianceLeader:Boolean = false) : void {
+      public function update(guildId:uint, guildName:String, guildEmblem:GuildEmblem, leaderId:uint, leaderName:String, guildLevel:uint, nbMembers:uint, creationDate:Number, members:Vector.<CharacterMinimalInformations>, nbConnectedMembers:uint = 0, nbTaxCollectors:uint = 0, lastActivity:Number = 0, enabled:Boolean = true, allianceId:uint = 0, allianceName:String = "", allianceTag:String = "", allianceLeader:Boolean = false) : void {
          var nowDate:Date = null;
          this.guildId = guildId;
          this._guildName = guildName;
@@ -131,6 +142,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
          this._leaderName = leaderName;
          this.allianceId = allianceId;
          this._allianceName = allianceName;
+         this._allianceTag = allianceTag;
          this.allianceLeader = allianceLeader;
          this.nbConnectedMembers = nbConnectedMembers;
          this.nbTaxCollectors = nbTaxCollectors;

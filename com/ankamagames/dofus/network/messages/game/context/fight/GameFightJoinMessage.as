@@ -26,8 +26,6 @@ package com.ankamagames.dofus.network.messages.game.context.fight
       
       public var canSayReady:Boolean = false;
       
-      public var isSpectator:Boolean = false;
-      
       public var isFightStarted:Boolean = false;
       
       public var timeMaxBeforeFightStart:uint = 0;
@@ -38,10 +36,9 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          return 702;
       }
       
-      public function initGameFightJoinMessage(canBeCancelled:Boolean = false, canSayReady:Boolean = false, isSpectator:Boolean = false, isFightStarted:Boolean = false, timeMaxBeforeFightStart:uint = 0, fightType:uint = 0) : GameFightJoinMessage {
+      public function initGameFightJoinMessage(canBeCancelled:Boolean = false, canSayReady:Boolean = false, isFightStarted:Boolean = false, timeMaxBeforeFightStart:uint = 0, fightType:uint = 0) : GameFightJoinMessage {
          this.canBeCancelled = canBeCancelled;
          this.canSayReady = canSayReady;
-         this.isSpectator = isSpectator;
          this.isFightStarted = isFightStarted;
          this.timeMaxBeforeFightStart = timeMaxBeforeFightStart;
          this.fightType = fightType;
@@ -52,7 +49,6 @@ package com.ankamagames.dofus.network.messages.game.context.fight
       override public function reset() : void {
          this.canBeCancelled = false;
          this.canSayReady = false;
-         this.isSpectator = false;
          this.isFightStarted = false;
          this.timeMaxBeforeFightStart = 0;
          this.fightType = 0;
@@ -77,8 +73,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          var _box0:uint = 0;
          _box0 = BooleanByteWrapper.setFlag(_box0,0,this.canBeCancelled);
          _box0 = BooleanByteWrapper.setFlag(_box0,1,this.canSayReady);
-         _box0 = BooleanByteWrapper.setFlag(_box0,2,this.isSpectator);
-         _box0 = BooleanByteWrapper.setFlag(_box0,3,this.isFightStarted);
+         _box0 = BooleanByteWrapper.setFlag(_box0,2,this.isFightStarted);
          output.writeByte(_box0);
          if(this.timeMaxBeforeFightStart < 0)
          {
@@ -100,8 +95,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          var _box0:uint = input.readByte();
          this.canBeCancelled = BooleanByteWrapper.getFlag(_box0,0);
          this.canSayReady = BooleanByteWrapper.getFlag(_box0,1);
-         this.isSpectator = BooleanByteWrapper.getFlag(_box0,2);
-         this.isFightStarted = BooleanByteWrapper.getFlag(_box0,3);
+         this.isFightStarted = BooleanByteWrapper.getFlag(_box0,2);
          this.timeMaxBeforeFightStart = input.readInt();
          if(this.timeMaxBeforeFightStart < 0)
          {

@@ -114,6 +114,7 @@ package com.ankamagames.atouin.managers
       }
       
       public function updateMap() : void {
+         this._lastCellId = -1;
          if(this._enable)
          {
             this._shapeTop.mouseEnabled = !(this.findNearestCell(this._shapeTop).cell == -1);

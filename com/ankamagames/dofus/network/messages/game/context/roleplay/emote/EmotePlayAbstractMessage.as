@@ -64,8 +64,15 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.emote
          else
          {
             output.writeByte(this.emoteId);
-            output.writeDouble(this.emoteStartTime);
-            return;
+            if((this.emoteStartTime < -9.007199254740992E15) || (this.emoteStartTime > 9.007199254740992E15))
+            {
+               throw new Error("Forbidden value (" + this.emoteStartTime + ") on element emoteStartTime.");
+            }
+            else
+            {
+               output.writeDouble(this.emoteStartTime);
+               return;
+            }
          }
       }
       
@@ -82,7 +89,14 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.emote
          else
          {
             this.emoteStartTime = input.readDouble();
-            return;
+            if((this.emoteStartTime < -9.007199254740992E15) || (this.emoteStartTime > 9.007199254740992E15))
+            {
+               throw new Error("Forbidden value (" + this.emoteStartTime + ") on element of EmotePlayAbstractMessage.emoteStartTime.");
+            }
+            else
+            {
+               return;
+            }
          }
       }
    }

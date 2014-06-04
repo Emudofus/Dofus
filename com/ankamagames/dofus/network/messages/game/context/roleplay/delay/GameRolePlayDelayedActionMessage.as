@@ -63,7 +63,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.delay
       public function serializeAs_GameRolePlayDelayedActionMessage(output:IDataOutput) : void {
          output.writeInt(this.delayedCharacterId);
          output.writeByte(this.delayTypeId);
-         if(this.delayEndTime < 0)
+         if((this.delayEndTime < 0) || (this.delayEndTime > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.delayEndTime + ") on element delayEndTime.");
          }
@@ -88,7 +88,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.delay
          else
          {
             this.delayEndTime = input.readDouble();
-            if(this.delayEndTime < 0)
+            if((this.delayEndTime < 0) || (this.delayEndTime > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.delayEndTime + ") on element of GameRolePlayDelayedActionMessage.delayEndTime.");
             }

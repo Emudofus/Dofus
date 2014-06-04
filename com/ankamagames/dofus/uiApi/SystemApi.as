@@ -93,6 +93,7 @@ package com.ankamagames.dofus.uiApi
    import flash.desktop.ClipboardFormats;
    import com.ankamagames.jerakine.utils.system.CommandLineArguments;
    import com.ankamagames.dofus.modules.utils.ModuleInstallerFrame;
+   import com.ankamagames.jerakine.handlers.HumanInputHandler;
    import com.ankamagames.dofus.logic.connection.managers.AuthentificationManager;
    import com.ankamagames.dofus.misc.utils.frames.LuaScriptRecorderFrame;
    import com.ankamagames.jerakine.logger.Log;
@@ -536,8 +537,8 @@ package com.ankamagames.dofus.uiApi
          KernelEventsManager.getInstance().processCallback(hook,params);
       }
       
-      public function showWorld(b:Boolean, resetAnimations:Boolean = false) : void {
-         Atouin.getInstance().showWorld(b,resetAnimations);
+      public function showWorld(b:Boolean) : void {
+         Atouin.getInstance().showWorld(b);
       }
       
       public function worldIsVisible() : Boolean {
@@ -777,8 +778,8 @@ package com.ankamagames.dofus.uiApi
          ComponentInternalAccessor.access(target,"load")(ur);
       }
       
-      public function goToSupportFAQ(faqId:uint) : void {
-         var ur:URLRequest = new URLRequest(I18n.getUiText("ui.link.support.faq",[faqId]));
+      public function goToSupportFAQ(faqURL:String) : void {
+         var ur:URLRequest = new URLRequest(faqURL);
          navigateToURL(ur);
       }
       
@@ -1059,6 +1060,10 @@ package com.ankamagames.dofus.uiApi
          }
          this._log.debug("Updater version : " + CommandLineArguments.getInstance().getArgument("updater_version"));
          return CommandLineArguments.getInstance().getArgument("updater_version") == "v2";
+      }
+      
+      public function isKeyDown(keyCode:uint) : Boolean {
+         return HumanInputHandler.getInstance().getKeyboardPoll().isDown(keyCode);
       }
       
       private function getAnkamaPortalUrlParams() : URLVariables {

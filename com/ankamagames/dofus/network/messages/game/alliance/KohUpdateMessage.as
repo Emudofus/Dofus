@@ -154,7 +154,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
             else
             {
                output.writeInt(this.allianceMapMyAllianceScore);
-               if(this.nextTickTime < 0)
+               if((this.nextTickTime < 0) || (this.nextTickTime > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.nextTickTime + ") on element nextTickTime.");
                }
@@ -250,7 +250,7 @@ package com.ankamagames.dofus.network.messages.game.alliance
             else
             {
                this.nextTickTime = input.readDouble();
-               if(this.nextTickTime < 0)
+               if((this.nextTickTime < 0) || (this.nextTickTime > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.nextTickTime + ") on element of KohUpdateMessage.nextTickTime.");
                }

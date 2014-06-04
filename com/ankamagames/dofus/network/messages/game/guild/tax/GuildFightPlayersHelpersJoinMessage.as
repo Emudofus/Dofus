@@ -59,7 +59,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
       }
       
       public function serializeAs_GuildFightPlayersHelpersJoinMessage(output:IDataOutput) : void {
-         if(this.fightId < 0)
+         if((this.fightId < 0) || (this.fightId > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
          }
@@ -77,7 +77,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
       
       public function deserializeAs_GuildFightPlayersHelpersJoinMessage(input:IDataInput) : void {
          this.fightId = input.readDouble();
-         if(this.fightId < 0)
+         if((this.fightId < 0) || (this.fightId > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.fightId + ") on element of GuildFightPlayersHelpersJoinMessage.fightId.");
          }

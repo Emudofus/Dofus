@@ -41,6 +41,10 @@ package com.ankamagames.dofus.internalDatacenter.items
       
       public static const ITEM_TYPE_LIVING_OBJECT:uint = 113;
       
+      public static const ITEM_TYPE_PET_GHOST:uint = 90;
+      
+      public static const ITEM_TYPE_PETSMOUNT_GHOST:uint = 124;
+      
       public static const ACTION_ID_LIVING_OBJECT_FOOD_DATE:uint = 808;
       
       public static const ACTION_ID_LIVING_OBJECT_ID:uint = 970;
@@ -267,12 +271,15 @@ package com.ankamagames.dofus.internalDatacenter.items
          {
             return false;
          }
-         for each(effect in this.effectsList)
+         if((!(typeId == ITEM_TYPE_PET_GHOST)) && (!(typeId == ITEM_TYPE_PETSMOUNT_GHOST)))
          {
-            if(effect.actionId == ACTION_ITEM_SKIN_ITEM)
+            for each(effect in this.effectsList)
             {
-               this._mimicryItemSkinGID = (effect as ObjectEffectInteger).value;
-               return true;
+               if(effect.actionId == ACTION_ITEM_SKIN_ITEM)
+               {
+                  this._mimicryItemSkinGID = (effect as ObjectEffectInteger).value;
+                  return true;
+               }
             }
          }
          return false;

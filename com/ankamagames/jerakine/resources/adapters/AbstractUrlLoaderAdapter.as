@@ -3,11 +3,18 @@ package com.ankamagames.jerakine.resources.adapters
    import com.ankamagames.jerakine.pools.PoolableURLLoader;
    import com.ankamagames.jerakine.resources.IResourceObserver;
    import com.ankamagames.jerakine.types.Uri;
-   import flash.errors.IllegalOperationError;
+   import flash.filesystem.FileStream;
    import flash.net.URLRequest;
-   import flash.net.URLRequestHeader;
-   import flash.utils.ByteArray;
+   import flash.errors.IllegalOperationError;
+   import flash.filesystem.File;
+   import com.ankamagames.jerakine.utils.system.SystemManager;
+   import com.ankamagames.jerakine.enum.OperatingSystem;
+   import com.ankamagames.jerakine.utils.system.AirScanner;
+   import flash.filesystem.FileMode;
    import flash.net.URLLoaderDataFormat;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.resources.ResourceErrorCode;
+   import flash.net.URLRequestHeader;
    import com.ankamagames.jerakine.utils.errors.AbstractMethodCallError;
    import com.ankamagames.jerakine.pools.PoolsManager;
    import flash.events.Event;
@@ -15,7 +22,6 @@ package com.ankamagames.jerakine.resources.adapters
    import flash.events.SecurityErrorEvent;
    import flash.events.ProgressEvent;
    import flash.events.ErrorEvent;
-   import com.ankamagames.jerakine.resources.ResourceErrorCode;
    
    public class AbstractUrlLoaderAdapter extends Object
    {
@@ -33,6 +39,10 @@ package com.ankamagames.jerakine.resources.adapters
       private var _dispatchProgress:Boolean;
       
       public function loadDirectly(uri:Uri, path:String, observer:IResourceObserver, dispatchProgress:Boolean) : void {
+         var fs:FileStream = null;
+         var dataFormat:String = null;
+         var data:* = undefined;
+         var r:URLRequest = null;
          if(this._ldr)
          {
             throw new IllegalOperationError("A single adapter can\'t handle two simultaneous loadings.");
@@ -42,10 +52,38 @@ package com.ankamagames.jerakine.resources.adapters
             this._observer = observer;
             this._uri = uri;
             this._dispatchProgress = dispatchProgress;
-            this.prepareLoader();
-            r = new URLRequest(path);
-            r.requestHeaders = [new URLRequestHeader("pragma","no-cache")];
-            this._ldr.load(r);
+            appUri = new Uri(File.applicationDirectory.nativePath);
+            if((SystemManager.getSingleton().os == OperatingSystem.MAC_OS) && (!AirScanner.isStreamingVersion()) && (!(path.indexOf(appUri.path) == -1)))
+            {
+               try
+               {
+                  fs = new FileStream();
+                  dataFormat = this.getDataFormat();
+                  fs.open(uri.toFile(),FileMode.READ);
+                  if(dataFormat == URLLoaderDataFormat.TEXT)
+                  {
+                     data = fs.readUTFBytes(fs.bytesAvailable);
+                  }
+                  else
+                  {
+                     data = new ByteArray();
+                     fs.readBytes(data);
+                  }
+                  fs.close();
+                  this.process(dataFormat,data);
+               }
+               catch(error:Error)
+               {
+                  _observer.onFailed(_uri,"Loading file " + uri + " through FileStream failed",ResourceErrorCode.RESOURCE_NOT_FOUND);
+               }
+            }
+            else
+            {
+               this.prepareLoader();
+               r = new URLRequest(path);
+               r.requestHeaders = [new URLRequestHeader("pragma","no-cache")];
+               this._ldr.load(r);
+            }
             return;
          }
       }

@@ -37,8 +37,6 @@ package com.ankamagames.dofus.misc.utils
       
       private static const MIN_SCALE:Number = 1;
       
-      private static const OFFSCREEN_Y:Number = 16;
-      
       private var _zoom:Number;
       
       private var _entityToFollow:AnimatedCharacter;
@@ -131,7 +129,7 @@ package com.ankamagames.dofus.misc.utils
             finalY = -pTargetY * pTargetZoom + CENTER_Y;
             if((LASTCELL_X - pTargetX) * pTargetZoom < LASTCELL_X / 2)
             {
-               finalX = finalX + (CENTER_X - (1262 - pTargetX) * pTargetZoom);
+               finalX = finalX + (CENTER_X - (1280 - pTargetX) * pTargetZoom);
                if(finalX < -pTargetX * pTargetZoom)
                {
                   finalX = -pTargetX * pTargetZoom + CENTER_X;
@@ -144,12 +142,11 @@ package com.ankamagames.dofus.misc.utils
             
             if((LASTCELL_Y - pTargetY) * pTargetZoom < LASTCELL_Y / 2)
             {
-               finalY = finalY + (CENTER_Y - (876 - OFFSCREEN_Y - pTargetY) * pTargetZoom);
+               finalY = finalY + (CENTER_Y - (874 - pTargetY) * pTargetZoom);
                if(finalY < -pTargetY * pTargetZoom)
                {
                   finalY = -pTargetY * pTargetZoom + CENTER_Y;
                }
-               finalY = finalY + OFFSCREEN_Y;
             }
             else if(pTargetY < CENTER_Y / pTargetZoom)
             {

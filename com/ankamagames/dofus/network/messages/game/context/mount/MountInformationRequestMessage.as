@@ -57,8 +57,23 @@ package com.ankamagames.dofus.network.messages.game.context.mount
       }
       
       public function serializeAs_MountInformationRequestMessage(output:IDataOutput) : void {
-         output.writeDouble(this.id);
-         output.writeDouble(this.time);
+         if((this.id < -9.007199254740992E15) || (this.id > 9.007199254740992E15))
+         {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+         }
+         else
+         {
+            output.writeDouble(this.id);
+            if((this.time < -9.007199254740992E15) || (this.time > 9.007199254740992E15))
+            {
+               throw new Error("Forbidden value (" + this.time + ") on element time.");
+            }
+            else
+            {
+               output.writeDouble(this.time);
+               return;
+            }
+         }
       }
       
       public function deserialize(input:IDataInput) : void {
@@ -67,7 +82,22 @@ package com.ankamagames.dofus.network.messages.game.context.mount
       
       public function deserializeAs_MountInformationRequestMessage(input:IDataInput) : void {
          this.id = input.readDouble();
-         this.time = input.readDouble();
+         if((this.id < -9.007199254740992E15) || (this.id > 9.007199254740992E15))
+         {
+            throw new Error("Forbidden value (" + this.id + ") on element of MountInformationRequestMessage.id.");
+         }
+         else
+         {
+            this.time = input.readDouble();
+            if((this.time < -9.007199254740992E15) || (this.time > 9.007199254740992E15))
+            {
+               throw new Error("Forbidden value (" + this.time + ") on element of MountInformationRequestMessage.time.");
+            }
+            else
+            {
+               return;
+            }
+         }
       }
    }
 }

@@ -107,15 +107,22 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
                {
                   output.writeShort(this.subAreaId);
                   output.writeUTF(this.userName);
-                  output.writeDouble(this.experience);
-                  output.writeShort(this.objectsInfos.length);
-                  _i8 = 0;
-                  while(_i8 < this.objectsInfos.length)
+                  if((this.experience < -9.007199254740992E15) || (this.experience > 9.007199254740992E15))
                   {
-                     (this.objectsInfos[_i8] as ObjectItemQuantity).serializeAs_ObjectItemQuantity(output);
-                     _i8++;
+                     throw new Error("Forbidden value (" + this.experience + ") on element experience.");
                   }
-                  return;
+                  else
+                  {
+                     output.writeDouble(this.experience);
+                     output.writeShort(this.objectsInfos.length);
+                     _i8 = 0;
+                     while(_i8 < this.objectsInfos.length)
+                     {
+                        (this.objectsInfos[_i8] as ObjectItemQuantity).serializeAs_ObjectItemQuantity(output);
+                        _i8++;
+                     }
+                     return;
+                  }
                }
             }
          }
@@ -152,16 +159,23 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
                {
                   this.userName = input.readUTF();
                   this.experience = input.readDouble();
-                  _objectsInfosLen = input.readUnsignedShort();
-                  _i8 = 0;
-                  while(_i8 < _objectsInfosLen)
+                  if((this.experience < -9.007199254740992E15) || (this.experience > 9.007199254740992E15))
                   {
-                     _item8 = new ObjectItemQuantity();
-                     _item8.deserialize(input);
-                     this.objectsInfos.push(_item8);
-                     _i8++;
+                     throw new Error("Forbidden value (" + this.experience + ") on element of ExchangeGuildTaxCollectorGetMessage.experience.");
                   }
-                  return;
+                  else
+                  {
+                     _objectsInfosLen = input.readUnsignedShort();
+                     _i8 = 0;
+                     while(_i8 < _objectsInfosLen)
+                     {
+                        _item8 = new ObjectItemQuantity();
+                        _item8.deserialize(input);
+                        this.objectsInfos.push(_item8);
+                        _i8++;
+                     }
+                     return;
+                  }
                }
             }
          }

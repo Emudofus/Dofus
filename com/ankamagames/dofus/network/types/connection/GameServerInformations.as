@@ -70,8 +70,15 @@ package com.ankamagames.dofus.network.types.connection
             else
             {
                output.writeByte(this.charactersCount);
-               output.writeDouble(this.date);
-               return;
+               if((this.date < -9.007199254740992E15) || (this.date > 9.007199254740992E15))
+               {
+                  throw new Error("Forbidden value (" + this.date + ") on element date.");
+               }
+               else
+               {
+                  output.writeDouble(this.date);
+                  return;
+               }
             }
          }
       }
@@ -111,7 +118,14 @@ package com.ankamagames.dofus.network.types.connection
                   else
                   {
                      this.date = input.readDouble();
-                     return;
+                     if((this.date < -9.007199254740992E15) || (this.date > 9.007199254740992E15))
+                     {
+                        throw new Error("Forbidden value (" + this.date + ") on element of GameServerInformations.date.");
+                     }
+                     else
+                     {
+                        return;
+                     }
                   }
                }
             }

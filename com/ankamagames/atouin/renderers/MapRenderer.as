@@ -39,6 +39,8 @@ package com.ankamagames.atouin.renderers
    import com.ankamagames.tiphon.display.RasterizedAnimation;
    import flash.display.DisplayObject;
    import com.ankamagames.atouin.types.LayerContainer;
+   import com.ankamagames.atouin.types.CellReference;
+   import flash.geom.Rectangle;
    import com.ankamagames.atouin.types.ICellContainer;
    import com.ankamagames.atouin.data.map.Cell;
    import com.ankamagames.atouin.data.map.Layer;
@@ -53,7 +55,6 @@ package com.ankamagames.atouin.renderers
    import com.ankamagames.atouin.types.InteractiveCell;
    import com.ankamagames.atouin.data.map.CellData;
    import flash.utils.getTimer;
-   import flash.geom.Rectangle;
    import com.ankamagames.atouin.managers.MapDisplayManager;
    import com.ankamagames.atouin.data.map.elements.GraphicalElement;
    import com.ankamagames.atouin.data.map.elements.BasicElement;
@@ -90,7 +91,7 @@ package com.ankamagames.atouin.renderers
          this._swfGfx = [];
          this._swfApplicationDomain = new Array();
          this._hideForeground = Atouin.getInstance().options.hideForeground;
-         this._downloadTimer = new Timer(1);
+         this._downloadTimer = new Timer(2500);
          this.colorTransform = new ColorTransform();
          this._m = new Matrix();
          this._srcRect = new Rectangle();
@@ -537,6 +538,11 @@ package com.ankamagames.atouin.renderers
          
       }
       
+      public function isCellUnderFixture(pCellId:uint) : Boolean {
+         var cellRef:CellReference = this._dataMapContainer.getCellReference(pCellId);
+         return this._bitmapForegroundContainer.bitmapData.hitTest(new Point(this._bitmapForegroundContainer.x,this._bitmapForegroundContainer.y),255,new Rectangle(cellRef.x,cellRef.y,AtouinConstants.CELL_WIDTH,AtouinConstants.CELL_HEIGHT));
+      }
+      
       private function makeMap() : void {
          var layerCtr:DisplayObjectContainer = null;
          var cellInteractionCtr:DisplayObjectContainer = null;
@@ -914,6 +920,11 @@ package com.ankamagames.atouin.renderers
                         {
                            objectInfo = this._swfGfx[ged.gfxId];
                            applicationDomain = this._swfApplicationDomain[ged.gfxId];
+                           if(objectInfo == null)
+                           {
+                              _log.fatal("Impossible d\'afficher l\'élément " + ged.gfxId + " : instance non trouvée");
+                              break;
+                           }
                            if(applicationDomain.hasDefinition("FX_0"))
                            {
                               elementDo = new applicationDomain.getDefinition("FX_0")() as Sprite;

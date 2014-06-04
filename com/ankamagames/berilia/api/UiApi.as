@@ -45,9 +45,11 @@ package com.ankamagames.berilia.api
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.berilia.utils.BeriliaHookList;
    import com.ankamagames.berilia.managers.CssManager;
+   import flash.display.StageDisplayState;
    import flash.geom.Rectangle;
    import flash.display.MovieClip;
    import flash.display.DisplayObjectContainer;
+   import com.ankamagames.berilia.types.graphic.GraphicSize;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.jerakine.managers.LangManager;
    import com.ankamagames.jerakine.utils.pattern.PatternDecoder;
@@ -441,14 +443,14 @@ package com.ankamagames.berilia.api
          return new Uri(uri);
       }
       
-      public function showTooltip(data:*, target:*, autoHide:Boolean = false, name:String = "standard", point:uint = 0, relativePoint:uint = 2, offset:int = 3, tooltipMaker:String = null, script:Class = null, makerParam:Object = null, cacheName:String = null, mouseEnabled:Boolean = false, strata:int = 4, zoom:Number = 1) : void {
+      public function showTooltip(data:*, target:*, autoHide:Boolean = false, name:String = "standard", point:uint = 0, relativePoint:uint = 2, offset:int = 3, tooltipMaker:String = null, script:Class = null, makerParam:Object = null, cacheName:String = null, mouseEnabled:Boolean = false, strata:int = 4, zoom:Number = 1, uiModuleName:String = "") : void {
          var tt:Tooltip = null;
-         if(this._currentUi)
+         if((uiModuleName) || (this._currentUi))
          {
             tt = TooltipManager.show(data,target,this._module,autoHide,name,point,relativePoint,offset,true,tooltipMaker,script,makerParam,cacheName,mouseEnabled,strata,zoom);
             if(tt)
             {
-               tt.uiModuleName = this._currentUi.name;
+               tt.uiModuleName = uiModuleName?uiModuleName:this._currentUi.name;
             }
          }
       }
@@ -553,6 +555,10 @@ package com.ankamagames.berilia.api
          StageShareManager.setFullScreen(enabled,onlyMaximize);
       }
       
+      public function isFullScreen() : Boolean {
+         return !(StageShareManager.stage.displayState == StageDisplayState.NORMAL);
+      }
+      
       public function useIME() : Boolean {
          return Berilia.getInstance().useIME;
       }
@@ -633,6 +639,21 @@ package com.ankamagames.berilia.api
          _label.fixedWidth = false;
          _label.text = pText;
          return new Rectangle(0,0,_label.textWidth,_label.textHeight);
+      }
+      
+      public function setComponentMinMaxSize(component:GraphicContainer, minSize:Point, maxSize:Point) : void {
+         if(!component.minSize)
+         {
+            component.minSize = new GraphicSize();
+         }
+         component.minSize.x = minSize.x;
+         component.minSize.y = minSize.y;
+         if(!component.maxSize)
+         {
+            component.maxSize = new GraphicSize();
+         }
+         component.maxSize.x = maxSize.x;
+         component.maxSize.y = maxSize.y;
       }
       
       public function replaceParams(text:String, params:Array, replace:String = "%") : String {

@@ -57,12 +57,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
       }
       
       public function serialize(output:IDataOutput) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: NullPointerException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         this.serializeAs_ObjectSetPositionMessage(output);
       }
       
       public function serializeAs_ObjectSetPositionMessage(output:IDataOutput) : void {

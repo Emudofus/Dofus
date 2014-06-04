@@ -7,7 +7,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
    import com.ankamagames.jerakine.newCache.ICache;
    import com.ankamagames.dofus.logic.game.common.frames.AllianceFrame;
-   import flash.display.Sprite;
    import flash.utils.Timer;
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapInformationsRequestMessage;
@@ -23,14 +22,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
    import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
    import com.ankamagames.tiphon.engine.Tiphon;
+   import com.ankamagames.atouin.Atouin;
    import com.ankamagames.dofus.kernel.Kernel;
-   import flash.display.DisplayObjectContainer;
-   import com.ankamagames.berilia.Berilia;
-   import com.ankamagames.berilia.enums.StrataEnum;
    import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapComplementaryInformationsDataMessage;
-   import com.ankamagames.dofus.datacenter.world.SubArea;
    import com.ankamagames.dofus.network.messages.game.interactive.InteractiveMapUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.interactive.StatedMapUpdateMessage;
    import com.ankamagames.dofus.network.types.game.house.HouseInformations;
@@ -70,14 +66,15 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.logic.game.common.actions.StartZoomAction;
    import flash.display.DisplayObject;
    import com.ankamagames.dofus.logic.game.common.actions.roleplay.SwitchCreatureModeAction;
+   import com.ankamagames.dofus.datacenter.world.SubArea;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightCommonInformations;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapComplementaryInformationsWithCoordsMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapComplementaryInformationsDataInHouseMessage;
-   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayCharacterInformations;
    import com.ankamagames.dofus.logic.game.roleplay.messages.DelayedActionMessage;
    import com.ankamagames.dofus.datacenter.communication.Emoticon;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
-   import com.ankamagames.dofus.network.types.game.context.fight.FightCommonInformations;
    import com.ankamagames.dofus.internalDatacenter.house.HouseWrapper;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.HousePropertiesMessage;
    import com.ankamagames.dofus.network.types.game.interactive.MapObstacle;
@@ -86,6 +83,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.logic.game.common.frames.EmoticonFrame;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.emote.EmotePlayRequestMessage;
    import com.ankamagames.dofus.network.types.game.paddock.PaddockItem;
+   import flash.display.Sprite;
    import com.ankamagames.dofus.datacenter.quest.Quest;
    import flash.geom.Rectangle;
    import com.ankamagames.dofus.logic.game.roleplay.types.FightTeam;
@@ -122,21 +120,20 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.misc.lists.ChatHookList;
    import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
    import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
-   import com.ankamagames.atouin.Atouin;
    import com.ankamagames.atouin.messages.MapLoadedMessage;
    import com.ankamagames.atouin.messages.MapZoomMessage;
    import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
    import com.ankamagames.dofus.logic.game.roleplay.types.Fight;
    import com.ankamagames.dofus.logic.game.roleplay.types.GameContextPaddockItemInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.MonsterInGroupLightInformations;
+   import com.ankamagames.dofus.datacenter.monsters.Monster;
+   import com.ankamagames.dofus.network.types.game.look.EntityLook;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GroupMonsterStaticInformations;
    import com.ankamagames.dofus.logic.game.common.frames.PartyManagementFrame;
    import com.ankamagames.dofus.internalDatacenter.people.PartyMemberWrapper;
    import com.ankamagames.dofus.network.types.game.context.roleplay.AlternativeMonstersInGroupLightInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GroupMonsterStaticInformationsWithAlternatives;
    import com.ankamagames.tiphon.types.IAnimationModifier;
-   import com.ankamagames.dofus.datacenter.monsters.Monster;
-   import com.ankamagames.dofus.network.types.game.look.EntityLook;
    import com.ankamagames.dofus.network.types.game.look.IndexedEntityLook;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcWithQuestInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionFollowers;
@@ -186,6 +183,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.jerakine.interfaces.IRectangle;
    import com.ankamagames.jerakine.utils.display.Rectangle2;
    import com.ankamagames.dofus.logic.game.roleplay.types.EntityIcon;
+   import flash.geom.Point;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import com.ankamagames.jerakine.newCache.impl.Cache;
    import com.ankamagames.jerakine.newCache.garbage.LruGarbageCollector;
@@ -201,7 +199,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          this._lastStaticAnimations = new Dictionary();
          this._entitiesIconsNames = new Dictionary();
          this._entitiesIcons = new Dictionary();
-         this._entitiesIconsContainer = new Sprite();
          this._waitingEmotesAnims = new Dictionary();
          super();
       }
@@ -249,8 +246,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       private var _entitiesIconsNames:Dictionary;
       
       private var _entitiesIcons:Dictionary;
-      
-      private var _entitiesIconsContainer:Sprite;
       
       private var _updateAllIcons:Boolean;
       
@@ -342,9 +337,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          _interactiveElements = new Vector.<InteractiveElement>();
          Dofus.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,onPropertyChanged);
          Tiphon.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onTiphonPropertyChanged);
+         Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onAtouinPropertyChanged);
          this._allianceFrame = Kernel.getWorker().getFrame(AllianceFrame) as AllianceFrame;
-         this._entitiesIconsContainer.mouseEnabled = this._entitiesIconsContainer.mouseChildren = false;
-         DisplayObjectContainer(Berilia.getInstance().docMain.getChildAt(StrataEnum.STRATA_WORLD + 1)).addChild(this._entitiesIconsContainer);
          EnterFrameDispatcher.addEventListener(this.showIcons,"showIcons",25);
          return super.pushed();
       }
@@ -352,11 +346,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       override public function process(msg:Message) : Boolean {
          var char:AnimatedCharacter = null;
          var mcidmsg:MapComplementaryInformationsDataMessage = null;
-         var newSubArea:SubArea = null;
-         var newCreatureMode:* = false;
-         var mapWithNoMonsters:* = false;
-         var emoteId:* = 0;
-         var emoteStartTime:* = NaN;
+         var sameMap:* = false;
          var imumsg:InteractiveMapUpdateMessage = null;
          var smumsg:StatedMapUpdateMessage = null;
          var houseInformations:HouseInformations = null;
@@ -413,11 +403,17 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var player:DisplayObject = null;
          var scmamsg:SwitchCreatureModeAction = null;
          var mirmsg:MapInformationsRequestMessage = null;
+         var newSubArea:SubArea = null;
+         var newCreatureMode:* = false;
+         var actor:GameRolePlayActorInformations = null;
+         var mapWithNoMonsters:* = false;
+         var emoteId:* = 0;
+         var emoteStartTime:* = NaN;
+         var actor1:GameRolePlayActorInformations = null;
+         var fight:FightCommonInformations = null;
          var mciwcmsg:MapComplementaryInformationsWithCoordsMessage = null;
          var mcidihmsg:MapComplementaryInformationsDataInHouseMessage = null;
          var playerHouse:* = false;
-         var actor:GameRolePlayActorInformations = null;
-         var actor1:GameRolePlayActorInformations = null;
          var ac:AnimatedCharacter = null;
          var hi:GameRolePlayCharacterInformations = null;
          var option:* = undefined;
@@ -427,7 +423,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var time:Date = null;
          var animNameLook:TiphonEntityLook = null;
          var emoteAnimMsg:GameRolePlaySetAnimationMessage = null;
-         var fight:FightCommonInformations = null;
          var house:HouseInformations = null;
          var houseWrapper:HouseWrapper = null;
          var numDoors:* = 0;
@@ -470,162 +465,170 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                return false;
             case msg is MapComplementaryInformationsDataMessage:
                mcidmsg = msg as MapComplementaryInformationsDataMessage;
-               this.initNewMap();
+               sameMap = _worldPoint?_worldPoint.mapId == mcidmsg.mapId:false;
                _interactiveElements = mcidmsg.interactiveElements;
                this._fightNumber = mcidmsg.fights.length;
-               if(msg is MapComplementaryInformationsWithCoordsMessage)
+               if(!sameMap)
                {
-                  mciwcmsg = msg as MapComplementaryInformationsWithCoordsMessage;
-                  if(PlayedCharacterManager.getInstance().isInHouse)
+                  this.initNewMap();
+                  if(msg is MapComplementaryInformationsWithCoordsMessage)
                   {
-                     KernelEventsManager.getInstance().processCallback(HookList.HouseExit);
-                  }
-                  PlayedCharacterManager.getInstance().isInHouse = false;
-                  PlayedCharacterManager.getInstance().isInHisHouse = false;
-                  PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(mciwcmsg.worldX,mciwcmsg.worldY);
-                  _worldPoint = new WorldPointWrapper(mciwcmsg.mapId,true,mciwcmsg.worldX,mciwcmsg.worldY);
-               }
-               else if(msg is MapComplementaryInformationsDataInHouseMessage)
-               {
-                  mcidihmsg = msg as MapComplementaryInformationsDataInHouseMessage;
-                  playerHouse = PlayerManager.getInstance().nickname == mcidihmsg.currentHouse.ownerName;
-                  PlayedCharacterManager.getInstance().isInHouse = true;
-                  if(playerHouse)
-                  {
-                     PlayedCharacterManager.getInstance().isInHisHouse = true;
-                  }
-                  PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(mcidihmsg.currentHouse.worldX,mcidihmsg.currentHouse.worldY);
-                  KernelEventsManager.getInstance().processCallback(HookList.HouseEntered,playerHouse,mcidihmsg.currentHouse.ownerId,mcidihmsg.currentHouse.ownerName,mcidihmsg.currentHouse.price,mcidihmsg.currentHouse.isLocked,mcidihmsg.currentHouse.worldX,mcidihmsg.currentHouse.worldY,HouseWrapper.manualCreate(mcidihmsg.currentHouse.modelId,-1,mcidihmsg.currentHouse.ownerName,!(mcidihmsg.currentHouse.price == 0)));
-                  _worldPoint = new WorldPointWrapper(mcidihmsg.mapId,true,mcidihmsg.currentHouse.worldX,mcidihmsg.currentHouse.worldY);
-               }
-               else
-               {
-                  _worldPoint = new WorldPointWrapper(mcidmsg.mapId);
-                  if(PlayedCharacterManager.getInstance().isInHouse)
-                  {
-                     KernelEventsManager.getInstance().processCallback(HookList.HouseExit);
-                  }
-                  PlayedCharacterManager.getInstance().isInHouse = false;
-                  PlayedCharacterManager.getInstance().isInHisHouse = false;
-               }
-               
-               _currentSubAreaId = mcidmsg.subAreaId;
-               newSubArea = SubArea.getSubAreaById(_currentSubAreaId);
-               PlayedCharacterManager.getInstance().currentMap = _worldPoint;
-               PlayedCharacterManager.getInstance().currentSubArea = newSubArea;
-               TooltipManager.hide();
-               updateCreaturesLimit();
-               newCreatureMode = false;
-               for each(actor in mcidmsg.actors)
-               {
-                  _humanNumber++;
-                  if((_creaturesLimit == 0) || (_creaturesLimit < 50) && (_humanNumber >= _creaturesLimit))
-                  {
-                     _creaturesMode = true;
-                  }
-                  if((actor.contextualId > 0) && (this._playersId) && (this._playersId.indexOf(actor.contextualId) == -1))
-                  {
-                     this._playersId.push(actor.contextualId);
-                  }
-                  if((actor is GameRolePlayGroupMonsterInformations) && (this._monstersIds.indexOf(actor.contextualId) == -1))
-                  {
-                     this._monstersIds.push(actor.contextualId);
-                  }
-               }
-               mapWithNoMonsters = true;
-               emoteId = 0;
-               emoteStartTime = 0;
-               for each(actor1 in mcidmsg.actors)
-               {
-                  ac = this.addOrUpdateActor(actor1) as AnimatedCharacter;
-                  if(ac)
-                  {
-                     if(ac.id == PlayedCharacterManager.getInstance().id)
+                     mciwcmsg = msg as MapComplementaryInformationsWithCoordsMessage;
+                     if(PlayedCharacterManager.getInstance().isInHouse)
                      {
-                        if(ac.libraryIsAvaible)
-                        {
-                           this.updateUsableEmotesListInit(ac.look);
-                        }
-                        else
-                        {
-                           ac.addEventListener(TiphonEvent.SPRITE_INIT,this.onPlayerSpriteInit);
-                        }
-                        if(this.dispatchPlayerNewLook)
-                        {
-                           KernelEventsManager.getInstance().processCallback(HookList.PlayedCharacterLookChange,ac.look);
-                           this.dispatchPlayerNewLook = false;
-                        }
+                        KernelEventsManager.getInstance().processCallback(HookList.HouseExit);
                      }
-                     hi = actor1 as GameRolePlayCharacterInformations;
-                     if(hi)
+                     PlayedCharacterManager.getInstance().isInHouse = false;
+                     PlayedCharacterManager.getInstance().isInHisHouse = false;
+                     PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(mciwcmsg.worldX,mciwcmsg.worldY);
+                     _worldPoint = new WorldPointWrapper(mciwcmsg.mapId,true,mciwcmsg.worldX,mciwcmsg.worldY);
+                  }
+                  else if(msg is MapComplementaryInformationsDataInHouseMessage)
+                  {
+                     mcidihmsg = msg as MapComplementaryInformationsDataInHouseMessage;
+                     playerHouse = PlayerManager.getInstance().nickname == mcidihmsg.currentHouse.ownerName;
+                     PlayedCharacterManager.getInstance().isInHouse = true;
+                     if(playerHouse)
                      {
-                        emoteId = 0;
-                        emoteStartTime = 0;
-                        for each(option in hi.humanoidInfo.options)
+                        PlayedCharacterManager.getInstance().isInHisHouse = true;
+                     }
+                     PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(mcidihmsg.currentHouse.worldX,mcidihmsg.currentHouse.worldY);
+                     KernelEventsManager.getInstance().processCallback(HookList.HouseEntered,playerHouse,mcidihmsg.currentHouse.ownerId,mcidihmsg.currentHouse.ownerName,mcidihmsg.currentHouse.price,mcidihmsg.currentHouse.isLocked,mcidihmsg.currentHouse.worldX,mcidihmsg.currentHouse.worldY,HouseWrapper.manualCreate(mcidihmsg.currentHouse.modelId,-1,mcidihmsg.currentHouse.ownerName,!(mcidihmsg.currentHouse.price == 0)));
+                     _worldPoint = new WorldPointWrapper(mcidihmsg.mapId,true,mcidihmsg.currentHouse.worldX,mcidihmsg.currentHouse.worldY);
+                  }
+                  else
+                  {
+                     _worldPoint = new WorldPointWrapper(mcidmsg.mapId);
+                     if(PlayedCharacterManager.getInstance().isInHouse)
+                     {
+                        KernelEventsManager.getInstance().processCallback(HookList.HouseExit);
+                     }
+                     PlayedCharacterManager.getInstance().isInHouse = false;
+                     PlayedCharacterManager.getInstance().isInHisHouse = false;
+                  }
+                  
+                  _currentSubAreaId = mcidmsg.subAreaId;
+                  newSubArea = SubArea.getSubAreaById(_currentSubAreaId);
+                  PlayedCharacterManager.getInstance().currentMap = _worldPoint;
+                  PlayedCharacterManager.getInstance().currentSubArea = newSubArea;
+                  TooltipManager.hide();
+                  updateCreaturesLimit();
+                  newCreatureMode = false;
+                  for each(actor in mcidmsg.actors)
+                  {
+                     _humanNumber++;
+                     if((_creaturesLimit == 0) || (_creaturesLimit < 50) && (_humanNumber >= _creaturesLimit))
+                     {
+                        _creaturesMode = true;
+                     }
+                     if(!this._playersId)
+                     {
+                        this._playersId = new Array();
+                     }
+                     if((actor.contextualId > 0) && (this._playersId.indexOf(actor.contextualId) == -1))
+                     {
+                        this._playersId.push(actor.contextualId);
+                     }
+                     if((actor is GameRolePlayGroupMonsterInformations) && (this._monstersIds.indexOf(actor.contextualId) == -1))
+                     {
+                        this._monstersIds.push(actor.contextualId);
+                     }
+                  }
+                  mapWithNoMonsters = true;
+                  emoteId = 0;
+                  emoteStartTime = 0;
+                  for each(actor1 in mcidmsg.actors)
+                  {
+                     ac = this.addOrUpdateActor(actor1) as AnimatedCharacter;
+                     if(ac)
+                     {
+                        if(ac.id == PlayedCharacterManager.getInstance().id)
                         {
-                           if(option is HumanOptionEmote)
+                           if(ac.libraryIsAvaible)
                            {
-                              emoteId = option.emoteId;
-                              emoteStartTime = option.emoteStartTime;
+                              this.updateUsableEmotesListInit(ac.look);
                            }
-                           else if(option is HumanOptionObjectUse)
+                           else
                            {
-                              dam = new DelayedActionMessage(hi.contextualId,option.objectGID,option.delayEndTime);
-                              Kernel.getWorker().process(dam);
+                              ac.addEventListener(TiphonEvent.SPRITE_INIT,this.onPlayerSpriteInit);
                            }
-                           
+                           if(this.dispatchPlayerNewLook)
+                           {
+                              KernelEventsManager.getInstance().processCallback(HookList.PlayedCharacterLookChange,ac.look);
+                              this.dispatchPlayerNewLook = false;
+                           }
                         }
-                        if(emoteId > 0)
+                        hi = actor1 as GameRolePlayCharacterInformations;
+                        if(hi)
                         {
-                           emote = Emoticon.getEmoticonById(emoteId);
-                           if((emote) && (emote.persistancy))
+                           emoteId = 0;
+                           emoteStartTime = 0;
+                           for each(option in hi.humanoidInfo.options)
                            {
-                              this._currentEmoticon = emote.id;
-                              if(!emote.aura)
+                              if(option is HumanOptionEmote)
                               {
-                                 staticOnly = false;
-                                 time = new Date();
-                                 if(time.getTime() - emoteStartTime >= emote.duration)
+                                 emoteId = option.emoteId;
+                                 emoteStartTime = option.emoteStartTime;
+                              }
+                              else if(option is HumanOptionObjectUse)
+                              {
+                                 dam = new DelayedActionMessage(hi.contextualId,option.objectGID,option.delayEndTime);
+                                 Kernel.getWorker().process(dam);
+                              }
+                              
+                           }
+                           if(emoteId > 0)
+                           {
+                              emote = Emoticon.getEmoticonById(emoteId);
+                              if((emote) && (emote.persistancy))
+                              {
+                                 this._currentEmoticon = emote.id;
+                                 if(!emote.aura)
                                  {
-                                    staticOnly = true;
-                                 }
-                                 animNameLook = EntityLookAdapter.fromNetwork(hi.look);
-                                 emoteAnimMsg = new GameRolePlaySetAnimationMessage(actor1,emote.getAnimName(animNameLook),emoteStartTime,!emote.persistancy,emote.eight_directions,staticOnly);
-                                 if(ac.rendered)
-                                 {
-                                    this.process(emoteAnimMsg);
-                                 }
-                                 else
-                                 {
-                                    if(emoteAnimMsg.playStaticOnly)
+                                    staticOnly = false;
+                                    time = new Date();
+                                    if(time.getTime() - emoteStartTime >= emote.duration)
                                     {
-                                       ac.visible = false;
+                                       staticOnly = true;
                                     }
-                                    this._waitingEmotesAnims[ac.id] = emoteAnimMsg;
-                                    ac.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityReadyForEmote);
-                                    ac.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityReadyForEmote);
+                                    animNameLook = EntityLookAdapter.fromNetwork(hi.look);
+                                    emoteAnimMsg = new GameRolePlaySetAnimationMessage(actor1,emote.getAnimName(animNameLook),emoteStartTime,!emote.persistancy,emote.eight_directions,staticOnly);
+                                    if(ac.rendered)
+                                    {
+                                       this.process(emoteAnimMsg);
+                                    }
+                                    else
+                                    {
+                                       if(emoteAnimMsg.playStaticOnly)
+                                       {
+                                          ac.visible = false;
+                                       }
+                                       this._waitingEmotesAnims[ac.id] = emoteAnimMsg;
+                                       ac.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityReadyForEmote);
+                                       ac.addEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityReadyForEmote);
+                                    }
                                  }
                               }
                            }
                         }
                      }
-                  }
-                  if(mapWithNoMonsters)
-                  {
-                     if(actor1 is GameRolePlayGroupMonsterInformations)
+                     if(mapWithNoMonsters)
                      {
-                        mapWithNoMonsters = false;
-                        KernelEventsManager.getInstance().processCallback(TriggerHookList.MapWithMonsters);
+                        if(actor1 is GameRolePlayGroupMonsterInformations)
+                        {
+                           mapWithNoMonsters = false;
+                           KernelEventsManager.getInstance().processCallback(TriggerHookList.MapWithMonsters);
+                        }
+                     }
+                     if(actor1 is GameRolePlayCharacterInformations)
+                     {
+                        ChatAutocompleteNameManager.getInstance().addEntry((actor1 as GameRolePlayCharacterInformations).name,0);
                      }
                   }
-                  if(actor1 is GameRolePlayCharacterInformations)
+                  for each(fight in mcidmsg.fights)
                   {
-                     ChatAutocompleteNameManager.getInstance().addEntry((actor1 as GameRolePlayCharacterInformations).name,0);
+                     this.addFight(fight);
                   }
-               }
-               for each(fight in mcidmsg.fights)
-               {
-                  this.addFight(fight);
                }
                this._housesList = new Dictionary();
                for each(house in mcidmsg.houses)
@@ -652,17 +655,20 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                smumsg = new StatedMapUpdateMessage();
                smumsg.initStatedMapUpdateMessage(mcidmsg.statedElements);
                Kernel.getWorker().process(smumsg);
-               KernelEventsManager.getInstance().processCallback(HookList.MapComplementaryInformationsData,PlayedCharacterManager.getInstance().currentMap,_currentSubAreaId,Dofus.getInstance().options.mapCoordinates);
-               KernelEventsManager.getInstance().processCallback(HookList.MapFightCount,0);
-               AnimFunManager.getInstance().initializeByMap(mcidmsg.mapId);
-               this.switchPokemonMode();
-               if(Kernel.getWorker().contains(MonstersInfoFrame))
+               if(!sameMap)
                {
-                  (Kernel.getWorker().getFrame(MonstersInfoFrame) as MonstersInfoFrame).update();
-               }
-               if(Kernel.getWorker().contains(InfoEntitiesFrame))
-               {
-                  (Kernel.getWorker().getFrame(InfoEntitiesFrame) as InfoEntitiesFrame).update();
+                  KernelEventsManager.getInstance().processCallback(HookList.MapComplementaryInformationsData,PlayedCharacterManager.getInstance().currentMap,_currentSubAreaId,Dofus.getInstance().options.mapCoordinates);
+                  KernelEventsManager.getInstance().processCallback(HookList.MapFightCount,0);
+                  AnimFunManager.getInstance().initializeByMap(mcidmsg.mapId);
+                  this.switchPokemonMode();
+                  if(Kernel.getWorker().contains(MonstersInfoFrame))
+                  {
+                     (Kernel.getWorker().getFrame(MonstersInfoFrame) as MonstersInfoFrame).update();
+                  }
+                  if(Kernel.getWorker().contains(InfoEntitiesFrame))
+                  {
+                     (Kernel.getWorker().getFrame(InfoEntitiesFrame) as InfoEntitiesFrame).update();
+                  }
                }
                return false;
             case msg is HousePropertiesMessage:
@@ -722,7 +728,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         break;
                   }
                }
-               AnimFunManager.getInstance().restart();
+               if(grpsamsg.informations is GameRolePlayGroupMonsterInformations)
+               {
+                  AnimFunManager.getInstance().restart();
+               }
                return true;
             case msg is GameContextRefreshEntityLookMessage:
                gcrelmsg = msg as GameContextRefreshEntityLookMessage;
@@ -777,9 +786,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         characterEntity.setDirection(characterEntity.getDirection() + 1);
                      }
                   }
-                  if(!characterEntity.hasAnimation(grsamsg.animation,characterEntity.getDirection()))
+                  if((_creaturesMode) || (!characterEntity.hasAnimation(grsamsg.animation,characterEntity.getDirection())))
                   {
-                     _log.error("GameRolePlaySetAnimationMessage : l\'animation " + grsamsg.animation + "_" + characterEntity.getDirection() + " n\'a pas ete trouvee");
+                     _log.error("L\'animation " + grsamsg.animation + "_" + characterEntity.getDirection() + " est introuvable.");
+                     characterEntity.visible = true;
                   }
                   else if(!_creaturesMode)
                   {
@@ -906,6 +916,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                delete this._waitingEmotesAnims[gcremsg.id];
                this.removeEntityListeners(gcremsg.id);
                removeActor(gcremsg.id);
+               if(monsterId != -1)
+               {
+                  AnimFunManager.getInstance().restart();
+               }
                return true;
             case msg is MapFightCountMessage:
                mfcmsg = msg as MapFightCountMessage;
@@ -1159,18 +1173,14 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             this._loader.removeEventListener(ResourceErrorEvent.ERROR,this.onGroundObjectLoadFailed);
             this._loader = null;
          }
-         AnimFunManager.getInstance().stopAllTimer();
+         AnimFunManager.getInstance().stop();
          this._fights = null;
          this._objects = null;
          this._npcList = null;
          Dofus.getInstance().options.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED,onPropertyChanged);
          Tiphon.getInstance().options.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onTiphonPropertyChanged);
+         Atouin.getInstance().options.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onAtouinPropertyChanged);
          EnterFrameDispatcher.removeEventListener(this.showIcons);
-         var doc:DisplayObjectContainer = Berilia.getInstance().docMain.getChildAt(StrataEnum.STRATA_WORLD + 1) as DisplayObjectContainer;
-         if((doc) && (doc == this._entitiesIconsContainer.parent))
-         {
-            doc.removeChild(this._entitiesIconsContainer);
-         }
          this.removeAllIcons();
          if(OptionManager.getOptionManager("tiphon").auraMode == OptionEnum.AURA_CYCLE)
          {
@@ -1203,6 +1213,27 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       
       public function getFightTeamType(entityId:int) : uint {
          return (_entities[entityId] as FightTeam).teamType;
+      }
+      
+      public function updateMonstersGroups() : void {
+         var entityInfo:GameContextActorInformations = null;
+         var entities:Dictionary = getEntitiesDictionnary();
+         for each(entityInfo in entities)
+         {
+            if(entityInfo is GameRolePlayGroupMonsterInformations)
+            {
+               this.updateMonstersGroup(entityInfo as GameRolePlayGroupMonsterInformations);
+            }
+         }
+      }
+      
+      private function updateMonstersGroup(pMonstersInfo:GameRolePlayGroupMonsterInformations) : void {
+         /*
+          * Decompilation error
+          * Code may be obfuscated
+          * Error type: TranslateException
+          */
+         throw new IllegalOperationError("Not decompiled due to error");
       }
       
       private function getMonsterGroup(pStaticMonsterInfos:GroupMonsterStaticInformations) : Vector.<MonsterInGroupLightInformations> {
@@ -1272,7 +1303,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       
       private function onEntityRendered(pEvent:TiphonEvent) : void {
          var ac:AnimatedCharacter = pEvent.currentTarget as AnimatedCharacter;
-         if((this._lastStaticAnimations[ac.id].targetBone == ac.look.getBone()) && (ac.rendered))
+         if((ac && this._lastStaticAnimations[ac.id] && ac.look) && (this._lastStaticAnimations[ac.id].targetBone == ac.look.getBone()) && (ac.rendered))
          {
             ac.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityRendered);
             ac.setAnimation(this._lastStaticAnimations[ac.id].anim);
@@ -1962,6 +1993,17 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                entity.visibleAura = visible;
             }
             i++;
+         }
+      }
+      
+      private function onAtouinPropertyChanged(e:PropertyChangeEvent) : void {
+         var entityId:* = undefined;
+         if(e.propertyName == "transparentOverlayMode")
+         {
+            for(entityId in this._entitiesIconsNames)
+            {
+               this.forceIconUpdate(entityId);
+            }
          }
       }
    }

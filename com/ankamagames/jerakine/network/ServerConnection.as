@@ -365,6 +365,7 @@ package com.ankamagames.jerakine.network
                   {
                      this._lagometer.pong(msg);
                   }
+                  (msg as NetworkMessage).receptionTime = getTimer();
                   if(!this._pause)
                   {
                      if((DEBUG_DATA) && (!(msg.getMessageId() == 176)) && (!(msg.getMessageId() == 6362)))

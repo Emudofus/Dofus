@@ -408,13 +408,17 @@ package com.ankamagames.jerakine.managers
       private function onXmlLoadComplete(e:ResourceLoadedEvent) : void {
          var metaData:LangMetaData = LangMetaData(e.uri.tag);
          var sCat:String = FileUtils.getFileStartName(e.uri.uri);
+         if(sCat == "config-custom")
+         {
+            sCat = "config";
+         }
          if((metaData.clearFile[e.uri.fileName]) || (metaData.clearAllFile) || (metaData.loadAllFile))
          {
             if((metaData.clearFile[e.uri.fileName]) || (metaData.clearAllFile))
             {
                this.clear(sCat);
             }
-            this.startParsing(new Array(new LangFile(e.resource,FileUtils.getFileStartName(e.uri.uri),e.uri.uri)),e.uri.uri);
+            this.startParsing(new Array(new LangFile(e.resource,sCat,e.uri.uri)),e.uri.uri);
          }
       }
       

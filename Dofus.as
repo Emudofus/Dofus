@@ -14,6 +14,8 @@ package
    import flash.xml.XMLDocument;
    import flash.xml.XMLNode;
    import com.ankamagames.dofus.network.types.updater.ContentPart;
+   import com.ankamagames.jerakine.utils.system.SystemManager;
+   import com.ankamagames.jerakine.enum.OperatingSystem;
    import com.ankamagames.jerakine.utils.system.CommandLineArguments;
    import com.ankamagames.dofus.logic.game.approach.managers.PartManager;
    import flash.filesystem.FileMode;
@@ -159,19 +161,17 @@ package
                      stage.stageHeight = stage.stageWidth / r;
                   }
                }
+               else if(osId == "Win")
+               {
+                  mainWindow.height = Screen.mainScreen.bounds.height * 0.8 + chromeHeight;
+                  mainWindow.width = r * (mainWindow.height - chromeHeight) + chromeWidth;
+               }
                else
                {
-                  if(osId == "Win")
-                  {
-                     mainWindow.height = Screen.mainScreen.bounds.height * 0.8 + chromeHeight;
-                     mainWindow.width = r * (mainWindow.height - chromeHeight) + chromeWidth;
-                  }
-                  else
-                  {
-                     stage.stageHeight = Screen.mainScreen.bounds.height * 0.8;
-                     stage.stageWidth = r * stage.stageHeight;
-                  }
+                  stage.stageHeight = Screen.mainScreen.bounds.height * 0.8;
+                  stage.stageWidth = r * stage.stageHeight;
                }
+               
             }
             clientDimentionSo.close();
             stage["nativeWindow"].x = (Screen.mainScreen.bounds.width - stage.stageWidth) / 2;
@@ -208,7 +208,7 @@ package
          }
       }
       
-      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Dofus));
+      protected static const _log:Logger;
       
       private static var _self:Dofus;
       
@@ -257,7 +257,11 @@ package
          var part:ContentPart = null;
          if(!this._initialized)
          {
-            CommandLineArguments.getInstance().setArguments(e.arguments);
+            _log.debug("onCall() - arguments: " + e.arguments.toString());
+            if(SystemManager.getSingleton().os != OperatingSystem.MAC_OS)
+            {
+               CommandLineArguments.getInstance().setArguments(e.arguments);
+            }
             try
             {
                file = new File(File.applicationDirectory.nativePath + File.separator + "uplauncherComponents.xml");
@@ -272,7 +276,7 @@ package
                   xml.parseXML(content);
                   gameNode = xml.firstChild;
                   upperVersion = null;
-                  for each (configNode in gameNode.childNodes)
+                  for each(configNode in gameNode.childNodes)
                   {
                      version = configNode.attributes["version"];
                      part = new ContentPart();
@@ -306,7 +310,7 @@ package
                      xml.ignoreWhite = true;
                      xml.parseXML(content);
                      gameNode = xml.firstChild.firstChild;
-                     for each (configNode in gameNode.childNodes)
+                     for each(configNode in gameNode.childNodes)
                      {
                         if(configNode.nodeName == "version")
                         {
@@ -350,6 +354,10 @@ package
             try
             {
                file = new File(CustomSharedObject.getCustomSharedObjectDirectory() + File.separator + "path.d2p");
+               if(SystemManager.getSingleton().os != OperatingSystem.MAC_OS)
+               {
+                  _log.debug("path.d2p: " + file + ", " + file.exists);
+               }
                if(!file.exists)
                {
                   stream = new FileStream();
@@ -405,7 +413,7 @@ package
          this._doOptions.fullScreen = this._doOptions.fullScreen;
       }
       
-      public function init(rootClip:DisplayObject, instanceId:uint=0, forcedLang:String=null, args:Array=null) : void {
+      public function init(rootClip:DisplayObject, instanceId:uint = 0, forcedLang:String = null, args:Array = null) : void {
          if(args)
          {
             CommandLineArguments.getInstance().setArguments(args);
@@ -455,7 +463,7 @@ package
          }
       }
       
-      public function quit(returnCode:int=0) : void {
+      public function quit(returnCode:int = 0) : void {
          this._returnCode = returnCode;
          if(!WebServiceDataHandler.getInstance().quit())
          {
@@ -469,7 +477,7 @@ package
          }
       }
       
-      private function quitHandler(pEvt:Event=null) : void {
+      private function quitHandler(pEvt:Event = null) : void {
          if(pEvt != null)
          {
             pEvt.currentTarget.removeEventListener(WebServiceDataHandler.ALL_DATA_SENT,this.quitHandler);
@@ -479,17 +487,15 @@ package
          {
             this.reboot();
          }
-         else
+         else if(AirScanner.hasAir())
          {
-            if(AirScanner.hasAir())
+            stage.nativeWindow.close();
+            if(NativeApplication.nativeApplication.openedWindows.length == 0)
             {
-               stage.nativeWindow.close();
-               if(NativeApplication.nativeApplication.openedWindows.length == 0)
-               {
-                  NativeApplication.nativeApplication.exit(this._returnCode);
-               }
+               NativeApplication.nativeApplication.exit(this._returnCode);
             }
          }
+         
       }
       
       public function onClose() : void {
@@ -497,7 +503,7 @@ package
          InterClientManager.destroy();
       }
       
-      public function clearCache(selective:Boolean=false, reboot:Boolean=false) : void {
+      public function clearCache(selective:Boolean = false, reboot:Boolean = false) : void {
          var soList:Array = null;
          var file:File = null;
          var fileName:String = null;
@@ -507,7 +513,7 @@ package
          {
             CustomSharedObject.closeAll();
             soList = soFolder.getDirectoryListing();
-            for each (file in soList)
+            for each(file in soList)
             {
                fileName = FileUtils.getFileStartName(file.name);
                if(selective)
@@ -616,7 +622,8 @@ package
          }
          var sharedDefUri:Uri = new Uri("SharedDefinitions.swf");
          sharedDefUri.loaderContext = new LoaderContext(false,new ApplicationDomain());
-         UiModuleManager.getInstance(BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE).sharedDefinitionContainer = sharedDefUri;
+         var hasNoHttpServerFile:Boolean = File.applicationDirectory.resolvePath("noHttpServer").exists;
+         UiModuleManager.getInstance((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE) || (hasNoHttpServerFile)).sharedDefinitionContainer = sharedDefUri;
          EntityDisplayer.setAnimationModifier(1,new CustomAnimStatiqueAnimationModifier());
          EntityDisplayer.setAnimationModifier(2,new CustomAnimStatiqueAnimationModifier());
          EntityDisplayer.setSkinModifier(1,new BreedSkinModifier());
@@ -669,20 +676,16 @@ package
             {
                StageShareManager.stage.quality = StageQuality.LOW;
             }
-            else
+            else if(e.propertyValue == 1)
             {
-               if(e.propertyValue == 1)
-               {
-                  StageShareManager.stage.quality = StageQuality.MEDIUM;
-               }
-               else
-               {
-                  if(e.propertyValue == 2)
-                  {
-                     StageShareManager.stage.quality = StageQuality.HIGH;
-                  }
-               }
+               StageShareManager.stage.quality = StageQuality.MEDIUM;
             }
+            else if(e.propertyValue == 2)
+            {
+               StageShareManager.stage.quality = StageQuality.HIGH;
+            }
+            
+            
          }
          if(e.propertyName == "fullScreen")
          {

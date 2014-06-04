@@ -97,21 +97,21 @@ package com.ankamagames.dofus.network.messages.game.guild
          else
          {
             output.writeByte(this.level);
-            if(this.expLevelFloor < 0)
+            if((this.expLevelFloor < 0) || (this.expLevelFloor > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.expLevelFloor + ") on element expLevelFloor.");
             }
             else
             {
                output.writeDouble(this.expLevelFloor);
-               if(this.experience < 0)
+               if((this.experience < 0) || (this.experience > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.experience + ") on element experience.");
                }
                else
                {
                   output.writeDouble(this.experience);
-                  if(this.expNextLevelFloor < 0)
+                  if((this.expNextLevelFloor < 0) || (this.expNextLevelFloor > 9.007199254740992E15))
                   {
                      throw new Error("Forbidden value (" + this.expNextLevelFloor + ") on element expNextLevelFloor.");
                   }
@@ -165,21 +165,21 @@ package com.ankamagames.dofus.network.messages.game.guild
          else
          {
             this.expLevelFloor = input.readDouble();
-            if(this.expLevelFloor < 0)
+            if((this.expLevelFloor < 0) || (this.expLevelFloor > 9.007199254740992E15))
             {
                throw new Error("Forbidden value (" + this.expLevelFloor + ") on element of GuildInformationsGeneralMessage.expLevelFloor.");
             }
             else
             {
                this.experience = input.readDouble();
-               if(this.experience < 0)
+               if((this.experience < 0) || (this.experience > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.experience + ") on element of GuildInformationsGeneralMessage.experience.");
                }
                else
                {
                   this.expNextLevelFloor = input.readDouble();
-                  if(this.expNextLevelFloor < 0)
+                  if((this.expNextLevelFloor < 0) || (this.expNextLevelFloor > 9.007199254740992E15))
                   {
                      throw new Error("Forbidden value (" + this.expNextLevelFloor + ") on element of GuildInformationsGeneralMessage.expNextLevelFloor.");
                   }

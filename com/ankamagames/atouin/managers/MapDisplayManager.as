@@ -130,9 +130,9 @@ package com.ankamagames.atouin.managers
          return this._currentRenderId;
       }
       
-      public function fromMap(map:Map, decryptionKey:ByteArray = null) : uint {
+      public function fromMap(map:Map, decryptionKey:ByteArray = null, renderFixture:Boolean = true) : uint {
          this._currentMap = WorldPoint.fromMapId(map.id);
-         var request:RenderRequest = new RenderRequest(this._currentMap,false,decryptionKey);
+         var request:RenderRequest = new RenderRequest(this._currentMap,false,decryptionKey,renderFixture);
          this._renderRequestStack.push(request);
          this._currentRenderId = request.renderId;
          Atouin.getInstance().showWorld(true);
@@ -144,8 +144,8 @@ package com.ankamagames.atouin.managers
          return this._currentRenderId;
       }
       
-      public function display(pMap:WorldPoint, forceReloadWithoutCache:Boolean = false, decryptionKey:ByteArray = null) : uint {
-         var request:RenderRequest = new RenderRequest(pMap,forceReloadWithoutCache,decryptionKey);
+      public function display(pMap:WorldPoint, forceReloadWithoutCache:Boolean = false, decryptionKey:ByteArray = null, renderFixture:Boolean = true) : uint {
+         var request:RenderRequest = new RenderRequest(pMap,forceReloadWithoutCache,decryptionKey,renderFixture);
          _log.debug("Ask render map " + pMap.mapId + ", renderRequestID: " + request.renderId);
          this._renderRequestStack.push(request);
          this.checkForRender();
@@ -363,7 +363,7 @@ package com.ankamagames.atouin.managers
          }
          this._currentDataMap = new DataMapContainer(map);
          MEMORY_LOG[DataMapContainer] = 1;
-         this._renderer.render(this._currentDataMap,this._forceReloadWithoutCache,request.renderId);
+         this._renderer.render(this._currentDataMap,this._forceReloadWithoutCache,request.renderId,request.renderFixture);
          FrustumManager.getInstance().updateMap();
       }
       
@@ -475,12 +475,13 @@ import flash.utils.ByteArray;
 class RenderRequest extends Object
 {
    
-   function RenderRequest(map:WorldPoint, forceReloadWithoutCache:Boolean, decryptionKey:ByteArray) {
+   function RenderRequest(map:WorldPoint, forceReloadWithoutCache:Boolean, decryptionKey:ByteArray, renderFixture:Boolean = true) {
       super();
       this.renderId = RENDER_ID++;
       this.map = map;
       this.forceReloadWithoutCache = forceReloadWithoutCache;
       this.decryptionKey = decryptionKey;
+      this.renderFixture = renderFixture;
    }
    
    private static var RENDER_ID:uint = 0;
@@ -492,4 +493,6 @@ class RenderRequest extends Object
    public var forceReloadWithoutCache:Boolean;
    
    public var decryptionKey:ByteArray;
+   
+   public var renderFixture:Boolean;
 }

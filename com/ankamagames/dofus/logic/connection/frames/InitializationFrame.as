@@ -70,6 +70,7 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.dofus.misc.lists.TriggerHookList;
    import com.ankamagames.dofus.misc.lists.CustomUiHookList;
    import com.ankamagames.dofus.misc.lists.RoleplayHookList;
+   import com.ankamagames.dofus.misc.lists.ExternalGameHookList;
    import com.ankamagames.dofus.misc.lists.ApiActionList;
    import com.ankamagames.dofus.misc.lists.ApiChatActionList;
    import com.ankamagames.dofus.misc.lists.ApiCraftActionList;
@@ -121,6 +122,7 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.dofus.types.data.SpellTooltipInfo;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.internalDatacenter.items.WeaponWrapper;
+   import com.ankamagames.dofus.internalDatacenter.items.QuantifiedItemWrapper;
    import com.ankamagames.dofus.internalDatacenter.communication.SmileyWrapper;
    import com.ankamagames.dofus.internalDatacenter.communication.ChatBubble;
    import com.ankamagames.dofus.internalDatacenter.communication.ThinkBubble;
@@ -575,6 +577,7 @@ package com.ankamagames.dofus.logic.connection.frames
          TooltipsFactory.registerAssoc(SpellTooltipInfo,"spellBanner");
          TooltipsFactory.registerAssoc(ItemWrapper,"item");
          TooltipsFactory.registerAssoc(WeaponWrapper,"item");
+         TooltipsFactory.registerAssoc(QuantifiedItemWrapper,"item");
          TooltipsFactory.registerAssoc(SmileyWrapper,"smiley");
          TooltipsFactory.registerAssoc(ChatBubble,"chatBubble");
          TooltipsFactory.registerAssoc(ThinkBubble,"thinkBubble");
@@ -608,6 +611,7 @@ package com.ankamagames.dofus.logic.connection.frames
          TooltipsFactory.registerAssoc(HouseWrapper,"house");
          MenusFactory.registerAssoc(GameRolePlayMerchantInformations,"humanVendor");
          MenusFactory.registerAssoc(ItemWrapper,"item");
+         MenusFactory.registerAssoc(QuantifiedItemWrapper,"item");
          MenusFactory.registerAssoc(WeaponWrapper,"item");
          MenusFactory.registerAssoc(MountWrapper,"mount");
          MenusFactory.registerAssoc(GameRolePlayCharacterInformations,"player");

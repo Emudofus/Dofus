@@ -57,16 +57,29 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightCastRequestMessage;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.datacenter.spells.SpellLevel;
+   import com.ankamagames.atouin.data.map.CellData;
    import com.ankamagames.dofus.types.entities.Glyph;
    import com.ankamagames.dofus.network.enums.GameActionMarkTypeEnum;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import com.ankamagames.dofus.datacenter.monsters.Monster;
    import flash.geom.Point;
+   import com.ankamagames.dofus.misc.EntityLookAdapter;
    
    public class FightSpellCastFrame extends Object implements Frame
    {
       
       public function FightSpellCastFrame(spellId:uint) {
          var i:SpellWrapper = null;
+         var effect:EffectInstance = null;
+         var tes:TiphonEntityLook = null;
+         var invoquedEntityNumber:* = 0;
+         var monsterId:* = undefined;
+         var monster:Monster = null;
+         var j:* = 0;
+         var ts:IEntity = null;
          var weapon:* = undefined;
+         this._invocationPreview = new Array();
          super();
          this._spellId = spellId;
          this._cursorData = new LinkedCursorData();
@@ -82,6 +95,46 @@ package com.ankamagames.dofus.logic.game.fight.frames
                if(i.spellId == this._spellId)
                {
                   this._spellLevel = i;
+                  if(this._spellId == 74)
+                  {
+                     tes = EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook);
+                     invoquedEntityNumber = 1;
+                  }
+                  else if(this._spellId == 2763)
+                  {
+                     tes = EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook);
+                     invoquedEntityNumber = 4;
+                  }
+                  
+                  for each(effect in this.currentSpell.effects)
+                  {
+                     if((effect.effectId == 181) || (effect.effectId == 1008) || (effect.effectId == 1011))
+                     {
+                        monsterId = effect.parameter0;
+                        monster = Monster.getMonsterById(monsterId);
+                        tes = new TiphonEntityLook(monster.look);
+                        invoquedEntityNumber = 1;
+                        break;
+                     }
+                  }
+                  if(tes)
+                  {
+                     j = 0;
+                     while(j < invoquedEntityNumber)
+                     {
+                        ts = new AnimatedCharacter(EntitiesManager.getInstance().getFreeEntityId(),tes);
+                        (ts as AnimatedCharacter).setCanSeeThrough(true);
+                        (ts as AnimatedCharacter).transparencyAllowed = true;
+                        (ts as AnimatedCharacter).alpha = 0.65;
+                        this._invocationPreview.push(ts);
+                        j++;
+                     }
+                  }
+                  else
+                  {
+                     this.removeInvocationPreview();
+                  }
+                  break;
                }
             }
          }
@@ -168,6 +221,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
       
       private var _spellmaximumRange:uint;
       
+      private var _invocationPreview:Array;
+      
       public function get priority() : int {
          return Priority.HIGHEST;
       }
@@ -228,6 +283,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var ccmsg:CellClickMessage = null;
          var ecmsg:EntityClickMessage = null;
          var teica:TimelineEntityClickAction = null;
+         var previewEntity:IEntity = null;
          switch(true)
          {
             case msg is CellOverMessage:
@@ -261,7 +317,21 @@ package com.ankamagames.dofus.logic.game.fight.frames
                return true;
             case msg is EntityClickMessage:
                ecmsg = msg as EntityClickMessage;
-               this.castSpell(ecmsg.entity.position.cellId,ecmsg.entity.id);
+               if(this._invocationPreview.length > 0)
+               {
+                  for each(previewEntity in this._invocationPreview)
+                  {
+                     if(previewEntity.id == ecmsg.entity.id)
+                     {
+                        this.castSpell(ecmsg.entity.position.cellId);
+                        return true;
+                     }
+                  }
+               }
+               else
+               {
+                  this.castSpell(ecmsg.entity.position.cellId,ecmsg.entity.id);
+               }
                return true;
             case msg is TimelineEntityClickAction:
                teica = msg as TimelineEntityClickAction;
@@ -305,6 +375,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          this.hideTargetsTooltips();
          this.removeRange();
          this.removeTarget();
+         this.removeInvocationPreview();
          LinkedCursorSpriteManager.getInstance().removeItem(FORBIDDEN_CURSOR_NAME);
          try
          {
@@ -322,11 +393,22 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var renderer:ZoneDARenderer = null;
          var spellZone:IZone = null;
          var updateStrata:* = false;
+         var playerX:* = 0;
+         var playerY:* = 0;
+         var distance:* = 0;
+         var positionArray:Array = null;
+         var i:* = 0;
+         var previewEntity:IEntity = null;
+         var preview:IEntity = null;
          if(this._clearTargetTimer.running)
          {
             this._clearTargetTimer.reset();
          }
          var target:int = FightContextFrame.currentCell;
+         if(target == -1)
+         {
+            return;
+         }
          if((!force) && (this._currentCell == target))
          {
             if((this._targetSelection) && (this.isValidCell(target)))
@@ -343,7 +425,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          }
          var myTurn:Boolean = fightTurnFrame.myTurn;
          _currentTargetIsTargetable = this.isValidCell(target);
-         if((!(target == -1)) && (_currentTargetIsTargetable))
+         if(_currentTargetIsTargetable)
          {
             if(!this._targetSelection)
             {
@@ -390,9 +472,52 @@ package com.ankamagames.dofus.logic.game.fight.frames
                this._lastTargetStatus = false;
             }
             this.showTargetsTooltips(this._targetSelection);
+            if(this._invocationPreview.length > 0)
+            {
+               if(this._spellId == 2763)
+               {
+                  playerX = MapPoint.fromCellId(entityInfos.disposition.cellId).x;
+                  playerY = MapPoint.fromCellId(entityInfos.disposition.cellId).y;
+                  distance = MapPoint.fromCellId(entityInfos.disposition.cellId).distanceTo(MapPoint.fromCellId(this._currentCell));
+                  positionArray = [MapPoint.fromCoords(playerX + distance,playerY),MapPoint.fromCoords(playerX - distance,playerY),MapPoint.fromCoords(playerX,playerY + distance),MapPoint.fromCoords(playerX,playerY - distance)];
+                  i = 0;
+                  while(i < 4)
+                  {
+                     preview = this._invocationPreview[i];
+                     (preview as AnimatedCharacter).visible = true;
+                     preview.position = positionArray[i];
+                     (preview as AnimatedCharacter).setDirection(MapPoint.fromCellId(entityInfos.disposition.cellId).advancedOrientationTo(preview.position,true));
+                     if((this.isValidCell(preview.position.cellId)) && (!(preview.position.cellId == this._currentCell)))
+                     {
+                        (preview as AnimatedCharacter).display(PlacementStrataEnums.STRATA_PLAYER);
+                        (preview as AnimatedCharacter).visible = true;
+                     }
+                     else
+                     {
+                        (preview as AnimatedCharacter).visible = false;
+                     }
+                     i++;
+                  }
+               }
+               else
+               {
+                  previewEntity = this._invocationPreview[0];
+                  (previewEntity as AnimatedCharacter).visible = true;
+                  previewEntity.position = MapPoint.fromCellId(this._currentCell);
+                  (previewEntity as AnimatedCharacter).setDirection(MapPoint.fromCellId(entityInfos.disposition.cellId).advancedOrientationTo(MapPoint.fromCellId(this._currentCell),true));
+                  (previewEntity as AnimatedCharacter).display(PlacementStrataEnums.STRATA_PLAYER);
+               }
+            }
          }
          else
          {
+            if(this._invocationPreview.length > 0)
+            {
+               for each(preview in this._invocationPreview)
+               {
+                  (preview as AnimatedCharacter).visible = false;
+               }
+            }
             if(this._lastTargetStatus)
             {
                LinkedCursorSpriteManager.getInstance().addItem(FORBIDDEN_CURSOR_NAME,this._cursorData,true);
@@ -400,6 +525,16 @@ package com.ankamagames.dofus.logic.game.fight.frames
             this.removeTarget();
             this._lastTargetStatus = false;
             this.hideTargetsTooltips();
+         }
+      }
+      
+      private function removeInvocationPreview() : void {
+         var preview:IEntity = null;
+         for each(preview in this._invocationPreview)
+         {
+            (preview as AnimatedCharacter).remove();
+            (preview as AnimatedCharacter).destroy();
+            preview = null;
          }
       }
       
@@ -578,6 +713,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
          }
          else if(this.isValidCell(cell))
          {
+            if(this._invocationPreview.length > 0)
+            {
+               this.removeInvocationPreview();
+            }
             CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent - this._spellLevel.apCost;
             gafcrmsg = new GameActionFightCastRequestMessage();
             gafcrmsg.initGameActionFightCastRequestMessage(this._spellId,cell);
@@ -588,6 +727,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
       }
       
       private function cancelCast(... args) : void {
+         this.removeInvocationPreview();
          this._cancelTimer.reset();
          Kernel.getWorker().removeFrame(this);
       }

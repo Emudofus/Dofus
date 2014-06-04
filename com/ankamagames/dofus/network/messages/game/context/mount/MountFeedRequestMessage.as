@@ -65,7 +65,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
       }
       
       public function serializeAs_MountFeedRequestMessage(output:IDataOutput) : void {
-         if(this.mountUid < 0)
+         if((this.mountUid < 0) || (this.mountUid > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.mountUid + ") on element mountUid.");
          }
@@ -99,7 +99,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
       
       public function deserializeAs_MountFeedRequestMessage(input:IDataInput) : void {
          this.mountUid = input.readDouble();
-         if(this.mountUid < 0)
+         if((this.mountUid < 0) || (this.mountUid > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.mountUid + ") on element of MountFeedRequestMessage.mountUid.");
          }

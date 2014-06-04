@@ -277,7 +277,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          {
             characterEntity.position = MapPoint.fromCellId(infos.disposition.cellId);
          }
-         if(justCreated)
+         if((justCreated) || (!characterEntity.root))
          {
             characterEntity.setDirection(infos.disposition.direction);
             characterEntity.display(PlacementStrataEnums.STRATA_PLAYER);

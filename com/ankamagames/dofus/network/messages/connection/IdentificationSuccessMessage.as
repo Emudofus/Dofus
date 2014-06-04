@@ -107,14 +107,14 @@ package com.ankamagames.dofus.network.messages.connection
             {
                output.writeByte(this.communityId);
                output.writeUTF(this.secretQuestion);
-               if(this.subscriptionEndDate < 0)
+               if((this.subscriptionEndDate < 0) || (this.subscriptionEndDate > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.subscriptionEndDate + ") on element subscriptionEndDate.");
                }
                else
                {
                   output.writeDouble(this.subscriptionEndDate);
-                  if(this.accountCreation < 0)
+                  if((this.accountCreation < 0) || (this.accountCreation > 9.007199254740992E15))
                   {
                      throw new Error("Forbidden value (" + this.accountCreation + ") on element accountCreation.");
                   }
@@ -154,14 +154,14 @@ package com.ankamagames.dofus.network.messages.connection
             {
                this.secretQuestion = input.readUTF();
                this.subscriptionEndDate = input.readDouble();
-               if(this.subscriptionEndDate < 0)
+               if((this.subscriptionEndDate < 0) || (this.subscriptionEndDate > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.subscriptionEndDate + ") on element of IdentificationSuccessMessage.subscriptionEndDate.");
                }
                else
                {
                   this.accountCreation = input.readDouble();
-                  if(this.accountCreation < 0)
+                  if((this.accountCreation < 0) || (this.accountCreation > 9.007199254740992E15))
                   {
                      throw new Error("Forbidden value (" + this.accountCreation + ") on element of IdentificationSuccessMessage.accountCreation.");
                   }

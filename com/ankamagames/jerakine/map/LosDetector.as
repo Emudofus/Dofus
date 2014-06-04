@@ -3,6 +3,7 @@ package com.ankamagames.jerakine.map
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    import com.ankamagames.jerakine.utils.display.Dofus1Line;
+   import com.ankamagames.jerakine.utils.display.Dofus2Line;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    
@@ -17,7 +18,7 @@ package com.ankamagames.jerakine.map
       
       public static function getCell(mapData:IDataMapProvider, range:Vector.<uint>, refPosition:MapPoint) : Vector.<uint> {
          var i:uint = 0;
-         var line:Array = null;
+         var line:* = undefined;
          var los:* = false;
          var currentPoint:String = null;
          var p:MapPoint = null;
@@ -44,7 +45,14 @@ package com.ankamagames.jerakine.map
             p = MapPoint(orderedCell[i].p);
             if(!((!(tested[p.x + "_" + p.y] == null)) && (!(refPosition.x + refPosition.y == p.x + p.y)) && (!(refPosition.x - refPosition.y == p.x - p.y))))
             {
-               line = Dofus1Line.getLine(refPosition.x,refPosition.y,0,p.x,p.y,0);
+               if(Dofus1Line.useDofus2Line)
+               {
+                  line = Dofus2Line.getLine(refPosition.cellId,p.cellId);
+               }
+               else
+               {
+                  line = Dofus1Line.getLine(refPosition.x,refPosition.y,0,p.x,p.y,0);
+               }
                if(line.length == 0)
                {
                   result.push(p.cellId);

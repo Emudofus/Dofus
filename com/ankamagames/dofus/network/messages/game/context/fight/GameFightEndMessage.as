@@ -3,6 +3,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.fight.FightResultListEntry;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.NamedPartyTeamWithOutcome;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -13,6 +14,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
       
       public function GameFightEndMessage() {
          this.results = new Vector.<FightResultListEntry>();
+         this.namedPartyTeamsOutcomes = new Vector.<NamedPartyTeamWithOutcome>();
          super();
       }
       
@@ -32,15 +34,18 @@ package com.ankamagames.dofus.network.messages.game.context.fight
       
       public var results:Vector.<FightResultListEntry>;
       
+      public var namedPartyTeamsOutcomes:Vector.<NamedPartyTeamWithOutcome>;
+      
       override public function getMessageId() : uint {
          return 720;
       }
       
-      public function initGameFightEndMessage(duration:uint = 0, ageBonus:int = 0, lootShareLimitMalus:int = 0, results:Vector.<FightResultListEntry> = null) : GameFightEndMessage {
+      public function initGameFightEndMessage(duration:uint = 0, ageBonus:int = 0, lootShareLimitMalus:int = 0, results:Vector.<FightResultListEntry> = null, namedPartyTeamsOutcomes:Vector.<NamedPartyTeamWithOutcome> = null) : GameFightEndMessage {
          this.duration = duration;
          this.ageBonus = ageBonus;
          this.lootShareLimitMalus = lootShareLimitMalus;
          this.results = results;
+         this.namedPartyTeamsOutcomes = namedPartyTeamsOutcomes;
          this._isInitialized = true;
          return this;
       }
@@ -50,6 +55,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
          this.ageBonus = 0;
          this.lootShareLimitMalus = 0;
          this.results = new Vector.<FightResultListEntry>();
+         this.namedPartyTeamsOutcomes = new Vector.<NamedPartyTeamWithOutcome>();
          this._isInitialized = false;
       }
       
@@ -85,6 +91,13 @@ package com.ankamagames.dofus.network.messages.game.context.fight
                (this.results[_i4] as FightResultListEntry).serialize(output);
                _i4++;
             }
+            output.writeShort(this.namedPartyTeamsOutcomes.length);
+            _i5 = 0;
+            while(_i5 < this.namedPartyTeamsOutcomes.length)
+            {
+               (this.namedPartyTeamsOutcomes[_i5] as NamedPartyTeamWithOutcome).serializeAs_NamedPartyTeamWithOutcome(output);
+               _i5++;
+            }
             return;
          }
       }
@@ -96,6 +109,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
       public function deserializeAs_GameFightEndMessage(input:IDataInput) : void {
          var _id4:uint = 0;
          var _item4:FightResultListEntry = null;
+         var _item5:NamedPartyTeamWithOutcome = null;
          this.duration = input.readInt();
          if(this.duration < 0)
          {
@@ -114,6 +128,15 @@ package com.ankamagames.dofus.network.messages.game.context.fight
                _item4.deserialize(input);
                this.results.push(_item4);
                _i4++;
+            }
+            _namedPartyTeamsOutcomesLen = input.readUnsignedShort();
+            _i5 = 0;
+            while(_i5 < _namedPartyTeamsOutcomesLen)
+            {
+               _item5 = new NamedPartyTeamWithOutcome();
+               _item5.deserialize(input);
+               this.namedPartyTeamsOutcomes.push(_item5);
+               _i5++;
             }
             return;
          }

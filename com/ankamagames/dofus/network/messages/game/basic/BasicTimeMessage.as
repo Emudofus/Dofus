@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return this._isInitialized;
       }
       
-      public var timestamp:uint = 0;
+      public var timestamp:Number = 0;
       
       public var timezoneOffset:int = 0;
       
@@ -29,7 +29,7 @@ package com.ankamagames.dofus.network.messages.game.basic
          return 175;
       }
       
-      public function initBasicTimeMessage(timestamp:uint = 0, timezoneOffset:int = 0) : BasicTimeMessage {
+      public function initBasicTimeMessage(timestamp:Number = 0, timezoneOffset:int = 0) : BasicTimeMessage {
          this.timestamp = timestamp;
          this.timezoneOffset = timezoneOffset;
          this._isInitialized = true;
@@ -57,13 +57,13 @@ package com.ankamagames.dofus.network.messages.game.basic
       }
       
       public function serializeAs_BasicTimeMessage(output:IDataOutput) : void {
-         if(this.timestamp < 0)
+         if((this.timestamp < 0) || (this.timestamp > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.timestamp + ") on element timestamp.");
          }
          else
          {
-            output.writeInt(this.timestamp);
+            output.writeDouble(this.timestamp);
             output.writeShort(this.timezoneOffset);
             return;
          }
@@ -74,8 +74,8 @@ package com.ankamagames.dofus.network.messages.game.basic
       }
       
       public function deserializeAs_BasicTimeMessage(input:IDataInput) : void {
-         this.timestamp = input.readInt();
-         if(this.timestamp < 0)
+         this.timestamp = input.readDouble();
+         if((this.timestamp < 0) || (this.timestamp > 9.007199254740992E15))
          {
             throw new Error("Forbidden value (" + this.timestamp + ") on element of BasicTimeMessage.timestamp.");
          }

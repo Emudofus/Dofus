@@ -4,6 +4,7 @@ package com.ankamagames.dofus.types.sequences
    import com.ankamagames.jerakine.types.positions.MapPoint;
    import flash.geom.Point;
    import com.ankamagames.jerakine.utils.display.Dofus1Line;
+   import com.ankamagames.jerakine.utils.display.Dofus2Line;
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.dofus.types.entities.Projectile;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
@@ -56,14 +57,14 @@ package com.ankamagames.dofus.types.sequences
       private var _cells:Array;
       
       override public function start() : void {
-         var cells:Array = null;
+         var cells:* = undefined;
          var cell:Point = null;
          var i:uint = 0;
          var add:* = false;
          var j:uint = 0;
          if(!this._useOnlyAddedCells)
          {
-            cells = Dofus1Line.getLine(this._startCell.x,this._startCell.y,0,this._endCell.x,this._endCell.y,0);
+            cells = Dofus1Line.useDofus2Line?Dofus2Line.getLine(this._startCell.cellId,this._endCell.cellId):Dofus1Line.getLine(this._startCell.x,this._startCell.y,0,this._endCell.x,this._endCell.y,0);
          }
          else
          {

@@ -5,6 +5,8 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.berilia.types.data.UiModule;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
+   import com.ankamagames.dofus.internalDatacenter.items.QuantifiedItemWrapper;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
    import com.ankamagames.dofus.network.enums.CharacterInventoryPositionEnum;
    import com.ankamagames.jerakine.types.Uri;
    import com.ankamagames.dofus.internalDatacenter.items.MountWrapper;
@@ -96,6 +98,45 @@ package com.ankamagames.dofus.uiApi
          return quantity;
       }
       
+      public function getItemByGID(objectGID:uint) : ItemWrapper {
+         var item:ItemWrapper = null;
+         var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().realInventory;
+         for each(item in inventory)
+         {
+            if((item.position < 63) || (!(item.objectGID == objectGID)))
+            {
+               continue;
+            }
+            return item;
+         }
+         return null;
+      }
+      
+      public function getQuantifiedItemByGIDInInventoryOrMakeUpOne(objectGID:uint) : QuantifiedItemWrapper {
+         var qiw:QuantifiedItemWrapper = null;
+         var item:ItemWrapper = null;
+         var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().realInventory;
+         var iw:ItemWrapper = null;
+         for each(item in inventory)
+         {
+            if((item.position < 63) || (!(item.objectGID == objectGID)))
+            {
+               continue;
+            }
+            iw = item;
+            break;
+         }
+         if(iw)
+         {
+            qiw = QuantifiedItemWrapper.create(iw.position,iw.objectUID,objectGID,iw.quantity,iw.effectsList,false);
+         }
+         else
+         {
+            qiw = QuantifiedItemWrapper.create(0,0,objectGID,0,new Vector.<ObjectEffect>(),false);
+         }
+         return qiw;
+      }
+      
       public function getItem(objectUID:uint) : ItemWrapper {
          return InventoryManager.getInstance().inventory.getItem(objectUID);
       }
@@ -185,7 +226,7 @@ package com.ankamagames.dofus.uiApi
          var presets:Array = new Array();
          var emptyUri:Uri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
          var i:int = 0;
-         while(i < 8)
+         while(i < 16)
          {
             preset = InventoryManager.getInstance().presets[i];
             if(preset)

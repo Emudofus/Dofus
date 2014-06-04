@@ -34,6 +34,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.inventory.items.SetUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassResetMessage;
    import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassUpdateMessage;
+   import com.ankamagames.dofus.network.messages.game.basic.BasicTimeMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayHumanoidInformations;
    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.dofus.datacenter.breeds.Breed;
@@ -66,6 +67,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.enums.CompassTypeEnum;
    import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassUpdatePartyMemberMessage;
    import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassUpdatePvpSeekMessage;
+   import flash.utils.getTimer;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterSpellModification;
@@ -134,6 +136,9 @@ package com.ankamagames.dofus.logic.game.common.frames
          var cumsg:CompassUpdateMessage = null;
          var legend:String = null;
          var color:uint = 0;
+         var btmsg:BasicTimeMessage = null;
+         var date:Date = null;
+         var receptionDelay:int = 0;
          var infos:GameRolePlayHumanoidInformations = null;
          var currentLook:TiphonEntityLook = null;
          var newLook:TiphonEntityLook = null;
@@ -481,6 +486,13 @@ package com.ankamagames.dofus.logic.game.common.frames
                      break;
                }
                KernelEventsManager.getInstance().processCallback(HookList.AddMapFlag,name,legend,PlayedCharacterManager.getInstance().currentWorldMap.id,cumsg.coords.worldX,cumsg.coords.worldY,color,false);
+               return true;
+            case msg is BasicTimeMessage:
+               btmsg = msg as BasicTimeMessage;
+               date = new Date();
+               receptionDelay = getTimer() - btmsg.receptionTime;
+               TimeManager.getInstance().serverTimeLag = btmsg.timestamp + btmsg.timezoneOffset * 60 * 1000 - date.getTime() + receptionDelay;
+               TimeManager.getInstance().serverUtcTimeLag = btmsg.timestamp - date.getTime() + receptionDelay;
                return true;
             default:
                return false;

@@ -110,6 +110,17 @@ package com.ankamagames.jerakine.utils.display
             }
             
          }
+         else if(AirScanner.isStreamingVersion())
+         {
+            try
+            {
+               StageShareManager.stage.displayState = enabled?StageDisplayState.FULL_SCREEN_INTERACTIVE:StageDisplayState.NORMAL;
+            }
+            catch(error:Error)
+            {
+            }
+         }
+         
       }
       
       public static function get startWidth() : uint {

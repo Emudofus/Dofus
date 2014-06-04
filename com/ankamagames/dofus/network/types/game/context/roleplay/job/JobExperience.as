@@ -63,21 +63,21 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
             else
             {
                output.writeByte(this.jobLevel);
-               if(this.jobXP < 0)
+               if((this.jobXP < 0) || (this.jobXP > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.jobXP + ") on element jobXP.");
                }
                else
                {
                   output.writeDouble(this.jobXP);
-                  if(this.jobXpLevelFloor < 0)
+                  if((this.jobXpLevelFloor < 0) || (this.jobXpLevelFloor > 9.007199254740992E15))
                   {
                      throw new Error("Forbidden value (" + this.jobXpLevelFloor + ") on element jobXpLevelFloor.");
                   }
                   else
                   {
                      output.writeDouble(this.jobXpLevelFloor);
-                     if(this.jobXpNextLevelFloor < 0)
+                     if((this.jobXpNextLevelFloor < 0) || (this.jobXpNextLevelFloor > 9.007199254740992E15))
                      {
                         throw new Error("Forbidden value (" + this.jobXpNextLevelFloor + ") on element jobXpNextLevelFloor.");
                      }
@@ -112,21 +112,21 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
             else
             {
                this.jobXP = input.readDouble();
-               if(this.jobXP < 0)
+               if((this.jobXP < 0) || (this.jobXP > 9.007199254740992E15))
                {
                   throw new Error("Forbidden value (" + this.jobXP + ") on element of JobExperience.jobXP.");
                }
                else
                {
                   this.jobXpLevelFloor = input.readDouble();
-                  if(this.jobXpLevelFloor < 0)
+                  if((this.jobXpLevelFloor < 0) || (this.jobXpLevelFloor > 9.007199254740992E15))
                   {
                      throw new Error("Forbidden value (" + this.jobXpLevelFloor + ") on element of JobExperience.jobXpLevelFloor.");
                   }
                   else
                   {
                      this.jobXpNextLevelFloor = input.readDouble();
-                     if(this.jobXpNextLevelFloor < 0)
+                     if((this.jobXpNextLevelFloor < 0) || (this.jobXpNextLevelFloor > 9.007199254740992E15))
                      {
                         throw new Error("Forbidden value (" + this.jobXpNextLevelFloor + ") on element of JobExperience.jobXpNextLevelFloor.");
                      }
