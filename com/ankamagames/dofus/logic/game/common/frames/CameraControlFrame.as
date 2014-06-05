@@ -41,6 +41,8 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       private var _wasDragging:Boolean;
       
+      private var _buttonDown:Boolean;
+      
       public function pushed() : Boolean {
          this._container = Atouin.getInstance().rootContainer as Sprite;
          this._allowDrag = true;
@@ -59,9 +61,13 @@ package com.ankamagames.dofus.logic.game.common.frames
          return true;
       }
       
+      public function get dragging() : Boolean {
+         return this._dragging;
+      }
+      
       private function onMouseMove(pEvent:MouseEvent) : void {
          var window:Rectangle = null;
-         if((this._allowDrag) && (Atouin.getInstance().currentZoom > MIN_ZOOM) && (!this._dragging) && (pEvent.buttonDown))
+         if((this._allowDrag) && (Atouin.getInstance().currentZoom > MIN_ZOOM) && (!this._dragging) && (this._buttonDown))
          {
             Mouse.hide();
             InteractiveCellManager.getInstance().setInteraction(false);
@@ -76,6 +82,7 @@ package com.ankamagames.dofus.logic.game.common.frames
       }
       
       private function onMouseDown(pEvent:Event) : void {
+         this._buttonDown = true;
          if((!(pEvent.target == StageShareManager.stage)) && (!this.isInWorld(pEvent.target as DisplayObject)))
          {
             this._allowDrag = false;
@@ -83,6 +90,7 @@ package com.ankamagames.dofus.logic.game.common.frames
       }
       
       private function onMouseUp(pEvent:Event) : void {
+         this._buttonDown = false;
          if(this._dragging)
          {
             this._container.stopDrag();

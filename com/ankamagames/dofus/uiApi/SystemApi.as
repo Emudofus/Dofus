@@ -690,6 +690,11 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function zoom(value:Number) : void {
+         var cameraFrame:CameraControlFrame = Kernel.getWorker().getFrame(CameraControlFrame) as CameraControlFrame;
+         if(cameraFrame.dragging)
+         {
+            return;
+         }
          this.luaZoom(value);
          Atouin.getInstance().zoom(value);
       }
@@ -859,6 +864,11 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function mouseZoom(zoomIn:Boolean = true) : void {
+         var cameraFrame:CameraControlFrame = Kernel.getWorker().getFrame(CameraControlFrame) as CameraControlFrame;
+         if(cameraFrame.dragging)
+         {
+            return;
+         }
          var zoomLevel:Number = Atouin.getInstance().currentZoom + (zoomIn?1:-1);
          this.luaZoom(zoomLevel);
          Atouin.getInstance().zoom(zoomLevel,Atouin.getInstance().worldContainer.mouseX,Atouin.getInstance().worldContainer.mouseY);
