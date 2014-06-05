@@ -341,7 +341,6 @@ package com.ankamagames.atouin
       
       public function zoom(value:Number, posX:int = 0, posY:int = 0) : void {
          var lastZoom:* = NaN;
-         var mzm:MapZoomMessage = null;
          if(value == 1)
          {
             this._worldContainer.scaleX = 1;
@@ -410,9 +409,9 @@ package com.ankamagames.atouin
                this._worldContainer.y = 876 - 876 * this._currentZoom;
             }
             
-            mzm = new MapZoomMessage(value,posX,posY);
-            Atouin.getInstance().handler.process(mzm);
          }
+         var mzm:MapZoomMessage = new MapZoomMessage(value,posX,posY);
+         Atouin.getInstance().handler.process(mzm);
       }
       
       public function cancelZoom() : void {

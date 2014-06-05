@@ -7,6 +7,7 @@ package com.ankamagames.berilia.utils.web
    import flash.filesystem.File;
    import flash.utils.getDefinitionByName;
    import flash.events.Event;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
    
    public class HttpServer extends EventDispatcher
@@ -80,6 +81,7 @@ package com.ankamagames.berilia.utils.web
       }
       
       public function getUrlTo(target:String) : String {
+         var target:String = StringUtils.convertLatinToUtf(target);
          return "http://localhost:" + this._usedPort + "/" + target;
       }
       
