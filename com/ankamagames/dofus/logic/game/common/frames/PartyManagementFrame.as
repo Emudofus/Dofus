@@ -1932,8 +1932,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                "name":playerName,
                "onSameMap":playerIsOnSameMap,
                "alignmentInfos":playerAlignmentInfos,
-               "cantBeChallenged":restrictionInfo.cantChallenge,
-               "cantExchange":restrictionInfo.cantExchange
+               "cantBeChallenged":restrictionInfo && restrictionInfo.cantChallenge,
+               "cantExchange":restrictionInfo && restrictionInfo.cantExchange
             },"partyMember",pPartyId);
       }
       

@@ -46,6 +46,7 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.berilia.types.data.UiData;
    import com.ankamagames.jerakine.resources.ResourceType;
    import com.ankamagames.berilia.types.data.PreCompiledUiModule;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
    import flash.filesystem.FileMode;
    import by.blooddy.crypto.MD5;
    import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;

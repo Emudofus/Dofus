@@ -8,6 +8,7 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.jerakine.types.Uri;
    import flash.filesystem.FileStream;
    import com.ankamagames.jerakine.managers.LangManager;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
    import com.ankamagames.jerakine.utils.system.SystemManager;
    import com.ankamagames.jerakine.enum.OperatingSystem;
    import flash.filesystem.FileMode;

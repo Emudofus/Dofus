@@ -67,6 +67,7 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.jerakine.types.Version;
    import com.ankamagames.dofus.datacenter.servers.Server;
    import com.ankamagames.atouin.managers.DataGroundMapManager;
+   import com.ankamagames.dofus.logic.game.common.frames.CameraControlFrame;
    import com.ankamagames.berilia.components.WebBrowser;
    import com.ankamagames.berilia.components.ComponentInternalAccessor;
    import flash.net.URLRequestMethod;
