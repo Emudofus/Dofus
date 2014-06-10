@@ -43,7 +43,7 @@ package com.ankamagames.dofus.logic.game.fight.types
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private static function applyBuffModification(pSpellInfo:SpellDamageInfo, pBuffActionId:int, pModif:int) : void {
@@ -394,7 +394,7 @@ package com.ankamagames.dofus.logic.game.fight.types
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public function get targetTriggeredSpells() : Vector.<TriggeredSpell> {
@@ -403,7 +403,7 @@ package com.ankamagames.dofus.logic.game.fight.types
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public function addTriggeredSpellsEffects(pTriggeredSpells:Vector.<TriggeredSpell>) : Boolean {
@@ -412,7 +412,7 @@ package com.ankamagames.dofus.logic.game.fight.types
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public function getDamageSharingTargets() : Vector.<int> {
@@ -421,7 +421,7 @@ package com.ankamagames.dofus.logic.game.fight.types
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
    }
 }

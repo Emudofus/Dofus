@@ -251,7 +251,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public static function resetAllCoolDown(playerId:int, accessKey:Object) : void {

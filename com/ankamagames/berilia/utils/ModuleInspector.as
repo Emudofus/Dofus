@@ -152,7 +152,7 @@ package com.ankamagames.berilia.utils
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
    }
 }

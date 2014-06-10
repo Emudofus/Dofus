@@ -341,7 +341,7 @@ package com.hurlant.math
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       bi_internal function clamp() : void {
@@ -556,7 +556,7 @@ package com.hurlant.math
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       bi_internal function invDigit() : int {
@@ -1124,7 +1124,7 @@ package com.hurlant.math
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       bi_internal function multiplyUpperTo(a:BigInteger, n:int, r:BigInteger) : void {
@@ -1151,7 +1151,7 @@ package com.hurlant.math
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public function gcd(a:BigInteger) : BigInteger {

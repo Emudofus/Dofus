@@ -1233,7 +1233,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private function getMonsterGroup(pStaticMonsterInfos:GroupMonsterStaticInformations) : Vector.<MonsterInGroupLightInformations> {
@@ -1277,7 +1277,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       override protected function updateActorLook(actorId:int, newLook:EntityLook, smoke:Boolean = false) : AnimatedCharacter {
@@ -1609,7 +1609,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private function onEntityReadyForEmote(pEvent:TiphonEvent) : void {
@@ -1933,7 +1933,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private function updateIconAfterRender(pEvent:TiphonEvent) : void {
@@ -1978,7 +1978,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private function setEntitiesAura(visible:Boolean) : void {

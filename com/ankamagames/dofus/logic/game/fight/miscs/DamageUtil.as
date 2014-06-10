@@ -490,7 +490,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public static function applySpellModificationsOnEffect(pEffectDamage:EffectDamage, pSpellW:SpellWrapper) : void {
@@ -517,7 +517,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private static function computeDamage(pRawDamage:SpellDamage, pSpellDamageInfo:SpellDamageInfo, pEfficiencyMultiplier:Number, pIgnoreCasterStats:Boolean = false, pIgnoreCriticalResist:Boolean = false, pIgnoreTargetResists:Boolean = false) : EffectDamage {
@@ -526,7 +526,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private static function getDamage(pBaseDmg:int, pStat:int, pStatBonus:int, pDamageBonus:int, pAllDamagesBonus:int, pDamageReduction:int, pResistPercent:int, pEfficiencyPercent:int, pDamageSharingMultiplicator:Number = 1) : int {
@@ -613,7 +613,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public static function getAverageElementResistance(pElement:uint, pEntitiesIds:Vector.<int>) : int {

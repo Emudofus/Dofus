@@ -136,7 +136,7 @@ package com.ankamagames.jerakine.utils.misc
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private var std_dc_luminance_nrcodes:Vector.<int>;
