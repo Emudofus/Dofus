@@ -128,6 +128,18 @@ package com.ankamagames.dofus.logic.game.common.frames
          return this._justSwitchingCreaturesFightMode;
       }
       
+      public function get creaturesLimit() : int {
+         return this._creaturesLimit;
+      }
+      
+      public function get entitiesNumber() : int {
+         return this._humanNumber;
+      }
+      
+      public function get creaturesMode() : Boolean {
+         return this._creaturesMode;
+      }
+      
       public function pushed() : Boolean {
          this._entities = new Dictionary();
          OptionManager.getOptionManager("atouin").addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onAtouinOptionChange);

@@ -3,12 +3,14 @@ package com.ankamagames.dofus.console.debug
    import com.ankamagames.jerakine.console.ConsoleInstructionHandler;
    import com.ankamagames.jerakine.console.ConsoleHandler;
    import flash.display.DisplayObjectContainer;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
    import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.atouin.Atouin;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import flash.system.System;
    import flash.utils.setTimeout;
    import com.ankamagames.tiphon.display.TiphonSprite;
+   import com.ankamagames.dofus.kernel.Kernel;
    import flash.utils.Dictionary;
    
    public class ClearSceneInstructionHandler extends Object implements ConsoleInstructionHandler
@@ -21,7 +23,13 @@ package com.ankamagames.dofus.console.debug
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
          var scene:DisplayObjectContainer = null;
          var count:uint = 0;
+         var totalCount:uint = 0;
+         var charCount:uint = 0;
+         var othersCount:uint = 0;
+         var entities:Array = null;
+         var entitiesFrame:RoleplayEntitiesFrame = null;
          var o:* = undefined;
+         var entity:* = undefined;
          switch(cmd)
          {
             case "clearscene":
@@ -48,6 +56,33 @@ package com.ankamagames.dofus.console.debug
                System.gc();
                setTimeout(this.asynchInfo,2000,console);
                break;
+            case "countentities":
+               totalCount = 0;
+               charCount = 0;
+               othersCount = 0;
+               entities = EntitiesManager.getInstance().entities;
+               for each(entity in entities)
+               {
+                  totalCount++;
+                  if(entity is TiphonSprite)
+                  {
+                     if(entity.id >= 0)
+                     {
+                        charCount++;
+                     }
+                     else
+                     {
+                        othersCount++;
+                     }
+                  }
+               }
+               console.output(totalCount + " entities : " + charCount + " characters, " + othersCount + " monsters & npc.");
+               entitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+               if(entitiesFrame)
+               {
+                  console.output("Switch to creature mode : " + entitiesFrame.entitiesNumber + " of " + entitiesFrame.creaturesLimit + " -> " + entitiesFrame.creaturesMode);
+               }
+               break;
          }
       }
       
@@ -67,6 +102,8 @@ package com.ankamagames.dofus.console.debug
                return "Clear the World Scene.";
             case "clearentities":
                return "Clear all entities from the scene.";
+            case "countentities":
+               return "Count all entities from the scene.";
             default:
                return "No help for command \'" + cmd + "\'";
          }
