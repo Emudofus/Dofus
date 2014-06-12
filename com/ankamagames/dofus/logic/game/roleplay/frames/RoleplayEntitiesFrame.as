@@ -94,6 +94,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.logic.common.managers.PlayerManager;
    import com.ankamagames.berilia.managers.TooltipManager;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterInformations;
+   import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.tiphon.events.TiphonEvent;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionEmote;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionObjectUse;
@@ -143,7 +144,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPortalInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
    import com.ankamagames.tiphon.types.TiphonUtility;
-   import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamInformations;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.dofus.factories.RolePlayEntitiesFactory;
@@ -313,7 +313,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          this._playersId = new Array();
          this._monstersIds = new Vector.<int>();
          this._emoteTimesBySprite = new Dictionary();
-         _humanNumber = 0;
+         _entitiesVisibleNumber = 0;
          this._auraCycleIndex = 0;
          this._auraCycleTimer = new Timer(1800);
          if(OptionManager.getOptionManager("tiphon").auraMode == OptionEnum.AURA_CYCLE)
@@ -516,11 +516,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   newCreatureMode = false;
                   for each(actor in mcidmsg.actors)
                   {
-                     _humanNumber++;
-                     if((_creaturesLimit == 0) || (_creaturesLimit < 50) && (_humanNumber >= _creaturesLimit))
-                     {
-                        _creaturesMode = true;
-                     }
                      if(!this._playersId)
                      {
                         this._playersId = new Array();
@@ -533,6 +528,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                      {
                         this._monstersIds.push(actor.contextualId);
                      }
+                  }
+                  _entitiesVisibleNumber = EntitiesManager.getInstance().entitiesCount;
+                  if((_creaturesLimit == 0) || (_creaturesLimit < 50) && (_entitiesVisibleNumber >= _creaturesLimit))
+                  {
+                     _creaturesMode = true;
                   }
                   mapWithNoMonsters = true;
                   emoteId = 0;
@@ -693,7 +693,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                if(!char)
                {
                   updateCreaturesLimit();
-                  _humanNumber++;
                }
                char = this.addOrUpdateActor(grpsamsg.informations);
                if((char) && (grpsamsg.informations.contextualId == PlayedCharacterManager.getInstance().id))

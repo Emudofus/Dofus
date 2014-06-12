@@ -4,11 +4,11 @@ package com.ankamagames.dofus.logic.game.fight.miscs
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import com.ankamagames.tiphon.display.TiphonSprite;
    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
-   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.dofus.datacenter.spells.SpellBomb;
    import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
    import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
@@ -19,6 +19,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
    import com.ankamagames.dofus.logic.game.fight.managers.FightersStateManager;
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+   import com.ankamagames.jerakine.utils.display.spellZone.SpellShapeEnum;
    import com.ankamagames.dofus.datacenter.monsters.Monster;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightCompanionInformations;
    import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
@@ -33,7 +34,6 @@ package com.ankamagames.dofus.logic.game.fight.miscs
    import com.ankamagames.dofus.logic.game.fight.types.SplashDamage;
    import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.dofus.logic.game.fight.types.EffectModification;
-   import com.ankamagames.jerakine.utils.display.spellZone.SpellShapeEnum;
    import com.ankamagames.dofus.logic.game.fight.types.TriggeredSpell;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
@@ -104,6 +104,11 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          {
             return false;
          }
+         var targetInfos:GameFightFighterInformations = fef.getEntityInfos(pTargetId) as GameFightFighterInformations;
+         if(!targetInfos)
+         {
+            return false;
+         }
          var target:TiphonSprite = DofusEntities.getEntity(pTargetId) as AnimatedCharacter;
          var targetIsCaster:Boolean = pTargetId == pCasterId;
          var targetIsCarried:Boolean = (target) && (target.parentSprite) && (target.parentSprite.carriedEntity == target);
@@ -115,7 +120,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
             }
             return false;
          }
-         var targetCanBePushed:Boolean = PushUtil.isPushableEntity(fef.getEntityInfos(pTargetId) as GameFightFighterInformations);
+         var targetCanBePushed:Boolean = PushUtil.isPushableEntity(targetInfos);
          if(BOMB_SPELLS_IDS.indexOf(pSpell.id) != -1)
          {
             pSpell = getBombDirectDamageSpellWrapper(pSpell as SpellWrapper);
@@ -362,30 +367,36 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                return false;
             }
          }
-         else if((targetInfos.stats.summoned) && (monsterInfo) && (!Monster.getMonsterById(monsterInfo.creatureGenericId).canPlay))
-         {
-            targetMaskPattern = isTargetAlly?"agsj":"ASJ";
-         }
-         else if(targetInfos.stats.summoned)
-         {
-            targetMaskPattern = isTargetAlly?"agij":"AIJ";
-         }
-         else if(targetInfos is GameFightCompanionInformations)
-         {
-            targetMaskPattern = isTargetAlly?"agdl":"ADL";
-         }
-         else if(targetInfos is GameFightMonsterInformations)
-         {
-            targetMaskPattern = isTargetAlly?"agm":"AM";
-         }
          else
          {
-            targetMaskPattern = isTargetAlly?"gahl":"AHL";
+            if((targetIsCarried) && (!(pEffect.zoneShape == SpellShapeEnum.A)))
+            {
+               return false;
+            }
+            if((targetInfos.stats.summoned) && (monsterInfo) && (!Monster.getMonsterById(monsterInfo.creatureGenericId).canPlay))
+            {
+               targetMaskPattern = isTargetAlly?"agsj":"ASJ";
+            }
+            else if(targetInfos.stats.summoned)
+            {
+               targetMaskPattern = isTargetAlly?"agij":"AIJ";
+            }
+            else if(targetInfos is GameFightCompanionInformations)
+            {
+               targetMaskPattern = isTargetAlly?"agdl":"ADL";
+            }
+            else if(targetInfos is GameFightMonsterInformations)
+            {
+               targetMaskPattern = isTargetAlly?"agm":"AM";
+            }
+            else
+            {
+               targetMaskPattern = isTargetAlly?"gahl":"AHL";
+            }
+            
+            
+            
          }
-         
-         
-         
-         
          r = new RegExp("[" + targetMaskPattern + "]","g");
          verify = pEffect.targetMask.match(r).length > 0;
          if(verify)

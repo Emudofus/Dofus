@@ -136,6 +136,16 @@ package com.ankamagames.atouin.managers
          return this._entities;
       }
       
+      public function get entitiesCount() : int {
+         var e:* = undefined;
+         var count:int = 0;
+         for each(e in this._entities)
+         {
+            count++;
+         }
+         return count;
+      }
+      
       public function getFreeEntityId() : int {
          while(true)
          {

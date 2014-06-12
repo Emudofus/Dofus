@@ -1,7 +1,7 @@
 package com.ankamagames.dofus.logic.game.fight.types
 {
    import com.ankamagames.jerakine.logger.Logger;
-   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
@@ -16,7 +16,6 @@ package com.ankamagames.dofus.logic.game.fight.types
    import com.ankamagames.jerakine.types.positions.MapPoint;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
    import com.ankamagames.atouin.managers.EntitiesManager;
-   import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import com.ankamagames.dofus.logic.game.fight.miscs.DamageUtil;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
@@ -180,6 +179,8 @@ package com.ankamagames.dofus.logic.game.fight.types
       public var casterPermanentDamagePercent:int;
       
       public var casterPushDamageBonus:int;
+      
+      public var casterCriticalPushDamageBonus:int;
       
       public var casterCriticalDamageBonus:int;
       
