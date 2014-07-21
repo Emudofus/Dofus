@@ -178,6 +178,7 @@ package com.ankamagames.dofus.logic.game.common.managers
          var charLook:TiphonEntityLook = null;
          var breedId:* = 0;
          var boneCorrect:* = false;
+         var trueBreed:Breed = null;
          var look:TiphonEntityLook = EntityLookAdapter.fromNetwork(pInfos.look);
          if((this.isCreatureMode()) || (pForceCreature))
          {
@@ -194,9 +195,10 @@ package com.ankamagames.dofus.logic.game.common.managers
                      charLook = look.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0)?TiphonUtility.getLookWithoutMount(look):look;
                      breedId = pInfos.hasOwnProperty("breed")?pInfos["breed"]:0;
                      boneCorrect = this.isBoneCorrect(charLook.getBone());
-                     if((breedId <= 0) && (boneCorrect))
+                     trueBreed = Breed.getBreedFromSkin(charLook.firstSkin);
+                     if((breedId <= 0) && (boneCorrect) && (trueBreed))
                      {
-                        breedId = Breed.getBreedFromSkin(charLook.firstSkin).id;
+                        breedId = trueBreed.id;
                      }
                      else if(!boneCorrect)
                      {
@@ -208,6 +210,7 @@ package com.ankamagames.dofus.logic.game.common.managers
                            case 706:
                            case 1504:
                            case 1509:
+                           case 113:
                               look.setBone(CreatureBoneType.getPlayerIncarnationCreatureBone());
                               break;
                         }
@@ -274,7 +277,7 @@ package com.ankamagames.dofus.logic.game.common.managers
       }
       
       private function isBoneCorrect(boneId:int) : Boolean {
-         if((boneId == 1) || (boneId == 113) || (boneId == 44) || (boneId == 1575) || (boneId == 1576))
+         if((boneId == 1) || (boneId == 44) || (boneId == 1575) || (boneId == 1576))
          {
             return true;
          }

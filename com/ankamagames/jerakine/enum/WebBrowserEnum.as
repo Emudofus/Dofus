@@ -11,9 +11,11 @@ package com.ankamagames.jerakine.enum
       
       public static const UNKNOWN:String = "unknown";
       
+      public static const UNIDENTIFIABLE:String = "unidentifiable";
+      
       public static const CHROME:String = "chrome";
       
-      public static const FIREFOX:String = "ff";
+      public static const FIREFOX:String = "firefox";
       
       public static const INTERNET_EXPLORER:String = "ie";
       

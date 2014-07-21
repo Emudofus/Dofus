@@ -808,10 +808,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   {
                      TooltipManager.hide("MonstersInfo_" + animatedCharacter.id);
                   }
-               }
-               if(OptionManager.getOptionManager("tiphon").auraMode == OptionEnum.AURA_ON_ROLLOVER)
-               {
-                  animatedCharacter.visibleAura = false;
+                  if(OptionManager.getOptionManager("tiphon").auraMode == OptionEnum.AURA_ON_ROLLOVER)
+                  {
+                     animatedCharacter.visibleAura = false;
+                  }
                }
                return true;
             case msg is EntityClickMessage:

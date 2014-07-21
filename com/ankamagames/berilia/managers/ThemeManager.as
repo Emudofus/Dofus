@@ -129,7 +129,7 @@ package com.ankamagames.berilia.managers
                   }
                   else
                   {
-                     ErrorManager.addError("Impossible de trouver le fichier de description de thÃ¨me dans le dossier " + file.nativePath);
+                     ErrorManager.addError("Impossible de trouver le fichier de description de thème dans le dossier " + file.nativePath);
                      Berilia.getInstance().handler.process(new ThemeLoadErrorMessage(file.name));
                   }
                }
@@ -137,7 +137,7 @@ package com.ankamagames.berilia.managers
          }
          else
          {
-            ErrorManager.addError("Le dossier des thÃ¨mes est introuvable (url:" + LangManager.getInstance().getEntry("config.ui.common.themes") + ")");
+            ErrorManager.addError("Le dossier des thèmes est introuvable (url:" + LangManager.getInstance().getEntry("config.ui.common.themes") + ")");
          }
       }
       

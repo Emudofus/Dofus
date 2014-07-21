@@ -519,8 +519,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   {
                      this._leaveSpectator = true;
                   }
-                  PlayedCharacterManager.getInstance().resetSummonedCreature();
-                  PlayedCharacterManager.getInstance().resetSummonedBomb();
                   KernelEventsManager.getInstance().processCallback(HookList.GameFightLeave,gflmsg.charId);
                }
                return true;
@@ -544,8 +542,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
                {
                   this.endBattle(gfemsg);
                }
-               PlayedCharacterManager.getInstance().resetSummonedCreature();
-               PlayedCharacterManager.getInstance().resetSummonedBomb();
                FightersStateManager.getInstance().endFight();
                CurrentPlayedFighterManager.getInstance().endFight();
                return true;

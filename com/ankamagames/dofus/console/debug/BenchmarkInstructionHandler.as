@@ -17,7 +17,6 @@ package com.ankamagames.dofus.console.debug
    import com.ankamagames.tiphon.engine.TiphonDebugManager;
    import com.ankamagames.dofus.logic.common.frames.FightBotFrame;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
-   import com.ankamagames.dofus.logic.game.roleplay.managers.AnimFunManager;
    import com.ankamagames.dofus.logic.game.fight.managers.TacticModeManager;
    import com.ankamagames.tiphon.display.TiphonSprite;
    import com.ankamagames.jerakine.logger.Log;
@@ -135,10 +134,6 @@ package com.ankamagames.dofus.console.debug
                   fps.display(external);
                }
                break;
-            case "fastanimfun":
-               console.output((AnimFunManager.getInstance().fastDelay?"Désactivation":"Activation") + " de l\'exécution rapide des anims-funs");
-               AnimFunManager.getInstance().fastDelay = !AnimFunManager.getInstance().fastDelay;
-               break;
             case "tacticmode":
                TacticModeManager.getInstance().hide();
                useCache = false;
@@ -223,8 +218,6 @@ package com.ankamagames.dofus.console.debug
                return "Start/Stop the auto join fight spectator bot" + "\n    debugchat";
             case "tiphon-error":
                return "Désactive l\'affichage des erreurs du moteur d\'animation.";
-            case "fastanimfun":
-               return "Active/Désactive l\'exécution rapide des anims funs.";
             case "tacticmode":
                return "Active/Désactive le mode tactique" + "\n    show=[true|false]" + "\n    clearcache=[true|false]" + "\n    mode=[fight|RP]" + "\n    interactivecells=[true|false] " + "\n    fightzone=[true|false]" + "\n    scalezone=[true|false]" + "\n    flattencells=[true|false]";
             default:

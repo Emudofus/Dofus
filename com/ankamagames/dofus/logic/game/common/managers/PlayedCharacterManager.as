@@ -119,10 +119,6 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       public var mount:MountData;
       
-      public var currentSummonedCreature:uint = 0;
-      
-      public var currentSummonedBomb:uint = 0;
-      
       public var isFighting:Boolean = false;
       
       public var teamId:int = 0;
@@ -297,56 +293,6 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       public function get tiphonEntityLook() : TiphonEntityLook {
          return EntityLookAdapter.fromNetwork(this.infos.entityLook);
-      }
-      
-      public function resetSummonedCreature() : void {
-         this.currentSummonedCreature = 0;
-      }
-      
-      public function addSummonedCreature() : void {
-         this.currentSummonedCreature = this.currentSummonedCreature + 1;
-      }
-      
-      public function removeSummonedCreature() : void {
-         if(this.currentSummonedCreature > 0)
-         {
-            this.currentSummonedCreature = this.currentSummonedCreature - 1;
-         }
-      }
-      
-      private function getMaxSummonedCreature() : uint {
-         return this.characteristics.summonableCreaturesBoost.base + this.characteristics.summonableCreaturesBoost.objectsAndMountBonus + this.characteristics.summonableCreaturesBoost.alignGiftBonus + this.characteristics.summonableCreaturesBoost.contextModif;
-      }
-      
-      private function getCurrentSummonedCreature() : uint {
-         return this.currentSummonedCreature;
-      }
-      
-      public function canSummon() : Boolean {
-         return this.getMaxSummonedCreature() > this.getCurrentSummonedCreature();
-      }
-      
-      public function resetSummonedBomb() : void {
-         this.currentSummonedBomb = 0;
-      }
-      
-      public function addSummonedBomb() : void {
-         this.currentSummonedBomb = this.currentSummonedBomb + 1;
-      }
-      
-      public function removeSummonedBomb() : void {
-         if(this.currentSummonedBomb > 0)
-         {
-            this.currentSummonedBomb = this.currentSummonedBomb - 1;
-         }
-      }
-      
-      private function getMaxSummonedBomb() : uint {
-         return 3;
-      }
-      
-      public function canBomb() : Boolean {
-         return this.getMaxSummonedBomb() > this.currentSummonedBomb;
       }
       
       public function levelDiff(targetLevel:uint) : int {

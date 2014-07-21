@@ -58,7 +58,7 @@ package com.ankamagames.dofus.console
          console.addHandler("jptest",new FontInstructionHandler());
          console.addHandler(["aping","ping"],new LatencyInstructionHandler());
          console.addHandler(["framelist","framepriority"],new FrameInstructionHandler());
-         console.addHandler(["addmovingcharacter","setanimation","setdirection","memorylog","bot-spectator","bot-fight","tiphon-error","fpsmanager","fastanimfun","tacticmode"],new BenchmarkInstructionHandler());
+         console.addHandler(["addmovingcharacter","setanimation","setdirection","memorylog","bot-spectator","bot-fight","tiphon-error","fpsmanager","tacticmode"],new BenchmarkInstructionHandler());
          console.addHandler(["sendaction","listactions","sendhook"],new ActionsInstructionHandler());
          console.addHandler(["debuglos","tracepath","debugcellsinline"],new IAInstructionHandler());
          console.addHandler(["setspellscriptparam","setspellscript"],new FightInstructionHandler());

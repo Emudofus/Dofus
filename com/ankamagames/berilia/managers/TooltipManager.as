@@ -210,6 +210,20 @@ package com.ankamagames.berilia.managers
          _tooltipCacheParam = new Dictionary();
       }
       
+      public static function updateAllPositions(pOffsetX:Number, pOffsetY:Number) : void {
+         var tt:UiRootContainer = null;
+         var ttName:String = null;
+         for(ttName in _tooltips)
+         {
+            tt = Berilia.getInstance().getUi(ttName);
+            if(tt)
+            {
+               tt.x = tt.x + pOffsetX;
+               tt.y = tt.y + pOffsetY;
+            }
+         }
+      }
+      
       private static function onTooltipReady(tt:Tooltip, uiModule:UiModule, name:String, data:*, target:*, autoHide:Boolean, point:uint, relativePoint:uint, offset:int, cacheName:String, strata:int, param:Object, zoom:Number, alwaysDisplayed:Boolean) : void {
          var uiData:UiData = null;
          var cacheNameInfo:Array = null;

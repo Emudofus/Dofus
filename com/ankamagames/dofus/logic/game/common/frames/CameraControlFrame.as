@@ -14,10 +14,16 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.atouin.managers.InteractiveCellManager;
    import com.ankamagames.berilia.Berilia;
    import flash.display.DisplayObject;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.InfoEntitiesFrame;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.atouin.managers.MapDisplayManager;
    import com.ankamagames.jerakine.entities.messages.EntityClickMessage;
    import com.ankamagames.dofus.logic.game.roleplay.messages.InteractiveElementActivationMessage;
    import com.ankamagames.atouin.messages.AdjacentMapClickMessage;
+   import com.ankamagames.atouin.messages.MapLoadedMessage;
+   import com.ankamagames.atouin.messages.MapZoomMessage;
    import com.ankamagames.jerakine.types.enums.Priority;
    
    public class CameraControlFrame extends Object implements Frame
@@ -35,6 +41,12 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       private var _container:Sprite;
       
+      private var _containerLastX:Number;
+      
+      private var _containerLastY:Number;
+      
+      private var _mapZoomed:Boolean;
+      
       private var _dragging:Boolean;
       
       private var _allowDrag:Boolean;
@@ -45,7 +57,6 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       public function pushed() : Boolean {
          this._container = Atouin.getInstance().rootContainer as Sprite;
-         this._allowDrag = true;
          StageShareManager.stage.addEventListener(Event.DEACTIVATE,this.onMouseUp);
          StageShareManager.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
          StageShareManager.stage.addEventListener(MouseEvent.MOUSE_DOWN,this.onMouseDown);
@@ -77,6 +88,9 @@ package com.ankamagames.dofus.logic.game.common.frames
             window.height = -StageShareManager.startHeight * Atouin.getInstance().currentZoom + CENTER_Y + (CENTER_Y - (874 - StageShareManager.startHeight) * Atouin.getInstance().currentZoom);
             Berilia.getInstance().getUi("banner").mouseChildren = false;
             this._container.startDrag(false,window);
+            this._containerLastX = this._container.x;
+            this._containerLastY = this._container.y;
+            StageShareManager.stage.addEventListener(Event.ENTER_FRAME,this.updateElementsPositions);
             this._dragging = true;
          }
       }
@@ -94,13 +108,18 @@ package com.ankamagames.dofus.logic.game.common.frames
          if(this._dragging)
          {
             this._container.stopDrag();
+            StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,this.updateElementsPositions);
             Mouse.show();
             Berilia.getInstance().getUi("banner").mouseChildren = true;
             this._dragging = false;
             InteractiveCellManager.getInstance().setInteraction(true);
             this._wasDragging = true;
          }
-         this._allowDrag = true;
+         else
+         {
+            this._wasDragging = false;
+         }
+         this._allowDrag = this._mapZoomed;
       }
       
       private function isInWorld(pObj:DisplayObject) : Boolean {
@@ -116,6 +135,21 @@ package com.ankamagames.dofus.logic.game.common.frames
          return false;
       }
       
+      private function updateElementsPositions(pEvent:Event) : void {
+         var infoEntitiesFrame:InfoEntitiesFrame = null;
+         if((!(this._container.x == this._containerLastX)) || (!(this._container.y == this._containerLastY)))
+         {
+            TooltipManager.updateAllPositions(this._container.x - this._containerLastX,this._container.y - this._containerLastY);
+            this._containerLastX = this._container.x;
+            this._containerLastY = this._container.y;
+            infoEntitiesFrame = Kernel.getWorker().getFrame(InfoEntitiesFrame) as InfoEntitiesFrame;
+            if(infoEntitiesFrame)
+            {
+               infoEntitiesFrame.updateAllTooltips();
+            }
+         }
+      }
+      
       public function process(msg:Message) : Boolean {
          switch(true)
          {
@@ -127,9 +161,18 @@ package com.ankamagames.dofus.logic.game.common.frames
                   this._wasDragging = false;
                   return true;
                }
-               break;
+            case msg is MapLoadedMessage:
+               this._allowDrag = this._mapZoomed = false;
+               return false;
+            case msg is MapZoomMessage:
+               if((MapDisplayManager.getInstance().currentMapRendered) && (!this._dragging) && (!this._mapZoomed))
+               {
+                  this._allowDrag = this._mapZoomed = true;
+               }
+               return false;
+            default:
+               return false;
          }
-         return false;
       }
       
       public function get priority() : int {

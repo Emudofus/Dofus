@@ -47,6 +47,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightResumeMessage;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightResumeSlaveInfo;
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+   import com.ankamagames.dofus.logic.game.fight.types.SpellCastInFightManager;
    import com.ankamagames.dofus.logic.game.fight.types.CastingSpell;
    import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightUpdateTeamMessage;
@@ -73,7 +74,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightNoSpellCastMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapInformationsRequestMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightResumeWithSlavesMessage;
-   import com.ankamagames.dofus.logic.game.fight.types.SpellCastInFightManager;
    import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
    import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMark;
    import com.ankamagames.dofus.datacenter.spells.Spell;
@@ -419,15 +419,18 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var decryptionKey:ByteArray = null;
          var gcrmsg:GameContextReadyMessage = null;
          var gfrmsg:GameFightResumeMessage = null;
+         var playerId:* = 0;
          var cooldownInfos:Vector.<GameFightResumeSlaveInfo> = null;
          var playerCoolDownInfo:GameFightResumeSlaveInfo = null;
          var playedFighterManager:CurrentPlayedFighterManager = null;
+         var i:* = 0;
          var num:* = 0;
+         var infos:GameFightResumeSlaveInfo = null;
+         var spellCastManager:SpellCastInFightManager = null;
          var castingSpellPool:Array = null;
          var targetPool:Array = null;
          var durationPool:Array = null;
          var castingSpell:CastingSpell = null;
-         var i:* = 0;
          var numEffects:uint = 0;
          var buff:FightDispellableEffectExtendedInformations = null;
          var gfutmsg:GameFightUpdateTeamMessage = null;
@@ -472,8 +475,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var mirmsg:MapInformationsRequestMessage = null;
          var decryptionKeyString:String = null;
          var gfrwsmsg:GameFightResumeWithSlavesMessage = null;
-         var infos:GameFightResumeSlaveInfo = null;
-         var spellCastManager:SpellCastInFightManager = null;
          var buffTmp:BasicBuff = null;
          var mark:GameActionMark = null;
          var spell:Spell = null;
@@ -580,8 +581,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
                return true;
             case msg is GameFightResumeMessage:
                gfrmsg = msg as GameFightResumeMessage;
+               playerId = PlayedCharacterManager.getInstance().id;
                this.tacticModeHandler();
-               PlayedCharacterManager.getInstance().currentSummonedCreature = gfrmsg.summonCount;
+               CurrentPlayedFighterManager.getInstance().setCurrentSummonedCreature(gfrmsg.summonCount,playerId);
+               CurrentPlayedFighterManager.getInstance().setCurrentSummonedBomb(gfrmsg.bombCount,playerId);
                this._battleFrame.turnsCount = gfrmsg.gameTurn - 1;
                KernelEventsManager.getInstance().processCallback(FightHookList.TurnCountUpdated,gfrmsg.gameTurn - 1);
                if(msg is GameFightResumeWithSlavesMessage)
@@ -606,6 +609,11 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   spellCastManager = playedFighterManager.getSpellCastManagerById(infos.slaveId);
                   spellCastManager.currentTurn = gfrmsg.gameTurn - 1;
                   spellCastManager.updateCooldowns(cooldownInfos[i].spellCooldowns);
+                  if(infos.slaveId != playerId)
+                  {
+                     CurrentPlayedFighterManager.getInstance().setCurrentSummonedCreature(infos.summonCount,infos.slaveId);
+                     CurrentPlayedFighterManager.getInstance().setCurrentSummonedBomb(infos.bombCount,infos.slaveId);
+                  }
                   i++;
                }
                castingSpellPool = [];

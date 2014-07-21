@@ -124,6 +124,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.types.game.context.roleplay.BasicAllianceInformations;
    import com.ankamagames.dofus.logic.common.managers.HyperlinkShowAllianceManager;
    import com.ankamagames.dofus.logic.game.common.managers.SpeakingItemManager;
+   import com.ankamagames.dofus.types.enums.NotificationTypeEnum;
    import com.ankamagames.dofus.logic.common.managers.NotificationManager;
    import com.ankamagames.dofus.datacenter.npcs.TaxCollectorFirstname;
    import com.ankamagames.dofus.datacenter.npcs.TaxCollectorName;
@@ -459,6 +460,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          var chanId:* = undefined;
          var socGroup:AbstractSocialGroupInfos = null;
          var parameter:String = null;
+         var type:uint = 0;
          var nbsmsgNid:uint = 0;
          var object:ObjectItemQuantity = null;
          switch(true)
@@ -1240,7 +1242,15 @@ package com.ankamagames.dofus.logic.game.common.frames
                text = I18n.getText(notification.messageId,a);
                if(notification.id)
                {
-                  nbsmsgNid = NotificationManager.getInstance().prepareNotification(title,text,notification.iconId,"serverMsg_" + notification.id);
+                  if((notification.id == 34) || (notification.id == 24) || (notification.id == 33) || (notification.id == 36))
+                  {
+                     type = NotificationTypeEnum.SERVER_INFORMATION;
+                  }
+                  else
+                  {
+                     type = notification.iconId;
+                  }
+                  nbsmsgNid = NotificationManager.getInstance().prepareNotification(title,text,type,"serverMsg_" + notification.id);
                   NotificationManager.getInstance().addCallbackToNotification(nbsmsgNid,"NotificationUpdateFlag",[notification.id]);
                   NotificationManager.getInstance().sendNotification(nbsmsgNid);
                }

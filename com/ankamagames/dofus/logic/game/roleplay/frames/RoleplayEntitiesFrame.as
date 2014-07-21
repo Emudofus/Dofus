@@ -335,7 +335,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onGroundObjectLoaded);
          this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onGroundObjectLoadFailed);
          _interactiveElements = new Vector.<InteractiveElement>();
-         Dofus.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,onPropertyChanged);
+         Dofus.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
          Tiphon.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onTiphonPropertyChanged);
          Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onAtouinPropertyChanged);
          this._allianceFrame = Kernel.getWorker().getFrame(AllianceFrame) as AllianceFrame;
@@ -465,7 +465,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                return false;
             case msg is MapComplementaryInformationsDataMessage:
                mcidmsg = msg as MapComplementaryInformationsDataMessage;
-               sameMap = _worldPoint?_worldPoint.mapId == mcidmsg.mapId:false;
+               sameMap = false;
+               if((_worldPoint) && (_worldPoint.mapId == mcidmsg.mapId) && (!(msg is MapComplementaryInformationsWithCoordsMessage)))
+               {
+                  sameMap = true;
+               }
                _interactiveElements = mcidmsg.interactiveElements;
                this._fightNumber = mcidmsg.fights.length;
                if(!sameMap)
@@ -658,8 +662,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                if(!sameMap)
                {
                   KernelEventsManager.getInstance().processCallback(HookList.MapComplementaryInformationsData,PlayedCharacterManager.getInstance().currentMap,_currentSubAreaId,Dofus.getInstance().options.mapCoordinates);
-                  KernelEventsManager.getInstance().processCallback(HookList.MapFightCount,0);
-                  AnimFunManager.getInstance().initializeByMap(mcidmsg.mapId);
+                  if(OptionManager.getOptionManager("dofus")["allowAnimsFun"] == true)
+                  {
+                     AnimFunManager.getInstance().initializeByMap(mcidmsg.mapId);
+                  }
                   this.switchPokemonMode();
                   if(Kernel.getWorker().contains(MonstersInfoFrame))
                   {
@@ -727,7 +733,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         break;
                   }
                }
-               if(grpsamsg.informations is GameRolePlayGroupMonsterInformations)
+               if((OptionManager.getOptionManager("dofus")["allowAnimsFun"] == true) && (grpsamsg.informations is GameRolePlayGroupMonsterInformations))
                {
                   AnimFunManager.getInstance().restart();
                }
@@ -915,7 +921,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                delete this._waitingEmotesAnims[gcremsg.id];
                this.removeEntityListeners(gcremsg.id);
                removeActor(gcremsg.id);
-               if(monsterId != -1)
+               if((OptionManager.getOptionManager("dofus")["allowAnimsFun"] == true) && (!(monsterId == -1)))
                {
                   AnimFunManager.getInstance().restart();
                }
@@ -1172,11 +1178,14 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             this._loader.removeEventListener(ResourceErrorEvent.ERROR,this.onGroundObjectLoadFailed);
             this._loader = null;
          }
-         AnimFunManager.getInstance().stop();
+         if(OptionManager.getOptionManager("dofus")["allowAnimsFun"] == true)
+         {
+            AnimFunManager.getInstance().stop();
+         }
          this._fights = null;
          this._objects = null;
          this._npcList = null;
-         Dofus.getInstance().options.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED,onPropertyChanged);
+         Dofus.getInstance().options.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
          Tiphon.getInstance().options.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onTiphonPropertyChanged);
          Atouin.getInstance().options.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onAtouinPropertyChanged);
          EnterFrameDispatcher.removeEventListener(this.showIcons);
@@ -1992,6 +2001,18 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                entity.visibleAura = visible;
             }
             i++;
+         }
+      }
+      
+      override protected function onPropertyChanged(e:PropertyChangeEvent) : void {
+         super.onPropertyChanged(e);
+         if(e.propertyName == "allowAnimsFun")
+         {
+            AnimFunManager.getInstance().stop();
+            if(e.propertyValue == true)
+            {
+               AnimFunManager.getInstance().initializeByMap(PlayedCharacterManager.getInstance().currentMap.mapId);
+            }
          }
       }
       

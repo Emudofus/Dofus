@@ -84,6 +84,10 @@ package com.ankamagames.jerakine.types
          _cache = [];
       }
       
+      public static function clearCache(name:String) : void {
+         delete _cache[name];
+      }
+      
       private var _name:String;
       
       private var _fileStream:FileStream;

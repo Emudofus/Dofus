@@ -18,6 +18,7 @@ package com.ankamagames.dofus.types
          add("fullScreen",false);
          add("autoConnectType",true);
          add("showEveryMonsters",false);
+         add("allowAnimsFun",true);
          add("turnPicture",true);
          add("mapCoordinates",true);
          add("showEntityInfos",true);

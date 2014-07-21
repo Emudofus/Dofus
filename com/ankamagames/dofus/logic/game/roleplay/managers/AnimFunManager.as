@@ -51,7 +51,6 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
          }
          else
          {
-            this.fastDelay = false;
             return;
          }
       }
@@ -92,10 +91,6 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
       
       private var _nbNormalAnims:int;
       
-      private var _minDelay:int = 40000;
-      
-      private var _maxDelay:int = 80000;
-      
       private var _mapId:int = -1;
       
       private var _entitiesList:Array;
@@ -132,30 +127,6 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
       
       private var _firstAnim:Boolean;
       
-      public function set fastDelay(value:Boolean) : void {
-         if(value != this.fastDelay)
-         {
-            if(value)
-            {
-               this._minDelay = FAST_ANIM_FUN_TIMER_MIN;
-               this._maxDelay = FAST_ANIM_FUN_TIMER_MAX;
-            }
-            else
-            {
-               this._minDelay = ANIM_FUN_TIMER_MIN;
-               this._maxDelay = ANIM_FUN_TIMER_MAX;
-            }
-            if(this._mapId != -1)
-            {
-               this.initializeByMap(this._mapId);
-            }
-         }
-      }
-      
-      public function get fastDelay() : Boolean {
-         return this._minDelay == 1000;
-      }
-      
       public function get mapId() : int {
          return this._mapId;
       }
@@ -191,7 +162,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
                isFastAnim = this.hasFastAnims(actorId);
                if(!isFastAnim)
                {
-                  animdelayTime = rnd.nextIntR(this._minDelay,this._maxDelay);
+                  animdelayTime = rnd.nextIntR(ANIM_FUN_TIMER_MIN,ANIM_FUN_TIMER_MAX);
                   this._nbNormalAnims++;
                }
                else

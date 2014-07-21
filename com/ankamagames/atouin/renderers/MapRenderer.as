@@ -988,7 +988,6 @@ package com.ankamagames.atouin.renderers
                         }
                         if(ged is BoundingBoxGraphicalElementData)
                         {
-                           disabled = true;
                            data.alpha = 0;
                            boundingBoxElements[ge.identifier] = true;
                         }
