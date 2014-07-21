@@ -14,10 +14,10 @@ package com.ankamagames.dofus
       
       public static var BUILD_TYPE:uint = 1;
       
-      public static var BUILD_REVISION:int = 85327;
+      public static var BUILD_REVISION:int = 86370;
       
       public static var BUILD_PATCH:int = 0;
       
-      public static const BUILD_DATE:String = "Jun 5, 2014 - 16:06:26 CEST";
+      public static const BUILD_DATE:String = "Jul 16, 2014 - 12:06:42 CEST";
    }
 }

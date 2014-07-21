@@ -637,7 +637,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                      summonedCreature.visible = false;
                   }
                   this.pushSummonStep(gafsnmsg.sourceId,gafsnmsg.summon);
-                  if((gafsnmsg.sourceId == PlayedCharacterManager.getInstance().id) && (!(gafsnmsg.actionId == 185)))
+                  if((gafsnmsg.sourceId == CurrentPlayedFighterManager.getInstance().currentFighterId) && (!(gafsnmsg.actionId == 185)))
                   {
                      isBomb = false;
                      isCreature = false;
@@ -669,11 +669,11 @@ package com.ankamagames.dofus.logic.game.fight.frames
                      }
                      if((isCreature) || (summonedCharacterInfoS))
                      {
-                        PlayedCharacterManager.getInstance().addSummonedCreature();
+                        CurrentPlayedFighterManager.getInstance().addSummonedCreature();
                      }
                      else if(isBomb)
                      {
-                        PlayedCharacterManager.getInstance().addSummonedBomb();
+                        CurrentPlayedFighterManager.getInstance().addSummonedBomb();
                      }
                      
                   }
@@ -727,16 +727,16 @@ package com.ankamagames.dofus.logic.game.fight.frames
                if(entityInfosL is GameFightMonsterInformations)
                {
                   summonedEntityInfosL = entityInfosL as GameFightMonsterInformations;
-                  if(summonedEntityInfosL.stats.summoner == PlayedCharacterManager.getInstance().id)
+                  if(CurrentPlayedFighterManager.getInstance().checkPlayableEntity(summonedEntityInfosL.stats.summoner))
                   {
                      monster = Monster.getMonsterById(summonedEntityInfosL.creatureGenericId);
                      if(monster.useSummonSlot)
                      {
-                        PlayedCharacterManager.getInstance().removeSummonedCreature();
+                        CurrentPlayedFighterManager.getInstance().removeSummonedCreature(summonedEntityInfosL.stats.summoner);
                      }
                      if(monster.useBombSlot)
                      {
-                        PlayedCharacterManager.getInstance().removeSummonedBomb();
+                        CurrentPlayedFighterManager.getInstance().removeSummonedBomb(summonedEntityInfosL.stats.summoner);
                      }
                   }
                }
@@ -799,18 +799,18 @@ package com.ankamagames.dofus.logic.game.fight.frames
                {
                   summonedEntityInfos = entityInfos as GameFightMonsterInformations;
                   summonedEntityInfos.alive = false;
-                  if(summonedEntityInfos.stats.summoner == PlayedCharacterManager.getInstance().id)
+                  if(CurrentPlayedFighterManager.getInstance().checkPlayableEntity(summonedEntityInfos.stats.summoner))
                   {
                      monster = Monster.getMonsterById(summonedEntityInfos.creatureGenericId);
                      if(monster.useSummonSlot)
                      {
-                        PlayedCharacterManager.getInstance().removeSummonedCreature();
+                        CurrentPlayedFighterManager.getInstance().removeSummonedCreature(summonedEntityInfos.stats.summoner);
                      }
                      if(monster.useBombSlot)
                      {
-                        PlayedCharacterManager.getInstance().removeSummonedBomb();
+                        CurrentPlayedFighterManager.getInstance().removeSummonedBomb(summonedEntityInfos.stats.summoner);
                      }
-                     SpellWrapper.refreshAllPlayerSpellHolder(PlayedCharacterManager.getInstance().id);
+                     SpellWrapper.refreshAllPlayerSpellHolder(summonedEntityInfos.stats.summoner);
                   }
                }
                else if(entityInfos is GameFightFighterInformations)
@@ -819,10 +819,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   if((entityInfos as GameFightFighterInformations).stats.summoner != 0)
                   {
                      summonedFighterEntityInfos = entityInfos as GameFightFighterInformations;
-                     if(summonedFighterEntityInfos.stats.summoner == PlayedCharacterManager.getInstance().id)
+                     if(CurrentPlayedFighterManager.getInstance().checkPlayableEntity(summonedFighterEntityInfos.stats.summoner))
                      {
-                        PlayedCharacterManager.getInstance().removeSummonedCreature();
-                        SpellWrapper.refreshAllPlayerSpellHolder(PlayedCharacterManager.getInstance().id);
+                        CurrentPlayedFighterManager.getInstance().removeSummonedCreature(summonedFighterEntityInfos.stats.summoner);
+                        SpellWrapper.refreshAllPlayerSpellHolder(summonedFighterEntityInfos.stats.summoner);
                      }
                   }
                }
@@ -1051,7 +1051,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private function onSequenceEnd(e:SequencerEvent) : void {

@@ -30,8 +30,8 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMutantInformations;
    import com.ankamagames.dofus.logic.game.common.managers.EntitiesLooksManager;
-   import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
    import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+   import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterSpellModification;
    import com.ankamagames.dofus.network.types.game.house.AccountHouseInformations;
    import com.ankamagames.dofus.logic.common.frames.MiscFrame;
@@ -337,15 +337,15 @@ package com.ankamagames.dofus.uiApi
       }
       
       public static function getMaxSummonedCreature() : uint {
-         return PlayedCharacterManager.getInstance().characteristics.summonableCreaturesBoost.base + PlayedCharacterManager.getInstance().characteristics.summonableCreaturesBoost.objectsAndMountBonus + PlayedCharacterManager.getInstance().characteristics.summonableCreaturesBoost.alignGiftBonus + PlayedCharacterManager.getInstance().characteristics.summonableCreaturesBoost.contextModif;
+         return CurrentPlayedFighterManager.getInstance().getMaxSummonedCreature();
       }
       
       public static function getCurrentSummonedCreature() : uint {
-         return PlayedCharacterManager.getInstance().currentSummonedCreature;
+         return CurrentPlayedFighterManager.getInstance().getCurrentSummonedCreature();
       }
       
       public static function canSummon() : Boolean {
-         return getMaxSummonedCreature() >= getCurrentSummonedCreature() + 1;
+         return CurrentPlayedFighterManager.getInstance().canSummon();
       }
       
       public static function getSpell(spellId:uint) : SpellWrapper {

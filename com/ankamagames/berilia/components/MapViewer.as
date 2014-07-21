@@ -1177,12 +1177,12 @@ package com.ankamagames.berilia.components
          this._areaShapesContainer = new Sprite();
          this._areaShapesContainer.mouseEnabled = false;
          this._mapContainer.addChild(this._areaShapesContainer);
-         this._layersContainer = new Sprite();
-         this._mapContainer.addChild(this._layersContainer);
-         this._layersContainer.mouseEnabled = false;
          this._groupsContainer = new Sprite();
          this._groupsContainer.mouseEnabled = false;
          this._mapContainer.addChild(this._groupsContainer);
+         this._layersContainer = new Sprite();
+         this._mapContainer.addChild(this._layersContainer);
+         this._layersContainer.mouseEnabled = false;
          if(this._enable3DMode)
          {
             t3d = new Sprite();

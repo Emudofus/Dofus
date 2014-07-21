@@ -287,7 +287,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                fighterRemovedId = RemoveEntityAction(msg).actorId;
                this._entitiesNumber[fighterRemovedId] = null;
                removeActor(fighterRemovedId);
-               KernelEventsManager.getInstance().processCallback(FightHookList.UpdatePreFightersList);
+               KernelEventsManager.getInstance().processCallback(FightHookList.UpdatePreFightersList,fighterRemovedId);
                delete this._realFightersLooks[fighterRemovedId];
                return true;
             case msg is ShowCellSpectatorMessage:

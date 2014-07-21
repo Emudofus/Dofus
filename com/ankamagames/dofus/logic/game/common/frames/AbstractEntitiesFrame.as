@@ -50,9 +50,9 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
    import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
    import com.ankamagames.dofus.logic.game.common.actions.roleplay.SwitchCreatureModeAction;
+   import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
-   import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.dofus.datacenter.items.Incarnation;
    import com.ankamagames.dofus.logic.game.fight.miscs.CustomAnimStatiqueAnimationModifier;
    import com.ankamagames.dofus.types.entities.BreedSkinModifier;
@@ -74,7 +74,7 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       protected var _creaturesLimit:int = -1;
       
-      protected var _humanNumber:uint = 0;
+      protected var _entitiesVisibleNumber:uint = 0;
       
       protected var _playerIsOnRide:Boolean = false;
       
@@ -126,6 +126,18 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       public function get justSwitchingCreaturesFightMode() : Boolean {
          return this._justSwitchingCreaturesFightMode;
+      }
+      
+      public function get creaturesLimit() : int {
+         return this._creaturesLimit;
+      }
+      
+      public function get entitiesNumber() : int {
+         return this._entitiesVisibleNumber;
+      }
+      
+      public function get creaturesMode() : Boolean {
+         return this._creaturesMode;
       }
       
       public function pushed() : Boolean {
@@ -233,10 +245,6 @@ package com.ankamagames.dofus.logic.game.common.frames
          else
          {
             justCreated = false;
-            if(this._humanNumber > 0)
-            {
-               this._humanNumber--;
-            }
             if((this._creaturesMode) && (infos is GameRolePlayMerchantInformations))
             {
                characterEntity.look.updateFrom(newLook);
@@ -444,10 +452,6 @@ package com.ankamagames.dofus.logic.game.common.frames
             tiphonSprite.destroy();
          }
          this.updateCreaturesLimit();
-         if(this._humanNumber > 0)
-         {
-            this._humanNumber--;
-         }
          delete this._entities[actorId];
          if(this.switchPokemonMode())
          {
@@ -457,9 +461,9 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       protected function switchPokemonMode() : Boolean {
          var action:SwitchCreatureModeAction = null;
-         if((this._creaturesLimit > -1) && (!(this._creaturesMode == (!Kernel.getWorker().getFrame(FightEntitiesFrame) && this._creaturesLimit < 50 && this._humanNumber >= this._creaturesLimit))))
+         this._entitiesVisibleNumber = EntitiesManager.getInstance().entitiesCount;
+         if((this._creaturesLimit > -1) && (!(this._creaturesMode == (!Kernel.getWorker().getFrame(FightEntitiesFrame) && this._creaturesLimit < 50 && this._entitiesVisibleNumber >= this._creaturesLimit))))
          {
-            _log.debug("human number: " + this._humanNumber + ", creature limit: " + this._creaturesLimit + " => " + this._creaturesMode);
             action = SwitchCreatureModeAction.create(!this._creaturesMode);
             Kernel.getWorker().process(action);
             return true;

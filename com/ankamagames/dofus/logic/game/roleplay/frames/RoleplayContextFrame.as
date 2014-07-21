@@ -518,6 +518,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                }
                PlayedCharacterManager.getInstance().currentMap = wp;
                Atouin.getInstance().clearEntities();
+               KernelEventsManager.getInstance().processCallback(HookList.MapFightCount,0);
                if((mcmsg.mapKey) && (mcmsg.mapKey.length))
                {
                   decryptionKeyString = XmlConfig.getInstance().getEntry("config.maps.encryptionKey");

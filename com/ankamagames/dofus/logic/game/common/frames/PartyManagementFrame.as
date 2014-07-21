@@ -1932,8 +1932,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                "name":playerName,
                "onSameMap":playerIsOnSameMap,
                "alignmentInfos":playerAlignmentInfos,
-               "cantBeChallenged":restrictionInfo.cantChallenge,
-               "cantExchange":restrictionInfo.cantExchange
+               "cantBeChallenged":restrictionInfo && restrictionInfo.cantChallenge,
+               "cantExchange":restrictionInfo && restrictionInfo.cantExchange
             },"partyMember",pPartyId);
       }
       
@@ -1943,7 +1943,7 @@ package com.ankamagames.dofus.logic.game.common.frames
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private function onFightStartTimerComplete(pEvent:TimerEvent) : void {

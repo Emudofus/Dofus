@@ -599,7 +599,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          }
       }
       
-      private function updateAllTooltips() : void {
+      public function updateAllTooltips() : void {
          var ent:DisplayedEntity = null;
          for each(ent in this._playersNames)
          {

@@ -21,6 +21,8 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       private var _damage:int;
       
+      private var _criticalDamage:int;
+      
       public function get id() : int {
          return this._id;
       }
@@ -59,6 +61,14 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       public function set damage(value:int) : void {
          this._damage = value;
+      }
+      
+      public function get criticalDamage() : int {
+         return this._criticalDamage;
+      }
+      
+      public function set criticalDamage(value:int) : void {
+         this._criticalDamage = value;
       }
    }
 }

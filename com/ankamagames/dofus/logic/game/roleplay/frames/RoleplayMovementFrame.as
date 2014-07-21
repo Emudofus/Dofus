@@ -25,6 +25,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.TriggerHookList;
    import com.ankamagames.dofus.logic.game.common.managers.MapMovementAdapter;
+   import com.ankamagames.jerakine.managers.OptionManager;
    import com.ankamagames.dofus.logic.game.roleplay.managers.AnimFunManager;
    import com.ankamagames.jerakine.entities.interfaces.IMovable;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
@@ -126,7 +127,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   KernelEventsManager.getInstance().processCallback(TriggerHookList.PlayerMove);
                }
                entityPath = MapMovementAdapter.getClientMovement(gmmmsg.keyMovements);
-               AnimFunManager.getInstance().cancelAnim(gmmmsg.actorId);
+               if(OptionManager.getOptionManager("dofus")["allowAnimsFun"] == true)
+               {
+                  AnimFunManager.getInstance().cancelAnim(gmmmsg.actorId);
+               }
                (movedEntity as IMovable).move(entityPath);
                return true;
             case msg is EntityMovementCompleteMessage:

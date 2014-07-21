@@ -14,8 +14,6 @@ package
    import flash.xml.XMLDocument;
    import flash.xml.XMLNode;
    import com.ankamagames.dofus.network.types.updater.ContentPart;
-   import com.ankamagames.jerakine.utils.system.SystemManager;
-   import com.ankamagames.jerakine.enum.OperatingSystem;
    import com.ankamagames.jerakine.utils.system.CommandLineArguments;
    import com.ankamagames.dofus.logic.game.approach.managers.PartManager;
    import flash.filesystem.FileMode;
@@ -257,11 +255,7 @@ package
          var part:ContentPart = null;
          if(!this._initialized)
          {
-            _log.debug("onCall() - arguments: " + e.arguments.toString());
-            if(SystemManager.getSingleton().os != OperatingSystem.MAC_OS)
-            {
-               CommandLineArguments.getInstance().setArguments(e.arguments);
-            }
+            CommandLineArguments.getInstance().setArguments(e.arguments);
             try
             {
                file = new File(File.applicationDirectory.nativePath + File.separator + "uplauncherComponents.xml");
@@ -354,10 +348,6 @@ package
             try
             {
                file = new File(CustomSharedObject.getCustomSharedObjectDirectory() + File.separator + "path.d2p");
-               if(SystemManager.getSingleton().os != OperatingSystem.MAC_OS)
-               {
-                  _log.debug("path.d2p: " + file + ", " + file.exists);
-               }
                if(!file.exists)
                {
                   stream = new FileStream();

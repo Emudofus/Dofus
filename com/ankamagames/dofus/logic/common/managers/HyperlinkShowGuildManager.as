@@ -18,7 +18,7 @@ package com.ankamagames.dofus.logic.common.managers
       
       public static function getLink(pGuild:*, pText:String = null) : String {
          var text:String = pText?"::" + pText:"";
-         return "{guild," + pGuild.guildId + "," + pGuild.guildName + text + "}";
+         return "{guild," + pGuild.guildId + "," + escape(pGuild.guildName) + text + "}";
       }
       
       public static function showGuild(guildId:uint, guildName:String) : void {
@@ -28,7 +28,7 @@ package com.ankamagames.dofus.logic.common.managers
       }
       
       public static function getGuildName(guildId:uint, guildName:String) : String {
-         return "[" + guildName + "]";
+         return "[" + unescape(guildName) + "]";
       }
       
       public static function rollOver(pX:int, pY:int, guildId:uint) : void {

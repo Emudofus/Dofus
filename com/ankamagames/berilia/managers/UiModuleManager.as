@@ -46,6 +46,7 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.berilia.types.data.UiData;
    import com.ankamagames.jerakine.resources.ResourceType;
    import com.ankamagames.berilia.types.data.PreCompiledUiModule;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
    import flash.filesystem.FileMode;
    import by.blooddy.crypto.MD5;
    import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;
@@ -651,7 +652,7 @@ package com.ankamagames.berilia.managers
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private function onScriptLoadFail(e:IOErrorEvent, uiModule:UiModule) : void {
@@ -762,7 +763,7 @@ package com.ankamagames.berilia.managers
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private function parseNextXml() : void {
@@ -824,7 +825,7 @@ package com.ankamagames.berilia.managers
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private var _uiLoaded:Dictionary;

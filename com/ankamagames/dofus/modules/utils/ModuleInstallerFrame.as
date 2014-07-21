@@ -413,6 +413,15 @@ package com.ankamagames.dofus.modules.utils
          {
             KernelEventsManager.getInstance().processCallback(HookList.ModuleInstallationError,1);
          }
+         else if(e.uri.fileType.toLowerCase() == "zip")
+         {
+            KernelEventsManager.getInstance().processCallback(HookList.ModuleInstallationError,8);
+         }
+         else
+         {
+            KernelEventsManager.getInstance().processCallback(HookList.ModuleInstallationError,0);
+         }
+         
       }
    }
 }

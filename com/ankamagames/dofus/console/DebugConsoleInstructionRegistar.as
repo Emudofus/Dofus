@@ -42,7 +42,7 @@ package com.ankamagames.dofus.console
          console.addHandler("version",new VersionInstructionHandler());
          console.addHandler(["crc32","md5"],new CryptoInstructionHandler());
          console.addHandler(["displaymap","displaymapdebug","getmapcoord","getmapid","testatouin","mapid","showcellid","playerjump","showtransitions","groundcache"],new DisplayMapInstructionHandler());
-         console.addHandler(["clearscene","clearentities"],new ClearSceneInstructionHandler());
+         console.addHandler(["clearscene","clearentities","countentities"],new ClearSceneInstructionHandler());
          console.addHandler(["inspector","uiinspector","inspectuielement","inspectuielementsos","modulelist","loadui","unloadui","clearuicache","setuiscale","useuicache","uilist","reloadui","fps","getmoduleinfo","chatoutput"],new UiHandlerInstructionHandler());
          console.addHandler(["dtd","componentdtd","shortcutsdtd","kerneleventdtd"],new DtdInstructionHandler());
          console.addHandler("cleartexturecache",new ClearTextureCacheInstructionHandler());
@@ -58,7 +58,7 @@ package com.ankamagames.dofus.console
          console.addHandler("jptest",new FontInstructionHandler());
          console.addHandler(["aping","ping"],new LatencyInstructionHandler());
          console.addHandler(["framelist","framepriority"],new FrameInstructionHandler());
-         console.addHandler(["addmovingcharacter","setanimation","setdirection","memorylog","bot-spectator","bot-fight","tiphon-error","fpsmanager","fastanimfun","tacticmode"],new BenchmarkInstructionHandler());
+         console.addHandler(["addmovingcharacter","setanimation","setdirection","memorylog","bot-spectator","bot-fight","tiphon-error","fpsmanager","tacticmode"],new BenchmarkInstructionHandler());
          console.addHandler(["sendaction","listactions","sendhook"],new ActionsInstructionHandler());
          console.addHandler(["debuglos","tracepath","debugcellsinline"],new IAInstructionHandler());
          console.addHandler(["setspellscriptparam","setspellscript"],new FightInstructionHandler());

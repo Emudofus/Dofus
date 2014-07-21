@@ -122,7 +122,7 @@ package com.ankamagames.jerakine.types.positions
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public function getCells() : Vector.<uint> {

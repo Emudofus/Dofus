@@ -64,7 +64,7 @@ package com.ankamagames.jerakine.data
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public function overrideId(oldId:uint, newId:uint) : void {

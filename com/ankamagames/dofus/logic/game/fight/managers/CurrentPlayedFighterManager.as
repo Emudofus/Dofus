@@ -35,6 +35,8 @@ package com.ankamagames.dofus.logic.game.fight.managers
       public function CurrentPlayedFighterManager() {
          this._characteristicsInformationsList = new Dictionary();
          this._spellCastInFightManagerList = new Dictionary();
+         this._currentSummonedCreature = new Dictionary();
+         this._currentSummonedBomb = new Dictionary();
          super();
       }
       
@@ -58,6 +60,10 @@ package com.ankamagames.dofus.logic.game.fight.managers
       private var _characteristicsInformationsList:Dictionary;
       
       private var _spellCastInFightManagerList:Dictionary;
+      
+      private var _currentSummonedCreature:Dictionary;
+      
+      private var _currentSummonedBomb:Dictionary;
       
       public function get currentFighterId() : int {
          return this._currentFighterId;
@@ -90,6 +96,14 @@ package com.ankamagames.dofus.logic.game.fight.managers
          {
             this.updatePortrait(currentFighterEntity);
          }
+      }
+      
+      public function checkPlayableEntity(id:int) : Boolean {
+         if(id == PlayedCharacterManager.getInstance().id)
+         {
+            return true;
+         }
+         return !(this._characteristicsInformationsList[id] == null);
       }
       
       public function isRealPlayer() : Boolean {
@@ -172,7 +186,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public function endFight() : void {
@@ -185,6 +199,8 @@ package com.ankamagames.dofus.logic.game.fight.managers
          this._currentFighterId = 0;
          this._characteristicsInformationsList = new Dictionary();
          this._spellCastInFightManagerList = new Dictionary();
+         this._currentSummonedCreature = new Dictionary();
+         this._currentSummonedBomb = new Dictionary();
       }
       
       public function getSpellModifications(spellId:int, carac:int) : CharacterSpellModification {
@@ -211,6 +227,85 @@ package com.ankamagames.dofus.logic.game.fight.managers
          var _loc9_:SpellWrapper = null;
          var _loc10_:Weapon = null;
          return true;
+      }
+      
+      public function getCurrentSummonedCreature(id:int = 0) : uint {
+         if(!id)
+         {
+            id = this._currentFighterId;
+         }
+         return this._currentSummonedCreature[id];
+      }
+      
+      public function setCurrentSummonedCreature(value:uint, id:int = 0) : void {
+         if(!id)
+         {
+            id = this._currentFighterId;
+         }
+         this._currentSummonedCreature[id] = value;
+      }
+      
+      public function getCurrentSummonedBomb(id:int = 0) : uint {
+         if(!id)
+         {
+            id = this._currentFighterId;
+         }
+         return this._currentSummonedBomb[id];
+      }
+      
+      public function setCurrentSummonedBomb(value:uint, id:int = 0) : void {
+         if(!id)
+         {
+            id = this._currentFighterId;
+         }
+         this._currentSummonedBomb[id] = value;
+      }
+      
+      public function resetSummonedCreature(id:int = 0) : void {
+         this.setCurrentSummonedCreature(0,id);
+      }
+      
+      public function addSummonedCreature(id:int = 0) : void {
+         this.setCurrentSummonedCreature(this.getCurrentSummonedCreature(id) + 1,id);
+      }
+      
+      public function removeSummonedCreature(id:int = 0) : void {
+         if(this.getCurrentSummonedCreature(id) > 0)
+         {
+            this.setCurrentSummonedCreature(this.getCurrentSummonedCreature(id) - 1,id);
+         }
+      }
+      
+      public function getMaxSummonedCreature(id:int = 0) : uint {
+         var characteristics:CharacterCharacteristicsInformations = this.getCharacteristicsInformations(id);
+         return characteristics.summonableCreaturesBoost.base + characteristics.summonableCreaturesBoost.objectsAndMountBonus + characteristics.summonableCreaturesBoost.alignGiftBonus + characteristics.summonableCreaturesBoost.contextModif;
+      }
+      
+      public function canSummon(id:int = 0) : Boolean {
+         return this.getMaxSummonedCreature(id) > this.getCurrentSummonedCreature(id);
+      }
+      
+      public function resetSummonedBomb(id:int = 0) : void {
+         this.setCurrentSummonedBomb(0,id);
+      }
+      
+      public function addSummonedBomb(id:int = 0) : void {
+         this.setCurrentSummonedBomb(this.getCurrentSummonedBomb(id) + 1,id);
+      }
+      
+      public function removeSummonedBomb(id:int = 0) : void {
+         if(this.getCurrentSummonedBomb(id) > 0)
+         {
+            this.setCurrentSummonedBomb(this.getCurrentSummonedBomb(id) - 1,id);
+         }
+      }
+      
+      public function canBomb(id:int = 0) : Boolean {
+         return this.getMaxSummonedBomb() > this.getCurrentSummonedBomb(id);
+      }
+      
+      private function getMaxSummonedBomb() : uint {
+         return 3;
       }
       
       private function updatePortrait(currentFighterEntity:AnimatedCharacter) : void {

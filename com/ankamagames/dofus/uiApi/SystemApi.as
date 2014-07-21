@@ -67,6 +67,7 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.jerakine.types.Version;
    import com.ankamagames.dofus.datacenter.servers.Server;
    import com.ankamagames.atouin.managers.DataGroundMapManager;
+   import com.ankamagames.dofus.logic.game.common.frames.CameraControlFrame;
    import com.ankamagames.berilia.components.WebBrowser;
    import com.ankamagames.berilia.components.ComponentInternalAccessor;
    import flash.net.URLRequestMethod;
@@ -618,7 +619,7 @@ package com.ankamagames.dofus.uiApi
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public function disableWorldInteraction(pTotal:Boolean = true) : void {

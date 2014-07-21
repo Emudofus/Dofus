@@ -183,6 +183,7 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.dofus.logic.common.managers.HyperlinkShowMonsterChatManager;
    import com.ankamagames.dofus.logic.common.managers.HyperlinkShowSubArea;
    import com.ankamagames.dofus.datacenter.appearance.SkinMapping;
+   import com.ankamagames.performance.Benchmark;
    import flash.utils.describeType;
    import com.ankamagames.dofus.misc.lists.GameDataList;
    import flash.utils.getDefinitionByName;
@@ -670,7 +671,7 @@ package com.ankamagames.dofus.logic.connection.frames
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       private function initFonts() : void {

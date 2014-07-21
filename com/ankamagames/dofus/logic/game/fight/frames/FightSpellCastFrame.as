@@ -431,6 +431,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
             {
                this._targetSelection = new Selection();
                this._targetSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA,1,true);
+               (this._targetSelection.renderer as ZoneDARenderer).showFarmCell = false;
                this._targetSelection.color = TARGET_COLOR;
                spellZone = SpellZoneManager.getInstance().getSpellZone(this._spellLevel,true);
                this._spellmaximumRange = spellZone.radius;
@@ -572,6 +573,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var testLos:Boolean = (this._spellLevel.castTestLos) && (Dofus.getInstance().options.showLineOfSight);
          this._rangeSelection = new Selection();
          this._rangeSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA);
+         (this._rangeSelection.renderer as ZoneDARenderer).showFarmCell = false;
          this._rangeSelection.color = testLos?RANGE_COLOR:LOS_COLOR;
          this._rangeSelection.alpha = true;
          if((this._spellLevel.castInLine) && (this._spellLevel.castInDiagonal))
@@ -604,6 +606,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          if(this._losSelection)
          {
             this._rangeSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA,0.5);
+            (this._rangeSelection.renderer as ZoneDARenderer).showFarmCell = false;
             rangeCell = new Vector.<uint>();
             noLosRangeCell = this._rangeSelection.zone.getCells(origin);
             num = noLosRangeCell.length;
@@ -735,6 +738,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
       private function drawLos(origin:uint) : void {
          this._losSelection = new Selection();
          this._losSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA);
+         (this._losSelection.renderer as ZoneDARenderer).showFarmCell = false;
          this._losSelection.color = LOS_COLOR;
          var cells:Vector.<uint> = this._rangeSelection.zone.getCells(origin);
          this._losSelection.zone = new Custom(LosDetector.getCell(DataMapProvider.getInstance(),cells,MapPoint.fromCellId(origin)));

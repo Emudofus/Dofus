@@ -238,7 +238,7 @@ package com.ankamagames.dofus.uiApi
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public function getRecipe(objectId:uint) : Recipe {
@@ -284,7 +284,7 @@ package com.ankamagames.dofus.uiApi
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public function getKnownJob(jobId:uint) : KnownJob {
@@ -306,7 +306,7 @@ package com.ankamagames.dofus.uiApi
           * Code may be obfuscated
           * Error type: TranslateException
           */
-         throw new IllegalOperationError("Not decompiled due to error");
+         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
       }
       
       public function sortRecipesByCriteria(recipes:Object, sortCriteria:String, sortDescending:Boolean) : Object {
