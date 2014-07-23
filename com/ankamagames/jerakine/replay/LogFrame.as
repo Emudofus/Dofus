@@ -388,12 +388,25 @@ package com.ankamagames.jerakine.replay
       }
       
       private function getClassIndex(className:String) : int {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var varCount:uint;
+         var variable:XML;
+         if (this._classIndex[className]){
+             return (this._classIndex[className]);
+         };
+         var fieldList:Array = new Array();
+         var desc:XML = DescribeTypeCache.typeDescription((getDefinitionByName(className) as Class));
+         for each (variable in desc..factory..variable) {
+             fieldList[varCount] = new LogClassField(this.getStringIndex(variable.@name.toString()), this.getClassIndex(variable.@type.toString()), XMLList(variable..metadata.(@name == "Transient")).length());
+             varCount++;
+         };
+         for each (variable in desc..accessor.(@access == "readwrite")) {
+             fieldList[varCount] = new LogClassField(this.getStringIndex(variable.@name.toString()), this.getClassIndex(variable.@type.toString()), XMLList(variable..metadata.(@name == "Transient")).length());
+             varCount++;
+         };
+         this._classRef[className] = fieldList;
+         this._classIndex[className] = ++this._classCount;
+         this.writeClassDefinition(this._classCount, className, varCount, fieldList);
+         return (this._classCount);
       }
       
       private function writeClassDefinition(classId:int, className:String, varCount:uint, fieldList:Array) : void {

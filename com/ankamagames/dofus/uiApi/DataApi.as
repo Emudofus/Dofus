@@ -298,12 +298,86 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function getSetEffects(GIDList:Array, setBonus:Array = null) : Array {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var item:*;
+         var GID:*;
+         var GIDe:*;
+         var line:*;
+         var lineNA:*;
+         var iGID:*;
+         var effect:*;
+         var effectEquip:*;
+         var setBonusLine:*;
+         var effectsDice:Dictionary = new Dictionary();
+         var effects:Array = new Array();
+         var effectsNonAddable:Array = new Array();
+         var GIDEquippedList:Array = new Array();
+         for each (item in PlayedCharacterManager.getInstance().inventory) {
+             if (item.position <= 15){
+                 for (iGID in GIDList) {
+                     if (item.objectGID == GIDList[iGID]){
+                         GIDEquippedList.push(item);
+                         GIDList[iGID] = -1;
+                     };
+                 };
+             };
+         };
+         for each (GID in GIDList) {
+             if (GID != -1){
+                 for each (effect in Item.getItemById(GID).possibleEffects) {
+                     if (Effect.getEffectById(effect.effectId).useDice){
+                         if (effectsDice[effect.effectId]){
+                             effectsDice[effect.effectId].add(effect);
+                         } else {
+                             effectsDice[effect.effectId] = effect.clone();
+                         };
+                     } else {
+                         effectsNonAddable.push(effect.clone());
+                     };
+                 };
+             };
+         };
+         for each (GIDe in GIDEquippedList) {
+             for each (effectEquip in GIDe.effects) {
+                 if (Effect.getEffectById(effectEquip.effectId).useDice){
+                     if (effectsDice[effectEquip.effectId]){
+                         effectsDice[effectEquip.effectId].add(effectEquip);
+                     } else {
+                         effectsDice[effectEquip.effectId] = effectEquip.clone();
+                     };
+                 } else {
+                     effectsNonAddable.push(effectEquip.clone());
+                 };
+             };
+         };
+         if (((setBonus) && (setBonus.length))){
+             for each (setBonusLine in setBonus) {
+                 if ((setBonusLine is String)){
+                     this._log.debug("Bonus en texte, on ne peut pas l'ajouter");
+                 } else {
+                     if (((Effect.getEffectById(setBonusLine.effectId)) && (Effect.getEffectById(setBonusLine.effectId).useDice))){
+                         if (effectsDice[setBonusLine.effectId]){
+                             effectsDice[setBonusLine.effectId].add(SecureCenter.unsecure(setBonusLine));
+                         } else {
+                             effectsDice[setBonusLine.effectId] = SecureCenter.unsecure(setBonusLine).clone();
+                         };
+                     } else {
+                         effectsNonAddable.push(SecureCenter.unsecure(setBonusLine).clone());
+                     };
+                 };
+             };
+         };
+         for each (line in effectsDice) {
+             if (line.showInSet > 0){
+                 effects.push(line);
+             };
+         };
+         for each (lineNA in effectsNonAddable) {
+             if (lineNA.showInSet > 0){
+                 effects.push(lineNA);
+             };
+         };
+         effects.sortOn("category", Array.NUMERIC);
+         return (effects);
       }
       
       public function getMonsterFromId(monsterId:uint) : Monster {

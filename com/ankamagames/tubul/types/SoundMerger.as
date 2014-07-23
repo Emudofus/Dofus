@@ -140,12 +140,125 @@ package com.ankamagames.tubul.types
       }
       
       private function sampleData(sde:SampleDataEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var previousPosition:uint;
+         var samplesRemaining:Number;
+         var samplesExtracted:Number;
+         var cutValueR:Number;
+         var cutValueL:Number;
+         var cutSamples:uint;
+         var cuttingPosition:uint;
+         var i:uint;
+         var j:uint;
+         var k:uint;
+         var baHolder:ByteArray;
+         var sw:SoundWrapper;
+         var extractFinished:Boolean;
+         var l:Number;
+         var r:Number;
+         var sl:Number;
+         var sr:Number;
+         var firstPass:Boolean;
+         var startSampleData:uint = getTimer();
+         var out:ByteArray = sde.data;
+         j = 0;
+         while (j < this._soundsCount) {
+             sw = (this._sounds[j] as SoundWrapper);
+             if (sw._extractFinished){
+             } else {
+                 samplesRemaining = DATA_SAMPLES_BUFFER_SIZE;
+                 previousPosition = sw.soundData.position;
+                 firstPass = true;
+                 do  {
+                     if ((((previousPosition == 0)) && (firstPass))){
+                         samplesExtracted = sw.sound.extract(sw.soundData, samplesRemaining, 0);
+                     } else {
+                         samplesExtracted = sw.sound.extract(sw.soundData, samplesRemaining);
+                     };
+                     firstPass = false;
+                     extractFinished = !((samplesExtracted == samplesRemaining));
+                     if (((!(sw.hadBeenCut)) && ((((sw.loops == 0)) || ((sw.loops > 1)))))){
+                         sw.currentLoop++;
+                         sw.soundData.position = cuttingPosition;
+                         i = 0;
+                         while (i < samplesExtracted) {
+                             cutValueR = sw.soundData.readFloat();
+                             cutValueL = sw.soundData.readFloat();
+                             if ((((((((cutValueR > 0.001)) || ((cutValueR < -0.001)))) || ((cutValueL > 0.001)))) || ((cutValueL < -0.001)))){
+                                 sw.hadBeenCut = true;
+                                 break;
+                             };
+                             i++;
+                         };
+                         cutSamples = (i + 1);
+                         i = (i + 1);
+                         while (i < samplesExtracted) {
+                             this._cuttingBytes.writeFloat(sw.soundData.readFloat());
+                             this._cuttingBytes.writeFloat(sw.soundData.readFloat());
+                             i++;
+                         };
+                         if (this._cuttingBytes.length > 0){
+                             samplesRemaining = (samplesRemaining + cutSamples);
+                             baHolder = sw.soundData;
+                             sw.soundData = this._cuttingBytes;
+                             this._cuttingBytes = baHolder;
+                             this._cuttingBytes.clear();
+                         } else {
+                             cuttingPosition = (cuttingPosition + (DATA_SAMPLES_BUFFER_SIZE * 8));
+                             samplesRemaining = (samplesRemaining + DATA_SAMPLES_BUFFER_SIZE);
+                         };
+                     };
+                     if (extractFinished){
+                         sw.extractFinished();
+                         break;
+                     };
+                     samplesRemaining = (samplesRemaining - samplesExtracted);
+                 } while (samplesRemaining > 0);
+                 sw.soundData.position = previousPosition;
+             };
+             j++;
+         };
+         i = 0;
+         while (i < DATA_SAMPLES_BUFFER_SIZE) {
+             r = 0;
+             l = r;
+             j = 0;
+             while (j < this._soundsCount) {
+                 if (i == 0){
+                     sw.checkSoundPosition();
+                 };
+                 sw = (this._sounds[j] as SoundWrapper);
+                 if (sw.soundData.bytesAvailable < 8){
+                     if ((((sw.loops == 0)) || ((((sw.loops > 1)) && (((sw.currentLoop + 1) < sw.loops)))))){
+                         sw.soundData.position = 0;
+                         sw.currentLoop++;
+                     } else {
+                         this.removeSound(sw);
+                         break;
+                     };
+                 } else {
+                     sl = ((sw.soundData.readFloat() * sw._volume) * (1 - sw._pan));
+                     sr = ((sw.soundData.readFloat() * sw._volume) * (1 + sw._pan));
+                     l = (l + ((sl * sw._leftToLeft) + (sr * sw._rightToLeft)));
+                     r = (r + ((sl * sw._leftToRight) + (sr * sw._rightToRight)));
+                 };
+                 j++;
+             };
+             if (l > 1){
+                 l = 1;
+             };
+             if (l < -1){
+                 l = -1;
+             };
+             if (r > 1){
+                 r = 1;
+             };
+             if (r < -1){
+                 r = -1;
+             };
+             out.writeFloat(l);
+             out.writeFloat(r);
+             i++;
+         };
       }
       
       private function sampleSilence(sde:SampleDataEvent) : void {

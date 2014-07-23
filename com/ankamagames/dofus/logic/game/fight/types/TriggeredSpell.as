@@ -25,12 +25,35 @@ package com.ankamagames.dofus.logic.game.fight.types
       }
       
       public static function create(pTriggers:String, pSpellID:uint, pSpellLevel:int, pCriticalSpellLevel:int, pCasterId:int, pTargetId:int, pUseCache:Boolean = true) : TriggeredSpell {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var targets:Vector.<int>;
+         var cellId:uint;
+         var entity:IEntity;
+         var effect:EffectInstance;
+         var criticalSw:SpellWrapper;
+         var sw:SpellWrapper = SpellWrapper.create(0, pSpellID, pSpellLevel, pUseCache, pCasterId);
+         var spellZone:IZone = SpellZoneManager.getInstance().getSpellZone(sw);
+         var fef:FightEntitiesFrame = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame);
+         var spellImpactCell:int = ((((fef) && (fef.getEntityInfos(pTargetId)))) ? fef.getEntityInfos(pTargetId).disposition.cellId : 0);
+         var spellZoneCells:Vector.<uint> = spellZone.getCells(spellImpactCell);
+         if (pCriticalSpellLevel > 0){
+             criticalSw = SpellWrapper.create(0, pSpellID, pCriticalSpellLevel, false, pCasterId);
+             sw.criticalEffect = criticalSw.effects;
+         };
+         for each (cellId in spellZoneCells) {
+             entity = EntitiesManager.getInstance().getEntityOnCell(cellId, AnimatedCharacter);
+             if (entity){
+                 if (!(targets)){
+                     targets = new Vector.<int>(0);
+                 };
+                 for each (effect in sw.effects) {
+                     if (DamageUtil.verifySpellEffectMask(pCasterId, entity.id, effect)){
+                         targets.push(entity.id);
+                         break;
+                     };
+                 };
+             };
+         };
+         return (new (TriggeredSpell)(pCasterId, pTargetId, sw, pTriggers, targets, (pCriticalSpellLevel > 0)));
       }
       
       private var _casterId:int;

@@ -67,21 +67,56 @@ package com.ankamagames.jerakine.network
       }
       
       public function addConnection(conn:IServerConnection, id:String) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var e:* = undefined;
+         if (this._connectionById[id]){
+             this.removeConnection(id);
+         };
+         if (this._idByConnection[conn]){
+             this.removeConnection(conn);
+         };
+         this._connectionById[id] = conn;
+         this._idByConnection[conn] = id;
+         this._connectionCount++;
+         conn.handler = new MessageWatcher(this.proccessMsg, conn.handler, conn);
+         for each (e in DescribeTypeCache.typeDescription(conn)..metadata.(@name == "Event").arg.(@key == "").@value) {
+             IEventDispatcher(conn).addEventListener(e.toString(), this.onSubConnectionEvent);
+         };
+         if (conn.connected){
+             this._connectionConnectedCount++;
+         };
       }
       
       public function removeConnection(idOrConnection:*) : Boolean {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var id:String;
+         var conn:IServerConnection;
+         var e:* = undefined;
+         if ((idOrConnection is String)){
+             id = idOrConnection;
+             conn = this.getSubConnection(idOrConnection);
+         };
+         if ((idOrConnection is IServerConnection)){
+             id = this._idByConnection[idOrConnection];
+             conn = idOrConnection;
+         };
+         if (!(conn)){
+             return (false);
+         };
+         for each (e in DescribeTypeCache.typeDescription(conn)..metadata.(@name == "Event").arg.(@key == "").@value) {
+             IEventDispatcher(conn).removeEventListener(e.toString(), this.onSubConnectionEvent);
+         };
+         this._connectionCount--;
+         if (conn.connected){
+             this._connectionConnectedCount--;
+         };
+         if (this._mainConnection == conn){
+             this._mainConnection = null;
+         };
+         delete this._connectionById[id];
+         delete this._idByConnection[conn];
+         if ((conn.handler is MessageWatcher)){
+             conn.handler = MessageWatcher(conn.handler).handler;
+         };
+         return (true);
       }
       
       public function getSubConnection(idOrMessageOrEvent:* = null) : IServerConnection {

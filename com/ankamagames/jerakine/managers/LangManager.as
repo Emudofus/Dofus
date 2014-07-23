@@ -206,12 +206,52 @@ package com.ankamagames.jerakine.managers
       }
       
       public function replaceKey(sTxt:String, bReplaceDynamicReference:Boolean = false) : String {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var aKey:Array;
+         var reg:RegExp;
+         var i:uint;
+         var sNewVal:String;
+         var aFind:Array;
+         var sKey:String;
+         if (((!((sTxt == null))) && (!((sTxt.indexOf("[") == -1))))){
+             reg = /(?<!\\)\[([^\]]*)\]/g;
+             aKey = sTxt.match(reg);
+             if (sTxt.indexOf("\\[")){
+                 sTxt = sTxt.split("\\[").join("[");
+             };
+             i = 0;
+             for (;i < aKey.length;i++) {
+                 sKey = aKey[i].substr(1, (aKey[i].length - 2));
+                 if (sKey.charAt(0) == "#"){
+                     if (!(bReplaceDynamicReference)) continue;
+                     sKey = sKey.substr(1);
+                 };
+                 sNewVal = this._aLang[sKey];
+                 if (sNewVal == null){
+                     if (!(isNaN(parseInt(sKey, 10)))){
+                         sNewVal = I18n.getText(parseInt(sKey, 10));
+                     };
+                     if (I18n.hasUiText(sKey)){
+                         sNewVal = I18n.getUiText(sKey);
+                     } else {
+                         if (sKey.charAt(0) == "~") continue;
+                         if (this._replaceErrorCallback != null){
+                             sNewVal = this._replaceErrorCallback(sKey);
+                         };
+                         if (sNewVal == null){
+                             sNewVal = ("!" + sKey);
+                             aFind = this.findCategory(sKey);
+                             if (aFind.length){
+                                 _log.warn((((((("Référence incorrect vers la clef [" + sKey) + "] dans : ") + sTxt) + " (pourrait être ") + aFind.join(" ou ")) + ")"));
+                             } else {
+                                 _log.warn(((("Référence inconue vers la clef [" + sKey) + "] dans : ") + sTxt));
+                             };
+                         };
+                     };
+                 };
+                 sTxt = sTxt.split(aKey[i]).join(sNewVal);
+             };
+         };
+         return (sTxt);
       }
       
       public function getCategory(sCategory:String, matchSubCategories:Boolean = true) : Array {

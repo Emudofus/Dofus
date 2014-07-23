@@ -1046,12 +1046,213 @@ package com.ankamagames.dofus.logic.game.fight.frames
       }
       
       private function executeBuffer(callback:Function, hadScript:Boolean, scriptSuccess:Boolean = false) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var step:ISequencable;
+         var allowHitAnim:Boolean;
+         var allowSpellEffects:Boolean;
+         var startStep:Array;
+         var endStep:Array;
+         var removed:Boolean;
+         var entityAttaqueAnimWait:Dictionary;
+         var lifeLoseSum:Dictionary;
+         var lifeLoseLastStep:Dictionary;
+         var shieldLoseSum:Dictionary;
+         var shieldLoseLastStep:Dictionary;
+         var i:int;
+         var b:*;
+         var index:*;
+         var waitStep:WaitAnimationEventStep;
+         var scriptTook:uint;
+         var _local_25:PlayAnimationStep;
+         var _local_26:FightDeathStep;
+         var _local_27:int;
+         var _local_28:FightActionPointsVariationStep;
+         var _local_29:FightShieldPointsVariationStep;
+         var _local_30:FightLifeVariationStep;
+         var idx:int;
+         var idx2:int;
+         var loseLifeTarget:*;
+         var j:uint;
+         if (hadScript){
+             scriptTook = (getTimer() - this._scriptStarted);
+             if (!(scriptSuccess)){
+                 _log.warn((("Script failed during a fight sequence, but still took " + scriptTook) + "ms."));
+             } else {
+                 _log.info((("Script successfuly executed in " + scriptTook) + "ms."));
+             };
+         };
+         var cleanedBuffer:Array = [];
+         var deathStepRef:Dictionary = new Dictionary(true);
+         var hitStep:Dictionary = new Dictionary(true);
+         var loseLifeStep:Dictionary = new Dictionary(true);
+         var waitHitEnd:Boolean;
+         for each (step in this._stepsBuffer) {
+             switch (true){
+                 case (step is FightMarkTriggeredStep):
+                     waitHitEnd = true;
+                     break;
+             };
+         };
+         allowHitAnim = OptionManager.getOptionManager("dofus")["allowHitAnim"];
+         allowSpellEffects = OptionManager.getOptionManager("dofus")["allowSpellEffects"];
+         startStep = [];
+         endStep = [];
+         entityAttaqueAnimWait = new Dictionary();
+         lifeLoseSum = new Dictionary(true);
+         lifeLoseLastStep = new Dictionary(true);
+         shieldLoseSum = new Dictionary(true);
+         shieldLoseLastStep = new Dictionary(true);
+         i = this._stepsBuffer.length;
+         while (--i >= 0) {
+             if (((removed) && (step))){
+                 step.clear();
+             };
+             removed = true;
+             step = this._stepsBuffer[i];
+             switch (true){
+                 case (step is PlayAnimationStep):
+                     _local_25 = (step as PlayAnimationStep);
+                     if (_local_25.animation.indexOf(AnimationEnum.ANIM_HIT) != -1){
+                         if (!(allowHitAnim)) continue;
+                         _local_25.waitEvent = waitHitEnd;
+                         if (_local_25.target == null){
+                             continue;
+                         };
+                         if (deathStepRef[EntitiesManager.getInstance().getEntityID((_local_25.target as IEntity))]){
+                             continue;
+                         };
+                         if (hitStep[_local_25.target]){
+                             continue;
+                         };
+                         if (((((!((_local_25.animation == AnimationEnum.ANIM_HIT))) && (!((_local_25.animation == AnimationEnum.ANIM_HIT_CARRYING))))) && (!(_local_25.target.hasAnimation(_local_25.animation, 1))))){
+                             _local_25.animation = AnimationEnum.ANIM_HIT;
+                         };
+                         hitStep[_local_25.target] = true;
+                     };
+                     if (this._castingSpell.casterId < 0){
+                         if (entityAttaqueAnimWait[_local_25.target]){
+                             cleanedBuffer.unshift(entityAttaqueAnimWait[_local_25.target]);
+                             delete entityAttaqueAnimWait[_local_25.target];
+                         };
+                         if (_local_25.animation.indexOf(AnimationEnum.ANIM_ATTAQUE_BASE) != -1){
+                             entityAttaqueAnimWait[_local_25.target] = new WaitAnimationEventStep(_local_25);
+                         };
+                     };
+                     break;
+                 case (step is FightDeathStep):
+                     _local_26 = (step as FightDeathStep);
+                     deathStepRef[_local_26.entityId] = true;
+                     _local_27 = this._fightBattleFrame.targetedEntities.indexOf(_local_26.entityId);
+                     if (_local_27 != -1){
+                         this._fightBattleFrame.targetedEntities.splice(_local_27, 1);
+                         TooltipManager.hide(("tooltipOverEntity_" + _local_26.entityId));
+                     };
+                     break;
+                 case (step is FightActionPointsVariationStep):
+                     _local_28 = (step as FightActionPointsVariationStep);
+                     if (_local_28.voluntarlyUsed){
+                         startStep.push(_local_28);
+                         removed = false;
+                         continue;
+                     };
+                     break;
+                 case (step is FightShieldPointsVariationStep):
+                     _local_29 = (step as FightShieldPointsVariationStep);
+                     if (_local_30.target == null){
+                         break;
+                     };
+                     if (shieldLoseSum[_local_29.target] == null){
+                         shieldLoseSum[_local_29.target] = 0;
+                     };
+                     shieldLoseSum[_local_29.target] = (shieldLoseSum[_local_29.target] + _local_29.value);
+                     shieldLoseLastStep[_local_29.target] = _local_29;
+                     this.showTargetTooltip(_local_29.target.id);
+                     break;
+                 case (step is FightLifeVariationStep):
+                     _local_30 = (step as FightLifeVariationStep);
+                     if (_local_30.target == null){
+                         break;
+                     };
+                     if (_local_30.delta < 0){
+                         loseLifeStep[_local_30.target] = _local_30;
+                     };
+                     if (lifeLoseSum[_local_30.target] == null){
+                         lifeLoseSum[_local_30.target] = 0;
+                     };
+                     lifeLoseSum[_local_30.target] = (lifeLoseSum[_local_30.target] + _local_30.delta);
+                     lifeLoseLastStep[_local_30.target] = _local_30;
+                     this.showTargetTooltip(_local_30.target.id);
+                     break;
+                 case (step is AddGfxEntityStep):
+                 case (step is AddGfxInLineStep):
+                 case (step is ParableGfxMovementStep):
+                 case (step is AddWorldEntityStep):
+                     if (!(allowSpellEffects)) continue;
+                     break;
+             };
+             removed = false;
+             cleanedBuffer.unshift(step);
+         };
+         for each (b in cleanedBuffer) {
+             if ((((((b is FightLifeVariationStep)) && ((lifeLoseSum[b.target] == 0)))) && (!((shieldLoseSum[b.target] == null))))){
+                 b.skipTextEvent = true;
+             };
+         };
+         for (index in lifeLoseSum) {
+             if (((!((index == "null"))) && (!((lifeLoseSum[index] == 0))))){
+                 idx = cleanedBuffer.indexOf(lifeLoseLastStep[index]);
+                 cleanedBuffer.splice(idx, 0, new FightLossAnimStep(index, lifeLoseSum[index], FightLifeVariationStep.COLOR));
+             };
+             lifeLoseLastStep[index] = -1;
+             lifeLoseSum[index] = 0;
+         };
+         for (index in shieldLoseSum) {
+             if (((!((index == "null"))) && (!((shieldLoseSum[index] == 0))))){
+                 idx2 = cleanedBuffer.indexOf(shieldLoseLastStep[index]);
+                 cleanedBuffer.splice(idx2, 0, new FightLossAnimStep(index, shieldLoseSum[index], FightShieldPointsVariationStep.COLOR));
+             };
+             shieldLoseLastStep[index] = -1;
+             shieldLoseSum[index] = 0;
+         };
+         for each (waitStep in entityAttaqueAnimWait) {
+             endStep.push(waitStep);
+         };
+         if (allowHitAnim){
+             for (loseLifeTarget in loseLifeStep) {
+                 if (!(hitStep[loseLifeTarget])){
+                     j = 0;
+                     while (j < cleanedBuffer.length) {
+                         if (cleanedBuffer[j] == loseLifeStep[loseLifeTarget]){
+                             cleanedBuffer.splice(j, 0, new PlayAnimationStep((loseLifeTarget as TiphonSprite), AnimationEnum.ANIM_HIT, true, false));
+                             break;
+                         };
+                         j++;
+                     };
+                 };
+             };
+         };
+         cleanedBuffer = startStep.concat(cleanedBuffer).concat(endStep);
+         for each (step in cleanedBuffer) {
+             this._sequencer.addStep(step);
+         };
+         this.clearBuffer();
+         if (((!((callback == null))) && (!(this._parent)))){
+             this._sequenceEndCallback = callback;
+             this._sequencer.addEventListener(SequencerEvent.SEQUENCE_END, this.onSequenceEnd);
+         };
+         _lastCastingSpell = this._castingSpell;
+         this._scriptInit = true;
+         if (!(this._parent)){
+             if (!(this._subSequenceWaitingCount)){
+                 this._sequencer.start();
+             } else {
+                 _log.warn((("Waiting sub sequence init end (" + this._subSequenceWaitingCount) + " seq)"));
+             };
+         } else {
+             if (callback != null){
+                 (callback());
+             };
+             this._parent.subSequenceInitDone();
+         };
       }
       
       private function onSequenceEnd(e:SequencerEvent) : void {

@@ -805,12 +805,121 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       }
       
       private function click(me:MouseEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var skillNameStr:String;
+         var enabledSkill:InteractiveElementSkill;
+         var jobsApi:JobsApi;
+         var skillDisabledData:Skill;
+         var jobsDetails:Array;
+         var disabledSkill:InteractiveElementSkill;
+         var nbSkillsAvailable:int;
+         var skillIndex:int;
+         var skill:Object;
+         var details:Object;
+         var knownJob:KnownJob;
+         var _local_16:int;
+         var _local_17:WeaponWrapper;
+         var _local_18:Job;
+         var isAlreadyChecked:Boolean;
+         var j:Object;
+         if (((!(this.roleplayWorldFrame)) || (!(this.roleplayContextFrame.hasWorldInteraction)))){
+             return;
+         };
+         TooltipManager.hide();
+         var ie:Object = this._ie[(me.target as Sprite)];
+         var interactive:Interactive;
+         if (ie.element.elementTypeId > 0){
+             interactive = Interactive.getInteractiveById(ie.element.elementTypeId);
+         };
+         var skills:Array = [];
+         for each (enabledSkill in ie.element.enabledSkills) {
+             if ((enabledSkill is InteractiveElementNamedSkill)){
+                 skillNameStr = SkillName.getSkillNameById((enabledSkill as InteractiveElementNamedSkill).nameId).name;
+             } else {
+                 skillNameStr = Skill.getSkillById(enabledSkill.skillId).name;
+             };
+             skills.push({
+                 "id":enabledSkill.skillId,
+                 "instanceId":enabledSkill.skillInstanceUid,
+                 "name":skillNameStr,
+                 "enabled":true
+             });
+         };
+         jobsApi = new JobsApi();
+         jobsDetails = new Array();
+         for each (disabledSkill in ie.element.disabledSkills) {
+             if ((disabledSkill is InteractiveElementNamedSkill)){
+                 skillNameStr = SkillName.getSkillNameById((disabledSkill as InteractiveElementNamedSkill).nameId).name;
+             } else {
+                 skillNameStr = Skill.getSkillById(disabledSkill.skillId).name;
+             };
+             skillDisabledData = Skill.getSkillById(disabledSkill.skillId);
+             skillNameStr = skillDisabledData.name;
+             if (skillDisabledData.parentJobId != 1){
+                 knownJob = jobsApi.getKnownJob(skillDisabledData.parentJobId);
+                 if (knownJob == null){
+                     details = new Object();
+                     details.job = skillDisabledData.parentJob.name;
+                     details.jobId = skillDisabledData.parentJob.id;
+                     details.type = "job";
+                     details.value = [skillDisabledData.parentJob.name];
+                 } else {
+                     _local_16 = knownJob.jobExperience.jobLevel;
+                     if (_local_16 < skillDisabledData.levelMin){
+                         details = new Object();
+                         details.job = skillDisabledData.parentJob.name;
+                         details.jobId = skillDisabledData.parentJob.id;
+                         details.type = "level";
+                         details.value = [skillDisabledData.parentJob.name, skillDisabledData.levelMin, _local_16];
+                     } else {
+                         _local_17 = PlayedCharacterApi.getWeapon();
+                         _local_18 = skillDisabledData.parentJob;
+                         if ((((_local_17 == null)) || ((_local_18.toolIds.indexOf(_local_17.id) == -1)))){
+                             details = new Object();
+                             details.job = skillDisabledData.parentJob.name;
+                             details.jobId = skillDisabledData.parentJob.id;
+                             details.type = "tool";
+                             details.value = [skillDisabledData.parentJob.name];
+                         };
+                     };
+                 };
+                 if (details != null){
+                     isAlreadyChecked = false;
+                     for each (j in jobsDetails) {
+                         if (j.jobId == details.jobId){
+                             isAlreadyChecked = true;
+                             break;
+                         };
+                     };
+                     if (!(isAlreadyChecked)){
+                         jobsDetails.push(details);
+                     };
+                 };
+                 skills.push({
+                     "id":disabledSkill.skillId,
+                     "instanceId":disabledSkill.skillInstanceUid,
+                     "name":skillNameStr,
+                     "enabled":false
+                 });
+             };
+         };
+         nbSkillsAvailable = 0;
+         for each (skill in skills) {
+             if (skill.enabled){
+                 skillIndex = skills.indexOf(skill);
+                 nbSkillsAvailable++;
+             };
+         };
+         if (nbSkillsAvailable == 1){
+             this.skillClicked(ie, skills[skillIndex].instanceId);
+             return;
+         };
+         if ((((nbSkillsAvailable > 0)) && ((skills.length > 1)))){
+             this._modContextMenu = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
+             this._modContextMenu.createContextMenu(MenusFactory.create(skills, "skill", [ie, interactive]));
+         };
+         if (nbSkillsAvailable == 0){
+             this.showInteractiveElementNotification(jobsDetails);
+         };
       }
       
       private function showInteractiveElementNotification(dataTab:Array) : void {

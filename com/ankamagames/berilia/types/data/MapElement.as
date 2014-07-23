@@ -38,12 +38,20 @@ package com.ankamagames.berilia.types.data
       }
       
       public static function removeAllElements(owner:*) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var currentOwner:*;
+         var me:MapElement;
+         for (currentOwner in _elementRef) {
+             if (((!(owner)) || ((currentOwner == owner)))){
+                 for each (me in _elementRef[currentOwner]) {
+                     me.remove();
+                 };
+             };
+         };
+         if (!(owner)){
+             _elementRef = new Dictionary(true);
+         } else {
+             _elementRef[owner] = new Dictionary(true);
+         };
       }
       
       public static function getOwnerElements(owner:*) : Dictionary {

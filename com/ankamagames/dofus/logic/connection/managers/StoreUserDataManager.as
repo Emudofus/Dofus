@@ -60,12 +60,90 @@ package com.ankamagames.dofus.logic.connection.managers
       private var _so:CustomSharedObject;
       
       public function savePlayerData() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var data:String;
+         var key:String;
+         var value:String;
+         var newValue:String;
+         var obj:Object;
+         var environnementType:String;
+         var tmp:Array;
+         if (AirScanner.isStreamingVersion()){
+             this.savePlayerStreamingData();
+             return;
+         };
+         var isUsingUpdater:Boolean;
+         var val:String = "";
+         if (CommandLineArguments.getInstance().hasArgument("sysinfos")){
+             val = Base64.decode(CommandLineArguments.getInstance().getArgument("sysinfos"));
+             isUsingUpdater = true;
+         };
+         var datas:Array = val.split("\n");
+         var dict:Array = new Array();
+         for each (data in datas) {
+             data = data.replace("\n", "");
+             if ((((data == "")) || ((data.search(":") == -1)))){
+             } else {
+                 tmp = data.split(":");
+                 key = tmp[0];
+                 value = tmp[1];
+                 if ((((value == "")) || ((key == "")))){
+                 } else {
+                     switch (key){
+                         case "RAM_FREE":
+                         case "DISK_FREE":
+                             continue;
+                         case "VIDEO_DRIVER_INSTALLATION_DATE":
+                             value = value.substr(0, 6);
+                             break;
+                     };
+                     dict.push({
+                         "key":key,
+                         "value":value
+                     });
+                 };
+             };
+         };
+         dict.sortOn("key");
+         newValue = "";
+         for each (obj in dict) {
+             newValue = (newValue + (((obj.key + ":") + obj.value) + ";"));
+         };
+         environnementType = ((AirScanner.isStreamingVersion()) ? "streaming" : "air");
+         newValue = (newValue + (("envType:" + environnementType) + ";"));
+         newValue = (newValue + (("isAbo:" + (((PlayerManager.getInstance().subscriptionEndDate > 0)) || (PlayerManager.getInstance().hasRights))) + ";"));
+         newValue = (newValue + (("creationAbo:" + PlayerManager.getInstance().accountCreation) + ";"));
+         newValue = (newValue + (("flashKey:" + InterClientManager.getInstance().flashKey) + ";"));
+         newValue = (newValue + (((("screenResolution:" + Capabilities.screenResolutionX) + "x") + Capabilities.screenResolutionY) + ";"));
+         var osNoFormate:String = Capabilities.os.toLowerCase();
+         newValue = (newValue + "os:");
+         if (osNoFormate.search("windows") != -1){
+             newValue = (newValue + "windows");
+         } else {
+             if (osNoFormate.search("mac") != -1){
+                 newValue = (newValue + "mac");
+             } else {
+                 if (osNoFormate.search("linux") != -1){
+                     newValue = (newValue + "linux");
+                 } else {
+                     newValue = (newValue + "other");
+                 };
+             };
+         };
+         newValue = (newValue + ";");
+         newValue = (newValue + (("osVersion:" + SystemManager.getSingleton().version) + ";"));
+         newValue = (newValue + "supports:");
+         if (((Capabilities.supports32BitProcesses) && (!(Capabilities.supports64BitProcesses)))){
+             newValue = (newValue + "32Bits");
+         } else {
+             if (Capabilities.supports64BitProcesses){
+                 newValue = (newValue + "64Bits");
+             } else {
+                 newValue = (newValue + "none");
+             };
+         };
+         newValue = (newValue + ";");
+         newValue = (newValue + (("isUsingUpdater:" + isUsingUpdater) + ";"));
+         this.submitData(newValue);
       }
       
       private function savePlayerStreamingData() : void {

@@ -899,12 +899,245 @@ package com.ankamagames.dofus.logic.game.fight.frames
       }
       
       public function displayEntityTooltip(pEntityId:int, pSpell:Object = null, pSpellInfo:SpellDamageInfo = null, pForceRefresh:Boolean = false, pSpellImpactCell:int = -1) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var params:Object;
+         var sdi:SpellDamageInfo;
+         var currentSpellDamage:SpellDamage;
+         var effect:EffectDamage;
+         var spellImpactCell:uint;
+         var spellZone:IZone;
+         var spellZoneCells:Vector.<uint>;
+         var targetId:int;
+         var ac:AnimatedCharacter;
+         var isCarriedEntity:Boolean;
+         var entityDamagedOrHealedBySpell:Boolean;
+         var directDamageSpell:SpellWrapper;
+         var nbPushedEntities:uint;
+         var pushedEntity:PushedEntity;
+         var i:int;
+         var entityPushed:Boolean;
+         var pushedEntitySdi:SpellDamageInfo;
+         var needRefresh:Boolean;
+         var ts:TriggeredSpell;
+         var triggeredSpellsByCasterOnTarget:Vector.<TriggeredSpell>;
+         var triggeredSpells:Vector.<TriggeredSpell>;
+         var damageSharingTargets:Vector.<int>;
+         var damageWithoutResists:SpellDamage;
+         var allTargets:Vector.<int>;
+         var splashDamages:Vector.<SplashDamage>;
+         var damageModifications:Boolean;
+         var splashdmg:SplashDamage;
+         var totalSpellDamage:SpellDamage;
+         var nbSameSpell:int;
+         var entitySpellDamage:Object;
+         var sd:SpellDamage;
+         var entity:IDisplayable = (DofusEntities.getEntity(pEntityId) as IDisplayable);
+         var infos:GameFightFighterInformations = (this._entitiesFrame.getEntityInfos(pEntityId) as GameFightFighterInformations);
+         if (((((!(entity)) || (!(infos)))) || (((!((this._battleFrame.targetedEntities.indexOf(pEntityId) == -1))) && (this._hideTooltips))))){
+             return;
+         };
+         if (((!((infos.disposition.cellId == currentCell))) && (!(((this._timelineOverEntity) && ((pEntityId == this.timelineOverEntityId))))))){
+             if (!(params)){
+                 params = new Object();
+             };
+             params.showName = false;
+         };
+         var showDamages:Boolean = ((((pSpell) && ((OptionManager.getOptionManager("dofus")["showDamagesPreview"] == true)))) && (FightSpellCastFrame.isCurrentTargetTargetable()));
+         if (showDamages){
+             if (((!(pForceRefresh)) && (this._spellTargetsTooltips[pEntityId]))){
+                 return;
+             };
+             spellImpactCell = ((!((pSpellImpactCell == -1))) ? pSpellImpactCell : currentCell);
+             spellZone = SpellZoneManager.getInstance().getSpellZone(pSpell);
+             spellZoneCells = spellZone.getCells(spellImpactCell);
+             if (!(pSpellInfo)){
+                 ac = (entity as AnimatedCharacter);
+                 isCarriedEntity = ((((ac) && (ac.parentSprite))) && ((ac.parentSprite.carriedEntity == ac)));
+                 entityDamagedOrHealedBySpell = ((pSpell) && (DamageUtil.isDamagedOrHealedBySpell(CurrentPlayedFighterManager.getInstance().currentFighterId, pEntityId, pSpell)));
+                 if (((isCarriedEntity) && (!(entityDamagedOrHealedBySpell)))){
+                     return;
+                 };
+                 if (entityDamagedOrHealedBySpell){
+                     if (DamageUtil.BOMB_SPELLS_IDS.indexOf(pSpell.id) != -1){
+                         directDamageSpell = DamageUtil.getBombDirectDamageSpellWrapper((pSpell as SpellWrapper));
+                         sdi = SpellDamageInfo.fromCurrentPlayer(directDamageSpell, pEntityId);
+                         for each (targetId in sdi.originalTargetsIds) {
+                             this.displayEntityTooltip(targetId, directDamageSpell, sdi);
+                         };
+                         return;
+                     };
+                     sdi = SpellDamageInfo.fromCurrentPlayer(pSpell, pEntityId);
+                     if ((pSpell is SpellWrapper)){
+                         sdi.pushedEntities = PushUtil.getPushedEntities((pSpell as SpellWrapper), this.entitiesFrame.getEntityInfos(pSpell.playerId).disposition.cellId, spellImpactCell);
+                         nbPushedEntities = ((sdi.pushedEntities) ? sdi.pushedEntities.length : 0);
+                         if (nbPushedEntities > 0){
+                             i = 0;
+                             while (i < nbPushedEntities) {
+                                 pushedEntity = sdi.pushedEntities[i];
+                                 if (!(entityPushed)){
+                                     entityPushed = (pEntityId == pushedEntity.id);
+                                 };
+                                 if (pushedEntity.id == pEntityId){
+                                     this.displayEntityTooltip(pushedEntity.id, pSpell, sdi, true);
+                                 } else {
+                                     pushedEntitySdi = SpellDamageInfo.fromCurrentPlayer(pSpell, pushedEntity.id);
+                                     pushedEntitySdi.pushedEntities = sdi.pushedEntities;
+                                     this.displayEntityTooltip(pushedEntity.id, pSpell, pushedEntitySdi, true);
+                                 };
+                                 i++;
+                             };
+                             if (entityPushed){
+                                 return;
+                             };
+                         };
+                     };
+                 };
+             } else {
+                 sdi = pSpellInfo;
+             };
+             this._spellTargetsTooltips[pEntityId] = true;
+             if (sdi){
+                 if (!(params)){
+                     params = new Object();
+                 };
+                 if (sdi.targetId != pEntityId){
+                     sdi.targetId = pEntityId;
+                 };
+                 if (!(sdi.damageSharingTargets)){
+                     damageSharingTargets = sdi.getDamageSharingTargets();
+                     if (((damageSharingTargets) && ((damageSharingTargets.length > 1)))){
+                         damageWithoutResists = DamageUtil.getSpellDamage(sdi, false, false);
+                         sdi.damageSharingTargets = damageSharingTargets;
+                         sdi.sharedDamage = damageWithoutResists;
+                         this._spellAlreadyTriggered = true;
+                         for each (targetId in damageSharingTargets) {
+                             needRefresh = ((!(this._spellDamages[targetId])) && (!((spellZoneCells.indexOf(this.entitiesFrame.getEntityInfos(targetId).disposition.cellId) == -1))));
+                             this.displayEntityTooltip(targetId, pSpell, sdi, true);
+                             if (needRefresh){
+                                 this._spellTargetsTooltips[targetId] = false;
+                             };
+                         };
+                         return;
+                     };
+                 };
+                 triggeredSpellsByCasterOnTarget = sdi.triggeredSpellsByCasterOnTarget;
+                 if (((!(this._spellAlreadyTriggered)) && (triggeredSpellsByCasterOnTarget))){
+                     for each (ts in triggeredSpellsByCasterOnTarget) {
+                         if (ts.triggers != "I"){
+                             this._spellAlreadyTriggered = true;
+                         };
+                         for each (targetId in ts.targets) {
+                             needRefresh = ((!(this._spellDamages[targetId])) && (!((spellZoneCells.indexOf(this.entitiesFrame.getEntityInfos(targetId).disposition.cellId) == -1))));
+                             this.displayEntityTooltip(targetId, ts.spell, null, true, this.entitiesFrame.getEntityInfos(ts.targetId).disposition.cellId);
+                             if (needRefresh){
+                                 this._spellTargetsTooltips[targetId] = false;
+                             };
+                         };
+                     };
+                 };
+                 triggeredSpells = sdi.targetTriggeredSpells;
+                 if (((!(this._spellAlreadyTriggered)) && (triggeredSpells))){
+                     splashDamages = DamageUtil.getSplashDamages(triggeredSpells, sdi);
+                     if (splashDamages){
+                         if (!(sdi.splashDamages)){
+                             sdi.splashDamages = new Vector.<SplashDamage>(0);
+                         };
+                         for each (splashdmg in splashDamages) {
+                             sdi.splashDamages.push(splashdmg);
+                             if (!(allTargets)){
+                                 allTargets = new Vector.<int>(0);
+                             };
+                             for each (targetId in splashdmg.targets) {
+                                 if (allTargets.indexOf(targetId) == -1){
+                                     allTargets.push(targetId);
+                                 };
+                             };
+                         };
+                     };
+                     damageModifications = sdi.addTriggeredSpellsEffects(triggeredSpells);
+                     if (((damageModifications) && (!(allTargets)))){
+                         allTargets = new Vector.<int>(0);
+                     };
+                     if (allTargets){
+                         for each (ts in triggeredSpells) {
+                             if (ts.triggers != "I"){
+                                 this._spellAlreadyTriggered = true;
+                                 break;
+                             };
+                         };
+                         if (allTargets.indexOf(pEntityId) == -1){
+                             allTargets.push(pEntityId);
+                         };
+                         for each (targetId in allTargets) {
+                             this.displayEntityTooltip(targetId, pSpell, sdi, true);
+                         };
+                         return;
+                     };
+                 };
+                 currentSpellDamage = DamageUtil.getSpellDamage(sdi);
+             };
+             if (currentSpellDamage){
+                 if (!(this._spellDamages[pEntityId])){
+                     this._spellDamages[pEntityId] = new Array();
+                 };
+                 for each (entitySpellDamage in this._spellDamages[pEntityId]) {
+                     if (entitySpellDamage.spellId == pSpell.id){
+                         nbSameSpell++;
+                         if (!(sdi.damageSharingTargets)){
+                             break;
+                         };
+                     };
+                 };
+                 if ((((nbSameSpell == 0)) || (((sdi.damageSharingTargets) && ((nbSameSpell < sdi.originalTargetsIds.length)))))){
+                     this._spellDamages[pEntityId].push({
+                         "spellId":pSpell.id,
+                         "spellDamage":currentSpellDamage
+                     });
+                 };
+                 if (this._spellDamages[pEntityId].length > 1){
+                     totalSpellDamage = new SpellDamage();
+                     for each (entitySpellDamage in this._spellDamages[pEntityId]) {
+                         sd = entitySpellDamage.spellDamage;
+                         for each (effect in sd.effectDamages) {
+                             totalSpellDamage.addEffectDamage(effect);
+                         };
+                         if (sd.invulnerableState){
+                             totalSpellDamage.invulnerableState = true;
+                         };
+                         if (sd.unhealableState){
+                             totalSpellDamage.unhealableState = true;
+                         };
+                         if (sd.hasCriticalDamage){
+                             totalSpellDamage.hasCriticalDamage = true;
+                         };
+                         if (sd.hasCriticalShieldPointsRemoved){
+                             totalSpellDamage.hasCriticalShieldPointsRemoved = true;
+                         };
+                         if (sd.hasCriticalLifePointsAdded){
+                             totalSpellDamage.hasCriticalLifePointsAdded = true;
+                         };
+                         if (sd.isHealingSpell){
+                             totalSpellDamage.isHealingSpell = true;
+                         };
+                         if (sd.hasHeal){
+                             totalSpellDamage.hasHeal = true;
+                         };
+                     };
+                     totalSpellDamage.updateDamage();
+                 } else {
+                     totalSpellDamage = currentSpellDamage;
+                 };
+                 params.spellDamage = totalSpellDamage;
+             };
+         };
+         if ((infos is GameFightCharacterInformations)){
+             TooltipManager.show(infos, entity.absoluteBounds, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), false, ("tooltipOverEntity_" + infos.contextualId), LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, 0, true, null, null, params, ("PlayerShortInfos" + infos.contextualId), false, StrataEnum.STRATA_WORLD);
+         } else {
+             if ((infos is GameFightCompanionInformations)){
+                 TooltipManager.show(infos, entity.absoluteBounds, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), false, ("tooltipOverEntity_" + infos.contextualId), LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, 0, true, "companionFighter", null, params, ("EntityShortInfos" + infos.contextualId));
+             } else {
+                 TooltipManager.show(infos, entity.absoluteBounds, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), false, ("tooltipOverEntity_" + infos.contextualId), LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, 0, true, "monsterFighter", null, params, ("EntityShortInfos" + infos.contextualId), false, StrataEnum.STRATA_WORLD);
+             };
+         };
       }
       
       public function hideEntityTooltip(pEntityId:int, pDelay:uint) : void {

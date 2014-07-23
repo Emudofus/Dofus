@@ -159,12 +159,17 @@ package com.ankamagames.jerakine.cache
       }
       
       public function clear() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var o:ICachable;
+         var s:String;
+         for (s in this._dicIndexObject) {
+             o = this._dicIndexObject[s];
+             if (!!(o)){
+                 delete this._dicCache[o];
+                 delete this._dicIndexObject[this.getIndex(o)];
+                 this._nObjectCount--;
+                 o.destroy();
+             };
+         };
       }
       
       public function containsCachable(type:Class, name:String) : Boolean {

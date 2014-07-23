@@ -647,12 +647,50 @@ package com.ankamagames.berilia.components
       }
       
       private function createSpan(p:ParagraphElement, sText:String, handleHtmlTags:Boolean, pStyle:String = "") : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var smiley:Smiley;
+         var textToShow:String;
+         var kamaIndex:int;
+         var reg:RegExp;
+         var data:Object;
+         var sub:String;
+         var intValue:String;
+         var cursor:int;
+         while (sText.length > 0) {
+             smiley = ((this._smiliesActivated) ? this.getSmileyFromText(sText) : null);
+             textToShow = sText.substring(0, ((!((smiley == null))) ? smiley.position : sText.length));
+             if ((((textToShow.length > 0)) || ((smiley == null)))){
+                 if (this._smiliesActivated){
+                     kamaIndex = textToShow.search(KAMA_PATTERN);
+                     while (kamaIndex != -1) {
+                         reg = new RegExp(KAMA_PATTERN);
+                         data = reg.exec(textToShow);
+                         sub = textToShow.substring(0, kamaIndex);
+                         if (sub != ""){
+                             intValue = StringUtil.trim(data[1]);
+                             if ((((((intValue.indexOf(".") == -1)) && ((intValue.indexOf(",") == -1)))) && ((intValue.indexOf(" ") == -1)))){
+                                 intValue = StringUtils.formateIntToString(parseInt(intValue));
+                             };
+                             p.addChild(this.createSpanElement((textToShow.substring(0, (kamaIndex + 1)) + intValue), pStyle));
+                         };
+                         p.addChild(this.createImage(new Uri((XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_kama")), "/k"));
+                         textToShow = textToShow.substr((kamaIndex + data[0].length));
+                         kamaIndex = textToShow.search(KAMA_PATTERN);
+                     };
+                 };
+                 if (!(handleHtmlTags)){
+                     p.addChild(this.createSpanElement(textToShow, pStyle));
+                 } else {
+                     this.createSpanElementsFromHtmlTags(p, textToShow, pStyle);
+                 };
+                 if (smiley == null){
+                     return;
+                 };
+             };
+             if (smiley.position != -1){
+                 p.addChild(this.createImage(((this._smiliesUri + smiley.pictoId) + ".png"), smiley.currentTrigger));
+                 sText = sText.substring((smiley.position + smiley.currentTrigger.length));
+             };
+         };
       }
       
       private function createSpanElement(pText:String, pStyle:String) : SpanElement {
@@ -667,12 +705,47 @@ package com.ankamagames.berilia.components
       }
       
       private function createSpanElementsFromHtmlTags(p:ParagraphElement, pText:String, pStyle:String) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var result:Object;
+         var _local_5:String;
+         var _local_6:Array;
+         var att:String;
+         result = new RegExp(TAGS_PATTERN).exec(pText);
+         while (result != null) {
+             if (result.index > 0){
+                 p.addChild(this.createSpanElement(pText.substring(0, result.index), pStyle));
+             };
+             switch (result[1]){
+                 case "p":
+                 case "span":
+                     _local_6 = result[3].split(" ");
+                     for each (att in _local_6) {
+                         if (att.search("style") != -1){
+                             _local_5 = this.getAttributeValue(att);
+                         };
+                     };
+                     this.createSpan(p, result[5], true, (((_local_5 == "")) ? pStyle : _local_5));
+                     break;
+                 case "a":
+                     this.createLinkElement(p, result);
+                     break;
+                 case "i":
+                     this.createSpanElementsFromHtmlTags(p, result[0].replace(ITALIC_PATTERN, ""), HtmlManager.addValueToInlineStyle(pStyle, "font-style", "italic"));
+                     break;
+                 case "b":
+                     this.createSpanElementsFromHtmlTags(p, result[0].replace(BOLD_PATTERN, ""), HtmlManager.addValueToInlineStyle(pStyle, "font-weight", "bold"));
+                     break;
+                 case "u":
+                     this.createSpanElementsFromHtmlTags(p, result[0].replace(UNDERLINE_PATTERN, ""), HtmlManager.addValueToInlineStyle(pStyle, "text-decoration", "underline"));
+                     break;
+                 default:
+                     trace(((("On fait rien: " + result[1]) + " ") + result[0]));
+             };
+             pText = pText.substring((result.index + result[0].length));
+             result = new RegExp(TAGS_PATTERN).exec(pText);
+         };
+         if (pText.length > 0){
+             p.addChild(this.createSpanElement(pText, pStyle));
+         };
       }
       
       private var _bmpdtList:Dictionary;

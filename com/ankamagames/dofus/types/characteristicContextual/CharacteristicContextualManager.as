@@ -137,12 +137,69 @@ package com.ankamagames.dofus.types.characteristicContextual
       }
       
       private function onScroll(e:Event) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var index:String;
+         var tweenData:TweenData;
+         var entity:CharacteristicContextual;
+         var entityTweenList:Array;
+         var display:IRectangle;
+         var addToNextTween:Array = [];
+         for (index in _aEntitiesTweening) {
+             tweenData = _aEntitiesTweening[index];
+             if (!!(tweenData)){
+                 entity = tweenData.context;
+                 entity.y = (entity.y - tweenData.scrollSpeed);
+                 tweenData._tweeningCurrentDistance = ((getTimer() - tweenData.startTime) / tweenData.scrollDuration);
+                 entityTweenList = this._tweenByEntities[tweenData.entity];
+                 if (((((entityTweenList) && ((entityTweenList[(entityTweenList.length - 1)] == tweenData)))) && ((tweenData._tweeningCurrentDistance > 0.5)))){
+                     entityTweenList.pop();
+                     if (entityTweenList.length){
+                         entityTweenList[(entityTweenList.length - 1)].startTime = getTimer();
+                         addToNextTween.push(entityTweenList[(entityTweenList.length - 1)]);
+                     } else {
+                         delete this._tweenByEntities[tweenData.entity];
+                     };
+                 };
+                 if (tweenData._tweeningCurrentDistance < (1 / 8)){
+                     entity.alpha = (tweenData._tweeningCurrentDistance * 4);
+                     if (this._type == 2){
+                         entity.scaleX = (tweenData._tweeningCurrentDistance * 24);
+                         entity.scaleY = (tweenData._tweeningCurrentDistance * 24);
+                         display = IDisplayable(entity.referedEntity).absoluteBounds;
+                         if (((!((entity.referedEntity is DisplayObject))) || (DisplayObject(entity.referedEntity).parent))){
+                             entity.x = ((((display.x + (display.width / 2)) - (entity.width / 2)) - StageShareManager.stageOffsetX) / StageShareManager.stageScaleX);
+                         };
+                     };
+                 } else {
+                     if (tweenData._tweeningCurrentDistance < (1 / 4)){
+                         entity.alpha = (tweenData._tweeningCurrentDistance * 4);
+                         if (this._type == 2){
+                             entity.scaleX = (3 - (tweenData._tweeningCurrentDistance * 8));
+                             entity.scaleY = (3 - (tweenData._tweeningCurrentDistance * 8));
+                             display = IDisplayable(entity.referedEntity).absoluteBounds;
+                             if (((!((entity.referedEntity is DisplayObject))) || (DisplayObject(entity.referedEntity).parent))){
+                                 entity.x = ((((display.x + (display.width / 2)) - (entity.width / 2)) - StageShareManager.stageOffsetX) / StageShareManager.stageScaleX);
+                             };
+                         };
+                     } else {
+                         if ((((tweenData._tweeningCurrentDistance >= (3 / 4))) && ((tweenData._tweeningCurrentDistance < 1)))){
+                             entity.alpha = (1 - tweenData._tweeningCurrentDistance);
+                         } else {
+                             if (tweenData._tweeningCurrentDistance >= 1){
+                                 this.removeStatContextual(int(index));
+                                 this._tweeningCount--;
+                                 if (this._tweeningCount == 0){
+                                     this._bEnterFrameNeeded = true;
+                                     EnterFrameDispatcher.removeEventListener(this.onScroll);
+                                 };
+                             } else {
+                                 entity.alpha = 1;
+                             };
+                         };
+                     };
+                 };
+             };
+         };
+         _aEntitiesTweening = _aEntitiesTweening.concat(addToNextTween);
       }
    }
 }

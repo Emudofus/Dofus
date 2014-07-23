@@ -159,12 +159,34 @@ package com.ankamagames.berilia.types.template
       }
       
       private function replaceParam(txt:String, aVars:Array, prefix:String, recur:uint = 1) : String {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var value:String;
+         var key:String;
+         var i:uint;
+         if (!(txt)){
+             return (txt);
+         };
+         var sortedParam:Array = new Array();
+         for (key in aVars) {
+             sortedParam.push(key);
+         };
+         sortedParam.sort(Array.DESCENDING);
+         i = 0;
+         while (i < sortedParam.length) {
+             key = sortedParam[i];
+             if (aVars[key] != null){
+                 value = aVars[key].value;
+                 if (((!(value)) && ((aVars[key] is TemplateParam)))){
+                     value = aVars[key].defaultValue;
+                 };
+                 if (value == null){
+                     _log.warn((("No value for " + prefix) + key));
+                 } else {
+                     txt = txt.split((prefix + key)).join(value);
+                 };
+             };
+             i++;
+         };
+         return (txt);
       }
    }
 }

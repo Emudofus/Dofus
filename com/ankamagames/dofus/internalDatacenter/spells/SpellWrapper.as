@@ -246,12 +246,25 @@ package com.ankamagames.dofus.internalDatacenter.spells
       }
       
       public static function refreshAllPlayerSpellHolder(playerId:int) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var spell:Array;
+         var wrapper:SpellWrapper;
+         var cac:SpellWrapper;
+         var sdhm:SlotDataHolderManager;
+         for each (spell in _playersCache[playerId]) {
+             for each (wrapper in spell) {
+                 wrapper._slotDataHolderManager.refreshAll();
+             };
+         };
+         if (_cac){
+             for each (cac in _cac) {
+                 if (cac){
+                     sdhm = cac._slotDataHolderManager;
+                     SpellWrapper(cac)._slotDataHolderManager.refreshAll();
+                 };
+             };
+         } else {
+             trace("CaC Semble ne pas exister");
+         };
       }
       
       public static function resetAllCoolDown(playerId:int, accessKey:Object) : void {

@@ -444,12 +444,27 @@ package com.ankamagames.tiphon.types.look
       }
       
       public function resetSubEntities() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var subEntityCategory:String;
+         var subEntityIndex:String;
+         var subEntity:TiphonEntityLook;
+         var elo:Object;
+         if (!(this._subEntities)){
+             return;
+         };
+         for (subEntityCategory in this._subEntities) {
+             for (subEntityIndex in this._subEntities[subEntityCategory]) {
+                 subEntity = this._subEntities[subEntityCategory][subEntityIndex];
+                 subEntity.removeObserver(this);
+             };
+         };
+         this._subEntities = null;
+         if (!(this._locked)){
+             for (elo in this._observers) {
+                 elo.subEntitiesChanged(this);
+             };
+         } else {
+             this._subEntitiesChangedWhileLocked = true;
+         };
       }
       
       public function addSubEntity(category:uint, index:uint, subEntity:TiphonEntityLook) : void {

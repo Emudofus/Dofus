@@ -251,12 +251,123 @@ package com.ankamagames.dofus.types.entities
       }
       
       public function move(path:MovementPath, callback:Function = null) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var follower:IMovable;
+         var infos:GameContextActorInformations;
+         var isCreatureMode:Boolean;
+         var forbidenCellsId:Array;
+         var rpContextFrame:RoleplayContextFrame;
+         var ies:Vector.<InteractiveElement>;
+         var ie:InteractiveElement;
+         var mp:MapPoint;
+         var iePos:int;
+         var followerPoint:MapPoint;
+         var tryCount:uint;
+         var avaibleDirection:Array;
+         var avaibleDirectionCount:uint;
+         var b:Boolean;
+         if (!(path.start.equals(this.position))){
+             _log.warn((((((("Unsynchronized position for entity " + this.id) + ", jumping from ") + this.position) + " to ") + path.start) + "."));
+             this.jump(path.start);
+         };
+         var distance:uint = (path.path.length + 1);
+         this._movementBehavior = null;
+         if (this.slideOnNextMove){
+             this._movementBehavior = SlideMovementBehavior.getInstance();
+             this.slideOnNextMove = false;
+         } else {
+             if (Kernel.getWorker().contains(RoleplayEntitiesFrame)){
+                 infos = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).getEntityInfos(this.id);
+                 if ((infos is GameRolePlayHumanoidInformations)){
+                     if ((infos as GameRolePlayHumanoidInformations).humanoidInfo.restrictions.cantRun){
+                         this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
+                     };
+                 } else {
+                     if ((infos is GameRolePlayGroupMonsterInformations)){
+                         this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
+                     };
+                 };
+             };
+             if (!(this._movementBehavior)){
+                 if (distance > 3){
+                     isCreatureMode = false;
+                     if (Kernel.getWorker().contains(RoleplayEntitiesFrame)){
+                         isCreatureMode = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).isCreatureMode;
+                     };
+                     if (((!(isCreatureMode)) && (this.isMounted()))){
+                         this._movementBehavior = MountedMovementBehavior.getInstance();
+                     } else {
+                         this._movementBehavior = RunningMovementBehavior.getInstance(this.speedAdjust);
+                     };
+                 } else {
+                     if (distance > 0){
+                         this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
+                     } else {
+                         return;
+                     };
+                 };
+             };
+         };
+         var followerDirection:int = this.getDirection();
+         var mapData:IDataMapProvider = DataMapProvider.getInstance();
+         if (this._followers.length > 0){
+             forbidenCellsId = new Array();
+             rpContextFrame = (Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame);
+             if (rpContextFrame != null){
+                 ies = rpContextFrame.entitiesFrame.interactiveElements;
+                 for each (ie in ies) {
+                     if (ie){
+                         mp = Atouin.getInstance().getIdentifiedElementPosition(ie.elementId);
+                         if (mp){
+                             iePos = mp.cellId;
+                             forbidenCellsId.push(iePos);
+                         };
+                     };
+                 };
+             };
+         };
+         for each (follower in this._followers) {
+             followerPoint = null;
+             tryCount = 0;
+             do  {
+                 followerPoint = path.end.getNearestFreeCellInDirection(followerDirection, mapData, false, false, forbidenCellsId);
+                 followerDirection++;
+                 followerDirection = (followerDirection % 8);
+             } while (((!(followerPoint)) && ((++tryCount < 8))));
+             if (followerPoint){
+                 avaibleDirection = [];
+                 if ((follower is TiphonSprite)){
+                     avaibleDirection = TiphonSprite(follower).getAvaibleDirection();
+                 };
+                 avaibleDirectionCount = 0;
+                 for each (b in avaibleDirection) {
+                     if (b){
+                         avaibleDirectionCount++;
+                     };
+                 };
+                 if (((avaibleDirection[1]) && (!(avaibleDirection[3])))){
+                     avaibleDirectionCount++;
+                 };
+                 if (((!(avaibleDirection[1])) && (avaibleDirection[3]))){
+                     avaibleDirectionCount++;
+                 };
+                 if (((avaibleDirection[7]) && (!(avaibleDirection[5])))){
+                     avaibleDirectionCount++;
+                 };
+                 if (((!(avaibleDirection[7])) && (avaibleDirection[5]))){
+                     avaibleDirectionCount++;
+                 };
+                 if (((!(avaibleDirection[0])) && (avaibleDirection[4]))){
+                     avaibleDirectionCount++;
+                 };
+                 if (((avaibleDirection[0]) && (!(avaibleDirection[4])))){
+                     avaibleDirectionCount++;
+                 };
+                 Pathfinding.findPath(mapData, follower.position, followerPoint, !((avaibleDirectionCount < 8)), true, this.processMove, new Array(follower, followerPoint));
+             } else {
+                 _log.warn("Unable to get a proper destination for the follower.");
+             };
+         };
+         this._movementBehavior.move(this, path, callback);
       }
       
       private function processMove(followPath:MovementPath, args:Array) : void {

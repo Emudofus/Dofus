@@ -45,12 +45,30 @@ package com.hurlant.util.der
       }
       
       public function toString() : String {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var found:Boolean;
+         var key:String;
+         var s:String = DER.indent;
+         DER.indent = (DER.indent + "    ");
+         var t:String = "";
+         var i:int;
+         while (i < length) {
+             if (this[i] != null){
+                 found = false;
+                 for (key in this) {
+                     if (((!((i.toString() == key))) && ((this[i] == this[key])))){
+                         t = (t + (((key + ": ") + this[i]) + "\n"));
+                         found = true;
+                         break;
+                     };
+                 };
+                 if (!(found)){
+                     t = (t + (this[i] + "\n"));
+                 };
+             };
+             i++;
+         };
+         DER.indent = s;
+         return ((((((((((DER.indent + "Sequence[") + this.type) + "][") + this.len) + "][\n") + t) + "\n") + s) + "]"));
       }
       
       public function findAttributeValue(oid:String) : IAsn1Type {

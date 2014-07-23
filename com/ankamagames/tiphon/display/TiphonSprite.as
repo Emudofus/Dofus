@@ -497,12 +497,91 @@ package com.ankamagames.tiphon.display
       }
       
       public function setAnimationAndDirection(animation:String, direction:uint, pDisableAnimModifier:Boolean = false) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var catId:String;
+         var eListener:EventListener;
+         var cat:Array;
+         var subEntity:DisplayObject;
+         var modifier:IAnimationModifier;
+         var te:TiphonEvent;
+         var transitionalAnim:String;
+         var boneFileUri:Uri;
+         if (this.destroyed){
+             return;
+         };
+         FpsManager.getInstance().startTracking("animation", 40277);
+         this._rawAnimation = animation;
+         if (!(animation)){
+             animation = this._currentAnimation;
+         };
+         if ((this is IEntity)){
+             if ((((((this._currentAnimation == "AnimMarche")) || ((this._currentAnimation == "AnimCourse")))) && ((animation == "AnimStatique")))){
+                 for each (eListener in TiphonEventsManager.listeners) {
+                     eListener.listener.removeEntitySound((this as IEntity));
+                 };
+             };
+         };
+         var behaviorData:BehaviorData = new BehaviorData(animation, direction, this);
+         for (catId in this._aSubEntities) {
+             cat = this._aSubEntities[catId];
+             if (!(cat)){
+             } else {
+                 for each (subEntity in cat) {
+                     if ((subEntity is TiphonSprite)){
+                         if (this._subEntityBehaviors[catId]){
+                             (this._subEntityBehaviors[catId] as ISubEntityBehavior).updateFromParentEntity(TiphonSprite(subEntity), behaviorData);
+                         } else {
+                             this.updateFromParentEntity(TiphonSprite(subEntity), behaviorData);
+                         };
+                     };
+                 };
+             };
+         };
+         if (this._animationModifier){
+             for each (modifier in this._animationModifier) {
+                 behaviorData.animation = modifier.getModifiedAnimation(behaviorData.animation, this.look);
+             };
+         };
+         if (pDisableAnimModifier){
+             this._currentAnimation = animation;
+             this.overrideNextAnimation = true;
+         };
+         if (((((((!(this.overrideNextAnimation)) && ((behaviorData.animation == this._currentAnimation)))) && ((direction == this._currentDirection)))) && (this._rendered))){
+             if (((this._animMovieClip) && ((this._animMovieClip.totalFrames > 1)))){
+                 this.restartAnimation();
+             };
+             this._changeDispatched = true;
+             if (this._subEntitiesList.length){
+                 this.dispatchEvent(new TiphonEvent(TiphonEvent.RENDER_FATHER_SUCCEED, this));
+             };
+             te = new TiphonEvent(TiphonEvent.RENDER_SUCCEED, this);
+             te.animationName = ((this._currentAnimation + "_") + this._currentDirection);
+             this.dispatchEvent(te);
+             return;
+         };
+         this.overrideNextAnimation = false;
+         this._changeDispatched = false;
+         this._lastAnimation = this._currentAnimation;
+         this._currentDirection = direction;
+         if (!(pDisableAnimModifier)){
+             if (BoneIndexManager.getInstance().hasTransition(this._look.getBone(), this._lastAnimation, behaviorData.animation, this._currentDirection)){
+                 transitionalAnim = BoneIndexManager.getInstance().getTransition(this._look.getBone(), this._lastAnimation, behaviorData.animation, this._currentDirection);
+                 this._currentAnimation = transitionalAnim;
+                 this._targetAnimation = behaviorData.animation;
+             } else {
+                 this._currentAnimation = behaviorData.animation;
+             };
+         };
+         if (BoneIndexManager.getInstance().hasCustomBone(this._look.getBone())){
+             boneFileUri = BoneIndexManager.getInstance().getBoneFile(this._look.getBone(), this._currentAnimation);
+             if (((!((boneFileUri.fileName == (this._look.getBone() + ".swl")))) || (BoneIndexManager.getInstance().hasAnim(this._look.getBone(), this._currentAnimation, this._currentDirection)))){
+                 this.initializeLibrary(this._look.getBone(), boneFileUri);
+             } else {
+                 this._currentAnimation = "AnimStatique";
+             };
+         };
+         this._rendered = false;
+         this.finalize();
+         FpsManager.getInstance().stopTracking("animation");
       }
       
       public function setView(view:String) : void {
@@ -1009,12 +1088,55 @@ package com.ankamagames.tiphon.display
       }
       
       private function resetSubEntities() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var mountCarriedEntity:TiphonSprite;
+         var subEntitiesCategory:String;
+         var entity:TiphonSprite;
+         var subEntityIndex:String;
+         var subEntityLook:TiphonEntityLook;
+         var subEntity:TiphonSprite;
+         while (this._subEntitiesList.length) {
+             entity = (this._subEntitiesList.shift() as TiphonSprite);
+             if (((entity) && (!(((this._carriedEntity) && ((entity == this._carriedEntity))))))){
+                 if (((((this._aSubEntities["2"]) && (this._aSubEntities["2"]["0"]))) && ((entity == this._aSubEntities["2"]["0"])))){
+                     if (((!((this._deactivatedSubEntityCategory.indexOf("2") == -1))) && (entity.carriedEntity))){
+                         this._carriedEntity = entity.carriedEntity;
+                     } else {
+                         mountCarriedEntity = (entity.getSubEntitySlot(3, 0) as TiphonSprite);
+                     };
+                 };
+                 entity.destroy();
+             };
+         };
+         this._aSubEntities = [];
+         var subEntities:Array = this._look.getSubEntities(true);
+         for (subEntitiesCategory in subEntities) {
+             if (this._deactivatedSubEntityCategory.indexOf(subEntitiesCategory) == -1){
+                 if ((((subEntitiesCategory == "2")) && (this._carriedEntity))){
+                     mountCarriedEntity = this._carriedEntity;
+                     this.removeSubEntity(this._carriedEntity);
+                 };
+                 for (subEntityIndex in subEntities[subEntitiesCategory]) {
+                     subEntityLook = subEntities[subEntitiesCategory][subEntityIndex];
+                     subEntity = new TiphonSprite(subEntityLook);
+                     subEntity.setAnimationAndDirection("AnimStatique", this._currentDirection);
+                     if (!(subEntity.rendered)){
+                         subEntity.addEventListener(TiphonEvent.RENDER_SUCCEED, this.onSubEntityRendered, false, 0, true);
+                     };
+                     this.addSubEntity(subEntity, parseInt(subEntitiesCategory), parseInt(subEntityIndex));
+                     if ((((((parseInt(subEntitiesCategory) == 2)) && ((parseInt(subEntityIndex) == 0)))) && (mountCarriedEntity))){
+                         subEntity.isCarrying = true;
+                         subEntity.addSubEntity(mountCarriedEntity, 3, 0);
+                     };
+                 };
+             };
+         };
+         if (this._carriedEntity){
+             if (!(this._aSubEntities["3"])){
+                 this._aSubEntities["3"] = new Array();
+             };
+             this._aSubEntities["3"]["0"] = this._carriedEntity;
+             this._subEntitiesList.push(entity);
+         };
       }
       
       protected function finalize() : void {
@@ -1353,12 +1475,43 @@ package com.ankamagames.tiphon.display
       }
       
       private function updateScale() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var p:DisplayObject;
+         var bg:DisplayObject;
+         var parentSprite:TiphonSprite;
+         var p2:TiphonSprite;
+         if (!(this._animMovieClip)){
+             return;
+         };
+         var valueX:int = (((this._animMovieClip.scaleX >= 0)) ? 1 : -1);
+         var valueY:int = (((this._animMovieClip.scaleY >= 0)) ? 1 : -1);
+         var ent:DisplayObject = this;
+         while (ent.parent) {
+             valueX = (valueX * (((ent.parent.scaleX >= 0)) ? 1 : -1));
+             valueY = (valueY * (((ent.parent.scaleY >= 0)) ? 1 : -1));
+             if ((((ent.parent is TiphonSprite)) && ((p == null)))){
+                 p = ent.parent;
+             };
+             ent = ent.parent;
+         };
+         if ((((p is TiphonSprite)) && (((!((TiphonSprite(p).look.getScaleX() == 1))) || (!((TiphonSprite(p).look.getScaleY() == 1))))))){
+             parentSprite = (p as TiphonSprite);
+             this._animMovieClip.scaleX = ((this.look.getScaleX() / parentSprite.look.getScaleX()) * (((this._animMovieClip.scaleX < 0)) ? -1 : 1));
+             this._animMovieClip.scaleY = (this.look.getScaleY() / parentSprite.look.getScaleY());
+         } else {
+             this._animMovieClip.scaleX = (this.look.getScaleX() * (((this._animMovieClip.scaleX < 0)) ? -1 : 1));
+             this._animMovieClip.scaleY = this.look.getScaleY();
+         };
+         for each (bg in this._background) {
+             if (!!(bg)){
+                 if ((p is TiphonSprite)){
+                     p2 = (p as TiphonSprite);
+                     bg.scaleX = ((1 / p2.look.getScaleX()) * valueX);
+                     bg.scaleY = ((1 / p2.look.getScaleY()) * valueY);
+                 } else {
+                     bg.scaleX = (bg.scaleY = 1);
+                 };
+             };
+         };
       }
       
       private function dispatchWaitingEvents(e:Event) : void {

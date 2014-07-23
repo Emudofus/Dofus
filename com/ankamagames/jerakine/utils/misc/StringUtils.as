@@ -49,12 +49,49 @@ package com.ankamagames.jerakine.utils.misc
       }
       
       public static function formatArray(data:Array, header:Array = null) : String {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var row:*;
+         var i:*;
+         var len:uint;
+         var lenIndex:*;
+         var headerLine:Array;
+         var headerSubLine:Array;
+         var line:Array;
+         var str:String;
+         var colSep:String = " | ";
+         var headerColSep:String = "-+-";
+         var spaces:String = "                                                                                                               ";
+         var headerSep:String = "---------------------------------------------------------------------------------------------------------------";
+         var length:Array = [];
+         var result:Array = [];
+         for each (row in data) {
+             for (i in row) {
+                 lenIndex = ((header) ? header[i] : i);
+                 length[lenIndex] = ((isNaN(length[lenIndex])) ? String(row[i]).length : Math.max(length[lenIndex], String(row[i]).length));
+             };
+         };
+         if ((((i is String)) || (header))){
+             headerLine = [];
+             headerSubLine = [];
+             row = ((header) ? header : row);
+             for (i in row) {
+                 lenIndex = ((header) ? header[i] : i);
+                 length[lenIndex] = ((isNaN(length[lenIndex])) ? lenIndex.length : Math.max(length[lenIndex], lenIndex.length));
+                 headerLine.push((lenIndex + spaces.substr(0, (length[lenIndex] - lenIndex.length))));
+                 headerSubLine.push(headerSep.substr(0, length[lenIndex]));
+             };
+             result.push(headerLine.join(colSep));
+             result.push(headerSubLine.join(headerColSep));
+         };
+         for each (row in data) {
+             line = [];
+             for (i in row) {
+                 str = row[i];
+                 lenIndex = ((header) ? header[i] : i);
+                 line.push((str + spaces.substr(0, (length[lenIndex] - String(str).length))));
+             };
+             result.push(line.join(colSep));
+         };
+         return (result.join("\n"));
       }
       
       public static function replace(src:String, pFrom:* = null, pTo:* = null) : String {

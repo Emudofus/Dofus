@@ -1938,12 +1938,55 @@ package com.ankamagames.dofus.logic.game.common.frames
       }
       
       private function onTimerTick(pEvent:TimerEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var member:PartyMemberWrapper;
+         var playerLPTM:LifePointTickManager;
+         var additionalLifePoint:uint;
+         var newLifePoints:uint;
+         var lptm:LifePointTickManager;
+         var playerLPTM2:LifePointTickManager;
+         var additionalLifePoint2:uint;
+         var newLifePoints2:uint;
+         var lptm2:LifePointTickManager;
+         for each (member in this._partyMembers) {
+             if ((((member.lifePoints < member.maxLifePoints)) && ((member.regenRate > 0)))){
+                 if (this._dicRegen[member.id] == null){
+                     lptm = new LifePointTickManager();
+                     lptm.originalLifePoint = member.lifePoints;
+                     lptm.regenRate = member.regenRate;
+                     lptm.tickNumber = 1;
+                     this._dicRegen[member.id] = lptm;
+                 };
+                 playerLPTM = (this._dicRegen[member.id] as LifePointTickManager);
+                 additionalLifePoint = Math.floor((playerLPTM.tickNumber * (10 / playerLPTM.regenRate)));
+                 newLifePoints = (playerLPTM.originalLifePoint + additionalLifePoint);
+                 if (newLifePoints >= member.maxLifePoints){
+                     newLifePoints = member.maxLifePoints;
+                 };
+                 member.lifePoints = newLifePoints;
+                 playerLPTM.tickNumber++;
+                 KernelEventsManager.getInstance().processCallback(HookList.PartyMemberLifeUpdate, this._partyId, member.id, member.lifePoints, member.initiative);
+             };
+         };
+         for each (member in this._arenaPartyMembers) {
+             if ((((member.lifePoints < member.maxLifePoints)) && ((member.regenRate > 0)))){
+                 if (this._dicRegenArena[member.id] == null){
+                     lptm2 = new LifePointTickManager();
+                     lptm2.originalLifePoint = member.lifePoints;
+                     lptm2.regenRate = member.regenRate;
+                     lptm2.tickNumber = 1;
+                     this._dicRegenArena[member.id] = lptm2;
+                 };
+                 playerLPTM2 = (this._dicRegenArena[member.id] as LifePointTickManager);
+                 additionalLifePoint2 = Math.floor((playerLPTM2.tickNumber * (10 / playerLPTM2.regenRate)));
+                 newLifePoints2 = (playerLPTM2.originalLifePoint + additionalLifePoint2);
+                 if (newLifePoints2 >= member.maxLifePoints){
+                     newLifePoints2 = member.maxLifePoints;
+                 };
+                 member.lifePoints = newLifePoints2;
+                 playerLPTM2.tickNumber++;
+                 KernelEventsManager.getInstance().processCallback(HookList.PartyMemberLifeUpdate, this._arenaPartyId, member.id, member.lifePoints, member.initiative);
+             };
+         };
       }
       
       private function onFightStartTimerComplete(pEvent:TimerEvent) : void {

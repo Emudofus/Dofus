@@ -121,12 +121,46 @@ package com.ankamagames.jerakine.json
       }
       
       private function objectToString(o:Object, depth:int) : String {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
-      }
+         var className:Array;
+         var value:Object;
+         var key:String;
+         var v:XML;
+         if (((!((this._depthLimit == 0))) && ((depth > this._depthLimit)))){
+             return ("");
+         };
+         var s:String = "";
+         var classInfo:XML = describeType(o);
+         if (classInfo.@name.toString() == "Object"){
+             for (key in o) {
+                 value = o[key];
+                 if ((value is Function)){
+                 } else {
+                     if (s.length > 0){
+                         s = (s + ",");
+                     };
+                     s = (s + ((this.escapeString(key) + ":") + this.convertToString(value)));
+                 };
+             };
+         } else {
+             for each (v in classInfo..*.(((name() == "variable")) || ((((name() == "accessor")) && ((attribute("access").charAt(0) == "r")))))) {
+                 if (((v.metadata) && ((v.metadata.(@name == "Transient").length() > 0)))){
+                 } else {
+                     if (s.length > 0){
+                         s = (s + ",");
+                     };
+                     try {
+                         s = (s + ((this.escapeString(v.@name.toString()) + ":") + this.convertToString(o[v.@name])));
+                     } catch(e:Error) {
+                     };
+                 };
+             };
+         };
+         if (this._showObjectType){
+             className = getQualifiedClassName(o).split("::");
+         };
+         if (className != null){
+             return ((((((((("{" + this.escapeString("type")) + ":") + this.escapeString(className.pop())) + ", ") + this.escapeString("value")) + ":{") + s) + "}}"));
+         };
+         return ((("{" + s) + "}"));
    }
 }
