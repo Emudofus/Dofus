@@ -178,12 +178,27 @@ package com.ankamagames.dofus.logic.game.fight.managers
       }
       
       private function updateDataMapProvider() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var mi:MarkInstance;
+         var dmp:DataMapProvider;
+         var mp:MapPoint;
+         var i:uint;
+         var cell:uint;
+         var markedCells:Array = [];
+         for each (mi in this._marks) {
+             for each (cell in mi.cells) {
+                 markedCells[cell] = (markedCells[cell] | mi.markType);
+             };
+         };
+         dmp = DataMapProvider.getInstance();
+         i = 0;
+         while (i < AtouinConstants.MAP_CELLS_COUNT) {
+             mp = MapPoint.fromCellId(i);
+             dmp.setSpecialEffects(i, ((dmp.pointSpecialEffects(mp.x, mp.y) | 3) ^ 3));
+             if (markedCells[i]){
+                 dmp.setSpecialEffects(i, (dmp.pointSpecialEffects(mp.x, mp.y) | markedCells[i]));
+             };
+             i++;
+         };
       }
    }
 }

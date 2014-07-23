@@ -401,12 +401,177 @@ package com.ankamagames.dofus.misc.utils.errormanager
       }
       
       public function getReportInfo(error:Error, txt:String) : Object {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var date:Date;
+         var o:Object;
+         var userNameData:Array;
+         var currentMap:WorldPointWrapper;
+         var obstacles:Array;
+         var entities:Array;
+         var los:Array;
+         var cellId:uint;
+         var mp:MapPoint;
+         var entityInfoProvider:Object;
+         var htmlBuffer:String;
+         var logs:Array;
+         var log:LogEvent;
+         var screenshot:BitmapData;
+         var m:Matrix;
+         var fighterBuffer:String;
+         var fighters:Vector.<int>;
+         var fighterId:int;
+         var fighterInfos:FighterInformations;
+         var entitiesOnCell:Array;
+         var entity:IEntity;
+         var entityInfo:GameContextActorInformations;
+         var entityInfoData:Array;
+         var entityInfoDataStr:String;
+         var key:String;
+         var rpFrame:RoleplayEntitiesFrame;
+         var interactiveElements:Vector.<InteractiveElement>;
+         var ie:InteractiveElement;
+         var ieInfoData:Array;
+         var iePos:MapPoint;
+         var ieInfoDataStr:String;
+         var keyIe:String;
+         try {
+             date = new Date();
+             o = new Object();
+             o.flashVersion = Capabilities.version;
+             o.os = Capabilities.os;
+             o.time = ((((date.hours + ":") + date.minutes) + ":") + date.seconds);
+             o.date = ((((date.date + "/") + (date.month + 1)) + "/") + date.fullYear);
+             o.buildType = BuildTypeParser.getTypeName(BuildInfos.BUILD_TYPE);
+             if (AirScanner.isStreamingVersion()){
+                 o.buildType = (o.buildType + " STREAMING");
+             } else {
+                 o.appPath = File.applicationDirectory.nativePath;
+             };
+             o.buildVersion = BuildInfos.BUILD_VERSION;
+             if (_logBuffer){
+                 htmlBuffer = "";
+                 logs = _logBuffer.getBuffer();
+                 for each (log in logs) {
+                     if ((((log is TextLogEvent)) && ((log.level > 0)))){
+                         htmlBuffer = (htmlBuffer + (((('\t\t\t<li class="l_' + log.level) + '">') + log.message) + "</li>\n"));
+                     };
+                 };
+                 o.logSos = htmlBuffer;
+             };
+             o.errorMsg = txt;
+             if (error){
+                 o.stacktrace = error.getStackTrace();
+             };
+             userNameData = File.documentsDirectory.nativePath.split(File.separator);
+             switch (SystemManager.getSingleton().os){
+                 case OperatingSystem.WINDOWS:
+                     o.user = userNameData[2];
+                     break;
+                 case OperatingSystem.LINUX:
+                     o.user = userNameData[2];
+                     break;
+                 case OperatingSystem.MAC_OS:
+                     o.user = userNameData[2];
+                     break;
+             };
+             o.multicompte = !(InterClientManager.getInstance().isAlone);
+             if ((getTimer() - _lastError) > 500){
+                 screenshot = new BitmapData(640, 0x0200, false);
+                 m = new Matrix();
+                 m.scale(0.5, 0.5);
+                 screenshot.draw(StageShareManager.stage, m, null, null, null, true);
+                 o.screenshot = screenshot;
+                 o.mouseX = StageShareManager.mouseX;
+                 o.mouseY = StageShareManager.mouseY;
+             };
+             if (PlayerManager.getInstance().nickname){
+                 o.account = (((PlayerManager.getInstance().nickname + " (id: ") + PlayerManager.getInstance().accountId) + ")");
+             };
+             o.accountId = PlayerManager.getInstance().accountId;
+             o.serverId = PlayerManager.getInstance().server.id;
+             if (!(PlayerManager.getInstance().server)){
+                 return (o);
+             };
+             o.server = (((PlayerManager.getInstance().server.name + " (id: ") + PlayerManager.getInstance().server.id) + ")");
+             if (!(PlayedCharacterManager.getInstance().infos)){
+                 return (o);
+             };
+             o.character = (((PlayedCharacterManager.getInstance().infos.name + " (id: ") + PlayedCharacterManager.getInstance().id) + ")");
+             o.characterId = PlayedCharacterManager.getInstance().id;
+             currentMap = PlayedCharacterManager.getInstance().currentMap;
+             if (currentMap == null){
+                 return (o);
+             };
+             o.mapId = (((((currentMap.mapId + " (") + currentMap.x) + "/") + currentMap.y) + ")");
+             o.look = EntityLookAdapter.fromNetwork(PlayedCharacterManager.getInstance().infos.entityLook).toString();
+             o.idMap = currentMap.mapId;
+             obstacles = [];
+             entities = [];
+             los = [];
+             o.wasFighting = !((this.getFightFrame() == null));
+             if (o.wasFighting){
+                 fighterBuffer = "";
+                 fighters = this.getFightFrame().battleFrame.fightersList;
+                 for each (fighterId in fighters) {
+                     fighterInfos = new FighterInformations(fighterId);
+                     fighterBuffer = (fighterBuffer + (((((((((((((((("<li><b>" + this.getFightFrame().getFighterName(fighterId)) + "</b>, id: ") + fighterId) + ", lvl: ") + this.getFightFrame().getFighterLevel(fighterId)) + ", team: ") + fighterInfos.team) + ", vie: ") + fighterInfos.lifePoints) + ", pa:") + fighterInfos.actionPoints) + ", pm:") + fighterInfos.movementPoints) + ", cell:") + FightEntitiesFrame.getCurrentInstance().getEntityInfos(fighterId).disposition.cellId) + "</li>"));
+                 };
+                 o.fighterList = fighterBuffer;
+                 o.currentPlayer = this.getFightFrame().getFighterName(this.getFightFrame().battleFrame.currentPlayerId);
+             };
+             if (!(o.wasFighting)){
+                 entityInfoProvider = Kernel.getWorker().getFrame(RoleplayEntitiesFrame);
+             } else {
+                 entityInfoProvider = this.getFightFrame();
+             };
+             cellId = 0;
+             while (cellId < AtouinConstants.MAP_CELLS_COUNT) {
+                 mp = MapPoint.fromCellId(cellId);
+                 obstacles.push(((DataMapProvider.getInstance().pointMov(mp.x, mp.y, true)) ? 1 : 0));
+                 los.push(((DataMapProvider.getInstance().pointLos(mp.x, mp.y, true)) ? 1 : 0));
+                 entitiesOnCell = EntitiesManager.getInstance().getEntitiesOnCell(mp.cellId);
+                 if (((entityInfoProvider) && (entitiesOnCell.length))){
+                     for each (entity in entitiesOnCell) {
+                         entityInfo = entityInfoProvider.getEntityInfos(entity.id);
+                         entityInfoData = DescribeTypeCache.getVariables(entityInfo, true);
+                         entityInfoDataStr = (((("{cell:" + cellId) + ",className:'") + getQualifiedClassName(entityInfo).split("::").pop()) + "'");
+                         for each (key in entityInfoData) {
+                             if ((((((((((entityInfo[key] is int)) || ((entityInfo[key] is uint)))) || ((entityInfo[key] is Number)))) || ((entityInfo[key] is Boolean)))) || ((entityInfo[key] is String)))){
+                                 entityInfoDataStr = (entityInfoDataStr + (((("," + key) + ':"') + entityInfo[key]) + '"'));
+                             };
+                         };
+                         entities.push((entityInfoDataStr + "}"));
+                     };
+                 };
+                 cellId++;
+             };
+             if (!(o.wasFighting)){
+                 rpFrame = (entityInfoProvider as RoleplayEntitiesFrame);
+                 if (rpFrame){
+                     interactiveElements = rpFrame.interactiveElements;
+                     for each (ie in interactiveElements) {
+                         ieInfoData = DescribeTypeCache.getVariables(ie, true);
+                         iePos = Atouin.getInstance().getIdentifiedElementPosition(ie.elementId);
+                         ieInfoDataStr = (((("{cell:" + iePos.cellId) + ",className:'") + getQualifiedClassName(ie).split("::").pop()) + "'");
+                         for each (keyIe in ieInfoData) {
+                             if ((((((((((ie[keyIe] is int)) || ((ie[keyIe] is uint)))) || ((ie[keyIe] is Number)))) || ((ie[keyIe] is Boolean)))) || ((ie[keyIe] is String)))){
+                                 ieInfoDataStr = (ieInfoDataStr + (((("," + keyIe) + ':"') + ie[keyIe]) + '"'));
+                             };
+                         };
+                         entities.push((ieInfoDataStr + "}"));
+                     };
+                 };
+             };
+             o.obstacles = obstacles.join(",");
+             o.entities = entities.join(",");
+             o.los = los.join(",");
+         } catch(e:Error) {
+             if (txt != MANUAL_BUG_REPORT_TXT){
+                 _log.error(((("Error during the creation of a bug report... " + e.message) + "\nInitial error :") + ((error) ? error.message : txt)));
+             } else {
+                 _log.info("Manual bug report has been created");
+             };
+         };
+         return (o);
       }
       
       private function getFightFrame() : FightContextFrame {

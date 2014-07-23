@@ -147,12 +147,38 @@ package com.ankamagames.berilia.utils
       }
       
       public static function getScriptHookAndAction(swfContent:ByteArray) : Object {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var tag:DoABCTag;
+         var abcFile:AbcFile;
+         var infos:ClassInfo;
+         var attributesTag:FileAttributesTag;
+         var fileAttributesTags:Array;
+         var apiHookAction:* = new Object();
+         var io:SWFFileIO = new SWFFileIO();
+         var swfFile:SWFFile = io.read(swfContent);
+         apiHookAction.actions = new Array();
+         apiHookAction.apis = new Array();
+         apiHookAction.hooks = new Array();
+         for each (tag in swfFile.getTagsByType(DoABCTag)) {
+             abcFile = tag.abcFile;
+             for each (infos in abcFile.classInfo) {
+                 switch (infos.classMultiname.nameSpace.name){
+                     case "d2hooks":
+                         apiHookAction.hooks.push(infos.classMultiname.name);
+                         break;
+                     case "d2actions":
+                         apiHookAction.actions.push(infos.classMultiname.name);
+                         break;
+                     case "d2api":
+                         apiHookAction.apis.push(infos.classMultiname.name);
+                         break;
+                 };
+             };
+         };
+         fileAttributesTags = swfFile.getTagsByType(FileAttributesTag);
+         for each (attributesTag in fileAttributesTags) {
+             apiHookAction.useNetwork = attributesTag.useNetwork;
+         };
+         return (apiHookAction);
       }
    }
 }

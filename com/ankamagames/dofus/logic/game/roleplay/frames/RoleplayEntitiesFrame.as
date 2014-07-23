@@ -1236,12 +1236,54 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       }
       
       private function updateMonstersGroup(pMonstersInfo:GameRolePlayGroupMonsterInformations) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+          var monsterInfos:MonsterInGroupLightInformations;
+         var i:uint;
+         var underling:MonsterInGroupLightInformations;
+         var monster:Monster;
+         var monsterGrade:int;
+         var monstersGroup:Vector.<MonsterInGroupLightInformations> = this.getMonsterGroup(pMonstersInfo.staticInfos);
+         var groupHasMiniBoss:Boolean = Monster.getMonsterById(pMonstersInfo.staticInfos.mainCreatureLightInfos.creatureGenericId).isMiniBoss;
+         if (monstersGroup){
+             for each (monsterInfos in monstersGroup) {
+                 if (monsterInfos.creatureGenericId == pMonstersInfo.staticInfos.mainCreatureLightInfos.creatureGenericId){
+                     monstersGroup.splice(monstersGroup.indexOf(monsterInfos), 1);
+                     break;
+                 };
+             };
+         };
+         var followersLooks:Vector.<EntityLook> = ((Dofus.getInstance().options.showEveryMonsters) ? new Vector.<EntityLook>(((!(monstersGroup)) ? pMonstersInfo.staticInfos.underlings.length : monstersGroup.length), true) : null);
+         var followersSpeeds:Vector.<Number> = ((followersLooks) ? new Vector.<Number>(followersLooks.length, true) : null);
+         for each (underling in pMonstersInfo.staticInfos.underlings) {
+             if (followersLooks){
+                 monster = Monster.getMonsterById(underling.creatureGenericId);
+                 monsterGrade = -1;
+                 if (!(monstersGroup)){
+                     monsterGrade = 0;
+                 } else {
+                     for each (monsterInfos in monstersGroup) {
+                         if (monsterInfos.creatureGenericId == underling.creatureGenericId){
+                             monstersGroup.splice(monstersGroup.indexOf(monsterInfos), 1);
+                             monsterGrade = monsterInfos.grade;
+                             break;
+                         };
+                     };
+                 };
+                 if (monsterGrade >= 0){
+                     followersSpeeds[i] = monster.speedAdjust;
+                     followersLooks[i] = EntityLookAdapter.toNetwork(TiphonEntityLook.fromString(monster.look));
+                     i++;
+                 };
+             };
+             if (((!(groupHasMiniBoss)) && (Monster.getMonsterById(underling.creatureGenericId).isMiniBoss))){
+                 groupHasMiniBoss = true;
+                 if (!(followersLooks)){
+                     break;
+                 };
+             };
+         };
+         if (followersLooks){
+             this.manageFollowers((DofusEntities.getEntity(pMonstersInfo.contextualId) as AnimatedCharacter), followersLooks, followersSpeeds);
+         };
       }
       
       private function getMonsterGroup(pStaticMonsterInfos:GroupMonsterStaticInformations) : Vector.<MonsterInGroupLightInformations> {
@@ -1280,12 +1322,119 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       }
       
       override public function addOrUpdateActor(infos:GameContextActorInformations, animationModifier:IAnimationModifier = null) : AnimatedCharacter {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var _local_4:Sprite;
+         var _local_5:Quest;
+         var _local_6:GameRolePlayGroupMonsterInformations;
+         var _local_7:Boolean;
+         var _local_8:Vector.<EntityLook>;
+         var option:*;
+         var _local_10:Array;
+         var indexedEL:IndexedEntityLook;
+         var iEL:IndexedEntityLook;
+         var ac:AnimatedCharacter = super.addOrUpdateActor(infos);
+         switch (true){
+             case (infos is GameRolePlayNpcWithQuestInformations):
+                 this._npcList[infos.contextualId] = ac;
+                 _local_5 = Quest.getFirstValidQuest((infos as GameRolePlayNpcWithQuestInformations).questFlag);
+                 this.removeBackground(ac);
+                 if (_local_5 != null){
+                     if ((infos as GameRolePlayNpcWithQuestInformations).questFlag.questsToStartId.indexOf(_local_5.id) != -1){
+                         if (_local_5.repeatType == 0){
+                             _local_4 = EmbedAssets.getSprite("QUEST_CLIP");
+                             ac.addBackground("questClip", _local_4, true);
+                         } else {
+                             _local_4 = EmbedAssets.getSprite("QUEST_REPEATABLE_CLIP");
+                             ac.addBackground("questRepeatableClip", _local_4, true);
+                         };
+                     } else {
+                         if (_local_5.repeatType == 0){
+                             _local_4 = EmbedAssets.getSprite("QUEST_OBJECTIVE_CLIP");
+                             ac.addBackground("questObjectiveClip", _local_4, true);
+                         } else {
+                             _local_4 = EmbedAssets.getSprite("QUEST_REPEATABLE_OBJECTIVE_CLIP");
+                             ac.addBackground("questRepeatableObjectiveClip", _local_4, true);
+                         };
+                     };
+                 };
+                 if (ac.look.getBone() == 1){
+                     ac.addAnimationModifier(_customAnimModifier);
+                 };
+                 if (((_creaturesMode) || ((ac.getAnimation() == AnimationEnum.ANIM_STATIQUE)))){
+                     ac.setAnimation(AnimationEnum.ANIM_STATIQUE);
+                 };
+                 break;
+             case (infos is GameRolePlayGroupMonsterInformations):
+                 _local_6 = (infos as GameRolePlayGroupMonsterInformations);
+                 _local_7 = Monster.getMonsterById(_local_6.staticInfos.mainCreatureLightInfos.creatureGenericId).isMiniBoss;
+                 this.updateMonstersGroup(_local_6);
+                 if (this._monstersIds.indexOf(infos.contextualId) == -1){
+                     this._monstersIds.push(infos.contextualId);
+                 };
+                 if (Kernel.getWorker().contains(MonstersInfoFrame)){
+                     (Kernel.getWorker().getFrame(MonstersInfoFrame) as MonstersInfoFrame).update();
+                 };
+                 if (((!((PlayerManager.getInstance().serverGameType == 0))) && (_local_6.hasHardcoreDrop))){
+                     this.addEntityIcon(_local_6.contextualId, "treasure");
+                 };
+                 if (_local_7){
+                     this.addEntityIcon(_local_6.contextualId, "archmonsters");
+                 };
+                 if (_local_6.hasAVARewardToken){
+                     this.addEntityIcon(_local_6.contextualId, "nugget");
+                 };
+                 break;
+             case (infos is GameRolePlayHumanoidInformations):
+                 if ((((((infos.contextualId > 0)) && (this._playersId))) && ((this._playersId.indexOf(infos.contextualId) == -1)))){
+                     this._playersId.push(infos.contextualId);
+                 };
+                 _local_8 = new Vector.<EntityLook>();
+                 for each (option in (infos as GameRolePlayHumanoidInformations).humanoidInfo.options) {
+                     switch (true){
+                         case (option is HumanOptionFollowers):
+                             _local_10 = new Array();
+                             for each (indexedEL in option.followingCharactersLook) {
+                                 _local_10.push(indexedEL);
+                             };
+                             _local_10.sortOn("index");
+                             for each (iEL in _local_10) {
+                                 _local_8.push(iEL.look);
+                             };
+                             break;
+                         case (option is HumanOptionAlliance):
+                             this.addConquestIcon(infos.contextualId, (option as HumanOptionAlliance));
+                             break;
+                     };
+                 };
+                 this.manageFollowers(ac, _local_8);
+                 if (ac.look.getBone() == 1){
+                     ac.addAnimationModifier(_customAnimModifier);
+                 };
+                 if (((_creaturesMode) || ((ac.getAnimation() == AnimationEnum.ANIM_STATIQUE)))){
+                     ac.setAnimation(AnimationEnum.ANIM_STATIQUE);
+                 };
+                 break;
+             case (infos is GameRolePlayMerchantInformations):
+                 if (ac.look.getBone() == 1){
+                     ac.addAnimationModifier(_customAnimModifier);
+                 };
+                 if (((_creaturesMode) || ((ac.getAnimation() == AnimationEnum.ANIM_STATIQUE)))){
+                     ac.setAnimation(AnimationEnum.ANIM_STATIQUE);
+                 };
+                 trace("Affichage d'un personnage en mode marchand");
+                 break;
+             case (infos is GameRolePlayTaxCollectorInformations):
+             case (infos is GameRolePlayPrismInformations):
+             case (infos is GameRolePlayPortalInformations):
+                 ac.allowMovementThrough = true;
+                 break;
+             case (infos is GameRolePlayNpcInformations):
+                 this._npcList[infos.contextualId] = ac;
+             case (infos is GameContextPaddockItemInformations):
+                 break;
+             default:
+                 _log.warn((("Unknown GameRolePlayActorInformations type : " + infos) + "."));
+         };
+         return (ac);
       }
       
       override protected function updateActorLook(actorId:int, newLook:EntityLook, smoke:Boolean = false) : AnimatedCharacter {
@@ -1612,12 +1761,65 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       }
       
       private function updateUsableEmotesList(pLook:TiphonEntityLook) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var emote:EmoteWrapper;
+         var animName:String;
+         var emoteAvailable:Boolean;
+         var subCat:String;
+         var subIndex:String;
+         var sw:ShortcutWrapper;
+         var emoteIndex:int;
+         var isGhost:Boolean = PlayedCharacterManager.getInstance().isGhost;
+         var rpEmoticonFrame:EmoticonFrame = (Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame);
+         var emotes:Array = rpEmoticonFrame.emotesList;
+         var subEntities:Array = pLook.getSubEntities();
+         var updateShortcutsBar:Boolean;
+         this._usableEmotes = new Array();
+         var boneToTest:uint = pLook.getBone();
+         for each (emote in emotes) {
+             emoteAvailable = false;
+             if (((emote) && (emote.emote))){
+                 animName = emote.emote.getAnimName(pLook);
+                 if (((((emote.emote.aura) && (!(isGhost)))) || (Tiphon.skullLibrary.hasAnim(pLook.getBone(), animName)))){
+                     emoteAvailable = true;
+                 } else {
+                     if (subEntities){
+                         for (subCat in subEntities) {
+                             for (subIndex in subEntities[subCat]) {
+                                 if (Tiphon.skullLibrary.hasAnim(subEntities[subCat][subIndex].getBone(), animName)){
+                                     emoteAvailable = true;
+                                     break;
+                                 };
+                             };
+                             if (emoteAvailable){
+                                 break;
+                             };
+                         };
+                     };
+                 };
+                 emoteIndex = rpEmoticonFrame.emotes.indexOf(emote.id);
+                 for each (sw in InventoryManager.getInstance().shortcutBarItems) {
+                     if (((((((sw) && ((sw.type == 4)))) && ((sw.id == emote.id)))) && (!((sw.active == emoteAvailable))))){
+                         sw.active = emoteAvailable;
+                         updateShortcutsBar = true;
+                         break;
+                     };
+                 };
+                 if (emoteAvailable){
+                     this._usableEmotes.push(emote.id);
+                     if (emoteIndex == -1){
+                         rpEmoticonFrame.emotes.push(emote.id);
+                     };
+                 } else {
+                     if (emoteIndex != -1){
+                         rpEmoticonFrame.emotes.splice(emoteIndex, 1);
+                     };
+                 };
+             };
+         };
+         KernelEventsManager.getInstance().processCallback(RoleplayHookList.EmoteUnabledListUpdated, this._usableEmotes);
+         if (updateShortcutsBar){
+             KernelEventsManager.getInstance().processCallback(InventoryHookList.ShortcutBarViewContent, 0);
+         };
       }
       
       private function onEntityReadyForEmote(pEvent:TiphonEvent) : void {
@@ -1936,12 +2138,100 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       }
       
       private function showIcons(pEvent:Event = null) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var entityId:*;
+         var head:DisplayObject;
+         var entity:AnimatedCharacter;
+         var targetBounds:IRectangle;
+         var r1:Rectangle;
+         var r2:Rectangle2;
+         var ei:EntityIcon;
+         var icon:Texture;
+         var tiphonspr:TiphonSprite;
+         var foot:DisplayObject;
+         var iconCat:*;
+         var iconName:String;
+         var newIcons:Boolean;
+         var globalPos:Point;
+         var localPos:Point;
+         for (entityId in this._entitiesIconsNames) {
+             entity = (DofusEntities.getEntity(entityId) as AnimatedCharacter);
+             if (!(entity)){
+                 delete this._entitiesIconsNames[entityId];
+                 if (this._entitiesIcons[entityId]){
+                     this.removeIcon(entityId);
+                 };
+             } else {
+                 targetBounds = null;
+                 if (((((((this._updateAllIcons) || (entity.isMoving))) || (!(this._entitiesIcons[entityId])))) || (this._entitiesIcons[entityId].needUpdate))){
+                     if (((this._entitiesIcons[entityId]) && (this._entitiesIcons[entityId].rendering))){
+                         continue;
+                     };
+                     tiphonspr = (entity as TiphonSprite);
+                     if (((entity.getSubEntitySlot(2, 0)) && (!(this.isCreatureMode)))){
+                         tiphonspr = (entity.getSubEntitySlot(2, 0) as TiphonSprite);
+                     };
+                     head = tiphonspr.getSlot("Tete");
+                     if (head){
+                         r1 = head.getBounds(StageShareManager.stage);
+                         r2 = new Rectangle2(r1.x, r1.y, r1.width, r1.height);
+                         targetBounds = r2;
+                         if (((targetBounds.y - 30) - 10) < 0){
+                             foot = tiphonspr.getSlot("Pied");
+                             if (foot){
+                                 r1 = foot.getBounds(StageShareManager.stage);
+                                 r2 = new Rectangle2(r1.x, ((r1.y + targetBounds.height) + 30), r1.width, r1.height);
+                                 targetBounds = r2;
+                             };
+                         };
+                     } else {
+                         if ((tiphonspr is IDisplayable)){
+                             targetBounds = (tiphonspr as IDisplayable).absoluteBounds;
+                         } else {
+                             r1 = tiphonspr.getBounds(StageShareManager.stage);
+                             r2 = new Rectangle2(r1.x, r1.y, r1.width, r1.height);
+                             targetBounds = r2;
+                         };
+                         if (((targetBounds.y - 30) - 10) < 0){
+                             targetBounds.y = (targetBounds.y + (targetBounds.height + 30));
+                         };
+                     };
+                 };
+                 if (targetBounds){
+                     ei = this._entitiesIcons[entityId];
+                     if (!(ei)){
+                         this._entitiesIcons[entityId] = new EntityIcon();
+                         ei = this._entitiesIcons[entityId];
+                     };
+                     newIcons = false;
+                     for (iconCat in this._entitiesIconsNames[entityId]) {
+                         for each (iconName in this._entitiesIconsNames[entityId][iconCat]) {
+                             if (!(ei.hasIcon(iconName))){
+                                 newIcons = true;
+                                 ei.addIcon(((ICONS_FILEPATH + "|") + iconName), iconName);
+                             };
+                         };
+                     };
+                     if (newIcons){
+                     } else {
+                         if (((((this._entitiesIcons[entityId].needUpdate) && (!(entity.isMoving)))) && ((entity.getAnimation().indexOf(AnimationEnum.ANIM_STATIQUE) == 0)))){
+                             this._entitiesIcons[entityId].needUpdate = false;
+                         };
+                         entity.parent.addChildAt(ei, entity.parent.getChildIndex(entity));
+                         if (entity.rendered){
+                             globalPos = new Point(((targetBounds.x + (targetBounds.width / 2)) - (ei.width / 2)), (targetBounds.y - 10));
+                             localPos = entity.parent.globalToLocal(globalPos);
+                             ei.x = localPos.x;
+                             ei.y = localPos.y;
+                         } else {
+                             ei.rendering = true;
+                             entity.removeEventListener(TiphonEvent.RENDER_SUCCEED, this.updateIconAfterRender);
+                             entity.addEventListener(TiphonEvent.RENDER_SUCCEED, this.updateIconAfterRender);
+                         };
+                     };
+                 };
+             };
+         };
+         this._updateAllIcons = false;
       }
       
       private function updateIconAfterRender(pEvent:TiphonEvent) : void {
@@ -1981,12 +2271,48 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       }
       
       private function onAuraCycleTimer(event:TimerEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var firstEntityWithAuraIndex:int;
+         var firstEntityWithAura:AnimatedCharacter;
+         var nextEntityWithAura:AnimatedCharacter;
+         var entity:AnimatedCharacter;
+         var entitiesIdsList:Vector.<int> = getEntitiesIdsList();
+         if (this._auraCycleIndex >= entitiesIdsList.length){
+             this._auraCycleIndex = 0;
+         };
+         var l:int = entitiesIdsList.length;
+         var i:int;
+         while (i < l) {
+             entity = (DofusEntities.getEntity(entitiesIdsList[i]) as AnimatedCharacter);
+             if (!(entity)){
+             } else {
+                 if (((((!(firstEntityWithAura)) && (entity.hasAura))) && ((entity.getDirection() == DirectionsEnum.DOWN)))){
+                     firstEntityWithAura = entity;
+                     firstEntityWithAuraIndex = i;
+                 };
+                 if ((((((i == this._auraCycleIndex)) && (entity.hasAura))) && ((entity.getDirection() == DirectionsEnum.DOWN)))){
+                     nextEntityWithAura = entity;
+                     break;
+                 };
+                 if (!(entity.hasAura)){
+                     this._auraCycleIndex++;
+                 };
+             };
+             i++;
+         };
+         if (this._lastEntityWithAura){
+             this._lastEntityWithAura.visibleAura = false;
+         };
+         if (nextEntityWithAura){
+             nextEntityWithAura.visibleAura = true;
+             this._lastEntityWithAura = nextEntityWithAura;
+         } else {
+             if (((!(nextEntityWithAura)) && (firstEntityWithAura))){
+                 firstEntityWithAura.visibleAura = true;
+                 this._lastEntityWithAura = firstEntityWithAura;
+                 this._auraCycleIndex = firstEntityWithAuraIndex;
+             };
+         };
+         this._auraCycleIndex++;
       }
       
       private function setEntitiesAura(visible:Boolean) : void {

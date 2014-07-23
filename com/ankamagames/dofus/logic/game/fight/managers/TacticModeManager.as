@@ -132,12 +132,261 @@ package com.ankamagames.dofus.logic.game.fight.managers
       private var _background:Sprite;
       
       public function show(pPoint:WorldPointWrapper, openByTerminal:Boolean = false) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var i:int;
+         var len:int;
+         var _local_5:Vector.<uint>;
+         var _local_6:CellData;
+         var _local_7:CellReference;
+         var _local_8:int;
+         var _local_9:MapPoint;
+         var _local_10:DisplayObjectContainer;
+         var _local_11:Boolean;
+         var _local_12:Boolean;
+         var _local_13:Boolean;
+         var _local_14:Boolean;
+         var _local_15:Array;
+         var _local_16:Object;
+         var _local_17:Point;
+         var _local_18:int;
+         var _local_19:int;
+         var _local_20:int;
+         var _local_21:int;
+         var _local_22:Object;
+         if (!(openByTerminal)){
+             this._debugMode = false;
+             SHOW_BLOC_MOVE = false;
+         } else {
+             this._debugMode = true;
+             SHOW_BLOC_MOVE = true;
+         };
+         if (this._roleplayInteractivesFrame == null){
+             this._roleplayInteractivesFrame = (Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame);
+         };
+         if (this._tacticModeActivated){
+             return;
+         };
+         this._tacticModeActivated = true;
+         KernelEventsManager.getInstance().processCallback(HookList.ShowTacticMode, true);
+         if (((((this._debugMode) && (this._debugCache))) || (((((((!(this._debugMode)) && (this._currentMapId))) && ((this._currentMapId == pPoint.mapId)))) && ((this._cellsRef.length > 0)))))){
+             if ((((this._cellsRef == null)) || ((this._cellsRef[0] == null)))){
+                 this._cellsRef = MapDisplayManager.getInstance().getDataMapContainer().getCell();
+                 this._cellsData = MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells;
+             };
+             len = this._cellsRef.length;
+             if (((!(this._debugMode)) || (((this._debugMode) && (this._flattenCells))))){
+                 i = 0;
+                 while (i < len) {
+                     if (this._cellsRef[i] != null){
+                         this._cellsRef[i].visible = true;
+                         this._cellsRef[i].visible = false;
+                         if (this._cellsData[i].floor != 0){
+                             _local_10 = InteractiveCellManager.getInstance().getCell(this._cellsRef[i].id);
+                             _local_10.y = (this._cellsRef[i].elevation + this._cellsData[i].floor);
+                             this.updateEntitiesOnCell(i);
+                         };
+                     };
+                     i = (i + 1);
+                 };
+             };
+             SelectionManager.getInstance().addSelection(this._tacticReachableRangeSelection, "tacticReachableRange", 0);
+             if (((!(this._debugMode)) || (this._showBlockMvt))){
+                 SelectionManager.getInstance().addSelection(this._tacticUnreachableRangeSelection, "tacticUnreachableRange", 0);
+             };
+             if (((SHOW_BLOC_MOVE) && ((this._nbMov > this._nbLos)))){
+                 SelectionManager.getInstance().addSelection(this._tacticOtherSelection, "tacticOtherRange", 0);
+             } else {
+                 if (((((!(SHOW_BLOC_MOVE)) && (this._tacticOtherSelection))) && (!((SelectionManager.getInstance().getSelection("tacticOtherRange") == null))))){
+                     SelectionManager.getInstance().getSelection("tacticOtherRange").remove();
+                 };
+             };
+             if (((this._debugMode) && (this._fightZone))){
+                 if (this._showFightZone){
+                     SelectionManager.getInstance().addSelection(this._fightZone, "debugSelection", this._debugCellId);
+                 } else {
+                     SelectionManager.getInstance().getSelection("debugSelection").remove();
+                 };
+             };
+             if (((this._debugMode) && (this._scaleZone))){
+                 if (this._showScaleZone){
+                     SelectionManager.getInstance().addSelection(this._scaleZone, "scaleZone", this._debugCellId);
+                 } else {
+                     SelectionManager.getInstance().getSelection("scaleZone").remove();
+                 };
+             };
+             if (((this._debugMode) && (this._interactiveCellsZone))){
+                 if (this._showInteractiveCells){
+                     SelectionManager.getInstance().addSelection(this._interactiveCellsZone, "interactiveCellsZone", this._debugCellId);
+                 } else {
+                     SelectionManager.getInstance().getSelection("interactiveCellsZone").remove();
+                 };
+             };
+         } else {
+             this._currentMapId = pPoint.mapId;
+             this._reachablePath = new Vector.<uint>();
+             this._unreachablePath = new Vector.<uint>();
+             this._otherPath = new Vector.<uint>();
+             _local_5 = new Vector.<uint>();
+             this._cellsRef = MapDisplayManager.getInstance().getDataMapContainer().getCell();
+             this._cellsData = MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells;
+             len = this._cellsRef.length;
+             this._cellZones = new Vector.<int>(len);
+             this._currentNbZone = 0;
+             this._nbMov = 0;
+             this._nbLos = 0;
+             i = 0;
+             while (i < len) {
+                 _local_7 = this._cellsRef[i];
+                 _local_6 = this._cellsData[i];
+                 _local_7.visible = true;
+                 _local_7.visible = false;
+                 if (!_local_7.isDisabled){
+                     _local_8 = this.getCellZone(i);
+                     _local_9 = MapPoint.fromCellId(i);
+                     _local_11 = ((this._dmp.pointMov(_local_9.x, _local_9.y)) && (((this._debugMode) || (((!(this._debugMode)) && (!(this._dmp.farmCell(_local_9.x, _local_9.y))))))));
+                     _local_12 = this._dmp.pointLos(_local_9.x, _local_9.y);
+                     _local_13 = _local_6.nonWalkableDuringFight;
+                     _local_14 = _local_6.nonWalkableDuringRP;
+                     if (_local_6.moveZone){
+                         _local_5.push(_local_7.id);
+                     };
+                     if (((((!(this._debugMode)) || (((this._debugMode) && (this._flattenCells))))) && (!((_local_6.floor == 0))))){
+                         _local_10 = InteractiveCellManager.getInstance().getCell(_local_7.id);
+                         _local_10.y = (_local_7.elevation + _local_6.floor);
+                         this.updateEntitiesOnCell(i);
+                     };
+                     if (this.canMoveOnThisCell(_local_11, _local_13, _local_14)){
+                         if (_local_8 > 0){
+                             this._cellZones[i] = _local_8;
+                         } else {
+                             this._currentNbZone++;
+                             this._cellZones[i] = this._currentNbZone;
+                         };
+                     } else {
+                         if (((_local_12) && (!(this.canMoveOnThisCell(_local_11, _local_13, _local_14))))){
+                             this._cellZones[i] = 0;
+                         } else {
+                             if (((!(_local_12)) && (!(this.canMoveOnThisCell(_local_11, _local_13, _local_14))))){
+                                 this._cellZones[i] = -1;
+                             };
+                         };
+                     };
+                 };
+                 i = (i + 1);
+             };
+             this.updateCellWithRealCellZone();
+             _local_15 = new Array();
+             this._zones = new Array();
+             i = 0;
+             while (i < len) {
+                 switch (this._cellZones[i]){
+                     case -1:
+                         this._unreachablePath.push(i);
+                         break;
+                     case 0:
+                         if (((SHOW_BLOC_MOVE) && (this.getInformations(i)[0]))){
+                             this._otherPath.push(i);
+                             this._nbLos++;
+                         };
+                         break;
+                     default:
+                         if (_local_15.indexOf(this._cellZones[i]) == -1){
+                             _local_15.push(this._cellZones[i]);
+                         };
+                         _local_17 = CellIdConverter.cellIdToCoord(i);
+                         if (this._zones[this._cellZones[i]] == null){
+                             _local_16 = new Object();
+                             _local_16.map = new Vector.<int>();
+                             _local_16.maxX = _local_17.x;
+                             _local_16.minX = _local_17.x;
+                             _local_16.maxY = _local_17.y;
+                             _local_16.minY = _local_17.y;
+                             this._zones[this._cellZones[i]] = _local_16;
+                         } else {
+                             _local_16 = this._zones[this._cellZones[i]];
+                             if (_local_17.x > _local_16.maxX){
+                                 _local_16.maxX = _local_17.x;
+                             };
+                             if (_local_17.x < _local_16.minX){
+                                 _local_16.minX = _local_17.x;
+                             };
+                             if (_local_17.y > _local_16.maxY){
+                                 _local_16.maxY = _local_17.y;
+                             };
+                             if (_local_17.y < _local_16.minY){
+                                 _local_16.minY = _local_17.y;
+                             };
+                         };
+                         this._zones[this._cellZones[i]].map.push(i);
+                         if (this._reachablePath.indexOf(i) == -1){
+                             this._reachablePath.push(i);
+                         };
+                         this._nbMov++;
+                 };
+                 i = (i + 1);
+             };
+             this._currentNbZone = _local_15.length;
+             _local_15 = null;
+             for each (_local_22 in this._zones) {
+                 if (!(_local_20)){
+                     _local_20 = _local_22.maxX;
+                 } else {
+                     _local_20 = Math.max(_local_20, _local_22.maxX);
+                 };
+                 if (!(_local_19)){
+                     _local_21 = _local_22.minX;
+                 } else {
+                     _local_21 = Math.min(_local_21, _local_22.minX);
+                 };
+                 if (!(_local_18)){
+                     _local_18 = _local_22.maxY;
+                 } else {
+                     _local_18 = Math.max(_local_18, _local_22.maxY);
+                 };
+                 if (!(_local_19)){
+                     _local_19 = _local_22.minY;
+                 } else {
+                     _local_19 = Math.min(_local_19, _local_22.minY);
+                 };
+             };
+             this.clearUnneededCells(_local_20, _local_18, _local_21, _local_19);
+             this._tacticReachableRangeSelection = new Selection();
+             this._tacticReachableRangeSelection.renderer = new ZoneClipRenderer(PlacementStrataEnums.STRATA_NO_Z_ORDER, SWF_LIB, TILES_REACHABLE, (((TILES_REACHABLE.length)>1) ? this._currentMapId : -1), SHOW_BLOC_MOVE);
+             this._tacticReachableRangeSelection.zone = new Custom(this._reachablePath);
+             SelectionManager.getInstance().addSelection(this._tacticReachableRangeSelection, "tacticReachableRange", 0);
+             if (((!(this._debugMode)) || (this._showBlockMvt))){
+                 this._tacticUnreachableRangeSelection = new Selection();
+                 this._tacticUnreachableRangeSelection.renderer = new ZoneClipRenderer(PlacementStrataEnums.STRATA_AREA, SWF_LIB, TILES_NO_VIEW, (((TILES_NO_VIEW.length)>1) ? this._currentMapId : -1), SHOW_BLOC_MOVE);
+                 this._tacticUnreachableRangeSelection.zone = new Custom(this._unreachablePath);
+                 SelectionManager.getInstance().addSelection(this._tacticUnreachableRangeSelection, "tacticUnreachableRange", 0);
+             };
+             if ((((((this._nbMov > this._nbLos)) && (SHOW_BLOC_MOVE))) || (this._debugMode))){
+                 this._tacticOtherSelection = new Selection();
+                 this._tacticOtherSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_NO_Z_ORDER);
+                 this._tacticOtherSelection.color = new Color(717337);
+                 this._tacticOtherSelection.zone = new Custom(this._otherPath);
+             };
+             if (((this._debugMode) && (this._showScaleZone))){
+                 this._scaleZone = new Selection();
+                 this._scaleZone.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_NO_Z_ORDER);
+                 this._scaleZone.color = new Color(5085175);
+                 this._scaleZone.zone = new Custom(_local_5);
+                 SelectionManager.getInstance().addSelection(this._scaleZone, "scaleZone", this._debugCellId);
+             };
+             if (((this._debugMode) && (this._showFightZone))){
+                 SelectionManager.getInstance().addSelection(this._fightZone, "debugSelection", this._debugCellId);
+             };
+             if (((this._debugMode) && (this._showInteractiveCells))){
+                 this._interactiveCellsZone = new Selection();
+                 this._interactiveCellsZone.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_NO_Z_ORDER);
+                 this._interactiveCellsZone.color = new Color(0xFFFFFF);
+                 this._interactiveCellsZone.zone = new Custom(this._roleplayInteractivesFrame.getInteractiveElementsCells());
+                 SelectionManager.getInstance().addSelection(this._interactiveCellsZone, "interactiveCellsZone", this._debugCellId);
+             };
+         };
+         MapDisplayManager.getInstance().hideBackgroundForTacticMode(true);
+         if (SHOW_BACKGROUND){
+             this.loadBackground();
+         };
       }
       
       private function canMoveOnThisCell(canMov:Boolean, nonWalkableDuringFight:Boolean, nonWalkableDuringRp:Boolean) : Boolean {

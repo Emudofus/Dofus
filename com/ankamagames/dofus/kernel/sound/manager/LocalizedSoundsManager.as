@@ -41,12 +41,24 @@ package com.ankamagames.dofus.kernel.sound.manager
       }
       
       public function setMap(pMap:Map) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var layer:Layer;
+         var cell:Cell;
+         var element:BasicElement;
+         var elem:SoundElement;
+         var lms:LocalizedMapSound;
+         this.removeLocalizedSounds();
+         for each (layer in pMap.layers) {
+             for each (cell in layer.cells) {
+                 for each (element in cell.elements) {
+                     if ((element is SoundElement)){
+                         elem = (element as SoundElement);
+                         lms = new LocalizedMapSound(elem.soundId.toString(), elem.cell.pixelCoords, elem.nullVolumeDistance, elem.fullVolumeDistance, elem.minDelayBetweenLoops, elem.maxDelayBetweenLoops, elem.baseVolume);
+                         this._localizedSounds.push(lms);
+                     };
+                 };
+             };
+         };
+         this._isInitialized = true;
       }
       
       public function playLocalizedSounds() : void {

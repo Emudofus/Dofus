@@ -1457,12 +1457,110 @@ package com.ankamagames.dofus.logic.game.common.frames
       }
       
       public function checkCensored(word:String, channel:uint, senderId:uint, senderName:String) : Array {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var wordl:String;
+         var nAddWarning:uint;
+         var newContent:Array;
+         var lang:String;
+         var finalText:String;
+         var safeChars:Array;
+         var indexOfMethod:Boolean;
+         var wordsToCheck:Array;
+         var wordi:String;
+         var testword:String;
+         var finalWord:String;
+         var ichar:int;
+         var _local_24:String;
+         var iichar:int;
+         var _local_26:String;
+         var _local_27:String;
+         var _local_28:String;
+         var pos:int;
+         var finalWordl:String;
+         var result:Object;
+         var warning:String;
+         var content:String = word;
+         if (((((((((OptionManager.getOptionManager("chat").filterInsult) && (!((channel == 8))))) && (!((channel == 10))))) && (!((channel == 11))))) && (!((channel == 666))))){
+             lang = XmlConfig.getInstance().getEntry("config.lang.current");
+             finalText = "";
+             safeChars = ["&", "%", "?", "#", "§", "!"];
+             indexOfMethod = (lang == "ja");
+             if (!(indexOfMethod)){
+                 wordsToCheck = content.split(" ");
+                 for each (wordi in wordsToCheck) {
+                     testword = wordi.toLowerCase();
+                     finalWord = "";
+                     if (this._aCensoredWords){
+                         if (this._aCensoredWords[testword]){
+                             ichar = 0;
+                             while (ichar < testword.length) {
+                                 finalWord = (finalWord + safeChars[(testword.charCodeAt(ichar) % 5)]);
+                                 ichar++;
+                             };
+                         } else {
+                             for (_local_24 in this._aCensoredWords) {
+                                 if (this._aCensoredWords[_local_24] == 2){
+                                     if (testword.indexOf(_local_24) != -1){
+                                         iichar = 0;
+                                         while (iichar < testword.length) {
+                                             finalWord = (finalWord + safeChars[(testword.charCodeAt(iichar) % 5)]);
+                                             iichar++;
+                                         };
+                                     };
+                                 };
+                             };
+                         };
+                     };
+                     if (finalWord == ""){
+                         finalWord = wordi;
+                     };
+                     finalText = (finalText + (finalWord + " "));
+                 };
+                 content = finalText.slice(0, (finalText.length - 1));
+             } else {
+                 _local_26 = "&%?§!&?&%§!&%!&%?#§!";
+                 _local_27 = content.toUpperCase();
+                 for (_local_28 in this._aCensoredWords) {
+                     pos = 0;
+                     while (pos != -1) {
+                         pos = _local_27.indexOf(_local_28);
+                         if (pos != -1){
+                             content = ((content.substr(0, pos) + _local_26.substr(0, _local_28.length)) + content.substr((pos + _local_28.length)));
+                             _local_27 = content.toUpperCase();
+                         };
+                     };
+                 };
+             };
+         };
+         var aText:Array = content.split(" ");
+         var finalText2:String = "";
+         var isLink:Boolean;
+         var wordBeginning:String = "";
+         var wordEnd:String = "";
+         var wordLink:String = "";
+         for each (wordl in aText) {
+             finalWordl = "";
+             result = this.needToFormateUrl(wordl);
+             if (result.formate){
+                 finalWordl = (finalWordl + HtmlManager.addLink((("[" + result.url) + "]"), ((((("event:chatLinkRelease," + result.url) + ",") + senderId) + ",") + senderName), {"bold":true}));
+                 isLink = true;
+             };
+             if (finalWordl == ""){
+                 finalWordl = wordl;
+             };
+             finalText2 = (finalText2 + (finalWordl + " "));
+         };
+         content = finalText2.slice(0, (finalText2.length - 1));
+         nAddWarning = 0;
+         newContent = new Array();
+         if (nAddWarning > 0){
+             warning = I18n.getUiText("ui.popup.warning");
+             newContent[0] = (((content + " [") + HtmlManager.addLink(I18n.getUiText("ui.popup.warning"), "event:chatWarning", {"color":XmlConfig.getInstance().getEntry("colors.hyperlink.warning")})) + "]");
+             newContent[1] = (((content + " [") + warning) + "]");
+         } else {
+             newContent[0] = content;
+             newContent[1] = content;
+         };
+         return (newContent);
       }
       
       public function needToFormateUrl(inStr:String) : Object {

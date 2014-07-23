@@ -137,21 +137,133 @@ package com.ankamagames.dofus.logic.game.fight.managers
       }
       
       public function incrementDuration(targetId:int, delta:int, dispellEffect:Boolean = false, incrementMode:int = 1) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var buffTarget:Array;
+         var buffItem:BasicBuff;
+         var modified:Boolean;
+         var skipBuffUpdate:Boolean;
+         var spell:CastingSpell;
+         var _local_12:int;
+         var newBuffs:Array = new Array();
+         var updateStatList:Boolean;
+         for each (buffTarget in this._buffs) {
+             for each (buffItem in buffTarget) {
+                 if (((((dispellEffect) && ((buffItem is TriggeredBuff)))) && ((TriggeredBuff(buffItem).delay > 0)))){
+                     if (!(newBuffs.hasOwnProperty(String(buffItem.targetId)))){
+                         newBuffs[buffItem.targetId] = new Array();
+                     };
+                     newBuffs[buffItem.targetId].push(buffItem);
+                 } else {
+                     if ((((((incrementMode == INCREMENT_MODE_SOURCE)) && ((buffItem.aliveSource == targetId)))) || ((((incrementMode == INCREMENT_MODE_TARGET)) && ((buffItem.targetId == targetId)))))){
+                         if ((((incrementMode == INCREMENT_MODE_SOURCE)) && (this.spellBuffsToIgnore.length))){
+                             skipBuffUpdate = false;
+                             for each (spell in this.spellBuffsToIgnore) {
+                                 if ((((spell.castingSpellId == buffItem.castingSpell.castingSpellId)) && ((spell.casterId == targetId)))){
+                                     skipBuffUpdate = true;
+                                     break;
+                                 };
+                             };
+                             if (skipBuffUpdate){
+                                 if (!(newBuffs.hasOwnProperty(String(buffItem.targetId)))){
+                                     newBuffs[buffItem.targetId] = new Array();
+                                 };
+                                 newBuffs[buffItem.targetId].push(buffItem);
+                                 continue;
+                             };
+                         };
+                         modified = buffItem.incrementDuration(delta, dispellEffect);
+                         if (buffItem.active){
+                             if (!(newBuffs.hasOwnProperty(String(buffItem.targetId)))){
+                                 newBuffs[buffItem.targetId] = new Array();
+                             };
+                             newBuffs[buffItem.targetId].push(buffItem);
+                             if (modified){
+                                 KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate, buffItem.id, buffItem.targetId);
+                             };
+                         } else {
+                             BasicBuff(buffItem).onRemoved();
+                             KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, buffItem, buffItem.targetId, "CoolDown");
+                             _local_12 = CurrentPlayedFighterManager.getInstance().currentFighterId;
+                             if ((((targetId == _local_12)) || ((buffItem.targetId == _local_12)))){
+                                 updateStatList = true;
+                             };
+                         };
+                     } else {
+                         if (!(newBuffs.hasOwnProperty(String(buffItem.targetId)))){
+                             newBuffs[buffItem.targetId] = new Array();
+                         };
+                         newBuffs[buffItem.targetId].push(buffItem);
+                     };
+                 };
+             };
+         };
+         if (updateStatList){
+             KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
+         };
+         this._buffs = newBuffs;
       }
       
       public function markFinishingBuffs(targetId:int, ignoreCurrent:Boolean = false) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var updateStatList:Boolean;
+         var buffItem:BasicBuff;
+         var mark:Boolean;
+         var fightBattleFrame:FightBattleFrame;
+         var state:int;
+         var casterFound:Boolean;
+         var fighter:int;
+         var statBuffItem:StatBuff;
+         if (this._buffs.hasOwnProperty(String(targetId))){
+             updateStatList = false;
+             for each (buffItem in this._buffs[targetId]) {
+                 mark = false;
+                 if (buffItem.duration == 1){
+                     fightBattleFrame = (Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame);
+                     if (fightBattleFrame == null){
+                         return;
+                     };
+                     state = 0;
+                     casterFound = false;
+                     for each (fighter in fightBattleFrame.fightersList) {
+                         if (fighter == buffItem.aliveSource){
+                             casterFound = true;
+                         };
+                         if (fighter == fightBattleFrame.currentPlayerId){
+                             state = 1;
+                         };
+                         if (state == 1){
+                             if (((casterFound) && (((!((fighter == fightBattleFrame.currentPlayerId))) || (!(ignoreCurrent)))))){
+                                 state = 2;
+                                 mark = true;
+                             } else {
+                                 if ((((fighter == targetId)) && (!((fighter == fightBattleFrame.currentPlayerId))))){
+                                     state = 2;
+                                     mark = false;
+                                 };
+                             };
+                         };
+                     };
+                     if (((mark) && (!(ignoreCurrent)))){
+                         buffItem.finishing = true;
+                         if ((((buffItem is StatBuff)) && (!((targetId == PlayedCharacterManager.getInstance().id))))){
+                             statBuffItem = (buffItem as StatBuff);
+                             if (statBuffItem.statName){
+                                 targetId = statBuffItem.targetId;
+                                 if (!(this._finishingBuffs[targetId])){
+                                     this._finishingBuffs[targetId] = new Array();
+                                 };
+                                 this._finishingBuffs[targetId].push(buffItem);
+                             };
+                         };
+                         BasicBuff(buffItem).onDisabled();
+                         if (targetId == CurrentPlayedFighterManager.getInstance().currentFighterId){
+                             updateStatList = true;
+                         };
+                     };
+                 };
+             };
+             if (updateStatList){
+                 KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
+             };
+         };
       }
       
       public function addBuff(buff:BasicBuff, applyBuff:Boolean = true) : void {

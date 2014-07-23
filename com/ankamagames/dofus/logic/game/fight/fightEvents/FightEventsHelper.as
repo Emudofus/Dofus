@@ -185,12 +185,58 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
       }
       
       public static function groupAllEventsForDisplay(entitiesList:Dictionary) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var eventList:Vector.<FightEvent>;
+         var eventBase:FightEvent;
+         var targetsId:Vector.<int>;
+         var targetEvents:String;
+         var type:int;
+         var tmpevt:FightEvent;
+         var _local_11:Vector.<FightEvent>;
+         var playerTeamId:int = PlayedCharacterManager.getInstance().teamId;
+         var groupPvLostAndDeath:Vector.<int> = getTargetsWhoDiesAfterALifeLoss();
+         var eventsGroupedByTarget:Dictionary = new Dictionary();
+         while (_events.length > 0) {
+             eventList = _events[0];
+             if ((((eventList == null)) || ((eventList.length == 0)))){
+                 _events.splice(0, 1);
+             } else {
+                 eventBase = eventList[0];
+                 targetsId = extractTargetsId(eventList);
+                 eventsGroupedByTarget = groupFightEventsByTarget(eventList);
+                 for (targetEvents in eventsGroupedByTarget) {
+                     eventBase = eventsGroupedByTarget[targetEvents][0];
+                     if ((((eventsGroupedByTarget[targetEvents].length > 1)) && ((((((eventBase.name == FightEventEnum.FIGHTER_LIFE_LOSS)) || ((eventBase.name == FightEventEnum.FIGHTER_LIFE_GAIN)))) || ((eventBase.name == FightEventEnum.FIGHTER_SHIELD_LOSS)))))){
+                         switch (eventBase.name){
+                             case FightEventEnum.FIGHTER_LIFE_LOSS:
+                             case FightEventEnum.FIGHTER_SHIELD_LOSS:
+                                 type = -1;
+                                 break;
+                             case FightEventEnum.FIGHTER_LIFE_GAIN:
+                             default:
+                                 type = 1;
+                         };
+                         groupByElements(eventsGroupedByTarget[targetEvents], type, _detailsActive, !((groupPvLostAndDeath.indexOf(eventBase.targetId) == -1)), eventBase.castingSpellId);
+                         for each (tmpevt in eventsGroupedByTarget[targetEvents]) {
+                             eventList.splice(eventList.indexOf(tmpevt), 1);
+                         };
+                     } else {
+                         _local_11 = eventList.concat();
+                         for each (eventBase in _local_11) {
+                             if ((((eventBase.name == FightEventEnum.FIGHTER_DEATH)) && (!((groupPvLostAndDeath.indexOf(eventBase.targetId) == -1))))){
+                                 eventList.splice(eventList.indexOf(eventBase), 1);
+                             };
+                         };
+                         groupByTeam(playerTeamId, targetsId, eventList, entitiesList, groupPvLostAndDeath);
+                         _local_11 = eventList.concat();
+                         for each (eventBase in _local_11) {
+                             sendFightLogToChat(eventBase, "", null, _detailsActive, (((eventBase.name == FightEventEnum.FIGHTER_LIFE_LOSS)) && (!((groupPvLostAndDeath.indexOf(eventBase.targetId) == -1)))));
+                             eventList.splice(eventList.indexOf(eventBase), 1);
+                         };
+                         _local_11 = null;
+                     };
+                 };
+             };
+         };
       }
       
       public static function extractTargetsId(eventList:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>) : Vector.<int> {
@@ -321,12 +367,63 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
       }
       
       private static function groupByTeam(playerTeamId:int, targets:Vector.<int>, pEventList:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>, pEntitiesList:Dictionary, groupPvLostAndDeath:Vector.<int>) : Boolean {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var event:FightEvent;
+         var list:Vector.<int>;
+         var listToConcat:Vector.<FightEvent>;
+         var evt:FightEvent;
+         var team:String;
+         var t:Object;
+         if (pEventList.length == 0){
+             return (false);
+         };
+         var tmpEventList:Vector.<FightEvent> = pEventList.concat();
+         while (tmpEventList.length > 1) {
+             listToConcat = getGroupedListEvent(tmpEventList);
+             if (listToConcat.length > 1){
+                 list = new Vector.<int>();
+                 for each (event in listToConcat) {
+                     list.push(event.targetId);
+                 };
+                 evt = listToConcat[0];
+                 team = groupEntitiesByTeam(playerTeamId, list, pEntitiesList, (SKIP_ENTITY_ALIVE_CHECK_EVENTS.indexOf(pEventList[0].name) == -1));
+                 switch (team){
+                     case "all":
+                     case "allies":
+                     case "enemies":
+                         removeEventFromEventsList(pEventList, listToConcat);
+                         if ((((evt.name == "fighterLifeLoss")) && (!((groupPvLostAndDeath.indexOf(listToConcat[0].targetId) == -1))))){
+                             sendFightLogToChat(evt, team, null, true, true);
+                         } else {
+                             sendFightLogToChat(evt, team);
+                         };
+                         break;
+                     case "other":
+                         removeEventFromEventsList(pEventList, listToConcat);
+                         if ((((evt.name == "fighterLifeLoss")) && (!((groupPvLostAndDeath.indexOf(listToConcat[0].targetId) == -1))))){
+                             sendFightLogToChat(evt, "", list, true, true);
+                         } else {
+                             sendFightLogToChat(evt, "", list);
+                         };
+                         break;
+                     case "none":
+                         trace("probleme de regroupement");
+                         break;
+                     default:
+                         for each (t in pEntitiesList) {
+                             if (((((!((team.indexOf("allies") == -1))) && ((t.teamId == playerTeamId)))) || (((!((team.indexOf("enemies") == -1))) && (!((t.teamId == playerTeamId))))))){
+                                 list.splice(list.indexOf(t.contextualId), 1);
+                             };
+                         };
+                         removeEventFromEventsList(pEventList, listToConcat);
+                         if ((((evt.name == "fighterLifeLoss")) && (!((groupPvLostAndDeath.indexOf(listToConcat[0].targetId) == -1))))){
+                             sendFightLogToChat(evt, team, list, true, true);
+                         } else {
+                             sendFightLogToChat(evt, team, list);
+                         };
+                 };
+             };
+         };
+         return (false);
       }
       
       public static function getGroupedListEvent(pInEventList:Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent>) : Vector.<com.ankamagames.dofus.logic.game.fight.fightEvents.FightEvent> {

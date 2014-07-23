@@ -647,12 +647,339 @@ package com.ankamagames.berilia.managers
       }
       
       private function onDMLoad(e:ResourceLoadedEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var um:UiModule;
+         var uiUri:Uri;
+         var currentFile:File;
+         var path:String;
+         var scriptUrl:String;
+         var scriptUri:Uri;
+         var scriptFile:File;
+         var fs:FileStream;
+         var swfContent:ByteArray;
+         var fooOutput:ByteArray;
+         var sig:Signature;
+         var shortcutsUri:Uri;
+         var mp:String;
+         var ui:UiData;
+         var _local_18:Array;
+         var _local_19:File;
+         for (;;) {
+             goto _label_3;
+             
+         _label_1: 
+             continue;
+             goto _label_1;
+             var _local_24 = _local_24;
+             
+         _label_2: 
+             goto _label_4;
+         };
+         
+     _label_3: 
+         goto _label_2;
+         
+     _label_4: 
+         if (e.resourceType == ResourceType.RESOURCE_XML){
+             um = UiModule.createFromXml((e.resource as XML), FileUtils.getFilePath(e.uri.path), File(e.uri.tag).parent.name);
+         } else {
+             um = PreCompiledUiModule.fromRaw(e.resource, FileUtils.getFilePath(e.uri.path), File(e.uri.tag).parent.name);
+             goto _label_6;
+         };
+         
+     _label_5: 
+         this._unInitializedModules[um.id] = um;
+         goto _label_7;
+         
+     _label_6: 
+         goto _label_5;
+         
+     _label_7: 
+         if (um.script){
+             goto _label_13;
+             
+         _label_8: 
+             scriptUri = new Uri(scriptUrl);
+             goto _label_12;
+             
+         _label_9: 
+             goto _label_8;
+             
+         _label_10: 
+             scriptUrl = StringUtils.convertLatinToUtf(unescape(um.script));
+             goto _label_9;
+             
+         _label_11: 
+             goto _label_10;
+             
+         _label_12: 
+             goto _label_14;
+             
+         _label_13: 
+             goto _label_11;
+             
+         _label_14: 
+             if (Berilia.getInstance().checkModuleAuthority){
+                 goto _label_18;
+                 
+             _label_15: 
+                 goto _label_19;
+                 
+             _label_16: 
+                 scriptFile = scriptUri.toFile();
+                 goto _label_15;
+                 var root = root;
+                 
+             _label_17: 
+                 goto _label_20;
+                 
+             _label_18: 
+                 goto _label_16;
+                 
+             _label_19: 
+                 _log.debug(("hash " + scriptUri));
+                 goto _label_17;
+                 var _local_20 = _local_20;
+                 
+             _label_20: 
+                 if (scriptFile.exists){
+                     goto _label_26;
+                     
+                 _label_21: 
+                     fs.readBytes(swfContent);
+                     while (true) {
+                         fs.close();
+                         goto _label_29;
+                         
+                     _label_22: 
+                         fs.open(scriptFile, FileMode.READ);
+                         goto _label_25;
+                         
+                     _label_23: 
+                         goto _label_28;
+                     };
+                     
+                 _label_24: 
+                     goto _label_21;
+                     
+                 _label_25: 
+                     swfContent = new ByteArray();
+                     goto _label_24;
+                     
+                 _label_26: 
+                     goto _label_23;
+                     var _local_22 = _local_22;
+                     
+                 _label_27: 
+                     goto _label_22;
+                     
+                 _label_28: 
+                     fs = new FileStream();
+                     goto _label_27;
+                     var files = files;
+                     
+                 _label_29: 
+                     if (scriptUri.fileType == "swf"){
+                         while ((um.trusted = (MD5.hashBytes(swfContent) == this._modulesHashs[scriptUri.fileName])), true) {
+                             goto _label_30;
+                         };
+                         
+                     _label_30: 
+                         if (!(um.trusted)){
+                             _log.error(("Hash incorrect pour le module " + um.id));
+                         };
+                     } else {
+                         if (scriptUri.fileType == "swfs"){
+                             while ((fooOutput = new ByteArray()), true) {
+                                 goto _label_31;
+                             };
+                             
+                         _label_31: 
+                             sig = new Signature(SignedFileAdapter.defaultSignatureKey);
+                             if (!(sig.verify(swfContent, fooOutput))){
+                                 _log.fatal(("Invalid signature in " + scriptFile.nativePath));
+                                 this._moduleCount--;
+                                 this._scriptNum--;
+                                 um.trusted = false;
+                                 while (true) {
+                                     return;
+                                 };
+                             };
+                             um.trusted = true;
+                         };
+                     };
+                 } else {
+                     ErrorManager.addError((((("Le script du module " + um.id) + " est introuvable (url: ") + scriptFile.nativePath) + ")"));
+                     this._moduleCount--;
+                     this._scriptNum--;
+                     while ((um.trusted = false), true) {
+                         return;
+                     };
+                     return;
+                 };
+             } else {
+                 um.trusted = true;
+             };
+             if (!(um.enable)){
+                 _log.fatal((("Le module " + um.id) + " est désactivé"));
+                 this._moduleCount--;
+                 this._scriptNum--;
+                 this._disabledModules[um.id] = um;
+                 while (true) {
+                     return;
+                 };
+             };
+             if (um.shortcuts){
+                 goto _label_33;
+                 
+             _label_32: 
+                 shortcutsUri.tag = um.id;
+                 for (;;) {
+                     goto _label_32;
+                     var _local_23 = _local_23;
+                     
+                 _label_33: 
+                     continue;
+                     this._loader.load(shortcutsUri);
+                     goto _label_34;
+                 };
+             };
+             
+         _label_34: 
+             if (((this._useHttpServer) && (!((scriptUri.fileType == "swfs"))))){
+                 while ((mp = File.applicationDirectory.nativePath.split("\\").join("/")), true) {
+                     goto _label_35;
+                 };
+                 
+             _label_35: 
+                 if (scriptUrl.indexOf(mp) != -1){
+                     goto _label_37;
+                     
+                 _label_36: 
+                     _log.trace(("[WebServer] Load " + scriptUrl));
+                     goto _label_42;
+                     
+                 _label_37: 
+                     scriptUrl = scriptUrl.substr((scriptUrl.indexOf(mp) + mp.length));
+                     goto _label_39;
+                 };
+                 
+             _label_38: 
+                 scriptUrl = HttpServer.getInstance().getUrlTo(scriptUrl);
+                 goto _label_40;
+                 
+             _label_39: 
+                 goto _label_38;
+                 
+             _label_40: 
+                 goto _label_36;
+                 var _local_0 = this;
+                 
+             _label_41: 
+                 _local_0._loadModuleFunction(scriptUrl, _local_0.onModuleScriptLoaded, _local_0.onScriptLoadFail, um);
+                 //unresolved jump
+                 
+             _label_42: 
+                 goto _label_41;
+             } else {
+                 if (um.trusted){
+                     goto _label_46;
+                     
+                 _label_43: 
+                     goto _label_48;
+                     
+                 _label_44: 
+                     scriptUri.loaderContext = new LoaderContext();
+                     for (;;goto _label_44, (files = files)) {
+                         scriptUri.loaderContext.applicationDomain = new ApplicationDomain(this._sharedDefinition);
+                         goto _label_43;
+                         
+                     _label_45: 
+                         _log.trace(("[Classic] Load " + scriptUri));
+                         goto _label_49;
+                         
+                     _label_46: 
+                         scriptUri.tag = um.id;
+                         continue;
+                         
+                     _label_47: 
+                         goto _label_45;
+                     };
+                     
+                 _label_48: 
+                     this._loadingModule[um] = um.id;
+                     goto _label_47;
+                     
+                 _label_49: 
+                     this._loader.load(scriptUri, null, ((!((scriptUri.fileType == "swfs"))) ? BinaryAdapter : AdvancedSignedFileAdapter));
+                 } else {
+                     this._moduleCount--;
+                     this._scriptNum--;
+                     goto _label_52;
+                     
+                 _label_50: 
+                     return;
+                     
+                 _label_51: 
+                     goto _label_50;
+                     
+                 _label_52: 
+                     ErrorManager.addError((((("Failed to load custom module " + um.author) + "_") + um.name) + ", because the local HTTP server is not available."));
+                     goto _label_51;
+                 };
+             };
+         };
+         files = new Array();
+         if (!((um is PreCompiledUiModule))){
+             _loop_1:
+             for each (ui in um.uis) {
+                 if (ui.file){
+                     //unresolved jump
+                     
+                 _label_53: 
+                     uiUri.tag = {
+                         "mod":um.id,
+                         "base":ui.file
+                     };
+                     while (//unresolved jump
+, (uiUri = new Uri(ui.file)), goto _label_54, (ui = ui), this._uiFiles.push(uiUri), true) {
+                         continue _loop_1;
+                         
+                     _label_54: 
+                         goto _label_53;
+                     };
+                 };
+             };
+         };
+         root = this._modulesRoot.resolvePath(um.id);
+         files = new Array();
+         for each (path in um.cachedFiles) {
+             //unresolved jump
+             
+         _label_55: 
+             if (currentFile.exists){
+                 if (!(currentFile.isDirectory)){
+                     files.push(new Uri(((("mod://" + um.id) + "/") + path)));
+                 } else {
+                     _local_18 = currentFile.getDirectoryListing();
+                     for each (_local_19 in _local_18) {
+                         if (!(_local_19.isDirectory)){
+                             goto _label_57;
+                             
+                         _label_56: 
+                             continue;
+                         };
+                         
+                     _label_57: 
+                         files.push(new Uri(((((("mod://" + um.id) + "/") + path) + "/") + FileUtils.getFileName(_local_19.url))));
+                         goto _label_56;
+                     };
+                 };
+             };
+         };
+         while (this.processCachedFiles(files), true) {
+             return;
+         };
+         return;
       }
       
       private function onScriptLoadFail(e:IOErrorEvent, uiModule:UiModule) : void {
@@ -758,12 +1085,44 @@ package com.ankamagames.berilia.managers
       }
       
       private function onAllUiChecked(e:ResourceLoaderProgressEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var module:UiModule;
+         var url:String;
+         var ui:UiData;
+         while (true) {
+             goto _label_1;
+         };
+         var _local_7 = _local_7;
+         
+     _label_1: 
+         var uiDataList:Array = new Array();
+         for each (module in this._unInitializedModules) {
+             //unresolved jump
+             var _local_6 = _local_6;
+             for each (ui in module.uis) {
+                 //unresolved jump
+             };
+         };
+         this._unparsedXml = [];
+         _loop_1:
+         for (url in this._clearUi) {
+             while (UiRenderManager.getInstance().clearCacheFromId(url), true) {
+                 UiRenderManager.getInstance().setUiVersion(url, this._clearUi[url]);
+                 goto _label_2;
+             };
+             
+         _label_2: 
+             if (uiDataList[url]){
+                 while (this._unparsedXml.push(uiDataList[url]), true) {
+                     continue _loop_1;
+                 };
+                 var _local_11 = _local_11;
+             };
+         };
+         this._unparsedXmlCount = (this._unparsedXmlTotalCount = this._unparsedXml.length);
+         while (this.parseNextXml(), true) {
+             return;
+         };
+         return;
       }
       
       private function parseNextXml() : void {
@@ -820,12 +1179,130 @@ package com.ankamagames.berilia.managers
       }
       
       private function onUiLoaded(e:ResourceLoadedEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var res:Array;
+         var filePath:String;
+         var modName:String;
+         var templateUri:Uri;
+         while (true) {
+             goto _label_4;
+             
+         _label_1: 
+             goto _label_3;
+             
+         _label_2: 
+             goto _label_5;
+         };
+         
+     _label_3: 
+         goto _label_2;
+         
+     _label_4: 
+         goto _label_1;
+         var _local_13 = _local_13;
+         
+     _label_5: 
+         if (this._resetState){
+             return;
+         };
+         var uriPos:int = this._uiFiles.indexOf(e.uri);
+         this._uiFiles.splice(this._uiFiles.indexOf(e.uri), 1);
+         var mod:UiModule = this._unInitializedModules[e.uri.tag.mod];
+         var base:String = e.uri.tag.base;
+         var md5:String = ((!((this._versions[e.uri.uri] == null))) ? this._versions[e.uri.uri] : MD5.hash((e.resource as String)));
+         var versionOk:Boolean = (md5 == UiRenderManager.getInstance().getUiVersion(e.uri.uri));
+         if (!(versionOk)){
+             while ((this._clearUi[e.uri.uri] = md5), true) {
+                 goto _label_6;
+             };
+             var _local_12 = _local_12;
+             
+         _label_6: 
+             if (e.uri.tag.template){
+                 goto _label_8;
+             };
+         };
+         
+     _label_7: 
+         this._versions[e.uri.uri] = md5;
+         goto _label_9;
+         
+     _label_8: 
+         this._clearUi[e.uri.tag.base] = this._versions[e.uri.tag.base];
+         goto _label_7;
+         
+     _label_9: 
+         var xml:String = (e.resource as String);
+         while ((res = this._regImport.exec(xml))) {
+             while (true) {
+                 while ((filePath = LangManager.getInstance().replaceKey(res[1])), true) {
+                     goto _label_10;
+                 };
+             };
+             
+         _label_10: 
+             if (filePath.indexOf("mod://") != -1){
+                 for (;;) {
+                     //unresolved jump
+                     continue;
+                 };
+             } else {
+                 if ((((filePath.indexOf(":") == -1)) && ((filePath.indexOf("ui/Ankama_Common") == -1)))){
+                     filePath = (mod.rootPath + filePath);
+                 };
+             };
+             if (this._clearUi[filePath]){
+                 goto _label_13;
+                 
+             _label_11: 
+                 this._clearUi[base] = this._versions[base];
+                 //unresolved jump
+                 
+             _label_12: 
+                 goto _label_11;
+                 
+             _label_13: 
+                 this._clearUi[e.uri.uri] = md5;
+                 goto _label_12;
+             } else {
+                 if (!(this._uiLoaded[filePath])){
+                     while (true) {
+                         this._uiLoaded[filePath] = true;
+                         //unresolved jump
+                     };
+                     var _local_15 = _local_15;
+                     this._uiFileToLoad++;
+                     goto _label_16;
+                     
+                 _label_14: 
+                     templateUri.tag = {
+                         "mod":mod.id,
+                         "base":base,
+                         "template":true
+                     };
+                     goto _label_18;
+                     
+                 _label_15: 
+                     goto _label_14;
+                     
+                 _label_16: 
+                     templateUri = new Uri(filePath);
+                     goto _label_15;
+                     
+                 _label_17: 
+                     this._uiLoader.load(templateUri, null, TxtAdapter);
+                     continue;
+                     
+                 _label_18: 
+                     goto _label_17;
+                 };
+             };
+         };
+         if (!(--this._uiFileToLoad)){
+             while (this.onAllUiChecked(null), true) {
+                 return;
+             };
+         };
+         return;
       }
       
       private var _uiLoaded:Dictionary;

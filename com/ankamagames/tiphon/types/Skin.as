@@ -213,12 +213,56 @@ package com.ankamagames.tiphon.types
       }
       
       private function processSkin() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var gfxId:uint;
+         var lib:Swl;
+         var classPart:Array;
+         var className:String;
+         var part:String;
+         var skinTransform:Dictionary;
+         var j:int;
+         var td:TransformData;
+         var i:uint;
+         while (i < this._aSkinPartOrdered.length) {
+             gfxId = this._aSkinPartOrdered[i];
+             lib = Tiphon.skinLibrary.getResourceById(gfxId);
+             if (!!(lib)){
+                 classPart = lib.getDefinitions();
+                 for each (className in classPart) {
+                     this._skinClass[className] = lib.getDefinition(className);
+                     this._partToSwl[className] = gfxId;
+                     delete this._skinParts[className];
+                 };
+             };
+             i++;
+         };
+         if (this.complete){
+             this._partTransformData = new Dictionary();
+             this._transformData = new Dictionary();
+             if (skinPartTransformProvider){
+                 skinPartTransformProvider.init(this);
+                 for (part in this._skinClass) {
+                     if (this._partTransformData[part]){
+                         skinTransform = this._partTransformData[part];
+                         j = (this._aSkinPartOrdered.length - 1);
+                         while (j >= -1) {
+                             gfxId = (((j >= 0)) ? this._aSkinPartOrdered[j] : 0);
+                             if (skinTransform[gfxId]){
+                                 td = skinTransform[gfxId];
+                                 this._transformData[part] = td;
+                                 if (td.overrideClip){
+                                     this._transformData[td.overrideClip] = td;
+                                 };
+                                 break;
+                             };
+                             j--;
+                         };
+                     };
+                 };
+             };
+             dispatchEvent(new Event(Event.COMPLETE));
+         } else {
+             dispatchEvent(new Event(ProgressEvent.PROGRESS));
+         };
       }
    }
 }

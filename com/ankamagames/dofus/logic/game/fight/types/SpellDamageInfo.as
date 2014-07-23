@@ -37,12 +37,345 @@ package com.ankamagames.dofus.logic.game.fight.types
       protected static const _log:Logger;
       
       public static function fromCurrentPlayer(pSpell:Object, pTargetId:int) : SpellDamageInfo {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var sdi:SpellDamageInfo;
+         var cellId:uint;
+         var targetEntities:Array;
+         var targetEntity:AnimatedCharacter;
+         var charStats:CharacterCharacteristicsInformations;
+         var effi:EffectInstance;
+         var effid:EffectInstanceDice;
+         var ed:EffectDamage;
+         var isHealingSpell:Boolean;
+         var firstDamageEffectOrder:int;
+         var i:int;
+         var f:int;
+         var numEffects:int;
+         var spellShapeEfficiencyPercent:int;
+         var casterBuffs:Array;
+         var buff:BasicBuff;
+         var groupedBuffs:Dictionary;
+         var buffs:Vector.<BasicBuff>;
+         var spellId:*;
+         var sw:SpellWrapper;
+         var stackedBuffs:Boolean;
+         var firstCastingSpellId:int;
+         var castingSpellId:int;
+         var nbStacks:int;
+         var effectElement:int;
+         var effectShapeSize:int;
+         var effectShapeMinSize:int;
+         var effectShapeEfficiencyPercent:int;
+         var effectShapeMaxEfficiency:int;
+         var weapon:WeaponWrapper;
+         var fightContextFrame:FightContextFrame = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
+         if (!(fightContextFrame)){
+             return (sdi);
+         };
+         sdi = new (SpellDamageInfo)();
+         sdi._originalTargetsIds = new Vector.<int>(0);
+         sdi.targetId = pTargetId;
+         sdi.casterId = CurrentPlayedFighterManager.getInstance().currentFighterId;
+         sdi.casterLevel = fightContextFrame.getFighterLevel(sdi.casterId);
+         sdi.spellEffects = pSpell.effects;
+         sdi.spellCriticalEffects = pSpell.criticalEffect;
+         sdi.isWeapon = !((pSpell is SpellWrapper));
+         var spellZone:IZone = SpellZoneManager.getInstance().getSpellZone(pSpell);
+         spellZone.direction = MapPoint.fromCellId((fightContextFrame.entitiesFrame.getEntityInfos(sdi.casterId) as GameFightFighterInformations).disposition.cellId).advancedOrientationTo(MapPoint.fromCellId(FightContextFrame.currentCell));
+         var spellZoneCells:Vector.<uint> = spellZone.getCells(FightContextFrame.currentCell);
+         for each (cellId in spellZoneCells) {
+             targetEntities = EntitiesManager.getInstance().getEntitiesOnCell(cellId, AnimatedCharacter);
+             for each (targetEntity in targetEntities) {
+                 if (((((fightContextFrame.entitiesFrame.getEntityInfos(targetEntity.id)) && ((sdi._originalTargetsIds.indexOf(targetEntity.id) == -1)))) && (DamageUtil.isDamagedOrHealedBySpell(sdi.casterId, targetEntity.id, pSpell)))){
+                     sdi._originalTargetsIds.push(targetEntity.id);
+                 };
+             };
+         };
+         charStats = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
+         sdi.casterStrength = (((charStats.strength.base + charStats.strength.objectsAndMountBonus) + charStats.strength.alignGiftBonus) + charStats.strength.contextModif);
+         sdi.casterChance = (((charStats.chance.base + charStats.chance.objectsAndMountBonus) + charStats.chance.alignGiftBonus) + charStats.chance.contextModif);
+         sdi.casterAgility = (((charStats.agility.base + charStats.agility.objectsAndMountBonus) + charStats.agility.alignGiftBonus) + charStats.agility.contextModif);
+         sdi.casterIntelligence = (((charStats.intelligence.base + charStats.intelligence.objectsAndMountBonus) + charStats.intelligence.alignGiftBonus) + charStats.intelligence.contextModif);
+         sdi.casterCriticalHit = (((charStats.criticalHit.base + charStats.criticalHit.objectsAndMountBonus) + charStats.criticalHit.alignGiftBonus) + charStats.criticalHit.contextModif);
+         sdi.casterCriticalHitWeapon = charStats.criticalHitWeapon;
+         sdi.casterHealBonus = (((charStats.healBonus.base + charStats.healBonus.objectsAndMountBonus) + charStats.healBonus.alignGiftBonus) + charStats.healBonus.contextModif);
+         sdi.casterAllDamagesBonus = (((charStats.allDamagesBonus.base + charStats.allDamagesBonus.objectsAndMountBonus) + charStats.allDamagesBonus.alignGiftBonus) + charStats.allDamagesBonus.contextModif);
+         sdi.casterDamagesBonus = (((charStats.damagesBonusPercent.base + charStats.damagesBonusPercent.objectsAndMountBonus) + charStats.damagesBonusPercent.alignGiftBonus) + charStats.damagesBonusPercent.contextModif);
+         sdi.casterTrapBonus = (((charStats.trapBonus.base + charStats.trapBonus.objectsAndMountBonus) + charStats.trapBonus.alignGiftBonus) + charStats.trapBonus.contextModif);
+         sdi.casterTrapBonusPercent = (((charStats.trapBonusPercent.base + charStats.trapBonusPercent.objectsAndMountBonus) + charStats.trapBonusPercent.alignGiftBonus) + charStats.trapBonusPercent.contextModif);
+         sdi.casterGlyphBonusPercent = (((charStats.glyphBonusPercent.base + charStats.glyphBonusPercent.objectsAndMountBonus) + charStats.glyphBonusPercent.alignGiftBonus) + charStats.glyphBonusPercent.contextModif);
+         sdi.casterPermanentDamagePercent = (((charStats.permanentDamagePercent.base + charStats.permanentDamagePercent.objectsAndMountBonus) + charStats.permanentDamagePercent.alignGiftBonus) + charStats.permanentDamagePercent.contextModif);
+         sdi.casterPushDamageBonus = (((charStats.pushDamageBonus.base + charStats.pushDamageBonus.objectsAndMountBonus) + charStats.pushDamageBonus.alignGiftBonus) + charStats.pushDamageBonus.contextModif);
+         sdi.casterCriticalDamageBonus = (((charStats.criticalDamageBonus.base + charStats.criticalDamageBonus.objectsAndMountBonus) + charStats.criticalDamageBonus.alignGiftBonus) + charStats.criticalDamageBonus.contextModif);
+         sdi.casterNeutralDamageBonus = (((charStats.neutralDamageBonus.base + charStats.neutralDamageBonus.objectsAndMountBonus) + charStats.neutralDamageBonus.alignGiftBonus) + charStats.neutralDamageBonus.contextModif);
+         sdi.casterEarthDamageBonus = (((charStats.earthDamageBonus.base + charStats.earthDamageBonus.objectsAndMountBonus) + charStats.earthDamageBonus.alignGiftBonus) + charStats.earthDamageBonus.contextModif);
+         sdi.casterWaterDamageBonus = (((charStats.waterDamageBonus.base + charStats.waterDamageBonus.objectsAndMountBonus) + charStats.waterDamageBonus.alignGiftBonus) + charStats.waterDamageBonus.contextModif);
+         sdi.casterAirDamageBonus = (((charStats.airDamageBonus.base + charStats.airDamageBonus.objectsAndMountBonus) + charStats.airDamageBonus.alignGiftBonus) + charStats.airDamageBonus.contextModif);
+         sdi.casterFireDamageBonus = (((charStats.fireDamageBonus.base + charStats.fireDamageBonus.objectsAndMountBonus) + charStats.fireDamageBonus.alignGiftBonus) + charStats.fireDamageBonus.contextModif);
+         sdi.neutralDamage = DamageUtil.getSpellElementDamage(pSpell, DamageUtil.NEUTRAL_ELEMENT, sdi.casterId, pTargetId);
+         sdi.earthDamage = DamageUtil.getSpellElementDamage(pSpell, DamageUtil.EARTH_ELEMENT, sdi.casterId, pTargetId);
+         sdi.fireDamage = DamageUtil.getSpellElementDamage(pSpell, DamageUtil.FIRE_ELEMENT, sdi.casterId, pTargetId);
+         sdi.waterDamage = DamageUtil.getSpellElementDamage(pSpell, DamageUtil.WATER_ELEMENT, sdi.casterId, pTargetId);
+         sdi.airDamage = DamageUtil.getSpellElementDamage(pSpell, DamageUtil.AIR_ELEMENT, sdi.casterId, pTargetId);
+         sdi.spellHasCriticalDamage = ((((((((((sdi.isWeapon) || (sdi.neutralDamage.hasCriticalDamage))) || (sdi.earthDamage.hasCriticalDamage))) || (sdi.fireDamage.hasCriticalDamage))) || (sdi.waterDamage.hasCriticalDamage))) || (sdi.airDamage.hasCriticalDamage));
+         sdi.fixedDamage = new SpellDamage();
+         sdi.healDamage = new SpellDamage();
+         for each (effi in pSpell.effects) {
+             if (((!((DamageUtil.HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1))) && (((!((effi.effectId == 90))) || (!((pTargetId == sdi.casterId))))))){
+                 if (DamageUtil.verifySpellEffectMask(sdi.casterId, pTargetId, effi)){
+                     isHealingSpell = true;
+                 };
+             } else {
+                 if ((((effi.category == DamageUtil.DAMAGE_EFFECT_CATEGORY)) && (DamageUtil.verifySpellEffectMask(sdi.casterId, pTargetId, effi)))){
+                     isHealingSpell = false;
+                     break;
+                 };
+             };
+         };
+         sdi.isHealingSpell = isHealingSpell;
+         firstDamageEffectOrder = getMinimumDamageEffectOrder(sdi.casterId, pTargetId, pSpell.effects);
+         numEffects = pSpell.effects.length;
+         i = 0;
+         while (i < numEffects) {
+             effi = pSpell.effects[i];
+             if (DamageUtil.verifySpellEffectMask(sdi.casterId, pTargetId, effi)){
+                 effid = (effi as EffectInstanceDice);
+                 if (DamageUtil.HEALING_EFFECTS_IDS.indexOf(effi.effectId) != -1){
+                     ed = new EffectDamage(effi.effectId, -1, effi.random);
+                     if (effi.effectId == 90){
+                         if (pTargetId != sdi.casterId){
+                             sdi.healDamage.addEffectDamage(ed);
+                             ed.lifePointsAddedBasedOnLifePercent = (ed.lifePointsAddedBasedOnLifePercent + ((effid.diceNum * charStats.lifePoints) / 100));
+                         } else {
+                             sdi.fixedDamage.addEffectDamage(ed);
+                             ed.minDamage = (ed.maxDamage = ((effid.diceNum * charStats.lifePoints) / 100));
+                         };
+                     } else {
+                         sdi.healDamage.addEffectDamage(ed);
+                         if (effi.effectId == 1109){
+                             if (sdi.targetInfos){
+                                 ed.lifePointsAddedBasedOnLifePercent = (ed.lifePointsAddedBasedOnLifePercent + ((effid.diceNum * sdi.targetInfos.stats.maxLifePoints) / 100));
+                             };
+                         } else {
+                             ed.minLifePointsAdded = (ed.minLifePointsAdded + effid.diceNum);
+                             ed.maxLifePointsAdded = (ed.maxLifePointsAdded + (((effid.diceSide == 0)) ? effid.diceNum : effid.diceSide));
+                         };
+                     };
+                 } else {
+                     if (((!((DamageUtil.IMMEDIATE_BOOST_EFFECTS_IDS.indexOf(effi.effectId) == -1))) && ((effi.order < firstDamageEffectOrder)))){
+                         switch (effi.effectId){
+                             case 266:
+                                 sdi.casterChanceBonus = (sdi.casterChanceBonus + effid.diceNum);
+                                 break;
+                             case 268:
+                                 sdi.casterAgilityBonus = (sdi.casterAgilityBonus + effid.diceNum);
+                                 break;
+                             case 269:
+                                 sdi.casterIntelligenceBonus = (sdi.casterIntelligenceBonus + effid.diceNum);
+                                 break;
+                             case 271:
+                                 sdi.casterStrengthBonus = (sdi.casterStrengthBonus + effid.diceNum);
+                                 break;
+                             case 414:
+                                 sdi.casterPushDamageBonus = (sdi.casterPushDamageBonus + effid.diceNum);
+                                 break;
+                         };
+                     };
+                 };
+             };
+             i++;
+         };
+         var numHealingEffectDamages:int = sdi.healDamage.effectDamages.length;
+         var numCriticalEffects:int = ((pSpell.criticalEffect) ? pSpell.criticalEffect.length : 0);
+         var criticalFirstDamageEffectOrder:int = (((numCriticalEffects > 0)) ? getMinimumDamageEffectOrder(sdi.casterId, pTargetId, pSpell.criticalEffect) : 0);
+         i = 0;
+         while (i < numCriticalEffects) {
+             effi = pSpell.criticalEffect[i];
+             if (DamageUtil.verifySpellEffectMask(sdi.casterId, pTargetId, effi)){
+                 effid = (effi as EffectInstanceDice);
+                 if (DamageUtil.HEALING_EFFECTS_IDS.indexOf(effi.effectId) != -1){
+                     if ((((effi.effectId == 90)) && ((pTargetId == sdi.casterId)))){
+                         ed = sdi.fixedDamage.effectDamages[f];
+                         f++;
+                     } else {
+                         if (i < numHealingEffectDamages){
+                             ed = sdi.healDamage.effectDamages[i];
+                         } else {
+                             ed = new EffectDamage(effi.effectId, -1, effi.random);
+                             sdi.healDamage.addEffectDamage(ed);
+                         };
+                     };
+                     if (effi.effectId == 1109){
+                         if (sdi.targetInfos){
+                             ed.criticalLifePointsAddedBasedOnLifePercent = (ed.criticalLifePointsAddedBasedOnLifePercent + ((effid.diceNum * sdi.targetInfos.stats.maxLifePoints) / 100));
+                         };
+                     } else {
+                         if (effi.effectId == 90){
+                             if (pTargetId != sdi.casterId){
+                                 ed.criticalLifePointsAddedBasedOnLifePercent = (ed.criticalLifePointsAddedBasedOnLifePercent + ((effid.diceNum * charStats.lifePoints) / 100));
+                             } else {
+                                 ed.minCriticalDamage = (ed.maxCriticalDamage = ((effid.diceNum * charStats.lifePoints) / 100));
+                                 sdi.spellHasCriticalDamage = (sdi.fixedDamage.hasCriticalDamage = (ed.hasCritical = true));
+                             };
+                         } else {
+                             ed.minCriticalLifePointsAdded = (ed.minCriticalLifePointsAdded + effid.diceNum);
+                             ed.maxCriticalLifePointsAdded = (ed.maxCriticalLifePointsAdded + (((effid.diceSide == 0)) ? effid.diceNum : effid.diceSide));
+                         };
+                     };
+                     sdi.spellHasCriticalHeal = true;
+                 } else {
+                     if (((!((DamageUtil.IMMEDIATE_BOOST_EFFECTS_IDS.indexOf(effi.effectId) == -1))) && ((effi.order < criticalFirstDamageEffectOrder)))){
+                         switch (effi.effectId){
+                             case 266:
+                                 sdi.casterCriticalChanceBonus = (sdi.casterCriticalChanceBonus + effid.diceNum);
+                                 break;
+                             case 268:
+                                 sdi.casterCriticalAgilityBonus = (sdi.casterCriticalAgilityBonus + effid.diceNum);
+                                 break;
+                             case 269:
+                                 sdi.casterCriticalIntelligenceBonus = (sdi.casterCriticalIntelligenceBonus + effid.diceNum);
+                                 break;
+                             case 271:
+                                 sdi.casterCriticalStrengthBonus = (sdi.casterCriticalStrengthBonus + effid.diceNum);
+                                 break;
+                             case 414:
+                                 sdi.casterCriticalPushDamageBonus = (sdi.casterCriticalPushDamageBonus + effid.diceNum);
+                                 break;
+                         };
+                     };
+                 };
+             };
+             i++;
+         };
+         sdi.spellHasRandomEffects = ((((((((((sdi.neutralDamage.hasRandomEffects) || (sdi.earthDamage.hasRandomEffects))) || (sdi.fireDamage.hasRandomEffects))) || (sdi.waterDamage.hasRandomEffects))) || (sdi.airDamage.hasRandomEffects))) || (sdi.healDamage.hasRandomEffects));
+         if (sdi.isWeapon){
+             weapon = PlayedCharacterManager.getInstance().currentWeapon;
+             sdi.spellWeaponCriticalBonus = weapon.criticalHitBonus;
+             if (weapon.type.id == 7){
+                 sdi.spellShapeEfficiencyPercent = 25;
+             };
+         };
+         sdi.spellCenterCell = FightContextFrame.currentCell;
+         for each (effi in pSpell.effects) {
+             if (effi.category == DamageUtil.DAMAGE_EFFECT_CATEGORY){
+                 if (effi.rawZone){
+                     sdi.spellShape = effi.rawZone.charCodeAt(0);
+                     sdi.spellShapeSize = effi.zoneSize;
+                     sdi.spellShapeMinSize = effi.zoneMinSize;
+                     sdi.spellShapeEfficiencyPercent = effi.zoneEfficiencyPercent;
+                     sdi.spellShapeMaxEfficiency = effi.zoneMaxEfficiency;
+                     break;
+                 };
+             };
+         };
+         casterBuffs = BuffManager.getInstance().getAllBuff(sdi.casterId);
+         groupedBuffs = groupBuffsBySpell(casterBuffs);
+         castingSpellId = -1;
+         nbStacks = 0;
+         for (spellId in groupedBuffs) {
+             buffs = groupedBuffs[spellId];
+             if (spellId == pSpell.id){
+                 sw = (pSpell as SpellWrapper);
+                 stackedBuffs = false;
+                 for each (buff in buffs) {
+                     if (((buff.stack) && ((buff.stack.length == sw.spellLevelInfos.maxStack)))){
+                         applyBuffModification(sdi, buff.stack[0].actionId, -(buff.stack[0].param1));
+                         stackedBuffs = true;
+                     };
+                 };
+                 if (!(stackedBuffs)){
+                     nbStacks = 1;
+                     firstCastingSpellId = buffs[0].castingSpell.castingSpellId;
+                     castingSpellId = firstCastingSpellId;
+                     for each (buff in buffs) {
+                         if (castingSpellId != buff.castingSpell.castingSpellId){
+                             castingSpellId = buff.castingSpell.castingSpellId;
+                             nbStacks++;
+                         };
+                     };
+                     if (nbStacks == sw.spellLevelInfos.maxStack){
+                         for each (buff in buffs) {
+                             if (buff.castingSpell.castingSpellId == firstCastingSpellId){
+                                 applyBuffModification(sdi, buff.actionId, -(buff.param1));
+                             } else {
+                                 break;
+                             };
+                         };
+                     };
+                 };
+             };
+             for each (buff in buffs) {
+                 if (buff.effects.category == DamageUtil.DAMAGE_EFFECT_CATEGORY){
+                     if (!(sdi.buffDamage)){
+                         sdi.buffDamage = new SpellDamage();
+                     };
+                     if (buff.castingSpell.spell.id == pSpell.id){
+                         for each (effi in pSpell.effects) {
+                             if (effi.effectId == buff.effects.effectId){
+                                 break;
+                             };
+                         };
+                     } else {
+                         effi = buff.effects;
+                     };
+                     if (!(DamageUtil.verifySpellEffectMask(sdi.casterId, pTargetId, effi))){
+                         break;
+                     };
+                     effectElement = Effect.getEffectById(effi.effectId).elementId;
+                     ed = new EffectDamage(effi.effectId, effectElement, effi.random);
+                     if (!((effi is EffectInstanceDice))){
+                         if ((effi is EffectInstanceInteger)){
+                             ed.minDamage = (ed.maxDamage = (ed.minCriticalDamage = (ed.maxCriticalDamage = (effi as EffectInstanceInteger).value)));
+                         } else {
+                             if ((effi is EffectInstanceMinMax)){
+                                 ed.minDamage = (ed.minCriticalDamage = (effi as EffectInstanceMinMax).min);
+                                 ed.maxDamage = (ed.maxCriticalDamage = (effi as EffectInstanceMinMax).max);
+                             };
+                         };
+                     } else {
+                         effid = (effi as EffectInstanceDice);
+                         ed.minDamage = (ed.minCriticalDamage = effid.diceNum);
+                         ed.maxDamage = (ed.maxCriticalDamage = (((effid.diceSide == 0)) ? effid.diceNum : effid.diceSide));
+                     };
+                     effectShapeSize = ((!((effi.zoneSize == null))) ? (int(effi.zoneSize)) : DamageUtil.EFFECTSHAPE_DEFAULT_AREA_SIZE);
+                     effectShapeMinSize = ((!((effi.zoneMinSize == null))) ? (int(effi.zoneMinSize)) : DamageUtil.EFFECTSHAPE_DEFAULT_MIN_AREA_SIZE);
+                     effectShapeEfficiencyPercent = ((!((effi.zoneEfficiencyPercent == null))) ? (int(effi.zoneEfficiencyPercent)) : DamageUtil.EFFECTSHAPE_DEFAULT_EFFICIENCY);
+                     effectShapeMaxEfficiency = ((!((effi.zoneMaxEfficiency == null))) ? (int(effi.zoneMaxEfficiency)) : DamageUtil.EFFECTSHAPE_DEFAULT_MAX_EFFICIENCY_APPLY);
+                     ed.efficiencyMultiplier = DamageUtil.getShapeEfficiency(effi.rawZone.charCodeAt(0), sdi.targetCell, sdi.targetCell, effectShapeSize, effectShapeMinSize, effectShapeEfficiencyPercent, effectShapeMaxEfficiency);
+                     sdi.buffDamage.addEffectDamage(ed);
+                 } else {
+                     switch (buff.actionId){
+                         case 1054:
+                             sdi.casterSpellDamagesBonus = (sdi.casterSpellDamagesBonus + buff.param1);
+                             break;
+                         case 1144:
+                             sdi.casterWeaponDamagesBonus = (sdi.casterWeaponDamagesBonus + buff.param1);
+                             break;
+                         case 1171:
+                             sdi.casterDamageBoostPercent = (sdi.casterDamageBoostPercent + buff.param1);
+                             break;
+                         case 1172:
+                             sdi.casterDamageDeboostPercent = (sdi.casterDamageDeboostPercent + buff.param1);
+                             break;
+                     };
+                 };
+             };
+         };
+         for each (buff in sdi.targetBuffs) {
+             if (((!(buff.trigger)) && ((buff.effects.effectId == 952)))){
+                 switch (buff.effects.parameter0){
+                     case 56:
+                         sdi.targetIsInvulnerable = false;
+                         break;
+                     case 76:
+                         sdi.targetIsUnhealable = false;
+                         break;
+                 };
+             };
+             if (buff.actionId == 776){
+                 sdi.targetErosionPercentBonus = (sdi.targetErosionPercentBonus + buff.param1);
+             };
+         };
+         return (sdi);
       }
       
       private static function applyBuffModification(pSpellInfo:SpellDamageInfo, pBuffActionId:int, pModif:int) : void {
@@ -390,39 +723,188 @@ package com.ankamagames.dofus.logic.game.fight.types
       }
       
       public function get triggeredSpellsByCasterOnTarget() : Vector.<TriggeredSpell> {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var triggeredSpellsByCaster:Vector.<TriggeredSpell>;
+         var spellId:int;
+         var spellLevel:int;
+         var eff:EffectInstance;
+         var criticalEff:EffectInstance;
+         var criticalSpellLevel:int;
+         for each (eff in this.spellEffects) {
+             if ((((((eff.effectId == 1160)) && (DamageUtil.verifySpellEffectMask(this.casterId, this.targetId, eff)))) && (DamageUtil.verifyEffectTrigger(this.casterId, this.targetId, eff, false, eff.triggers)))){
+                 if (!(triggeredSpellsByCaster)){
+                     triggeredSpellsByCaster = new Vector.<TriggeredSpell>();
+                 };
+                 spellId = int(eff.parameter0);
+                 spellLevel = int(eff.parameter1);
+                 criticalSpellLevel = 0;
+                 for each (criticalEff in this.spellCriticalEffects) {
+                     if ((((criticalEff.effectId == 1160)) && ((int(criticalEff.parameter0) == spellId)))){
+                         criticalSpellLevel = int(criticalEff.parameter1);
+                         break;
+                     };
+                 };
+                 triggeredSpellsByCaster.push(TriggeredSpell.create(eff.triggers, spellId, spellLevel, criticalSpellLevel, this.casterId, this.targetId));
+             };
+         };
+         return (triggeredSpellsByCaster);
       }
       
       public function get targetTriggeredSpells() : Vector.<TriggeredSpell> {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var buff:BasicBuff;
+         var triggeredSpells:Vector.<TriggeredSpell>;
+         var spellId:int;
+         var criticalEff:EffectInstance;
+         var criticalSpellLevel:int;
+         for each (buff in this.targetBuffs) {
+             if (((((((!(this._buffsWithSpellsTriggered)) || ((this._buffsWithSpellsTriggered.indexOf(buff.uid) == -1)))) && ((((buff.effects.effectId == 793)) || ((buff.effects.effectId == 792)))))) && (DamageUtil.verifyBuffTriggers(this, buff)))){
+                 spellId = int(buff.effects.parameter0);
+                 criticalSpellLevel = 0;
+                 if (!(this._buffsWithSpellsTriggered)){
+                     this._buffsWithSpellsTriggered = new Vector.<uint>(0);
+                 };
+                 this._buffsWithSpellsTriggered.push(buff.uid);
+                 if (((buff.castingSpell.spellRank) && (buff.castingSpell.spellRank.criticalEffect))){
+                     for each (criticalEff in buff.castingSpell.spellRank.criticalEffect) {
+                         if ((((((criticalEff.effectId == 793)) || ((criticalEff.effectId == 792)))) && ((int(criticalEff.parameter0) == spellId)))){
+                             criticalSpellLevel = int(criticalEff.parameter1);
+                             break;
+                         };
+                     };
+                 };
+                 if (!(triggeredSpells)){
+                     triggeredSpells = new Vector.<TriggeredSpell>(0);
+                 };
+                 triggeredSpells.push(TriggeredSpell.create(DamageUtil.getBuffTriggers(buff), spellId, int(buff.effects.parameter1), criticalSpellLevel, this.targetId, this.targetId));
+             };
+         };
+         return (triggeredSpells);
       }
       
       public function addTriggeredSpellsEffects(pTriggeredSpells:Vector.<TriggeredSpell>) : Boolean {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var damageModifications:Boolean;
+         var ts:TriggeredSpell;
+         var effect:EffectInstance;
+         var triggeredEffect:EffectInstance;
+         var i:int;
+         var efm:EffectModification;
+         var damagesBonus:int;
+         var shieldPoints:int;
+         var effectOnCaster:Boolean;
+         var effectOnTarget:Boolean;
+         var numEffects:int = this.spellEffects.length;
+         var numCriticalEffects:int = ((this.spellCriticalEffects) ? this.spellCriticalEffects.length : 0);
+         for each (ts in pTriggeredSpells) {
+             damagesBonus = 0;
+             shieldPoints = 0;
+             i = 0;
+             while (i < numEffects) {
+                 effect = this.spellEffects[i];
+                 if ((((effect.random == 0)) && (DamageUtil.verifyEffectTrigger(this.casterId, this.targetId, effect, this.isWeapon, ts.triggers)))){
+                     for each (triggeredEffect in ts.spell.effects) {
+                         effectOnCaster = DamageUtil.verifySpellEffectMask(ts.spell.playerId, this.casterId, triggeredEffect, this.casterId);
+                         effectOnTarget = DamageUtil.verifySpellEffectMask(ts.spell.playerId, ts.spell.playerId, triggeredEffect, this.casterId);
+                         if (DamageUtil.TRIGGERED_EFFECTS_IDS.indexOf(triggeredEffect.effectId) != -1){
+                             if (!(this._effectsModifications)){
+                                 this._effectsModifications = new Vector.<EffectModification>(0);
+                             };
+                             efm = ((((i + 1) <= this._effectsModifications.length)) ? this._effectsModifications[i] : null);
+                             if (!(efm)){
+                                 efm = new EffectModification(effect.effectId);
+                                 this._effectsModifications.push(efm);
+                             };
+                             if (((Effect.getEffectById(triggeredEffect.effectId).active) && (effectOnCaster))){
+                                 switch (triggeredEffect.effectId){
+                                     case 138:
+                                         efm.damagesBonus = (efm.damagesBonus + damagesBonus);
+                                         damagesBonus = (damagesBonus + (triggeredEffect as EffectInstanceDice).diceNum);
+                                         break;
+                                 };
+                             };
+                             if (effectOnTarget){
+                                 switch (triggeredEffect.effectId){
+                                     case 1040:
+                                         efm.shieldPoints = (efm.shieldPoints + shieldPoints);
+                                         shieldPoints = (shieldPoints + (triggeredEffect as EffectInstanceDice).diceNum);
+                                         break;
+                                 };
+                             };
+                             damageModifications = true;
+                         };
+                     };
+                 };
+                 i++;
+             };
+             damagesBonus = 0;
+             shieldPoints = 0;
+             i = 0;
+             while (i < numCriticalEffects) {
+                 effect = this.spellCriticalEffects[i];
+                 if ((((effect.random == 0)) && (DamageUtil.verifyEffectTrigger(this.casterId, this.targetId, effect, this.isWeapon, ts.triggers)))){
+                     for each (triggeredEffect in ts.spell.effects) {
+                         effectOnCaster = DamageUtil.verifySpellEffectMask(ts.spell.playerId, this.casterId, triggeredEffect, this.casterId);
+                         effectOnTarget = DamageUtil.verifySpellEffectMask(ts.spell.playerId, ts.spell.playerId, triggeredEffect, this.casterId);
+                         if (DamageUtil.TRIGGERED_EFFECTS_IDS.indexOf(triggeredEffect.effectId) != -1){
+                             if (!(this._criticalEffectsModifications)){
+                                 this._criticalEffectsModifications = new Vector.<EffectModification>(0);
+                             };
+                             efm = ((((i + 1) <= this._criticalEffectsModifications.length)) ? this._criticalEffectsModifications[i] : null);
+                             if (!(efm)){
+                                 efm = new EffectModification(effect.effectId);
+                                 this._criticalEffectsModifications.push(efm);
+                             };
+                             if (((Effect.getEffectById(triggeredEffect.effectId).active) && (effectOnCaster))){
+                                 switch (triggeredEffect.effectId){
+                                     case 138:
+                                         efm.damagesBonus = (efm.damagesBonus + damagesBonus);
+                                         damagesBonus = (damagesBonus + (triggeredEffect as EffectInstanceDice).diceNum);
+                                         break;
+                                 };
+                             };
+                             if (effectOnTarget){
+                                 switch (triggeredEffect.effectId){
+                                     case 1040:
+                                         efm.shieldPoints = (efm.shieldPoints + shieldPoints);
+                                         shieldPoints = (shieldPoints + (triggeredEffect as EffectInstanceDice).diceNum);
+                                         break;
+                                 };
+                             };
+                             damageModifications = true;
+                         };
+                     };
+                 };
+                 i++;
+             };
+         };
+         return (damageModifications);
       }
       
       public function getDamageSharingTargets() : Vector.<int> {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var targets:Vector.<int>;
+         var targetBuff:BasicBuff;
+         var entityBuff:BasicBuff;
+         var fightEntities:Vector.<int>;
+         var entityId:int;
+         var buffs:Array;
+         for each (targetBuff in this.targetBuffs) {
+             if ((((targetBuff.actionId == 1061)) && (DamageUtil.verifyBuffTriggers(this, targetBuff)))){
+                 targets = new Vector.<int>(0);
+                 targets.push(this.targetId);
+                 fightEntities = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame).getEntitiesIdsList();
+                 for each (entityId in fightEntities) {
+                     if (entityId != this.targetId){
+                         buffs = BuffManager.getInstance().getAllBuff(entityId);
+                         for each (entityBuff in buffs) {
+                             if (entityBuff.actionId == 1061){
+                                 targets.push(entityId);
+                                 break;
+                             };
+                         };
+                     };
+                 };
+                 break;
+             };
+         };
+         return (targets);
       }
    }
 }

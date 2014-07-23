@@ -666,12 +666,66 @@ package com.ankamagames.dofus.logic.connection.frames
       }
       
       private function checkInit() : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var reste:uint;
+         var key:String;
+         var d:XML;
+         var testSequence:Array;
+         var type:XML;
+         var i:uint;
+         var lowdefMappings:Array;
+         var skin:SkinMapping;
+         var dataClassDesc:XML;
+         var fct:XML;
+         var start:Boolean = true;
+         for (key in this._aModuleInit) {
+             start = ((start) && (this._aModuleInit[key]));
+             if (!(this._aModuleInit[key])){
+                 reste++;
+             };
+         };
+         if (reste == 2){
+             UiModuleManager.getInstance().init(Constants.COMMON_GAME_MODULE.concat(Constants.PRE_GAME_MODULE), true);
+         };
+         if (((!(Benchmark.hasCachedResults)) && (!(Benchmark.isDone)))){
+             if (start){
+                 Benchmark.run(StageShareManager.stage, this.checkInit);
+             };
+             return;
+         };
+         if (start){
+             d = describeType(GameDataList);
+             testSequence = [];
+             for each (type in d..constant) {
+                 dataClassDesc = describeType(getDefinitionByName(type.@type));
+                 for each (fct in dataClassDesc..method) {
+                     if ((((((fct.@returnType.toString() == type.@type.toString())) && ((fct.@name.toString().indexOf("get") == 0)))) && (!((fct.@name.toString().indexOf("ById") == -1))))){
+                         testSequence.push({
+                             "fct":getDefinitionByName(type.@type)[fct.@name.toString()],
+                             "returnClass":getDefinitionByName(type.@type),
+                             "testIndex":[0, 1, 2, 3, 4, 100, 1000, 2000, 10000, 100000]
+                         });
+                     };
+                 };
+             };
+             DofusApiAction.updateInfo();
+             CensoredContentManager.getInstance().init(CensoredContent.getCensoredContents(), XmlConfig.getInstance().getEntry("config.lang.current"));
+             lowdefMappings = SkinMapping.getSkinMappings();
+             for each (skin in lowdefMappings) {
+                 Skin.addAlternativeSkin(skin.id, skin.lowDefId);
+             };
+             _log.info("Initialization frame end");
+             Constants.EVENT_MODE = (LangManager.getInstance().getEntry("config.eventMode") == "true");
+             Constants.EVENT_MODE_PARAM = LangManager.getInstance().getEntry("config.eventModeParams");
+             Constants.CHARACTER_CREATION_ALLOWED = (LangManager.getInstance().getEntry("config.characterCreationAllowed") == "true");
+             Constants.FORCE_MAXIMIZED_WINDOW = (LangManager.getInstance().getEntry("config.autoMaximize") == "true");
+             if (((Constants.FORCE_MAXIMIZED_WINDOW) && (AirScanner.hasAir()))){
+                 StageShareManager.stage["nativeWindow"].maximize();
+             };
+             Kernel.getWorker().removeFrame(this);
+             Kernel.getWorker().addFrame(new AuthentificationFrame());
+             Kernel.getWorker().addFrame(new QueueFrame());
+             Kernel.getWorker().addFrame(new GameStartingFrame());
+         };
       }
       
       private function initFonts() : void {

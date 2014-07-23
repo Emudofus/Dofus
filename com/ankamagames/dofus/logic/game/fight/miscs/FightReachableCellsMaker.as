@@ -12,12 +12,49 @@ package com.ankamagames.dofus.logic.game.fight.miscs
    {
       
       public function FightReachableCellsMaker(infos:GameFightFighterInformations, fromCellId:int = -1, movementPoint:int = -1) {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var i:String;
+         var x:int;
+         var y:int;
+         var e:IEntity;
+         var node:_ReachableCellStore;
+         var evade:Number;
+         super();
+         var entitiesFrame:FightEntitiesFrame = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame);
+         this._infos = infos;
+         if (movementPoint > -1){
+             this._mp = movementPoint;
+         } else {
+             this._mp = (((this._infos.stats.movementPoints > 0)) ? this._infos.stats.movementPoints : 0);
+         };
+         this._mapPoint = MapPoint.fromCellId(((!((fromCellId == -1))) ? fromCellId : this._infos.disposition.cellId));
+         this._cellGrid = new Vector.<Vector.<_ReachableCellStore>>(((this._mp * 2) + 1));
+         for (i in this._cellGrid) {
+             this._cellGrid[i] = new Vector.<_ReachableCellStore>(((this._mp * 2) + 1));
+         };
+         for each (e in EntitiesManager.getInstance().entities) {
+             if (e.id != this._infos.contextualId){
+                 x = ((e.position.x - this._mapPoint.x) + this._mp);
+                 y = ((e.position.y - this._mapPoint.y) + this._mp);
+                 if ((((((((x >= 0)) && ((x < ((this._mp * 2) + 1))))) && ((y >= 0)))) && ((y < ((this._mp * 2) + 1))))){
+                     infos = (entitiesFrame.getEntityInfos(e.id) as GameFightFighterInformations);
+                     if (infos){
+                         if ((((infos.disposition is FightEntityDispositionInformations)) && ((FightEntityDispositionInformations(infos.disposition).carryingCharacterId == this._infos.contextualId)))){
+                         } else {
+                             node = new _ReachableCellStore(e.position, x, y, this._cellGrid);
+                             node.state = _ReachableCellStore.STATE_UNREACHABLE;
+                             evade = TackleUtil.getTackleForFighter(infos, this._infos);
+                             if (((!(node.evade)) || ((evade < node.evade)))){
+                                 node.evade = evade;
+                             };
+                             this._cellGrid[x][y] = node;
+                         };
+                     };
+                 };
+             };
+         };
+         this._reachableCells = new Vector.<uint>();
+         this._unreachableCells = new Vector.<uint>();
+         this.compute();
       }
       
       private var _cellGrid:Vector.<Vector.<_ReachableCellStore>>;

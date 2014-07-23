@@ -128,12 +128,70 @@ package com.ankamagames.dofus.logic.game.common.managers
       }
       
       public function updateAfterExpiredArticle(articleId:int) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var l:int;
+         var list:Array;
+         var data:DofusShopObject;
+         var i:int;
+         var category:int;
+         var page:int;
+         var categoriesToPurge:Array;
+         var categoryKey:String;
+         var needUpdate:Boolean;
+         var pageKey:String;
+         var pageObj:Object;
+         if (((this._cacheHome) && (this._cacheHome.gondolaArticles))){
+             l = this._cacheHome.gondolaArticles.length;
+             i = 0;
+             while (i < l) {
+                 if (this._cacheHome.gondolaArticles[i].id == articleId){
+                     this._cacheHome.gondolaArticles.splice(i, 1);
+                     if (this._isOnHomePage){
+                         KernelEventsManager.getInstance().processCallback(ExternalGameHookList.DofusShopHome, this._cacheHome.categories, this._cacheHome.gondolaArticles, this._cacheHome.gondolaHeads, this._cacheHome.highlightCarousel, this._cacheHome.highlightImages);
+                     };
+                     break;
+                 };
+                 i++;
+             };
+         };
+         if (this._cacheArticles){
+             categoriesToPurge = new Array();
+             for (categoryKey in this._cacheArticles) {
+                 category = parseInt(categoryKey);
+                 for (pageKey in this._cacheArticles[category]) {
+                     page = parseInt(pageKey);
+                     if (categoriesToPurge.indexOf(category) != -1){
+                         break;
+                     };
+                     if (!(this._cacheArticles[category][page].articles)){
+                     } else {
+                         l = this._cacheArticles[category][page].articles.length;
+                         i = 0;
+                         while (i < l) {
+                             if (this._cacheArticles[category][page].articles[i].id == articleId){
+                                 categoriesToPurge.push(category);
+                                 break;
+                             };
+                             i++;
+                         };
+                     };
+                 };
+             };
+             needUpdate = false;
+             for each (category in categoriesToPurge) {
+                 if (category == this._lastCategory){
+                     needUpdate = true;
+                 };
+                 for each (pageObj in this._cacheArticles[category]) {
+                     for each (data in pageObj.articles) {
+                         data.free();
+                     };
+                 };
+                 delete this._cacheArticles[category];
+             };
+             if (((!(this._isOnHomePage)) && (needUpdate))){
+                 this.getArticlesList(this._lastCategory, this._lastPage);
+             };
+         };
       }
       
       private function onAuthentification(success:Boolean, params:*, request:*) : void {
@@ -305,12 +363,29 @@ package com.ankamagames.dofus.logic.game.common.managers
       }
       
       private function onClose(event:UiUnloadEvent) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var list:Array;
+         var data:DofusShopObject;
+         var page:Object;
+         if (event.name == "webShop"){
+             Berilia.getInstance().removeEventListener(UiUnloadEvent.UNLOAD_UI_COMPLETE, this.onClose);
+             for each (list in this._cacheHome) {
+                 for each (data in list) {
+                     data.free();
+                 };
+                 list = null;
+             };
+             this._cacheHome = null;
+             for each (list in this._cacheArticles) {
+                 for each (page in list) {
+                     for each (data in page.articles) {
+                         data.free();
+                     };
+                     page = null;
+                 };
+                 list = null;
+             };
+             this._cacheArticles = null;
+         };
       }
       
       private function checkPreviousAndNextArticlePages(category:int, page:int, totalPages:int) : void {

@@ -90,12 +90,26 @@ package com.ankamagames.berilia.types.data
       }
       
       public function merge(stylesheet:ExtendedStyleSheet, replace:Boolean = false) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var localDef:Object;
+         var newDef:Object;
+         var property:String;
+         var i:uint;
+         while (i < stylesheet.styleNames.length) {
+             if (stylesheet.styleNames[i] != CSS_INHERITANCE_KEYWORD){
+                 localDef = getStyle(stylesheet.styleNames[i]);
+                 newDef = stylesheet.getStyle(stylesheet.styleNames[i]);
+                 if (localDef){
+                     for (property in newDef) {
+                         if ((((localDef[property] == null)) || (replace))){
+                             localDef[property] = newDef[property];
+                         };
+                     };
+                     newDef = localDef;
+                 };
+                 setStyle(stylesheet.styleNames[i], newDef);
+             };
+             i++;
+         };
       }
       
       override public function toString() : String {

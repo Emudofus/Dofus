@@ -614,12 +614,21 @@ package com.ankamagames.dofus.uiApi
       }
       
       public function removeEventListener(listener:Function) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var name:String;
+         var toDelete:Array = [];
+         for (name in this._listener) {
+             if (listener == this._listener[name]){
+                 this._listenerCount--;
+                 toDelete.push(name);
+             };
+         };
+         for each (name in toDelete) {
+             delete this._listener[name];
+         };
+         if (!(this._listenerCount)){
+             this._running = false;
+             EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
+         };
       }
       
       public function disableWorldInteraction(pTotal:Boolean = true) : void {

@@ -94,12 +94,35 @@ package com.ankamagames.jerakine.console
       }
       
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var commands:Array;
+         var sCmd:String;
+         var cmdHelp:String;
+         var _local_7:ConsoleInstructionHandler;
+         switch (cmd){
+             case "help":
+                 if (args.length == 0){
+                     console.output(I18n.getUiText("ui.console.generalHelp", [this._name]));
+                     commands = new Array();
+                     for (cmd in this._handlers) {
+                         commands.push(cmd);
+                     };
+                     commands.sort();
+                     for each (sCmd in commands) {
+                         cmdHelp = (this._handlers[sCmd] as ConsoleInstructionHandler).getHelp(sCmd);
+                         if (((cmdHelp) || (!(this._hideCommandsWithoutHelp)))){
+                             console.output(((("  - <b>" + sCmd) + "</b>: ") + cmdHelp));
+                         };
+                     };
+                 } else {
+                     _local_7 = this._handlers[args[0]];
+                     if (_local_7){
+                         console.output(((("<b>" + sCmd) + "</b>: ") + _local_7.getHelp(args[0])));
+                     } else {
+                         console.output(I18n.getUiText("ui.console.unknownCommand", [args[0]]));
+                     };
+                 };
+                 return;
+         };
       }
       
       public function getHelp(cmd:String) : String {

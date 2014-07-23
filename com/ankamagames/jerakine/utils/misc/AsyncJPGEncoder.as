@@ -131,12 +131,27 @@ package com.ankamagames.jerakine.utils.misc
       private var UVAC_HT:Vector.<BitString>;
       
       private function computeHuffmanTbl(nrcodes:Vector.<int>, std_table:Vector.<int>) : Vector.<BitString> {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var bitString:BitString;
+         var j:int;
+         var codevalue:int;
+         var pos_in_table:int;
+         var HT:Vector.<BitString> = new Vector.<BitString>(251, true);
+         var k:int = 1;
+         while (k <= 16) {
+             j = 1;
+             while (j <= nrcodes[k]) {
+                 bitString = new BitString();
+                 HT[std_table[pos_in_table]] = bitString;
+                 bitString.val = codevalue;
+                 bitString.len = k;
+                 pos_in_table++;
+                 codevalue++;
+                 j++;
+             };
+             codevalue = (codevalue << 1);
+             k++;
+         };
+         return (HT);
       }
       
       private var std_dc_luminance_nrcodes:Vector.<int>;

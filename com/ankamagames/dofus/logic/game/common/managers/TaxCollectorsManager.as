@@ -110,12 +110,53 @@ package com.ankamagames.dofus.logic.game.common.managers
       }
       
       public function setTaxCollectorsFighters(tcList:Vector.<TaxCollectorFightersInformation>) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var fightTime:int;
+         var waitTime:Number;
+         var char:Object;
+         var tc:TaxCollectorFightersInformation;
+         var tcWrapper:TaxCollectorWrapper;
+         var allies:Array = new Array();
+         var enemies:Array = new Array();
+         var myGuildId:int = SocialFrame.getInstance().guild.guildId;
+         this._guildTaxCollectorsInFight = new Dictionary();
+         this._allTaxCollectorsInPreFight = new Dictionary();
+         for each (tc in tcList) {
+             tcWrapper = this._taxCollectors[tc.collectorId];
+             if (!(tcWrapper)){
+                 _log.error((("Tax collector " + tc.collectorId) + " doesn't exist IS PROBLEM"));
+             } else {
+                 fightTime = tcWrapper.fightTime;
+                 waitTime = (tcWrapper.waitTimeForPlacement * 100);
+                 allies = new Array();
+                 enemies = new Array();
+                 for each (char in tc.allyCharactersInformations) {
+                     allies.push(char);
+                 };
+                 for each (char in tc.enemyCharactersInformations) {
+                     enemies.push(char);
+                 };
+                 if (((!(tcWrapper.guild)) || ((tcWrapper.guild.guildId == myGuildId)))){
+                     if (this._guildTaxCollectorsInFight[tc.collectorId]){
+                         this._guildTaxCollectorsInFight[tc.collectorId].update(TYPE_TAX_COLLECTOR, tc.collectorId, allies, enemies, fightTime, waitTime, tcWrapper.nbPositionPerTeam);
+                     } else {
+                         this._guildTaxCollectorsInFight[tc.collectorId] = SocialEntityInFightWrapper.create(TYPE_TAX_COLLECTOR, tc.collectorId, allies, enemies, fightTime, waitTime, tcWrapper.nbPositionPerTeam);
+                     };
+                     this._guildTaxCollectorsInFight[tc.collectorId].addPonyFighter(tcWrapper);
+                 };
+                 if (tcWrapper.state != TaxCollectorStateEnum.STATE_WAITING_FOR_HELP){
+                     if (this._allTaxCollectorsInPreFight[tc.collectorId]){
+                         delete this._allTaxCollectorsInPreFight[tc.collectorId];
+                     };
+                 } else {
+                     if (this._allTaxCollectorsInPreFight[tc.collectorId]){
+                         this._allTaxCollectorsInPreFight[tc.collectorId].update(TYPE_TAX_COLLECTOR, tc.collectorId, allies, enemies, fightTime, waitTime, tcWrapper.nbPositionPerTeam);
+                     } else {
+                         this._allTaxCollectorsInPreFight[tc.collectorId] = SocialEntityInFightWrapper.create(TYPE_TAX_COLLECTOR, tc.collectorId, allies, enemies, fightTime, waitTime, tcWrapper.nbPositionPerTeam);
+                     };
+                     this._allTaxCollectorsInPreFight[tc.collectorId].addPonyFighter(tcWrapper);
+                 };
+             };
+         };
       }
       
       public function setPrismsInFight(pList:Vector.<PrismFightersInformation>) : void {

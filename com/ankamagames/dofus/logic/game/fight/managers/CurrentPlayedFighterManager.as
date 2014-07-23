@@ -181,12 +181,133 @@ package com.ankamagames.dofus.logic.game.fight.managers
       }
       
       public function canCastThisSpell(spellId:uint, lvl:uint, pTargetId:int = 2147483647) : Boolean {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var thisSpell:SpellWrapper;
+         var spellKnown:SpellWrapper;
+         var apCost:uint;
+         var maxCastPerTurn:uint;
+         var spellModification:CharacterSpellModification;
+         var state:int;
+         var stateRequired:int;
+         var weapon:Weapon;
+         var currentState:SpellState;
+         var weapon2:Weapon;
+         var _local_23:uint;
+         var spell:Spell = Spell.getSpellById(spellId);
+         var spellLevel:SpellLevel = spell.getSpellLevel(lvl);
+         if (spellLevel == null){
+             return (false);
+         };
+         var player:PlayedCharacterManager = PlayedCharacterManager.getInstance();
+         if (spellLevel.minPlayerLevel > player.infos.level){
+             return (false);
+         };
+         for each (spellKnown in player.spellsInventory) {
+             if (spellKnown.id == spellId){
+                 thisSpell = spellKnown;
+             };
+         };
+         if (!(thisSpell)){
+             return (false);
+         };
+         var characteristics:CharacterCharacteristicsInformations = this.getCharacteristicsInformations();
+         if (!(characteristics)){
+             return (false);
+         };
+         var currentPA:int = characteristics.actionPointsCurrent;
+         if ((((spellId == 0)) && (!((player.currentWeapon == null))))){
+             weapon = (Item.getItemById(player.currentWeapon.objectGID) as Weapon);
+             if (!(weapon)){
+                 return (false);
+             };
+             apCost = weapon.apCost;
+             maxCastPerTurn = weapon.maxCastPerTurn;
+         } else {
+             apCost = thisSpell.apCost;
+             maxCastPerTurn = thisSpell.maxCastPerTurn;
+         };
+         var spellModifs:SpellModificator = new SpellModificator();
+         for each (spellModification in characteristics.spellModifications) {
+             if (spellModification.spellId == spellId){
+                 switch (spellModification.modificationType){
+                     case CharacterSpellModificationTypeEnum.AP_COST:
+                         spellModifs.apCost = spellModification.value;
+                         break;
+                     case CharacterSpellModificationTypeEnum.CAST_INTERVAL:
+                         spellModifs.castInterval = spellModification.value;
+                         break;
+                     case CharacterSpellModificationTypeEnum.CAST_INTERVAL_SET:
+                         spellModifs.castIntervalSet = spellModification.value;
+                         break;
+                     case CharacterSpellModificationTypeEnum.MAX_CAST_PER_TARGET:
+                         spellModifs.maxCastPerTarget = spellModification.value;
+                         break;
+                     case CharacterSpellModificationTypeEnum.MAX_CAST_PER_TURN:
+                         spellModifs.maxCastPerTurn = spellModification.value;
+                         break;
+                 };
+             };
+         };
+         if (apCost > currentPA){
+             return (false);
+         };
+         var states:Array = FightersStateManager.getInstance().getStates(this._currentFighterId);
+         if (!(states)){
+             states = new Array();
+         };
+         for each (state in states) {
+             currentState = SpellState.getSpellStateById(state);
+             if (((currentState.preventsFight) && ((spellId == 0)))){
+                 return (false);
+             };
+             if ((((currentState.id == 101)) && ((spellId == 0)))){
+                 weapon2 = (Item.getItemById(player.currentWeapon.objectGID) as Weapon);
+                 if (weapon2.typeId != 2){
+                     return (false);
+                 };
+             };
+             if (((spellLevel.statesForbidden) && (!((spellLevel.statesForbidden.indexOf(state) == -1))))){
+                 return (false);
+             };
+             if (currentState.preventsSpellCast){
+                 if (spellLevel.statesRequired){
+                     if (spellLevel.statesRequired.indexOf(state) == -1){
+                         return (false);
+                     };
+                 } else {
+                     return (false);
+                 };
+             };
+         };
+         for each (stateRequired in spellLevel.statesRequired) {
+             if (states.indexOf(stateRequired) == -1){
+                 return (false);
+             };
+         };
+         if (((spellLevel.canSummon) && (!(this.canSummon())))){
+             return (false);
+         };
+         if (((spellLevel.canBomb) && (!(this.canBomb())))){
+             return (false);
+         };
+         if (!(player.isFighting)){
+             return (true);
+         };
+         var spellCastManager:SpellCastInFightManager = this.getSpellCastManager();
+         var spellManager:SpellManager = spellCastManager.getSpellManagerBySpellId(spellId);
+         if (spellManager == null){
+             return (true);
+         };
+         if ((((maxCastPerTurn <= spellManager.numberCastThisTurn)) && ((maxCastPerTurn > 0)))){
+             return (false);
+         };
+         if ((((spellManager.cooldown > 0)) || ((thisSpell.actualCooldown > 0)))){
+             return (false);
+         };
+         _local_23 = spellManager.getCastOnEntity(pTargetId);
+         if (((((spellLevel.maxCastPerTarget + spellModifs.getTotalBonus(spellModifs.maxCastPerTarget)) <= _local_23)) && ((spellLevel.maxCastPerTarget > 0)))){
+             return (false);
+         };
+         return (true);
       }
       
       public function endFight() : void {

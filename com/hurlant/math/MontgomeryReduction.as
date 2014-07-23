@@ -44,12 +44,32 @@ package com.hurlant.math
       }
       
       public function reduce(x:BigInteger) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var j:int;
+         var u0:int;
+         while (x.t <= this.mt2) {
+             var _local_5 = x.t++;
+             x.a[_local_5] = 0;
+         };
+         var i:int;
+         while (i < this.m.t) {
+             j = (x.a[i] & 32767);
+             u0 = (((j * this.mpl) + ((((j * this.mph) + ((x.a[i] >> 15) * this.mpl)) & this.um) << 15)) & BigInteger.DM);
+             j = (i + this.m.t);
+             x.a[j] = (x.a[j] + this.m.am(0, u0, x, i, 0, this.m.t));
+             while (x.a[j] >= BigInteger.DV) {
+                 x.a[j] = (x.a[j] - BigInteger.DV);
+                 _local_5 = x.a;
+                 var _local_6 = ++j;
+                 var _local_7 = (_local_5[_local_6] + 1);
+                 _local_5[_local_6] = _local_7;
+             };
+             i++;
+         };
+         x.clamp();
+         x.drShiftTo(this.m.t, x);
+         if (x.compareTo(this.m) >= 0){
+             x.subTo(this.m, x);
+         };
       }
       
       public function sqrTo(x:BigInteger, r:BigInteger) : void {

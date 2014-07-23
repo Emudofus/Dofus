@@ -32,12 +32,84 @@ package com.ankamagames.jerakine.utils.parser
       private static var PARAM_NO_CUT_SILENCE:String = "noCutSilence";
       
       public static function parseSoundLabel(pParams:String) : Array {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var rollOff:uint;
+         var berceauDuree:uint;
+         var berceauVol:uint;
+         var berceauFadeIn:uint;
+         var berceauFadeOut:uint;
+         var paramName:String;
+         var r:RegExp;
+         var temp:String;
+         var valueParams:Array;
+         var id:String;
+         var vol:uint;
+         var sepw:SoundEventParamWrapper;
+         var returnSEPW:Array = new Array();
+         var params:Array = pParams.split(BALISE_PARAM_DELIMITER);
+         var tabLength:uint = params.length;
+         var aIds:Vector.<String> = new Vector.<String>();
+         var aVols:Vector.<uint> = new Vector.<uint>();
+         var noCutSilence:Boolean;
+         var i:uint;
+         while (i < tabLength) {
+             paramName = params[i].split(BALISE_PARAM_ASSIGN)[0];
+             r = /^\s*(.*?)\s*$/g;
+             paramName = paramName.replace(r, "$1");
+             temp = params[i].split(BALISE_PARAM_ASSIGN)[1];
+             valueParams = temp.split(BALISE_PARAM_NEXT_PARAM);
+             switch (paramName.toUpperCase()){
+                 case PARAM_ID.toUpperCase():
+                     for each (id in valueParams) {
+                         id = id.replace(r, "$1");
+                         aIds.push(id);
+                     };
+                     break;
+                 case PARAM_VOLUME.toUpperCase():
+                     for each (vol in valueParams) {
+                         aVols.push(vol);
+                     };
+                     break;
+                 case PARAM_ROLLOFF.toUpperCase():
+                     rollOff = valueParams[0];
+                     break;
+                 case PARAM_BERCEAU_DUREE.toUpperCase():
+                     berceauDuree = valueParams[0];
+                     break;
+                 case PARAM_BERCEAU_VOL.toUpperCase():
+                     berceauVol = valueParams[0];
+                     break;
+                 case PARAM_BERCEAU_FADE_IN.toUpperCase():
+                     berceauFadeIn = valueParams[0];
+                     break;
+                 case PARAM_BERCEAU_FADE_OUT.toUpperCase():
+                     berceauFadeOut = valueParams[0];
+                     break;
+                 case PARAM_NO_CUT_SILENCE.toUpperCase():
+                     if (String(valueParams[0]).match("false")){
+                         noCutSilence = false;
+                     } else {
+                         noCutSilence = true;
+                     };
+                     break;
+             };
+             i++;
+         };
+         var size:uint = aIds.length;
+         if (aIds.length != aVols.length){
+             throw (new Error("The number of sound id and volume are differents"));
+         };
+         var compt:uint;
+         while (compt < size) {
+             sepw = new SoundEventParamWrapper(aIds[compt], aVols[compt], rollOff);
+             sepw.berceauDuree = berceauDuree;
+             sepw.berceauVol = berceauVol;
+             sepw.berceauFadeIn = berceauFadeIn;
+             sepw.berceauFadeOut = berceauFadeOut;
+             sepw.noCutSilence = noCutSilence;
+             returnSEPW.push(sepw);
+             compt++;
+         };
+         return (returnSEPW);
       }
       
       public static function buildSoundLabel(soundEvents:Vector.<SoundEventParamWrapper>) : String {

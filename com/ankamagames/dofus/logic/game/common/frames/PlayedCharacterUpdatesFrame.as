@@ -500,12 +500,71 @@ package com.ankamagames.dofus.logic.game.common.frames
       }
       
       public function updateCharacterStatsList(cslmsg:CharacterStatsListMessage) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new flash.errors.IllegalOperationError("Not decompiled due to error");
+         var iSM:int;
+         var spellIdToRefresh:int;
+         var swsToUpdate:Array;
+         var swToUpdate:SpellWrapper;
+         var lastCharacteristics:CharacterCharacteristicsInformations = PlayedCharacterManager.getInstance().characteristics;
+         if (((lastCharacteristics) && ((lastCharacteristics.energyPoints > cslmsg.stats.energyPoints)))){
+             KernelEventsManager.getInstance().processCallback(TriggerHookList.PlayerIsDead);
+         };
+         if (cslmsg.stats.kamas != InventoryManager.getInstance().inventory.kamas){
+             InventoryManager.getInstance().inventory.kamas = cslmsg.stats.kamas;
+         };
+         var oldSM:Vector.<CharacterSpellModification> = ((lastCharacteristics) ? (PlayedCharacterManager.getInstance().characteristics.spellModifications) : null);
+         var newSM:Vector.<CharacterSpellModification> = cslmsg.stats.spellModifications;
+         var lengthSM:int = ((oldSM) ? Math.max(oldSM.length, newSM.length) : newSM.length);
+         var idSpellsToRefresh:Array = new Array();
+         if (oldSM){
+             iSM = 0;
+             while (iSM < lengthSM) {
+                 if (oldSM.length <= iSM){
+                     if (idSpellsToRefresh.indexOf(newSM[iSM].spellId) == -1){
+                         idSpellsToRefresh.push(newSM[iSM].spellId);
+                     };
+                 } else {
+                     if (newSM.length <= iSM){
+                         if (idSpellsToRefresh.indexOf(oldSM[iSM].spellId) == -1){
+                             idSpellsToRefresh.push(oldSM[iSM].spellId);
+                         };
+                     } else {
+                         if (oldSM[iSM] != newSM[iSM]){
+                             if (idSpellsToRefresh.indexOf(newSM[iSM].spellId) == -1){
+                                 idSpellsToRefresh.push(newSM[iSM].spellId);
+                             };
+                             if (idSpellsToRefresh.indexOf(oldSM[iSM].spellId) == -1){
+                                 idSpellsToRefresh.push(oldSM[iSM].spellId);
+                             };
+                         };
+                     };
+                 };
+                 iSM++;
+             };
+         } else {
+             iSM = 0;
+             while (iSM < lengthSM) {
+                 idSpellsToRefresh.push(newSM[iSM].spellId);
+                 iSM++;
+             };
+         };
+         PlayedCharacterManager.getInstance().characteristics = cslmsg.stats;
+         for each (spellIdToRefresh in idSpellsToRefresh) {
+             swsToUpdate = SpellWrapper.getSpellWrappersById(spellIdToRefresh, PlayedCharacterManager.getInstance().id);
+             for each (swToUpdate in swsToUpdate) {
+                 if (swToUpdate){
+                     swToUpdate = SpellWrapper.create(swToUpdate.position, swToUpdate.spellId, swToUpdate.spellLevel, true, PlayedCharacterManager.getInstance().id);
+                     swToUpdate.versionNum++;
+                 };
+             };
+         };
+         if (PlayedCharacterManager.getInstance().isFighting){
+             if (CurrentPlayedFighterManager.getInstance().isRealPlayer()){
+                 KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
+             };
+             SpellWrapper.refreshAllPlayerSpellHolder(PlayedCharacterManager.getInstance().id);
+         } else {
+             KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
+         };
       }
       
       public function pulled() : Boolean {
