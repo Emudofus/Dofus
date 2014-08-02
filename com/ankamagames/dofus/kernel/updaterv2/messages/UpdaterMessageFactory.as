@@ -5,6 +5,7 @@ package com.ankamagames.dofus.kernel.updaterv2.messages
    import com.ankamagames.dofus.kernel.updaterv2.messages.impl.FinishedMessage;
    import com.ankamagames.dofus.kernel.updaterv2.messages.impl.ComponentListMessage;
    import com.ankamagames.dofus.kernel.updaterv2.messages.impl.ErrorMessage;
+   import com.ankamagames.dofus.kernel.updaterv2.messages.impl.SystemConfigurationMessage;
    
    public class UpdaterMessageFactory extends Object
    {
@@ -31,6 +32,9 @@ package com.ankamagames.dofus.kernel.updaterv2.messages
                break;
             case UpdaterMessageIDEnum.ERROR_MESSAGE:
                uim = new ErrorMessage();
+               break;
+            case UpdaterMessageIDEnum.SYSTEM_CONFIGURATION:
+               uim = new SystemConfigurationMessage();
                break;
          }
          if(uim)

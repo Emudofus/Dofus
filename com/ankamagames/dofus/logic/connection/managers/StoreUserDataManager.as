@@ -7,6 +7,7 @@ package com.ankamagames.dofus.logic.connection.managers
    import com.ankamagames.jerakine.utils.system.AirScanner;
    import com.ankamagames.jerakine.utils.system.CommandLineArguments;
    import com.hurlant.util.Base64;
+   import com.ankamagames.dofus.logic.game.approach.managers.PartManagerV2;
    import com.ankamagames.dofus.logic.common.managers.PlayerManager;
    import com.ankamagames.dofus.misc.interClient.InterClientManager;
    import flash.system.Capabilities;
@@ -115,41 +116,49 @@ package com.ankamagames.dofus.logic.connection.managers
          newValue = (newValue + (("flashKey:" + InterClientManager.getInstance().flashKey) + ";"));
          newValue = (newValue + (((("screenResolution:" + Capabilities.screenResolutionX) + "x") + Capabilities.screenResolutionY) + ";"));
          var osNoFormate:String = Capabilities.os.toLowerCase();
-         newValue = (newValue + "os:");
-         if (osNoFormate.search("windows") != -1){
-             newValue = (newValue + "windows");
-         } else {
-             if (osNoFormate.search("mac") != -1){
-                 newValue = (newValue + "mac");
-             } else {
-                 if (osNoFormate.search("linux") != -1){
-                     newValue = (newValue + "linux");
-                 } else {
-                     newValue = (newValue + "other");
-                 };
-             };
-         };
-         newValue = (newValue + ";");
-         newValue = (newValue + (("osVersion:" + SystemManager.getSingleton().version) + ";"));
-         newValue = (newValue + "supports:");
-         if (((Capabilities.supports32BitProcesses) && (!(Capabilities.supports64BitProcesses)))){
-             newValue = (newValue + "32Bits");
-         } else {
-             if (Capabilities.supports64BitProcesses){
-                 newValue = (newValue + "64Bits");
-             } else {
-                 newValue = (newValue + "none");
-             };
-         };
-         newValue = (newValue + ";");
-         newValue = (newValue + (("isUsingUpdater:" + isUsingUpdater) + ";"));
+         newValue = newValue + "os:";
+         if(osNoFormate.search("windows") != -1)
+         {
+            newValue = newValue + "windows";
+         }
+         else if(osNoFormate.search("mac") != -1)
+         {
+            newValue = newValue + "mac";
+         }
+         else if(osNoFormate.search("linux") != -1)
+         {
+            newValue = newValue + "linux";
+         }
+         else
+         {
+            newValue = newValue + "other";
+         }
+         
+         
+         newValue = newValue + ";";
+         newValue = newValue + ("osVersion:" + SystemManager.getSingleton().version + ";");
+         newValue = newValue + "supports:";
+         if((Capabilities.supports32BitProcesses) && (!Capabilities.supports64BitProcesses))
+         {
+            newValue = newValue + "32Bits";
+         }
+         else if(Capabilities.supports64BitProcesses)
+         {
+            newValue = newValue + "64Bits";
+         }
+         else
+         {
+            newValue = newValue + "none";
+         }
+         
+         newValue = newValue + ";";
+         newValue = newValue + ("isUsingUpdater:" + isUsingUpdater + ";");
          this.submitData(newValue);
       }
       
       private function savePlayerStreamingData() : void {
          var newValue:String = "";
-         var environnementType:String = AirScanner.isStreamingVersion()?"streaming":"air";
-         newValue = newValue + ("envType:" + environnementType + ";");
+         newValue = newValue + "envType:streaming;";
          newValue = newValue + ("isAbo:" + (PlayerManager.getInstance().subscriptionEndDate > 0 || PlayerManager.getInstance().hasRights) + ";");
          newValue = newValue + ("creationAbo:" + PlayerManager.getInstance().accountCreation + ";");
          newValue = newValue + ("screenResolution:" + Capabilities.screenResolutionX + "x" + Capabilities.screenResolutionY + ";");
@@ -214,7 +223,7 @@ package com.ankamagames.dofus.logic.connection.managers
          var md5value:String = MD5.hash(playerData);
          var playerId:uint = PlayerManager.getInstance().accountId;
          this._so = CustomSharedObject.getLocal("playerData_" + playerId);
-         if((this._so.data && this._so.data.hasOwnProperty("version") && this._so.data.md5 == md5value) && (this._so.data.version.major >= 2 && this._so.data.version.minor >= 21) && (Benchmark.hasCachedResults))
+         if((this._so.data && this._so.data.hasOwnProperty("version") && this._so.data.md5 == md5value) && (this._so.data.version.major >= 2 && this._so.data.version.minor >= 22) && (Benchmark.hasCachedResults))
          {
             return;
          }
@@ -264,6 +273,19 @@ package com.ankamagames.dofus.logic.connection.managers
          rpcService.removeEventListener(IOErrorEvent.IO_ERROR,this.onDataSavedError);
          rpcService.removeEventListener(RpcServiceManager.SERVER_ERROR,this.onDataSavedError);
          rpcService.destroy();
+      }
+      
+      public function onSystemConfiguration(config:*) : void {
+         var key:String = null;
+         var newValue:String = "";
+         if(config)
+         {
+            for(key in config.config)
+            {
+               newValue = newValue + (key + ":" + config.config[key] + ";");
+            }
+         }
+         this.savePlayerAirData(newValue,true);
       }
    }
 }

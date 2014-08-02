@@ -7,6 +7,7 @@ package com.ankamagames.dofus.logic.game.approach.managers
    import com.ankamagames.dofus.kernel.updaterv2.UpdaterApi;
    import flash.utils.Dictionary;
    import com.ankamagames.dofus.kernel.updaterv2.messages.IUpdaterInputMessage;
+   import com.ankamagames.dofus.kernel.updaterv2.messages.impl.SystemConfigurationMessage;
    import com.ankamagames.dofus.kernel.updaterv2.messages.impl.ComponentListMessage;
    import com.ankamagames.dofus.kernel.updaterv2.messages.impl.StepMessage;
    import com.ankamagames.berilia.types.data.UiModule;
@@ -19,6 +20,7 @@ package com.ankamagames.dofus.logic.game.approach.managers
    import com.ankamagames.berilia.enums.StrataEnum;
    import com.ankamagames.dofus.misc.lists.HookList;
    import flash.utils.setTimeout;
+   import com.ankamagames.dofus.logic.connection.managers.StoreUserDataManager;
    import d2hooks.UpdateError;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    
@@ -35,7 +37,7 @@ package com.ankamagames.dofus.logic.game.approach.managers
       
       private static const instance:PartManagerV2;
       
-      private static const logger:Logger;
+      private static const _log:Logger;
       
       private static const PROJECT_NAME:String = "game";
       
@@ -50,7 +52,7 @@ package com.ankamagames.dofus.logic.game.approach.managers
       private var _init_mode:Boolean;
       
       public function init() : void {
-         logger.info("Initializing PartManager");
+         _log.info("Initializing PartManager");
          this.api.getComponentList(PROJECT_NAME);
       }
       
@@ -61,9 +63,13 @@ package com.ankamagames.dofus.logic.game.approach.managers
       public function activateComponent(name:String, activate:Boolean = true, project:String = "game") : void {
          if(!this.hasComponent(name))
          {
-            logger.debug("Ask updater for " + activate?"activate":"desactivate" + " component : " + name);
+            _log.debug("Ask updater for " + activate?"activate":"desactivate" + " component : " + name);
             this.api.activateComponent(name,activate,project);
          }
+      }
+      
+      public function getSystemConfiguration(key:String = "") : void {
+         this.api.getSystemConfiguration(key);
       }
       
       public function set installedModules(m:Dictionary) : void {
@@ -71,6 +77,7 @@ package com.ankamagames.dofus.logic.game.approach.managers
       }
       
       public function handleMessage(msg:IUpdaterInputMessage) : void {
+         var scm:SystemConfigurationMessage = null;
          var clm:ComponentListMessage = null;
          var sm:StepMessage = null;
          var uiM:UiModule = null;
@@ -79,6 +86,7 @@ package com.ankamagames.dofus.logic.game.approach.managers
          var em:ErrorMessage = null;
          var hook:Hook = null;
          var params:Array = null;
+         _log.info("From updater : " + getQualifiedClassName(msg));
          switch(true)
          {
             case msg is ComponentListMessage:
@@ -109,6 +117,10 @@ package com.ankamagames.dofus.logic.game.approach.managers
                params = [hook,fm.needRestart,fm.needUpdate,fm.newVersion,fm.previousVersion,fm.error];
                setTimeout(Berilia.getInstance().unloadUi,2000,"downloadUiNewUpdaterInstance");
                break;
+            case msg is SystemConfigurationMessage:
+               scm = msg as SystemConfigurationMessage;
+               StoreUserDataManager.getInstance().onSystemConfiguration(scm.config);
+               break;
             case msg is d2hooks.UpdateError:
                em = msg as ErrorMessage;
                hook = HookList.UpdateError;
@@ -121,11 +133,11 @@ package com.ankamagames.dofus.logic.game.approach.managers
       }
       
       public function handleConnectionOpened() : void {
-         logger.info("Updater is online");
+         _log.info("Updater is online");
       }
       
       public function handleConnectionClosed() : void {
-         logger.info("Connexion with updater has been closed");
+         _log.info("Connexion with updater has been closed");
       }
    }
 }

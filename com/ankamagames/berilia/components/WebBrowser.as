@@ -18,6 +18,7 @@ package com.ankamagames.berilia.components
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.utils.clearTimeout;
    import flash.net.URLRequest;
+   import com.ankamagames.jerakine.utils.misc.CopyObject;
    import flash.utils.setTimeout;
    import com.ankamagames.berilia.Berilia;
    import com.ankamagames.berilia.components.messages.BrowserDomReady;
@@ -257,9 +258,12 @@ package com.ankamagames.berilia.components
       }
       
       public function load(urlRequest:URLRequest) : void {
+         var clone:URLRequest = null;
          if(getUi().uiModule.trusted)
          {
-            this._htmlLoader.load(urlRequest);
+            clone = new URLRequest();
+            CopyObject.copyObject(urlRequest,null,clone);
+            this._htmlLoader.load(clone);
             return;
          }
          throw new SecurityError("Only trusted module can use WebBroswer");
