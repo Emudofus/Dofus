@@ -16,6 +16,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.network.messages.game.context.roleplay.TeleportOnSameMapMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameMapMovementConfirmMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameMapMovementCancelMessage;
+   import com.ankamagames.dofus.logic.game.common.frames.StackManagementFrame;
+   import com.ankamagames.dofus.logic.game.common.misc.stackedMessages.MoveBehavior;
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
@@ -28,6 +30,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.jerakine.managers.OptionManager;
    import com.ankamagames.dofus.logic.game.roleplay.managers.AnimFunManager;
    import com.ankamagames.jerakine.entities.interfaces.IMovable;
+   import com.ankamagames.dofus.network.messages.game.context.GameCautiousMapMovementMessage;
+   import com.ankamagames.atouin.entities.behaviours.movements.WalkingMovementBehavior;
+   import com.ankamagames.jerakine.entities.behaviours.IMovementBehavior;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.logic.game.roleplay.messages.CharacterMovementStoppedMessage;
    import com.ankamagames.dofus.logic.common.actions.EmptyStackAction;
@@ -39,7 +44,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import com.ankamagames.jerakine.pathfinding.Pathfinding;
    import com.ankamagames.atouin.utils.DataMapProvider;
+   import com.ankamagames.dofus.network.messages.game.context.GameCautiousMapMovementRequestMessage;
    import com.ankamagames.dofus.network.messages.game.context.GameMapMovementRequestMessage;
+   import com.ankamagames.berilia.frames.ShortcutsFrame;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.ChangeMapMessage;
    import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
    import com.ankamagames.dofus.network.messages.game.interactive.InteractiveUseRequestMessage;
@@ -69,6 +76,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       
       private var _destinationPoint:uint;
       
+      private var _forceWalkForNextMovement:Boolean;
+      
       public function get priority() : int {
          return Priority.NORMAL;
       }
@@ -94,6 +103,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var teleportedEntity:IEntity = null;
          var gmmcmsg:GameMapMovementConfirmMessage = null;
          var canceledMoveMessage:GameMapMovementCancelMessage = null;
+         var stackFrame:StackManagementFrame = null;
+         var moveBehavior:MoveBehavior = null;
          switch(true)
          {
             case msg is GameMapNoMovementMessage:
@@ -131,7 +142,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                {
                   AnimFunManager.getInstance().cancelAnim(gmmmsg.actorId);
                }
-               (movedEntity as IMovable).move(entityPath);
+               (movedEntity as IMovable).move(entityPath,null,msg is GameCautiousMapMovementMessage?WalkingMovementBehavior.getInstance():null);
                return true;
             case msg is EntityMovementCompleteMessage:
                emcmsg = msg as EntityMovementCompleteMessage;
@@ -159,11 +170,19 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   canceledMoveMessage = new GameMapMovementCancelMessage();
                   canceledMoveMessage.initGameMapMovementCancelMessage(emsmsg.entity.position.cellId);
                   ConnectionsHandler.getConnection().send(canceledMoveMessage);
-                  Kernel.getWorker().process(EmptyStackAction.create());
                   this._isRequestingMovement = false;
                   if(this._followingMove)
                   {
                      this.askMoveTo(this._followingMove);
+                     stackFrame = Kernel.getWorker().getFrame(StackManagementFrame) as StackManagementFrame;
+                     if(stackFrame.stackOutputMessage.length > 0)
+                     {
+                        moveBehavior = stackFrame.stackOutputMessage[0] as MoveBehavior;
+                        if((moveBehavior) && (!(moveBehavior.position.cellId == this._followingMove.cellId)))
+                        {
+                           Kernel.getWorker().process(EmptyStackAction.create());
+                        }
+                     }
                      this._followingMove = null;
                   }
                   if(this._followingMessage)
@@ -236,6 +255,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          }
       }
       
+      public function setForceWalkForNextMovement(pValue:Boolean) : * {
+         this._forceWalkForNextMovement = pValue;
+      }
+      
       function askMoveTo(cell:MapPoint) : Boolean {
          if(this._isRequestingMovement)
          {
@@ -270,6 +293,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       }
       
       private function sendPath(path:MovementPath) : void {
+         var gcmmrmsg:GameCautiousMapMovementRequestMessage = null;
+         var gmmrmsg:GameMapMovementRequestMessage = null;
          if(path.start.cellId == path.end.cellId)
          {
             _log.warn("Discarding a movement path that begins and ends on the same cell (" + path.start.cellId + ").");
@@ -281,9 +306,19 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             }
             return;
          }
-         var gmmrmsg:GameMapMovementRequestMessage = new GameMapMovementRequestMessage();
-         gmmrmsg.initGameMapMovementRequestMessage(MapMovementAdapter.getServerMovement(path),PlayedCharacterManager.getInstance().currentMap.mapId);
-         ConnectionsHandler.getConnection().send(gmmrmsg);
+         if((this._forceWalkForNextMovement) || (ShortcutsFrame.ctrlKeyDown))
+         {
+            gcmmrmsg = new GameCautiousMapMovementRequestMessage();
+            gcmmrmsg.initGameCautiousMapMovementRequestMessage(MapMovementAdapter.getServerMovement(path),PlayedCharacterManager.getInstance().currentMap.mapId);
+            ConnectionsHandler.getConnection().send(gcmmrmsg);
+            this._forceWalkForNextMovement = false;
+         }
+         else
+         {
+            gmmrmsg = new GameMapMovementRequestMessage();
+            gmmrmsg.initGameMapMovementRequestMessage(MapMovementAdapter.getServerMovement(path),PlayedCharacterManager.getInstance().currentMap.mapId);
+            ConnectionsHandler.getConnection().send(gmmrmsg);
+         }
          this._latestMovementRequest = getTimer();
       }
       

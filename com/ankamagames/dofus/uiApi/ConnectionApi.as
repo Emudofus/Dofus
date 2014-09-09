@@ -4,6 +4,7 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.logic.connection.frames.ServerSelectionFrame;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.network.types.connection.GameServerInformations;
+   import com.ankamagames.dofus.logic.connection.managers.GuestModeManager;
    import com.ankamagames.dofus.logic.game.approach.frames.GameServerApproachFrame;
    import com.ankamagames.dofus.logic.common.managers.PlayerManager;
    import com.ankamagames.dofus.datacenter.servers.Server;
@@ -27,6 +28,10 @@ package com.ankamagames.dofus.uiApi
       
       public function getServers() : Vector.<GameServerInformations> {
          return this.serverSelectionFrame.servers;
+      }
+      
+      public function hasGuestAccount() : Boolean {
+         return GuestModeManager.getInstance().hasGuestAccount();
       }
       
       public function isCharacterWaitingForChange(id:int) : Boolean {
@@ -82,6 +87,10 @@ package com.ankamagames.dofus.uiApi
             firstPop = -1;
             for each(server in serversList)
             {
+               if((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE) && (server.id == 36))
+               {
+                  return server;
+               }
                data = Server.getServerById(server.id);
                if((server.status == 3) && (firstPop == -1))
                {

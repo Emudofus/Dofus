@@ -48,6 +48,17 @@ package com.ankamagames.dofus.logic.game.common.types
                this._external = new DofusShopArticle(data.external);
             }
             
+            if((this._mode == DofusShopEnum.HIGHLIGHT_MODE_CAROUSEL) && (this._external is DofusShopObject))
+            {
+               if(!_name)
+               {
+                  _name = DofusShopObject(this._external).name;
+               }
+               if(!_description)
+               {
+                  _description = DofusShopObject(this._external).description;
+               }
+            }
          }
       }
       

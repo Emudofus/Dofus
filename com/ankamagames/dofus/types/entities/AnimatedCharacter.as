@@ -376,7 +376,7 @@ package com.ankamagames.dofus.types.entities
          if((followPath) && (followPath.path.length > 0))
          {
             follower.movementBehavior = this._movementBehavior;
-            follower.move(followPath);
+            follower.move(followPath,null,this._movementBehavior);
          }
          else
          {

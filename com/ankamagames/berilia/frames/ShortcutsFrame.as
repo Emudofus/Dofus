@@ -9,9 +9,9 @@ package com.ankamagames.berilia.frames
    import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyDownMessage;
    import com.ankamagames.berilia.types.shortcut.Shortcut;
    import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyUpMessage;
+   import flash.ui.Keyboard;
    import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardMessage;
    import flash.text.TextField;
-   import flash.ui.Keyboard;
    import com.ankamagames.berilia.managers.BindsManager;
    import com.ankamagames.jerakine.handlers.FocusHandler;
    import com.ankamagames.berilia.Berilia;
@@ -42,6 +42,8 @@ package com.ankamagames.berilia.frames
       public static var ctrlKey:Boolean = false;
       
       public static var altKey:Boolean = false;
+      
+      public static var ctrlKeyDown:Boolean;
       
       public static var shortcutsEnabled:Boolean = true;
       
@@ -80,6 +82,10 @@ package com.ankamagames.berilia.frames
                ctrlKey = kdmsg.keyboardEvent.ctrlKey;
                altKey = kdmsg.keyboardEvent.altKey;
                this._lastCtrlKey = false;
+               if(!ctrlKeyDown)
+               {
+                  ctrlKeyDown = kdmsg.keyboardEvent.keyCode == Keyboard.CONTROL;
+               }
                s = this.getShortcut(kdmsg);
                if((s) && (s.holdKeys) && (this._heldShortcuts.indexOf(s.defaultBind.targetedShortcut) == -1))
                {
@@ -92,6 +98,10 @@ package com.ankamagames.berilia.frames
                shiftKey = kumsg.keyboardEvent.shiftKey;
                ctrlKey = kumsg.keyboardEvent.ctrlKey;
                altKey = kumsg.keyboardEvent.altKey;
+               if(kumsg.keyboardEvent.keyCode == Keyboard.CONTROL)
+               {
+                  ctrlKeyDown = false;
+               }
                return this.handleMessage(kumsg);
             default:
                this._isProcessingDirectInteraction = false;
@@ -210,6 +220,7 @@ package com.ankamagames.berilia.frames
       private function onWindowDeactivate(pEvent:Event) : void {
          this._heldShortcuts.length = 0;
          shiftKey = ctrlKey = altKey = false;
+         ctrlKeyDown = false;
       }
       
       public function pushed() : Boolean {

@@ -45,6 +45,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.logic.game.common.frames.ChatFrame;
    import com.ankamagames.atouin.managers.InteractiveCellManager;
    import com.ankamagames.dofus.network.enums.MapObstacleStateEnum;
+   import com.ankamagames.berilia.frames.ShortcutsFrame;
    import com.ankamagames.dofus.logic.game.roleplay.messages.InteractiveElementMouseOutMessage;
    import flash.utils.clearTimeout;
    import com.ankamagames.jerakine.entities.interfaces.IMovable;
@@ -443,6 +444,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                delete this._entities[iuemsg.elemId];
                return true;
             case msg is InteractiveElementMouseOverMessage:
+               if(ShortcutsFrame.ctrlKeyDown)
+               {
+                  return false;
+               }
                iemimsg = msg as InteractiveElementMouseOverMessage;
                iel = this._ie[iemimsg.sprite];
                if((iel) && (iel.element))
@@ -793,7 +798,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             return;
          }
          var ie:Object = this._ie[me.target as Sprite];
-         Kernel.getWorker().process(new InteractiveElementMouseOverMessage(ie.element,me.target));
+         if((ie) && (me))
+         {
+            Kernel.getWorker().process(new InteractiveElementMouseOverMessage(ie.element,me.target));
+         }
       }
       
       private function out(me:Object) : void {

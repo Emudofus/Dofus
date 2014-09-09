@@ -44,6 +44,8 @@ package com.ankamagames.dofus.logic.connection.managers
          }
       }
       
+      private static const INFOS_EXCLUDED_FROM_MD5CHECK:Array;
+      
       protected static const _log:Logger;
       
       private static var BASE_URL:String = "http://api.ankama.";
@@ -59,6 +61,8 @@ package com.ankamagames.dofus.logic.connection.managers
       }
       
       private var _so:CustomSharedObject;
+      
+      private var _postMd5CheckInfos:String;
       
       public function savePlayerData() : void {
          var data:String;
@@ -221,9 +225,11 @@ package com.ankamagames.dofus.logic.connection.managers
          var rpcService:RpcServiceManager = null;
          var logObj:Object = null;
          var md5value:String = MD5.hash(playerData);
+         var playerData:String = playerData + this._postMd5CheckInfos;
+         this._postMd5CheckInfos = "";
          var playerId:uint = PlayerManager.getInstance().accountId;
          this._so = CustomSharedObject.getLocal("playerData_" + playerId);
-         if((this._so.data && this._so.data.hasOwnProperty("version") && this._so.data.md5 == md5value) && (this._so.data.version.major >= 2 && this._so.data.version.minor >= 22) && (Benchmark.hasCachedResults))
+         if((this._so.data && this._so.data.hasOwnProperty("version") && this._so.data.md5 == md5value) && (this._so.data.version.major >= 2 && this._so.data.version.minor >= 23) && (Benchmark.hasCachedResults))
          {
             return;
          }
@@ -277,12 +283,31 @@ package com.ankamagames.dofus.logic.connection.managers
       
       public function onSystemConfiguration(config:*) : void {
          var key:String = null;
+         var obj:Object = null;
          var newValue:String = "";
+         this._postMd5CheckInfos = "";
+         var dict:Array = new Array();
          if(config)
          {
             for(key in config.config)
             {
-               newValue = newValue + (key + ":" + config.config[key] + ";");
+               dict.push(
+                  {
+                     "key":key,
+                     "value":config.config[key]
+                  });
+            }
+         }
+         dict.sortOn("key");
+         for each(obj in dict)
+         {
+            if(INFOS_EXCLUDED_FROM_MD5CHECK.indexOf(obj.key) == -1)
+            {
+               newValue = newValue + (obj.key + ":" + obj.value + ";");
+            }
+            else
+            {
+               this._postMd5CheckInfos = this._postMd5CheckInfos + (obj.key + ":" + obj.value + ";");
             }
          }
          this.savePlayerAirData(newValue,true);

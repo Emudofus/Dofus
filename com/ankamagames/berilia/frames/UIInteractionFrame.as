@@ -70,6 +70,7 @@ package com.ankamagames.berilia.frames
    import com.ankamagames.jerakine.utils.misc.CallWithParameters;
    import flash.utils.getTimer;
    import flash.utils.setTimeout;
+   import com.ankamagames.jerakine.handlers.FocusHandler;
    
    public class UIInteractionFrame extends Object implements Frame
    {
@@ -492,7 +493,8 @@ package com.ankamagames.berilia.frames
       }
       
       private function onWindowDeactivate(pEvent:Event) : void {
-         KernelEventsManager.getInstance().processCallback(BeriliaHookList.FocusChange,null);
+         Berilia.getInstance().docMain.stage.focus = null;
+         FocusHandler.getInstance().setFocus(null);
       }
    }
 }

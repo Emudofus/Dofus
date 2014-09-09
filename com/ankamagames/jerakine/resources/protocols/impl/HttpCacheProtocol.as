@@ -24,7 +24,6 @@ package com.ankamagames.jerakine.resources.protocols.impl
    {
       
       public function HttpCacheProtocol() {
-         this._dataLoading = new Dictionary(true);
          super();
          if(AirScanner.hasAir())
          {
@@ -51,6 +50,8 @@ package com.ankamagames.jerakine.resources.protocols.impl
       private static var _calcCachedFileData:Dictionary;
       
       private static var _pathCrcList:Dictionary;
+      
+      private static var _dataLoading:Dictionary;
       
       private static var _httpDataToLoad:Vector.<Object>;
       
@@ -81,8 +82,6 @@ package com.ankamagames.jerakine.resources.protocols.impl
       
       private var _isLoadingFilelist:Boolean = false;
       
-      private var _dataLoading:Dictionary;
-      
       public function load(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, cache:ICache, forcedAdapter:Class, singleFile:Boolean) : void {
          if(this._serverRootDir == null)
          {
@@ -98,7 +97,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
          }
          if(!this._isLoadingFilelist)
          {
-            if(this._dataLoading[uri] != null)
+            if(_dataLoading[this.getLocalPath(uri)] != null)
             {
                _fileDataToLoad.push(
                   {
@@ -222,7 +221,9 @@ package com.ankamagames.jerakine.resources.protocols.impl
          var arrayIndex:* = 0;
          var cachedCrcFile:* = 0;
          var stream:FileStream = null;
-         if(this._dataLoading[uri] != null)
+         var path:String = this.getLocalPath(uri);
+         trace("load file " + path);
+         if(_dataLoading[path] != null)
          {
             _fileDataToLoad.push(
                {
@@ -233,8 +234,6 @@ package com.ankamagames.jerakine.resources.protocols.impl
                });
             return;
          }
-         var path:String = this.getLocalPath(uri);
-         trace("load file " + path);
          var file:File = new File(path);
          if(file.exists)
          {
@@ -266,7 +265,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
             else
             {
                _log.debug(uri.path + " mise a jour necessaire");
-               this._dataLoading[uri] = 
+               _dataLoading[path] = 
                   {
                      "uri":uri,
                      "observer":observer,
@@ -279,7 +278,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
          else
          {
             _log.debug(uri + " inexistant");
-            this._dataLoading[uri] = 
+            _dataLoading[path] = 
                {
                   "uri":uri,
                   "observer":observer,
@@ -317,10 +316,10 @@ package com.ankamagames.jerakine.resources.protocols.impl
          fileStream.position = 0;
          fileStream.writeBytes(resource);
          fileStream.close();
-         if(this._dataLoading[uri] != null)
+         if(_dataLoading[path] != null)
          {
-            this.loadFromParent(this._dataLoading[uri].uri,this._dataLoading[uri].observer,this._dataLoading[uri].dispatchProgress,this._dataLoading[uri].adapter);
-            this._dataLoading[uri] = null;
+            this.loadFromParent(_dataLoading[path].uri,_dataLoading[path].observer,_dataLoading[path].dispatchProgress,_dataLoading[path].adapter);
+            _dataLoading[path] = null;
          }
       }
       
@@ -341,17 +340,26 @@ package com.ankamagames.jerakine.resources.protocols.impl
       }
       
       private function onRemoteFileFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         var path:String = null;
          var data:* = undefined;
          _log.warn(uri.path + ": download failed (" + errorMsg + ")");
          if((!(_attemptToDownloadFile[uri] == null)) && (_attemptToDownloadFile[uri] <= LIMITE_ATTEMPT_FOR_DOWNLOAD))
          {
             _log.warn(uri.path + ": try again");
-            this.loadDirectlyUri(uri,this._dataLoading[uri].dispatchProgress);
+            if(!AirScanner.isStreamingVersion())
+            {
+               path = this.getLocalPath(uri);
+            }
+            else
+            {
+               path = this.getPathWithoutAkamaiHack(this.getLocalPath(uri));
+            }
+            this.loadDirectlyUri(uri,_dataLoading[path].dispatchProgress);
          }
          else
          {
             _log.warn(uri.path + ": download definitively failed (" + errorMsg + ")");
-            data = this._dataLoading[uri];
+            data = _dataLoading[uri];
             if((data) && (data.observer))
             {
                IResourceObserver(data.observer).onFailed(uri,errorMsg,errorCode);
@@ -364,7 +372,9 @@ package com.ankamagames.jerakine.resources.protocols.impl
       
       private function loadFromParent(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, adapter:Class) : void {
          var d:Object = null;
+         var i:uint = 0;
          var oldUri:Uri = uri;
+         var oldUriPath:String = oldUri.path;
          if(uri.fileType == "swf")
          {
             uri = new Uri(this.getLocalPath(uri));
@@ -387,13 +397,17 @@ package com.ankamagames.jerakine.resources.protocols.impl
          }
          
          this._parent.load(uri,observer,dispatchProgress,null,adapter,false);
-         for each(d in _fileDataToLoad)
+         var l:uint = _fileDataToLoad.length;
+         i = 0;
+         while(i < l)
          {
-            if((!(d == null)) && (d.uri.path == uri.path))
+            d = _fileDataToLoad[i];
+            if((d) && ((d.uri.path == uri.path) || (d.uri.path == oldUriPath)))
             {
-               this._parent.load(d.uri,d.observer,d.dispatchProgress,null,d.adapter,false);
-               d = null;
+               this._parent.load(uri,d.observer,d.dispatchProgress,null,d.adapter,false);
+               _fileDataToLoad[i] = null;
             }
+            i++;
          }
          _fileDataToLoad = _fileDataToLoad.filter(this.removeNullValue);
       }

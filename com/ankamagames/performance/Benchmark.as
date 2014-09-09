@@ -1,22 +1,28 @@
 package com.ankamagames.performance
 {
-   import flash.events.EventDispatcher;
    import com.ankamagames.jerakine.types.DataStoreType;
    import com.ankamagames.jerakine.managers.StoreDataManager;
    import flash.display.Stage;
-   import com.ankamagames.jerakine.utils.system.AirScanner;
+   import com.ankamagames.performance.tests.TestDisplayPerformance;
    import com.ankamagames.performance.tests.TestBandwidth;
    import com.ankamagames.performance.tests.TestWriteDisk;
    import com.ankamagames.performance.tests.TestReadDisk;
-   import com.ankamagames.performance.tests.TestDisplayPerformance;
    import com.ankamagames.jerakine.types.enums.DataStoreEnum;
    
-   public class Benchmark extends EventDispatcher
+   public class Benchmark extends Object
    {
       
       public function Benchmark() {
          super();
       }
+      
+      public static const BENCHMARK_FORMAT_VERSION:uint = 1;
+      
+      public static const TESTS_DEFAULT:Vector.<Class>;
+      
+      public static const TESTS_NODISK:Vector.<Class>;
+      
+      public static const TESTS_AIR:Vector.<Class>;
       
       public static var isDone:Boolean = false;
       
@@ -26,24 +32,37 @@ package com.ankamagames.performance
       
       private static var _onCompleteCallback:Function;
       
+      private static var _lastTests:Vector.<IBenchmarkTest>;
+      
       public static function get hasCachedResults() : Boolean {
          var results:String = StoreDataManager.getInstance().getData(_ds,"results");
+         var formatVersion:uint = StoreDataManager.getInstance().getData(_ds,"formatVersion");
+         if(formatVersion != BENCHMARK_FORMAT_VERSION)
+         {
+            results = null;
+            StoreDataManager.getInstance().setData(_ds,"results",null);
+         }
          return !(results == null);
       }
       
-      public static function run(stage:Stage, onCompleteCallback:Function) : void {
-         _totalTestToDo = 0;
+      public static function run(stage:Stage, onCompleteCallback:Function, tests:Vector.<Class> = null) : void {
+         var test:IBenchmarkTest = null;
+         var testClass:Class = null;
+         TestDisplayPerformance.stage = stage;
+         if(!tests)
+         {
+            tests = TESTS_DEFAULT;
+         }
+         _totalTestToDo = tests.length;
          _onCompleteCallback = onCompleteCallback;
          isDone = false;
-         if(AirScanner.isStreamingVersion())
+         _lastTests = new Vector.<IBenchmarkTest>();
+         for each(testClass in tests)
          {
-            _totalTestToDo++;
-            new TestBandwidth().run();
+            test = new testClass();
+            _lastTests.push(test);
+            test.run();
          }
-         new TestWriteDisk().run();
-         new TestReadDisk().run();
-         _totalTestToDo++;
-         new TestDisplayPerformance(stage).run();
       }
       
       public static function onTestCompleted(test:IBenchmarkTest) : void {
@@ -54,12 +73,14 @@ package com.ankamagames.performance
             if(_onCompleteCallback != null)
             {
                _onCompleteCallback();
+               _onCompleteCallback = null;
             }
          }
       }
       
       public static function getResults(writeResultsOnDisk:Boolean = false, fromCacheIfExists:Boolean = true) : String {
-         var res:String = null;
+         var test:IBenchmarkTest = null;
+         var res:String = "";
          if(fromCacheIfExists)
          {
             res = StoreDataManager.getInstance().getData(_ds,"results");
@@ -67,11 +88,17 @@ package com.ankamagames.performance
             {
                return res;
             }
+            res = "";
          }
-         res = TestWriteDisk.getResults() + ";" + TestReadDisk.getResults() + ";" + TestDisplayPerformance.getResults() + ";" + TestBandwidth.getResults();
+         for each(test in _lastTests)
+         {
+            res = res + (test.getResults() + ";");
+         }
+         res = res.slice(0,-1);
          if(writeResultsOnDisk)
          {
             StoreDataManager.getInstance().setData(_ds,"results",res);
+            StoreDataManager.getInstance().setData(_ds,"formatVersion",BENCHMARK_FORMAT_VERSION);
          }
          return res;
       }

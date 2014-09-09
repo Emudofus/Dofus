@@ -30,7 +30,7 @@ package com.ankamagames.dofus.console
          {
             emoteShortcuts.push(emote.shortcut);
          }
-         console.addHandler(["whois","version","ver","about","whoami","mapid","cellid","time","mlog"],new InfoInstructionHandler());
+         console.addHandler(["whois","version","ver","about","whoami","mapid","cellid","time"],new InfoInstructionHandler());
          console.addHandler(["aping","ping"],new LatencyInstructionHandler());
          console.addHandler(["f","ignore","invite"],new SocialInstructionHandler());
          console.addHandler(["w","whisper","msg","t","g","p","a","r","b","m"],new MessagingInstructionHandler());
@@ -39,13 +39,13 @@ package com.ankamagames.dofus.console
          console.addHandler(["tab","clear"],new OptionsInstructionHandler());
          if(BuildInfos.BUILD_TYPE != BuildTypeEnum.RELEASE)
          {
-            console.addHandler(["savereplaylog","sd","showsmilies","shieldmax","shieldmoy","shieldmin"],new MiscInstructionHandler());
+            console.addHandler(["savereplaylog","sd","showsmilies","shieldmax","shieldmed","shieldmin"],new MiscInstructionHandler());
          }
          else
          {
-            console.addHandler(["savereplaylog","showsmilies","shieldmax","shieldmoy","shieldmin"],new MiscInstructionHandler());
+            console.addHandler(["savereplaylog","showsmilies","shieldmax","shieldmed","shieldmin"],new MiscInstructionHandler());
          }
-         console.addHandler(["away",I18n.getUiText("ui.chat.status.away").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.solo").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.private").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.availiable").toLocaleLowerCase(),"invisible","release"],new StatusInstructionHandler());
+         console.addHandler(["away",I18n.getUiText("ui.chat.status.away").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.solo").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.private").toLocaleLowerCase(),I18n.getUiText("ui.chat.status.availiable").toLocaleLowerCase(),"release"],new StatusInstructionHandler());
       }
    }
 }

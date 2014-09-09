@@ -21,6 +21,7 @@ package com.ankamagames.dofus.misc.utils
    import com.ankamagames.dofus.datacenter.challenges.Challenge;
    import com.ankamagames.dofus.datacenter.alignments.AlignmentSide;
    import com.ankamagames.dofus.datacenter.world.Dungeon;
+   import com.ankamagames.dofus.datacenter.monsters.Companion;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import com.ankamagames.dofus.logic.common.managers.HyperlinkItemManager;
    import com.ankamagames.jerakine.utils.misc.StringUtils;
@@ -29,6 +30,7 @@ package com.ankamagames.dofus.misc.utils
    import com.ankamagames.dofus.logic.common.managers.HyperlinkShowTitleManager;
    import com.ankamagames.dofus.logic.common.managers.HyperlinkShowOrnamentManager;
    import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    
@@ -150,6 +152,9 @@ package com.ankamagames.dofus.misc.utils
          var alignmentSide:AlignmentSide = null;
          var stats:Array = null;
          var dungeon:Dungeon = null;
+         var date:Date = null;
+         var timeToDisplay:uint = 0;
+         var companion:Companion = null;
          var itemw:ItemWrapper = null;
          var newString:String = "";
          nid = int(Number(id.substr(1))) - 1;
@@ -417,6 +422,24 @@ package com.ankamagames.dofus.misc.utils
                   if(dungeon)
                   {
                      newString = dungeon.name;
+                  }
+                  else
+                  {
+                     _log.error(type + " " + params[nid] + " introuvable");
+                     newString = "";
+                  }
+                  break;
+               case "$time":
+                  date = new Date();
+                  timeToDisplay = params[nid] * 1000 - date.time;
+                  newString = TimeManager.getInstance().getDuration(timeToDisplay);
+                  break;
+               case "$companion":
+               case "$sidekick":
+                  companion = Companion.getCompanionById(params[nid]);
+                  if(companion)
+                  {
+                     newString = companion.name;
                   }
                   else
                   {

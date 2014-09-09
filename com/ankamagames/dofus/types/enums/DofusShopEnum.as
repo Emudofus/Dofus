@@ -25,14 +25,16 @@ package com.ankamagames.dofus.types.enums
       
       public static const MAX_ARTICLES_PER_PAGE:uint = 12;
       
-      public static const ERROR_AUTHENTICATION_FAILED:String = "error_authFailed";
+      public static const ERROR_AUTHENTICATION_FAILED:String = "AUTH_FAILED";
       
-      public static const ERROR_REQUEST_TIMED_OUT:String = "error_timedOut";
+      public static const ERROR_REQUEST_TIMED_OUT:String = "TIMED_OUT";
       
       public static const ERROR_PURCHASE_FAILED:String = "PAIDFAILED";
       
       public static const ERROR_PURCHASE_NO_STOCK:String = "STOCKMISSING";
       
       public static const ERROR_PURCHASE_NO_MONEY:String = "MISSINGMONEY";
+      
+      public static const ERROR_PURCHASE_REQUEST_TIMED_OUT:String = "PURCHASE_TIMED_OUT";
    }
 }

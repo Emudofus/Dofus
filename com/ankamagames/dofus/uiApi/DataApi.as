@@ -28,12 +28,14 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.jerakine.types.positions.WorldPoint;
    import com.ankamagames.dofus.datacenter.items.Item;
    import com.ankamagames.dofus.datacenter.items.IncarnationLevel;
+   import com.ankamagames.dofus.datacenter.items.Incarnation;
    import com.ankamagames.dofus.types.data.GenericSlotData;
    import com.ankamagames.jerakine.types.Uri;
    import com.ankamagames.jerakine.data.XmlConfig;
    import com.ankamagames.dofus.datacenter.items.ItemType;
    import com.ankamagames.dofus.datacenter.items.ItemSet;
    import com.ankamagames.dofus.datacenter.livingObjects.Pet;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import flash.utils.Dictionary;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.datacenter.effects.Effect;
@@ -57,6 +59,7 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.datacenter.communication.Smiley;
    import com.ankamagames.dofus.internalDatacenter.communication.SmileyWrapper;
    import com.ankamagames.dofus.logic.game.common.frames.ChatFrame;
+   import com.ankamagames.dofus.datacenter.communication.Emoticon;
    import com.ankamagames.dofus.datacenter.npcs.TaxCollectorName;
    import com.ankamagames.dofus.datacenter.npcs.TaxCollectorFirstname;
    import com.ankamagames.dofus.datacenter.guild.EmblemSymbol;
@@ -98,8 +101,13 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.misc.utils.GameDataQuery;
    import com.ankamagames.dofus.datacenter.world.Waypoint;
    import com.ankamagames.dofus.internalDatacenter.taxi.TeleportDestinationWrapper;
-   import com.ankamagames.jerakine.logger.Log;
+   import com.ankamagames.dofus.datacenter.items.VeteranReward;
+   import com.ankamagames.dofus.datacenter.documents.Comic;
    import flash.utils.getQualifiedClassName;
+   import flash.net.registerClassAlias;
+   import flash.utils.getDefinitionByName;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.logger.Log;
    
    public class DataApi extends Object implements IApi
    {
@@ -263,6 +271,10 @@ package com.ankamagames.dofus.uiApi
          return IncarnationLevel.getIncarnationLevelByIdAndLevel(incarnationId,level);
       }
       
+      public function getIncarnation(incarnationId:int) : Incarnation {
+         return Incarnation.getIncarnationById(incarnationId);
+      }
+      
       public function getNewGenericSlotData() : GenericSlotData {
          return new GenericSlotData();
       }
@@ -280,13 +292,9 @@ package com.ankamagames.dofus.uiApi
          return null;
       }
       
-      public function getItemType(id:int) : String {
+      public function getItemType(id:int) : ItemType {
          var it:ItemType = ItemType.getItemTypeById(id);
-         if(it)
-         {
-            return it.name;
-         }
-         return null;
+         return it;
       }
       
       public function getItemSet(id:int) : ItemSet {
@@ -566,6 +574,10 @@ package com.ankamagames.dofus.uiApi
       
       public function getAllSmiley() : Array {
          return Smiley.getSmileys();
+      }
+      
+      public function getEmoticon(id:uint) : Emoticon {
+         return Emoticon.getEmoticonById(id);
       }
       
       public function getTaxCollectorName(id:uint) : TaxCollectorName {
@@ -878,6 +890,26 @@ package com.ankamagames.dofus.uiApi
             }
          }
          return unknowZaaps;
+      }
+      
+      public function getAllVeteranRewards() : Array {
+         return VeteranReward.getAllVeteranRewards();
+      }
+      
+      public function getComicReaderUrl(pComicRemoteId:String) : String {
+         var comicId:uint = GameDataQuery.queryEquals(Comic,"remoteId",pComicRemoteId)[0];
+         var comic:Comic = Comic.getComicById(comicId);
+         return comic.readerUrl;
+      }
+      
+      private function deepClone(source:*) : * {
+         var className:String = getQualifiedClassName(source);
+         registerClassAlias(className,getDefinitionByName(className) as Class);
+         var b:ByteArray = new ByteArray();
+         b.writeObject(source);
+         b.position = 0;
+         var temp:* = b.readObject();
+         return temp;
       }
    }
 }

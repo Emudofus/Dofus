@@ -9,11 +9,12 @@ package com.ankamagames.berilia.components
    import flash.events.Event;
    import com.ankamagames.jerakine.messages.Message;
    import flash.display.DisplayObject;
+   import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardMessage;
+   import com.ankamagames.berilia.types.shortcut.Bind;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseWheelMessage;
    import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyDownMessage;
    import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyUpMessage;
-   import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardMessage;
-   import flash.ui.Keyboard;
+   import com.ankamagames.berilia.managers.BindsManager;
    import com.ankamagames.jerakine.handlers.FocusHandler;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.utils.clearTimeout;
@@ -81,6 +82,8 @@ package com.ankamagames.berilia.components
       private var _displayScrollBar:Boolean = true;
       
       private var _manualExternalLink:Dictionary;
+      
+      private var _transparentBackground:Boolean;
       
       public function get cacheLife() : Number {
          return this._cacheLife;
@@ -162,6 +165,14 @@ package com.ankamagames.berilia.components
          return this._htmlLoader.location;
       }
       
+      public function set transparentBackground(pValue:Boolean) : void {
+         this._transparentBackground = pValue;
+         if(this._htmlLoader)
+         {
+            this._htmlLoader.paintsDefaultBackground = !this._transparentBackground;
+         }
+      }
+      
       public function finalize() : void {
          addChild(this._vScrollBar);
          this._vScrollBar.finalize();
@@ -177,6 +188,7 @@ package com.ankamagames.berilia.components
             this._htmlLoader.addEventListener(Event["HTML_BOUNDS_CHANGE"],this.onBoundsChange);
             this._htmlLoader.addEventListener(TimeoutHTMLLoader.TIMEOUT,this.onSessionTimeout);
             this._htmlLoader.addEventListener(Event["LOCATION_CHANGE"],this.onLocationChange);
+            this._htmlLoader.paintsDefaultBackground = !this._transparentBackground;
          }
          this.width = width;
          this.height = height;
@@ -204,6 +216,10 @@ package com.ankamagames.berilia.components
       
       override public function process(msg:Message) : Boolean {
          var currentDo:DisplayObject = null;
+         var kbmsg:KeyboardMessage = null;
+         var allowedShorcut:* = false;
+         var sShortcut:String = null;
+         var bind:Bind = null;
          if(msg is MouseWheelMessage)
          {
             currentDo = MouseWheelMessage(msg).target;
@@ -216,14 +232,24 @@ package com.ankamagames.berilia.components
                this._vScrollBar.value = this._htmlLoader.scrollV;
             }
          }
-         if(((msg is KeyboardKeyDownMessage) || (msg is KeyboardKeyUpMessage)) && (!(KeyboardMessage(msg).keyboardEvent.keyCode == Keyboard.ESCAPE)))
+         if((msg is KeyboardKeyDownMessage) || (msg is KeyboardKeyUpMessage))
          {
-            currentDo = FocusHandler.getInstance().getFocus();
-            while((!(currentDo == this._htmlLoader)) && (currentDo) && (currentDo.parent))
+            kbmsg = msg as KeyboardMessage;
+            sShortcut = BindsManager.getInstance().getShortcutString(kbmsg.keyboardEvent.keyCode,this.getCharCode(kbmsg));
+            bind = BindsManager.getInstance().getBind(new Bind(sShortcut,"",kbmsg.keyboardEvent.altKey,kbmsg.keyboardEvent.ctrlKey,kbmsg.keyboardEvent.shiftKey));
+            if((bind) && ((bind.targetedShortcut == "closeUi") || (bind.targetedShortcut == "toggleFullscreen")))
             {
-               currentDo = currentDo.parent;
+               allowedShorcut = true;
             }
-            return currentDo == this._htmlLoader;
+            if(!allowedShorcut)
+            {
+               currentDo = FocusHandler.getInstance().getFocus();
+               while((!(currentDo == this._htmlLoader)) && (currentDo) && (currentDo.parent))
+               {
+                  currentDo = currentDo.parent;
+               }
+               return currentDo == this._htmlLoader;
+            }
          }
          return false;
       }
@@ -270,9 +296,28 @@ package com.ankamagames.berilia.components
       }
       
       public function javascriptSetVar(varName:String, value:*) : void {
+         var path:Array = null;
+         var len:* = 0;
+         var htmlVar:Object = null;
+         var i:* = 0;
          try
          {
-            this._htmlLoader.window.document.body[varName] = value;
+            path = varName.split(".");
+            len = path.length;
+            htmlVar = this._htmlLoader.window;
+            i = 0;
+            while(i < len)
+            {
+               if(i < len - 1)
+               {
+                  htmlVar = htmlVar[path[i]];
+               }
+               else
+               {
+                  htmlVar[path[i]] = value;
+               }
+               i++;
+            }
          }
          catch(e:Error)
          {
@@ -280,11 +325,22 @@ package com.ankamagames.berilia.components
       }
       
       public function javascriptCall(fctName:String, ... params) : void {
-         var f:Function = null;
+         var path:Array = null;
+         var len:* = 0;
+         var htmlFunction:Object = null;
+         var i:* = 0;
          try
          {
-            f = this._htmlLoader.window[fctName];
-            f.apply(null,params);
+            path = fctName.split(".");
+            len = path.length;
+            htmlFunction = this._htmlLoader.window;
+            i = 0;
+            while(i < len)
+            {
+               htmlFunction = htmlFunction[path[i]];
+               i++;
+            }
+            (htmlFunction as Function).apply(null,params);
          }
          catch(e:Error)
          {
@@ -317,6 +373,24 @@ package com.ankamagames.berilia.components
                continue;
             }
          }
+      }
+      
+      private function getCharCode(pKeyboardMessage:KeyboardMessage) : int {
+         var charCode:* = 0;
+         if((pKeyboardMessage.keyboardEvent.shiftKey) && (pKeyboardMessage.keyboardEvent.keyCode == 52))
+         {
+            charCode = 39;
+         }
+         else if((pKeyboardMessage.keyboardEvent.shiftKey) && (pKeyboardMessage.keyboardEvent.keyCode == 54))
+         {
+            charCode = 45;
+         }
+         else
+         {
+            charCode = pKeyboardMessage.keyboardEvent.charCode;
+         }
+         
+         return charCode;
       }
       
       private function onResize(e:Event) : void {
@@ -434,10 +508,11 @@ package com.ankamagames.berilia.components
       }
       
       private function updateScrollbar() : void {
-         if(this._vScrollBar.max != this._htmlLoader.contentHeight - this._htmlLoader.height)
+         var heightDiff:int = this._htmlLoader.contentHeight - this._htmlLoader.height;
+         if((!(this._vScrollBar.max == heightDiff)) && (heightDiff > 0))
          {
             this._vScrollBar.min = 0;
-            this._vScrollBar.max = this._htmlLoader.contentHeight - this._htmlLoader.height;
+            this._vScrollBar.max = heightDiff;
          }
       }
       

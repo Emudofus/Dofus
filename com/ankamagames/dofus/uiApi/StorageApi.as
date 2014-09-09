@@ -11,6 +11,7 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.dofus.network.enums.ShortcutBarEnum;
    import com.ankamagames.dofus.internalDatacenter.items.MountWrapper;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.dofus.datacenter.items.ItemType;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.common.frames.MountFrame;
    import com.ankamagames.dofus.logic.game.common.managers.StorageOptionManager;
@@ -145,12 +146,32 @@ package com.ankamagames.dofus.uiApi
       }
       
       public static function getBestEquipablePosition(item:Object) : int {
+         var cat:* = 0;
+         var type:ItemType = null;
          var equipement:Object = null;
          var freeSlot:* = 0;
          var pos:* = 0;
          var typeId:* = 0;
          var lastIndex:* = 0;
-         var possiblePosition:Object = itemSuperTypeToServerPosition(item.type.superTypeId);
+         var superTypeId:int = item.type.superTypeId;
+         if((item) && ((item.isLivingObject) || (item.isWrapperObject)))
+         {
+            cat = 0;
+            if(item.isLivingObject)
+            {
+               cat = item.livingObjectCategory;
+            }
+            else
+            {
+               cat = item.wrapperObjectCategory;
+            }
+            type = ItemType.getItemTypeById(cat);
+            if(type)
+            {
+               superTypeId = type.superTypeId;
+            }
+         }
+         var possiblePosition:Object = itemSuperTypeToServerPosition(superTypeId);
          if((possiblePosition) && (possiblePosition.length))
          {
             equipement = getViewContent("equipment");

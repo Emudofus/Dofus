@@ -144,6 +144,10 @@ package com.ankamagames.atouin.data.elements
          this._rawData["position"] = this._elementsIndex[edId];
          var edType:int = this._rawData.readByte();
          var ed:GraphicalElementData = GraphicalElementFactory.getGraphicalElementData(edId,edType);
+         if(!ed)
+         {
+            return null;
+         }
          ed.fromRaw(this._rawData,this.fileVersion);
          this._elementsMap[edId] = ed;
          return ed;

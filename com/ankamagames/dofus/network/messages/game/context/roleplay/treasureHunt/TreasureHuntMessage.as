@@ -3,6 +3,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
    import com.ankamagames.jerakine.network.NetworkMessage;
    import com.ankamagames.jerakine.network.INetworkMessage;
    import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStep;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntFlag;
    import flash.utils.IDataOutput;
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
@@ -12,7 +13,8 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
    {
       
       public function TreasureHuntMessage() {
-         this.stepList = new Vector.<TreasureHuntStep>();
+         this.knownStepsList = new Vector.<TreasureHuntStep>();
+         this.flags = new Vector.<TreasureHuntFlag>();
          super();
       }
       
@@ -26,9 +28,11 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
       
       public var questType:uint = 0;
       
-      public var startMapId:uint = 0;
+      public var startMapId:int = 0;
       
-      public var stepList:Vector.<TreasureHuntStep>;
+      public var knownStepsList:Vector.<TreasureHuntStep>;
+      
+      public var totalStepCount:uint = 0;
       
       public var checkPointCurrent:uint = 0;
       
@@ -36,17 +40,21 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
       
       public var availableRetryCount:int = 0;
       
+      public var flags:Vector.<TreasureHuntFlag>;
+      
       override public function getMessageId() : uint {
          return 6486;
       }
       
-      public function initTreasureHuntMessage(questType:uint = 0, startMapId:uint = 0, stepList:Vector.<TreasureHuntStep> = null, checkPointCurrent:uint = 0, checkPointTotal:uint = 0, availableRetryCount:int = 0) : TreasureHuntMessage {
+      public function initTreasureHuntMessage(questType:uint = 0, startMapId:int = 0, knownStepsList:Vector.<TreasureHuntStep> = null, totalStepCount:uint = 0, checkPointCurrent:uint = 0, checkPointTotal:uint = 0, availableRetryCount:int = 0, flags:Vector.<TreasureHuntFlag> = null) : TreasureHuntMessage {
          this.questType = questType;
          this.startMapId = startMapId;
-         this.stepList = stepList;
+         this.knownStepsList = knownStepsList;
+         this.totalStepCount = totalStepCount;
          this.checkPointCurrent = checkPointCurrent;
          this.checkPointTotal = checkPointTotal;
          this.availableRetryCount = availableRetryCount;
+         this.flags = flags;
          this._isInitialized = true;
          return this;
       }
@@ -54,10 +62,12 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
       override public function reset() : void {
          this.questType = 0;
          this.startMapId = 0;
-         this.stepList = new Vector.<TreasureHuntStep>();
+         this.knownStepsList = new Vector.<TreasureHuntStep>();
+         this.totalStepCount = 0;
          this.checkPointCurrent = 0;
          this.checkPointTotal = 0;
          this.availableRetryCount = 0;
+         this.flags = new Vector.<TreasureHuntFlag>();
          this._isInitialized = false;
       }
       
@@ -77,21 +87,22 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
       
       public function serializeAs_TreasureHuntMessage(output:IDataOutput) : void {
          output.writeByte(this.questType);
-         if(this.startMapId < 0)
+         output.writeInt(this.startMapId);
+         output.writeShort(this.knownStepsList.length);
+         var _i3:uint = 0;
+         while(_i3 < this.knownStepsList.length)
          {
-            throw new Error("Forbidden value (" + this.startMapId + ") on element startMapId.");
+            output.writeShort((this.knownStepsList[_i3] as TreasureHuntStep).getTypeId());
+            (this.knownStepsList[_i3] as TreasureHuntStep).serialize(output);
+            _i3++;
+         }
+         if(this.totalStepCount < 0)
+         {
+            throw new Error("Forbidden value (" + this.totalStepCount + ") on element totalStepCount.");
          }
          else
          {
-            output.writeInt(this.startMapId);
-            output.writeShort(this.stepList.length);
-            _i3 = 0;
-            while(_i3 < this.stepList.length)
-            {
-               output.writeShort((this.stepList[_i3] as TreasureHuntStep).getTypeId());
-               (this.stepList[_i3] as TreasureHuntStep).serialize(output);
-               _i3++;
-            }
+            output.writeByte(this.totalStepCount);
             if(this.checkPointCurrent < 0)
             {
                throw new Error("Forbidden value (" + this.checkPointCurrent + ") on element checkPointCurrent.");
@@ -107,6 +118,13 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
                {
                   output.writeInt(this.checkPointTotal);
                   output.writeInt(this.availableRetryCount);
+                  output.writeShort(this.flags.length);
+                  _i8 = 0;
+                  while(_i8 < this.flags.length)
+                  {
+                     (this.flags[_i8] as TreasureHuntFlag).serializeAs_TreasureHuntFlag(output);
+                     _i8++;
+                  }
                   return;
                }
             }
@@ -120,6 +138,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
       public function deserializeAs_TreasureHuntMessage(input:IDataInput) : void {
          var _id3:uint = 0;
          var _item3:TreasureHuntStep = null;
+         var _item8:TreasureHuntFlag = null;
          this.questType = input.readByte();
          if(this.questType < 0)
          {
@@ -128,22 +147,23 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
          else
          {
             this.startMapId = input.readInt();
-            if(this.startMapId < 0)
+            _knownStepsListLen = input.readUnsignedShort();
+            _i3 = 0;
+            while(_i3 < _knownStepsListLen)
             {
-               throw new Error("Forbidden value (" + this.startMapId + ") on element of TreasureHuntMessage.startMapId.");
+               _id3 = input.readUnsignedShort();
+               _item3 = ProtocolTypeManager.getInstance(TreasureHuntStep,_id3);
+               _item3.deserialize(input);
+               this.knownStepsList.push(_item3);
+               _i3++;
+            }
+            this.totalStepCount = input.readByte();
+            if(this.totalStepCount < 0)
+            {
+               throw new Error("Forbidden value (" + this.totalStepCount + ") on element of TreasureHuntMessage.totalStepCount.");
             }
             else
             {
-               _stepListLen = input.readUnsignedShort();
-               _i3 = 0;
-               while(_i3 < _stepListLen)
-               {
-                  _id3 = input.readUnsignedShort();
-                  _item3 = ProtocolTypeManager.getInstance(TreasureHuntStep,_id3);
-                  _item3.deserialize(input);
-                  this.stepList.push(_item3);
-                  _i3++;
-               }
                this.checkPointCurrent = input.readInt();
                if(this.checkPointCurrent < 0)
                {
@@ -159,6 +179,15 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHun
                   else
                   {
                      this.availableRetryCount = input.readInt();
+                     _flagsLen = input.readUnsignedShort();
+                     _i8 = 0;
+                     while(_i8 < _flagsLen)
+                     {
+                        _item8 = new TreasureHuntFlag();
+                        _item8.deserialize(input);
+                        this.flags.push(_item8);
+                        _i8++;
+                     }
                      return;
                   }
                }

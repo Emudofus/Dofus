@@ -2,6 +2,7 @@ package com.ankamagames.dofus.datacenter.world
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
    import com.ankamagames.jerakine.data.GameData;
+   import com.ankamagames.jerakine.data.I18n;
    
    public class WorldMap extends Object implements IDataCenter
    {
@@ -21,6 +22,8 @@ package com.ankamagames.dofus.datacenter.world
       }
       
       public var id:int;
+      
+      public var nameId:uint;
       
       public var origineX:int;
       
@@ -51,5 +54,15 @@ package com.ankamagames.dofus.datacenter.world
       public var totalHeight:int;
       
       public var zoom:Vector.<String>;
+      
+      private var _name:String;
+      
+      public function get name() : String {
+         if(!this._name)
+         {
+            this._name = I18n.getText(this.nameId);
+         }
+         return this._name;
+      }
    }
 }

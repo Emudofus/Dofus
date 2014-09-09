@@ -58,7 +58,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          {
             if(this.isListening(item))
             {
-               this.addItem(item,0);
+               this.addItem(item,0,false);
             }
          }
          this._content.sort(this.sortItemsByIndex);
@@ -81,7 +81,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          return this._types;
       }
       
-      public function addItem(item:ItemWrapper, invisible:int) : void {
+      public function addItem(item:ItemWrapper, invisible:int, needUpdateView:Boolean = true) : void {
          var clone:ItemWrapper = item.clone();
          clone.quantity = clone.quantity - invisible;
          this._content.unshift(clone);
@@ -98,7 +98,10 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
             this._typesQty[item.typeId] = 1;
             this._types[item.typeId] = item.type;
          }
-         this.updateView();
+         if(needUpdateView)
+         {
+            this.updateView();
+         }
       }
       
       public function removeItem(item:ItemWrapper, invisible:int) : void {

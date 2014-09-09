@@ -19,6 +19,7 @@ package com.ankamagames.dofus.internalDatacenter.conquest
    {
       
       public function PrismSubAreaWrapper() {
+         this._modulesItemIds = new Vector.<uint>();
          super();
       }
       
@@ -77,6 +78,7 @@ package com.ankamagames.dofus.internalDatacenter.conquest
                prism._lastTimeSlotModificationAuthorId = aipi.lastTimeSlotModificationAuthorId;
                prism._lastTimeSlotModificationAuthorName = aipi.lastTimeSlotModificationAuthorName;
                prism._lastTimeSlotModificationAuthorGuildId = aipi.lastTimeSlotModificationAuthorGuildId;
+               prism._modulesItemIds = aipi.modulesItemIds;
             }
             else
             {
@@ -84,6 +86,7 @@ package com.ankamagames.dofus.internalDatacenter.conquest
                prism._lastTimeSlotModificationAuthorId = 0;
                prism._lastTimeSlotModificationAuthorName = null;
                prism._lastTimeSlotModificationAuthorGuildId = 0;
+               prism._modulesItemIds = new Vector.<uint>();
                if(pgi.prism is AlliancePrismInformation)
                {
                   prism._alliance = AllianceWrapper.getFromNetwork(AlliancePrismInformation(pgi.prism).alliance);
@@ -143,6 +146,8 @@ package com.ankamagames.dofus.internalDatacenter.conquest
       
       private var _rewardTokenCount:uint;
       
+      private var _modulesItemIds:Vector.<uint>;
+      
       public function get subAreaId() : uint {
          return this._subAreaId;
       }
@@ -169,6 +174,10 @@ package com.ankamagames.dofus.internalDatacenter.conquest
       
       public function get rewardTokenCount() : uint {
          return this._rewardTokenCount;
+      }
+      
+      public function get modulesItemIds() : Vector.<uint> {
+         return this._modulesItemIds;
       }
       
       public function get nextVulnerabilityDate() : uint {

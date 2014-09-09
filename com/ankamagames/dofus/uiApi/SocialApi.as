@@ -138,6 +138,10 @@ package com.ankamagames.dofus.uiApi
          return this.socialFrame.warnWhenFriendOrGuildMemberAchieve;
       }
       
+      public function getWarnOnHardcoreDeath() : Boolean {
+         return this.socialFrame.warnOnHardcoreDeath;
+      }
+      
       public function getSpouse() : SpouseWrapper {
          return this.socialFrame.spouse;
       }

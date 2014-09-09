@@ -18,6 +18,7 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.game.common.actions.social.MemberWarningSetAction;
    import com.ankamagames.dofus.logic.game.common.actions.social.FriendOrGuildMemberLevelUpWarningSetAction;
    import com.ankamagames.dofus.logic.game.common.actions.social.FriendGuildSetWarnOnAchievementCompleteAction;
+   import com.ankamagames.dofus.logic.game.common.actions.social.WarnOnHardcoreDeathAction;
    import com.ankamagames.dofus.logic.game.common.actions.guild.GuildGetInformationsAction;
    import com.ankamagames.dofus.logic.game.common.actions.guild.GuildCreationValidAction;
    import com.ankamagames.dofus.logic.game.common.actions.guild.GuildModificationValidAction;
@@ -93,6 +94,8 @@ package com.ankamagames.dofus.misc.lists
       public static const FriendOrGuildMemberLevelUpWarningSet:DofusApiAction;
       
       public static const FriendGuildSetWarnOnAchievementComplete:DofusApiAction;
+      
+      public static const WarnOnHardcoreDeath:DofusApiAction;
       
       public static const GuildGetInformations:DofusApiAction;
       

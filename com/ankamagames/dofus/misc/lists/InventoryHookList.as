@@ -56,5 +56,7 @@ package com.ankamagames.dofus.misc.lists
       public static const PresetSelected:Hook;
       
       public static const PresetError:Hook;
+      
+      public static const AccessoryPreview:Hook;
    }
 }

@@ -13,11 +13,11 @@ package com.ankamagames.dofus.logic.game.common.types
          }
       }
       
-      private var _id:int;
+      protected var _id:int;
       
-      private var _name:String;
+      protected var _name:String;
       
-      private var _description:String;
+      protected var _description:String;
       
       public function init(data:Object) : void {
          this._id = data.id;

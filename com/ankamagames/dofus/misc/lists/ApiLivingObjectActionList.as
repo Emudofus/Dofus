@@ -6,6 +6,7 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.game.common.actions.livingObject.LivingObjectChangeSkinRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.livingObject.MimicryObjectFeedAndAssociateRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.livingObject.MimicryObjectEraseRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.livingObject.WrapperObjectDissociateRequestAction;
    
    public class ApiLivingObjectActionList extends Object
    {
@@ -23,5 +24,7 @@ package com.ankamagames.dofus.misc.lists
       public static const MimicryObjectFeedAndAssociateRequest:DofusApiAction;
       
       public static const MimicryObjectEraseRequest:DofusApiAction;
+      
+      public static const WrapperObjectDissociateRequest:DofusApiAction;
    }
 }

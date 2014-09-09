@@ -21,6 +21,8 @@ package com.ankamagames.jerakine.network
       
       public static const BIT_MASK:uint = 3;
       
+      public static var HASH_FUNCTION:Function;
+      
       public static function writePacket(output:IDataOutput, id:int, data:ByteArray) : void {
          var high:uint = 0;
          var low:uint = 0;

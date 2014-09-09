@@ -25,6 +25,8 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.internalDatacenter.communication.ChatBubble;
    import com.ankamagames.dofus.network.messages.game.subscriber.SubscriptionLimitationMessage;
    import com.ankamagames.dofus.network.messages.game.subscriber.SubscriptionZoneMessage;
+   import com.ankamagames.dofus.network.messages.game.guest.GuestLimitationMessage;
+   import com.ankamagames.dofus.network.messages.game.guest.GuestModeMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightOptionStateUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightOptionToggleMessage;
    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayInteractivesFrame;
@@ -52,6 +54,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.misc.lists.ChatHookList;
    import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
    import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+   import com.ankamagames.dofus.network.enums.GuestLimitationEnum;
    import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
    import com.ankamagames.dofus.network.enums.FightOptionsEnum;
    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
@@ -113,6 +116,9 @@ package com.ankamagames.dofus.logic.game.common.frames
          var slmsg:SubscriptionLimitationMessage = null;
          var text:String = null;
          var szmsg:SubscriptionZoneMessage = null;
+         var glmsg:GuestLimitationMessage = null;
+         var textGuest:String = null;
+         var gmmsg:GuestModeMessage = null;
          var gfosumsg:GameFightOptionStateUpdateMessage = null;
          var option:uint = 0;
          var gfotmsg:GameFightOptionToggleMessage = null;
@@ -300,6 +306,30 @@ package com.ankamagames.dofus.logic.game.common.frames
                szmsg = msg as SubscriptionZoneMessage;
                _log.error("SubscriptionZoneMessage active " + szmsg.active);
                KernelEventsManager.getInstance().processCallback(HookList.SubscriptionZone,szmsg.active);
+               return true;
+            case msg is GuestLimitationMessage:
+               glmsg = msg as GuestLimitationMessage;
+               _log.error("GuestLimitationMessage reason " + glmsg.reason);
+               textGuest = "";
+               switch(glmsg.reason)
+               {
+                  case GuestLimitationEnum.GUEST_LIMIT_ON_JOB_XP:
+                  case GuestLimitationEnum.GUEST_LIMIT_ON_JOB_USE:
+                  case GuestLimitationEnum.GUEST_LIMIT_ON_MAP:
+                  case GuestLimitationEnum.GUEST_LIMIT_ON_ITEM:
+                  case GuestLimitationEnum.GUEST_LIMIT_ON_VENDOR:
+                  case GuestLimitationEnum.GUEST_LIMIT_ON_GUILD:
+                  case GuestLimitationEnum.GUEST_LIMIT_ON_CHAT:
+                     break;
+               }
+               textGuest = I18n.getUiText("ui.fight.guestAccount");
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,textGuest,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               KernelEventsManager.getInstance().processCallback(HookList.GuestLimitationPopup);
+               return true;
+            case msg is GuestModeMessage:
+               gmmsg = msg as GuestModeMessage;
+               _log.error("GuestModeMessage active " + gmmsg.active);
+               KernelEventsManager.getInstance().processCallback(HookList.GuestMode,gmmsg.active);
                return true;
             case msg is GameFightOptionStateUpdateMessage:
                gfosumsg = msg as GameFightOptionStateUpdateMessage;

@@ -254,7 +254,7 @@ package com.ankamagames.jerakine.types.positions
          return null;
       }
       
-      public function getNearestFreeCellInDirection(orientation:uint, mapProvider:IDataMapProvider, allowItself:Boolean = true, allowThoughEntity:Boolean = true, forbidenCellsId:Array = null) : MapPoint {
+      public function getNearestFreeCellInDirection(orientation:uint, mapProvider:IDataMapProvider, allowItself:Boolean = true, allowThoughEntity:Boolean = true, ignoreSpeed:Boolean = false, forbidenCellsId:Array = null) : MapPoint {
          var i:* = 0;
          var speed:* = 0;
          var weight:* = 0;
@@ -276,7 +276,7 @@ package com.ankamagames.jerakine.types.positions
                {
                   speed = -100;
                }
-               weights[i] = getOrientationsDistance(i,orientation) + (speed >= 0?5 - speed:11 + Math.abs(speed));
+               weights[i] = getOrientationsDistance(i,orientation) + (!ignoreSpeed?speed >= 0?5 - speed:11 + Math.abs(speed):0);
             }
             else
             {

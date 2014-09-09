@@ -10,6 +10,10 @@ package com.ankamagames.dofus.logic.common.managers
       
       public function PlayerManager() {
          super();
+         if(!this._connexionTime)
+         {
+            this._connexionTime = new Date().getTime();
+         }
          if(_self != null)
          {
             throw new SingletonError("PlayerManager is a singleton and should not be instanciated directly.");
@@ -64,6 +68,10 @@ package com.ankamagames.dofus.logic.common.managers
       
       public var autoConnectOfASpecificCharacterId:int = -1;
       
+      private var _subscriptionDurationElapsed:Number;
+      
+      private var _connexionTime:Number;
+      
       public function set server(s:Server) : void {
          this._server = s;
       }
@@ -85,6 +93,25 @@ package com.ankamagames.dofus.logic.common.managers
             }
          }
          return this._server;
+      }
+      
+      public function get subscriptionDurationElapsed() : Number {
+         var now:* = NaN;
+         var subscriptionSinceConnection:* = NaN;
+         if(this.subscriptionEndDate > this._connexionTime)
+         {
+            now = new Date().getTime();
+            subscriptionSinceConnection = Math.min(this.subscriptionEndDate,now) - this._connexionTime;
+            if(subscriptionSinceConnection > 0)
+            {
+               return this._subscriptionDurationElapsed + Math.floor(subscriptionSinceConnection / 1000);
+            }
+         }
+         return this._subscriptionDurationElapsed;
+      }
+      
+      public function set subscriptionDurationElapsed(n:Number) : void {
+         this._subscriptionDurationElapsed = n;
       }
       
       public function destroy() : void {

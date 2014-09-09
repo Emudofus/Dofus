@@ -15,8 +15,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.jerakine.types.enums.Priority;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.jerakine.utils.system.AirScanner;
-   import com.ankamagames.jerakine.data.XmlConfig;
-   import com.ankamagames.dofus.types.enums.LanguageEnum;
    import com.ankamagames.jerakine.types.enums.DataStoreEnum;
    import com.ankamagames.jerakine.managers.StoreDataManager;
    import flash.events.TimerEvent;
@@ -25,6 +23,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.events.Event;
    import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.data.XmlConfig;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.atouin.messages.AdjacentMapOverMessage;
    import com.ankamagames.atouin.types.GraphicCell;
@@ -62,6 +61,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
    import com.ankamagames.dofus.datacenter.npcs.Npc;
    import com.ankamagames.dofus.logic.game.common.frames.AllianceFrame;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayTreasureHintInformations;
    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightJoinRequestMessage;
    import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberInformations;
    import com.ankamagames.jerakine.types.positions.MapPoint;
@@ -74,12 +74,14 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.atouin.utils.CellIdConverter;
    import com.ankamagames.atouin.managers.InteractiveCellManager;
    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
+   import com.ankamagames.atouin.managers.MapDisplayManager;
    import com.ankamagames.jerakine.data.I18n;
    import flash.display.Sprite;
    import com.ankamagames.atouin.AtouinConstants;
+   import com.ankamagames.atouin.Atouin;
    import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.berilia.enums.StrataEnum;
-   import com.ankamagames.atouin.Atouin;
+   import com.ankamagames.berilia.types.graphic.GraphicContainer;
    import com.ankamagames.atouin.types.FrustumShape;
    import flash.events.MouseEvent;
    import com.ankamagames.jerakine.managers.OptionManager;
@@ -124,16 +126,17 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.logic.game.fight.actions.ShowAllNamesAction;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseDownMessage;
    import flash.ui.Mouse;
-   import com.ankamagames.jerakine.utils.system.SystemManager;
-   import com.ankamagames.jerakine.enum.WebBrowserEnum;
-   import flash.external.ExternalInterface;
-   import flash.net.navigateToURL;
-   import flash.net.URLRequest;
    import com.ankamagames.dofus.network.enums.PlayerLifeStatusEnum;
    import com.ankamagames.dofus.misc.lists.ChatHookList;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeOnHumanVendorRequestMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyInvitationRequestMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.HouseKickIndoorMerchantRequestMessage;
+   import com.ankamagames.dofus.types.enums.LanguageEnum;
+   import com.ankamagames.jerakine.utils.system.SystemManager;
+   import com.ankamagames.jerakine.enum.WebBrowserEnum;
+   import flash.external.ExternalInterface;
+   import flash.net.navigateToURL;
+   import flash.net.URLRequest;
    
    public class RoleplayWorldFrame extends Object implements Frame
    {
@@ -235,7 +238,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
       }
       
       public function pushed() : Boolean {
-         if((AirScanner.isStreamingVersion()) && (XmlConfig.getInstance().getEntry("config.lang.current") == LanguageEnum.LANG_FR))
+         if(AirScanner.isStreamingVersion())
          {
             if(!_dataStoreType)
             {
@@ -315,6 +318,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var amomsg:AdjacentMapOverMessage = null;
          var targetCell:Point = null;
          var cellSprite:GraphicCell = null;
+         var cellGlobalPos:Point = null;
          var item:LinkedCursorData = null;
          var neighborId:* = 0;
          var neighborSubarea:SubArea = null;
@@ -382,6 +386,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var npcInfos:GameRolePlayNpcInformations = null;
          var npc:Npc = null;
          var allianceFrame:AllianceFrame = null;
+         var treasureHintInfos:GameRolePlayTreasureHintInformations = null;
+         var npch:Npc = null;
          var targetLevel:uint = 0;
          var playerLevel:uint = 0;
          var rcf:RoleplayContextFrame = null;
@@ -471,22 +477,23 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                amomsg = AdjacentMapOverMessage(msg);
                targetCell = CellIdConverter.cellIdToCoord(amomsg.cellId);
                cellSprite = InteractiveCellManager.getInstance().getCell(amomsg.cellId);
+               cellGlobalPos = cellSprite.parent.localToGlobal(new Point(cellSprite.x,cellSprite.y));
                item = new LinkedCursorData();
                if(amomsg.direction == DirectionsEnum.RIGHT)
                {
-                  neighborId = PlayedCharacterManager.getInstance().currentMap.rightNeighbourId;
+                  neighborId = MapDisplayManager.getInstance().getDataMapContainer().dataMap.rightNeighbourId;
                }
                else if(amomsg.direction == DirectionsEnum.DOWN)
                {
-                  neighborId = PlayedCharacterManager.getInstance().currentMap.bottomNeighbourId;
+                  neighborId = MapDisplayManager.getInstance().getDataMapContainer().dataMap.bottomNeighbourId;
                }
                else if(amomsg.direction == DirectionsEnum.LEFT)
                {
-                  neighborId = PlayedCharacterManager.getInstance().currentMap.leftNeighbourId;
+                  neighborId = MapDisplayManager.getInstance().getDataMapContainer().dataMap.leftNeighbourId;
                }
                else if(amomsg.direction == DirectionsEnum.UP)
                {
-                  neighborId = PlayedCharacterManager.getInstance().currentMap.topNeighbourId;
+                  neighborId = MapDisplayManager.getInstance().getDataMapContainer().dataMap.topNeighbourId;
                }
                
                
@@ -511,7 +518,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                      item.sprite.x = amomsg.zone.x + amomsg.zone.width / 2;
                      item.offset = new Point(0,0);
                      item.lockY = true;
-                     item.sprite.y = cellSprite.y + AtouinConstants.CELL_HEIGHT / 2;
+                     item.sprite.y = cellGlobalPos.y + AtouinConstants.CELL_HEIGHT / 2 * Atouin.getInstance().currentZoom;
                      if(subareaChange)
                      {
                         x = 0;
@@ -524,7 +531,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                      item.sprite.y = amomsg.zone.y + amomsg.zone.height / 2;
                      item.offset = new Point(0,0);
                      item.lockX = true;
-                     item.sprite.x = cellSprite.x + AtouinConstants.CELL_WIDTH / 2;
+                     item.sprite.x = cellGlobalPos.x + AtouinConstants.CELL_WIDTH / 2 * Atouin.getInstance().currentZoom;
                      if(subareaChange)
                      {
                         x = -this._mouseLabel.textWidth / 2;
@@ -537,7 +544,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                      item.sprite.y = amomsg.zone.getBounds(amomsg.zone).top;
                      item.offset = new Point(0,0);
                      item.lockX = true;
-                     item.sprite.x = cellSprite.x + AtouinConstants.CELL_WIDTH / 2;
+                     item.sprite.x = cellGlobalPos.x + AtouinConstants.CELL_WIDTH / 2 * Atouin.getInstance().currentZoom;
                      if(subareaChange)
                      {
                         x = -this._mouseLabel.textWidth / 2;
@@ -550,7 +557,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                      item.sprite.x = amomsg.zone.getBounds(amomsg.zone).left + amomsg.zone.width / 2;
                      item.offset = new Point(0,0);
                      item.lockY = true;
-                     item.sprite.y = cellSprite.y + AtouinConstants.CELL_HEIGHT / 2;
+                     item.sprite.y = cellGlobalPos.y + AtouinConstants.CELL_HEIGHT / 2 * Atouin.getInstance().currentZoom;
                      if(subareaChange)
                      {
                         x = -this._mouseLabel.textWidth;
@@ -568,10 +575,21 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                LinkedCursorSpriteManager.getInstance().addItem("changeMapCursor",item);
                return true;
             case msg is MapComplementaryInformationsDataMessage:
+               if(!StageShareManager.mouseOnStage)
+               {
+                  return false;
+               }
                mousePos = new Point(StageShareManager.stage.mouseX,StageShareManager.stage.mouseY);
                if(Atouin.getInstance().options.frustum.containsPoint(mousePos))
                {
                   objectsUnder = StageShareManager.stage.getObjectsUnderPoint(mousePos);
+                  for each(o in objectsUnder)
+                  {
+                     if((o is GraphicContainer) && (!((o as GraphicContainer).customUnicName.indexOf("banner") == -1)))
+                     {
+                        return false;
+                     }
+                  }
                   for each(o in objectsUnder)
                   {
                      if(o.parent is FrustumShape)
@@ -723,6 +741,17 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                      case infos is GameContextPaddockItemInformations:
                         cacheName = "PaddockItemCache";
                         break;
+                     case infos is GameRolePlayTreasureHintInformations:
+                        if(this.allowOnlyCharacterInteraction)
+                        {
+                           return false;
+                        }
+                        treasureHintInfos = infos as GameRolePlayTreasureHintInformations;
+                        npch = Npc.getNpcById(treasureHintInfos.npcId);
+                        infos = new TextTooltipInfo(npch.name,XmlConfig.getInstance().getEntry("config.ui.skin") + "css/tooltip_npc.css","orange",0);
+                        infos.bgCornerRadius = 10;
+                        cacheName = "TrHintCacheName";
+                        break;
                   }
                }
                if(!infos)
@@ -867,7 +896,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                
                return true;
             case msg is InteractiveElementActivationMessage:
-               if(this.allowOnlyCharacterInteraction)
+               if((this.allowOnlyCharacterInteraction) || (ShortcutsFrame.ctrlKeyDown))
                {
                   return false;
                }
@@ -893,7 +922,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         i++;
                      }
                   }
-                  nearestCell = ieamsg.position.getNearestFreeCellInDirection(ieamsg.position.advancedOrientationTo(playerEntity.position),DataMapProvider.getInstance(),true,true,forbiddenCellsIds);
+                  nearestCell = ieamsg.position.getNearestFreeCellInDirection(ieamsg.position.advancedOrientationTo(playerEntity.position),DataMapProvider.getInstance(),true,true,false,forbiddenCellsIds);
                   if(!nearestCell)
                   {
                      nearestCell = ieamsg.position;
@@ -907,7 +936,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                }
                return true;
             case msg is InteractiveElementMouseOverMessage:
-               if(this.allowOnlyCharacterInteraction)
+               if((this.allowOnlyCharacterInteraction) || (ShortcutsFrame.ctrlKeyDown))
                {
                   return false;
                }
@@ -1041,43 +1070,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          return true;
       }
       
-      private function openFeedbackPopup(e:TimerEvent = null) : void {
-         var commonMod:Object = null;
-         if(Kernel.getWorker().contains(RoleplayWorldFrame))
-         {
-            _feedbackPopupOnNextPush = false;
-            _streamingFeebackTimer.stop();
-            commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-            commonMod.openPopup(I18n.getUiText("ui.popup.information"),"Un formulaire est disponible afin de receuillir vos retours sur la version Streaming.\nSouhaitez-vous le remplir maintenant ?",[I18n.getUiText("ui.common.yes"),I18n.getUiText("ui.common.no")],[this.openStreamingFeebackForm,this.dontOpenStreamingFeedbackForm],null,this.dontOpenStreamingFeedbackForm,null,false,true);
-         }
-         else
-         {
-            _feedbackPopupOnNextPush = true;
-         }
-      }
-      
-      private function openStreamingFeebackForm() : void {
-         _streamingFeebackTimer.removeEventListener(TimerEvent.TIMER_COMPLETE,this.openFeedbackPopup);
-         _streamingFeebackTimer = null;
-         StoreDataManager.getInstance().setData(_dataStoreType,"hasClickedFeedbackLink",true);
-         if(SystemManager.getSingleton().browser == WebBrowserEnum.CHROME)
-         {
-            ExternalInterface.call("window.open","https://fr.surveymonkey.com/s/DofusWeb","_blank");
-         }
-         else
-         {
-            navigateToURL(new URLRequest("https://fr.surveymonkey.com/s/DofusWeb"),"_blank");
-         }
-      }
-      
-      private function dontOpenStreamingFeedbackForm() : void {
-         _streamingFeedbackDelay = _streamingFeedbackDelay + 3600000;
-         _streamingFeebackTimer.delay = _streamingFeedbackDelay;
-         _streamingFeebackTimer.reset();
-         _streamingFeebackTimer.start();
-         StoreDataManager.getInstance().setData(_dataStoreType,"hasRefusedToOpenFeedbackLink",true);
-      }
-      
       private function onEntityAnimRendered(pEvent:TiphonEvent) : void {
          var ac:AnimatedCharacter = pEvent.currentTarget as AnimatedCharacter;
          ac.removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onEntityAnimRendered);
@@ -1131,6 +1123,61 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          {
             Kernel.getWorker().removeFrame(_monstersInfoFrame);
          }
+      }
+      
+      private function openFeedbackPopup(e:TimerEvent = null) : void {
+         var popupTxt:String = null;
+         var commonMod:Object = null;
+         if(Kernel.getWorker().contains(RoleplayWorldFrame))
+         {
+            _feedbackPopupOnNextPush = false;
+            _streamingFeebackTimer.stop();
+            if(XmlConfig.getInstance().getEntry("config.lang.current") == LanguageEnum.LANG_FR)
+            {
+               popupTxt = "Un formulaire est disponible afin de receuillir vos retours sur la version Streaming.\nSouhaitez-vous le remplir maintenant ?";
+            }
+            else
+            {
+               popupTxt = "A form is available to give us your feedback on the Streaming version.\nWould you like to open it now?";
+            }
+            commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+            commonMod.openPopup(I18n.getUiText("ui.popup.information"),popupTxt,[I18n.getUiText("ui.common.yes"),I18n.getUiText("ui.common.no")],[this.openStreamingFeebackForm,this.dontOpenStreamingFeedbackForm],null,this.dontOpenStreamingFeedbackForm,null,false,true);
+         }
+         else
+         {
+            _feedbackPopupOnNextPush = true;
+         }
+      }
+      
+      private function openStreamingFeebackForm() : void {
+         var url:String = null;
+         _streamingFeebackTimer.removeEventListener(TimerEvent.TIMER_COMPLETE,this.openFeedbackPopup);
+         _streamingFeebackTimer = null;
+         if(XmlConfig.getInstance().getEntry("config.lang.current") == LanguageEnum.LANG_FR)
+         {
+            url = "https://fr.surveymonkey.com/s/DofusWeb2";
+         }
+         else
+         {
+            url = "https://fr.surveymonkey.com/s/DofusWebEN";
+         }
+         StoreDataManager.getInstance().setData(_dataStoreType,"hasClickedFeedbackLink",true);
+         if(SystemManager.getSingleton().browser == WebBrowserEnum.CHROME)
+         {
+            ExternalInterface.call("window.open",url,"_blank");
+         }
+         else
+         {
+            navigateToURL(new URLRequest(url),"_blank");
+         }
+      }
+      
+      private function dontOpenStreamingFeedbackForm() : void {
+         _streamingFeedbackDelay = _streamingFeedbackDelay + 3600000;
+         _streamingFeebackTimer.delay = _streamingFeedbackDelay;
+         _streamingFeebackTimer.reset();
+         _streamingFeebackTimer.start();
+         StoreDataManager.getInstance().setData(_dataStoreType,"hasRefusedToOpenFeedbackLink",true);
       }
    }
 }

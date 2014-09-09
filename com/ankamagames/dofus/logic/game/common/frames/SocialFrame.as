@@ -57,6 +57,8 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.friend.FriendSetWarnOnLevelGainMessage;
    import com.ankamagames.dofus.logic.game.common.actions.social.FriendGuildSetWarnOnAchievementCompleteAction;
    import com.ankamagames.dofus.network.messages.game.achievement.FriendGuildSetWarnOnAchievementCompleteMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.social.WarnOnHardcoreDeathAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.death.WarnOnPermaDeathMessage;
    import com.ankamagames.dofus.network.messages.game.friend.SpouseStatusMessage;
    import com.ankamagames.dofus.network.messages.game.chat.smiley.MoodSmileyUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.friend.FriendWarnOnConnectionStateMessage;
@@ -64,6 +66,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.guild.GuildMemberOnlineStatusMessage;
    import com.ankamagames.dofus.network.messages.game.friend.FriendWarnOnLevelGainStateMessage;
    import com.ankamagames.dofus.network.messages.game.achievement.FriendGuildWarnOnAchievementCompleteStateMessage;
+   import com.ankamagames.dofus.network.messages.game.friend.WarnOnPermaDeathStateMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildInformationsMembersMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildHousesInformationMessage;
    import com.ankamagames.dofus.network.messages.game.guild.GuildModificationStartedMessage;
@@ -243,6 +246,8 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       private var _warnWhenFriendOrGuildMemberAchieve:Boolean;
       
+      private var _warnOnHardcoreDeath:Boolean;
+      
       private var _autoLeaveHelpers:Boolean;
       
       private var _allGuilds:Dictionary;
@@ -311,6 +316,10 @@ package com.ankamagames.dofus.logic.game.common.frames
       
       public function get warnWhenFriendOrGuildMemberAchieve() : Boolean {
          return this._warnWhenFriendOrGuildMemberAchieve;
+      }
+      
+      public function get warnOnHardcoreDeath() : Boolean {
+         return this._warnOnHardcoreDeath;
       }
       
       public function get guildHousesUpdateNeeded() : Boolean {
@@ -388,6 +397,8 @@ package com.ankamagames.dofus.logic.game.common.frames
          var fswolgmsg:FriendSetWarnOnLevelGainMessage = null;
          var fgswoaca:FriendGuildSetWarnOnAchievementCompleteAction = null;
          var fgswoacmsg:FriendGuildSetWarnOnAchievementCompleteMessage = null;
+         var wohda:WarnOnHardcoreDeathAction = null;
+         var wopdmsg:WarnOnPermaDeathMessage = null;
          var ssmsg:SpouseStatusMessage = null;
          var msumsg:MoodSmileyUpdateMessage = null;
          var fwocsmsg:FriendWarnOnConnectionStateMessage = null;
@@ -395,6 +406,7 @@ package com.ankamagames.dofus.logic.game.common.frames
          var gmosm:GuildMemberOnlineStatusMessage = null;
          var fwolgsmsg:FriendWarnOnLevelGainStateMessage = null;
          var fgwoacsmsg:FriendGuildWarnOnAchievementCompleteStateMessage = null;
+         var wopdsmsg:WarnOnPermaDeathStateMessage = null;
          var gimmsg:GuildInformationsMembersMessage = null;
          var ghimsg:GuildHousesInformationMessage = null;
          var gmsmsg:GuildModificationStartedMessage = null;
@@ -895,6 +907,13 @@ package com.ankamagames.dofus.logic.game.common.frames
                fgswoacmsg.initFriendGuildSetWarnOnAchievementCompleteMessage(fgswoaca.enable);
                ConnectionsHandler.getConnection().send(fgswoacmsg);
                return true;
+            case msg is WarnOnHardcoreDeathAction:
+               wohda = msg as WarnOnHardcoreDeathAction;
+               this._warnOnHardcoreDeath = wohda.enable;
+               wopdmsg = new WarnOnPermaDeathMessage();
+               wopdmsg.initWarnOnPermaDeathMessage(wohda.enable);
+               ConnectionsHandler.getConnection().send(wopdmsg);
+               return true;
             case msg is SpouseStatusMessage:
                ssmsg = msg as SpouseStatusMessage;
                this._hasSpouse = ssmsg.hasSpouse;
@@ -987,6 +1006,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                fgwoacsmsg = msg as FriendGuildWarnOnAchievementCompleteStateMessage;
                this._warnWhenFriendOrGuildMemberAchieve = fgwoacsmsg.enable;
                KernelEventsManager.getInstance().processCallback(SocialHookList.FriendGuildWarnOnAchievementCompleteState,fgwoacsmsg.enable);
+               return true;
+            case msg is WarnOnPermaDeathStateMessage:
+               wopdsmsg = msg as WarnOnPermaDeathStateMessage;
+               this._warnOnHardcoreDeath = wopdsmsg.enable;
+               KernelEventsManager.getInstance().processCallback(SocialHookList.WarnOnHardcoreDeathState,wopdsmsg.enable);
                return true;
             case msg is GuildInformationsMembersMessage:
                gimmsg = msg as GuildInformationsMembersMessage;

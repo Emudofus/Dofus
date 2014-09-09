@@ -25,6 +25,11 @@ package com.ankamagames.dofus.console.moduleLogger
             {
                this.displayLog(object as String,args[1]);
             }
+            else if((object is String) && (args[1] == LOG_CHAT))
+            {
+               this.type = LOG_CHAT;
+               this.textInfo = "<span class=\'" + args[2] + "\'>[" + this.getDate() + "] " + String(object) + "</span>";
+            }
             else if(object is Hook)
             {
                this.displayHookInformations(object as Hook,args[1]);
@@ -47,6 +52,7 @@ package com.ankamagames.dofus.console.moduleLogger
                this.textInfo = object as String;
                this.type = LOG;
             }
+            
             
             
             

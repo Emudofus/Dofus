@@ -1,11 +1,11 @@
 package com.ankamagames.jerakine.network
 {
-   import flash.net.Socket;
    import flash.events.IEventDispatcher;
    import flash.utils.Dictionary;
    import com.ankamagames.jerakine.logger.Logger;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
+   import flash.net.Socket;
    import com.ankamagames.jerakine.messages.MessageHandler;
    import flash.utils.ByteArray;
    import flash.utils.Timer;
@@ -13,8 +13,8 @@ package com.ankamagames.jerakine.network
    import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
    import com.ankamagames.jerakine.replay.LogFrame;
    import com.ankamagames.jerakine.replay.LogTypeEnum;
-   import flash.events.ProgressEvent;
    import flash.events.Event;
+   import flash.events.ProgressEvent;
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
    import flash.utils.IDataInput;
@@ -23,14 +23,23 @@ package com.ankamagames.jerakine.network
    import flash.utils.setTimeout;
    import com.ankamagames.jerakine.network.messages.ServerConnectionClosedMessage;
    import com.ankamagames.jerakine.network.messages.ServerConnectionFailedMessage;
+   import flash.net.SecureSocket;
    
-   public class ServerConnection extends Socket implements IEventDispatcher, IServerConnection
+   public class ServerConnection extends Object implements IEventDispatcher, IServerConnection
    {
       
-      public function ServerConnection(host:String = null, port:int = 0) {
+      public function ServerConnection(host:String = null, port:int = 0, secure:Boolean = false) {
          this._pauseBuffer = new Array();
          this._latencyBuffer = new Array();
-         super(host,port);
+         super();
+         if((secure) && (SecureSocket.isSupported))
+         {
+            this._socket = new SecureSocket();
+         }
+         else
+         {
+            this._socket = new Socket(host,port);
+         }
          this._remoteSrvHost = host;
          this._remoteSrvPort = port;
       }
@@ -43,6 +52,8 @@ package com.ankamagames.jerakine.network
       
       public static var DEBUG_VERBOSE:Boolean = false;
       
+      public static var DEBUG_LOW_LEVEL_VERBOSE:Boolean = false;
+      
       private static const DEBUG_DATA:Boolean = true;
       
       private static const LATENCY_AVG_BUFFER_SIZE:uint = 50;
@@ -50,6 +61,8 @@ package com.ankamagames.jerakine.network
       public static var MEMORY_LOG:Dictionary;
       
       protected static const _log:Logger;
+      
+      protected var _socket:Socket;
       
       private var _rawParser:RawDataParser;
       
@@ -89,8 +102,8 @@ package com.ankamagames.jerakine.network
       
       private var _sendSequenceId:uint = 0;
       
-      override public function close() : void {
-         super.close();
+      public function close() : void {
+         this._socket.close();
       }
       
       public function get rawParser() : RawDataParser {
@@ -155,7 +168,11 @@ package com.ankamagames.jerakine.network
          return this._sendSequenceId;
       }
       
-      override public function connect(host:String, port:int) : void {
+      public function get connected() : Boolean {
+         return this._socket.connected;
+      }
+      
+      public function connect(host:String, port:int) : void {
          if((this._connecting) || (disabled) || (disabledIn) && (disabledOut))
          {
             return;
@@ -165,7 +182,7 @@ package com.ankamagames.jerakine.network
          this._remoteSrvPort = port;
          this.addListeners();
          _log.info("Connecting to " + host + ":" + port + "...");
-         super.connect(host,port);
+         this._socket.connect(host,port);
          this._timeoutTimer = new Timer(10000,1);
          this._timeoutTimer.start();
          this._timeoutTimer.addEventListener(TimerEvent.TIMER_COMPLETE,this.onSocketTimeOut);
@@ -254,7 +271,7 @@ package com.ankamagames.jerakine.network
          {
             _log.warn("Sending non-initialized packet " + msg + " !");
          }
-         if(!connected)
+         if(!this._socket.connected)
          {
             if(this._connecting)
             {
@@ -265,10 +282,10 @@ package com.ankamagames.jerakine.network
          this.lowSend(msg);
       }
       
-      override public function toString() : String {
+      public function toString() : String {
          var status:String = "Server connection status:\n";
-         status = status + ("  Connected:       " + (connected?"Yes":"No") + "\n");
-         if(connected)
+         status = status + ("  Connected:       " + (this._socket.connected?"Yes":"No") + "\n");
+         if(this._socket.connected)
          {
             status = status + ("  Connected to:    " + this._remoteSrvHost + ":" + this._remoteSrvPort + "\n");
          }
@@ -328,24 +345,48 @@ package com.ankamagames.jerakine.network
          }
       }
       
+      public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false) : void {
+         this._socket.addEventListener(type,listener,useCapture,priority,useWeakReference);
+      }
+      
+      public function dispatchEvent(event:Event) : Boolean {
+         return this._socket.dispatchEvent(event);
+      }
+      
+      public function hasEventListener(type:String) : Boolean {
+         return this._socket.hasEventListener(type);
+      }
+      
+      public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false) : void {
+         this._socket.removeEventListener(type,listener,useCapture);
+      }
+      
+      public function willTrigger(type:String) : Boolean {
+         return this._socket.willTrigger(type);
+      }
+      
       private function addListeners() : void {
-         addEventListener(ProgressEvent.SOCKET_DATA,this.onSocketData,false,0,true);
-         addEventListener(Event.CONNECT,this.onConnect,false,0,true);
-         addEventListener(Event.CLOSE,this.onClose,false,0,true);
-         addEventListener(IOErrorEvent.IO_ERROR,this.onSocketError,false,0,true);
-         addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onSecurityError,false,0,true);
+         this._socket.addEventListener(ProgressEvent.SOCKET_DATA,this.onSocketData,false,0,true);
+         this._socket.addEventListener(Event.CONNECT,this.onConnect,false,0,true);
+         this._socket.addEventListener(Event.CLOSE,this.onClose,false,0,true);
+         this._socket.addEventListener(IOErrorEvent.IO_ERROR,this.onSocketError,false,0,true);
+         this._socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onSecurityError,false,0,true);
       }
       
       private function removeListeners() : void {
-         removeEventListener(ProgressEvent.SOCKET_DATA,this.onSocketData);
-         removeEventListener(Event.CONNECT,this.onConnect);
-         removeEventListener(Event.CLOSE,this.onClose);
-         removeEventListener(IOErrorEvent.IO_ERROR,this.onSocketError);
-         removeEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onSecurityError);
+         this._socket.removeEventListener(ProgressEvent.SOCKET_DATA,this.onSocketData);
+         this._socket.removeEventListener(Event.CONNECT,this.onConnect);
+         this._socket.removeEventListener(Event.CLOSE,this.onClose);
+         this._socket.removeEventListener(IOErrorEvent.IO_ERROR,this.onSocketError);
+         this._socket.removeEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onSecurityError);
       }
       
       private function receive(src:IDataInput) : void {
          var msg:INetworkMessage = null;
+         if(DEBUG_LOW_LEVEL_VERBOSE)
+         {
+            _log.info("Receive Event, byte available : " + src.bytesAvailable);
+         }
          var count:uint = 0;
          try
          {
@@ -427,7 +468,7 @@ package com.ankamagames.jerakine.network
       }
       
       protected function lowSend(msg:INetworkMessage, autoFlush:Boolean = true) : void {
-         msg.pack(this);
+         msg.pack(this._socket);
          this._latestSent = getTimer();
          this._lastSent = getTimer();
          this._sendSequenceId++;
@@ -437,7 +478,7 @@ package com.ankamagames.jerakine.network
          }
          if(autoFlush)
          {
-            flush();
+            this._socket.flush();
          }
       }
       
@@ -450,6 +491,10 @@ package com.ankamagames.jerakine.network
          {
             if(src.bytesAvailable < 2)
             {
+               if(DEBUG_LOW_LEVEL_VERBOSE)
+               {
+                  _log.info("Not enought data to read the header, byte available : " + src.bytesAvailable + " (needed : 2)");
+               }
                return null;
             }
             staticHeader = src.readUnsignedShort();
@@ -462,14 +507,26 @@ package com.ankamagames.jerakine.network
                   this.updateLatency();
                   msg = this._rawParser.parse(src,messageId,messageLength);
                   MEMORY_LOG[msg] = 1;
+                  if(DEBUG_LOW_LEVEL_VERBOSE)
+                  {
+                     _log.info("Full parsing done");
+                  }
                   return msg;
+               }
+               if(DEBUG_LOW_LEVEL_VERBOSE)
+               {
+                  _log.info("Not enought data to read msg content, byte available : " + src.bytesAvailable + " (needed : " + messageLength + ")");
                }
                this._staticHeader = -1;
                this._splittedPacketLength = messageLength;
                this._splittedPacketId = messageId;
                this._splittedPacket = true;
-               readBytes(this._inputBuffer,0,src.bytesAvailable);
+               this._socket.readBytes(this._inputBuffer,0,src.bytesAvailable);
                return null;
+            }
+            if(DEBUG_LOW_LEVEL_VERBOSE)
+            {
+               _log.info("Not enought data to read message ID, byte available : " + src.bytesAvailable + " (needed : " + (staticHeader & NetworkMessage.BIT_MASK) + ")");
             }
             this._staticHeader = staticHeader;
             this._splittedPacketLength = messageLength;
@@ -529,7 +586,7 @@ package com.ankamagames.jerakine.network
          {
             this.lowSend(msg,false);
          }
-         flush();
+         this._socket.flush();
          this._inputBuffer = new ByteArray();
          this._outputBuffer = new Array();
          if(this._handler)
@@ -554,7 +611,7 @@ package com.ankamagames.jerakine.network
       }
       
       protected function onSocketData(pe:ProgressEvent) : void {
-         this.receive(this);
+         this.receive(this._socket);
       }
       
       protected function onSocketError(e:IOErrorEvent) : void {
@@ -582,7 +639,7 @@ package com.ankamagames.jerakine.network
          {
             this._lagometer.stop();
          }
-         if(this.connected)
+         if(this._socket..connected)
          {
             _log.error("Security error while connected : " + see.text);
             this._handler.process(new ServerConnectionFailedMessage(this,see.text));

@@ -9,17 +9,21 @@ package com.ankamagames.jerakine.logger
       
       public static var active:Boolean = false;
       
-      private static var _callBack:Function;
+      private static var _callbacks:Vector.<Function>;
       
       public static function log(... args) : void {
-         if((active) && (!(_callBack == null)))
+         var f:Function = null;
+         if(active)
          {
-            _callBack.apply(_callBack,args);
+            for each(f in _callbacks)
+            {
+               f.apply(f,args);
+            }
          }
       }
       
-      public static function init(callBack:Function) : void {
-         _callBack = callBack;
+      public static function addCallback(callBack:Function) : void {
+         _callbacks.push(callBack);
       }
    }
 }

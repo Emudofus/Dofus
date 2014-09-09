@@ -8,6 +8,7 @@ package com.ankamagames.dofus.network.types.game.prism
    {
       
       public function AllianceInsiderPrismInformation() {
+         this.modulesItemIds = new Vector.<uint>();
          super();
       }
       
@@ -21,19 +22,19 @@ package com.ankamagames.dofus.network.types.game.prism
       
       public var lastTimeSlotModificationAuthorName:String = "";
       
-      public var hasTeleporterModule:Boolean = false;
+      public var modulesItemIds:Vector.<uint>;
       
       override public function getTypeId() : uint {
          return 431;
       }
       
-      public function initAllianceInsiderPrismInformation(typeId:uint = 0, state:uint = 1, nextVulnerabilityDate:uint = 0, placementDate:uint = 0, rewardTokenCount:uint = 0, lastTimeSlotModificationDate:uint = 0, lastTimeSlotModificationAuthorGuildId:uint = 0, lastTimeSlotModificationAuthorId:uint = 0, lastTimeSlotModificationAuthorName:String = "", hasTeleporterModule:Boolean = false) : AllianceInsiderPrismInformation {
+      public function initAllianceInsiderPrismInformation(typeId:uint = 0, state:uint = 1, nextVulnerabilityDate:uint = 0, placementDate:uint = 0, rewardTokenCount:uint = 0, lastTimeSlotModificationDate:uint = 0, lastTimeSlotModificationAuthorGuildId:uint = 0, lastTimeSlotModificationAuthorId:uint = 0, lastTimeSlotModificationAuthorName:String = "", modulesItemIds:Vector.<uint> = null) : AllianceInsiderPrismInformation {
          super.initPrismInformation(typeId,state,nextVulnerabilityDate,placementDate,rewardTokenCount);
          this.lastTimeSlotModificationDate = lastTimeSlotModificationDate;
          this.lastTimeSlotModificationAuthorGuildId = lastTimeSlotModificationAuthorGuildId;
          this.lastTimeSlotModificationAuthorId = lastTimeSlotModificationAuthorId;
          this.lastTimeSlotModificationAuthorName = lastTimeSlotModificationAuthorName;
-         this.hasTeleporterModule = hasTeleporterModule;
+         this.modulesItemIds = modulesItemIds;
          return this;
       }
       
@@ -43,7 +44,7 @@ package com.ankamagames.dofus.network.types.game.prism
          this.lastTimeSlotModificationAuthorGuildId = 0;
          this.lastTimeSlotModificationAuthorId = 0;
          this.lastTimeSlotModificationAuthorName = "";
-         this.hasTeleporterModule = false;
+         this.modulesItemIds = new Vector.<uint>();
       }
       
       override public function serialize(output:IDataOutput) : void {
@@ -74,7 +75,21 @@ package com.ankamagames.dofus.network.types.game.prism
                {
                   output.writeInt(this.lastTimeSlotModificationAuthorId);
                   output.writeUTF(this.lastTimeSlotModificationAuthorName);
-                  output.writeBoolean(this.hasTeleporterModule);
+                  output.writeShort(this.modulesItemIds.length);
+                  _i5 = 0;
+                  while(_i5 < this.modulesItemIds.length)
+                  {
+                     if(this.modulesItemIds[_i5] < 0)
+                     {
+                        throw new Error("Forbidden value (" + this.modulesItemIds[_i5] + ") on element 5 (starting at 1) of modulesItemIds.");
+                     }
+                     else
+                     {
+                        output.writeInt(this.modulesItemIds[_i5]);
+                        _i5++;
+                        continue;
+                     }
+                  }
                   return;
                }
             }
@@ -86,6 +101,7 @@ package com.ankamagames.dofus.network.types.game.prism
       }
       
       public function deserializeAs_AllianceInsiderPrismInformation(input:IDataInput) : void {
+         var _val5:uint = 0;
          super.deserialize(input);
          this.lastTimeSlotModificationDate = input.readInt();
          if(this.lastTimeSlotModificationDate < 0)
@@ -109,7 +125,22 @@ package com.ankamagames.dofus.network.types.game.prism
                else
                {
                   this.lastTimeSlotModificationAuthorName = input.readUTF();
-                  this.hasTeleporterModule = input.readBoolean();
+                  _modulesItemIdsLen = input.readUnsignedShort();
+                  _i5 = 0;
+                  while(_i5 < _modulesItemIdsLen)
+                  {
+                     _val5 = input.readInt();
+                     if(_val5 < 0)
+                     {
+                        throw new Error("Forbidden value (" + _val5 + ") on elements of modulesItemIds.");
+                     }
+                     else
+                     {
+                        this.modulesItemIds.push(_val5);
+                        _i5++;
+                        continue;
+                     }
+                  }
                   return;
                }
             }

@@ -229,6 +229,7 @@ package com.ankamagames.atouin.entities.behaviours.movements
                IAnimated(oMobile).setAnimation(tweenData.animation);
             }
          }
+         delete _stoppingEntity[oMobile];
          this.goNextCell(oMobile);
          this.checkIfEnterFrameNeeded();
       }

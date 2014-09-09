@@ -152,7 +152,7 @@ package com.ankamagames.dofus.console.moduleLogger
          textFormat.color = 9937645;
          this._filterList.defaultTextFormat = textFormat;
          this._title.defaultTextFormat = textFormat;
-         this._title.styleSheet = Console.CONSOLE_STYLE;
+         this._title.styleSheet = Console.getInstance().consoleStyle;
          addChild(this._title);
          addChild(this._filterList);
          this.updateTitleText();

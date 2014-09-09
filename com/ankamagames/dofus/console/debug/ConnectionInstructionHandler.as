@@ -22,6 +22,10 @@ package com.ankamagames.dofus.console.debug
                ServerConnection.DEBUG_VERBOSE = !ServerConnection.DEBUG_VERBOSE;
                console.output("Inspect traffic is " + (ServerConnection.DEBUG_VERBOSE?"ON":"OFF"));
                break;
+            case "inspectlowtraffic":
+               ServerConnection.DEBUG_LOW_LEVEL_VERBOSE = !ServerConnection.DEBUG_LOW_LEVEL_VERBOSE;
+               console.output("Inspect low traffic is " + (ServerConnection.DEBUG_LOW_LEVEL_VERBOSE?"ON":"OFF"));
+               break;
          }
       }
       
@@ -32,6 +36,8 @@ package com.ankamagames.dofus.console.debug
                return "Print the status of the current connection (if any).";
             case "inspecttraffic":
                return "Show detailled informations about network activities.";
+            case "inspectlowtraffic":
+               return "Show detailled informations about network message parsing.";
             default:
                return "No help for command \'" + cmd + "\'";
          }

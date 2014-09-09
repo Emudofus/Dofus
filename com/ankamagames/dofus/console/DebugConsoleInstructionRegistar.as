@@ -40,13 +40,13 @@ package com.ankamagames.dofus.console
       
       public function registerInstructions(console:ConsoleHandler) : void {
          console.addHandler("version",new VersionInstructionHandler());
-         console.addHandler(["crc32","md5"],new CryptoInstructionHandler());
+         console.addHandler(["crc32","md5","antibot"],new CryptoInstructionHandler());
          console.addHandler(["displaymap","displaymapdebug","getmapcoord","getmapid","testatouin","mapid","showcellid","playerjump","showtransitions","groundcache"],new DisplayMapInstructionHandler());
          console.addHandler(["clearscene","clearentities","countentities"],new ClearSceneInstructionHandler());
          console.addHandler(["inspector","uiinspector","inspectuielement","inspectuielementsos","modulelist","loadui","unloadui","clearuicache","setuiscale","useuicache","uilist","reloadui","fps","getmoduleinfo","chatoutput"],new UiHandlerInstructionHandler());
          console.addHandler(["dtd","componentdtd","shortcutsdtd","kerneleventdtd"],new DtdInstructionHandler());
          console.addHandler("cleartexturecache",new ClearTextureCacheInstructionHandler());
-         console.addHandler(["connectionstatus","inspecttraffic"],new ConnectionInstructionHandler());
+         console.addHandler(["connectionstatus","inspecttraffic","inspectlowtraffic"],new ConnectionInstructionHandler());
          console.addHandler(["panic","throw"],new PanicInstructionHandler());
          console.addHandler("fullscreen",new FullScreenInstructionHandler());
          console.addHandler("reset",new ResetInstructionHandler());

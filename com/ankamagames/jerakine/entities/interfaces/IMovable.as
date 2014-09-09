@@ -13,7 +13,7 @@ package com.ankamagames.jerakine.entities.interfaces
       
       function get isMoving() : Boolean;
       
-      function move(param1:MovementPath, param2:Function = null) : void;
+      function move(param1:MovementPath, param2:Function = null, param3:IMovementBehavior = null) : void;
       
       function jump(param1:MapPoint) : void;
       

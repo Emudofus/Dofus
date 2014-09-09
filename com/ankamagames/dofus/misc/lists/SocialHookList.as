@@ -41,6 +41,8 @@ package com.ankamagames.dofus.misc.lists
       
       public static const FriendGuildWarnOnAchievementCompleteState:Hook;
       
+      public static const WarnOnHardcoreDeathState:Hook;
+      
       public static const SpouseFollowStatusUpdated:Hook;
       
       public static const GuildInformationsMembers:Hook;

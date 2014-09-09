@@ -114,7 +114,7 @@ package com.ankamagames.dofus.datacenter.world
             }
             else
             {
-               this._worldMap = this.area.superArea.worldmap;
+               this._worldMap = this.area.worldmap;
             }
          }
          return this._worldMap;

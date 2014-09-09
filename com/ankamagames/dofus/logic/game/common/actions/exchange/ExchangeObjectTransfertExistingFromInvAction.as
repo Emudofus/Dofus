@@ -9,7 +9,7 @@ package com.ankamagames.dofus.logic.game.common.actions.exchange
          super();
       }
       
-      public static function create() : ExchangeObjectTransfertExistingFromInvAction {
+      public static function create(fromBankExchange:Boolean = false) : ExchangeObjectTransfertExistingFromInvAction {
          return new ExchangeObjectTransfertExistingFromInvAction();
       }
    }

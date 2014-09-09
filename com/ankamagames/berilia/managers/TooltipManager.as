@@ -15,8 +15,8 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.jerakine.types.Callback;
    import com.ankamagames.berilia.types.tooltip.TooltipPlacer;
    import com.ankamagames.berilia.types.graphic.UiRootContainer;
-   import com.ankamagames.berilia.types.data.UiData;
    import com.ankamagames.berilia.types.tooltip.TooltipRectangle;
+   import com.ankamagames.berilia.types.data.UiData;
    import flash.geom.Point;
    import flash.geom.Rectangle;
    import com.ankamagames.jerakine.utils.display.StageShareManager;
@@ -79,7 +79,7 @@ package com.ankamagames.berilia.managers
                _tooltipsStrata[name] = tooltipCache.display.strata;
                Berilia.getInstance().uiList[name] = tooltipCache.display;
                DisplayObjectContainer(Berilia.getInstance().docMain.getChildAt(strata + 1)).addChild(tooltipCache.display);
-               if((!(tooltipCache == null)) && (!(tooltipCache.display == null)))
+               if((!(tooltipCache == null)) && (!(tooltipCache.display == null)) && (!(tooltipCache.display.uiClass == null)))
                {
                   tooltipCache.display.x = tooltipCache.display.y = 0;
                   tooltipCache.display.scaleX = tooltipCache.display.scaleY = zoom;
@@ -178,6 +178,26 @@ package com.ankamagames.berilia.managers
             if(tooltipCache)
             {
                tooltipCache.display.uiClass.updateContent(new TooltipProperties(tooltipCache,false,null,0,0,0,data,null));
+            }
+         }
+      }
+      
+      public static function updatePosition(ttCacheName:String, ttName:String, target:*, point:uint, relativePoint:uint, offset:int, alwaysDisplayed:Boolean = true, checkSuperposition:Boolean = false, cellId:int = -1) : void {
+         var tooltipCache:Tooltip = null;
+         var ttRect:TooltipRectangle = null;
+         if(isVisible(ttName))
+         {
+            tooltipCache = _tooltipCache[ttCacheName] as Tooltip;
+            if(tooltipCache)
+            {
+               tooltipCache.display.x = 0;
+               tooltipCache.display.y = 0;
+               ttRect = getTargetRect(target);
+               TooltipPlacer.place(tooltipCache.display,ttRect,point,relativePoint,offset,alwaysDisplayed);
+               if((checkSuperposition) && (!(cellId == -1)))
+               {
+                  TooltipPlacer.addTooltipPosition(tooltipCache.display,ttRect,cellId);
+               }
             }
          }
       }

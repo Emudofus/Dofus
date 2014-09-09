@@ -51,6 +51,9 @@ package com.ankamagames.dofus.datacenter.items.criterion
             case "Ow":
                criterion = new AllianceItemCriterion(pServerCriterionForm);
                break;
+            case "OV":
+               criterion = new SubscriptionDurationItemCriterion(pServerCriterionForm);
+               break;
             case "Ox":
                criterion = new AllianceRightsItemCriterion(pServerCriterionForm);
                break;

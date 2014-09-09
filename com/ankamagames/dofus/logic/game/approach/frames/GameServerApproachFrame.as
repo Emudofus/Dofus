@@ -52,7 +52,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
    import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListWithModificationsMessage;
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRecolorInformation;
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRelookInformation;
-   import com.ankamagames.dofus.network.types.game.character.choice.CharacterHardcoreInformations;
+   import com.ankamagames.dofus.network.types.game.character.choice.CharacterHardcoreOrEpicInformations;
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
    import com.ankamagames.dofus.network.messages.game.startup.StartupActionsExecuteMessage;
    import com.ankamagames.dofus.logic.game.approach.actions.CharacterSelectionAction;
@@ -94,7 +94,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
    import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.dofus.Constants;
    import com.ankamagames.dofus.externalnotification.ExternalNotificationManager;
-   import com.ankamagames.jerakine.utils.crypto.Base64;
+   import com.ankamagames.dofus.misc.stats.StatisticsManager;
    import com.ankamagames.dofus.logic.game.common.frames.WorldFrame;
    import com.ankamagames.dofus.logic.game.common.frames.AlignmentFrame;
    import com.ankamagames.dofus.logic.game.common.frames.SynchronisationFrame;
@@ -138,6 +138,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
    import com.ankamagames.dofus.logic.game.approach.actions.CharacterDeselectionAction;
    import com.ankamagames.berilia.types.messages.AllModulesLoadedMessage;
    import com.ankamagames.jerakine.messages.ConnectionResumedMessage;
+   import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignCancelAction;
    import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListRequestMessage;
    import flash.system.ApplicationDomain;
    
@@ -278,11 +279,8 @@ package com.ankamagames.dofus.logic.game.approach.frames
          var ctrli:CharacterToRelookInformation = null;
          var ctrid:int = 0;
          var charColors:Array = null;
-         var num:int = 0;
-         var uIndexedColor:Number = NaN;
-         var uIndex:int = 0;
-         var uColor:int = 0;
-         var chi:CharacterHardcoreInformations = null;
+         var charRelookColors:Array = null;
+         var chi:CharacterHardcoreOrEpicInformations = null;
          var cbi:CharacterBaseInformations = null;
          var bonusXp:int = 0;
          var cbi2:CharacterBaseInformations = null;
@@ -292,7 +290,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
          var charToConnectSpecificallyId:int = 0;
          var ctc:BasicCharacterWrapper = null;
          var fakacsa:CharacterSelectionAction = null;
-         var bChi:CharacterHardcoreInformations = null;
+         var bChi:CharacterHardcoreOrEpicInformations = null;
          var bCbi:CharacterBaseInformations = null;
          var c:* = undefined;
          var persoc:Object = null;
@@ -362,20 +360,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                   clwrmsg = msg as CharactersListWithModificationsMessage;
                   for each(ctrci in clwrmsg.charactersToRecolor)
                   {
-                     charColors = new Array(-1,-1,-1,-1,-1);
-                     num = ctrci.colors.length;
-                     i = 0;
-                     while(i < num)
-                     {
-                        uIndexedColor = ctrci.colors[i];
-                        uIndex = (uIndexedColor >> 24) - 1;
-                        uColor = uIndexedColor & 16777215;
-                        if((uIndex > -1) && (uIndex < charColors.length))
-                        {
-                           charColors[uIndex] = uColor;
-                        }
-                        i++;
-                     }
+                     charColors = this.getCharacterColorsInformations(ctrci);
                      this._charactersToRecolorList[ctrci.id] = 
                         {
                            "id":ctrci.id,
@@ -388,7 +373,12 @@ package com.ankamagames.dofus.logic.game.approach.frames
                   }
                   for each(ctrli in clwrmsg.charactersToRelook)
                   {
-                     this._charactersToRelookList[ctrli.id] = ctrli;
+                     charRelookColors = this.getCharacterColorsInformations(ctrli);
+                     this._charactersToRelookList[ctrli.id] = 
+                        {
+                           "cosmeticId":ctrli.cosmeticId,
+                           "colors":charRelookColors
+                        };
                   }
                   for each(ctrid in clwrmsg.unusableCharacters)
                   {
@@ -784,7 +774,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                         charToRelook = perso;
                      }
                   }
-                  this._kernel.processCallback(HookList.CharacterCreationStart,new Array("relook",charToRelook,this._charactersToRelookList[characterId].cosmeticId));
+                  this._kernel.processCallback(HookList.CharacterCreationStart,new Array("relook",charToRelook,this._charactersToRelookList[characterId].colors,this._charactersToRelookList[characterId].cosmeticId));
                }
                else
                {
@@ -838,6 +828,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                {
                   ExternalNotificationManager.getInstance().init();
                }
+               StatisticsManager.getInstance().statsEnabled = cssmsg.isCollectingStats;
                return true;
             case msg is AllModulesLoadedMessage:
                this._gmaf = null;
@@ -845,10 +836,6 @@ package com.ankamagames.dofus.logic.game.approach.frames
                {
                   _changeLogLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,onChangeLogError);
                   _changeLogLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,onChangeLogLoaded);
-                  if(AirScanner.hasAir())
-                  {
-                     _changeLogLoader.loadBytes(Base64.decodeToByteArray(I18n.getUiText("ui.link.changelog")),this._lc);
-                  }
                }
                catch(e:Error)
                {
@@ -905,6 +892,11 @@ package com.ankamagames.dofus.logic.game.approach.frames
                   ModuleDebugManager.display(XmlConfig.getInstance().getBooleanEntry("config.dev.auto.display.controler"));
                   Console.getInstance().display(!XmlConfig.getInstance().getBooleanEntry("config.dev.auto.display.eventUtil"));
                   ConsoleLUA.getInstance().display(!XmlConfig.getInstance().getBooleanEntry("config.dev.auto.display.luaUtil"));
+               }
+               else
+               {
+                  Console.logChatMessagesOnly = true;
+                  Console.getInstance().activate();
                }
                this._kernel.processCallback(HookList.GameStart);
                Kernel.getWorker().addFrame(new ServerTransferFrame());
@@ -1000,17 +992,16 @@ package com.ankamagames.dofus.logic.game.approach.frames
                return true;
             case msg is GiftAssignRequestAction:
                gar = msg as GiftAssignRequestAction;
-               if((gar.characterId == 0) && (gar.giftId == this._giftList[0].uid))
-               {
-                  if(!Berilia.getInstance().getUi("characterSelection"))
-                  {
-                     this._kernel.processCallback(HookList.CharacterSelectionStart,this._charactersList);
-                  }
-               }
                sao = new StartupActionsObjetAttributionMessage();
                sao.initStartupActionsObjetAttributionMessage(gar.giftId,gar.characterId);
                ConnectionsHandler.getConnection().send(sao);
                return true;
+            case msg is GiftAssignCancelAction:
+               if(!Berilia.getInstance().getUi("characterSelection"))
+               {
+                  this._kernel.processCallback(HookList.CharacterSelectionStart,this._charactersList);
+                  return true;
+               }
             case msg is StartupActionFinishedMessage:
                safm = msg as StartupActionFinishedMessage;
                KernelEventsManager.getInstance().processCallback(HookList.GiftAssigned,safm.actionId);
@@ -1037,6 +1028,31 @@ package com.ankamagames.dofus.logic.game.approach.frames
       
       public function pulled() : Boolean {
          return true;
+      }
+      
+      private function getCharacterColorsInformations(ctrci:*) : Array {
+         var uIndexedColor:* = NaN;
+         var uIndex:* = 0;
+         var uColor:* = 0;
+         var charColors:Array = new Array(-1,-1,-1,-1,-1);
+         if((!ctrci) || (!ctrci.colors))
+         {
+            return null;
+         }
+         var num:int = ctrci.colors.length;
+         var i:int = 0;
+         while(i < num)
+         {
+            uIndexedColor = ctrci.colors[i];
+            uIndex = (uIndexedColor >> 24) - 1;
+            uColor = uIndexedColor & 16777215;
+            if((uIndex > -1) && (uIndex < charColors.length))
+            {
+               charColors[uIndex] = uColor;
+            }
+            i++;
+         }
+         return charColors;
       }
       
       private function onEscapePopup() : void {

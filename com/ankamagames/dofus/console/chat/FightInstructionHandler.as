@@ -94,6 +94,7 @@ package com.ankamagames.dofus.console.chat
       public function getHelp(cmd:String) : String {
          switch(cmd)
          {
+            case "s":
             case "spectator":
                return I18n.getUiText("ui.chat.console.help.spectator");
             case "list":

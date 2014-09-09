@@ -62,6 +62,10 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.roleplay.actions.preset.InventoryPresetItemUpdateRequestAction;
    import com.ankamagames.dofus.network.messages.game.inventory.preset.InventoryPresetItemUpdateRequestMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.preset.InventoryPresetItemUpdateErrorMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.AccessoryPreviewRequestAction;
+   import com.ankamagames.dofus.network.messages.game.look.AccessoryPreviewRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.look.AccessoryPreviewErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.look.AccessoryPreviewMessage;
    import com.ankamagames.dofus.network.types.game.inventory.preset.Preset;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
    import com.ankamagames.dofus.network.types.game.data.items.ObjectItemQuantity;
@@ -76,14 +80,14 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
    import com.ankamagames.dofus.network.enums.CharacterInventoryPositionEnum;
    import com.ankamagames.dofus.logic.game.common.misc.Inventory;
-   import com.ankamagames.dofus.kernel.sound.enum.SoundTypeEnum;
-   import com.ankamagames.berilia.managers.KernelEventsManager;
-   import com.ankamagames.dofus.misc.lists.InventoryHookList;
    import com.ankamagames.berilia.Berilia;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.ChatHookList;
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
    import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+   import com.ankamagames.dofus.kernel.sound.enum.SoundTypeEnum;
+   import com.ankamagames.dofus.misc.lists.InventoryHookList;
    import com.ankamagames.dofus.network.enums.ShortcutBarEnum;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.berilia.managers.UiModuleManager;
@@ -93,6 +97,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.enums.PresetSaveResultEnum;
    import com.ankamagames.dofus.network.enums.PresetUseResultEnum;
    import com.ankamagames.dofus.network.enums.PresetSaveUpdateErrorEnum;
+   import com.ankamagames.dofus.network.enums.AccessoryPreviewErrorEnum;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectUseOnCharacterMessage;
    import com.ankamagames.berilia.components.Texture;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectUseMultipleMessage;
@@ -229,8 +234,15 @@ package com.ankamagames.dofus.logic.game.common.frames
          var ipiurmsg:InventoryPresetItemUpdateRequestMessage = null;
          var ipiremsg:InventoryPresetItemUpdateErrorMessage = null;
          var reason:String = null;
+         var apra:AccessoryPreviewRequestAction = null;
+         var aprmsg:AccessoryPreviewRequestMessage = null;
+         var apemsg:AccessoryPreviewErrorMessage = null;
+         var apErrorMsg:String = null;
+         var apmsg:AccessoryPreviewMessage = null;
          var equipmentView:IInventoryView = null;
          var preset:Preset = null;
+         var equipmentView2:IInventoryView = null;
+         var itwa:ItemWrapper = null;
          var osait:ObjectItem = null;
          var shortcutQty:ShortcutWrapper = null;
          var objoqm:ObjectItemQuantity = null;
@@ -295,14 +307,14 @@ package com.ankamagames.dofus.logic.game.common.frames
                InventoryManager.getInstance().inventory.kamas = icmsg.kamas;
                if(InventoryManager.getInstance().inventory)
                {
-                  equipmentView = InventoryManager.getInstance().inventory.getView("equipment");
-                  if((equipmentView) && (equipmentView.content))
+                  equipmentView2 = InventoryManager.getInstance().inventory.getView("equipment");
+                  if((equipmentView2) && (equipmentView2.content))
                   {
-                     if((equipmentView.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS]) && (equipmentView.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS].typeId == Inventory.PETSMOUNT_TYPE_ID))
+                     if((equipmentView2.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS]) && (equipmentView2.content[CharacterInventoryPositionEnum.ACCESSORY_POSITION_PETS].typeId == Inventory.PETSMOUNT_TYPE_ID))
                      {
                         PlayedCharacterManager.getInstance().isPetsMounting = true;
                      }
-                     if(equipmentView.content[CharacterInventoryPositionEnum.INVENTORY_POSITION_COMPANION])
+                     if(equipmentView2.content[CharacterInventoryPositionEnum.INVENTORY_POSITION_COMPANION])
                      {
                         PlayedCharacterManager.getInstance().hasCompanion = true;
                      }
@@ -318,6 +330,11 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is ObjectAddedMessage:
                oam = msg as ObjectAddedMessage;
                InventoryManager.getInstance().inventory.addObjectItem(oam.object);
+               if(((oam.object.position <= 16) || (oam.object.position == CharacterInventoryPositionEnum.INVENTORY_POSITION_COMPANION)) && (oam.object.position >= 0) && (!Berilia.getInstance().getUi("storage")))
+               {
+                  itwa = InventoryManager.getInstance().inventory.getItem(oam.object.objectUID);
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.item.inUse",[itwa.name]),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               }
                return true;
             case msg is ObjectsAddedMessage:
                osam = msg as ObjectsAddedMessage;
@@ -374,7 +391,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is ObjectMovementMessage:
                ommsg = msg as ObjectMovementMessage;
                InventoryManager.getInstance().inventory.modifyItemPosition(ommsg.objectUID,ommsg.position);
-               if((this._objectPositionModification) && (ommsg.position <= 16) && (ommsg.position >= 0) && (!Berilia.getInstance().getUi("storage")))
+               if((this._objectPositionModification) && ((ommsg.position <= 16) || (ommsg.position == CharacterInventoryPositionEnum.INVENTORY_POSITION_COMPANION)) && (ommsg.position >= 0) && (!Berilia.getInstance().getUi("storage")))
                {
                   itwm = InventoryManager.getInstance().inventory.getItem(ommsg.objectUID);
                   KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.item.inUse",[itwm.name]),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
@@ -664,7 +681,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                break;
             case msg is ObjectErrorMessage:
                oemsg = msg as ObjectErrorMessage;
-               if(oemsg.reason == ObjectErrorEnum.MIMICRY_OBJECT_ERROR)
+               if(oemsg.reason == ObjectErrorEnum.SYMBIOTIC_OBJECT_ERROR)
                {
                   return false;
                }
@@ -805,6 +822,35 @@ package com.ankamagames.dofus.logic.game.common.frames
                      break;
                }
                KernelEventsManager.getInstance().processCallback(InventoryHookList.PresetError,reason);
+               return true;
+            case msg is AccessoryPreviewRequestAction:
+               apra = msg as AccessoryPreviewRequestAction;
+               aprmsg = new AccessoryPreviewRequestMessage();
+               aprmsg.initAccessoryPreviewRequestMessage(apra.itemGIDs);
+               ConnectionsHandler.getConnection().send(aprmsg);
+               return true;
+            case msg is AccessoryPreviewErrorMessage:
+               apemsg = msg as AccessoryPreviewErrorMessage;
+               switch(apemsg.error)
+               {
+                  case AccessoryPreviewErrorEnum.PREVIEW_BAD_ITEM:
+                     apErrorMsg = I18n.getUiText("ui.shop.preview.badItem");
+                     break;
+                  case AccessoryPreviewErrorEnum.PREVIEW_COOLDOWN:
+                     apErrorMsg = I18n.getUiText("ui.shop.preview.cooldown");
+                     break;
+                  case AccessoryPreviewErrorEnum.PREVIEW_ERROR:
+                     apErrorMsg = I18n.getUiText("ui.shop.preview.error");
+                     break;
+               }
+               if(apErrorMsg)
+               {
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,apErrorMsg,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               }
+               return true;
+            case msg is AccessoryPreviewMessage:
+               apmsg = msg as AccessoryPreviewMessage;
+               KernelEventsManager.getInstance().processCallback(InventoryHookList.AccessoryPreview,apmsg.look);
                return true;
          }
          return false;

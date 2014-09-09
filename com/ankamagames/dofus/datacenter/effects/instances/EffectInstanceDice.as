@@ -17,6 +17,7 @@ package com.ankamagames.dofus.datacenter.effects.instances
       override public function clone() : EffectInstance {
          var o:EffectInstanceDice = new EffectInstanceDice();
          o.rawZone = rawZone;
+         o.effectUid = effectUid;
          o.effectId = effectId;
          o.duration = duration;
          o.delay = delay;

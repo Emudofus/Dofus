@@ -95,6 +95,7 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.jerakine.utils.system.CommandLineArguments;
    import com.ankamagames.dofus.modules.utils.ModuleInstallerFrame;
    import com.ankamagames.jerakine.handlers.HumanInputHandler;
+   import com.ankamagames.dofus.logic.connection.managers.GuestModeManager;
    import com.ankamagames.dofus.logic.connection.managers.AuthentificationManager;
    import com.ankamagames.dofus.misc.utils.frames.LuaScriptRecorderFrame;
    import com.ankamagames.jerakine.logger.Log;
@@ -1084,6 +1085,10 @@ package com.ankamagames.dofus.uiApi
       
       public function isKeyDown(keyCode:uint) : Boolean {
          return HumanInputHandler.getInstance().getKeyboardPoll().isDown(keyCode);
+      }
+      
+      public function isGuest() : Boolean {
+         return GuestModeManager.getInstance().isLoggingAsGuest;
       }
       
       private function getAnkamaPortalUrlParams() : URLVariables {

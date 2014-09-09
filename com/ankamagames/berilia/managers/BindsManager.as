@@ -107,6 +107,10 @@ package com.ankamagames.berilia.managers
          StoreDataManager.getInstance().registerClass(new Bind());
          this._waitingBinds = new Array();
          this._aRegisterKey = StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_BINDS,"registeredKeys",new Array());
+         if((this._aRegisterKey) && (!(this._aRegisterKey[0] is Bind)))
+         {
+            this._aRegisterKey = new Array();
+         }
          this.fillShortcutsEnum();
          var path:String = LangManager.getInstance().getEntry("config.binds.path.root").split("file://")[1];
          if(!path)
@@ -519,6 +523,9 @@ package com.ankamagames.berilia.managers
          ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("(insert)"));
          ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("(del)"));
          ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("(locknum)"));
+         ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("Z","",false,true));
+         ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("Y","",false,true));
+         ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("Z","",false,true,true));
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.ESCAPE] = "(escape)";
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.ENTER] = "(enter)";
          ShortcutsEnum.BASIC_SHORTCUT_KEYCODE[Keyboard.TAB] = "(tab)";

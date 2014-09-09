@@ -40,7 +40,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          return this._view;
       }
       
-      public function addItem(item:ItemWrapper, invisible:int) : void {
+      public function addItem(item:ItemWrapper, invisible:int, needUpdateView:Boolean = true) : void {
          this._view.push(item);
       }
       

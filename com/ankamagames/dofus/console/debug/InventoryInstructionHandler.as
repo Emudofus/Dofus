@@ -60,7 +60,7 @@ package com.ankamagames.dofus.console.debug
                Chrono.start("Add");
                for each(currentItem in items)
                {
-                  matchItems.push("\t" + currentItem.name + " (id : " + currentItem.id + ")");
+                  matchItems.push("\t" + currentItem.name + " ( id : " + currentItem.id + " )");
                }
                Chrono.stop();
                Chrono.stop();

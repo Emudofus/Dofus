@@ -1,7 +1,9 @@
 package com.ankamagames.dofus.logic.game.common.types
 {
    import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.types.Uri;
    import flash.utils.Timer;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
    import flash.events.TimerEvent;
    import com.ankamagames.dofus.logic.game.common.managers.DofusShopManager;
    
@@ -30,11 +32,19 @@ package com.ankamagames.dofus.logic.game.common.types
       
       private var _imgNormal:String;
       
+      private var _imgSwf:Uri;
+      
       private var _references:Array;
       
       private var _promo:Array;
       
       private var _endTimer:Timer;
+      
+      private var _gids:Array;
+      
+      private var _isNew:Boolean;
+      
+      private var _hasExpired:Boolean;
       
       override public function init(data:Object) : void {
          var dateStr:String = null;
@@ -95,6 +105,7 @@ package com.ankamagames.dofus.logic.game.common.types
          this._imgNormal = null;
          this._references = null;
          this._promo = null;
+         this._gids = null;
          super.free();
       }
       
@@ -126,6 +137,10 @@ package com.ankamagames.dofus.logic.game.common.types
          return this._imgSmall;
       }
       
+      public function get imageSwf() : Uri {
+         return this._imgSwf;
+      }
+      
       public function get imageNormal() : String {
          return this._imgNormal;
       }
@@ -134,8 +149,20 @@ package com.ankamagames.dofus.logic.game.common.types
          return this._references;
       }
       
+      public function get gids() : Array {
+         return this._gids;
+      }
+      
       public function get promo() : Array {
          return this._promo;
+      }
+      
+      public function get isNew() : Boolean {
+         return this._isNew;
+      }
+      
+      public function get hasExpired() : Boolean {
+         return this._hasExpired;
       }
    }
 }

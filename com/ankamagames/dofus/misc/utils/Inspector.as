@@ -96,6 +96,7 @@ package com.ankamagames.dofus.misc.utils
          var currentTooltipStr:String = null;
          var rawTooltipStr:String = null;
          var s:ShortcutItem = null;
+         this.onRollout(this._lastTarget);
          this._lastTarget = this.findElements(e.target as DisplayObject);
          var tooltipStr:String = "";
          var ind:String = "";

@@ -20,7 +20,7 @@ package com.ankamagames.dofus.datacenter.spells
       
       protected static const _log:Logger;
       
-      private static const MODULE:String = "SpellLevels";
+      public static const MODULE:String = "SpellLevels";
       
       public static function getLevelById(id:int) : SpellLevel {
          return GameData.getObject(MODULE,id) as SpellLevel;

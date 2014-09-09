@@ -153,6 +153,8 @@ package com.ankamagames.dofus.misc.lists
       
       public static const HouseSold:Hook;
       
+      public static const PaddockBuyResult:Hook;
+      
       public static const LockableShowCode:Hook;
       
       public static const LockableCodeResult:Hook;
@@ -312,6 +314,10 @@ package com.ankamagames.dofus.misc.lists
       public static const InformationPopup:Hook;
       
       public static const SubscriptionZone:Hook;
+      
+      public static const GuestMode:Hook;
+      
+      public static const GuestLimitationPopup:Hook;
       
       public static const GiftList:Hook;
       

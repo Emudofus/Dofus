@@ -54,6 +54,8 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.prism.PrismAttackRequestMessage;
    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismUseRequestAction;
    import com.ankamagames.dofus.network.messages.game.prism.PrismUseRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.prism.PrismModuleExchangeRequestAction;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismModuleExchangeRequestMessage;
    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismSetSabotagedRequestAction;
    import com.ankamagames.dofus.network.messages.game.prism.PrismSetSabotagedRequestMessage;
    import com.ankamagames.dofus.network.messages.game.prism.PrismSetSabotagedRefusedMessage;
@@ -273,6 +275,8 @@ package com.ankamagames.dofus.logic.game.common.frames
          var pbrqmsg:PrismAttackRequestMessage = null;
          var pura:PrismUseRequestAction = null;
          var purmsg:PrismUseRequestMessage = null;
+         var pmera:PrismModuleExchangeRequestAction = null;
+         var pmermsg:PrismModuleExchangeRequestMessage = null;
          var pssra:PrismSetSabotagedRequestAction = null;
          var pssrmsg:PrismSetSabotagedRequestMessage = null;
          var pssrdmsg:PrismSetSabotagedRefusedMessage = null;
@@ -726,6 +730,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                purmsg = new PrismUseRequestMessage();
                purmsg.initPrismUseRequestMessage();
                ConnectionsHandler.getConnection().send(purmsg);
+               return true;
+            case msg is PrismModuleExchangeRequestAction:
+               pmera = msg as PrismModuleExchangeRequestAction;
+               pmermsg = new PrismModuleExchangeRequestMessage();
+               pmermsg.initPrismModuleExchangeRequestMessage();
+               ConnectionsHandler.getConnection().send(pmermsg);
                return true;
             case msg is PrismSetSabotagedRequestAction:
                pssra = msg as PrismSetSabotagedRequestAction;
