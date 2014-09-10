@@ -21,6 +21,10 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectAssociatedMessage;
    import com.ankamagames.dofus.logic.game.common.actions.livingObject.MimicryObjectEraseRequestAction;
    import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectEraseRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.WrapperObjectErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.WrapperObjectAssociatedMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.livingObject.WrapperObjectDissociateRequestAction;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.WrapperObjectDissociateRequestMessage;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.LivingObjectHookList;
@@ -76,7 +80,13 @@ package com.ankamagames.dofus.logic.game.common.frames
          var itwm:ItemWrapper = null;
          var moera:MimicryObjectEraseRequestAction = null;
          var moermsg:MimicryObjectEraseRequestMessage = null;
+         var woemsg:WrapperObjectErrorMessage = null;
+         var woamsg:WrapperObjectAssociatedMessage = null;
+         var itww:ItemWrapper = null;
+         var wodra:WrapperObjectDissociateRequestAction = null;
+         var wodrmsg:WrapperObjectDissociateRequestMessage = null;
          var mimicryErrorText:String = null;
+         var wrapperErrorText:String = null;
          switch(true)
          {
             case msg is LivingObjectDissociateAction:
@@ -110,6 +120,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                {
                   return false;
                }
+               if(itemModified.isObjectWrapped)
+               {
+                  itemModified.update(omdmsg.object.position,omdmsg.object.objectUID,omdmsg.object.objectGID,omdmsg.object.quantity,omdmsg.object.effects);
+               }
                if(this.livingObjectUID == omdmsg.object.objectUID)
                {
                   itemModified.update(omdmsg.object.position,omdmsg.object.objectUID,omdmsg.object.objectGID,omdmsg.object.quantity,omdmsg.object.effects);
@@ -136,7 +150,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             case msg is MimicryObjectFeedAndAssociateRequestAction:
                mofaara = msg as MimicryObjectFeedAndAssociateRequestAction;
                mofaarmsg = new MimicryObjectFeedAndAssociateRequestMessage();
-               mofaarmsg.initMimicryObjectFeedAndAssociateRequestMessage(mofaara.mimicryUID,mofaara.mimicryPos,mofaara.foodUID,mofaara.foodPos,mofaara.hostUID,mofaara.hostPos,mofaara.preview);
+               mofaarmsg.initMimicryObjectFeedAndAssociateRequestMessage(mofaara.mimicryUID,mofaara.symbiotePos,mofaara.hostUID,mofaara.hostPos,mofaara.foodUID,mofaara.foodPos,mofaara.preview);
                ConnectionsHandler.getConnection().send(mofaarmsg);
                return true;
             case msg is MimicryObjectPreviewMessage:
@@ -150,7 +164,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is MimicryObjectErrorMessage:
                moemsg = msg as MimicryObjectErrorMessage;
-               if(moemsg.reason == ObjectErrorEnum.MIMICRY_OBJECT_ERROR)
+               if(moemsg.reason == ObjectErrorEnum.SYMBIOTIC_OBJECT_ERROR)
                {
                   switch(moemsg.errorCode)
                   {
@@ -215,6 +229,61 @@ package com.ankamagames.dofus.logic.game.common.frames
                moermsg = new MimicryObjectEraseRequestMessage();
                moermsg.initMimicryObjectEraseRequestMessage(moera.hostUID,moera.hostPos);
                ConnectionsHandler.getConnection().send(moermsg);
+               return true;
+            case msg is WrapperObjectErrorMessage:
+               woemsg = msg as WrapperObjectErrorMessage;
+               if(woemsg.reason == ObjectErrorEnum.SYMBIOTIC_OBJECT_ERROR)
+               {
+                  switch(woemsg.errorCode)
+                  {
+                     case -1:
+                        wrapperErrorText = I18n.getUiText("ui.error.state");
+                        break;
+                     case -2:
+                        wrapperErrorText = I18n.getUiText("ui.charSel.deletionErrorUnsecureMode");
+                        break;
+                     case -7:
+                        wrapperErrorText = I18n.getUiText("ui.mimicry.error.foodType");
+                        break;
+                     case -8:
+                        wrapperErrorText = I18n.getUiText("ui.mimicry.error.invalidWrapperObject");
+                        break;
+                     case -10:
+                        wrapperErrorText = I18n.getUiText("ui.mimicry.error.noValidHost");
+                        break;
+                     case -16:
+                        wrapperErrorText = I18n.getUiText("ui.mimicry.error.noWrapperAssociated");
+                        break;
+                     case -18:
+                        wrapperErrorText = I18n.getUiText("ui.mimicry.error.noAssociationWithLivingObject");
+                        break;
+                     case -19:
+                        wrapperErrorText = I18n.getUiText("ui.mimicry.error.alreadyWrapped");
+                        break;
+                     case -3:
+                     case -4:
+                     case -6:
+                     case -12:
+                     case -14:
+                     case -15:
+                        wrapperErrorText = I18n.getUiText("ui.popup.impossible_action");
+                        break;
+                     default:
+                        wrapperErrorText = I18n.getUiText("ui.common.unknownFail");
+                  }
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,wrapperErrorText,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               }
+               return true;
+            case msg is WrapperObjectAssociatedMessage:
+               woamsg = msg as WrapperObjectAssociatedMessage;
+               itww = InventoryManager.getInstance().inventory.getItem(woamsg.hostUID);
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,I18n.getUiText("ui.mimicry.success",[itww.name]),ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               return true;
+            case msg is WrapperObjectDissociateRequestAction:
+               wodra = msg as WrapperObjectDissociateRequestAction;
+               wodrmsg = new WrapperObjectDissociateRequestMessage();
+               wodrmsg.initWrapperObjectDissociateRequestMessage(wodra.hostUID,wodra.hostPosition);
+               ConnectionsHandler.getConnection().send(wodrmsg);
                return true;
             default:
                return false;

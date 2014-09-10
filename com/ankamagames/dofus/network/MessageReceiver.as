@@ -92,6 +92,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.common.basic.BasicPongMessage;
    import com.ankamagames.dofus.network.messages.game.basic.BasicLatencyStatsRequestMessage;
    import com.ankamagames.dofus.network.messages.game.basic.SequenceNumberRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.basic.CurrentServerStatusUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.script.CinematicMessage;
    import com.ankamagames.dofus.network.messages.game.script.URLOpenMessage;
    import com.ankamagames.dofus.network.messages.debug.DebugHighlightCellsMessage;
@@ -319,6 +320,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.friend.FriendUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.friend.FriendDeleteResultMessage;
    import com.ankamagames.dofus.network.messages.game.friend.FriendWarnOnConnectionStateMessage;
+   import com.ankamagames.dofus.network.messages.game.friend.WarnOnPermaDeathStateMessage;
    import com.ankamagames.dofus.network.messages.game.friend.FriendWarnOnLevelGainStateMessage;
    import com.ankamagames.dofus.network.messages.game.friend.IgnoredListMessage;
    import com.ankamagames.dofus.network.messages.game.friend.IgnoredAddFailureMessage;
@@ -411,6 +413,8 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.notification.NotificationByServerMessage;
    import com.ankamagames.dofus.network.messages.game.subscriber.SubscriptionLimitationMessage;
    import com.ankamagames.dofus.network.messages.game.subscriber.SubscriptionZoneMessage;
+   import com.ankamagames.dofus.network.messages.game.guest.GuestLimitationMessage;
+   import com.ankamagames.dofus.network.messages.game.guest.GuestModeMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.MapNpcsQuestStatusUpdateMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.NpcGenericActionFailureMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.NpcDialogCreationMessage;
@@ -464,8 +468,14 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectsQuantityMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectModifiedMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectJobAddedMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.ObtainedItemMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.ObtainedItemWithBonusMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectFoundWhileRecoltingMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.LivingObjectMessageMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.SymbioticObjectErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.SymbioticObjectAssociatedMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.WrapperObjectErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.WrapperObjectAssociatedMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectPreviewMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectErrorMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectAssociatedMessage;
@@ -479,8 +489,11 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeReplayCountModifiedMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectAddedMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectsAddedMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectRemovedMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectsRemovedMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectModifiedMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectsModifiedMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectPutInBagMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectRemovedFromBagMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectModifiedInBagMessage;
@@ -567,6 +580,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.HouseToSellListMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.guild.HouseGuildNoneMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.guild.HouseGuildRightsMessage;
+   import com.ankamagames.dofus.network.messages.game.context.mount.PaddockBuyResultMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.paddock.PaddockPropertiesMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.paddock.PaddockSellBuyDialogMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.paddock.GameDataPlayFarmObjectAnimationMessage;
@@ -591,6 +605,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.roleplay.lockable.LockableStateUpdateHouseDoorMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.lockable.LockableStateUpdateStorageMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.document.DocumentReadingBeginMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.document.ComicReadingBeginMessage;
    import com.ankamagames.dofus.network.messages.game.tinsel.TitlesAndOrnamentsListMessage;
    import com.ankamagames.dofus.network.messages.game.tinsel.TitleGainedMessage;
    import com.ankamagames.dofus.network.messages.game.tinsel.TitleLostMessage;
@@ -601,6 +616,8 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.tinsel.OrnamentSelectErrorMessage;
    import com.ankamagames.dofus.network.messages.game.social.ContactLookMessage;
    import com.ankamagames.dofus.network.messages.game.social.ContactLookErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.look.AccessoryPreviewErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.look.AccessoryPreviewMessage;
    import com.ankamagames.dofus.network.messages.web.ankabox.MailStatusMessage;
    import com.ankamagames.dofus.network.messages.web.ankabox.NewMailMessage;
    import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterAuthTokenMessage;
@@ -613,8 +630,9 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFinishedMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntDigRequestAnswerMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntDigRequestAnswerFailedMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFlagRequestAnswerMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntAvailableRetryCountUpdateMessage;
-   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.PortalDialogQuestionMessage;
    import com.ankamagames.dofus.network.messages.game.packs.PackRestrictedSubAreaMessage;
    import com.ankamagames.dofus.network.messages.updater.parts.PartsListMessage;
    import com.ankamagames.dofus.network.messages.updater.parts.PartInfoMessage;
@@ -725,6 +743,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new BasicPongMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new BasicLatencyStatsRequestMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new SequenceNumberRequestMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new CurrentServerStatusUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new CinematicMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new URLOpenMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new DebugHighlightCellsMessage(),true,true);
@@ -952,6 +971,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new FriendUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new FriendDeleteResultMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new FriendWarnOnConnectionStateMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new WarnOnPermaDeathStateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new FriendWarnOnLevelGainStateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new IgnoredListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new IgnoredAddFailureMessage(),true,true);
@@ -1044,6 +1064,8 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new NotificationByServerMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new SubscriptionLimitationMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new SubscriptionZoneMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuestLimitationMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new GuestModeMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new MapNpcsQuestStatusUpdateMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new NpcGenericActionFailureMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new NpcDialogCreationMessage(),true,true);
@@ -1097,8 +1119,14 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new ObjectsQuantityMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ObjectModifiedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ObjectJobAddedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new ObtainedItemMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new ObtainedItemWithBonusMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ObjectFoundWhileRecoltingMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new LivingObjectMessageMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new SymbioticObjectErrorMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new SymbioticObjectAssociatedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new WrapperObjectErrorMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new WrapperObjectAssociatedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new MimicryObjectPreviewMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new MimicryObjectErrorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new MimicryObjectAssociatedMessage(),true,true);
@@ -1112,8 +1140,11 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new ExchangeReplayCountModifiedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeObjectMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeObjectAddedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new ExchangeObjectsAddedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeObjectRemovedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new ExchangeObjectsRemovedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeObjectModifiedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new ExchangeObjectsModifiedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeObjectPutInBagMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeObjectRemovedFromBagMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ExchangeObjectModifiedInBagMessage(),true,true);
@@ -1200,6 +1231,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new HouseToSellListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new HouseGuildNoneMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new HouseGuildRightsMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new PaddockBuyResultMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PaddockPropertiesMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PaddockSellBuyDialogMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new GameDataPlayFarmObjectAnimationMessage(),true,true);
@@ -1224,6 +1256,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new LockableStateUpdateHouseDoorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new LockableStateUpdateStorageMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new DocumentReadingBeginMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new ComicReadingBeginMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TitlesAndOrnamentsListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TitleGainedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TitleLostMessage(),true,true);
@@ -1234,6 +1267,8 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new OrnamentSelectErrorMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ContactLookMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new ContactLookErrorMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AccessoryPreviewErrorMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new AccessoryPreviewMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new MailStatusMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new NewMailMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new KrosmasterAuthTokenMessage(),true,true);
@@ -1246,8 +1281,9 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new TreasureHuntMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TreasureHuntFinishedMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TreasureHuntDigRequestAnswerMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntDigRequestAnswerFailedMessage(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntFlagRequestAnswerMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new TreasureHuntAvailableRetryCountUpdateMessage(),true,true);
-         StoreDataManager.getInstance().registerClass(new PortalDialogQuestionMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PackRestrictedSubAreaMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PartsListMessage(),true,true);
          StoreDataManager.getInstance().registerClass(new PartInfoMessage(),true,true);

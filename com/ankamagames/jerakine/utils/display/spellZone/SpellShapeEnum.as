@@ -45,6 +45,8 @@ package com.ankamagames.jerakine.utils.display.spellZone
       
       public static const A:uint = 65;
       
+      public static const a:uint = 97;
+      
       public static const B:uint = 66;
       
       public static const Z:uint = 90;

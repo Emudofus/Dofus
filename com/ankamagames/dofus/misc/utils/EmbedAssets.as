@@ -19,13 +19,23 @@ package com.ankamagames.dofus.misc.utils
       
       public static const CHECKPOINT_CLIP_TOP:Class;
       
+      public static const CHECKPOINT_CLIP_TOP_WALK:Class;
+      
       public static const CHECKPOINT_CLIP_LEFT:Class;
+      
+      public static const CHECKPOINT_CLIP_LEFT_WALK:Class;
       
       public static const CHECKPOINT_CLIP_BOTTOM:Class;
       
+      public static const CHECKPOINT_CLIP_BOTTOM_WALK:Class;
+      
       public static const CHECKPOINT_CLIP_RIGHT:Class;
       
+      public static const CHECKPOINT_CLIP_RIGHT_WALK:Class;
+      
       private static const CHECKPOINT_CLIP:Class;
+      
+      private static const CHECKPOINT_CLIP_WALK:Class;
       
       private static const QUEST_CLIP:Class;
       

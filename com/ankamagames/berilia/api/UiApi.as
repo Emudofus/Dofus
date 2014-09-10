@@ -559,6 +559,10 @@ package com.ankamagames.berilia.api
          return !(StageShareManager.stage.displayState == StageDisplayState.NORMAL);
       }
       
+      public function setShortcutUsedToExitFullScreen(value:Boolean) : void {
+         StageShareManager.shortcutUsedToExitFullScreen = value;
+      }
+      
       public function useIME() : Boolean {
          return Berilia.getInstance().useIME;
       }

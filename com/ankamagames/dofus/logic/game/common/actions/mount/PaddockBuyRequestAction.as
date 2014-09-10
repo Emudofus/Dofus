@@ -9,8 +9,12 @@ package com.ankamagames.dofus.logic.game.common.actions.mount
          super();
       }
       
-      public static function create() : PaddockBuyRequestAction {
-         return new PaddockBuyRequestAction();
+      public static function create(proposedPrice:uint) : PaddockBuyRequestAction {
+         var action:PaddockBuyRequestAction = new PaddockBuyRequestAction();
+         action.proposedPrice = proposedPrice;
+         return action;
       }
+      
+      public var proposedPrice:uint;
    }
 }

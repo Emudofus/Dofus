@@ -2,15 +2,16 @@ package com.ankamagames.jerakine.types
 {
    import com.ankamagames.jerakine.logger.Logger;
    import flash.utils.Dictionary;
+   import flash.filesystem.File;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import com.ankamagames.jerakine.utils.system.SystemManager;
    import com.ankamagames.jerakine.enum.OperatingSystem;
    import flash.system.LoaderContext;
    import flash.errors.IllegalOperationError;
-   import flash.filesystem.File;
    import com.ankamagames.jerakine.utils.crypto.CRC32;
    import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.managers.LangManager;
    import com.ankamagames.jerakine.utils.system.AirScanner;
    
    public class Uri extends Object
@@ -34,10 +35,20 @@ package com.ankamagames.jerakine.types
       
       private static var _useSecureURI:Boolean = false;
       
+      private static var _appPath:String;
+      
       public static var _osIsWindows:Boolean;
       
       public static function enableSecureURI() : void {
          _useSecureURI = true;
+      }
+      
+      public static function checkAbsolutePath(path:String) : Boolean {
+         if(!_appPath)
+         {
+            _appPath = new Uri(File.applicationDirectory.nativePath).path;
+         }
+         return !(path.indexOf(_appPath) == -1);
       }
       
       private var _protocol:String;
@@ -225,6 +236,7 @@ package com.ankamagames.jerakine.types
       }
       
       public function toFile() : File {
+         var uiRoot:String = null;
          var tmp:String = unescape(this._path);
          if((SystemManager.getSingleton().os == OperatingSystem.WINDOWS) && ((tmp.indexOf("\\\\") == 0) || (tmp.charAt(1) == ":")))
          {
@@ -233,6 +245,15 @@ package com.ankamagames.jerakine.types
          if((!(SystemManager.getSingleton().os == OperatingSystem.WINDOWS)) && (tmp.charAt(0) == "/"))
          {
             return new File("/" + tmp);
+         }
+         if(this._protocol == "mod")
+         {
+            uiRoot = LangManager.getInstance().getEntry("config.mod.path");
+            if((!(uiRoot.substr(0,2) == "\\\\")) && (!(uiRoot.substr(1,2) == ":/")))
+            {
+               return new File(File.applicationDirectory.nativePath + File.separator + uiRoot + File.separator + tmp);
+            }
+            return new File(uiRoot + File.separator + tmp);
          }
          return new File(File.applicationDirectory.nativePath + File.separator + tmp);
       }

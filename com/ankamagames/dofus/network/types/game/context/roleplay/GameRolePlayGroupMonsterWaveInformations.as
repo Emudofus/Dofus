@@ -5,6 +5,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
    import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
    
    public class GameRolePlayGroupMonsterWaveInformations extends GameRolePlayGroupMonsterInformations implements INetworkType
    {
@@ -54,7 +55,8 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
             _i2 = 0;
             while(_i2 < this.alternatives.length)
             {
-               (this.alternatives[_i2] as GroupMonsterStaticInformations).serializeAs_GroupMonsterStaticInformations(output);
+               output.writeShort((this.alternatives[_i2] as GroupMonsterStaticInformations).getTypeId());
+               (this.alternatives[_i2] as GroupMonsterStaticInformations).serialize(output);
                _i2++;
             }
             return;
@@ -66,6 +68,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
       }
       
       public function deserializeAs_GameRolePlayGroupMonsterWaveInformations(input:IDataInput) : void {
+         var _id2:uint = 0;
          var _item2:GroupMonsterStaticInformations = null;
          super.deserialize(input);
          this.nbWaves = input.readUnsignedInt();
@@ -79,7 +82,8 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
             _i2 = 0;
             while(_i2 < _alternativesLen)
             {
-               _item2 = new GroupMonsterStaticInformations();
+               _id2 = input.readUnsignedShort();
+               _item2 = ProtocolTypeManager.getInstance(GroupMonsterStaticInformations,_id2);
                _item2.deserialize(input);
                this.alternatives.push(_item2);
                _i2++;

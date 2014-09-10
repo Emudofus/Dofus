@@ -1,7 +1,11 @@
 package com.ankamagames.berilia.types.graphic
 {
    import flash.html.HTMLLoader;
+   import com.ankamagames.jerakine.logger.Logger;
    import flash.utils.Dictionary;
+   import flash.events.HTMLUncaughtScriptExceptionEvent;
+   import com.ankamagames.jerakine.logger.Log;
+   import avmplus.getQualifiedClassName;
    import flash.utils.Timer;
    import flash.events.TimerEvent;
    import flash.events.Event;
@@ -13,6 +17,8 @@ package com.ankamagames.berilia.types.graphic
          super();
          addEventListener(Event["LOCATION_CHANGE"],this.onLocationChange);
       }
+      
+      protected static const _log:Logger;
       
       private static var INSTANCE_CACHE:Dictionary;
       
@@ -30,6 +36,7 @@ package com.ankamagames.berilia.types.graphic
          }
          instance = new TimeoutHTMLLoader();
          instance._uid = uid;
+         instance.addEventListener(HTMLUncaughtScriptExceptionEvent.UNCAUGHT_SCRIPT_EXCEPTION,onJsError);
          if(uid)
          {
             INSTANCE_CACHE[uid] = instance;
@@ -39,6 +46,17 @@ package com.ankamagames.berilia.types.graphic
       
       public static function resetCache() : void {
          INSTANCE_CACHE = new Dictionary();
+      }
+      
+      private static function onJsError(event:HTMLUncaughtScriptExceptionEvent) : void {
+         var msg:String = "Javascript exception \"" + event.exceptionValue.message + "\"";
+         var i:uint = 0;
+         while(i < event.stackTrace.length)
+         {
+            msg = msg + ("\n" + event.stackTrace[i].functionName + " at line " + event.stackTrace[i].line);
+            i++;
+         }
+         _log.error(msg);
       }
       
       private var _fromCache:Boolean;

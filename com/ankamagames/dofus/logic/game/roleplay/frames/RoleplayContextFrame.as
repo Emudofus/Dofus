@@ -17,6 +17,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
    import com.ankamagames.dofus.logic.game.common.frames.SocialFrame;
    import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.frames.StackManagementFrame;
    import com.ankamagames.jerakine.messages.Message;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.CurrentMapMessage;
    import com.ankamagames.dofus.datacenter.world.SubArea;
@@ -24,7 +25,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import flash.utils.ByteArray;
    import com.ankamagames.dofus.datacenter.world.MapPosition;
    import com.ankamagames.dofus.logic.common.actions.ChangeWorldInteractionAction;
-   import com.ankamagames.dofus.logic.game.common.frames.StackManagementFrame;
    import com.ankamagames.dofus.logic.game.roleplay.actions.NpcGenericActionRequestAction;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.NpcGenericActionRequestMessage;
@@ -39,7 +39,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.NpcDialogCreationMessage;
    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.PortalUseRequestAction;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.PortalUseRequestMessage;
-   import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.PortalDialogQuestionMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeShowVendorTaxMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeReplyTaxVendorMessage;
    import com.ankamagames.dofus.logic.game.common.actions.humanVendor.ExchangeOnHumanVendorRequestAction;
@@ -90,6 +89,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeCraftInformationObjectMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.delay.GameRolePlayDelayedActionMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.document.DocumentReadingBeginMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.document.ComicReadingBeginMessage;
+   import com.ankamagames.dofus.datacenter.documents.Comic;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.paddock.PaddockSellBuyDialogMessage;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.visual.GameRolePlaySpellAnimMessage;
    import com.ankamagames.dofus.logic.game.roleplay.types.RoleplaySpellCastProvider;
@@ -98,6 +99,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.network.messages.game.context.roleplay.ErrorMapNotFoundMessage;
    import com.ankamagames.atouin.data.map.Map;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
    import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPortalInformations;
@@ -134,6 +136,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import flash.events.MouseEvent;
    import com.ankamagames.dofus.misc.lists.RoleplayHookList;
    import com.ankamagames.dofus.misc.EntityLookAdapter;
+   import com.ankamagames.tiphon.types.TiphonUtility;
    import com.ankamagames.dofus.network.types.game.prism.AlliancePrismInformation;
    import com.ankamagames.dofus.network.enums.ExchangeTypeEnum;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeStartedBidBuyerMessage;
@@ -165,6 +168,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
    import com.ankamagames.dofus.network.enums.FighterRefusedReasonEnum;
    import com.ankamagames.dofus.network.enums.CraftResultEnum;
    import com.ankamagames.dofus.network.enums.DelayedActionTypeEnum;
+   import com.ankamagames.dofus.misc.lists.ExternalGameHookList;
+   import com.ankamagames.jerakine.managers.LangManager;
    import com.ankamagames.dofus.misc.lists.MountHookList;
    import com.ankamagames.dofus.network.messages.game.context.roleplay.paddock.PaddockPropertiesMessage;
    import com.ankamagames.dofus.datacenter.spells.Spell;
@@ -338,6 +343,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             this._emoticonFrame = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
          }
          this._playersMultiCraftSkill = new Array();
+         var stackFrame:StackManagementFrame = Kernel.getWorker().getFrame(StackManagementFrame) as StackManagementFrame;
+         stackFrame.paused = false;
          return true;
       }
       
@@ -368,8 +375,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var entityNpcLike:Object = null;
          var pura:PortalUseRequestAction = null;
          var purmsg:PortalUseRequestMessage = null;
-         var pdqmsg:PortalDialogQuestionMessage = null;
-         var date:Date = null;
          var esvtmsg:ExchangeShowVendorTaxMessage = null;
          var ertvmsg:ExchangeReplyTaxVendorMessage = null;
          var erossa:ExchangeOnHumanVendorRequestAction = null;
@@ -436,6 +441,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var csi:CraftSmileyItem = null;
          var grda:GameRolePlayDelayedActionMessage = null;
          var drbm:DocumentReadingBeginMessage = null;
+         var crbmsg:ComicReadingBeginMessage = null;
+         var comic:Comic = null;
          var psbdmsg:PaddockSellBuyDialogMessage = null;
          var ldrmsg2:LeaveDialogRequestMessage = null;
          var grpsamsg:GameRolePlaySpellAnimMessage = null;
@@ -451,6 +458,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
          var virtualMap:Map = null;
          var menuResult:* = false;
          var npcEntity:GameRolePlayNpcInformations = null;
+         var npcLook:TiphonEntityLook = null;
          var ponyEntity:GameRolePlayTaxCollectorInformations = null;
          var prismEntity:GameRolePlayPrismInformations = null;
          var allianceName:String = null;
@@ -731,7 +739,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                if(entityNpcLike is GameRolePlayNpcInformations)
                {
                   npcEntity = entityNpcLike as GameRolePlayNpcInformations;
-                  KernelEventsManager.getInstance().processCallback(RoleplayHookList.NpcDialogCreation,ndcmsg.mapId,npcEntity.npcId,EntityLookAdapter.fromNetwork(npcEntity.look));
+                  npcLook = EntityLookAdapter.fromNetwork(npcEntity.look);
+                  npcLook = TiphonUtility.getLookWithoutMount(npcLook);
+                  KernelEventsManager.getInstance().processCallback(RoleplayHookList.NpcDialogCreation,ndcmsg.mapId,npcEntity.npcId,npcLook);
                }
                else if(entityNpcLike is GameRolePlayTaxCollectorInformations)
                {
@@ -776,11 +786,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                purmsg = new PortalUseRequestMessage();
                purmsg.initPortalUseRequestMessage(pura.portalId);
                ConnectionsHandler.getConnection().send(purmsg);
-               return true;
-            case msg is PortalDialogQuestionMessage:
-               pdqmsg = msg as PortalDialogQuestionMessage;
-               date = new Date();
-               KernelEventsManager.getInstance().processCallback(RoleplayHookList.PortalDialogQuestion,pdqmsg.availableUseLeft,pdqmsg.closeDate * 1000 - date.time);
                return true;
             case msg is GameContextDestroyMessage:
                TooltipManager.hide();
@@ -1100,6 +1105,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                      errorMessage = I18n.getUiText("ui.exchange.cantExchangeCharacterRestricted");
                      channelId = ChatFrame.RED_CHANNEL_ID;
                      break;
+                  case ExchangeErrorEnum.REQUEST_CHARACTER_GUEST:
+                     errorMessage = I18n.getUiText("ui.exchange.cantExchangeCharacterGuest");
+                     channelId = ChatFrame.RED_CHANNEL_ID;
+                     break;
                   default:
                      errorMessage = I18n.getUiText("ui.exchange.cantExchange");
                }
@@ -1299,6 +1308,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   case FighterRefusedReasonEnum.MEMBER_ACCOUNT_NEEDED:
                      message = I18n.getUiText("ui.fight.memberAccountNeeded");
                      break;
+                  case FighterRefusedReasonEnum.GUEST_ACCOUNT:
+                     message = I18n.getUiText("ui.fight.guestAccount");
+                     break;
                   case FighterRefusedReasonEnum.OPPONENT_NOT_MEMBER:
                      message = I18n.getUiText("ui.fight.opponentNotMember");
                      break;
@@ -1369,6 +1381,19 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                   Kernel.getWorker().addFrame(this._documentFrame);
                }
                KernelEventsManager.getInstance().processCallback(RoleplayHookList.DocumentReadingBegin,drbm.documentId);
+               return true;
+            case msg is ComicReadingBeginMessage:
+               crbmsg = msg as ComicReadingBeginMessage;
+               comic = Comic.getComicById(crbmsg.comicId);
+               if(comic)
+               {
+                  TooltipManager.hideAll();
+                  if(!Kernel.getWorker().contains(DocumentFrame))
+                  {
+                     Kernel.getWorker().addFrame(this._documentFrame);
+                  }
+                  KernelEventsManager.getInstance().processCallback(ExternalGameHookList.OpenComic,comic.remoteId,comic.readerUrl,LangManager.getInstance().getEntry("config.lang.current"));
+               }
                return true;
          }
       }

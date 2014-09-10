@@ -29,9 +29,10 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          {
             if(this.isListening(item))
             {
-               this.addItem(item,0);
+               this.addItem(item,0,false);
             }
          }
+         this.updateView();
       }
       
       public function get name() : String {
@@ -42,9 +43,12 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          return this._content;
       }
       
-      public function addItem(item:ItemWrapper, invisible:int) : void {
+      public function addItem(item:ItemWrapper, invisible:int, needUpdateView:Boolean = true) : void {
          this._content.unshift(item);
-         this.updateView();
+         if(needUpdateView)
+         {
+            this.updateView();
+         }
       }
       
       public function removeItem(item:ItemWrapper, invisible:int) : void {

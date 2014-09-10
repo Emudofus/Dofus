@@ -46,6 +46,10 @@ package com.ankamagames.dofus.network.messages.game.context
       override public function pack(output:IDataOutput) : void {
          var data:ByteArray = new ByteArray();
          this.serialize(data);
+         if(HASH_FUNCTION != null)
+         {
+            HASH_FUNCTION(data);
+         }
          writePacket(output,this.getMessageId(),data);
       }
       

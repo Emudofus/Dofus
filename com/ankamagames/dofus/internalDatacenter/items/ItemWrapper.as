@@ -41,10 +41,6 @@ package com.ankamagames.dofus.internalDatacenter.items
       
       public static const ITEM_TYPE_LIVING_OBJECT:uint = 113;
       
-      public static const ITEM_TYPE_PET_GHOST:uint = 90;
-      
-      public static const ITEM_TYPE_PETSMOUNT_GHOST:uint = 124;
-      
       public static const ACTION_ID_LIVING_OBJECT_FOOD_DATE:uint = 808;
       
       public static const ACTION_ID_LIVING_OBJECT_ID:uint = 970;
@@ -62,6 +58,10 @@ package com.ankamagames.dofus.internalDatacenter.items
       public static const ACTION_ID_SPEAKING_OBJECT:uint = 1102;
       
       public static const ACTION_ITEM_SKIN_ITEM:uint = 1151;
+      
+      public static const ACTION_ID_WRAPPER_OBJECT_CATEGORY:uint = 1179;
+      
+      public static const ACTION_ID_WRAPPER_OBJECT_GID:uint = 1176;
       
       public static const GID_PRESET_SHORTCUT_ITEM:int = 11589;
       
@@ -127,6 +127,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          _uniqueIndex++;
          item.sortOrder = _uniqueIndex;
          item.livingObjectCategory = 0;
+         item.wrapperObjectCategory = 0;
          item.effects = new Vector.<EffectInstance>();
          item.exchangeAllowed = true;
          item.updateEffects(newEffects);
@@ -152,6 +153,8 @@ package com.ankamagames.dofus.internalDatacenter.items
       private var _shortName:String;
       
       private var _mimicryItemSkinGID:int;
+      
+      private var _wrapperItemSkinGID:int;
       
       private var _setCount:int = 0;
       
@@ -184,6 +187,10 @@ package com.ankamagames.dofus.internalDatacenter.items
       public var livingObjectLevel:uint;
       
       public var livingObjectFoodDate:String;
+      
+      public var wrapperObjectCategory:uint;
+      
+      private var _isObjectWrapped:Boolean;
       
       public var presetIcon:int = -1;
       
@@ -265,13 +272,34 @@ package com.ankamagames.dofus.internalDatacenter.items
          return !(this.livingObjectCategory == 0);
       }
       
+      public function get isWrapperObject() : Boolean {
+         return !(this.wrapperObjectCategory == 0);
+      }
+      
+      public function get isObjectWrapped() : Boolean {
+         var effect:ObjectEffect = null;
+         if(this.isLivingObject)
+         {
+            return false;
+         }
+         for each(effect in this.effectsList)
+         {
+            if(effect.actionId == ACTION_ID_WRAPPER_OBJECT_GID)
+            {
+               this._wrapperItemSkinGID = (effect as ObjectEffectInteger).value;
+               return true;
+            }
+         }
+         return false;
+      }
+      
       public function get isMimicryObject() : Boolean {
          var effect:ObjectEffect = null;
          if(this.isLivingObject)
          {
             return false;
          }
-         if((!(typeId == ITEM_TYPE_PET_GHOST)) && (!(typeId == ITEM_TYPE_PETSMOUNT_GHOST)))
+         if(type.mimickable)
          {
             for each(effect in this.effectsList)
             {
@@ -524,6 +552,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          this.effectsList = newEffects;
          this.effects = new Vector.<EffectInstance>();
          this.livingObjectCategory = 0;
+         this.wrapperObjectCategory = 0;
          this.livingObjectId = 0;
          var refItem:Item = Item.getItemById(objectGID);
          refItem.copy(refItem,this);
@@ -534,6 +563,7 @@ package com.ankamagames.dofus.internalDatacenter.items
       public function getIconUri(pngMode:Boolean = true) : Uri {
          var iconId:String = null;
          var skinItem:Item = null;
+         var skinItemm:Item = null;
          if((pngMode) && (this._uriPngMode))
          {
             return this._uriPngMode;
@@ -558,15 +588,21 @@ package com.ankamagames.dofus.internalDatacenter.items
          {
             iconId = LivingObjectSkinJntMood.getLivingObjectSkin(this.livingObjectId?this.livingObjectId:this.objectGID,this.livingObjectMood,this.livingObjectSkin).toString();
          }
+         else if(this.isObjectWrapped)
+         {
+            skinItem = Item.getItemById(this._wrapperItemSkinGID);
+            iconId = skinItem?skinItem.iconId.toString():"error_on_item_" + this.objectGID + ".png";
+         }
          else if(this.isMimicryObject)
          {
-            skinItem = Item.getItemById(this._mimicryItemSkinGID);
-            iconId = skinItem?skinItem.iconId.toString():"error_on_item_" + this.objectGID + ".png";
+            skinItemm = Item.getItemById(this._mimicryItemSkinGID);
+            iconId = skinItemm?skinItemm.iconId.toString():"error_on_item_" + this.objectGID + ".png";
          }
          else
          {
             iconId = item?item.iconId.toString():"error_on_item_" + this.objectGID + ".png";
          }
+         
          
          if(pngMode)
          {
@@ -597,6 +633,7 @@ package com.ankamagames.dofus.internalDatacenter.items
          item.quantity = this.quantity;
          item.effects = this.effects;
          item.effectsList = this.effectsList;
+         item.wrapperObjectCategory = this.wrapperObjectCategory;
          item.livingObjectCategory = this.livingObjectCategory;
          item.livingObjectFoodDate = this.livingObjectFoodDate;
          item.livingObjectId = this.livingObjectId;
@@ -715,6 +752,10 @@ package com.ankamagames.dofus.internalDatacenter.items
             if((effectInstance.effectId == 981) || (effectInstance.effectId == 982))
             {
                exchangeable = false;
+            }
+            if(effectInstance.effectId == ACTION_ID_WRAPPER_OBJECT_CATEGORY)
+            {
+               this.wrapperObjectCategory = EffectInstanceInteger(effectInstance).value;
             }
          }
       }

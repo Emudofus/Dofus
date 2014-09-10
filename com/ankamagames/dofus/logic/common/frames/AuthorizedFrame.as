@@ -28,8 +28,12 @@ package com.ankamagames.dofus.logic.common.frames
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.kernel.net.ConnectionType;
    import com.ankamagames.dofus.network.ProtocolConstantsEnum;
+   import flash.utils.Dictionary;
+   import flash.utils.getDefinitionByName;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
+   import com.ankamagames.dofus.misc.lists.GameDataList;
    
    public class AuthorizedFrame extends RegisteringFrame
    {
@@ -140,6 +144,87 @@ package com.ankamagames.dofus.logic.common.frames
          }
          KernelEventsManager.getInstance().processCallback(HookList.ConsoleOutput,comsg.text,comsg.type);
          return true;
+      }
+      
+      private function getValidClass() : Dictionary {
+         var subXML:XML = null;
+         var varAndAccessors:Array = null;
+         var dico:Dictionary = new Dictionary();
+         var xml:XML = DescribeTypeCache.typeDescription(GameDataList);
+         for each(subXML in xml..constant)
+         {
+            varAndAccessors = this.getSimpleVariablesAndAccessors(String(subXML.@type));
+            if(varAndAccessors.indexOf("id") != -1)
+            {
+               dico[String(subXML.@name).toLowerCase()] = String(subXML.@type);
+            }
+         }
+         return dico;
+      }
+      
+      private function getSimpleVariablesAndAccessors(clazz:String, addVectors:Boolean = false) : Array {
+         var type:String = null;
+         var currentXML:XML = null;
+         var result:Array = new Array();
+         var xml:XML = DescribeTypeCache.typeDescription(getDefinitionByName(clazz));
+         for each(currentXML in xml..variable)
+         {
+            type = String(currentXML.@type);
+            if((type == "int") || (type == "uint") || (type == "Number") || (type == "String"))
+            {
+               result.push(String(currentXML.@name));
+            }
+            if(addVectors)
+            {
+               if((!(type.indexOf("Vector.<int>") == -1)) || (!(type.indexOf("Vector.<uint>") == -1)) || (!(type.indexOf("Vector.<Number>") == -1)) || (!(type.indexOf("Vector.<String>") == -1)))
+               {
+                  if(type.split("Vector").length == 2)
+                  {
+                     result.push(String(currentXML.@name));
+                  }
+               }
+            }
+         }
+         for each(currentXML in xml..accessor)
+         {
+            type = String(currentXML.@type);
+            if((type == "int") || (type == "uint") || (type == "Number") || (type == "String"))
+            {
+               result.push(String(currentXML.@name));
+            }
+            if(addVectors)
+            {
+               if((!(type.indexOf("Vector.<int>") == -1)) || (!(type.indexOf("Vector.<uint>") == -1)) || (!(type.indexOf("Vector.<Number>") == -1)) || (!(type.indexOf("Vector.<String>") == -1)))
+               {
+                  if(type.split("Vector").length == 2)
+                  {
+                     result.push(String(currentXML.@name));
+                  }
+               }
+            }
+         }
+         return result;
+      }
+      
+      private function getIdFunction(clazz:String) : String {
+         var subXML:XML = null;
+         var parameterType:String = null;
+         var xml:XML = DescribeTypeCache.typeDescription(getDefinitionByName(clazz));
+         for each(subXML in xml..method)
+         {
+            if((subXML.@returnType == clazz) && ((XMLList(subXML.parameter).length() == 1) || (XMLList(subXML.parameter).length() == 2)))
+            {
+               parameterType = String(XMLList(subXML.parameter)[0].@type);
+               if((parameterType == "int") || (parameterType == "uint"))
+               {
+                  if(String(subXML.@name).indexOf("ById") != -1)
+                  {
+                     return String(subXML.@name);
+                  }
+               }
+            }
+         }
+         return null;
       }
       
       private function onQuitGameAction(qga:QuitGameAction) : Boolean {

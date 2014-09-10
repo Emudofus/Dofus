@@ -33,7 +33,7 @@ package com.ankamagames.dofus.kernel.updaterv2
          }
       }
       
-      private static const logger:Logger;
+      private static const _log:Logger;
       
       private static const LOCALHOST:String = "127.0.0.1";
       
@@ -83,12 +83,14 @@ package com.ankamagames.dofus.kernel.updaterv2
                this._buffer.push(msg);
                return false;
             }
+            _log.info("Send to updater " + msg);
+            _log.info(msg.serialize());
             this._socket.writeUTFBytes(msg.serialize());
             this._socket.flush();
          }
          catch(e:Error)
          {
-            logger.error("Sending updater message failed (reason : [" + e.errorID + "] " + e.message + ")");
+            _log.error("Sending updater message failed (reason : [" + e.errorID + "] " + e.message + ")");
             return false;
          }
          return true;
@@ -122,7 +124,7 @@ package com.ankamagames.dofus.kernel.updaterv2
       }
       
       private function onConnectionOpened(event:Event) : void {
-         logger.info("Connected to the updater on port : " + this._port);
+         _log.info("Connected to the updater on port : " + this._port);
          this._socket.removeEventListener(Event.CONNECT,this.onConnectionOpened);
          StatisticReportingManager.getInstance().report("UpdaterConnexion - " + BuildInfos.BUILD_TYPE + " - " + BuildInfos.BUILD_VERSION,"success");
          this.dispatchConnected();
@@ -135,13 +137,13 @@ package com.ankamagames.dofus.kernel.updaterv2
       }
       
       private function onConnectionClosed(event:Event) : void {
-         logger.info("Updater connection has been closed");
+         _log.info("Updater connection has been closed");
          this.removeEventListeners();
          this.dispatchRagquit();
       }
       
       private function onIOError(event:IOErrorEvent) : void {
-         logger.error("Error : [" + event.errorID + "] " + event.text);
+         _log.error("Error : [" + event.errorID + "] " + event.text);
          if(CommandLineArguments.getInstance().hasArgument("update-server-port"))
          {
             StatisticReportingManager.getInstance().report("UpdaterConnexion - " + BuildInfos.BUILD_TYPE + " - " + BuildInfos.BUILD_VERSION,"failed [" + event.text + "]");
@@ -171,7 +173,7 @@ package com.ankamagames.dofus.kernel.updaterv2
                   message = UpdaterMessageFactory.getUpdaterMessage(contentJSON);
                   if(this._handlers.length == 0)
                   {
-                     logger.error("No handler to process Updater input message : " + content);
+                     _log.error("No handler to process Updater input message : " + content);
                   }
                   else
                   {
@@ -180,14 +182,14 @@ package com.ankamagames.dofus.kernel.updaterv2
                }
                catch(e:Error)
                {
-                  logger.error("Malformed updater packet : " + messages[i] + " [" + e.errorID + " " + e.message + "]");
+                  _log.error("Malformed updater packet : " + messages[i] + " [" + e.errorID + " " + e.message + "]");
                }
                i++;
             }
          }
          catch(ioe:IOError)
          {
-            logger.error("Error during reading packet : [" + ioe.errorID + " " + ioe.message + "]");
+            _log.error("Error during reading packet : [" + ioe.errorID + " " + ioe.message + "]");
          }
       }
       

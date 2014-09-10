@@ -51,6 +51,10 @@ package com.ankamagames.dofus.datacenter.world
       
       public var bounds:Rectangle;
       
+      public var worldmapId:uint;
+      
+      public var hasWorldMap:Boolean;
+      
       private var _name:String;
       
       private var _superArea:SuperArea;
@@ -58,6 +62,8 @@ package com.ankamagames.dofus.datacenter.world
       private var _hasVisibleSubAreas:Boolean;
       
       private var _hasVisibleSubAreasInitialized:Boolean;
+      
+      private var _worldMap:WorldMap;
       
       public function get name() : String {
          if(!this._name)
@@ -82,6 +88,21 @@ package com.ankamagames.dofus.datacenter.world
             this._hasVisibleSubAreasInitialized = true;
          }
          return this._hasVisibleSubAreas;
+      }
+      
+      public function get worldmap() : WorldMap {
+         if(!this._worldMap)
+         {
+            if(!this.hasWorldMap)
+            {
+               this._worldMap = this.superArea.worldmap;
+            }
+            else
+            {
+               this._worldMap = WorldMap.getWorldMapById(this.worldmapId);
+            }
+         }
+         return this._worldMap;
       }
    }
 }

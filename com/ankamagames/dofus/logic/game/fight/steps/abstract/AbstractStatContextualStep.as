@@ -1,6 +1,9 @@
 package com.ankamagames.dofus.logic.game.fight.steps.abstract
 {
    import com.ankamagames.jerakine.sequencer.AbstractSequencable;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import avmplus.getQualifiedClassName;
    import com.ankamagames.dofus.types.characteristicContextual.CharacteristicContextual;
    import com.ankamagames.jerakine.managers.OptionManager;
    import com.ankamagames.dofus.types.characteristicContextual.CharacteristicContextualManager;
@@ -20,6 +23,8 @@ package com.ankamagames.dofus.logic.game.fight.steps.abstract
          this._targetId = targetId;
          this._blocking = blocking;
       }
+      
+      protected static const _log:Logger;
       
       protected var _color:uint;
       

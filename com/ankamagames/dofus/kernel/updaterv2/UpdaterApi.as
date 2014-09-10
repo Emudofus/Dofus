@@ -4,6 +4,7 @@ package com.ankamagames.dofus.kernel.updaterv2
    import com.ankamagames.dofus.logic.game.approach.managers.PartManagerV2;
    import com.ankamagames.dofus.kernel.updaterv2.messages.impl.ActivateComponentMessage;
    import com.ankamagames.dofus.kernel.updaterv2.messages.impl.GetComponentsListMessage;
+   import com.ankamagames.dofus.kernel.updaterv2.messages.impl.GetSystemConfiguration;
    
    public class UpdaterApi extends Object implements IApi
    {
@@ -32,6 +33,10 @@ package com.ankamagames.dofus.kernel.updaterv2
       
       public function getComponentList(project:String = "game") : void {
          updaterConnection.sendMessage(new GetComponentsListMessage(project));
+      }
+      
+      public function getSystemConfiguration(key:String = "") : void {
+         updaterConnection.sendMessage(new GetSystemConfiguration(key));
       }
    }
 }

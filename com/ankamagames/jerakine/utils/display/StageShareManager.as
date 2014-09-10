@@ -5,6 +5,8 @@ package com.ankamagames.jerakine.utils.display
    import flash.geom.Point;
    import com.ankamagames.jerakine.utils.system.AirScanner;
    import flash.events.NativeWindowDisplayStateEvent;
+   import flash.events.Event;
+   import flash.events.MouseEvent;
    import flash.display.StageQuality;
    import flash.display.StageDisplayState;
    import flash.display.NativeWindow;
@@ -35,6 +37,8 @@ package com.ankamagames.jerakine.utils.display
       
       private static var _chrome:Point;
       
+      private static var _mouseOnStage:Boolean;
+      
       public static var nativeWindowStartWidth:uint;
       
       public static var nativeWindowStartHeight:uint;
@@ -42,6 +46,10 @@ package com.ankamagames.jerakine.utils.display
       public static var chromeWidth:uint;
       
       public static var chromeHeight:uint;
+      
+      public static var justExitFullScreen:Boolean = false;
+      
+      public static var shortcutUsedToExitFullScreen:Boolean = false;
       
       public static function set rootContainer(d:DisplayObjectContainer) : void {
          _rootContainer = d;
@@ -77,6 +85,8 @@ package com.ankamagames.jerakine.utils.display
          {
             _stage["nativeWindow"].addEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGE,displayStateChangeHandler);
          }
+         _stage.addEventListener(Event.MOUSE_LEAVE,onStageMouseLeave);
+         _stage.addEventListener(MouseEvent.MOUSE_MOVE,onStageMouseMove);
       }
       
       public static function testQuality() : void {
@@ -175,6 +185,10 @@ package com.ankamagames.jerakine.utils.display
          return _rootContainer.scaleY;
       }
       
+      public static function get mouseOnStage() : Boolean {
+         return _mouseOnStage;
+      }
+      
       private static function displayStateChangeHandler(event:NativeWindowDisplayStateEvent) : void {
          var nativeWindow:NativeWindow = null;
          if(event.beforeDisplayState == NativeWindowDisplayState.MINIMIZED)
@@ -189,6 +203,14 @@ package com.ankamagames.jerakine.utils.display
                }
             }
          }
+      }
+      
+      private static function onStageMouseLeave(pEvent:Event) : void {
+         _mouseOnStage = false;
+      }
+      
+      private static function onStageMouseMove(pEvent:MouseEvent) : void {
+         _mouseOnStage = true;
       }
       
       public static function get chrome() : Point {

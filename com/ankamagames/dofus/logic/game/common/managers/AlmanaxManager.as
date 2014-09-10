@@ -8,15 +8,15 @@ package com.ankamagames.dofus.logic.game.common.managers
    import com.ankamagames.dofus.internalDatacenter.almanax.AlmanaxMonth;
    import com.ankamagames.dofus.internalDatacenter.almanax.AlmanaxZodiac;
    import com.ankamagames.jerakine.types.DataStoreType;
-   import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.dofus.BuildInfos;
+   import com.ankamagames.dofus.network.enums.BuildTypeEnum;
    import flash.events.Event;
+   import com.ankamagames.dofus.types.events.RpcEvent;
+   import com.ankamagames.jerakine.managers.LangManager;
+   import com.ankamagames.jerakine.data.XmlConfig;
    import com.ankamagames.jerakine.managers.StoreDataManager;
    import com.ankamagames.jerakine.types.enums.DataStoreEnum;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
-   import com.ankamagames.dofus.BuildInfos;
-   import com.ankamagames.dofus.network.enums.BuildTypeEnum;
-   import com.ankamagames.dofus.types.events.RpcEvent;
-   import com.ankamagames.jerakine.managers.LangManager;
    
    public class AlmanaxManager extends Object
    {
@@ -34,25 +34,24 @@ package com.ankamagames.dofus.logic.game.common.managers
             currentDate = new Date();
             if((!(cacheDate.day == currentDate.day)) || (currentDate.time - cacheDate.time > 120000))
             {
-               if(BuildInfos.BUILD_TYPE >= BuildTypeEnum.INTERNAL)
-               {
-                  this._rpcService = new RpcServiceManager("http://api.ankama.lan/krosmoz/event.json","json");
-               }
-               else
-               {
-                  this._rpcService = new RpcServiceManager("http://api.ankama.com/krosmoz/event.json","json");
-               }
-               this._rpcService.addEventListener(Event.COMPLETE,this.onData);
-               this._rpcService.addEventListener(RpcEvent.EVENT_ERROR,this.onError);
-               this._rpcService.callMethod("GetEvent",[LangManager.getInstance().getEntry("config.lang.current")]);
+               this.getEventFromApi();
             }
             else
             {
                StoreDataManager.getInstance().registerClass(new AlmanaxEvent());
-               this._currentEvent = StoreDataManager.getInstance().getData(this._ds,"currentEvent");
-               this._currentMonth = StoreDataManager.getInstance().getData(this._ds,"currentMonth");
-               this._currentZodiac = StoreDataManager.getInstance().getData(this._ds,"currentZodiac");
-               this.checkData();
+               StoreDataManager.getInstance().registerClass(new AlmanaxMonth());
+               StoreDataManager.getInstance().registerClass(new AlmanaxZodiac());
+               this._currentEvent = StoreDataManager.getInstance().getData(this._ds,"currentEvent") as AlmanaxEvent;
+               this._currentMonth = StoreDataManager.getInstance().getData(this._ds,"currentMonth") as AlmanaxMonth;
+               this._currentZodiac = StoreDataManager.getInstance().getData(this._ds,"currentZodiac") as AlmanaxZodiac;
+               if((!this._currentEvent) || (!this._currentMonth) || (!this._currentZodiac))
+               {
+                  this.getEventFromApi();
+               }
+               else
+               {
+                  this.checkData();
+               }
             }
             return;
          }
@@ -90,6 +89,20 @@ package com.ankamagames.dofus.logic.game.common.managers
       
       public function get zodiac() : AlmanaxZodiac {
          return this._currentZodiac;
+      }
+      
+      private function getEventFromApi() : void {
+         if(BuildInfos.BUILD_TYPE >= BuildTypeEnum.INTERNAL)
+         {
+            this._rpcService = new RpcServiceManager("http://api.ankama.lan/krosmoz/event.json","json");
+         }
+         else
+         {
+            this._rpcService = new RpcServiceManager("http://api.ankama.com/krosmoz/event.json","json");
+         }
+         this._rpcService.addEventListener(Event.COMPLETE,this.onData);
+         this._rpcService.addEventListener(RpcEvent.EVENT_ERROR,this.onError);
+         this._rpcService.callMethod("GetEvent",[LangManager.getInstance().getEntry("config.lang.current")]);
       }
       
       private function setDefaultData(pAlmanaxElement:Object) : void {
@@ -150,6 +163,9 @@ package com.ankamagames.dofus.logic.game.common.managers
          var eventRawData:Object = this._rpcService.getResultData("event");
          var monthRawData:Object = this._rpcService.getResultData("month");
          var zodiacRawData:Object = this._rpcService.getResultData("zodiac");
+         this._rpcService.removeEventListener(Event.COMPLETE,this.onData);
+         this._rpcService.removeEventListener(RpcEvent.EVENT_ERROR,this.onError);
+         this._rpcService = null;
          this._currentEvent = new AlmanaxEvent();
          this.event.bossText = eventRawData.bosstext;
          this.event.ephemeris = eventRawData.ephemeris;
@@ -177,6 +193,9 @@ package com.ankamagames.dofus.logic.game.common.managers
       }
       
       private function onError(e:Event) : void {
+         this._rpcService.removeEventListener(Event.COMPLETE,this.onData);
+         this._rpcService.removeEventListener(RpcEvent.EVENT_ERROR,this.onError);
+         this._rpcService = null;
          this._currentEvent = new AlmanaxEvent();
          this.setDefaultData(this._currentEvent);
          this._currentMonth = new AlmanaxMonth();

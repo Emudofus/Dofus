@@ -6,6 +6,8 @@ package com.ankamagames.dofus.logic.game.fight.managers
    import com.ankamagames.dofus.logic.game.fight.types.CastingSpell;
    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostWeaponDamagesEffect;
    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporarySpellImmunityEffect;
+   import com.ankamagames.dofus.datacenter.spells.SpellLevel;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
    import com.ankamagames.dofus.logic.game.fight.types.SpellBuff;
    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporarySpellBoostEffect;
    import com.ankamagames.dofus.logic.game.fight.types.TriggeredBuff;
@@ -14,12 +16,14 @@ package com.ankamagames.dofus.logic.game.fight.managers
    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostStateEffect;
    import com.ankamagames.dofus.logic.game.fight.types.StatBuff;
    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostEffect;
+   import com.ankamagames.dofus.misc.utils.GameDataQuery;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    import flash.utils.Dictionary;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.FightHookList;
    import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.logic.game.fight.fightEvents.FightEventsHelper;
    import com.ankamagames.dofus.logic.game.fight.frames.FightBattleFrame;
    import com.ankamagames.dofus.kernel.Kernel;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
@@ -53,12 +57,6 @@ package com.ankamagames.dofus.logic.game.fight.managers
       
       private static var _self:BuffManager;
       
-      private static var _buffSpellId:int = -1;
-      
-      private static var _buffTargetId:int;
-      
-      private static var _buffOrder:int;
-      
       public static function getInstance() : BuffManager {
          if(!_self)
          {
@@ -69,8 +67,12 @@ package com.ankamagames.dofus.logic.game.fight.managers
       
       public static function makeBuffFromEffect(effect:AbstractFightDispellableEffect, castingSpell:CastingSpell, actionId:uint) : BasicBuff {
          var buff:BasicBuff = null;
+         var criticalEffect:* = false;
          var ftbwde:FightTemporaryBoostWeaponDamagesEffect = null;
          var ftsie:FightTemporarySpellImmunityEffect = null;
+         var spellLevel:SpellLevel = null;
+         var effects:Vector.<EffectInstanceDice> = null;
+         var effid:EffectInstanceDice = null;
          switch(true)
          {
             case effect is FightTemporarySpellBoostEffect:
@@ -95,17 +97,26 @@ package com.ankamagames.dofus.logic.game.fight.managers
                break;
          }
          buff.id = effect.uid;
-         if((!(_buffSpellId == castingSpell.spell.id)) || (!(_buffTargetId == buff.targetId)))
+         var spellLevelsIds:Vector.<uint> = GameDataQuery.queryEquals(SpellLevel,"effects.effectUid",effect.effectId);
+         if(spellLevelsIds.length == 0)
          {
-            _buffSpellId = castingSpell.spell.id;
-            _buffTargetId = buff.targetId;
-            _buffOrder = 0;
+            spellLevelsIds = GameDataQuery.queryEquals(SpellLevel,"criticalEffect.effectUid",effect.effectId);
+            criticalEffect = true;
          }
-         else
+         if(spellLevelsIds.length > 0)
          {
-            _buffOrder++;
+            spellLevel = SpellLevel.getLevelById(spellLevelsIds[0]);
+            effects = !criticalEffect?spellLevel.effects:spellLevel.criticalEffect;
+            for each(effid in effects)
+            {
+               if(effid.effectUid == effect.effectId)
+               {
+                  buff.effects.order = effid.order;
+                  buff.effects.triggers = effid.triggers;
+                  break;
+               }
+            }
          }
-         buff.effects.order = _buffOrder;
          return buff;
       }
       
@@ -426,7 +437,6 @@ package com.ankamagames.dofus.logic.game.fight.managers
                this._buffs[targetId].splice(this._buffs[targetId].indexOf(buff),1);
                buff.onRemoved();
                KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,buff,targetId,"Dispell");
-               KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,buff,targetId,"");
                if(targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
                {
                   KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);

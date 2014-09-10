@@ -19,8 +19,8 @@ package com.ankamagames.dofus.uiApi
    import com.ankamagames.berilia.managers.HtmlManager;
    import com.ankamagames.jerakine.logger.ModuleLogger;
    import com.ankamagames.dofus.console.moduleLogger.TypeMessage;
-   import com.ankamagames.jerakine.managers.OptionManager;
    import com.ankamagames.dofus.console.moduleLogger.Console;
+   import com.ankamagames.jerakine.managers.OptionManager;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
    
@@ -81,6 +81,11 @@ package com.ankamagames.dofus.uiApi
       
       public function getParagraphByChannel(channel:uint) : Array {
          var list:Array = this.chatFrame.getParagraphes();
+         return list[channel];
+      }
+      
+      public function getHistoryMessagesByChannel(channel:uint) : Array {
+         var list:Array = this.chatFrame.getHistoryMessages();
          return list[channel];
       }
       
@@ -184,15 +189,43 @@ package com.ankamagames.dofus.uiApi
          HtmlManager.changeCssHandler(val);
       }
       
-      public function logChat(text:String) : void {
-         ModuleLogger.log(text,TypeMessage.LOG_CHAT);
+      public function logChat(text:String, cssClass:String) : void {
+         ModuleLogger.log(text,TypeMessage.LOG_CHAT,cssClass);
       }
       
       public function launchExternalChat() : void {
-         var toggleChat:Boolean = OptionManager.getOptionManager("chat")["chatoutput"];
+         Console.getInstance().chatMode = true;
          Console.getInstance().display();
          Console.getInstance().disableLogEvent();
-         OptionManager.getOptionManager("chat")["chatoutput"] = !toggleChat;
+         OptionManager.getOptionManager("chat")["chatoutput"] = true;
+      }
+      
+      public function clearConsoleChat() : void {
+         if(Console.getInstance().chatMode)
+         {
+            Console.getInstance().clearConsole();
+         }
+      }
+      
+      public function isExternalChatOpened() : Boolean {
+         return (Console.getInstance().opened) && (Console.getInstance().chatMode);
+      }
+      
+      public function setExternalChatChannels(pChannels:Array) : void {
+         var chanId:uint = 0;
+         var externalChatChannels:Array = OptionManager.getOptionManager("chat")["externalChatEnabledChannels"];
+         externalChatChannels.length = 0;
+         for each(chanId in pChannels)
+         {
+            if(externalChatChannels.indexOf(chanId) == -1)
+            {
+               externalChatChannels.push(chanId);
+            }
+         }
+         if((Console.getInstance().opened) && (Console.getInstance().chatMode))
+         {
+            Console.getInstance().updateEnabledChatChannels();
+         }
       }
       
       public function addHtmlLink(pText:String, pHref:String) : String {

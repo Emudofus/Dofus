@@ -31,7 +31,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
          var companionInfo:FightTeamMemberCompanionInformations = null;
          super();
          this.nbWaves = pFightTeam.teamInfos.nbWaves;
-         this.fighters = new Vector.<Fighter>();
+         this.fighters = new Vector.<RoleplayTeamFightersTooltipInformation>();
          var len:int = pFightTeam.teamInfos.teamMembers.length;
          i = 0;
          while(i < len)

@@ -19,7 +19,7 @@ package com.ankamagames.dofus.misc.utils
    public class RpcServiceManager extends EventDispatcher
    {
       
-      public function RpcServiceManager(pServiceName:String = "", pType:String = "") {
+      public function RpcServiceManager(pServiceName:String = "", pType:String = "", pVersion:String = "1.0") {
          super();
          this._busy = false;
          if(pServiceName != "")
@@ -30,6 +30,7 @@ package com.ankamagames.dofus.misc.utils
          {
             this.type = pType;
          }
+         this.version = pVersion;
       }
       
       private static const DELAY_BEFORE_TIMED_OUT:int = 1000;
@@ -53,6 +54,8 @@ package com.ankamagames.dofus.misc.utils
       private var _result:Object;
       
       private var _type:String;
+      
+      private var _version:String;
       
       private var _busy:Boolean;
       
@@ -180,6 +183,15 @@ package com.ankamagames.dofus.misc.utils
          switch(this._type)
          {
             case "json":
+               switch(this._version)
+               {
+                  case "1.1":
+                     rpcObject.version = "1.1";
+                     break;
+                  case "2.0":
+                     rpcObject.jsonrpc = "2.0";
+                     break;
+               }
                rpcObject.method = method;
                rpcObject.params = this._params;
                rpcObject.id = 1;
@@ -231,7 +243,7 @@ package com.ankamagames.dofus.misc.utils
          return this._result[name];
       }
       
-      public function callMethod(name:String, params:*, callback:Function = null) : void {
+      public function callMethod(name:String, params:*, callback:Function = null, retryOnTimedout:Boolean = true) : void {
          var obj:Object = null;
          this._busy = true;
          this._method = name;
@@ -251,6 +263,10 @@ package com.ankamagames.dofus.misc.utils
                   break;
                case "xml":
                   throw new Error("Not implemented yet");
+            }
+            if(!retryOnTimedout)
+            {
+               this._timedOutRetry = RETRY_AFTER_TIMED_OUT;
             }
             this._timedOutTimer = new Timer(5000,1);
             this._timedOutTimer.addEventListener(TimerEvent.TIMER_COMPLETE,this.onTimedOut);
@@ -274,6 +290,10 @@ package com.ankamagames.dofus.misc.utils
             default:
                this._type = "xml";
          }
+      }
+      
+      public function set version(val:String) : void {
+         this._version = val;
       }
       
       public function set service(val:String) : void {

@@ -46,6 +46,8 @@ package com.ankamagames.dofus.datacenter.items
       
       public var needUseConfirm:Boolean;
       
+      public var mimickable:Boolean;
+      
       private var _name:String;
       
       public function get name() : String {

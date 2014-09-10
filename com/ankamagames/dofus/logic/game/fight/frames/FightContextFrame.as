@@ -132,8 +132,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.logic.game.fight.types.PushedEntity;
    import com.ankamagames.dofus.logic.game.fight.types.TriggeredSpell;
    import com.ankamagames.dofus.logic.game.fight.types.SplashDamage;
-   import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
    import com.ankamagames.dofus.logic.game.fight.miscs.DamageUtil;
+   import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
    import com.ankamagames.berilia.managers.UiModuleManager;
    import com.ankamagames.berilia.types.LocationEnum;
    import com.ankamagames.berilia.enums.StrataEnum;

@@ -154,6 +154,10 @@ package com.ankamagames.berilia.components
          {
             if(look.toString() == this._lookUpdate.toString())
             {
+               if((this._entity) && (!this._entity.parent))
+               {
+                  addChild(this._entity);
+               }
                return;
             }
          }
@@ -165,7 +169,7 @@ package com.ankamagames.berilia.components
             {
                if(this._entity)
                {
-                  this.destroyOldEntity(this._entity);
+                  this.destroyEntity(this._entity);
                }
                addChild(entity);
                this._entity = entity;
@@ -390,25 +394,20 @@ package com.ankamagames.berilia.components
          {
             this._animation = anim;
             this._direction = dir;
-            if(this._entity is TiphonSprite)
+            if((this._entity is TiphonSprite) && (!this._listenForUpdate))
             {
-               seq = new SerialSequencer();
-               if(this._animation == "AnimStatique")
+               if((this._animation == "AnimStatique") || (this._animation == "AnimArtwork"))
                {
-                  TiphonSprite(this._entity).setAnimationAndDirection("AnimStatique",this._direction);
-               }
-               else if(this._animation == "AnimArtwork")
-               {
-                  TiphonSprite(this._entity).setAnimationAndDirection("AnimArtwork",this._direction);
+                  TiphonSprite(this._entity).setAnimationAndDirection(this._animation,this._direction);
                }
                else
                {
+                  seq = new SerialSequencer();
                   seq.addStep(new SetDirectionStep(TiphonSprite(this._entity),this._direction));
                   seq.addStep(new PlayAnimationStep(TiphonSprite(this._entity),this._animation,false));
                   seq.addStep(new SetAnimationStep(TiphonSprite(this._entity),"AnimStatique"));
                   seq.start();
                }
-               
             }
          }
       }
@@ -593,7 +592,7 @@ package com.ankamagames.berilia.components
             }
             else
             {
-               this.destroyOldEntity(this._oldEntity);
+               this.destroyEntity(this._oldEntity);
                this._oldEntity = null;
             }
          }
@@ -610,7 +609,14 @@ package com.ankamagames.berilia.components
          }
       }
       
-      private function destroyOldEntity(entity:TiphonSprite) : void {
+      public function destroyCurrentEntity() : void {
+         if((this._entity) && (this._entity.parent))
+         {
+            removeChild(this._entity);
+         }
+      }
+      
+      private function destroyEntity(entity:TiphonSprite) : void {
          if(entity.parent)
          {
             removeChild(entity);
@@ -628,14 +634,14 @@ package com.ankamagames.berilia.components
          this._listenForUpdate = false;
          if(this._oldEntity)
          {
-            this.destroyOldEntity(this._oldEntity);
+            this.destroyEntity(this._oldEntity);
             this._oldEntity = null;
          }
          if(!this._lookUpdate)
          {
             if(this._entity)
             {
-               this.destroyOldEntity(this._entity);
+               this.destroyEntity(this._entity);
                this._entity = null;
             }
             return;
@@ -682,7 +688,7 @@ package com.ankamagames.berilia.components
             if(this._oldEntity.alpha < 0.05)
             {
                this._entity.alpha = 1;
-               this.destroyOldEntity(this._oldEntity);
+               this.destroyEntity(this._oldEntity);
                this._oldEntity = null;
                EnterFrameDispatcher.removeEventListener(this.onFade);
             }

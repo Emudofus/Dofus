@@ -6,8 +6,8 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberArenaInformations;
-   import com.ankamagames.dofus.network.types.game.character.choice.CharacterHardcoreInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyInvitationMemberInformations;
+   import com.ankamagames.dofus.network.types.game.character.choice.CharacterHardcoreOrEpicInformations;
    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalGuildInformations;
    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalAllianceInformations;
    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookAndGradeInformations;
@@ -121,6 +121,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPortalInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayTreasureHintInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanInformations;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOption;
    import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionAlliance;
@@ -156,6 +157,7 @@ package com.ankamagames.dofus.network
    import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFollowDirection;
    import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepDig;
    import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFollowDirectionToPOI;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFollowDirectionToHint;
    import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.PortalInformation;
    import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
    import com.ankamagames.dofus.network.types.game.character.status.PlayerStatusExtended;
@@ -198,16 +200,16 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new CharacterBaseInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyMemberInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyMemberArenaInformations(),true,true);
-         StoreDataManager.getInstance().registerClass(new CharacterHardcoreInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyInvitationMemberInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new CharacterHardcoreOrEpicInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new CharacterMinimalGuildInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new CharacterMinimalAllianceInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new CharacterMinimalPlusLookAndGradeInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new CharacterBaseInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyMemberInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyMemberArenaInformations(),true,true);
-         StoreDataManager.getInstance().registerClass(new CharacterHardcoreInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new PartyInvitationMemberInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new CharacterHardcoreOrEpicInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new EntityDispositionInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new IdentifiedEntityDispositionInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new FightEntityDispositionInformations(),true,true);
@@ -323,6 +325,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameRolePlayTaxCollectorInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayPrismInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayPortalInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameRolePlayTreasureHintInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayActorInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayNamedActorInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayHumanoidInformations(),true,true);
@@ -337,6 +340,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new GameRolePlayTaxCollectorInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayPrismInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new GameRolePlayPortalInformations(),true,true);
+         StoreDataManager.getInstance().registerClass(new GameRolePlayTreasureHintInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanInformations(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanOption(),true,true);
          StoreDataManager.getInstance().registerClass(new HumanOptionAlliance(),true,true);
@@ -381,6 +385,7 @@ package com.ankamagames.dofus.network
          StoreDataManager.getInstance().registerClass(new TreasureHuntStepFollowDirection(),true,true);
          StoreDataManager.getInstance().registerClass(new TreasureHuntStepDig(),true,true);
          StoreDataManager.getInstance().registerClass(new TreasureHuntStepFollowDirectionToPOI(),true,true);
+         StoreDataManager.getInstance().registerClass(new TreasureHuntStepFollowDirectionToHint(),true,true);
          StoreDataManager.getInstance().registerClass(new PortalInformation(),true,true);
          StoreDataManager.getInstance().registerClass(new PlayerStatus(),true,true);
          StoreDataManager.getInstance().registerClass(new PlayerStatusExtended(),true,true);

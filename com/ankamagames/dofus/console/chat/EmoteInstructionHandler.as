@@ -1,29 +1,28 @@
 package com.ankamagames.dofus.console.chat
 {
    import com.ankamagames.jerakine.console.ConsoleInstructionHandler;
-   import com.ankamagames.dofus.uiApi.SystemApi;
    import com.ankamagames.jerakine.console.ConsoleHandler;
    import com.ankamagames.dofus.logic.game.roleplay.actions.EmotePlayRequestAction;
    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
-   import com.ankamagames.dofus.network.enums.PlayerLifeStatusEnum;
    import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
+   import com.ankamagames.dofus.logic.game.common.frames.AbstractEntitiesFrame;
+   import com.ankamagames.dofus.network.enums.PlayerLifeStatusEnum;
    import com.ankamagames.dofus.datacenter.communication.Emoticon;
    
    public class EmoteInstructionHandler extends Object implements ConsoleInstructionHandler
    {
       
       public function EmoteInstructionHandler() {
-         this.sysApi = new SystemApi();
          super();
       }
-      
-      private var sysApi:SystemApi;
       
       public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
          var epra:EmotePlayRequestAction = null;
          var emoteId:uint = this.getEmoteId(cmd);
          var playerManager:PlayedCharacterManager = PlayedCharacterManager.getInstance();
-         if((emoteId > 0) && (playerManager.state == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING) && (playerManager.isRidding) || (playerManager.isPetsMounting) || (playerManager.infos.entityLook.bonesId == 1))
+         var entFrame:AbstractEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as AbstractEntitiesFrame;
+         if((emoteId > 0) && (playerManager.state == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING) && ((playerManager.isRidding || playerManager.isPetsMounting || playerManager.infos.entityLook.bonesId == 1) || (entFrame && entFrame.creaturesMode)))
          {
             epra = EmotePlayRequestAction.create(emoteId);
             Kernel.getWorker().process(epra);

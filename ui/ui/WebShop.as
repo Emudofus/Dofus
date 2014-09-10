@@ -316,12 +316,73 @@ package ui
       }
       
       private function displayCategories(selectedCategory:Object = null, forceOpen:Boolean = false) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var myIndex:int;
+         var cat:Object;
+         var cat2:Object;
+         var subcat:Object;
+         if (!(selectedCategory)){
+             selectedCategory = this.gd_categories.selectedItem;
+         };
+         if ((((((selectedCategory.parentId > -1)) && ((this._openCatIndex == selectedCategory.parentId)))) || ((this._openCatIndex == selectedCategory.id)))){
+             this._currentSelectedCatId = selectedCategory.id;
+             for each (cat2 in this.gd_categories.dataProvider) {
+                 if (cat2.id == this._currentSelectedCatId){
+                     break;
+                 };
+                 myIndex++;
+             };
+             if (this.gd_categories.selectedIndex != myIndex){
+                 this.gd_categories.silent = true;
+                 this.gd_categories.selectedIndex = myIndex;
+                 this.gd_categories.silent = false;
+             };
+             this._currentPage = 1;
+             this.sysApi.sendAction(new ShopArticlesListRequest(this._currentSelectedCatId, 1));
+             this.manageWaiting();
+             if (this._openCatIndex != selectedCategory.id){
+                 return;
+             };
+         };
+         var bigCatId:int = selectedCategory.id;
+         if (selectedCategory.parentId > -1){
+             bigCatId = selectedCategory.parentId;
+         };
+         var index:int = -1;
+         var tempCats:Array = new Array();
+         var categoryOpened:int = -1;
+         for each (cat in this._categories) {
+             tempCats.push(cat);
+             index++;
+             if (bigCatId == cat.id){
+                 myIndex = index;
+                 if (((!((this._currentSelectedCatId == cat.id))) || ((this._openCatIndex == 0)))){
+                     categoryOpened = cat.id;
+                     for each (subcat in cat.subcats) {
+                         tempCats.push(subcat);
+                         index++;
+                         if (subcat.id == selectedCategory.id){
+                             myIndex = index;
+                         };
+                     };
+                 };
+             };
+         };
+         if (categoryOpened >= 0){
+             this._openCatIndex = categoryOpened;
+         }
+         else {
+             this._openCatIndex = 0;
+         };
+         this._currentSelectedCatId = selectedCategory.id;
+         this.gd_categories.dataProvider = tempCats;
+         if (this.gd_categories.selectedIndex != myIndex){
+             this.gd_categories.silent = true;
+             this.gd_categories.selectedIndex = myIndex;
+             this.gd_categories.silent = false;
+         };
+         this._currentPage = 1;
+         this.sysApi.sendAction(new ShopArticlesListRequest(this._currentSelectedCatId, 1));
+         this.manageWaiting();
       }
       
       private function showHighlightCarouselArticle(increase:Boolean = true) : void {
@@ -383,12 +444,40 @@ package ui
       }
       
       private function releaseOnHighlight(highlight:DofusShopHighlight) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var cat:DofusShopCategory;
+         var customCatToOpen:Object;
+         var c:Object;
+         var c2:Object;
+         if (!(this._isOnFrontPage)){
+             return;
+         };
+         if (((highlight.link) && (!((highlight.link == ""))))){
+             this.sysApi.goToUrl(highlight.link);
+         }
+         else {
+             if (highlight.type == DofusShopEnum.HIGHLIGHT_TYPE_CATEGORY){
+                 cat = (highlight.external as DofusShopCategory);
+                 for each (c in this._categories) {
+                     if (c.id == cat.id){
+                         customCatToOpen = c;
+                     }
+                     else {
+                         for each (c2 in c.subcats) {
+                             if (c2.id == cat.id){
+                                 customCatToOpen = c2;
+                             };
+                         };
+                     };
+                 };
+                 this.displayCategories(customCatToOpen, true);
+             }
+             else {
+                 if (highlight.type == DofusShopEnum.HIGHLIGHT_TYPE_ARTICLE){
+                     this._selectedArticle = (highlight.external as DofusShopArticle);
+                     this.displayArticle();
+                 };
+             };
+         };
       }
       
       private function refreshPageNumber() : void {
@@ -724,12 +813,75 @@ package ui
       }
       
       private function onDofusShopHome(categories:Object, frontDisplayArticles:Object, frontDisplayMains:Object, highlightCarousels:Object, highlightImages:Object) : void {
-         /*
-          * Decompilation error
-          * Code may be obfuscated
-          * Error type: TranslateException
-          */
-         throw new IllegalOperationError("Not decompiled due to error");
+         var c:DofusShopCategory;
+         var articlesToDisplay:Array;
+         var a:DofusShopArticle;
+         var hc:DofusShopHighlight;
+         var hi:DofusShopHighlight;
+         var i:int;
+         var c2:DofusShopCategory;
+         this.sysApi.log(2, "onDofusShopHome");
+         this._isOnFrontPage = true;
+         if (((frontDisplayMains) && ((frontDisplayMains.length > 0)))){
+             this.ctr_frontDisplayButtons.visible = true;
+         }
+         else {
+             this.ctr_frontDisplayButtons.visible = false;
+         };
+         this.sysApi.log(2, ("   categories " + categories.length));
+         this._categories = new Array();
+         var childrens:Array = new Array();
+         for each (c in categories) {
+             this.sysApi.log(2, ("     - " + c.name));
+             childrens[c.id] = new Array();
+             for each (c2 in c.children) {
+                 childrens[c.id].push({
+                     "id":c2.id,
+                     "name":c2.name,
+                     "desc":c2.description,
+                     "img":c2.image,
+                     "parentId":c.id,
+                     "subcats":new Array()
+                 });
+             };
+             this._categories.push({
+                 "id":c.id,
+                 "name":c.name,
+                 "desc":c.description,
+                 "img":c.image,
+                 "parentId":-1,
+                 "subcats":childrens[c.id]
+             });
+         };
+         this.gd_categories.dataProvider = this._categories;
+         this.sysApi.log(2, ("   articles " + frontDisplayArticles.length));
+         articlesToDisplay = new Array();
+         for each (a in frontDisplayArticles) {
+             this.sysApi.log(2, ("     - " + a.name));
+             articlesToDisplay.push(a);
+         };
+         this.gd_frontDisplayArticles.dataProvider = articlesToDisplay;
+         this.sysApi.log(2, ("   caroussel " + highlightCarousels.length));
+         this._highlightCarousels = new Array();
+         for each (hc in highlightCarousels) {
+             this.sysApi.log(2, ("     - " + hc.name));
+             this._highlightCarousels.push(hc);
+         };
+         this._currentCarouselArticleIndex = (int((Math.random() * this._highlightCarousels.length)) - 1);
+         this.showHighlightCarouselArticle();
+         this._carouselInterval = setInterval(this.showHighlightCarouselArticle, 10000);
+         this.sysApi.log(2, ("   images " + highlightImages.length));
+         this._highlightImages = new Array();
+         for each (hi in highlightImages) {
+             this.sysApi.log(2, ("     - " + hi.name));
+             this._highlightImages.push(hi);
+         };
+         while (i < this._highlightImages.length) {
+             this.showHighlightImage(this._highlightImages[i], i);
+             i++;
+         };
+         this.ctr_frontDisplay.visible = true;
+         this.ctr_articlesDisplay.visible = false;
       }
    }
 }

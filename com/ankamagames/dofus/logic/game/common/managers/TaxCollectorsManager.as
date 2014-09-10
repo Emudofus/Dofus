@@ -220,7 +220,14 @@ package com.ankamagames.dofus.logic.game.common.managers
             }
             else
             {
-               this._guildTaxCollectorsInFight[taxCollector.uniqueId] = SocialEntityInFightWrapper.create(TYPE_TAX_COLLECTOR,taxCollector.uniqueId);
+               if(this._guildTaxCollectorsInFight[taxCollector.uniqueId])
+               {
+                  this._guildTaxCollectorsInFight[taxCollector.uniqueId].update(TYPE_TAX_COLLECTOR,taxCollector.uniqueId,new Array(),new Array());
+               }
+               else
+               {
+                  this._guildTaxCollectorsInFight[taxCollector.uniqueId] = SocialEntityInFightWrapper.create(TYPE_TAX_COLLECTOR,taxCollector.uniqueId);
+               }
                if(taxCollector.state == TaxCollectorStateEnum.STATE_WAITING_FOR_HELP)
                {
                   this._guildTaxCollectorsInFight[taxCollector.uniqueId].addPonyFighter(this._taxCollectors[taxCollector.uniqueId]);

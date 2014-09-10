@@ -13,13 +13,17 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeReadyMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectModifiedMessage;
    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectsModifiedMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectAddedMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectsAddedMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectRemovedMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectsRemovedMessage;
    import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeObjectMoveAction;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectMoveMessage;
    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeIsReadyMessage;
    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
    import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeKamaModifiedMessage;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
    import com.ankamagames.dofus.network.enums.ExchangeTypeEnum;
    import com.ankamagames.berilia.managers.KernelEventsManager;
@@ -75,9 +79,16 @@ package com.ankamagames.dofus.logic.game.common.frames
          var ermsg:ExchangeReadyMessage = null;
          var eommsg:ExchangeObjectModifiedMessage = null;
          var iwModified:ItemWrapper = null;
+         var eosmmsg:ExchangeObjectsModifiedMessage = null;
+         var itemModifiedArray:Array = null;
          var eoamsg:ExchangeObjectAddedMessage = null;
          var iwAdded:ItemWrapper = null;
+         var eosamsg:ExchangeObjectsAddedMessage = null;
+         var itemAddedArray:* = undefined;
          var eormsg:ExchangeObjectRemovedMessage = null;
+         var eosrmsg:ExchangeObjectsRemovedMessage = null;
+         var itemDeleteMessage:Array = null;
+         var itemUid:uint = 0;
          var eoma:ExchangeObjectMoveAction = null;
          var iw:ItemWrapper = null;
          var eomvmsg:ExchangeObjectMoveMessage = null;
@@ -85,6 +96,10 @@ package com.ankamagames.dofus.logic.game.common.frames
          var roleplayEntitiesFrame:RoleplayEntitiesFrame = null;
          var playerName:String = null;
          var ekmmsg:ExchangeKamaModifiedMessage = null;
+         var anModifiedItem:ObjectItem = null;
+         var iwsModified:ItemWrapper = null;
+         var anAddedObje:ObjectItem = null;
+         var iwsAdded:ItemWrapper = null;
          switch(true)
          {
             case msg is LeaveShopStockAction:
@@ -123,7 +138,24 @@ package com.ankamagames.dofus.logic.game.common.frames
                      this.craftFrame.modifyCraftComponent(eommsg.remote,iwModified);
                      break;
                }
-               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectModified,iwModified);
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectModified,iwModified,eommsg.remote);
+               return true;
+            case msg is ExchangeObjectsModifiedMessage:
+               eosmmsg = msg as ExchangeObjectsModifiedMessage;
+               this._numCurrentSequence++;
+               itemModifiedArray = new Array();
+               for each(anModifiedItem in eosmmsg.object)
+               {
+                  iwsModified = ItemWrapper.create(anModifiedItem.position,anModifiedItem.objectUID,anModifiedItem.objectGID,anModifiedItem.quantity,anModifiedItem.effects,false);
+                  switch(this._exchangeType)
+                  {
+                     case ExchangeTypeEnum.CRAFT:
+                        this.craftFrame.modifyCraftComponent(eosmmsg.remote,iwsModified);
+                        break;
+                  }
+                  itemModifiedArray.push(iwsModified);
+               }
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectListModified,itemModifiedArray,eosmmsg.remote);
                return true;
             case msg is ExchangeObjectAddedMessage:
                eoamsg = msg as ExchangeObjectAddedMessage;
@@ -135,7 +167,24 @@ package com.ankamagames.dofus.logic.game.common.frames
                      this.craftFrame.addCraftComponent(eoamsg.remote,iwAdded);
                      break;
                }
-               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectAdded,iwAdded);
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectAdded,iwAdded,eoamsg.remote);
+               return true;
+            case msg is ExchangeObjectsAddedMessage:
+               eosamsg = msg as ExchangeObjectsAddedMessage;
+               this._numCurrentSequence++;
+               itemAddedArray = new Array();
+               for each(anAddedObje in eosamsg.object)
+               {
+                  iwsAdded = ItemWrapper.create(anAddedObje.position,anAddedObje.objectUID,anAddedObje.objectGID,anAddedObje.quantity,anAddedObje.effects,false);
+                  switch(this._exchangeType)
+                  {
+                     case ExchangeTypeEnum.CRAFT:
+                        this.craftFrame.addCraftComponent(eosamsg.remote,iwsAdded);
+                        break;
+                  }
+                  itemAddedArray.push(iwsAdded);
+               }
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectListAdded,itemAddedArray,eosamsg.remote);
                return true;
             case msg is ExchangeObjectRemovedMessage:
                eormsg = msg as ExchangeObjectRemovedMessage;
@@ -146,7 +195,23 @@ package com.ankamagames.dofus.logic.game.common.frames
                      this.craftFrame.removeCraftComponent(eormsg.remote,eormsg.objectUID);
                      break;
                }
-               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectRemoved,eormsg.objectUID);
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectRemoved,eormsg.objectUID,eormsg.remote);
+               return true;
+            case msg is ExchangeObjectsRemovedMessage:
+               eosrmsg = msg as ExchangeObjectsRemovedMessage;
+               this._numCurrentSequence++;
+               itemDeleteMessage = new Array();
+               for each(itemUid in eosrmsg.objectUID)
+               {
+                  switch(this._exchangeType)
+                  {
+                     case ExchangeTypeEnum.CRAFT:
+                        this.craftFrame.removeCraftComponent(eormsg.remote,itemUid);
+                        break;
+                  }
+                  itemDeleteMessage.push(itemUid);
+               }
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectListRemoved,itemDeleteMessage,eosrmsg.remote);
                return true;
             case msg is ExchangeObjectMoveAction:
                eoma = msg as ExchangeObjectMoveAction;

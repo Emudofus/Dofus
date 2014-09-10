@@ -4,5 +4,7 @@ package com.ankamagames.performance
    {
       
       function run() : void;
+      
+      function getResults() : String;
    }
 }

@@ -11,7 +11,7 @@ package com.ankamagames.dofus.logic.game.common.misc
       
       function get content() : Vector.<ItemWrapper>;
       
-      function addItem(param1:ItemWrapper, param2:int) : void;
+      function addItem(param1:ItemWrapper, param2:int, param3:Boolean = true) : void;
       
       function removeItem(param1:ItemWrapper, param2:int) : void;
       

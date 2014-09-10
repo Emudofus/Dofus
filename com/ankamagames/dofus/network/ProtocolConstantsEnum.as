@@ -67,6 +67,8 @@ package com.ankamagames.dofus.network
       
       public static const MAX_EQUIPED:int = 255;
       
+      public static const SLOTS_EQUIPABLE_BY_USER:int = 16;
+      
       public static const MAX_JOBS_PER_CHARACTER:int = 6;
       
       public static const MAX_CRAFT_SLOT:int = 9;

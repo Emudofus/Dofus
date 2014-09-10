@@ -26,8 +26,8 @@ package com.ankamagames.dofus.network.messages.connection
          return 6209;
       }
       
-      public function initIdentificationSuccessWithLoginTokenMessage(login:String = "", nickname:String = "", accountId:uint = 0, communityId:uint = 0, hasRights:Boolean = false, secretQuestion:String = "", subscriptionEndDate:Number = 0, wasAlreadyConnected:Boolean = false, accountCreation:Number = 0, loginToken:String = "") : IdentificationSuccessWithLoginTokenMessage {
-         super.initIdentificationSuccessMessage(login,nickname,accountId,communityId,hasRights,secretQuestion,subscriptionEndDate,wasAlreadyConnected,accountCreation);
+      public function initIdentificationSuccessWithLoginTokenMessage(login:String = "", nickname:String = "", accountId:uint = 0, communityId:uint = 0, hasRights:Boolean = false, secretQuestion:String = "", accountCreation:Number = 0, subscriptionElapsedDuration:Number = 0, subscriptionEndDate:Number = 0, wasAlreadyConnected:Boolean = false, loginToken:String = "") : IdentificationSuccessWithLoginTokenMessage {
+         super.initIdentificationSuccessMessage(login,nickname,accountId,communityId,hasRights,secretQuestion,accountCreation,subscriptionElapsedDuration,subscriptionEndDate,wasAlreadyConnected);
          this.loginToken = loginToken;
          this._isInitialized = true;
          return this;

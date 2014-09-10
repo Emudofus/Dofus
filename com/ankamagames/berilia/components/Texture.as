@@ -517,6 +517,7 @@ package com.ankamagames.berilia.components
       private function reload() : void {
          var realUri:Uri = null;
          var forcedAdapter:Class = null;
+         var singleFile:* = false;
          if((!(this._bitmap == null)) && (!(this._child == this._bitmap)))
          {
             if((this._child) && (this._child.parent))
@@ -586,7 +587,12 @@ package com.ankamagames.berilia.components
             {
                dispatchEvent(new Event(Event.INIT));
             }
-            this._loader.load(realUri,this._useCache?UriCacheFactory.getCacheFromUri(realUri):null,forcedAdapter);
+            singleFile = false;
+            if((!this._useCache) && (!this._uri.subPath))
+            {
+               singleFile = true;
+            }
+            this._loader.load(realUri,this._useCache?UriCacheFactory.getCacheFromUri(realUri):null,forcedAdapter,singleFile);
          }
          else
          {

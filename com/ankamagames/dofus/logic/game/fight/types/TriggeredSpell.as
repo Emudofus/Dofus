@@ -1,7 +1,7 @@
 package com.ankamagames.dofus.logic.game.fight.types
 {
-   import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
    import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
    import com.ankamagames.jerakine.types.zones.IZone;

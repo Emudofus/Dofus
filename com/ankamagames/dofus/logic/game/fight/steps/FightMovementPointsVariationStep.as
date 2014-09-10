@@ -54,10 +54,6 @@ package com.ankamagames.dofus.logic.game.fight.steps
             }
             FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(_targetId,-this._intValue,true);
          }
-         if(fighterInfos.disposition.cellId == -1)
-         {
-            super.executeCallbacks();
-         }
          if(this._showChatmessage)
          {
             if(this._intValue > 0)
@@ -77,10 +73,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
             }
             
          }
-         if(fighterInfos.disposition.cellId != -1)
-         {
-            super.start();
-         }
+         super.start();
       }
    }
 }

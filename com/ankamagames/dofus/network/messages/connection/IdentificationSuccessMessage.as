@@ -34,26 +34,29 @@ package com.ankamagames.dofus.network.messages.connection
       
       public var secretQuestion:String = "";
       
+      public var accountCreation:Number = 0;
+      
+      public var subscriptionElapsedDuration:Number = 0;
+      
       public var subscriptionEndDate:Number = 0;
       
       public var wasAlreadyConnected:Boolean = false;
-      
-      public var accountCreation:Number = 0;
       
       override public function getMessageId() : uint {
          return 22;
       }
       
-      public function initIdentificationSuccessMessage(login:String = "", nickname:String = "", accountId:uint = 0, communityId:uint = 0, hasRights:Boolean = false, secretQuestion:String = "", subscriptionEndDate:Number = 0, wasAlreadyConnected:Boolean = false, accountCreation:Number = 0) : IdentificationSuccessMessage {
+      public function initIdentificationSuccessMessage(login:String = "", nickname:String = "", accountId:uint = 0, communityId:uint = 0, hasRights:Boolean = false, secretQuestion:String = "", accountCreation:Number = 0, subscriptionElapsedDuration:Number = 0, subscriptionEndDate:Number = 0, wasAlreadyConnected:Boolean = false) : IdentificationSuccessMessage {
          this.login = login;
          this.nickname = nickname;
          this.accountId = accountId;
          this.communityId = communityId;
          this.hasRights = hasRights;
          this.secretQuestion = secretQuestion;
+         this.accountCreation = accountCreation;
+         this.subscriptionElapsedDuration = subscriptionElapsedDuration;
          this.subscriptionEndDate = subscriptionEndDate;
          this.wasAlreadyConnected = wasAlreadyConnected;
-         this.accountCreation = accountCreation;
          this._isInitialized = true;
          return this;
       }
@@ -65,9 +68,10 @@ package com.ankamagames.dofus.network.messages.connection
          this.communityId = 0;
          this.hasRights = false;
          this.secretQuestion = "";
+         this.accountCreation = 0;
+         this.subscriptionElapsedDuration = 0;
          this.subscriptionEndDate = 0;
          this.wasAlreadyConnected = false;
-         this.accountCreation = 0;
          this._isInitialized = false;
       }
       
@@ -107,21 +111,29 @@ package com.ankamagames.dofus.network.messages.connection
             {
                output.writeByte(this.communityId);
                output.writeUTF(this.secretQuestion);
-               if((this.subscriptionEndDate < 0) || (this.subscriptionEndDate > 9.007199254740992E15))
+               if((this.accountCreation < 0) || (this.accountCreation > 9.007199254740992E15))
                {
-                  throw new Error("Forbidden value (" + this.subscriptionEndDate + ") on element subscriptionEndDate.");
+                  throw new Error("Forbidden value (" + this.accountCreation + ") on element accountCreation.");
                }
                else
                {
-                  output.writeDouble(this.subscriptionEndDate);
-                  if((this.accountCreation < 0) || (this.accountCreation > 9.007199254740992E15))
+                  output.writeDouble(this.accountCreation);
+                  if((this.subscriptionElapsedDuration < 0) || (this.subscriptionElapsedDuration > 9.007199254740992E15))
                   {
-                     throw new Error("Forbidden value (" + this.accountCreation + ") on element accountCreation.");
+                     throw new Error("Forbidden value (" + this.subscriptionElapsedDuration + ") on element subscriptionElapsedDuration.");
                   }
                   else
                   {
-                     output.writeDouble(this.accountCreation);
-                     return;
+                     output.writeDouble(this.subscriptionElapsedDuration);
+                     if((this.subscriptionEndDate < 0) || (this.subscriptionEndDate > 9.007199254740992E15))
+                     {
+                        throw new Error("Forbidden value (" + this.subscriptionEndDate + ") on element subscriptionEndDate.");
+                     }
+                     else
+                     {
+                        output.writeDouble(this.subscriptionEndDate);
+                        return;
+                     }
                   }
                }
             }
@@ -153,21 +165,29 @@ package com.ankamagames.dofus.network.messages.connection
             else
             {
                this.secretQuestion = input.readUTF();
-               this.subscriptionEndDate = input.readDouble();
-               if((this.subscriptionEndDate < 0) || (this.subscriptionEndDate > 9.007199254740992E15))
+               this.accountCreation = input.readDouble();
+               if((this.accountCreation < 0) || (this.accountCreation > 9.007199254740992E15))
                {
-                  throw new Error("Forbidden value (" + this.subscriptionEndDate + ") on element of IdentificationSuccessMessage.subscriptionEndDate.");
+                  throw new Error("Forbidden value (" + this.accountCreation + ") on element of IdentificationSuccessMessage.accountCreation.");
                }
                else
                {
-                  this.accountCreation = input.readDouble();
-                  if((this.accountCreation < 0) || (this.accountCreation > 9.007199254740992E15))
+                  this.subscriptionElapsedDuration = input.readDouble();
+                  if((this.subscriptionElapsedDuration < 0) || (this.subscriptionElapsedDuration > 9.007199254740992E15))
                   {
-                     throw new Error("Forbidden value (" + this.accountCreation + ") on element of IdentificationSuccessMessage.accountCreation.");
+                     throw new Error("Forbidden value (" + this.subscriptionElapsedDuration + ") on element of IdentificationSuccessMessage.subscriptionElapsedDuration.");
                   }
                   else
                   {
-                     return;
+                     this.subscriptionEndDate = input.readDouble();
+                     if((this.subscriptionEndDate < 0) || (this.subscriptionEndDate > 9.007199254740992E15))
+                     {
+                        throw new Error("Forbidden value (" + this.subscriptionEndDate + ") on element of IdentificationSuccessMessage.subscriptionEndDate.");
+                     }
+                     else
+                     {
+                        return;
+                     }
                   }
                }
             }

@@ -15,6 +15,7 @@ package com.ankamagames.dofus.logic.shield
    import com.ankamagames.dofus.types.events.RpcEvent;
    import com.ankamagames.jerakine.data.I18n;
    import flash.filesystem.File;
+   import com.ankamagames.jerakine.types.CustomSharedObject;
    import flash.filesystem.FileStream;
    import flash.filesystem.FileMode;
    import by.blooddy.crypto.MD5;
@@ -185,7 +186,7 @@ package com.ankamagames.dofus.logic.shield
                result.fatal = true;
                break;
             default:
-               result.text = response.error;
+               result.text = response.error?response.error:I18n.getUiText("ui.secureMode.error.default");
                result.fatal = true;
          }
          if((response.certificate) && (response.id))
@@ -220,14 +221,23 @@ package com.ankamagames.dofus.logic.shield
          return result;
       }
       
-      private function getCertifFolder(version:uint) : File {
-         var _loc5_:* = false;
+      private function getCertifFolder(version:uint, useCustomSharedObjectFolder:Boolean = false) : File {
          var _loc6_:* = true;
+         var _loc7_:* = false;
          var f:File = null;
-         var tmp:Array = File.applicationStorageDirectory.nativePath.split(File.separator);
-         tmp.pop();
-         tmp.pop();
-         var parentDir:String = tmp.join(File.separator);
+         var tmp:Array = null;
+         var parentDir:String = null;
+         if(!useCustomSharedObjectFolder)
+         {
+            tmp = File.applicationStorageDirectory.nativePath.split(File.separator);
+            tmp.pop();
+            tmp.pop();
+            parentDir = tmp.join(File.separator);
+         }
+         else
+         {
+            parentDir = CustomSharedObject.getCustomSharedObjectDirectory();
+         }
          if(version == 1)
          {
             f = new File(parentDir + File.separator + "AnkamaCertificates/");
@@ -292,6 +302,10 @@ package com.ankamagames.dofus.logic.shield
             if(!f.exists)
             {
                f = this.getCertifFolder(1).resolvePath(MD5.hash(userName));
+            }
+            if(!f.exists)
+            {
+               f = this.getCertifFolder(2,true).resolvePath(MD5.hash(userName));
             }
             if(f.exists)
             {

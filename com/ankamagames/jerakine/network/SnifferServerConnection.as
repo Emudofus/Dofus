@@ -52,8 +52,8 @@ package com.ankamagames.jerakine.network
       }
       
       override protected function onConnect(e:Event) : void {
-         writeUTF(this._targetHost);
-         writeUnsignedInt(this._targetPort);
+         _socket.writeUTF(this._targetHost);
+         _socket.writeUnsignedInt(this._targetPort);
          super.onConnect(e);
       }
    }

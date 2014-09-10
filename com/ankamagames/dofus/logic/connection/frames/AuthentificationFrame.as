@@ -14,6 +14,7 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.jerakine.data.I18n;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.logic.connection.managers.GuestModeManager;
    import com.ankamagames.dofus.logic.connection.actions.LoginValidationAction;
    import flash.events.Event;
    import com.ankamagames.dofus.logic.connection.managers.SpecialBetaAuthentification;
@@ -37,6 +38,7 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.dofus.logic.game.approach.actions.NewsLoginRequestAction;
    import flash.utils.ByteArray;
    import com.ankamagames.jerakine.utils.crypto.Signature;
+   import com.ankamagames.dofus.logic.connection.actions.LoginValidationAsGuestAction;
    import by.blooddy.crypto.MD5;
    import com.ankamagames.dofus.BuildInfos;
    import com.ankamagames.dofus.network.enums.BuildTypeEnum;
@@ -58,6 +60,8 @@ package com.ankamagames.dofus.logic.connection.frames
    import com.ankamagames.dofus.logic.game.approach.managers.PartManager;
    import com.ankamagames.dofus.logic.connection.managers.StoreUserDataManager;
    import com.ankamagames.dofus.logic.common.frames.ChangeCharacterFrame;
+   import com.ankamagames.dofus.network.enums.IdentificationFailureReasonEnum;
+   import com.ankamagames.dofus.logic.connection.actions.LoginAsGuestAction;
    import com.ankamagames.berilia.Berilia;
    import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
    import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
@@ -122,7 +126,14 @@ package com.ankamagames.dofus.logic.connection.frames
                   KernelEventsManager.getInstance().processCallback(HookList.AgreementsRequired,files);
                }
             }
-            KernelEventsManager.getInstance().processCallback(HookList.AuthentificationStart);
+            if(GuestModeManager.getInstance().forceGuestMode)
+            {
+               GuestModeManager.getInstance().logAsGuest();
+            }
+            else
+            {
+               KernelEventsManager.getInstance().processCallback(HookList.AuthentificationStart);
+            }
          }
          return true;
       }
@@ -208,8 +219,12 @@ package com.ankamagames.dofus.logic.connection.frames
          var files:Array = null;
          switch(true)
          {
+            case msg is LoginAsGuestAction:
+               GuestModeManager.getInstance().logAsGuest();
+               return true;
             case msg is LoginValidationAction:
                lva = LoginValidationAction(msg);
+               GuestModeManager.getInstance().isLoggingAsGuest = lva is LoginValidationAsGuestAction;
                if(this._lastLoginHash != MD5.hash(lva.username))
                {
                   this._streamingBetaAccess = false;
@@ -377,6 +392,7 @@ package com.ankamagames.dofus.logic.connection.frames
                PlayerManager.getInstance().hasRights = ismsg.hasRights;
                PlayerManager.getInstance().nickname = ismsg.nickname;
                PlayerManager.getInstance().subscriptionEndDate = ismsg.subscriptionEndDate;
+               PlayerManager.getInstance().subscriptionDurationElapsed = ismsg.subscriptionElapsedDuration;
                PlayerManager.getInstance().secretQuestion = ismsg.secretQuestion;
                PlayerManager.getInstance().accountCreation = ismsg.accountCreation;
                try
@@ -464,6 +480,10 @@ package com.ankamagames.dofus.logic.connection.frames
                ifmsg = IdentificationFailedMessage(msg);
                PlayerManager.getInstance().destroy();
                ConnectionsHandler.closeConnection();
+               if((ifmsg.reason == IdentificationFailureReasonEnum.WRONG_CREDENTIALS) && (GuestModeManager.getInstance().isLoggingAsGuest))
+               {
+                  GuestModeManager.getInstance().clearStoredCredentials();
+               }
                KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed,ifmsg.reason);
                if(!this._dispatchModuleHook)
                {

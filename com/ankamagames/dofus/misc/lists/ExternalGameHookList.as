@@ -28,5 +28,13 @@ package com.ankamagames.dofus.misc.lists
       public static const DofusShopSuccessfulPurchase:Hook;
       
       public static const DofusShopError:Hook;
+      
+      public static const OpenWebService:Hook;
+      
+      public static const ComicsLibraryLoaded:Hook;
+      
+      public static const ComicLoaded:Hook;
+      
+      public static const OpenComic:Hook;
    }
 }

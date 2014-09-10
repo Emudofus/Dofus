@@ -8,15 +8,16 @@ package
    import flash.utils.getQualifiedClassName;
    import flash.text.TextField;
    import com.ankamagames.dofus.types.DofusOptions;
-   import flash.events.InvokeEvent;
-   import flash.filesystem.File;
+   import flash.utils.ByteArray;
    import flash.filesystem.FileStream;
+   import flash.filesystem.File;
+   import flash.filesystem.FileMode;
+   import flash.events.InvokeEvent;
    import flash.xml.XMLDocument;
    import flash.xml.XMLNode;
    import com.ankamagames.dofus.network.types.updater.ContentPart;
    import com.ankamagames.jerakine.utils.system.CommandLineArguments;
    import com.ankamagames.dofus.logic.game.approach.managers.PartManager;
-   import flash.filesystem.FileMode;
    import com.ankamagames.dofus.network.enums.PartStateEnum;
    import com.ankamagames.dofus.BuildInfos;
    import com.ankamagames.jerakine.types.Version;
@@ -26,14 +27,15 @@ package
    import com.ankamagames.jerakine.types.CustomSharedObject;
    import flash.events.NativeWindowBoundsEvent;
    import flash.display.NativeWindowDisplayState;
+   import flash.events.FullScreenEvent;
+   import com.ankamagames.jerakine.managers.OptionManager;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
    import flash.display.DisplayObjectContainer;
    import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
    import flash.display.DisplayObject;
-   import com.ankamagames.jerakine.utils.display.StageShareManager;
    import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;
    import com.ankamagames.jerakine.utils.crypto.SignatureKey;
    import com.ankamagames.dofus.Constants;
-   import flash.utils.ByteArray;
    import com.ankamagames.jerakine.utils.system.AirScanner;
    import flash.events.Event;
    import com.ankamagames.tiphon.engine.TiphonEventsManager;
@@ -204,6 +206,11 @@ package
             NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE,this.onCall);
             stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE,this.onResize);
          }
+         else if(AirScanner.isStreamingVersion())
+         {
+            stage.addEventListener(FullScreenEvent.FULL_SCREEN,this.onFullScreen);
+         }
+         
       }
       
       protected static const _log:Logger;
@@ -241,6 +248,16 @@ package
       private var _returnCode:int;
       
       public var REG_LOCAL_CONNECTION_ID:uint = 0;
+      
+      public function getRawSignatureData() : ByteArray {
+         var fs:FileStream = new FileStream();
+         var f:File = File.applicationDirectory.resolvePath("DofusInvoker.d2sf");
+         fs.open(f,FileMode.READ);
+         var rawData:ByteArray = new ByteArray();
+         fs.readBytes(rawData);
+         fs.close();
+         return rawData;
+      }
       
       private function onCall(e:InvokeEvent) : void {
          var file:File = null;
@@ -376,6 +393,15 @@ package
          }
       }
       
+      private function onFullScreen(e:FullScreenEvent) : void {
+         var fullScreenOption:Boolean = OptionManager.getOptionManager("dofus").fullScreen;
+         if(fullScreenOption != e.fullScreen)
+         {
+            OptionManager.getOptionManager("dofus").fullScreen = e.fullScreen;
+         }
+         StageShareManager.justExitFullScreen = !e.fullScreen;
+      }
+      
       public function getUiContainer() : DisplayObjectContainer {
          return this._uiContainer;
       }
@@ -506,43 +532,46 @@ package
             for each(file in soList)
             {
                fileName = FileUtils.getFileStartName(file.name);
-               if(selective)
+               if(fileName != "Dofus_Guest")
                {
-                  switch(true)
+                  if(selective)
                   {
-                     case fileName.indexOf("Module_") == 0:
-                     case fileName == "dofus":
-                     case fileName.indexOf("Dofus_") == 0:
-                     case fileName == "atouin":
-                     case fileName == "berilia":
-                     case fileName == "chat":
-                     case fileName == "tiphon":
-                     case fileName == "tubul":
-                     case fileName.indexOf("externalNotifications_") == 0:
-                     case fileName == "averagePrices":
-                     case fileName == "Berilia_binds":
-                     case fileName == "maps":
-                     case fileName == "logs":
-                     case fileName == "uid":
-                     case fileName == "appVersion":
-                        continue;
+                     switch(true)
+                     {
+                        case fileName.indexOf("Module_") == 0:
+                        case fileName == "dofus":
+                        case fileName.indexOf("Dofus_") == 0:
+                        case fileName == "atouin":
+                        case fileName == "berilia":
+                        case fileName == "chat":
+                        case fileName == "tiphon":
+                        case fileName == "tubul":
+                        case fileName.indexOf("externalNotifications_") == 0:
+                        case fileName == "averagePrices":
+                        case fileName == "Berilia_binds":
+                        case fileName == "maps":
+                        case fileName == "logs":
+                        case fileName == "uid":
+                        case fileName == "appVersion":
+                           continue;
+                     }
                   }
-               }
-               try
-               {
-                  if(file.isDirectory)
+                  try
                   {
-                     file.deleteDirectory(true);
+                     if(file.isDirectory)
+                     {
+                        file.deleteDirectory(true);
+                     }
+                     else
+                     {
+                        file.deleteFile();
+                     }
                   }
-                  else
+                  catch(e:Error)
                   {
-                     file.deleteFile();
+                     trace("ClearCache method cannot delete " + file.nativePath);
+                     continue;
                   }
-               }
-               catch(e:Error)
-               {
-                  trace("ClearCache method cannot delete " + file.nativePath);
-                  continue;
                }
             }
          }

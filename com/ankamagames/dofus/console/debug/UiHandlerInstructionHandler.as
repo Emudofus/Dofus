@@ -140,6 +140,7 @@ package com.ankamagames.dofus.console.debug
                break;
             case "chatoutput":
                toggleChat = (!args.length) || (String(args[0]).toLowerCase() == "true") || (String(args[0]).toLowerCase() == "on");
+               Console.getInstance().chatMode = toggleChat;
                Console.getInstance().display();
                Console.getInstance().disableLogEvent();
                KernelEventsManager.getInstance().processCallback(ChatHookList.ToggleChatLog,toggleChat);

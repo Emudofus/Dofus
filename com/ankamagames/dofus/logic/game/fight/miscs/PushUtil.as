@@ -7,15 +7,15 @@ package com.ankamagames.dofus.logic.game.fight.miscs
    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
    import com.ankamagames.jerakine.entities.interfaces.IEntity;
-   import com.ankamagames.jerakine.utils.display.spellZone.SpellShapeEnum;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
    import com.ankamagames.jerakine.types.zones.IZone;
    import com.ankamagames.jerakine.types.positions.MapPoint;
    import com.ankamagames.atouin.managers.EntitiesManager;
    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
-   import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
-   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.jerakine.utils.display.spellZone.SpellShapeEnum;
    import com.ankamagames.atouin.managers.InteractiveCellManager;
    import com.ankamagames.atouin.types.GraphicCell;
    import com.ankamagames.dofus.datacenter.monsters.Monster;
@@ -32,6 +32,10 @@ package com.ankamagames.dofus.logic.game.fight.miscs
       }
       
       protected static const _log:Logger;
+      
+      private static const PUSH_EFFECT_ID:uint = 5;
+      
+      private static const PULL_EFFECT_ID:uint = 6;
       
       private static var _updatedEntitiesPositions:Dictionary;
       
@@ -58,9 +62,11 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          var direction:* = 0;
          var entitiesInDirection:Vector.<IEntity> = null;
          var newSpell:* = false;
+         var force:* = 0;
+         var fightEntitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
          for each(effi in pSpell.effects)
          {
-            if(effi.effectId == 5)
+            if(effi.effectId == PUSH_EFFECT_ID)
             {
                pushEffect = effi as EffectInstanceDice;
                pushForce = pushEffect.diceNum;
@@ -72,10 +78,9 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          {
             return null;
          }
-         var hasMinSize:Boolean = (zoneShape == SpellShapeEnum.C) || (zoneShape == SpellShapeEnum.X) || (zoneShape == SpellShapeEnum.Q) || (zoneShape == SpellShapeEnum.plus) || (zoneShape == SpellShapeEnum.sharp);
          var spellZone:IZone = SpellZoneManager.getInstance().getSpellZone(pSpell);
          var spellZoneCells:Vector.<uint> = spellZone.getCells(pSpellImpactCell);
-         origin = !hasMinSize?pCasterCell:pSpellImpactCell;
+         origin = !hasMinSize(zoneShape)?pCasterCell:pSpellImpactCell;
          var originPoint:MapPoint = MapPoint.fromCellId(origin);
          var directions:Dictionary = new Dictionary();
          if(_pushSpells.indexOf(pSpell.id) == -1)
@@ -100,7 +105,8 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                      {
                         pushedEntities = new Vector.<PushedEntity>(0);
                      }
-                     pushedEntities = pushedEntities.concat(getPushedEntitiesInLine(pSpell,newSpell,pushEffect,pSpellImpactCell,entity.position.cellId,pushForce,direction));
+                     force = getPushForce(origin,fightEntitiesFrame.getEntityInfos(entity.id) as GameFightFighterInformations,pSpell.effects,pushEffect);
+                     pushedEntities = pushedEntities.concat(getPushedEntitiesInLine(pSpell,newSpell,pushEffect,pSpellImpactCell,entity.position.cellId,force,direction));
                   }
                }
             }
@@ -199,6 +205,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          };
          var fightEntitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
          var nbEntities:int = entities.length;
+         var casterInfos:GameFightFighterInformations = fightEntitiesFrame.getEntityInfos(pSpell.playerId) as GameFightFighterInformations;
          i = 0;
          while(i < nbEntities)
          {
@@ -207,7 +214,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
             entityInfo = fightEntitiesFrame.getEntityInfos(entities[i].id) as GameFightFighterInformations;
             entityPushable = isPushableEntity(entityInfo);
             pushedIndex = 0;
-            if((entityPushable) && (DamageUtil.verifySpellEffectZone(entities[i].id,pPushEffect,pSpellImpactCell)) && (DamageUtil.verifySpellEffectMask(pSpell.playerId,entities[i].id,pPushEffect)))
+            if((entityPushable) && (DamageUtil.verifySpellEffectZone(entities[i].id,pPushEffect,pSpellImpactCell,casterInfos.disposition.cellId)) && (DamageUtil.verifySpellEffectMask(pSpell.playerId,entities[i].id,pPushEffect)))
             {
                pushingEntity = getPushedEntity(entities[i].id);
                if(!pushingEntity)
@@ -323,6 +330,110 @@ package com.ankamagames.dofus.logic.game.fight.miscs
             }
          }
          return pushedEntities;
+      }
+      
+      private static function getPushForce(pPushOriginCell:int, pTargetInfos:GameFightFighterInformations, pSpellEffects:Vector.<EffectInstance>, pPushEffect:EffectInstance) : int {
+         var pushForce:* = 0;
+         var pullEffect:EffectInstanceDice = null;
+         var effect:EffectInstance = null;
+         var pushEffectForce:* = 0;
+         var pullEffectForce:* = 0;
+         var targetCell:MapPoint = null;
+         var originCell:MapPoint = null;
+         var cell:MapPoint = null;
+         var nextCell:MapPoint = null;
+         var orientation:uint = 0;
+         var i:* = 0;
+         var pullDistance:uint = 0;
+         var pushEffectIndex:int = pSpellEffects.indexOf(pPushEffect);
+         var pullEffectIndex:int = -1;
+         for each(effect in pSpellEffects)
+         {
+            if(effect.effectId == PULL_EFFECT_ID)
+            {
+               pullEffectIndex = pSpellEffects.indexOf(effect);
+               pullEffect = effect as EffectInstanceDice;
+               break;
+            }
+         }
+         pushEffectForce = (pPushEffect as EffectInstanceDice).diceNum;
+         if((!(pullEffectIndex == -1)) && (pullEffectIndex < pushEffectIndex) && (isPushableEntity(pTargetInfos)))
+         {
+            pullEffectForce = pullEffect.diceNum;
+            targetCell = MapPoint.fromCellId(pTargetInfos.disposition.cellId);
+            originCell = MapPoint.fromCellId(pPushOriginCell);
+            cell = targetCell;
+            orientation = targetCell.advancedOrientationTo(originCell);
+            pullDistance = 0;
+            i = 0;
+            while(i < pullEffectForce)
+            {
+               nextCell = cell.getNearestCellInDirection(orientation);
+               if((nextCell) && (!isBlockingCell(nextCell.cellId)))
+               {
+                  pullDistance++;
+                  cell = nextCell;
+                  i++;
+                  continue;
+               }
+               break;
+            }
+            pushForce = pushEffectForce - pullDistance;
+         }
+         else
+         {
+            pushForce = pushEffectForce;
+         }
+         return pushForce;
+      }
+      
+      private static function hasMinSize(pZoneShape:int) : Boolean {
+         return (pZoneShape == SpellShapeEnum.C) || (pZoneShape == SpellShapeEnum.X) || (pZoneShape == SpellShapeEnum.Q) || (pZoneShape == SpellShapeEnum.plus) || (pZoneShape == SpellShapeEnum.sharp);
+      }
+      
+      public static function hasPushDamages(pCasterId:int, pTargetId:int, pSpellEffects:Vector.<EffectInstance>, pEffect:EffectInstance, pSpellImpactCell:int) : Boolean {
+         var casterInfos:GameFightFighterInformations = null;
+         var origin:uint = 0;
+         var originPoint:MapPoint = null;
+         var direction:* = 0;
+         var pushForce:* = 0;
+         var cellMp:MapPoint = null;
+         var nextCell:MapPoint = null;
+         var force:* = 0;
+         var i:* = 0;
+         var fightEntitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         if((!(pEffect.effectId == PUSH_EFFECT_ID)) || (!fightEntitiesFrame))
+         {
+            return false;
+         }
+         var targetInfos:GameFightFighterInformations = fightEntitiesFrame.getEntityInfos(pTargetId) as GameFightFighterInformations;
+         if((targetInfos) && (isPushableEntity(targetInfos)))
+         {
+            casterInfos = fightEntitiesFrame.getEntityInfos(pCasterId) as GameFightFighterInformations;
+            origin = !hasMinSize(pEffect.zoneShape)?casterInfos.disposition.cellId:pSpellImpactCell;
+            originPoint = MapPoint.fromCellId(origin);
+            direction = originPoint.advancedOrientationTo(MapPoint.fromCellId(targetInfos.disposition.cellId),false);
+            pushForce = getPushForce(origin,targetInfos,pSpellEffects,pEffect);
+            cellMp = MapPoint.fromCellId(targetInfos.disposition.cellId);
+            nextCell = cellMp.getNearestCellInDirection(direction);
+            force = pushForce;
+            i = 0;
+            while(i < pushForce)
+            {
+               if(nextCell)
+               {
+                  if(isBlockingCell(nextCell.cellId))
+                  {
+                     break;
+                  }
+                  force--;
+                  nextCell = nextCell.getNearestCellInDirection(direction);
+               }
+               i++;
+            }
+            return force > 0;
+         }
+         return false;
       }
       
       public static function isBlockingCell(pCell:int) : Boolean {

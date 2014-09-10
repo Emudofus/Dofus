@@ -54,11 +54,11 @@ package com.ankamagames.dofus.logic.game.fight.types
             {
                if(actionId == 952)
                {
-                  FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_ENTERING_STATE,[targetId,this.stateId],targetId,-1,true);
+                  FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_ENTERING_STATE,[targetId,this.stateId],targetId,-1,false,2);
                }
                else
                {
-                  FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_LEAVING_STATE,[targetId,this.stateId],targetId,-1,true);
+                  FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_LEAVING_STATE,[targetId,this.stateId],targetId,-1,false,2);
                }
             }
          }

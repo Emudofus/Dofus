@@ -9,6 +9,7 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.common.actions.AuthorizedCommandAction;
    import com.ankamagames.dofus.logic.connection.actions.LoginValidationAction;
    import com.ankamagames.dofus.logic.connection.actions.LoginValidationWithTicketAction;
+   import com.ankamagames.dofus.logic.connection.actions.LoginAsGuestAction;
    import com.ankamagames.dofus.logic.connection.actions.NicknameChoiceRequestAction;
    import com.ankamagames.dofus.logic.connection.actions.ServerSelectionAction;
    import com.ankamagames.dofus.logic.connection.actions.AcquaintanceSearchAction;
@@ -81,6 +82,7 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.game.roleplay.actions.preset.InventoryPresetSaveCustomAction;
    import com.ankamagames.dofus.logic.game.roleplay.actions.preset.InventoryPresetUseAction;
    import com.ankamagames.dofus.logic.game.roleplay.actions.preset.InventoryPresetItemUpdateRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.AccessoryPreviewRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.roleplay.SwitchCreatureModeAction;
    import com.ankamagames.dofus.logic.game.roleplay.actions.NpcDialogReplyAction;
    import com.ankamagames.dofus.logic.game.common.actions.InteractiveElementActivationAction;
@@ -131,6 +133,8 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntDigRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.PortalUseRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntGiveUpRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntFlagRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntFlagRemoveRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.GuidedModeReturnRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.quest.GuidedModeQuitRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.alignment.SetEnablePVPRequestAction;
@@ -142,9 +146,11 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismsListRegisterAction;
    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismAttackRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismUseRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.prism.PrismModuleExchangeRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismSetSabotagedRequestAction;
    import com.ankamagames.dofus.logic.game.roleplay.actions.ObjectUseOnCellAction;
    import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignRequestAction;
+   import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignCancelAction;
    import com.ankamagames.dofus.logic.game.common.actions.NotificationUpdateFlagAction;
    import com.ankamagames.dofus.logic.game.common.actions.NotificationResetAction;
    import com.ankamagames.dofus.logic.game.common.actions.StartZoomAction;
@@ -159,7 +165,10 @@ package com.ankamagames.dofus.misc.lists
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopFrontPageRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopArticlesListRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopSearchRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.GetComicRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.GetComicsLibraryRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopBuyRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.OpenWebServiceAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterTokenRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterInventoryRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterTransferRequestAction;
@@ -199,6 +208,8 @@ package com.ankamagames.dofus.misc.lists
       public static const LoginValidation:DofusApiAction;
       
       public static const LoginValidationWithTicket:DofusApiAction;
+      
+      public static const LoginAsGuest:DofusApiAction;
       
       public static const NicknameChoiceRequest:DofusApiAction;
       
@@ -344,6 +355,8 @@ package com.ankamagames.dofus.misc.lists
       
       public static const InventoryPresetItemUpdateRequest:DofusApiAction;
       
+      public static const AccessoryPreviewRequest:DofusApiAction;
+      
       public static const SwitchCreatureMode:DofusApiAction;
       
       public static const NpcDialogReply:DofusApiAction;
@@ -444,6 +457,10 @@ package com.ankamagames.dofus.misc.lists
       
       public static const TreasureHuntGiveUpRequest:DofusApiAction;
       
+      public static const TreasureHuntFlagRequest:DofusApiAction;
+      
+      public static const TreasureHuntFlagRemoveRequest:DofusApiAction;
+      
       public static const GuidedModeReturnRequest:DofusApiAction;
       
       public static const GuidedModeQuitRequest:DofusApiAction;
@@ -466,11 +483,15 @@ package com.ankamagames.dofus.misc.lists
       
       public static const PrismUseRequest:DofusApiAction;
       
+      public static const PrismModuleExchangeRequest:DofusApiAction;
+      
       public static const PrismSetSabotagedRequest:DofusApiAction;
       
       public static const ObjectUseOnCell:DofusApiAction;
       
       public static const GiftAssignRequest:DofusApiAction;
+      
+      public static const GiftAssignCancel:DofusApiAction;
       
       public static const NotificationUpdateFlag:DofusApiAction;
       
@@ -500,7 +521,13 @@ package com.ankamagames.dofus.misc.lists
       
       public static const ShopSearchRequest:DofusApiAction;
       
+      public static const GetComicRequest:DofusApiAction;
+      
+      public static const GetComicsLibraryRequest:DofusApiAction;
+      
       public static const ShopBuyRequest:DofusApiAction;
+      
+      public static const OpenWebService:DofusApiAction;
       
       public static const KrosmasterTokenRequest:DofusApiAction;
       

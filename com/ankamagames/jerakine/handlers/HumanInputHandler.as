@@ -34,7 +34,6 @@ package com.ankamagames.jerakine.handlers
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseReleaseOutsideMessage;
    import com.ankamagames.jerakine.handlers.messages.mouse.MouseUpMessage;
    import flash.ui.Keyboard;
-   import flash.display.StageDisplayState;
    import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyDownMessage;
    import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyUpMessage;
    import com.ankamagames.jerakine.utils.errors.SingletonError;
@@ -320,19 +319,17 @@ package com.ankamagames.jerakine.handlers
          if(ke.keyCode == Keyboard.ESCAPE)
          {
             ke.preventDefault();
-            if((AirScanner.isStreamingVersion()) && (StageShareManager.stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE))
-            {
-               return;
-            }
          }
-         if(ke.keyCode == 15)
+         else if(ke.keyCode == Keyboard.COMMAND)
          {
             this._appleDown = true;
          }
-         if((ke.keyCode == Keyboard.S) && (ke.ctrlKey))
+         else if((ke.keyCode == Keyboard.S) && (ke.ctrlKey))
          {
             ke.preventDefault();
          }
+         
+         
          if(!this._useDirectEventMode)
          {
             this._handler.process(GenericPool.get(KeyboardKeyDownMessage,FocusHandler.getInstance().getFocus(),ke));
@@ -348,6 +345,21 @@ package com.ankamagames.jerakine.handlers
          if(this._keyPoll.isDown(Keyboard.CONTROL))
          {
             ke.ctrlKey = true;
+         }
+         if(AirScanner.isStreamingVersion())
+         {
+            if(ke.keyCode == Keyboard.ESCAPE)
+            {
+               if(StageShareManager.justExitFullScreen)
+               {
+                  StageShareManager.justExitFullScreen = false;
+                  if(!StageShareManager.shortcutUsedToExitFullScreen)
+                  {
+                     return;
+                  }
+                  StageShareManager.shortcutUsedToExitFullScreen = false;
+               }
+            }
          }
          if(!this._appleDown)
          {

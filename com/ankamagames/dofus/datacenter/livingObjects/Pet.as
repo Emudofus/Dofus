@@ -5,6 +5,7 @@ package com.ankamagames.dofus.datacenter.livingObjects
    import com.ankamagames.jerakine.data.GameData;
    import com.ankamagames.jerakine.logger.Log;
    import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
    
    public class Pet extends Object implements IDataCenter
    {
@@ -30,5 +31,11 @@ package com.ankamagames.dofus.datacenter.livingObjects
       public var foodItems:Vector.<int>;
       
       public var foodTypes:Vector.<int>;
+      
+      public var minDurationBeforeMeal:int;
+      
+      public var maxDurationBeforeMeal:int;
+      
+      public var possibleEffects:Vector.<EffectInstance>;
    }
 }

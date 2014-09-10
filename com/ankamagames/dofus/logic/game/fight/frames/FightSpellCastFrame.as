@@ -658,9 +658,18 @@ package com.ankamagames.dofus.logic.game.fight.frames
       
       private function hideTargetsTooltips() : void {
          var entityId:* = 0;
+         var ac:AnimatedCharacter = null;
          var fcf:FightContextFrame = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
          var entitiesId:Vector.<int> = fcf.entitiesFrame.getEntitiesIdsList();
          var overEntity:IEntity = EntitiesManager.getInstance().getEntityOnCell(FightContextFrame.currentCell,AnimatedCharacter);
+         if(overEntity)
+         {
+            ac = overEntity as AnimatedCharacter;
+            if((ac) && (ac.parentSprite) && (ac.parentSprite.carriedEntity == ac))
+            {
+               overEntity = ac.parentSprite as AnimatedCharacter;
+            }
+         }
          for each(entityId in entitiesId)
          {
             if((!fcf.showPermanentTooltips) || (fcf.showPermanentTooltips) && (fcf.battleFrame.targetedEntities.indexOf(entityId) == -1))

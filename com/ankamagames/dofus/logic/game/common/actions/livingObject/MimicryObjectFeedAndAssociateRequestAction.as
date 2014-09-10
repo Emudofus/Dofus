@@ -9,10 +9,10 @@ package com.ankamagames.dofus.logic.game.common.actions.livingObject
          super();
       }
       
-      public static function create(mimicryUID:uint, mimicryPos:uint, foodUID:uint, foodPos:uint, hostUID:uint, hostPos:uint, preview:Boolean) : MimicryObjectFeedAndAssociateRequestAction {
+      public static function create(mimicryUID:uint, symbiotePos:uint, foodUID:uint, foodPos:uint, hostUID:uint, hostPos:uint, preview:Boolean) : MimicryObjectFeedAndAssociateRequestAction {
          var action:MimicryObjectFeedAndAssociateRequestAction = new MimicryObjectFeedAndAssociateRequestAction();
          action.mimicryUID = mimicryUID;
-         action.mimicryPos = mimicryPos;
+         action.symbiotePos = symbiotePos;
          action.foodUID = foodUID;
          action.foodPos = foodPos;
          action.hostUID = hostUID;
@@ -23,7 +23,7 @@ package com.ankamagames.dofus.logic.game.common.actions.livingObject
       
       public var mimicryUID:uint;
       
-      public var mimicryPos:uint;
+      public var symbiotePos:uint;
       
       public var foodUID:uint;
       

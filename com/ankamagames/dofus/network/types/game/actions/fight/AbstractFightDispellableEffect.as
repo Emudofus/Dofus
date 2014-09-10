@@ -23,18 +23,21 @@ package com.ankamagames.dofus.network.types.game.actions.fight
       
       public var spellId:uint = 0;
       
+      public var effectId:uint = 0;
+      
       public var parentBoostUid:uint = 0;
       
       public function getTypeId() : uint {
          return 206;
       }
       
-      public function initAbstractFightDispellableEffect(uid:uint = 0, targetId:int = 0, turnDuration:int = 0, dispelable:uint = 1, spellId:uint = 0, parentBoostUid:uint = 0) : AbstractFightDispellableEffect {
+      public function initAbstractFightDispellableEffect(uid:uint = 0, targetId:int = 0, turnDuration:int = 0, dispelable:uint = 1, spellId:uint = 0, effectId:uint = 0, parentBoostUid:uint = 0) : AbstractFightDispellableEffect {
          this.uid = uid;
          this.targetId = targetId;
          this.turnDuration = turnDuration;
          this.dispelable = dispelable;
          this.spellId = spellId;
+         this.effectId = effectId;
          this.parentBoostUid = parentBoostUid;
          return this;
       }
@@ -45,6 +48,7 @@ package com.ankamagames.dofus.network.types.game.actions.fight
          this.turnDuration = 0;
          this.dispelable = 1;
          this.spellId = 0;
+         this.effectId = 0;
          this.parentBoostUid = 0;
       }
       
@@ -70,14 +74,22 @@ package com.ankamagames.dofus.network.types.game.actions.fight
             else
             {
                output.writeShort(this.spellId);
-               if(this.parentBoostUid < 0)
+               if(this.effectId < 0)
                {
-                  throw new Error("Forbidden value (" + this.parentBoostUid + ") on element parentBoostUid.");
+                  throw new Error("Forbidden value (" + this.effectId + ") on element effectId.");
                }
                else
                {
-                  output.writeInt(this.parentBoostUid);
-                  return;
+                  output.writeInt(this.effectId);
+                  if(this.parentBoostUid < 0)
+                  {
+                     throw new Error("Forbidden value (" + this.parentBoostUid + ") on element parentBoostUid.");
+                  }
+                  else
+                  {
+                     output.writeInt(this.parentBoostUid);
+                     return;
+                  }
                }
             }
          }
@@ -111,14 +123,22 @@ package com.ankamagames.dofus.network.types.game.actions.fight
                }
                else
                {
-                  this.parentBoostUid = input.readInt();
-                  if(this.parentBoostUid < 0)
+                  this.effectId = input.readInt();
+                  if(this.effectId < 0)
                   {
-                     throw new Error("Forbidden value (" + this.parentBoostUid + ") on element of AbstractFightDispellableEffect.parentBoostUid.");
+                     throw new Error("Forbidden value (" + this.effectId + ") on element of AbstractFightDispellableEffect.effectId.");
                   }
                   else
                   {
-                     return;
+                     this.parentBoostUid = input.readInt();
+                     if(this.parentBoostUid < 0)
+                     {
+                        throw new Error("Forbidden value (" + this.parentBoostUid + ") on element of AbstractFightDispellableEffect.parentBoostUid.");
+                     }
+                     else
+                     {
+                        return;
+                     }
                   }
                }
             }

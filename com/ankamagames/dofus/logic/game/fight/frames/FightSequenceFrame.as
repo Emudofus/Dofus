@@ -93,6 +93,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
    import com.ankamagames.dofus.logic.game.fight.steps.FightLeavingStateStep;
    import com.ankamagames.dofus.logic.game.fight.steps.FightEnteringStateStep;
    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostEffect;
+   import com.ankamagames.dofus.logic.game.fight.types.StatBuff;
    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightTriggerEffectMessage;
    import com.ankamagames.dofus.network.messages.game.actions.AbstractGameActionMessage;
    import com.ankamagames.jerakine.script.BinaryScript;
@@ -941,7 +942,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                if(this._castingSpell)
                {
                   castingSpell.castingSpellId = this._castingSpell.castingSpellId;
-                  if(this._castingSpell.spell.id == gaftbmsg.effect.spellId)
+                  if(this._castingSpell.castingSpellId == gaftbmsg.effect.spellId)
                   {
                      castingSpell.spellRank = this._castingSpell.spellRank;
                   }
@@ -973,6 +974,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
                   if((!(actionId == ActionIdConverter.ACTION_CHARACTER_MAKE_INVISIBLE)) && (!(actionId == ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST)) && (!(actionId == ActionIdConverter.ACTION_CHARACTER_CHANGE_LOOK)) && (!(actionId == ActionIdConverter.ACTION_CHARACTER_CHANGE_COLOR)) && (!(actionId == ActionIdConverter.ACTION_CHARACTER_ADD_APPEARANCE)) && (!(actionId == ActionIdConverter.ACTION_FIGHT_SET_STATE)))
                   {
                      this.pushTemporaryBoostStep(gaftbmsg.effect.targetId,buff.effects.description,buff.effects.duration,buff.effects.durationString);
+                  }
+                  if(actionId == ActionIdConverter.ACTION_CHARACTER_BOOST_SHIELD)
+                  {
+                     this.pushShieldPointsVariationStep(gaftbmsg.effect.targetId,(buff as StatBuff).delta,actionId);
                   }
                }
                this.pushDisplayBuffStep(buff);

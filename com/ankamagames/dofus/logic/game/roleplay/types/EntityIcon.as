@@ -68,7 +68,10 @@ package com.ankamagames.dofus.logic.game.roleplay.types
       }
       
       public function remove() : void {
-         parent.removeChild(this);
+         if(parent)
+         {
+            parent.removeChild(this);
+         }
       }
       
       private function iconRendered(pEvent:Event) : void {

@@ -225,6 +225,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var sscmsg:SlaveSwitchContextMessage = null;
          var gftsmsg:GameFightTurnStartMessage = null;
          var playerId:* = 0;
+         var isResumeMessage:* = false;
          var sapi:SoundApi = null;
          var deadEntityInfo:GameFightFighterInformations = null;
          var mouseOverEntityInfos:GameFightFighterInformations = null;
@@ -314,11 +315,12 @@ package com.ankamagames.dofus.logic.game.fight.frames
                this._currentPlayerId = gftsmsg.id;
                this._playingSlaveEntity = gftsmsg.id == this._slaveId;
                this._turnFrame.turnDuration = gftsmsg.waitTime;
-               if(!(msg is GameFightTurnResumeMessage))
+               isResumeMessage = msg is GameFightTurnResumeMessage;
+               if(!isResumeMessage)
                {
                   BuffManager.getInstance().decrementDuration(gftsmsg.id);
                }
-               else if(msg is GameFightTurnResumeMessage)
+               else
                {
                   currentPlayedFighterId = CurrentPlayedFighterManager.getInstance().currentFighterId;
                   if((this._slaveId) && (!(this._currentPlayerId == currentPlayedFighterId)) && ((this._slaveId == this._currentPlayerId) || (this.getNextPlayableCharacterId() == this._slaveId)))
@@ -326,7 +328,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
                      this.prepareNextPlayableCharacter(this._masterId);
                   }
                }
-               
                if((gftsmsg.id > 0) || (this._playingSlaveEntity))
                {
                   if((!(FightEntitiesFrame.getCurrentInstance().getEntityInfos(gftsmsg.id).disposition.cellId == -1)) && (!FightEntitiesHolder.getInstance().getEntity(gftsmsg.id)))
@@ -361,7 +362,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                {
                   this._turnFrame.myTurn = false;
                }
-               KernelEventsManager.getInstance().processCallback(HookList.GameFightTurnStart,gftsmsg.id,gftsmsg.waitTime,Dofus.getInstance().options.turnPicture);
+               KernelEventsManager.getInstance().processCallback(HookList.GameFightTurnStart,gftsmsg.id,gftsmsg.waitTime,isResumeMessage?(msg as GameFightTurnResumeMessage).remainingTime:gftsmsg.waitTime,Dofus.getInstance().options.turnPicture);
                if(this._skipTurnTimer)
                {
                   this._skipTurnTimer.stop();
@@ -908,13 +909,19 @@ package com.ankamagames.dofus.logic.game.fight.frames
          var newWaveMonster:* = false;
          var newWaveMonsterIndex:* = 0;
          var fighterInfos:GameFightFighterInformations = null;
+         var ignoreEntityId:* = 0;
          var sequencer:SerialSequencer = null;
          var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
          var fbf:FightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
          var bm:BuffManager = BuffManager.getInstance();
          if(synchronizeBuff)
          {
-            BuffManager.getInstance().synchronize();
+            ignoreEntityId = 0;
+            if((this.currentPlayerId == this.masterId) || (this.currentPlayerId == this.slaveId))
+            {
+               ignoreEntityId = this.currentPlayerId == this.slaveId?this.masterId:this.slaveId;
+            }
+            BuffManager.getInstance().synchronize(ignoreEntityId);
          }
          for each(fighterInfos in fighters)
          {

@@ -32,8 +32,8 @@ package com.ankamagames.berilia.managers
    import com.ankamagames.berilia.types.messages.AllModulesLoadedMessage;
    import com.ankamagames.jerakine.resources.adapters.impl.TxtAdapter;
    import com.ankamagames.jerakine.newCache.ICache;
-   import com.ankamagames.berilia.utils.UriCacheFactory;
    import com.ankamagames.jerakine.utils.files.FileUtils;
+   import com.ankamagames.berilia.utils.UriCacheFactory;
    import com.ankamagames.jerakine.newCache.impl.Cache;
    import com.ankamagames.jerakine.newCache.garbage.LruGarbageCollector;
    import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
@@ -109,6 +109,8 @@ package com.ankamagames.berilia.managers
       }
       
       protected static const _log:Logger;
+      
+      private static const _lastModulesToUnload:Array;
       
       private static var _self:UiModuleManager;
       
@@ -322,8 +324,12 @@ package com.ankamagames.berilia.managers
       }
       
       public function getModule(name:String, includeUnInitialized:Boolean = false) : UiModule {
-         var module:UiModule = this._modules[name];
-         if((includeUnInitialized) && (!module))
+         var module:UiModule = null;
+         if(this._modules)
+         {
+            module = this._modules[name];
+         }
+         if((!module) && (includeUnInitialized) && (this._unInitializedModules))
          {
             module = this._unInitializedModules[name];
          }
@@ -336,6 +342,7 @@ package com.ankamagames.berilia.managers
       
       public function reset() : void {
          var module:UiModule = null;
+         var i:* = 0;
          _log.warn("Reset des modules");
          this._resetState = true;
          if(this._loader)
@@ -353,7 +360,19 @@ package com.ankamagames.berilia.managers
          TooltipManager.clearCache();
          for each(module in this._modules)
          {
-            this.unloadModule(module.id);
+            if(_lastModulesToUnload.indexOf(module.id) == -1)
+            {
+               this.unloadModule(module.id);
+            }
+         }
+         i = 0;
+         while(i < _lastModulesToUnload.length)
+         {
+            if(this._modules[_lastModulesToUnload[i]])
+            {
+               this.unloadModule(_lastModulesToUnload[i]);
+            }
+            i++;
          }
          Shortcut.reset();
          Berilia.getInstance().reset();
@@ -429,7 +448,6 @@ package com.ankamagames.berilia.managers
          var moduleUiInstances:Array = [];
          for each(uiCtr in Berilia.getInstance().uiList)
          {
-            _log.trace("UI " + uiCtr.name + " >> " + uiCtr.uiModule.id + " (@" + uiCtr.uiModule.instanceId + ")");
             if(uiCtr.uiModule == m)
             {
                moduleUiInstances.push(uiCtr.name);

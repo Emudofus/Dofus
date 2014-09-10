@@ -96,7 +96,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
       
       public static const NO_BOOST_EFFECTS_IDS:Array;
       
-      public static function isDamagedOrHealedBySpell(pCasterId:int, pTargetId:int, pSpell:Object) : Boolean {
+      public static function isDamagedOrHealedBySpell(pCasterId:int, pTargetId:int, pSpell:Object, pSpellImpactCell:int) : Boolean {
          var affected:* = false;
          var effi:EffectInstance = null;
          var fef:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
@@ -125,9 +125,10 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          {
             pSpell = getBombDirectDamageSpellWrapper(pSpell as SpellWrapper);
          }
+         var casterInfos:GameFightFighterInformations = fef.getEntityInfos(pCasterId) as GameFightFighterInformations;
          for each(effi in pSpell.effects)
          {
-            if(((effi.category == 2) || (!(HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1)) || (effi.effectId == 5) && (targetCanBePushed)) && (verifySpellEffectMask(pCasterId,pTargetId,effi)))
+            if((effi.triggers == "I") && ((effi.category == 2) || (!(HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1)) || (effi.effectId == 5) && (targetCanBePushed)) && (verifySpellEffectMask(pCasterId,pTargetId,effi)) && (verifySpellEffectZone(pTargetId,effi,pSpellImpactCell,casterInfos.disposition.cellId)))
             {
                affected = true;
                break;
@@ -137,7 +138,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          {
             for each(effi in pSpell.criticalEffect)
             {
-               if(((effi.category == 2) || (!(HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1)) || (effi.effectId == 5) && (targetCanBePushed)) && (verifySpellEffectMask(pCasterId,pTargetId,effi)))
+               if((effi.triggers == "I") && ((effi.category == 2) || (!(HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1)) || (effi.effectId == 5) && (targetCanBePushed)) && (verifySpellEffectMask(pCasterId,pTargetId,effi)) && (verifySpellEffectZone(pTargetId,effi,pSpellImpactCell,casterInfos.disposition.cellId)))
                {
                   affected = true;
                   break;
@@ -225,7 +226,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          var triggersList:Array = null;
          var trigger:String = null;
          var eff:EffectInstance = null;
-         var triggers:String = getBuffTriggers(pBuff);
+         var triggers:String = pBuff.effects.triggers;
          if(triggers)
          {
             triggersList = triggers.split("|");
@@ -233,7 +234,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
             {
                for each(eff in pSpellInfo.spellEffects)
                {
-                  if(verifyEffectTrigger(pSpellInfo.casterId,pSpellInfo.targetId,eff,pSpellInfo.isWeapon,trigger))
+                  if(verifyEffectTrigger(pSpellInfo.casterId,pSpellInfo.targetId,pSpellInfo.spellEffects,eff,pSpellInfo.isWeapon,trigger,pSpellInfo.spellCenterCell))
                   {
                      return true;
                   }
@@ -243,7 +244,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          return false;
       }
       
-      public static function verifyEffectTrigger(pCasterId:int, pTargetId:int, pEffect:EffectInstance, pWeaponEffect:Boolean, pTriggers:String) : Boolean {
+      public static function verifyEffectTrigger(pCasterId:int, pTargetId:int, pSpellEffects:Vector.<EffectInstance>, pEffect:EffectInstance, pWeaponEffect:Boolean, pTriggers:String, pSpellImpactCell:int) : Boolean {
          var trigger:String = null;
          var verify:* = false;
          var fightEntitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
@@ -256,7 +257,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          var targetInfos:GameFightFighterInformations = fightEntitiesFrame.getEntityInfos(pTargetId) as GameFightFighterInformations;
          var isTargetAlly:Boolean = targetInfos.teamId == (fightEntitiesFrame.getEntityInfos(pCasterId) as GameFightFighterInformations).teamId;
          var distance:uint = MapPoint.fromCellId(casterInfos.disposition.cellId).distanceTo(MapPoint.fromCellId(targetInfos.disposition.cellId));
-         for each(_loc16_ in triggersList)
+         for each(_loc18_ in triggersList)
          {
             switch(trigger)
             {
@@ -312,6 +313,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                   verify = (pEffect.category == DAMAGE_EFFECT_CATEGORY) && (Effect.getEffectById(pEffect.effectId).elementId == WATER_ELEMENT);
                   break;
                case "MD":
+                  verify = PushUtil.hasPushDamages(pCasterId,pTargetId,pSpellEffects,pEffect,pSpellImpactCell);
                   break;
                case "MDM":
                   break;
@@ -369,7 +371,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          }
          else
          {
-            if((targetIsCarried) && (!(pEffect.zoneShape == SpellShapeEnum.A)))
+            if((targetIsCarried) && (!(pEffect.zoneShape == SpellShapeEnum.A)) && (!(pEffect.zoneShape == SpellShapeEnum.a)))
             {
                return false;
             }
@@ -483,7 +485,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          return verify;
       }
       
-      public static function verifySpellEffectZone(pTargetId:int, pEffect:EffectInstance, pSpellImpactCell:int) : Boolean {
+      public static function verifySpellEffectZone(pTargetId:int, pEffect:EffectInstance, pSpellImpactCell:int, pCasterCell:int) : Boolean {
          var fef:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
          if(!fef)
          {
@@ -491,6 +493,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          }
          var targetInfos:GameFightFighterInformations = fef.getEntityInfos(pTargetId) as GameFightFighterInformations;
          var effectZone:IZone = SpellZoneManager.getInstance().getZone(pEffect.zoneShape,uint(pEffect.zoneSize),uint(pEffect.zoneMinSize));
+         effectZone.direction = MapPoint(MapPoint.fromCellId(pCasterCell)).advancedOrientationTo(MapPoint.fromCellId(pSpellImpactCell),false);
          var effectZoneCells:Vector.<uint> = effectZone.getCells(pSpellImpactCell);
          return effectZoneCells?!(effectZoneCells.indexOf(targetInfos.disposition.cellId) == -1):false;
       }
@@ -1035,7 +1038,12 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          return (finalDamage);
       }
       
-      private static function getDamage(pBaseDmg:int, pStat:int, pStatBonus:int, pDamageBonus:int, pAllDamagesBonus:int, pDamageReduction:int, pResistPercent:int, pEfficiencyPercent:int, pDamageSharingMultiplicator:Number = 1) : int {
+      private static function getDamage(pBaseDmg:int, pIgnoreStats:Boolean, pStat:int, pStatBonus:int, pDamageBonus:int, pAllDamagesBonus:int, pDamageReduction:int, pResistPercent:int, pEfficiencyPercent:int, pDamageSharingMultiplicator:Number = 1) : int {
+         if((!pIgnoreStats) && (pStat + pStatBonus <= 0))
+         {
+            pStat = 1;
+            pStatBonus = 0;
+         }
          var dmgWithEfficiency:int = pBaseDmg > 0?(Math.floor(pBaseDmg * (100 + pStat + pStatBonus) / 100) + pDamageBonus + pAllDamagesBonus) * pEfficiencyPercent / 100:0;
          var dmgWithDamageReduction:int = dmgWithEfficiency > 0?dmgWithEfficiency - pDamageReduction:0;
          dmgWithDamageReduction = dmgWithDamageReduction < 0?0:dmgWithDamageReduction;
@@ -1061,6 +1069,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          switch(pShape)
          {
             case SpellShapeEnum.A:
+            case SpellShapeEnum.a:
             case SpellShapeEnum.Z:
             case SpellShapeEnum.I:
             case SpellShapeEnum.O:
@@ -1221,7 +1230,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
          effect.effectId = pEffectDamage.effectId;
          for each(buff in targetBuffs)
          {
-            triggers = getBuffTriggers(buff);
+            triggers = buff.effects.triggers;
             if(triggers)
             {
                triggersList = triggers.split("|");
@@ -1231,7 +1240,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                }
                for each(trigger in triggersList)
                {
-                  if((buff.actionId == 265) && (verifyEffectTrigger(pSpellInfo.casterId,pTargetId,effect,pSpellInfo.isWeapon,trigger)))
+                  if((buff.actionId == 265) && (verifyEffectTrigger(pSpellInfo.casterId,pTargetId,null,effect,pSpellInfo.isWeapon,trigger,pSpellInfo.spellCenterCell)))
                   {
                      if(buffSpellElementsReduced[buff.castingSpell.spell.id].indexOf(pEffectDamage.element) == -1)
                      {

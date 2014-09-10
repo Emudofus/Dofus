@@ -54,5 +54,7 @@ package com.ankamagames.dofus.network.enums
       public static const COMPANION_REFUSED:int = 22;
       
       public static const NOT_ENOUGH_ROOM:int = 23;
+      
+      public static const GUEST_ACCOUNT:int = 24;
    }
 }

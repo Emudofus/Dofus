@@ -1,11 +1,10 @@
 package com.ankamagames.dofus.network.types.game.character.choice
 {
-   import com.ankamagames.dofus.network.types.game.character.AbstractCharacterInformation;
    import com.ankamagames.jerakine.network.INetworkType;
    import flash.utils.IDataOutput;
    import flash.utils.IDataInput;
    
-   public class CharacterToRelookInformation extends AbstractCharacterInformation implements INetworkType
+   public class CharacterToRelookInformation extends AbstractCharacterToRefurbishInformation implements INetworkType
    {
       
       public function CharacterToRelookInformation() {
@@ -14,21 +13,17 @@ package com.ankamagames.dofus.network.types.game.character.choice
       
       public static const protocolId:uint = 399;
       
-      public var cosmeticId:uint = 0;
-      
       override public function getTypeId() : uint {
          return 399;
       }
       
-      public function initCharacterToRelookInformation(id:uint = 0, cosmeticId:uint = 0) : CharacterToRelookInformation {
-         super.initAbstractCharacterInformation(id);
-         this.cosmeticId = cosmeticId;
+      public function initCharacterToRelookInformation(id:uint = 0, colors:Vector.<int> = null, cosmeticId:uint = 0) : CharacterToRelookInformation {
+         super.initAbstractCharacterToRefurbishInformation(id,colors,cosmeticId);
          return this;
       }
       
       override public function reset() : void {
          super.reset();
-         this.cosmeticId = 0;
       }
       
       override public function serialize(output:IDataOutput) : void {
@@ -36,16 +31,7 @@ package com.ankamagames.dofus.network.types.game.character.choice
       }
       
       public function serializeAs_CharacterToRelookInformation(output:IDataOutput) : void {
-         super.serializeAs_AbstractCharacterInformation(output);
-         if(this.cosmeticId < 0)
-         {
-            throw new Error("Forbidden value (" + this.cosmeticId + ") on element cosmeticId.");
-         }
-         else
-         {
-            output.writeInt(this.cosmeticId);
-            return;
-         }
+         super.serializeAs_AbstractCharacterToRefurbishInformation(output);
       }
       
       override public function deserialize(input:IDataInput) : void {
@@ -54,15 +40,6 @@ package com.ankamagames.dofus.network.types.game.character.choice
       
       public function deserializeAs_CharacterToRelookInformation(input:IDataInput) : void {
          super.deserialize(input);
-         this.cosmeticId = input.readInt();
-         if(this.cosmeticId < 0)
-         {
-            throw new Error("Forbidden value (" + this.cosmeticId + ") on element of CharacterToRelookInformation.cosmeticId.");
-         }
-         else
-         {
-            return;
-         }
       }
    }
 }

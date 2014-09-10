@@ -51,7 +51,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
          return this._content;
       }
       
-      public function addItem(item:ItemWrapper, invisible:int) : void {
+      public function addItem(item:ItemWrapper, invisible:int, needUpdateView:Boolean = true) : void {
          this.content[item.position] = item;
          if(item.position == CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)
          {

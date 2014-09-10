@@ -7,6 +7,7 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.managers.DofusShopManager;
    import com.ankamagames.jerakine.types.enums.Priority;
    import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.OpenWebServiceAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterTokenRequestAction;
    import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterAuthTokenRequestMessage;
    import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterAuthTokenErrorMessage;
@@ -23,9 +24,16 @@ package com.ankamagames.dofus.logic.game.common.frames
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopArticlesListRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopBuyRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopSearchRequestAction;
-   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.GetComicRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.GetComicsLibraryRequestAction;
    import com.ankamagames.berilia.managers.KernelEventsManager;
    import com.ankamagames.dofus.misc.lists.ExternalGameHookList;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.dofus.types.enums.DofusShopEnum;
+   import com.ankamagames.dofus.BuildInfos;
+   import com.ankamagames.dofus.network.enums.BuildTypeEnum;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.dofus.logic.game.common.managers.ComicsManager;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopAuthentificationRequestAction;
    import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopFrontPageRequestAction;
    
@@ -39,8 +47,6 @@ package com.ankamagames.dofus.logic.game.common.frames
       protected static const _log:Logger;
       
       private var _dofusShopManager:DofusShopManager;
-      
-      private var _iceAuthToken:String;
       
       private var _openingShop:Boolean = false;
       
@@ -57,6 +63,7 @@ package com.ankamagames.dofus.logic.game.common.frames
       }
       
       public function process(msg:Message) : Boolean {
+         var owsa:OpenWebServiceAction = null;
          var ktora:KrosmasterTokenRequestAction = null;
          var katrmsg:KrosmasterAuthTokenRequestMessage = null;
          var katemsg:KrosmasterAuthTokenErrorMessage = null;
@@ -73,8 +80,15 @@ package com.ankamagames.dofus.logic.game.common.frames
          var salra:ShopArticlesListRequestAction = null;
          var sbra:ShopBuyRequestAction = null;
          var ssra:ShopSearchRequestAction = null;
+         var gcra:GetComicRequestAction = null;
+         var gclra:GetComicsLibraryRequestAction = null;
+         var commonMod:Object = null;
          switch(true)
          {
+            case msg is OpenWebServiceAction:
+               owsa = msg as OpenWebServiceAction;
+               KernelEventsManager.getInstance().processCallback(ExternalGameHookList.OpenWebService,owsa.uiName,owsa.uiParams);
+               return true;
             case msg is KrosmasterTokenRequestAction:
                ktora = msg as KrosmasterTokenRequestAction;
                katrmsg = new KrosmasterAuthTokenRequestMessage();
@@ -83,21 +97,28 @@ package com.ankamagames.dofus.logic.game.common.frames
                return true;
             case msg is KrosmasterAuthTokenErrorMessage:
                katemsg = msg as KrosmasterAuthTokenErrorMessage;
-               KernelEventsManager.getInstance().processCallback(ExternalGameHookList.KrosmasterAuthTokenError,katemsg.reason);
-               return true;
-            case msg is KrosmasterAuthTokenMessage:
-               katmsg = msg as KrosmasterAuthTokenMessage;
-               this._iceAuthToken = katmsg.token;
-               if(!this._openingShop)
+               if(this._openingShop)
                {
-                  KernelEventsManager.getInstance().processCallback(ExternalGameHookList.KrosmasterAuthToken,katmsg.token);
+                  KernelEventsManager.getInstance().processCallback(ExternalGameHookList.DofusShopError,DofusShopEnum.ERROR_AUTHENTICATION_FAILED);
+                  this._openingShop = false;
                }
                else
                {
-                  this._dofusShopManager = DofusShopManager.getInstance();
-                  this._dofusShopManager.init(this._iceAuthToken);
+                  KernelEventsManager.getInstance().processCallback(ExternalGameHookList.KrosmasterAuthTokenError,katemsg.reason);
                }
-               this._openingShop = false;
+               return true;
+            case msg is KrosmasterAuthTokenMessage:
+               katmsg = msg as KrosmasterAuthTokenMessage;
+               if(this._openingShop)
+               {
+                  this._dofusShopManager = DofusShopManager.getInstance();
+                  this._dofusShopManager.init(katmsg.token);
+                  this._openingShop = false;
+               }
+               else
+               {
+                  KernelEventsManager.getInstance().processCallback(ExternalGameHookList.KrosmasterAuthToken,katmsg.token);
+               }
                return true;
             case msg is KrosmasterInventoryRequestAction:
                kira = msg as KrosmasterInventoryRequestAction;
@@ -130,26 +151,17 @@ package com.ankamagames.dofus.logic.game.common.frames
                ConnectionsHandler.getConnection().send(kpsmsg);
                return true;
             case msg is ShopAuthentificationRequestAction:
-               if(!this._dofusShopManager)
+               this._openingShop = true;
+               if(BuildInfos.BUILD_TYPE > BuildTypeEnum.BETA)
                {
-                  if(!this._iceAuthToken)
-                  {
-                     this._openingShop = true;
-                     katrmsg = new KrosmasterAuthTokenRequestMessage();
-                     katrmsg.initKrosmasterAuthTokenRequestMessage();
-                     ConnectionsHandler.getConnection().send(katrmsg);
-                  }
-                  else
-                  {
-                     this._dofusShopManager = DofusShopManager.getInstance();
-                     this._dofusShopManager.init(this._iceAuthToken);
-                  }
+                  commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+                  commonMod.openInputPopup("ICE Authentication","Please enter your ICE Token",this.onTokenInput,this.onCancel);
                }
                else
                {
-                  this._dofusShopManager.open();
-                  this._dofusShopManager.getMoney();
-                  this._dofusShopManager.getHome();
+                  katrmsg = new KrosmasterAuthTokenRequestMessage();
+                  katrmsg.initKrosmasterAuthTokenRequestMessage();
+                  ConnectionsHandler.getConnection().send(katrmsg);
                }
                return true;
             case msg is ShopArticlesListRequestAction:
@@ -167,9 +179,29 @@ package com.ankamagames.dofus.logic.game.common.frames
                ssra = msg as ShopSearchRequestAction;
                this._dofusShopManager.searchForArticles(ssra.text,ssra.pageId);
                return true;
+            case msg is GetComicRequestAction:
+               gcra = msg as GetComicRequestAction;
+               ComicsManager.getInstance().getComic(gcra.remoteId,gcra.language,gcra.previewOnly);
+               return true;
+            case msg is GetComicsLibraryRequestAction:
+               gclra = msg as GetComicsLibraryRequestAction;
+               ComicsManager.getInstance().getLibrary(gclra.accountId);
+               return true;
             default:
                return false;
          }
+      }
+      
+      private function onTokenInput(value:String) : void {
+         this._openingShop = false;
+         this._dofusShopManager = DofusShopManager.getInstance();
+         this._dofusShopManager.init(value,true);
+      }
+      
+      private function onCancel() : void {
+         var katrmsg:KrosmasterAuthTokenRequestMessage = new KrosmasterAuthTokenRequestMessage();
+         katrmsg.initKrosmasterAuthTokenRequestMessage();
+         ConnectionsHandler.getConnection().send(katrmsg);
       }
    }
 }

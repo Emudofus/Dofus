@@ -5,7 +5,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
    import flash.utils.ByteArray;
    import flash.utils.IDataInput;
    
-   public class MimicryObjectErrorMessage extends ObjectErrorMessage implements INetworkMessage
+   public class MimicryObjectErrorMessage extends SymbioticObjectErrorMessage implements INetworkMessage
    {
       
       public function MimicryObjectErrorMessage() {
@@ -22,16 +22,13 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
       
       public var preview:Boolean = false;
       
-      public var errorCode:int = 0;
-      
       override public function getMessageId() : uint {
          return 6461;
       }
       
-      public function initMimicryObjectErrorMessage(reason:int = 0, preview:Boolean = false, errorCode:int = 0) : MimicryObjectErrorMessage {
-         super.initObjectErrorMessage(reason);
+      public function initMimicryObjectErrorMessage(reason:int = 0, errorCode:int = 0, preview:Boolean = false) : MimicryObjectErrorMessage {
+         super.initSymbioticObjectErrorMessage(reason,errorCode);
          this.preview = preview;
-         this.errorCode = errorCode;
          this._isInitialized = true;
          return this;
       }
@@ -39,7 +36,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
       override public function reset() : void {
          super.reset();
          this.preview = false;
-         this.errorCode = 0;
          this._isInitialized = false;
       }
       
@@ -58,9 +54,8 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
       }
       
       public function serializeAs_MimicryObjectErrorMessage(output:IDataOutput) : void {
-         super.serializeAs_ObjectErrorMessage(output);
+         super.serializeAs_SymbioticObjectErrorMessage(output);
          output.writeBoolean(this.preview);
-         output.writeByte(this.errorCode);
       }
       
       override public function deserialize(input:IDataInput) : void {
@@ -70,7 +65,6 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
       public function deserializeAs_MimicryObjectErrorMessage(input:IDataInput) : void {
          super.deserialize(input);
          this.preview = input.readBoolean();
-         this.errorCode = input.readByte();
       }
    }
 }

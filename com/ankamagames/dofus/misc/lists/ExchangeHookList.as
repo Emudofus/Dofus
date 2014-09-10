@@ -19,6 +19,12 @@ package com.ankamagames.dofus.misc.lists
       
       public static const ExchangeObjectRemoved:Hook;
       
+      public static const ExchangeObjectListModified:Hook;
+      
+      public static const ExchangeObjectListAdded:Hook;
+      
+      public static const ExchangeObjectListRemoved:Hook;
+      
       public static const ExchangeKamaModified:Hook;
       
       public static const ExchangeStartOkNpcTrade:Hook;

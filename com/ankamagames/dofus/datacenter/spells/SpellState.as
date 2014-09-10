@@ -29,8 +29,6 @@ package com.ankamagames.dofus.datacenter.spells
       
       public var preventsFight:Boolean;
       
-      public var critical:Boolean;
-      
       private var _name:String;
       
       public function get name() : String {

@@ -92,6 +92,8 @@ package com.ankamagames.berilia.components
       
       protected var _bFixedHeight:Boolean = true;
       
+      protected var _bFixedHeightForMultiline:Boolean = false;
+      
       protected var _aStyleObj:Array;
       
       protected var _ssSheet:ExtendedStyleSheet;
@@ -435,6 +437,14 @@ package com.ankamagames.berilia.components
          this._tText.wordWrap = !this._bFixedHeight;
       }
       
+      public function get fixedHeightForMultiline() : Boolean {
+         return this._bFixedHeightForMultiline;
+      }
+      
+      public function set fixedHeightForMultiline(bValue:Boolean) : void {
+         this._bFixedHeightForMultiline = bValue;
+      }
+      
       override public function set bgColor(nColor:int) : void {
          _bgColor = nColor;
          graphics.clear();
@@ -614,6 +624,7 @@ package com.ankamagames.berilia.components
          this._sAntialiasType = "normal";
          this._bFixedWidth = true;
          this._bFixedHeight = true;
+         this._bFixedHeightForMultiline = false;
          this._ssSheet = null;
          this._useEmbedFonts = true;
          this._nPaddingLeft = 0;
@@ -917,7 +928,7 @@ package com.ankamagames.berilia.components
          var currentTextFieldWidth:* = 0;
          var textWidth:* = NaN;
          this.removeTooltipExtension();
-         if((this._bFixedHeight) && (!this._tText.multiline) && (this._tText.autoSize == "none") && (this._tfFormatter))
+         if(((this._bFixedHeight) && (!this._tText.multiline) || (this._bFixedHeightForMultiline)) && (this._tText.autoSize == "none") && (this._tfFormatter))
          {
             currentSize = int(this._tfFormatter.size);
             sizeMin = currentSize;
@@ -937,7 +948,7 @@ package com.ankamagames.berilia.components
             while(true)
             {
                textWidth = this._tText.textWidth;
-               if((textWidth > currentTextFieldWidth) || (this._tText.textHeight > this._tText.height))
+               if((textWidth > currentTextFieldWidth) || (this._tText.textHeight > this._tText.height) || (this._bFixedHeightForMultiline) && (this._tText.textHeight > this.height))
                {
                   currentSize--;
                   if(currentSize < sizeMin)
@@ -958,7 +969,7 @@ package com.ankamagames.berilia.components
                }
                break;
             }
-            if((needTooltipExtension) && (!this.multiline) && (this._bFixedHeight))
+            if((needTooltipExtension) && ((!this.multiline) && (this._bFixedHeight) || (this._bFixedHeightForMultiline)))
             {
                this.addTooltipExtension();
             }

@@ -159,6 +159,7 @@ package com.ankamagames.dofus.console.moduleLogger
       }
       
       private static function onOpenConsole(e:Event) : void {
+         Console.getInstance().chatMode = false;
          Console.getInstance().toggleDisplay();
       }
       

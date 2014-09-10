@@ -44,8 +44,8 @@ package com.ankamagames.dofus.uiApi
          return [time[0],time[1]];
       }
       
-      public function getDate(time:Number = 0, useTimezoneOffset:Boolean = false) : String {
-         return TimeManager.getInstance().formatDateIRL(time,useTimezoneOffset);
+      public function getDate(time:Number = 0, useTimezoneOffset:Boolean = false, unchanged:Boolean = false) : String {
+         return TimeManager.getInstance().formatDateIRL(time,useTimezoneOffset,unchanged);
       }
       
       public function getDofusDate(time:Number = 0) : String {

@@ -33,6 +33,8 @@ package com.ankamagames.dofus.logic.game.fight.types
       
       private var _isABoost:Boolean;
       
+      private var _zeroDiff:int;
+      
       override public function get type() : String {
          return "StatBuff";
       }
@@ -47,6 +49,10 @@ package com.ankamagames.dofus.logic.game.fight.types
             return this._isABoost?EffectInstanceDice(_effect).diceNum:-EffectInstanceDice(_effect).diceNum;
          }
          return 0;
+      }
+      
+      public function get zeroDiff() : int {
+         return this._zeroDiff;
       }
       
       override public function onApplyed() : void {
@@ -152,6 +158,18 @@ package com.ankamagames.dofus.logic.game.fight.types
                infos.stats["movementPoints"] = infos.stats["movementPoints"] + this.delta;
                infos.stats["maxMovementPoints"] = infos.stats["maxMovementPoints"] + this.delta;
                break;
+            case "tackleBlock":
+            case "tackleEvade":
+               if(infos.stats[this._statName] + this.delta < 0)
+               {
+                  this._zeroDiff = infos.stats[this._statName] + this.delta;
+                  infos.stats[this._statName] = 0;
+               }
+               else
+               {
+                  infos.stats[this._statName] = infos.stats[this._statName] + this.delta;
+               }
+               break;
             default:
                if(infos)
                {
@@ -199,6 +217,9 @@ package com.ankamagames.dofus.logic.game.fight.types
          var targetCaracs:CharacterCharacteristicsInformations = null;
          var playedcharacterCharac:CharacterCharacteristicsInformations = null;
          var multi:* = 0;
+         var zeroDiff:* = 0;
+         var i:* = 0;
+         var stackLen:* = 0;
          targetCaracs = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations(targetId);
          if(targetCaracs)
          {
@@ -298,6 +319,28 @@ package com.ankamagames.dofus.logic.game.fight.types
             case "movementPoints":
                infos.stats["movementPoints"] = infos.stats["movementPoints"] - this.delta;
                infos.stats["maxMovementPoints"] = infos.stats["maxMovementPoints"] - this.delta;
+               break;
+            case "tackleBlock":
+            case "tackleEvade":
+               if(infos.stats[this._statName] == 0)
+               {
+                  zeroDiff = this._zeroDiff;
+                  if(stack)
+                  {
+                     stackLen = stack.length;
+                     i = 1;
+                     while(i < stackLen)
+                     {
+                        zeroDiff = zeroDiff + (stack[i] as StatBuff).zeroDiff;
+                        i++;
+                     }
+                  }
+                  infos.stats[this._statName] = infos.stats[this._statName] - this.delta + zeroDiff;
+               }
+               else
+               {
+                  infos.stats[this._statName] = infos.stats[this._statName] - this.delta;
+               }
                break;
             default:
                if(infos)

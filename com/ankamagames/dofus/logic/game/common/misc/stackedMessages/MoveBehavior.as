@@ -11,9 +11,12 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterInformations;
    import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.berilia.frames.ShortcutsFrame;
    import com.ankamagames.dofus.logic.game.roleplay.messages.CharacterMovementStoppedMessage;
    import com.ankamagames.atouin.messages.EntityMovementStoppedMessage;
    import com.ankamagames.dofus.misc.utils.EmbedAssets;
+   import flash.display.Sprite;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayMovementFrame;
    
    public class MoveBehavior extends AbstractBehavior
    {
@@ -21,13 +24,14 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
       public function MoveBehavior() {
          super();
          type = NORMAL;
-         sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP");
          isAvailableToStart = true;
       }
       
       private var _abstractEntitiesFrame:AbstractEntitiesFrame;
       
       private var _fakepos:int = -1;
+      
+      public var forceWalk:Boolean;
       
       override public function processInputMessage(pMsgToProcess:Message, pMode:String) : Boolean {
          var entity:IEntity = null;
@@ -73,6 +77,7 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
                   position = (pMsgToProcess as EntityClickMessage).entity.position;
                }
                
+               this.forceWalk = ShortcutsFrame.ctrlKeyDown;
                return true;
             }
          }
@@ -123,6 +128,8 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          cp.pendingMessage = this.pendingMessage;
          cp.position = this.position;
          cp.type = this.type;
+         cp.forceWalk = this.forceWalk;
+         cp.sprite = cp.forceWalk?EmbedAssets.getSprite("CHECKPOINT_CLIP_WALK"):EmbedAssets.getSprite("CHECKPOINT_CLIP");
          return cp;
       }
       
@@ -134,6 +141,12 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
          var mp:MapPoint = new MapPoint();
          mp.cellId = this._fakepos;
          return mp;
+      }
+      
+      override public function processMessageToWorker() : void {
+         var rpMovementFrame:RoleplayMovementFrame = Kernel.getWorker().getFrame(RoleplayMovementFrame) as RoleplayMovementFrame;
+         rpMovementFrame.setForceWalkForNextMovement(this.forceWalk);
+         super.processMessageToWorker();
       }
    }
 }
