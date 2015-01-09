@@ -1,14 +1,13 @@
-package ui
+﻿package ui
 {
-   import d2api.UiApi;
-   
-   public class API extends Object
-   {
-      
-      public function API() {
-         super();
-      }
-      
-      public static var uiApi:UiApi;
-   }
-}
+    import d2api.UiApi;
+
+    public class API 
+    {
+
+        public static var uiApi:UiApi;
+
+
+    }
+}//package ui
+

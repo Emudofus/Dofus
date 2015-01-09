@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OpenStatusMenu extends Object
-   {
-      
-      public function OpenStatusMenu() {
-         super();
-      }
-   }
-}
+    public class OpenStatusMenu 
+    {
+
+
+    }
+}//package d2hooks
+

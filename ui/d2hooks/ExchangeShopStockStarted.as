@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ExchangeShopStockStarted extends Object
-   {
-      
-      public function ExchangeShopStockStarted() {
-         super();
-      }
-   }
-}
+    public class ExchangeShopStockStarted 
+    {
+
+
+    }
+}//package d2hooks
+

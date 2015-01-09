@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OpenGrimoireQuestTab extends Object
-   {
-      
-      public function OpenGrimoireQuestTab() {
-         super();
-      }
-   }
-}
+    public class OpenGrimoireQuestTab 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,14 +1,15 @@
-package d2network
+﻿package d2network
 {
-   public class AlliancePrismInformation extends PrismInformation
-   {
-      
-      public function AlliancePrismInformation() {
-         super();
-      }
-      
-      public function get alliance() : AllianceInformations {
-         return new AllianceInformations();
-      }
-   }
-}
+    public class AlliancePrismInformation extends PrismInformation 
+    {
+
+
+        public function get alliance():AllianceInformations
+        {
+            return (new AllianceInformations());
+        }
+
+
+    }
+}//package d2network
+

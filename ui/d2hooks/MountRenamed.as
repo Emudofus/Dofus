@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class MountRenamed extends Object
-   {
-      
-      public function MountRenamed() {
-         super();
-      }
-   }
-}
+    public class MountRenamed 
+    {
+
+
+    }
+}//package d2hooks
+

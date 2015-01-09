@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ExchangeKamaModified extends Object
-   {
-      
-      public function ExchangeKamaModified() {
-         super();
-      }
-   }
-}
+    public class ExchangeKamaModified 
+    {
+
+
+    }
+}//package d2hooks
+

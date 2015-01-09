@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class DofusShopError extends Object
-   {
-      
-      public function DofusShopError() {
-         super();
-      }
-   }
-}
+    public class DofusShopError 
+    {
+
+
+    }
+}//package d2hooks
+

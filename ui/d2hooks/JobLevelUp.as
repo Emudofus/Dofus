@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class JobLevelUp extends Object
-   {
-      
-      public function JobLevelUp() {
-         super();
-      }
-   }
-}
+    public class JobLevelUp 
+    {
+
+
+    }
+}//package d2hooks
+

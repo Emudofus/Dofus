@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class BankViewContent extends Object
-   {
-      
-      public function BankViewContent() {
-         super();
-      }
-   }
-}
+    public class BankViewContent 
+    {
+
+
+    }
+}//package d2hooks
+

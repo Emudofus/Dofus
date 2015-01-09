@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GameFightLeave extends Object
-   {
-      
-      public function GameFightLeave() {
-         super();
-      }
-   }
-}
+    public class GameFightLeave 
+    {
+
+
+    }
+}//package d2hooks
+

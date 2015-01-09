@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ClearChat extends Object
-   {
-      
-      public function ClearChat() {
-         super();
-      }
-   }
-}
+    public class ClearChat 
+    {
+
+
+    }
+}//package d2hooks
+

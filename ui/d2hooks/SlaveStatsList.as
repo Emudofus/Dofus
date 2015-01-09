@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class SlaveStatsList extends Object
-   {
-      
-      public function SlaveStatsList() {
-         super();
-      }
-   }
-}
+    public class SlaveStatsList 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OpenGrimoireAlignmentTab extends Object
-   {
-      
-      public function OpenGrimoireAlignmentTab() {
-         super();
-      }
-   }
-}
+    public class OpenGrimoireAlignmentTab 
+    {
+
+
+    }
+}//package d2hooks
+

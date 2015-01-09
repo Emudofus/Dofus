@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class CloseNotification extends Object
-   {
-      
-      public function CloseNotification() {
-         super();
-      }
-   }
-}
+    public class CloseNotification 
+    {
+
+
+    }
+}//package d2hooks
+

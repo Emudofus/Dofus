@@ -1,17 +1,21 @@
-package d2api
+﻿package d2api
 {
-   public class ExchangeApi extends Object
-   {
-      
-      public function ExchangeApi() {
-         super();
-      }
-      
-      public function destroy() : void {
-      }
-      
-      public function getExchangeError(typeError:int) : String {
-         return null;
-      }
-   }
-}
+    public class ExchangeApi 
+    {
+
+
+        [Trusted]
+        public function destroy():void
+        {
+        }
+
+        [Untrusted]
+        public function getExchangeError(typeError:int):String
+        {
+            return (null);
+        }
+
+
+    }
+}//package d2api
+

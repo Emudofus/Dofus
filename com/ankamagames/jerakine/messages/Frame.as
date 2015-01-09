@@ -1,12 +1,13 @@
-package com.ankamagames.jerakine.messages
+﻿package com.ankamagames.jerakine.messages
 {
-   import com.ankamagames.jerakine.utils.misc.Prioritizable;
-   
-   public interface Frame extends MessageHandler, Prioritizable
-   {
-      
-      function pushed() : Boolean;
-      
-      function pulled() : Boolean;
-   }
-}
+    import com.ankamagames.jerakine.utils.misc.Prioritizable;
+
+    public interface Frame extends MessageHandler, Prioritizable 
+    {
+
+        function pushed():Boolean;
+        function pulled():Boolean;
+
+    }
+}//package com.ankamagames.jerakine.messages
+

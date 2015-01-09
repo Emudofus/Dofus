@@ -1,102 +1,104 @@
-package com.hurlant.crypto.hash
+﻿package com.hurlant.crypto.hash
 {
-   import flash.utils.ByteArray;
-   
-   public class MAC extends Object implements IHMAC
-   {
-      
-      public function MAC(hash:IHash, bits:uint = 0) {
-         var pad_size:* = 0;
-         var x:* = 0;
-         super();
-         this.hash = hash;
-         this.bits = bits;
-         this.innerHash = new ByteArray();
-         this.outerHash = new ByteArray();
-         this.innerKey = new ByteArray();
-         this.outerKey = new ByteArray();
-         if(hash != null)
-         {
-            pad_size = hash.getPadSize();
-            this.pad_1 = new ByteArray();
-            this.pad_2 = new ByteArray();
-            x = 0;
-            while(x < pad_size)
+    import flash.utils.ByteArray;
+
+    public class MAC implements IHMAC 
+    {
+
+        private var hash:IHash;
+        private var bits:uint;
+        private var pad_1:ByteArray;
+        private var pad_2:ByteArray;
+        private var innerHash:ByteArray;
+        private var outerHash:ByteArray;
+        private var outerKey:ByteArray;
+        private var innerKey:ByteArray;
+
+        public function MAC(hash:IHash, bits:uint=0)
+        {
+            var pad_size:int;
+            var x:int;
+            super();
+            this.hash = hash;
+            this.bits = bits;
+            this.innerHash = new ByteArray();
+            this.outerHash = new ByteArray();
+            this.innerKey = new ByteArray();
+            this.outerKey = new ByteArray();
+            if (hash != null)
             {
-               this.pad_1.writeByte(54);
-               this.pad_2.writeByte(92);
-               x++;
-            }
-         }
-      }
-      
-      private var hash:IHash;
-      
-      private var bits:uint;
-      
-      private var pad_1:ByteArray;
-      
-      private var pad_2:ByteArray;
-      
-      private var innerHash:ByteArray;
-      
-      private var outerHash:ByteArray;
-      
-      private var outerKey:ByteArray;
-      
-      private var innerKey:ByteArray;
-      
-      public function setPadSize(pad_size:int) : void {
-      }
-      
-      public function getHashSize() : uint {
-         if(this.bits != 0)
-         {
-            return this.bits / 8;
-         }
-         return this.hash.getHashSize();
-      }
-      
-      public function compute(key:ByteArray, data:ByteArray) : ByteArray {
-         var pad_size:* = 0;
-         var x:* = 0;
-         if(this.pad_1 == null)
-         {
-            pad_size = this.hash.getPadSize();
-            this.pad_1 = new ByteArray();
-            this.pad_2 = new ByteArray();
-            x = 0;
-            while(x < pad_size)
+                pad_size = hash.getPadSize();
+                this.pad_1 = new ByteArray();
+                this.pad_2 = new ByteArray();
+                x = 0;
+                while (x < pad_size)
+                {
+                    this.pad_1.writeByte(54);
+                    this.pad_2.writeByte(92);
+                    x++;
+                };
+            };
+        }
+
+        public function setPadSize(pad_size:int):void
+        {
+        }
+
+        public function getHashSize():uint
+        {
+            if (this.bits != 0)
             {
-               this.pad_1.writeByte(54);
-               this.pad_2.writeByte(92);
-               x++;
-            }
-         }
-         this.innerKey.length = 0;
-         this.outerKey.length = 0;
-         this.innerKey.writeBytes(key);
-         this.innerKey.writeBytes(this.pad_1);
-         this.innerKey.writeBytes(data);
-         this.innerHash = this.hash.hash(this.innerKey);
-         this.outerKey.writeBytes(key);
-         this.outerKey.writeBytes(this.pad_2);
-         this.outerKey.writeBytes(this.innerHash);
-         this.outerHash = this.hash.hash(this.outerKey);
-         if((this.bits > 0) && (this.bits < 8 * this.outerHash.length))
-         {
-            this.outerHash.length = this.bits / 8;
-         }
-         return this.outerHash;
-      }
-      
-      public function dispose() : void {
-         this.hash = null;
-         this.bits = 0;
-      }
-      
-      public function toString() : String {
-         return "mac-" + (this.bits > 0?this.bits + "-":"") + this.hash.toString();
-      }
-   }
-}
+                return ((this.bits / 8));
+            };
+            return (this.hash.getHashSize());
+        }
+
+        public function compute(key:ByteArray, data:ByteArray):ByteArray
+        {
+            var pad_size:int;
+            var x:int;
+            if (this.pad_1 == null)
+            {
+                pad_size = this.hash.getPadSize();
+                this.pad_1 = new ByteArray();
+                this.pad_2 = new ByteArray();
+                x = 0;
+                while (x < pad_size)
+                {
+                    this.pad_1.writeByte(54);
+                    this.pad_2.writeByte(92);
+                    x++;
+                };
+            };
+            this.innerKey.length = 0;
+            this.outerKey.length = 0;
+            this.innerKey.writeBytes(key);
+            this.innerKey.writeBytes(this.pad_1);
+            this.innerKey.writeBytes(data);
+            this.innerHash = this.hash.hash(this.innerKey);
+            this.outerKey.writeBytes(key);
+            this.outerKey.writeBytes(this.pad_2);
+            this.outerKey.writeBytes(this.innerHash);
+            this.outerHash = this.hash.hash(this.outerKey);
+            if ((((this.bits > 0)) && ((this.bits < (8 * this.outerHash.length)))))
+            {
+                this.outerHash.length = (this.bits / 8);
+            };
+            return (this.outerHash);
+        }
+
+        public function dispose():void
+        {
+            this.hash = null;
+            this.bits = 0;
+        }
+
+        public function toString():String
+        {
+            return ((("mac-" + (((this.bits > 0)) ? (this.bits + "-") : "")) + this.hash.toString()));
+        }
+
+
+    }
+}//package com.hurlant.crypto.hash
+

@@ -1,13 +1,15 @@
-package contextMenu
+﻿package contextMenu
 {
-   public class ContextMenuTitle extends Object
-   {
-      
-      public function ContextMenuTitle(label:String) {
-         super();
-         this.label = label;
-      }
-      
-      public var label:String;
-   }
-}
+    public class ContextMenuTitle 
+    {
+
+        public var label:String;
+
+        public function ContextMenuTitle(label:String)
+        {
+            this.label = label;
+        }
+
+    }
+}//package contextMenu
+

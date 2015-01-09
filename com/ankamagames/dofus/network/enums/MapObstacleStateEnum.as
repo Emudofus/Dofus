@@ -1,14 +1,13 @@
-package com.ankamagames.dofus.network.enums
+﻿package com.ankamagames.dofus.network.enums
 {
-   public class MapObstacleStateEnum extends Object
-   {
-      
-      public function MapObstacleStateEnum() {
-         super();
-      }
-      
-      public static const OBSTACLE_OPENED:uint = 1;
-      
-      public static const OBSTACLE_CLOSED:uint = 2;
-   }
-}
+    [Trusted]
+    public class MapObstacleStateEnum 
+    {
+
+        public static const OBSTACLE_OPENED:uint = 1;
+        public static const OBSTACLE_CLOSED:uint = 2;
+
+
+    }
+}//package com.ankamagames.dofus.network.enums
+

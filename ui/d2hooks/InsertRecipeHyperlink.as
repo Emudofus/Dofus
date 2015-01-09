@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class InsertRecipeHyperlink extends Object
-   {
-      
-      public function InsertRecipeHyperlink() {
-         super();
-      }
-   }
-}
+    public class InsertRecipeHyperlink 
+    {
+
+
+    }
+}//package d2hooks
+

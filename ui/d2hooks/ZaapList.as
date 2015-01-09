@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ZaapList extends Object
-   {
-      
-      public function ZaapList() {
-         super();
-      }
-   }
-}
+    public class ZaapList 
+    {
+
+
+    }
+}//package d2hooks
+

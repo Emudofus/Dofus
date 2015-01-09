@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GuildFightEnnemiesListUpdate extends Object
-   {
-      
-      public function GuildFightEnnemiesListUpdate() {
-         super();
-      }
-   }
-}
+    public class GuildFightEnnemiesListUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

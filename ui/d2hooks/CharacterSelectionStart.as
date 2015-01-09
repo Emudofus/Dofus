@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class CharacterSelectionStart extends Object
-   {
-      
-      public function CharacterSelectionStart() {
-         super();
-      }
-   }
-}
+    public class CharacterSelectionStart 
+    {
+
+
+    }
+}//package d2hooks
+

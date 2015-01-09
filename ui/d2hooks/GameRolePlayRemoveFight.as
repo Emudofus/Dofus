@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GameRolePlayRemoveFight extends Object
-   {
-      
-      public function GameRolePlayRemoveFight() {
-         super();
-      }
-   }
-}
+    public class GameRolePlayRemoveFight 
+    {
+
+
+    }
+}//package d2hooks
+

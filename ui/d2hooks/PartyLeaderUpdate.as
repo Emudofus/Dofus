@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class PartyLeaderUpdate extends Object
-   {
-      
-      public function PartyLeaderUpdate() {
-         super();
-      }
-   }
-}
+    public class PartyLeaderUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package contextMenu
+﻿package contextMenu
 {
-   public class ContextMenuSeparator extends Object
-   {
-      
-      public function ContextMenuSeparator() {
-         super();
-      }
-   }
-}
+    public class ContextMenuSeparator 
+    {
+
+
+    }
+}//package contextMenu
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class KamasUpdate extends Object
-   {
-      
-      public function KamasUpdate() {
-         super();
-      }
-   }
-}
+    public class KamasUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

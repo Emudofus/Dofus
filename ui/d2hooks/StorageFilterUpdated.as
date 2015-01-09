@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class StorageFilterUpdated extends Object
-   {
-      
-      public function StorageFilterUpdated() {
-         super();
-      }
-   }
-}
+    public class StorageFilterUpdated 
+    {
+
+
+    }
+}//package d2hooks
+

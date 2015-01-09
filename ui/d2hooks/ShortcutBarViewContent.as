@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ShortcutBarViewContent extends Object
-   {
-      
-      public function ShortcutBarViewContent() {
-         super();
-      }
-   }
-}
+    public class ShortcutBarViewContent 
+    {
+
+
+    }
+}//package d2hooks
+

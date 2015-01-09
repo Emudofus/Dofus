@@ -1,457 +1,465 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
-   import com.ankamagames.jerakine.logger.Logger;
-   import com.ankamagames.dofus.datacenter.items.Item;
-   import com.ankamagames.dofus.datacenter.items.ItemType;
-   import com.ankamagames.dofus.datacenter.jobs.Job;
-   import com.ankamagames.dofus.datacenter.quest.Quest;
-   import com.ankamagames.dofus.datacenter.quest.Achievement;
-   import com.ankamagames.dofus.datacenter.appearance.Title;
-   import com.ankamagames.dofus.datacenter.appearance.Ornament;
-   import com.ankamagames.dofus.datacenter.spells.Spell;
-   import com.ankamagames.dofus.datacenter.spells.SpellState;
-   import com.ankamagames.dofus.datacenter.breeds.Breed;
-   import com.ankamagames.dofus.datacenter.world.Area;
-   import com.ankamagames.dofus.datacenter.world.SubArea;
-   import com.ankamagames.dofus.datacenter.world.MapPosition;
-   import com.ankamagames.dofus.datacenter.communication.Emoticon;
-   import com.ankamagames.dofus.datacenter.monsters.Monster;
-   import com.ankamagames.dofus.datacenter.monsters.MonsterRace;
-   import com.ankamagames.dofus.datacenter.monsters.MonsterSuperRace;
-   import com.ankamagames.dofus.datacenter.challenges.Challenge;
-   import com.ankamagames.dofus.datacenter.alignments.AlignmentSide;
-   import com.ankamagames.dofus.datacenter.world.Dungeon;
-   import com.ankamagames.dofus.datacenter.monsters.Companion;
-   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
-   import com.ankamagames.dofus.logic.common.managers.HyperlinkItemManager;
-   import com.ankamagames.jerakine.utils.misc.StringUtils;
-   import com.ankamagames.dofus.logic.common.managers.HyperlinkShowQuestManager;
-   import com.ankamagames.dofus.logic.common.managers.HyperlinkShowAchievementManager;
-   import com.ankamagames.dofus.logic.common.managers.HyperlinkShowTitleManager;
-   import com.ankamagames.dofus.logic.common.managers.HyperlinkShowOrnamentManager;
-   import com.ankamagames.jerakine.data.I18n;
-   import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
-   import com.ankamagames.jerakine.logger.Log;
-   import flash.utils.getQualifiedClassName;
-   
-   public class ParamsDecoder extends Object
-   {
-      
-      public function ParamsDecoder() {
-         super();
-      }
-      
-      protected static const _log:Logger;
-      
-      public static function applyParams(txt:String, params:Array, replace:String = "%") : String {
-         var c:String = null;
-         var lectureType:Boolean = false;
-         var lectureId:Boolean = false;
-         var type:String = "";
-         var id:String = "";
-         var s:String = "";
-         var i:uint = 0;
-         while(i < txt.length)
-         {
-            c = txt.charAt(i);
-            if(c == "$")
+    import com.ankamagames.jerakine.logger.Logger;
+    import com.ankamagames.jerakine.logger.Log;
+    import flash.utils.getQualifiedClassName;
+    import com.ankamagames.dofus.datacenter.items.Item;
+    import com.ankamagames.dofus.datacenter.items.ItemType;
+    import com.ankamagames.dofus.datacenter.jobs.Job;
+    import com.ankamagames.dofus.datacenter.quest.Quest;
+    import com.ankamagames.dofus.datacenter.quest.Achievement;
+    import com.ankamagames.dofus.datacenter.appearance.Title;
+    import com.ankamagames.dofus.datacenter.appearance.Ornament;
+    import com.ankamagames.dofus.datacenter.spells.Spell;
+    import com.ankamagames.dofus.datacenter.spells.SpellState;
+    import com.ankamagames.dofus.datacenter.breeds.Breed;
+    import com.ankamagames.dofus.datacenter.world.Area;
+    import com.ankamagames.dofus.datacenter.world.SubArea;
+    import com.ankamagames.dofus.datacenter.world.MapPosition;
+    import com.ankamagames.dofus.datacenter.communication.Emoticon;
+    import com.ankamagames.dofus.datacenter.monsters.Monster;
+    import com.ankamagames.dofus.datacenter.monsters.MonsterRace;
+    import com.ankamagames.dofus.datacenter.monsters.MonsterSuperRace;
+    import com.ankamagames.dofus.datacenter.challenges.Challenge;
+    import com.ankamagames.dofus.datacenter.alignments.AlignmentSide;
+    import com.ankamagames.dofus.datacenter.world.Dungeon;
+    import com.ankamagames.dofus.datacenter.monsters.Companion;
+    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+    import com.ankamagames.dofus.logic.common.managers.HyperlinkItemManager;
+    import com.ankamagames.jerakine.utils.misc.StringUtils;
+    import com.ankamagames.dofus.logic.common.managers.HyperlinkShowQuestManager;
+    import com.ankamagames.dofus.logic.common.managers.HyperlinkShowAchievementManager;
+    import com.ankamagames.dofus.logic.common.managers.HyperlinkShowTitleManager;
+    import com.ankamagames.dofus.logic.common.managers.HyperlinkShowOrnamentManager;
+    import com.ankamagames.jerakine.data.I18n;
+    import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+
+    public class ParamsDecoder 
+    {
+
+        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ParamsDecoder));
+
+
+        public static function applyParams(txt:String, params:Array, replace:String="%"):String
+        {
+            var c:String;
+            var lectureType:Boolean;
+            var lectureId:Boolean;
+            var type:String = "";
+            var id:String = "";
+            var s:String = "";
+            var i:uint;
+            while (i < txt.length)
             {
-               lectureType = true;
-            }
-            else if(c == replace)
+                c = txt.charAt(i);
+                if (c == "$")
+                {
+                    lectureType = true;
+                }
+                else
+                {
+                    if (c == replace)
+                    {
+                        if (((((i + 1) < txt.length)) && ((txt.charAt((i + 1)) == replace))))
+                        {
+                            lectureId = false;
+                            lectureType = false;
+                            i++;
+                        }
+                        else
+                        {
+                            lectureType = false;
+                            lectureId = true;
+                        };
+                    };
+                };
+                if (lectureType)
+                {
+                    type = (type + c);
+                }
+                else
+                {
+                    if (lectureId)
+                    {
+                        if (c == replace)
+                        {
+                            if (id.length == 0)
+                            {
+                                id = (id + c);
+                            }
+                            else
+                            {
+                                s = (s + processReplace(type, id, params));
+                                type = "";
+                                id = ("" + c);
+                            };
+                        }
+                        else
+                        {
+                            if ((((c >= "0")) && ((c <= "9"))))
+                            {
+                                id = (id + c);
+                                if ((i + 1) == txt.length)
+                                {
+                                    lectureId = false;
+                                    s = (s + processReplace(type, id, params));
+                                    type = "";
+                                    id = "";
+                                };
+                            }
+                            else
+                            {
+                                lectureId = false;
+                                s = (s + processReplace(type, id, params));
+                                type = "";
+                                id = "";
+                                s = (s + c);
+                            };
+                        };
+                    }
+                    else
+                    {
+                        if (id != "")
+                        {
+                            s = (s + processReplace(type, id, params));
+                            type = "";
+                            id = "";
+                        };
+                        s = (s + c);
+                    };
+                };
+                i++;
+            };
+            return (s);
+        }
+
+        private static function processReplace(type:String, id:String, params:Array):String
+        {
+            var nid:int;
+            var _local_6:Item;
+            var _local_7:ItemType;
+            var _local_8:Job;
+            var _local_9:Quest;
+            var _local_10:Achievement;
+            var _local_11:Title;
+            var _local_12:Ornament;
+            var _local_13:Spell;
+            var _local_14:SpellState;
+            var _local_15:Breed;
+            var _local_16:Area;
+            var _local_17:SubArea;
+            var _local_18:MapPosition;
+            var _local_19:Emoticon;
+            var _local_20:Monster;
+            var _local_21:MonsterRace;
+            var _local_22:MonsterSuperRace;
+            var _local_23:Challenge;
+            var _local_24:AlignmentSide;
+            var _local_25:Array;
+            var _local_26:Dungeon;
+            var _local_27:Date;
+            var _local_28:uint;
+            var _local_29:Companion;
+            var itemw:ItemWrapper;
+            var newString:String = "";
+            nid = (int(Number(id.substr(1))) - 1);
+            if (type == "")
             {
-               if((i + 1 < txt.length) && (txt.charAt(i + 1) == replace))
-               {
-                  lectureId = false;
-                  lectureType = false;
-                  i++;
-               }
-               else
-               {
-                  lectureType = false;
-                  lectureId = true;
-               }
-            }
-            
-            if(lectureType)
-            {
-               type = type + c;
-            }
-            else if(lectureId)
-            {
-               if(c == replace)
-               {
-                  if(id.length == 0)
-                  {
-                     id = id + c;
-                  }
-                  else
-                  {
-                     s = s + processReplace(type,id,params);
-                     type = "";
-                     id = "" + c;
-                  }
-               }
-               else if((c >= "0") && (c <= "9"))
-               {
-                  id = id + c;
-                  if(i + 1 == txt.length)
-                  {
-                     lectureId = false;
-                     s = s + processReplace(type,id,params);
-                     type = "";
-                     id = "";
-                  }
-               }
-               else
-               {
-                  lectureId = false;
-                  s = s + processReplace(type,id,params);
-                  type = "";
-                  id = "";
-                  s = s + c;
-               }
-               
+                newString = params[nid];
             }
             else
             {
-               if(id != "")
-               {
-                  s = s + processReplace(type,id,params);
-                  type = "";
-                  id = "";
-               }
-               s = s + c;
-            }
-            
-            i++;
-         }
-         return s;
-      }
-      
-      private static function processReplace(type:String, id:String, params:Array) : String {
-         var nid:* = 0;
-         var item:Item = null;
-         var itemType:ItemType = null;
-         var job:Job = null;
-         var quest:Quest = null;
-         var achievement:Achievement = null;
-         var title:Title = null;
-         var ornament:Ornament = null;
-         var spell:Spell = null;
-         var spellState:SpellState = null;
-         var breed:Breed = null;
-         var area:Area = null;
-         var subArea:SubArea = null;
-         var map:MapPosition = null;
-         var emote:Emoticon = null;
-         var monster:Monster = null;
-         var monsterRace:MonsterRace = null;
-         var monsterSuperRace:MonsterSuperRace = null;
-         var challenge:Challenge = null;
-         var alignmentSide:AlignmentSide = null;
-         var stats:Array = null;
-         var dungeon:Dungeon = null;
-         var date:Date = null;
-         var timeToDisplay:uint = 0;
-         var companion:Companion = null;
-         var itemw:ItemWrapper = null;
-         var newString:String = "";
-         nid = int(Number(id.substr(1))) - 1;
-         if(type == "")
-         {
-            newString = params[nid];
-         }
-         else
-         {
-            switch(type)
-            {
-               case "$item":
-                  item = Item.getItemById(params[nid]);
-                  if(item)
-                  {
-                     itemw = ItemWrapper.create(0,0,params[nid],0,null,false);
-                     newString = HyperlinkItemManager.newChatItem(itemw);
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$itemType":
-                  itemType = ItemType.getItemTypeById(params[nid]);
-                  if(itemType)
-                  {
-                     newString = itemType.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$quantity":
-                  newString = StringUtils.formateIntToString(int(params[nid]));
-                  break;
-               case "$job":
-                  job = Job.getJobById(params[nid]);
-                  if(job)
-                  {
-                     newString = job.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$quest":
-                  quest = Quest.getQuestById(params[nid]);
-                  if(quest)
-                  {
-                     newString = HyperlinkShowQuestManager.addQuest(quest.id);
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$achievement":
-                  achievement = Achievement.getAchievementById(params[nid]);
-                  if(achievement)
-                  {
-                     newString = HyperlinkShowAchievementManager.addAchievement(achievement.id);
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$title":
-                  title = Title.getTitleById(params[nid]);
-                  if(title)
-                  {
-                     newString = HyperlinkShowTitleManager.addTitle(title.id);
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$ornament":
-                  ornament = Ornament.getOrnamentById(params[nid]);
-                  if(ornament)
-                  {
-                     newString = HyperlinkShowOrnamentManager.addOrnament(ornament.id);
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$spell":
-                  spell = Spell.getSpellById(params[nid]);
-                  if(spell)
-                  {
-                     newString = spell.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$spellState":
-                  spellState = SpellState.getSpellStateById(params[nid]);
-                  if(spellState)
-                  {
-                     newString = spellState.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$breed":
-                  breed = Breed.getBreedById(params[nid]);
-                  if(breed)
-                  {
-                     newString = breed.shortName;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$area":
-                  area = Area.getAreaById(params[nid]);
-                  if(area)
-                  {
-                     newString = area.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$subarea":
-                  subArea = SubArea.getSubAreaById(params[nid]);
-                  if(subArea)
-                  {
-                     newString = "{subArea," + params[nid] + "}";
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$map":
-                  map = MapPosition.getMapPositionById(params[nid]);
-                  if(map)
-                  {
-                     if(map.name)
-                     {
-                        newString = map.name;
-                     }
-                     else
-                     {
-                        newString = "{map," + int(map.posX) + "," + int(map.posY) + "," + int(map.worldMap) + "}";
-                     }
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$emote":
-                  emote = Emoticon.getEmoticonById(params[nid]);
-                  if(emote)
-                  {
-                     newString = emote.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$monster":
-                  monster = Monster.getMonsterById(params[nid]);
-                  if(monster)
-                  {
-                     newString = monster.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$monsterRace":
-                  monsterRace = MonsterRace.getMonsterRaceById(params[nid]);
-                  if(monsterRace)
-                  {
-                     newString = monsterRace.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$monsterSuperRace":
-                  monsterSuperRace = MonsterSuperRace.getMonsterSuperRaceById(params[nid]);
-                  if(monsterSuperRace)
-                  {
-                     newString = monsterSuperRace.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$challenge":
-                  challenge = Challenge.getChallengeById(params[nid]);
-                  if(challenge)
-                  {
-                     newString = challenge.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$alignment":
-                  alignmentSide = AlignmentSide.getAlignmentSideById(params[nid]);
-                  if(alignmentSide)
-                  {
-                     newString = alignmentSide.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$stat":
-                  stats = I18n.getUiText("ui.item.characteristics").split(",");
-                  if(stats[params[nid]])
-                  {
-                     newString = stats[params[nid]];
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$dungeon":
-                  dungeon = Dungeon.getDungeonById(params[nid]);
-                  if(dungeon)
-                  {
-                     newString = dungeon.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               case "$time":
-                  date = new Date();
-                  timeToDisplay = params[nid] * 1000 - date.time;
-                  newString = TimeManager.getInstance().getDuration(timeToDisplay);
-                  break;
-               case "$companion":
-               case "$sidekick":
-                  companion = Companion.getCompanionById(params[nid]);
-                  if(companion)
-                  {
-                     newString = companion.name;
-                  }
-                  else
-                  {
-                     _log.error(type + " " + params[nid] + " introuvable");
-                     newString = "";
-                  }
-                  break;
-               default:
-                  trace("Error ! The parameter type (" + type + ") is unknown.");
-            }
-         }
-         return newString;
-      }
-   }
-}
+                switch (type)
+                {
+                    case "$item":
+                        _local_6 = Item.getItemById(params[nid]);
+                        if (_local_6)
+                        {
+                            itemw = ItemWrapper.create(0, 0, params[nid], 0, null, false);
+                            newString = HyperlinkItemManager.newChatItem(itemw);
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$itemType":
+                        _local_7 = ItemType.getItemTypeById(params[nid]);
+                        if (_local_7)
+                        {
+                            newString = _local_7.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$quantity":
+                        newString = StringUtils.formateIntToString(int(params[nid]));
+                        break;
+                    case "$job":
+                        _local_8 = Job.getJobById(params[nid]);
+                        if (_local_8)
+                        {
+                            newString = _local_8.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$quest":
+                        _local_9 = Quest.getQuestById(params[nid]);
+                        if (_local_9)
+                        {
+                            newString = HyperlinkShowQuestManager.addQuest(_local_9.id);
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$achievement":
+                        _local_10 = Achievement.getAchievementById(params[nid]);
+                        if (_local_10)
+                        {
+                            newString = HyperlinkShowAchievementManager.addAchievement(_local_10.id);
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$title":
+                        _local_11 = Title.getTitleById(params[nid]);
+                        if (_local_11)
+                        {
+                            newString = HyperlinkShowTitleManager.addTitle(_local_11.id);
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$ornament":
+                        _local_12 = Ornament.getOrnamentById(params[nid]);
+                        if (_local_12)
+                        {
+                            newString = HyperlinkShowOrnamentManager.addOrnament(_local_12.id);
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$spell":
+                        _local_13 = Spell.getSpellById(params[nid]);
+                        if (_local_13)
+                        {
+                            newString = _local_13.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$spellState":
+                        _local_14 = SpellState.getSpellStateById(params[nid]);
+                        if (_local_14)
+                        {
+                            newString = _local_14.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$breed":
+                        _local_15 = Breed.getBreedById(params[nid]);
+                        if (_local_15)
+                        {
+                            newString = _local_15.shortName;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$area":
+                        _local_16 = Area.getAreaById(params[nid]);
+                        if (_local_16)
+                        {
+                            newString = _local_16.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$subarea":
+                        _local_17 = SubArea.getSubAreaById(params[nid]);
+                        if (_local_17)
+                        {
+                            newString = (("{subArea," + params[nid]) + "}");
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$map":
+                        _local_18 = MapPosition.getMapPositionById(params[nid]);
+                        if (_local_18)
+                        {
+                            if (_local_18.name)
+                            {
+                                newString = _local_18.name;
+                            }
+                            else
+                            {
+                                newString = (((((("{map," + int(_local_18.posX)) + ",") + int(_local_18.posY)) + ",") + int(_local_18.worldMap)) + "}");
+                            };
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$emote":
+                        _local_19 = Emoticon.getEmoticonById(params[nid]);
+                        if (_local_19)
+                        {
+                            newString = _local_19.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$monster":
+                        _local_20 = Monster.getMonsterById(params[nid]);
+                        if (_local_20)
+                        {
+                            newString = _local_20.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$monsterRace":
+                        _local_21 = MonsterRace.getMonsterRaceById(params[nid]);
+                        if (_local_21)
+                        {
+                            newString = _local_21.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$monsterSuperRace":
+                        _local_22 = MonsterSuperRace.getMonsterSuperRaceById(params[nid]);
+                        if (_local_22)
+                        {
+                            newString = _local_22.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$challenge":
+                        _local_23 = Challenge.getChallengeById(params[nid]);
+                        if (_local_23)
+                        {
+                            newString = _local_23.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$alignment":
+                        _local_24 = AlignmentSide.getAlignmentSideById(params[nid]);
+                        if (_local_24)
+                        {
+                            newString = _local_24.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$stat":
+                        _local_25 = I18n.getUiText("ui.item.characteristics").split(",");
+                        if (_local_25[params[nid]])
+                        {
+                            newString = _local_25[params[nid]];
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$dungeon":
+                        _local_26 = Dungeon.getDungeonById(params[nid]);
+                        if (_local_26)
+                        {
+                            newString = _local_26.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$time":
+                        _local_27 = new Date();
+                        _local_28 = ((params[nid] * 1000) - _local_27.time);
+                        newString = TimeManager.getInstance().getDuration(_local_28);
+                        break;
+                    case "$companion":
+                    case "$sidekick":
+                        _local_29 = Companion.getCompanionById(params[nid]);
+                        if (_local_29)
+                        {
+                            newString = _local_29.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    default:
+                        trace((("Error ! The parameter type (" + type) + ") is unknown."));
+                };
+            };
+            return (newString);
+        }
+
+
+    }
+}//package com.ankamagames.dofus.misc.utils
+

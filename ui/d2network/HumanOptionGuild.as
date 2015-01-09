@@ -1,14 +1,15 @@
-package d2network
+﻿package d2network
 {
-   public class HumanOptionGuild extends HumanOption
-   {
-      
-      public function HumanOptionGuild() {
-         super();
-      }
-      
-      public function get guildInformations() : GuildInformations {
-         return new GuildInformations();
-      }
-   }
-}
+    public class HumanOptionGuild extends HumanOption 
+    {
+
+
+        public function get guildInformations():GuildInformations
+        {
+            return (new GuildInformations());
+        }
+
+
+    }
+}//package d2network
+

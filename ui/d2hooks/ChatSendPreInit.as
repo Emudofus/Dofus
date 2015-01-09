@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ChatSendPreInit extends Object
-   {
-      
-      public function ChatSendPreInit() {
-         super();
-      }
-   }
-}
+    public class ChatSendPreInit 
+    {
+
+
+    }
+}//package d2hooks
+

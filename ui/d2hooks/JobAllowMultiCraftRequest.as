@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class JobAllowMultiCraftRequest extends Object
-   {
-      
-      public function JobAllowMultiCraftRequest() {
-         super();
-      }
-   }
-}
+    public class JobAllowMultiCraftRequest 
+    {
+
+
+    }
+}//package d2hooks
+

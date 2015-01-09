@@ -1,20 +1,21 @@
-package com.ankamagames.dofus.logic.game.common.actions.party
+﻿package com.ankamagames.dofus.logic.game.common.actions.party
 {
-   import com.ankamagames.jerakine.handlers.messages.Action;
-   
-   public class PartyRefuseInvitationAction extends Object implements Action
-   {
-      
-      public function PartyRefuseInvitationAction() {
-         super();
-      }
-      
-      public static function create(partyId:int) : PartyRefuseInvitationAction {
-         var a:PartyRefuseInvitationAction = new PartyRefuseInvitationAction();
-         a.partyId = partyId;
-         return a;
-      }
-      
-      public var partyId:int;
-   }
-}
+    import com.ankamagames.jerakine.handlers.messages.Action;
+
+    public class PartyRefuseInvitationAction implements Action 
+    {
+
+        public var partyId:int;
+
+
+        public static function create(partyId:int):PartyRefuseInvitationAction
+        {
+            var a:PartyRefuseInvitationAction = new (PartyRefuseInvitationAction)();
+            a.partyId = partyId;
+            return (a);
+        }
+
+
+    }
+}//package com.ankamagames.dofus.logic.game.common.actions.party
+

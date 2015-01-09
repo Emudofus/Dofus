@@ -1,6 +1,8 @@
-package com.ankamagames.jerakine.interfaces
+﻿package com.ankamagames.jerakine.interfaces
 {
-   public interface INoBoxing
-   {
-   }
-}
+    public interface INoBoxing 
+    {
+
+    }
+}//package com.ankamagames.jerakine.interfaces
+

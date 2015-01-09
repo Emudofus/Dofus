@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class KeyboardShortcut extends Object
-   {
-      
-      public function KeyboardShortcut() {
-         super();
-      }
-   }
-}
+    public class KeyboardShortcut 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,26 +1,30 @@
-package d2network
+﻿package d2network
 {
-   public class ActorExtendedAlignmentInformations extends ActorAlignmentInformations
-   {
-      
-      public function ActorExtendedAlignmentInformations() {
-         super();
-      }
-      
-      public function get honor() : uint {
-         return new uint();
-      }
-      
-      public function get honorGradeFloor() : uint {
-         return new uint();
-      }
-      
-      public function get honorNextGradeFloor() : uint {
-         return new uint();
-      }
-      
-      public function get aggressable() : uint {
-         return new uint();
-      }
-   }
-}
+    public class ActorExtendedAlignmentInformations extends ActorAlignmentInformations 
+    {
+
+
+        public function get honor():uint
+        {
+            return (new uint());
+        }
+
+        public function get honorGradeFloor():uint
+        {
+            return (new uint());
+        }
+
+        public function get honorNextGradeFloor():uint
+        {
+            return (new uint());
+        }
+
+        public function get aggressable():uint
+        {
+            return (new uint());
+        }
+
+
+    }
+}//package d2network
+

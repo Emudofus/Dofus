@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class NonSubscriberPopup extends Object
-   {
-      
-      public function NonSubscriberPopup() {
-         super();
-      }
-   }
-}
+    public class NonSubscriberPopup 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,83 +1,75 @@
-package com.ankamagames.dofus.network.types.game.paddock
+﻿package com.ankamagames.dofus.network.types.game.paddock
 {
-   import com.ankamagames.jerakine.network.INetworkType;
-   import flash.utils.IDataOutput;
-   import flash.utils.IDataInput;
-   
-   public class PaddockInformations extends Object implements INetworkType
-   {
-      
-      public function PaddockInformations() {
-         super();
-      }
-      
-      public static const protocolId:uint = 132;
-      
-      public var maxOutdoorMount:uint = 0;
-      
-      public var maxItems:uint = 0;
-      
-      public function getTypeId() : uint {
-         return 132;
-      }
-      
-      public function initPaddockInformations(maxOutdoorMount:uint = 0, maxItems:uint = 0) : PaddockInformations {
-         this.maxOutdoorMount = maxOutdoorMount;
-         this.maxItems = maxItems;
-         return this;
-      }
-      
-      public function reset() : void {
-         this.maxOutdoorMount = 0;
-         this.maxItems = 0;
-      }
-      
-      public function serialize(output:IDataOutput) : void {
-         this.serializeAs_PaddockInformations(output);
-      }
-      
-      public function serializeAs_PaddockInformations(output:IDataOutput) : void {
-         if(this.maxOutdoorMount < 0)
-         {
-            throw new Error("Forbidden value (" + this.maxOutdoorMount + ") on element maxOutdoorMount.");
-         }
-         else
-         {
-            output.writeShort(this.maxOutdoorMount);
-            if(this.maxItems < 0)
+    import com.ankamagames.jerakine.network.INetworkType;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
+
+    public class PaddockInformations implements INetworkType 
+    {
+
+        public static const protocolId:uint = 132;
+
+        public var maxOutdoorMount:uint = 0;
+        public var maxItems:uint = 0;
+
+
+        public function getTypeId():uint
+        {
+            return (132);
+        }
+
+        public function initPaddockInformations(maxOutdoorMount:uint=0, maxItems:uint=0):PaddockInformations
+        {
+            this.maxOutdoorMount = maxOutdoorMount;
+            this.maxItems = maxItems;
+            return (this);
+        }
+
+        public function reset():void
+        {
+            this.maxOutdoorMount = 0;
+            this.maxItems = 0;
+        }
+
+        public function serialize(output:ICustomDataOutput):void
+        {
+            this.serializeAs_PaddockInformations(output);
+        }
+
+        public function serializeAs_PaddockInformations(output:ICustomDataOutput):void
+        {
+            if (this.maxOutdoorMount < 0)
             {
-               throw new Error("Forbidden value (" + this.maxItems + ") on element maxItems.");
-            }
-            else
+                throw (new Error((("Forbidden value (" + this.maxOutdoorMount) + ") on element maxOutdoorMount.")));
+            };
+            output.writeVarShort(this.maxOutdoorMount);
+            if (this.maxItems < 0)
             {
-               output.writeShort(this.maxItems);
-               return;
-            }
-         }
-      }
-      
-      public function deserialize(input:IDataInput) : void {
-         this.deserializeAs_PaddockInformations(input);
-      }
-      
-      public function deserializeAs_PaddockInformations(input:IDataInput) : void {
-         this.maxOutdoorMount = input.readShort();
-         if(this.maxOutdoorMount < 0)
-         {
-            throw new Error("Forbidden value (" + this.maxOutdoorMount + ") on element of PaddockInformations.maxOutdoorMount.");
-         }
-         else
-         {
-            this.maxItems = input.readShort();
-            if(this.maxItems < 0)
+                throw (new Error((("Forbidden value (" + this.maxItems) + ") on element maxItems.")));
+            };
+            output.writeVarShort(this.maxItems);
+        }
+
+        public function deserialize(input:ICustomDataInput):void
+        {
+            this.deserializeAs_PaddockInformations(input);
+        }
+
+        public function deserializeAs_PaddockInformations(input:ICustomDataInput):void
+        {
+            this.maxOutdoorMount = input.readVarUhShort();
+            if (this.maxOutdoorMount < 0)
             {
-               throw new Error("Forbidden value (" + this.maxItems + ") on element of PaddockInformations.maxItems.");
-            }
-            else
+                throw (new Error((("Forbidden value (" + this.maxOutdoorMount) + ") on element of PaddockInformations.maxOutdoorMount.")));
+            };
+            this.maxItems = input.readVarUhShort();
+            if (this.maxItems < 0)
             {
-               return;
-            }
-         }
-      }
-   }
-}
+                throw (new Error((("Forbidden value (" + this.maxItems) + ") on element of PaddockInformations.maxItems.")));
+            };
+        }
+
+
+    }
+}//package com.ankamagames.dofus.network.types.game.paddock
+

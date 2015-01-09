@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class PonyDialogCreation extends Object
-   {
-      
-      public function PonyDialogCreation() {
-         super();
-      }
-   }
-}
+    public class PonyDialogCreation 
+    {
+
+
+    }
+}//package d2hooks
+

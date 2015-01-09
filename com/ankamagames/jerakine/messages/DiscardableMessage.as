@@ -1,6 +1,8 @@
-package com.ankamagames.jerakine.messages
+﻿package com.ankamagames.jerakine.messages
 {
-   public interface DiscardableMessage extends Message
-   {
-   }
-}
+    public interface DiscardableMessage extends Message 
+    {
+
+    }
+}//package com.ankamagames.jerakine.messages
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OpenCartographyPopup extends Object
-   {
-      
-      public function OpenCartographyPopup() {
-         super();
-      }
-   }
-}
+    public class OpenCartographyPopup 
+    {
+
+
+    }
+}//package d2hooks
+

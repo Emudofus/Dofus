@@ -1,12 +1,11 @@
-package com.ankamagames.dofus.types.data
+﻿package com.ankamagames.dofus.types.data
 {
-   public class FpsLogWrapper extends Object
-   {
-      
-      public function FpsLogWrapper() {
-         super();
-      }
-      
-      public var fps:Number;
-   }
-}
+    public class FpsLogWrapper 
+    {
+
+        public var fps:Number;
+
+
+    }
+}//package com.ankamagames.dofus.types.data
+

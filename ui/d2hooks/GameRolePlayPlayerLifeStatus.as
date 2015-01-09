@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GameRolePlayPlayerLifeStatus extends Object
-   {
-      
-      public function GameRolePlayPlayerLifeStatus() {
-         super();
-      }
-   }
-}
+    public class GameRolePlayPlayerLifeStatus 
+    {
+
+
+    }
+}//package d2hooks
+

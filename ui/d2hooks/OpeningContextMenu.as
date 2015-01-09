@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OpeningContextMenu extends Object
-   {
-      
-      public function OpeningContextMenu() {
-         super();
-      }
-   }
-}
+    public class OpeningContextMenu 
+    {
+
+
+    }
+}//package d2hooks
+

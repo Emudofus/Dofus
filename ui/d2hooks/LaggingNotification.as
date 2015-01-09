@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class LaggingNotification extends Object
-   {
-      
-      public function LaggingNotification() {
-         super();
-      }
-   }
-}
+    public class LaggingNotification 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ModuleInstallationError extends Object
-   {
-      
-      public function ModuleInstallationError() {
-         super();
-      }
-   }
-}
+    public class ModuleInstallationError 
+    {
+
+
+    }
+}//package d2hooks
+

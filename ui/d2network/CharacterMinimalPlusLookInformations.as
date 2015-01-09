@@ -1,14 +1,15 @@
-package d2network
+﻿package d2network
 {
-   public class CharacterMinimalPlusLookInformations extends CharacterMinimalInformations
-   {
-      
-      public function CharacterMinimalPlusLookInformations() {
-         super();
-      }
-      
-      public function get entityLook() : EntityLook {
-         return new EntityLook();
-      }
-   }
-}
+    public class CharacterMinimalPlusLookInformations extends CharacterMinimalInformations 
+    {
+
+
+        public function get entityLook():EntityLook
+        {
+            return (new EntityLook());
+        }
+
+
+    }
+}//package d2network
+

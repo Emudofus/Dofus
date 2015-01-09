@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class SpectatorWantLeave extends Object
-   {
-      
-      public function SpectatorWantLeave() {
-         super();
-      }
-   }
-}
+    public class SpectatorWantLeave 
+    {
+
+
+    }
+}//package d2hooks
+

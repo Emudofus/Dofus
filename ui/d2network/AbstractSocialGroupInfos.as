@@ -1,10 +1,9 @@
-package d2network
+﻿package d2network
 {
-   public class AbstractSocialGroupInfos extends Object
-   {
-      
-      public function AbstractSocialGroupInfos() {
-         super();
-      }
-   }
-}
+    public class AbstractSocialGroupInfos 
+    {
+
+
+    }
+}//package d2network
+

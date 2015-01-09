@@ -1,118 +1,117 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
-   import flash.utils.Dictionary;
-   import com.ankamagames.jerakine.logger.Logger;
-   import com.ankamagames.berilia.types.listener.GenericListener;
-   import com.ankamagames.jerakine.logger.Log;
-   import flash.utils.getQualifiedClassName;
-   
-   public class GenericEventsManager extends Object
-   {
-      
-      public function GenericEventsManager() {
-         this._aEvent = new Array();
-         this._listenerRef = new Dictionary(true);
-         this._log = Log.getLogger(getQualifiedClassName(GenericEventsManager));
-         super();
-      }
-      
-      protected var _aEvent:Array;
-      
-      protected var _listenerRef:Dictionary;
-      
-      protected var _log:Logger;
-      
-      public function initialize() : void {
-         this._aEvent = new Array();
-      }
-      
-      public function registerEvent(e:GenericListener) : void {
-         this._listenerRef[e] = true;
-         if(this._aEvent[e.event] == null)
-         {
-            this._aEvent[e.event] = new Array();
-         }
-         this._aEvent[e.event].push(e);
-         (this._aEvent[e.event] as Array).sortOn("sortIndex",Array.NUMERIC | Array.DESCENDING);
-      }
-      
-      public function removeEventListener(ge:GenericListener) : void {
-         var i:String = null;
-         var j:Object = null;
-         for(i in this._aEvent)
-         {
-            for(j in this._aEvent[i])
+    import com.ankamagames.jerakine.logger.Logger;
+    import com.ankamagames.jerakine.logger.Log;
+    import flash.utils.getQualifiedClassName;
+    import com.ankamagames.berilia.types.listener.GenericListener;
+
+    public class GenericEventsManager 
+    {
+
+        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GenericEventsManager));
+
+        protected var _aEvent:Array;
+
+        public function GenericEventsManager()
+        {
+            this._aEvent = new Array();
+            super();
+        }
+
+        public function initialize():void
+        {
+            this._aEvent = new Array();
+        }
+
+        public function registerEvent(ge:GenericListener):void
+        {
+            if (this._aEvent[ge.event] == null)
             {
-               if(!((this._aEvent[i] == null) || (this._aEvent[i][j] == null)))
-               {
-                  if(this._aEvent[i][j] == ge)
-                  {
-                     delete this._aEvent[i][j];
-                     if(!this._aEvent[i].length)
-                     {
+                this._aEvent[ge.event] = new Array();
+            };
+            this._aEvent[ge.event].push(ge);
+            (this._aEvent[ge.event] as Array).sortOn("sortIndex", (Array.NUMERIC | Array.DESCENDING));
+        }
+
+        public function removeEventListener(ge:GenericListener):void
+        {
+            var i:String;
+            var j:int;
+            var genericListener:GenericListener;
+            for (i in this._aEvent)
+            {
+                if (!(this._aEvent[i]))
+                {
+                }
+                else
+                {
+                    j = 0;
+                    while (j < this._aEvent[i].length)
+                    {
+                        genericListener = this._aEvent[i][j];
+                        if (!(genericListener))
+                        {
+                        }
+                        else
+                        {
+                            if (genericListener == ge)
+                            {
+                                genericListener.destroy();
+                                (this._aEvent[i] as Array).splice(j, 1);
+                                j--;
+                            };
+                        };
+                        j++;
+                    };
+                    if (!(this._aEvent[i].length))
+                    {
                         this._aEvent[i] = null;
                         delete this._aEvent[i];
-                     }
-                  }
-               }
-            }
-         }
-      }
-      
-      public function removeEventListenerByName(name:String) : void {
-         var i:String = null;
-         var j:Object = null;
-         var l:GenericListener = null;
-         for(i in this._aEvent)
-         {
-            for(j in this._aEvent[i])
+                    };
+                };
+            };
+        }
+
+        public function removeAllEventListeners(sListener:*):void
+        {
+            var i:String;
+            var j:int;
+            var genericListener:GenericListener;
+            for (i in this._aEvent)
             {
-               if(!((this._aEvent[i] == null) || (this._aEvent[i][j] == null)))
-               {
-                  l = this._aEvent[i][j];
-                  if(l.listener == name)
-                  {
-                     delete this._aEvent[i][j];
-                     if(!this._aEvent[i].length)
-                     {
+                if (!(this._aEvent[i]))
+                {
+                }
+                else
+                {
+                    j = 0;
+                    while (j < this._aEvent[i].length)
+                    {
+                        genericListener = this._aEvent[i][j];
+                        if (!(genericListener))
+                        {
+                        }
+                        else
+                        {
+                            if (genericListener.listener == sListener)
+                            {
+                                genericListener.destroy();
+                                (this._aEvent[i] as Array).splice(j, 1);
+                                j--;
+                            };
+                        };
+                        j++;
+                    };
+                    if (!(this._aEvent[i].length))
+                    {
                         this._aEvent[i] = null;
                         delete this._aEvent[i];
-                     }
-                  }
-               }
-            }
-         }
-      }
-      
-      public function removeEvent(sListener:*) : void {
-         var e:GenericListener = null;
-         var deleteIndex:Array = null;
-         var i:* = undefined;
-         var j:* = undefined;
-         var index:* = undefined;
-         for(i in this._aEvent)
-         {
-            deleteIndex = null;
-            for(j in this._aEvent[i])
-            {
-               if(!((this._aEvent[i] == null) || (this._aEvent[i][j] == null)))
-               {
-                  e = this._aEvent[i][j];
-                  if(e.listener == sListener)
-                  {
-                     if(!deleteIndex)
-                     {
-                        deleteIndex = [];
-                     }
-                     deleteIndex.push(j);
-                  }
-               }
-            }
-            for each(index in deleteIndex)
-            {
-               delete this._aEvent[i][index];
-            }
-         }
-      }
-   }
-}
+                    };
+                };
+            };
+        }
+
+
+    }
+}//package com.ankamagames.berilia.managers
+

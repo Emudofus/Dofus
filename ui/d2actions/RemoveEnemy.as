@@ -1,25 +1,26 @@
-package d2actions
+﻿package d2actions
 {
-   public class RemoveEnemy extends Object implements IAction
-   {
-      
-      public function RemoveEnemy(accountId:int) {
-         super();
-         this._params = [accountId];
-      }
-      
-      public static const NEED_INTERACTION:Boolean = false;
-      
-      public static const NEED_CONFIRMATION:Boolean = false;
-      
-      public static const MAX_USE_PER_FRAME:int = 0;
-      
-      public static const DELAY:int = 0;
-      
-      private var _params:Array;
-      
-      public function get parameters() : Array {
-         return this._params;
-      }
-   }
-}
+    public class RemoveEnemy implements IAction 
+    {
+
+        public static const NEED_INTERACTION:Boolean = false;
+        public static const NEED_CONFIRMATION:Boolean = false;
+        public static const MAX_USE_PER_FRAME:int = 0;
+        public static const DELAY:int = 0;
+
+        private var _params:Array;
+
+        public function RemoveEnemy(accountId:int)
+        {
+            this._params = [accountId];
+        }
+
+        public function get parameters():Array
+        {
+            return (this._params);
+        }
+
+
+    }
+}//package d2actions
+

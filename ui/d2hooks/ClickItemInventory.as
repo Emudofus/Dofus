@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ClickItemInventory extends Object
-   {
-      
-      public function ClickItemInventory() {
-         super();
-      }
-   }
-}
+    public class ClickItemInventory 
+    {
+
+
+    }
+}//package d2hooks
+

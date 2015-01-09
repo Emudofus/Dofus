@@ -1,12 +1,12 @@
-package com.ankamagames.dofus.misc.utils.errormanager
+﻿package com.ankamagames.dofus.misc.utils.errormanager
 {
-   import mx.core.ByteArrayAsset;
-   
-   public class ErrorReport__htmlTemplate extends ByteArrayAsset
-   {
-      
-      public function ErrorReport__htmlTemplate() {
-         super();
-      }
-   }
-}
+    import mx.core.ByteArrayAsset;
+
+    [ExcludeClass]
+    public class ErrorReport__htmlTemplate extends ByteArrayAsset 
+    {
+
+
+    }
+}//package com.ankamagames.dofus.misc.utils.errormanager
+

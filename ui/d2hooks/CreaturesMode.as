@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class CreaturesMode extends Object
-   {
-      
-      public function CreaturesMode() {
-         super();
-      }
-   }
-}
+    public class CreaturesMode 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class QuestValidated extends Object
-   {
-      
-      public function QuestValidated() {
-         super();
-      }
-   }
-}
+    public class QuestValidated 
+    {
+
+
+    }
+}//package d2hooks
+

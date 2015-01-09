@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class FocusChange extends Object
-   {
-      
-      public function FocusChange() {
-         super();
-      }
-   }
-}
+    public class FocusChange 
+    {
+
+
+    }
+}//package d2hooks
+

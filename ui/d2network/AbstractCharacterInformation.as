@@ -1,14 +1,15 @@
-package d2network
+﻿package d2network
 {
-   public class AbstractCharacterInformation extends Object
-   {
-      
-      public function AbstractCharacterInformation() {
-         super();
-      }
-      
-      public function get id() : uint {
-         return new uint();
-      }
-   }
-}
+    public class AbstractCharacterInformation 
+    {
+
+
+        public function get id():uint
+        {
+            return (new uint());
+        }
+
+
+    }
+}//package d2network
+

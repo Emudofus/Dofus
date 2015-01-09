@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class MountSet extends Object
-   {
-      
-      public function MountSet() {
-         super();
-      }
-   }
-}
+    public class MountSet 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,6 +1,8 @@
-package com.ankamagames.jerakine.interfaces
+﻿package com.ankamagames.jerakine.interfaces
 {
-   public interface ICustomSecureObject
-   {
-   }
-}
+    public interface ICustomSecureObject 
+    {
+
+    }
+}//package com.ankamagames.jerakine.interfaces
+

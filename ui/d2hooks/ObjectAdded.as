@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ObjectAdded extends Object
-   {
-      
-      public function ObjectAdded() {
-         super();
-      }
-   }
-}
+    public class ObjectAdded 
+    {
+
+
+    }
+}//package d2hooks
+

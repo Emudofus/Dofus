@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class HideDeadFighters extends Object
-   {
-      
-      public function HideDeadFighters() {
-         super();
-      }
-   }
-}
+    public class HideDeadFighters 
+    {
+
+
+    }
+}//package d2hooks
+

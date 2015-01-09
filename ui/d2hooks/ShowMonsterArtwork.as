@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ShowMonsterArtwork extends Object
-   {
-      
-      public function ShowMonsterArtwork() {
-         super();
-      }
-   }
-}
+    public class ShowMonsterArtwork 
+    {
+
+
+    }
+}//package d2hooks
+

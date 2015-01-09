@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OpenBidHouse extends Object
-   {
-      
-      public function OpenBidHouse() {
-         super();
-      }
-   }
-}
+    public class OpenBidHouse 
+    {
+
+
+    }
+}//package d2hooks
+

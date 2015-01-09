@@ -1,10 +1,9 @@
-package com.ankamagames.jerakine.messages
+﻿package com.ankamagames.jerakine.messages
 {
-   public class ConnectionResumedMessage extends Object implements Message
-   {
-      
-      public function ConnectionResumedMessage() {
-         super();
-      }
-   }
-}
+    public class ConnectionResumedMessage implements Message 
+    {
+
+
+    }
+}//package com.ankamagames.jerakine.messages
+

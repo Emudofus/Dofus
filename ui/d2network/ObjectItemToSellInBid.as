@@ -1,14 +1,15 @@
-package d2network
+﻿package d2network
 {
-   public class ObjectItemToSellInBid extends ObjectItemToSell
-   {
-      
-      public function ObjectItemToSellInBid() {
-         super();
-      }
-      
-      public function get unsoldDelay() : uint {
-         return new uint();
-      }
-   }
-}
+    public class ObjectItemToSellInBid extends ObjectItemToSell 
+    {
+
+
+        public function get unsoldDelay():uint
+        {
+            return (new uint());
+        }
+
+
+    }
+}//package d2network
+

@@ -1,12 +1,13 @@
-package com.ankamagames.dofus.misc.stats
+﻿package com.ankamagames.dofus.misc.stats
 {
-   import com.ankamagames.jerakine.messages.Message;
-   
-   public interface IStatsClass
-   {
-      
-      function process(param1:Message) : void;
-      
-      function remove() : void;
-   }
-}
+    import com.ankamagames.jerakine.messages.Message;
+
+    public interface IStatsClass 
+    {
+
+        function process(_arg_1:Message):void;
+        function remove():void;
+
+    }
+}//package com.ankamagames.dofus.misc.stats
+

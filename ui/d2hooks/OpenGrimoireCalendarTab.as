@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OpenGrimoireCalendarTab extends Object
-   {
-      
-      public function OpenGrimoireCalendarTab() {
-         super();
-      }
-   }
-}
+    public class OpenGrimoireCalendarTab 
+    {
+
+
+    }
+}//package d2hooks
+

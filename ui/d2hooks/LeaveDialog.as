@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class LeaveDialog extends Object
-   {
-      
-      public function LeaveDialog() {
-         super();
-      }
-   }
-}
+    public class LeaveDialog 
+    {
+
+
+    }
+}//package d2hooks
+

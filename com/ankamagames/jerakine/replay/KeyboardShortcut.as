@@ -1,13 +1,15 @@
-package com.ankamagames.jerakine.replay
+﻿package com.ankamagames.jerakine.replay
 {
-   public class KeyboardShortcut extends Object
-   {
-      
-      public function KeyboardShortcut(targetedShortcut:String = null) {
-         super();
-         this.targetedShortcut = targetedShortcut;
-      }
-      
-      public var targetedShortcut:String;
-   }
-}
+    public class KeyboardShortcut 
+    {
+
+        public var targetedShortcut:String;
+
+        public function KeyboardShortcut(targetedShortcut:String=null)
+        {
+            this.targetedShortcut = targetedShortcut;
+        }
+
+    }
+}//package com.ankamagames.jerakine.replay
+

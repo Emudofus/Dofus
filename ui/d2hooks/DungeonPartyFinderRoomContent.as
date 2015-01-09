@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class DungeonPartyFinderRoomContent extends Object
-   {
-      
-      public function DungeonPartyFinderRoomContent() {
-         super();
-      }
-   }
-}
+    public class DungeonPartyFinderRoomContent 
+    {
+
+
+    }
+}//package d2hooks
+

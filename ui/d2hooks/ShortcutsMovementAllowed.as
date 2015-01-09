@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ShortcutsMovementAllowed extends Object
-   {
-      
-      public function ShortcutsMovementAllowed() {
-         super();
-      }
-   }
-}
+    public class ShortcutsMovementAllowed 
+    {
+
+
+    }
+}//package d2hooks
+

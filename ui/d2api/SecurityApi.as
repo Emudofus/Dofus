@@ -1,27 +1,37 @@
-package d2api
+﻿package d2api
 {
-   public class SecurityApi extends Object
-   {
-      
-      public function SecurityApi() {
-         super();
-      }
-      
-      public function askSecureModeCode(callback:Function) : void {
-      }
-      
-      public function sendSecureModeCode(code:String, callback:Function, computerName:String = null) : void {
-      }
-      
-      public function SecureModeisActive() : Boolean {
-         return false;
-      }
-      
-      public function setShieldLevel(level:uint) : void {
-      }
-      
-      public function getShieldLevel() : uint {
-         return 0;
-      }
-   }
-}
+    public class SecurityApi 
+    {
+
+
+        [Trusted]
+        public function askSecureModeCode(callback:Function):void
+        {
+        }
+
+        [Trusted]
+        public function sendSecureModeCode(code:String, callback:Function, computerName:String=null):void
+        {
+        }
+
+        [Trusted]
+        public function SecureModeisActive():Boolean
+        {
+            return (false);
+        }
+
+        [Trusted]
+        public function setShieldLevel(level:uint):void
+        {
+        }
+
+        [Trusted]
+        public function getShieldLevel():uint
+        {
+            return (0);
+        }
+
+
+    }
+}//package d2api
+

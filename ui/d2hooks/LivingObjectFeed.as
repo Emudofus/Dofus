@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class LivingObjectFeed extends Object
-   {
-      
-      public function LivingObjectFeed() {
-         super();
-      }
-   }
-}
+    public class LivingObjectFeed 
+    {
+
+
+    }
+}//package d2hooks
+

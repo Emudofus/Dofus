@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class MimicryObjectPreview extends Object
-   {
-      
-      public function MimicryObjectPreview() {
-         super();
-      }
-   }
-}
+    public class MimicryObjectPreview 
+    {
+
+
+    }
+}//package d2hooks
+

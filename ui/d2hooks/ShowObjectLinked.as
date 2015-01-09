@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ShowObjectLinked extends Object
-   {
-      
-      public function ShowObjectLinked() {
-         super();
-      }
-   }
-}
+    public class ShowObjectLinked 
+    {
+
+
+    }
+}//package d2hooks
+

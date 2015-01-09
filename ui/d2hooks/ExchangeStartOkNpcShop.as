@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ExchangeStartOkNpcShop extends Object
-   {
-      
-      public function ExchangeStartOkNpcShop() {
-         super();
-      }
-   }
-}
+    public class ExchangeStartOkNpcShop 
+    {
+
+
+    }
+}//package d2hooks
+

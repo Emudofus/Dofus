@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class MapComplementaryInformationsData extends Object
-   {
-      
-      public function MapComplementaryInformationsData() {
-         super();
-      }
-   }
-}
+    public class MapComplementaryInformationsData 
+    {
+
+
+    }
+}//package d2hooks
+

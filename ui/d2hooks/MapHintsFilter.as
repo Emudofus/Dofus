@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class MapHintsFilter extends Object
-   {
-      
-      public function MapHintsFilter() {
-         super();
-      }
-   }
-}
+    public class MapHintsFilter 
+    {
+
+
+    }
+}//package d2hooks
+

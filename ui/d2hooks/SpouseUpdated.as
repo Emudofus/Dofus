@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class SpouseUpdated extends Object
-   {
-      
-      public function SpouseUpdated() {
-         super();
-      }
-   }
-}
+    public class SpouseUpdated 
+    {
+
+
+    }
+}//package d2hooks
+

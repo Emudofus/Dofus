@@ -1,8 +1,10 @@
-package com.ankamagames.jerakine.interfaces
+﻿package com.ankamagames.jerakine.interfaces
 {
-   public interface ISecurizable
-   {
-      
-      function getSecureObject() : *;
-   }
-}
+    public interface ISecurizable 
+    {
+
+        function getSecureObject();
+
+    }
+}//package com.ankamagames.jerakine.interfaces
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class PortalDialogCreation extends Object
-   {
-      
-      public function PortalDialogCreation() {
-         super();
-      }
-   }
-}
+    public class PortalDialogCreation 
+    {
+
+
+    }
+}//package d2hooks
+

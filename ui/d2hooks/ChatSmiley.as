@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ChatSmiley extends Object
-   {
-      
-      public function ChatSmiley() {
-         super();
-      }
-   }
-}
+    public class ChatSmiley 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,14 +1,15 @@
-package d2network
+﻿package d2network
 {
-   public class PlayerStatus extends Object
-   {
-      
-      public function PlayerStatus() {
-         super();
-      }
-      
-      public function get statusId() : uint {
-         return new uint();
-      }
-   }
-}
+    public class PlayerStatus 
+    {
+
+
+        public function get statusId():uint
+        {
+            return (new uint());
+        }
+
+
+    }
+}//package d2network
+

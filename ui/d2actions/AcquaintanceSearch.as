@@ -1,25 +1,26 @@
-package d2actions
+﻿package d2actions
 {
-   public class AcquaintanceSearch extends Object implements IAction
-   {
-      
-      public function AcquaintanceSearch(friendName:String) {
-         super();
-         this._params = [friendName];
-      }
-      
-      public static const NEED_INTERACTION:Boolean = false;
-      
-      public static const NEED_CONFIRMATION:Boolean = false;
-      
-      public static const MAX_USE_PER_FRAME:int = 1;
-      
-      public static const DELAY:int = 0;
-      
-      private var _params:Array;
-      
-      public function get parameters() : Array {
-         return this._params;
-      }
-   }
-}
+    public class AcquaintanceSearch implements IAction 
+    {
+
+        public static const NEED_INTERACTION:Boolean = false;
+        public static const NEED_CONFIRMATION:Boolean = false;
+        public static const MAX_USE_PER_FRAME:int = 1;
+        public static const DELAY:int = 0;
+
+        private var _params:Array;
+
+        public function AcquaintanceSearch(friendName:String)
+        {
+            this._params = [friendName];
+        }
+
+        public function get parameters():Array
+        {
+            return (this._params);
+        }
+
+
+    }
+}//package d2actions
+

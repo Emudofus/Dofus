@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class RemoveMapFlag extends Object
-   {
-      
-      public function RemoveMapFlag() {
-         super();
-      }
-   }
-}
+    public class RemoveMapFlag 
+    {
+
+
+    }
+}//package d2hooks
+

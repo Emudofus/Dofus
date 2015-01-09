@@ -1,19 +1,20 @@
-package com.ankamagames.tiphon.types.cache
+﻿package com.ankamagames.tiphon.types.cache
 {
-   import com.ankamagames.tiphon.display.TiphonSprite;
-   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
-   
-   public class SpriteCacheInfo extends Object
-   {
-      
-      public function SpriteCacheInfo(tiphonSprite:TiphonSprite, tiphonEntityLook:TiphonEntityLook) {
-         super();
-         this.sprite = tiphonSprite;
-         this.look = tiphonEntityLook;
-      }
-      
-      public var sprite:TiphonSprite;
-      
-      public var look:TiphonEntityLook;
-   }
-}
+    import com.ankamagames.tiphon.display.TiphonSprite;
+    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+
+    public class SpriteCacheInfo 
+    {
+
+        public var sprite:TiphonSprite;
+        public var look:TiphonEntityLook;
+
+        public function SpriteCacheInfo(tiphonSprite:TiphonSprite, tiphonEntityLook:TiphonEntityLook)
+        {
+            this.sprite = tiphonSprite;
+            this.look = tiphonEntityLook;
+        }
+
+    }
+}//package com.ankamagames.tiphon.types.cache
+

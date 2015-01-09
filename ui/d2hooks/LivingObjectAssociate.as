@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class LivingObjectAssociate extends Object
-   {
-      
-      public function LivingObjectAssociate() {
-         super();
-      }
-   }
-}
+    public class LivingObjectAssociate 
+    {
+
+
+    }
+}//package d2hooks
+

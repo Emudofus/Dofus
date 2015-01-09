@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class CharacterDeletionError extends Object
-   {
-      
-      public function CharacterDeletionError() {
-         super();
-      }
-   }
-}
+    public class CharacterDeletionError 
+    {
+
+
+    }
+}//package d2hooks
+

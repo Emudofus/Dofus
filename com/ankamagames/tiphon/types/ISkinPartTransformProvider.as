@@ -1,8 +1,10 @@
-package com.ankamagames.tiphon.types
+﻿package com.ankamagames.tiphon.types
 {
-   public interface ISkinPartTransformProvider
-   {
-      
-      function init(param1:Skin) : void;
-   }
-}
+    public interface ISkinPartTransformProvider 
+    {
+
+        function init(_arg_1:Skin):void;
+
+    }
+}//package com.ankamagames.tiphon.types
+

@@ -1,10 +1,13 @@
-package com.ankamagames.atouin.data
+﻿package com.ankamagames.atouin.data
 {
-   public class DataFormatError extends Error
-   {
-      
-      public function DataFormatError(message:String = "", id:uint = 0) {
-         super(message,id);
-      }
-   }
-}
+    public class DataFormatError extends Error 
+    {
+
+        public function DataFormatError(message:String="", id:uint=0)
+        {
+            super(message, id);
+        }
+
+    }
+}//package com.ankamagames.atouin.data
+

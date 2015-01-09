@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class CertificateMountData extends Object
-   {
-      
-      public function CertificateMountData() {
-         super();
-      }
-   }
-}
+    public class CertificateMountData 
+    {
+
+
+    }
+}//package d2hooks
+

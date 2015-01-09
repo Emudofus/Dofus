@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class FriendRemoved extends Object
-   {
-      
-      public function FriendRemoved() {
-         super();
-      }
-   }
-}
+    public class FriendRemoved 
+    {
+
+
+    }
+}//package d2hooks
+

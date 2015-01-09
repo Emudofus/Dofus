@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class Cinematic extends Object
-   {
-      
-      public function Cinematic() {
-         super();
-      }
-   }
-}
+    public class Cinematic 
+    {
+
+
+    }
+}//package d2hooks
+

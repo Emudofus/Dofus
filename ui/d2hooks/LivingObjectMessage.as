@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class LivingObjectMessage extends Object
-   {
-      
-      public function LivingObjectMessage() {
-         super();
-      }
-   }
-}
+    public class LivingObjectMessage 
+    {
+
+
+    }
+}//package d2hooks
+

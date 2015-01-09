@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class AddBannerButton extends Object
-   {
-      
-      public function AddBannerButton() {
-         super();
-      }
-   }
-}
+    public class AddBannerButton 
+    {
+
+
+    }
+}//package d2hooks
+

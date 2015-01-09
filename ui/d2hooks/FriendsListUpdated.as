@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class FriendsListUpdated extends Object
-   {
-      
-      public function FriendsListUpdated() {
-         super();
-      }
-   }
-}
+    public class FriendsListUpdated 
+    {
+
+
+    }
+}//package d2hooks
+

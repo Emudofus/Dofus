@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ShowPlayersNames extends Object
-   {
-      
-      public function ShowPlayersNames() {
-         super();
-      }
-   }
-}
+    public class ShowPlayersNames 
+    {
+
+
+    }
+}//package d2hooks
+

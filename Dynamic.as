@@ -1,9 +1,12 @@
-package 
+﻿package 
 {
-   public class Dynamic extends Object
-   {
-      
-      public function Dynamic() {
-      }
-   }
-}
+    public class Dynamic 
+    {
+
+        public function Dynamic():void
+        {
+        }
+
+    }
+}//package 
+

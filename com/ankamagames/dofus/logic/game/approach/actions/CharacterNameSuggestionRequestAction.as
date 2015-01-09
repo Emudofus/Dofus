@@ -1,16 +1,17 @@
-package com.ankamagames.dofus.logic.game.approach.actions
+﻿package com.ankamagames.dofus.logic.game.approach.actions
 {
-   import com.ankamagames.jerakine.handlers.messages.Action;
-   
-   public class CharacterNameSuggestionRequestAction extends Object implements Action
-   {
-      
-      public function CharacterNameSuggestionRequestAction() {
-         super();
-      }
-      
-      public static function create() : CharacterNameSuggestionRequestAction {
-         return new CharacterNameSuggestionRequestAction();
-      }
-   }
-}
+    import com.ankamagames.jerakine.handlers.messages.Action;
+
+    public class CharacterNameSuggestionRequestAction implements Action 
+    {
+
+
+        public static function create():CharacterNameSuggestionRequestAction
+        {
+            return (new (CharacterNameSuggestionRequestAction)());
+        }
+
+
+    }
+}//package com.ankamagames.dofus.logic.game.approach.actions
+

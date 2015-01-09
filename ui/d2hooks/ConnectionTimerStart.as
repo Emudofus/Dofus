@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ConnectionTimerStart extends Object
-   {
-      
-      public function ConnectionTimerStart() {
-         super();
-      }
-   }
-}
+    public class ConnectionTimerStart 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GuildTaxCollectorRemoved extends Object
-   {
-      
-      public function GuildTaxCollectorRemoved() {
-         super();
-      }
-   }
-}
+    public class GuildTaxCollectorRemoved 
+    {
+
+
+    }
+}//package d2hooks
+

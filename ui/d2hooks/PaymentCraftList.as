@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class PaymentCraftList extends Object
-   {
-      
-      public function PaymentCraftList() {
-         super();
-      }
-   }
-}
+    public class PaymentCraftList 
+    {
+
+
+    }
+}//package d2hooks
+

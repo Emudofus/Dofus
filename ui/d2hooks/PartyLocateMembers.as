@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class PartyLocateMembers extends Object
-   {
-      
-      public function PartyLocateMembers() {
-         super();
-      }
-   }
-}
+    public class PartyLocateMembers 
+    {
+
+
+    }
+}//package d2hooks
+

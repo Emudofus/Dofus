@@ -1,10 +1,9 @@
-package d2network
+﻿package d2network
 {
-   public class IgnoredInformations extends AbstractContactInformations
-   {
-      
-      public function IgnoredInformations() {
-         super();
-      }
-   }
-}
+    public class IgnoredInformations extends AbstractContactInformations 
+    {
+
+
+    }
+}//package d2network
+

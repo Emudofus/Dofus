@@ -1,14 +1,15 @@
-package d2network
+﻿package d2network
 {
-   public class CharacterMinimalGuildInformations extends CharacterMinimalPlusLookInformations
-   {
-      
-      public function CharacterMinimalGuildInformations() {
-         super();
-      }
-      
-      public function get guild() : BasicGuildInformations {
-         return new BasicGuildInformations();
-      }
-   }
-}
+    public class CharacterMinimalGuildInformations extends CharacterMinimalPlusLookInformations 
+    {
+
+
+        public function get guild():BasicGuildInformations
+        {
+            return (new BasicGuildInformations());
+        }
+
+
+    }
+}//package d2network
+

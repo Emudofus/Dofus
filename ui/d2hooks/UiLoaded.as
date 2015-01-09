@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class UiLoaded extends Object
-   {
-      
-      public function UiLoaded() {
-         super();
-      }
-   }
-}
+    public class UiLoaded 
+    {
+
+
+    }
+}//package d2hooks
+

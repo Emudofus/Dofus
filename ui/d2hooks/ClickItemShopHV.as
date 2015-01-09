@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ClickItemShopHV extends Object
-   {
-      
-      public function ClickItemShopHV() {
-         super();
-      }
-   }
-}
+    public class ClickItemShopHV 
+    {
+
+
+    }
+}//package d2hooks
+

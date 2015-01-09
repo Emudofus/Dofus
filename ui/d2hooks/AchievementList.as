@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class AchievementList extends Object
-   {
-      
-      public function AchievementList() {
-         super();
-      }
-   }
-}
+    public class AchievementList 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class CrafterDirectoryListUpdate extends Object
-   {
-      
-      public function CrafterDirectoryListUpdate() {
-         super();
-      }
-   }
-}
+    public class CrafterDirectoryListUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

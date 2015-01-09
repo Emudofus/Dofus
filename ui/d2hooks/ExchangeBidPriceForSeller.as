@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ExchangeBidPriceForSeller extends Object
-   {
-      
-      public function ExchangeBidPriceForSeller() {
-         super();
-      }
-   }
-}
+    public class ExchangeBidPriceForSeller 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OpenSet extends Object
-   {
-      
-      public function OpenSet() {
-         super();
-      }
-   }
-}
+    public class OpenSet 
+    {
+
+
+    }
+}//package d2hooks
+

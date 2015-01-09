@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ServersList extends Object
-   {
-      
-      public function ServersList() {
-         super();
-      }
-   }
-}
+    public class ServersList 
+    {
+
+
+    }
+}//package d2hooks
+

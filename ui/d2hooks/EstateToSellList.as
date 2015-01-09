@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class EstateToSellList extends Object
-   {
-      
-      public function EstateToSellList() {
-         super();
-      }
-   }
-}
+    public class EstateToSellList 
+    {
+
+
+    }
+}//package d2hooks
+

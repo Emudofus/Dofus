@@ -1,14 +1,15 @@
-package d2network
+﻿package d2network
 {
-   public class GroupMonsterStaticInformationsWithAlternatives extends GroupMonsterStaticInformations
-   {
-      
-      public function GroupMonsterStaticInformationsWithAlternatives() {
-         super();
-      }
-      
-      public function get alternatives() : Object {
-         return new Object();
-      }
-   }
-}
+    public class GroupMonsterStaticInformationsWithAlternatives extends GroupMonsterStaticInformations 
+    {
+
+
+        public function get alternatives():Object
+        {
+            return (new Object());
+        }
+
+
+    }
+}//package d2network
+

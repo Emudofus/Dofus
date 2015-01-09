@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OpenRecipe extends Object
-   {
-      
-      public function OpenRecipe() {
-         super();
-      }
-   }
-}
+    public class OpenRecipe 
+    {
+
+
+    }
+}//package d2hooks
+

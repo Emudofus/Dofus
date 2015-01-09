@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class UpdateError extends Object
-   {
-      
-      public function UpdateError() {
-         super();
-      }
-   }
-}
+    public class UpdateError 
+    {
+
+
+    }
+}//package d2hooks
+

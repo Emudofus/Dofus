@@ -1,12 +1,12 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
-   import mx.core.SpriteAsset;
-   
-   public class EmbedAssets_CHECKPOINT_CLIP_RIGHT extends SpriteAsset
-   {
-      
-      public function EmbedAssets_CHECKPOINT_CLIP_RIGHT() {
-         super();
-      }
-   }
-}
+    import mx.core.SpriteAsset;
+
+    [ExcludeClass]
+    public class EmbedAssets_CHECKPOINT_CLIP_RIGHT extends SpriteAsset 
+    {
+
+
+    }
+}//package com.ankamagames.dofus.misc.utils
+

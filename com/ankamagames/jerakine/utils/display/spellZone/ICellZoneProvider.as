@@ -1,14 +1,15 @@
-package com.ankamagames.jerakine.utils.display.spellZone
+﻿package com.ankamagames.jerakine.utils.display.spellZone
 {
-   public interface ICellZoneProvider
-   {
-      
-      function get minimalRange() : uint;
-      
-      function get maximalRange() : uint;
-      
-      function get castZoneInLine() : Boolean;
-      
-      function get spellZoneEffects() : Vector.<IZoneShape>;
-   }
-}
+    import __AS3__.vec.Vector;
+
+    public interface ICellZoneProvider 
+    {
+
+        function get minimalRange():uint;
+        function get maximalRange():uint;
+        function get castZoneInLine():Boolean;
+        function get spellZoneEffects():Vector.<IZoneShape>;
+
+    }
+}//package com.ankamagames.jerakine.utils.display.spellZone
+

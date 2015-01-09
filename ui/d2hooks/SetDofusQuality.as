@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class SetDofusQuality extends Object
-   {
-      
-      public function SetDofusQuality() {
-         super();
-      }
-   }
-}
+    public class SetDofusQuality 
+    {
+
+
+    }
+}//package d2hooks
+

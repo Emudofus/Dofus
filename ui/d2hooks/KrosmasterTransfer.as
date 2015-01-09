@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class KrosmasterTransfer extends Object
-   {
-      
-      public function KrosmasterTransfer() {
-         super();
-      }
-   }
-}
+    public class KrosmasterTransfer 
+    {
+
+
+    }
+}//package d2hooks
+

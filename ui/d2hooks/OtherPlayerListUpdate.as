@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OtherPlayerListUpdate extends Object
-   {
-      
-      public function OtherPlayerListUpdate() {
-         super();
-      }
-   }
-}
+    public class OtherPlayerListUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

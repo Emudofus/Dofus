@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GuildPaddockAdd extends Object
-   {
-      
-      public function GuildPaddockAdd() {
-         super();
-      }
-   }
-}
+    public class GuildPaddockAdd 
+    {
+
+
+    }
+}//package d2hooks
+

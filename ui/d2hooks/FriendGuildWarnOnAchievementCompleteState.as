@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class FriendGuildWarnOnAchievementCompleteState extends Object
-   {
-      
-      public function FriendGuildWarnOnAchievementCompleteState() {
-         super();
-      }
-   }
-}
+    public class FriendGuildWarnOnAchievementCompleteState 
+    {
+
+
+    }
+}//package d2hooks
+

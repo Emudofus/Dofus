@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ChatHyperlink extends Object
-   {
-      
-      public function ChatHyperlink() {
-         super();
-      }
-   }
-}
+    public class ChatHyperlink 
+    {
+
+
+    }
+}//package d2hooks
+

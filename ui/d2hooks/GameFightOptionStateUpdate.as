@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GameFightOptionStateUpdate extends Object
-   {
-      
-      public function GameFightOptionStateUpdate() {
-         super();
-      }
-   }
-}
+    public class GameFightOptionStateUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

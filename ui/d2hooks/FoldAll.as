@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class FoldAll extends Object
-   {
-      
-      public function FoldAll() {
-         super();
-      }
-   }
-}
+    public class FoldAll 
+    {
+
+
+    }
+}//package d2hooks
+

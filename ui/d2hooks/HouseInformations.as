@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class HouseInformations extends Object
-   {
-      
-      public function HouseInformations() {
-         super();
-      }
-   }
-}
+    public class HouseInformations 
+    {
+
+
+    }
+}//package d2hooks
+

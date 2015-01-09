@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class TextureLoadFailed extends Object
-   {
-      
-      public function TextureLoadFailed() {
-         super();
-      }
-   }
-}
+    public class TextureLoadFailed 
+    {
+
+
+    }
+}//package d2hooks
+

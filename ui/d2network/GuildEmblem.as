@@ -1,26 +1,30 @@
-package d2network
+﻿package d2network
 {
-   public class GuildEmblem extends Object
-   {
-      
-      public function GuildEmblem() {
-         super();
-      }
-      
-      public function get symbolShape() : int {
-         return new int();
-      }
-      
-      public function get symbolColor() : int {
-         return new int();
-      }
-      
-      public function get backgroundShape() : int {
-         return new int();
-      }
-      
-      public function get backgroundColor() : int {
-         return new int();
-      }
-   }
-}
+    public class GuildEmblem 
+    {
+
+
+        public function get symbolShape():uint
+        {
+            return (new uint());
+        }
+
+        public function get symbolColor():int
+        {
+            return (new int());
+        }
+
+        public function get backgroundShape():uint
+        {
+            return (new uint());
+        }
+
+        public function get backgroundColor():int
+        {
+            return (new int());
+        }
+
+
+    }
+}//package d2network
+

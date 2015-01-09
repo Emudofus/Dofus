@@ -1,20 +1,22 @@
-package com.ankamagames.dofus.logic.game.common.actions
+﻿package com.ankamagames.dofus.logic.game.common.actions
 {
-   import com.ankamagames.jerakine.handlers.messages.Action;
-   
-   public class AccessoryPreviewRequestAction extends Object implements Action
-   {
-      
-      public function AccessoryPreviewRequestAction() {
-         super();
-      }
-      
-      public static function create(itemGIDs:Vector.<uint>) : AccessoryPreviewRequestAction {
-         var action:AccessoryPreviewRequestAction = new AccessoryPreviewRequestAction();
-         action.itemGIDs = itemGIDs;
-         return action;
-      }
-      
-      public var itemGIDs:Vector.<uint>;
-   }
-}
+    import com.ankamagames.jerakine.handlers.messages.Action;
+    import __AS3__.vec.Vector;
+
+    public class AccessoryPreviewRequestAction implements Action 
+    {
+
+        public var itemGIDs:Vector.<uint>;
+
+
+        public static function create(itemGIDs:Vector.<uint>):AccessoryPreviewRequestAction
+        {
+            var action:AccessoryPreviewRequestAction = new (AccessoryPreviewRequestAction)();
+            action.itemGIDs = itemGIDs;
+            return (action);
+        }
+
+
+    }
+}//package com.ankamagames.dofus.logic.game.common.actions
+

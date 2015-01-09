@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class TreasureHuntUpdate extends Object
-   {
-      
-      public function TreasureHuntUpdate() {
-         super();
-      }
-   }
-}
+    public class TreasureHuntUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

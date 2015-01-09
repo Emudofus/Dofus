@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GameFightTurnEnd extends Object
-   {
-      
-      public function GameFightTurnEnd() {
-         super();
-      }
-   }
-}
+    public class GameFightTurnEnd 
+    {
+
+
+    }
+}//package d2hooks
+

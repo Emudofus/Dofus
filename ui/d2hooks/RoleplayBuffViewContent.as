@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class RoleplayBuffViewContent extends Object
-   {
-      
-      public function RoleplayBuffViewContent() {
-         super();
-      }
-   }
-}
+    public class RoleplayBuffViewContent 
+    {
+
+
+    }
+}//package d2hooks
+

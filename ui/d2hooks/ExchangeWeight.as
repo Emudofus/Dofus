@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ExchangeWeight extends Object
-   {
-      
-      public function ExchangeWeight() {
-         super();
-      }
-   }
-}
+    public class ExchangeWeight 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ExchangeError extends Object
-   {
-      
-      public function ExchangeError() {
-         super();
-      }
-   }
-}
+    public class ExchangeError 
+    {
+
+
+    }
+}//package d2hooks
+

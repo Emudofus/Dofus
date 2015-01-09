@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OrderFightersSwitched extends Object
-   {
-      
-      public function OrderFightersSwitched() {
-         super();
-      }
-   }
-}
+    public class OrderFightersSwitched 
+    {
+
+
+    }
+}//package d2hooks
+

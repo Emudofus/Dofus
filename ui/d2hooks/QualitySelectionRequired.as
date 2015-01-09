@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class QualitySelectionRequired extends Object
-   {
-      
-      public function QualitySelectionRequired() {
-         super();
-      }
-   }
-}
+    public class QualitySelectionRequired 
+    {
+
+
+    }
+}//package d2hooks
+

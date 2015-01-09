@@ -1,12 +1,12 @@
-package com.ankamagames.dofus.console.moduleLogger
+﻿package com.ankamagames.dofus.console.moduleLogger
 {
-   import mx.core.SpriteAsset;
-   
-   public class ConsoleIcon_I_MOVE_DEFAULT extends SpriteAsset
-   {
-      
-      public function ConsoleIcon_I_MOVE_DEFAULT() {
-         super();
-      }
-   }
-}
+    import mx.core.SpriteAsset;
+
+    [ExcludeClass]
+    public class ConsoleIcon_I_MOVE_DEFAULT extends SpriteAsset 
+    {
+
+
+    }
+}//package com.ankamagames.dofus.console.moduleLogger
+

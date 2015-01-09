@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class TaxCollectorError extends Object
-   {
-      
-      public function TaxCollectorError() {
-         super();
-      }
-   }
-}
+    public class TaxCollectorError 
+    {
+
+
+    }
+}//package d2hooks
+

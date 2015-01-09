@@ -1,14 +1,13 @@
-package com.ankamagames.jerakine.script
+﻿package com.ankamagames.jerakine.script
 {
-   public class ScriptErrorEnum extends Object
-   {
-      
-      public function ScriptErrorEnum() {
-         super();
-      }
-      
-      public static const OK:uint = 0;
-      
-      public static const SCRIPT_ERROR:uint = 1;
-   }
-}
+    [Trusted]
+    public class ScriptErrorEnum 
+    {
+
+        public static const OK:uint = 0;
+        public static const SCRIPT_ERROR:uint = 1;
+
+
+    }
+}//package com.ankamagames.jerakine.script
+

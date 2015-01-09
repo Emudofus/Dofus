@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ToggleChatLog extends Object
-   {
-      
-      public function ToggleChatLog() {
-         super();
-      }
-   }
-}
+    public class ToggleChatLog 
+    {
+
+
+    }
+}//package d2hooks
+

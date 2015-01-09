@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class StorageViewContent extends Object
-   {
-      
-      public function StorageViewContent() {
-         super();
-      }
-   }
-}
+    public class StorageViewContent 
+    {
+
+
+    }
+}//package d2hooks
+

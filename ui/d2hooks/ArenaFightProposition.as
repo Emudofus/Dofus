@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ArenaFightProposition extends Object
-   {
-      
-      public function ArenaFightProposition() {
-         super();
-      }
-   }
-}
+    public class ArenaFightProposition 
+    {
+
+
+    }
+}//package d2hooks
+

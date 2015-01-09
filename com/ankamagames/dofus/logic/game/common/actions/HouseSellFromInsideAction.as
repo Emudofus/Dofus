@@ -1,20 +1,21 @@
-package com.ankamagames.dofus.logic.game.common.actions
+﻿package com.ankamagames.dofus.logic.game.common.actions
 {
-   import com.ankamagames.jerakine.handlers.messages.Action;
-   
-   public class HouseSellFromInsideAction extends Object implements Action
-   {
-      
-      public function HouseSellFromInsideAction() {
-         super();
-      }
-      
-      public static function create(amount:uint) : HouseSellFromInsideAction {
-         var action:HouseSellFromInsideAction = new HouseSellFromInsideAction();
-         action.amount = amount;
-         return action;
-      }
-      
-      public var amount:uint;
-   }
-}
+    import com.ankamagames.jerakine.handlers.messages.Action;
+
+    public class HouseSellFromInsideAction implements Action 
+    {
+
+        public var amount:uint;
+
+
+        public static function create(amount:uint):HouseSellFromInsideAction
+        {
+            var action:HouseSellFromInsideAction = new (HouseSellFromInsideAction)();
+            action.amount = amount;
+            return (action);
+        }
+
+
+    }
+}//package com.ankamagames.dofus.logic.game.common.actions
+

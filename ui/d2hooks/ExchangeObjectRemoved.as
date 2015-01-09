@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ExchangeObjectRemoved extends Object
-   {
-      
-      public function ExchangeObjectRemoved() {
-         super();
-      }
-   }
-}
+    public class ExchangeObjectRemoved 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,8 +1,10 @@
-package com.ankamagames.berilia.interfaces
+﻿package com.ankamagames.berilia.interfaces
 {
-   public interface IClonable
-   {
-      
-      function clone() : *;
-   }
-}
+    public interface IClonable 
+    {
+
+        function clone();
+
+    }
+}//package com.ankamagames.berilia.interfaces
+

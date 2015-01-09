@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OptionHelpWanted extends Object
-   {
-      
-      public function OptionHelpWanted() {
-         super();
-      }
-   }
-}
+    public class OptionHelpWanted 
+    {
+
+
+    }
+}//package d2hooks
+

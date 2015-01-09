@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class IgnoredRemoved extends Object
-   {
-      
-      public function IgnoredRemoved() {
-         super();
-      }
-   }
-}
+    public class IgnoredRemoved 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class InformationPopup extends Object
-   {
-      
-      public function InformationPopup() {
-         super();
-      }
-   }
-}
+    public class InformationPopup 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GuildInvitationStateRecruter extends Object
-   {
-      
-      public function GuildInvitationStateRecruter() {
-         super();
-      }
-   }
-}
+    public class GuildInvitationStateRecruter 
+    {
+
+
+    }
+}//package d2hooks
+

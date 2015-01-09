@@ -1,25 +1,26 @@
-package d2actions
+﻿package d2actions
 {
-   public class CharacterReplayRequest extends Object implements IAction
-   {
-      
-      public function CharacterReplayRequest(characterId:uint) {
-         super();
-         this._params = [characterId];
-      }
-      
-      public static const NEED_INTERACTION:Boolean = false;
-      
-      public static const NEED_CONFIRMATION:Boolean = false;
-      
-      public static const MAX_USE_PER_FRAME:int = 1;
-      
-      public static const DELAY:int = 0;
-      
-      private var _params:Array;
-      
-      public function get parameters() : Array {
-         return this._params;
-      }
-   }
-}
+    public class CharacterReplayRequest implements IAction 
+    {
+
+        public static const NEED_INTERACTION:Boolean = false;
+        public static const NEED_CONFIRMATION:Boolean = false;
+        public static const MAX_USE_PER_FRAME:int = 1;
+        public static const DELAY:int = 0;
+
+        private var _params:Array;
+
+        public function CharacterReplayRequest(characterId:uint)
+        {
+            this._params = [characterId];
+        }
+
+        public function get parameters():Array
+        {
+            return (this._params);
+        }
+
+
+    }
+}//package d2actions
+

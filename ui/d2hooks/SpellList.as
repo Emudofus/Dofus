@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class SpellList extends Object
-   {
-      
-      public function SpellList() {
-         super();
-      }
-   }
-}
+    public class SpellList 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ArenaRegistrationStatusUpdate extends Object
-   {
-      
-      public function ArenaRegistrationStatusUpdate() {
-         super();
-      }
-   }
-}
+    public class ArenaRegistrationStatusUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

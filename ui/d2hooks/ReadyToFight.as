@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ReadyToFight extends Object
-   {
-      
-      public function ReadyToFight() {
-         super();
-      }
-   }
-}
+    public class ReadyToFight 
+    {
+
+
+    }
+}//package d2hooks
+

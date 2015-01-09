@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class Notification extends Object
-   {
-      
-      public function Notification() {
-         super();
-      }
-   }
-}
+    public class Notification 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class PlayerMove extends Object
-   {
-      
-      public function PlayerMove() {
-         super();
-      }
-   }
-}
+    public class PlayerMove 
+    {
+
+
+    }
+}//package d2hooks
+

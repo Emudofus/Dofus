@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class AcquaintanceSearchError extends Object
-   {
-      
-      public function AcquaintanceSearchError() {
-         super();
-      }
-   }
-}
+    public class AcquaintanceSearchError 
+    {
+
+
+    }
+}//package d2hooks
+

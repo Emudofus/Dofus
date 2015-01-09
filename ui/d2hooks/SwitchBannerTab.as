@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class SwitchBannerTab extends Object
-   {
-      
-      public function SwitchBannerTab() {
-         super();
-      }
-   }
-}
+    public class SwitchBannerTab 
+    {
+
+
+    }
+}//package d2hooks
+

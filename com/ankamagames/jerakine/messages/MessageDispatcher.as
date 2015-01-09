@@ -1,14 +1,15 @@
-package com.ankamagames.jerakine.messages
+﻿package com.ankamagames.jerakine.messages
 {
-   public class MessageDispatcher extends Object implements IMessageDispatcher
-   {
-      
-      public function MessageDispatcher() {
-         super();
-      }
-      
-      public function dispatchMessage(handler:MessageHandler, message:Message) : void {
-         handler.process(message);
-      }
-   }
-}
+    public class MessageDispatcher implements IMessageDispatcher 
+    {
+
+
+        public function dispatchMessage(handler:MessageHandler, message:Message):void
+        {
+            handler.process(message);
+        }
+
+
+    }
+}//package com.ankamagames.jerakine.messages
+

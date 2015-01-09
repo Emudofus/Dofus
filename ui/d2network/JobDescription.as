@@ -1,18 +1,20 @@
-package d2network
+﻿package d2network
 {
-   public class JobDescription extends Object
-   {
-      
-      public function JobDescription() {
-         super();
-      }
-      
-      public function get jobId() : uint {
-         return new uint();
-      }
-      
-      public function get skills() : Object {
-         return new Object();
-      }
-   }
-}
+    public class JobDescription 
+    {
+
+
+        public function get jobId():uint
+        {
+            return (new uint());
+        }
+
+        public function get skills():Object
+        {
+            return (new Object());
+        }
+
+
+    }
+}//package d2network
+

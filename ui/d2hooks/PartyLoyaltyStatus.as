@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class PartyLoyaltyStatus extends Object
-   {
-      
-      public function PartyLoyaltyStatus() {
-         super();
-      }
-   }
-}
+    public class PartyLoyaltyStatus 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class SellerObjectListUpdate extends Object
-   {
-      
-      public function SellerObjectListUpdate() {
-         super();
-      }
-   }
-}
+    public class SellerObjectListUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

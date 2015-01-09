@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class MouseAltDoubleClick extends Object
-   {
-      
-      public function MouseAltDoubleClick() {
-         super();
-      }
-   }
-}
+    public class MouseAltDoubleClick 
+    {
+
+
+    }
+}//package d2hooks
+

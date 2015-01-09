@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class TeleportDestinationList extends Object
-   {
-      
-      public function TeleportDestinationList() {
-         super();
-      }
-   }
-}
+    public class TeleportDestinationList 
+    {
+
+
+    }
+}//package d2hooks
+

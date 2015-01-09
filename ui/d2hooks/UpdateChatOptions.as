@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class UpdateChatOptions extends Object
-   {
-      
-      public function UpdateChatOptions() {
-         super();
-      }
-   }
-}
+    public class UpdateChatOptions 
+    {
+
+
+    }
+}//package d2hooks
+

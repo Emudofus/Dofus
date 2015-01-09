@@ -1,10 +1,9 @@
-package d2network
+﻿package d2network
 {
-   public class HumanOption extends Object
-   {
-      
-      public function HumanOption() {
-         super();
-      }
-   }
-}
+    public class HumanOption 
+    {
+
+
+    }
+}//package d2network
+

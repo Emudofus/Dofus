@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class DofusShopHome extends Object
-   {
-      
-      public function DofusShopHome() {
-         super();
-      }
-   }
-}
+    public class DofusShopHome 
+    {
+
+
+    }
+}//package d2hooks
+

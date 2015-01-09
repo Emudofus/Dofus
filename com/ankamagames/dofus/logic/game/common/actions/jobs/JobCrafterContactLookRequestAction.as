@@ -1,20 +1,21 @@
-package com.ankamagames.dofus.logic.game.common.actions.jobs
+﻿package com.ankamagames.dofus.logic.game.common.actions.jobs
 {
-   import com.ankamagames.jerakine.handlers.messages.Action;
-   
-   public class JobCrafterContactLookRequestAction extends Object implements Action
-   {
-      
-      public function JobCrafterContactLookRequestAction() {
-         super();
-      }
-      
-      public static function create(crafterId:uint) : JobCrafterContactLookRequestAction {
-         var act:JobCrafterContactLookRequestAction = new JobCrafterContactLookRequestAction();
-         act.crafterId = crafterId;
-         return act;
-      }
-      
-      public var crafterId:uint;
-   }
-}
+    import com.ankamagames.jerakine.handlers.messages.Action;
+
+    public class JobCrafterContactLookRequestAction implements Action 
+    {
+
+        public var crafterId:uint;
+
+
+        public static function create(crafterId:uint):JobCrafterContactLookRequestAction
+        {
+            var act:JobCrafterContactLookRequestAction = new (JobCrafterContactLookRequestAction)();
+            act.crafterId = crafterId;
+            return (act);
+        }
+
+
+    }
+}//package com.ankamagames.dofus.logic.game.common.actions.jobs
+

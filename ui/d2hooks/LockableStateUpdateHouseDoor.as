@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class LockableStateUpdateHouseDoor extends Object
-   {
-      
-      public function LockableStateUpdateHouseDoor() {
-         super();
-      }
-   }
-}
+    public class LockableStateUpdateHouseDoor 
+    {
+
+
+    }
+}//package d2hooks
+

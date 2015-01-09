@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class SelectedServerFailed extends Object
-   {
-      
-      public function SelectedServerFailed() {
-         super();
-      }
-   }
-}
+    public class SelectedServerFailed 
+    {
+
+
+    }
+}//package d2hooks
+

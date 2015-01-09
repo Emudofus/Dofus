@@ -1,14 +1,15 @@
-package d2network
+﻿package d2network
 {
-   public class PlayerStatusExtended extends PlayerStatus
-   {
-      
-      public function PlayerStatusExtended() {
-         super();
-      }
-      
-      public function get message() : String {
-         return new String();
-      }
-   }
-}
+    public class PlayerStatusExtended extends PlayerStatus 
+    {
+
+
+        public function get message():String
+        {
+            return (new String());
+        }
+
+
+    }
+}//package d2network
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class DropEnd extends Object
-   {
-      
-      public function DropEnd() {
-         super();
-      }
-   }
-}
+    public class DropEnd 
+    {
+
+
+    }
+}//package d2hooks
+

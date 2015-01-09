@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GuildInformationsMembers extends Object
-   {
-      
-      public function GuildInformationsMembers() {
-         super();
-      }
-   }
-}
+    public class GuildInformationsMembers 
+    {
+
+
+    }
+}//package d2hooks
+

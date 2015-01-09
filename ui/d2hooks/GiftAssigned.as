@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GiftAssigned extends Object
-   {
-      
-      public function GiftAssigned() {
-         super();
-      }
-   }
-}
+    public class GiftAssigned 
+    {
+
+
+    }
+}//package d2hooks
+

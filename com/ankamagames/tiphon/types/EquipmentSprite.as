@@ -1,61 +1,62 @@
-package com.ankamagames.tiphon.types
+﻿package com.ankamagames.tiphon.types
 {
-   import flash.utils.Dictionary;
-   import flash.utils.getQualifiedClassName;
-   import flash.display.DisplayObject;
-   import flash.display.Sprite;
-   
-   public class EquipmentSprite extends DynamicSprite
-   {
-      
-      public function EquipmentSprite() {
-         super();
-      }
-      
-      public static var enableLiveReference:Boolean = false;
-      
-      public static var liveReference:Dictionary;
-      
-      private static const _handlerRef:Dictionary;
-      
-      public function updateTransform() : void {
-         if(_handlerRef[this])
-         {
-            this.makeChild(_handlerRef[this]);
-         }
-      }
-      
-      override public function init(handler:IAnimationSpriteHandler) : void {
-         if(getQualifiedClassName(parent) == getQualifiedClassName(this))
-         {
-            return;
-         }
-         var c:DisplayObject = this.makeChild(handler);
-         if((c) && (enableLiveReference))
-         {
-            if(!liveReference[getQualifiedClassName(c)])
+    import flash.utils.Dictionary;
+    import flash.utils.getQualifiedClassName;
+    import flash.display.DisplayObject;
+    import flash.display.Sprite;
+
+    public class EquipmentSprite extends DynamicSprite 
+    {
+
+        public static var enableLiveReference:Boolean = false;
+        public static var liveReference:Dictionary = new Dictionary(false);
+        private static const _handlerRef:Dictionary = new Dictionary(true);
+
+
+        public function updateTransform():void
+        {
+            if (_handlerRef[this])
             {
-               liveReference[getQualifiedClassName(c)] = new Dictionary(true);
-            }
-            liveReference[getQualifiedClassName(c)][this] = 1;
-            _handlerRef[this] = handler;
-         }
-      }
-      
-      private function makeChild(handler:IAnimationSpriteHandler) : DisplayObject {
-         var lastNumChild:uint = 0;
-         var c:Sprite = handler.getSkinSprite(this);
-         if((c) && (!(c == this)))
-         {
-            lastNumChild = 0;
-            while((numChildren) && (!(lastNumChild == numChildren)))
+                this.makeChild(_handlerRef[this]);
+            };
+        }
+
+        override public function init(handler:IAnimationSpriteHandler):void
+        {
+            if (getQualifiedClassName(parent) == getQualifiedClassName(this))
             {
-               lastNumChild = numChildren;
-               removeChildAt(0);
-            }
-            return addChild(c);
-         }
-         return null;
-      }
-   }
-}
+                return;
+            };
+            var c:DisplayObject = this.makeChild(handler);
+            if (((c) && (enableLiveReference)))
+            {
+                if (!(liveReference[getQualifiedClassName(c)]))
+                {
+                    liveReference[getQualifiedClassName(c)] = new Dictionary(true);
+                };
+                liveReference[getQualifiedClassName(c)][this] = 1;
+                _handlerRef[this] = handler;
+            };
+        }
+
+        private function makeChild(handler:IAnimationSpriteHandler):DisplayObject
+        {
+            var lastNumChild:uint;
+            var c:Sprite = handler.getSkinSprite(this);
+            if (((c) && (!((c == this)))))
+            {
+                lastNumChild = 0;
+                while (((numChildren) && (!((lastNumChild == numChildren)))))
+                {
+                    lastNumChild = numChildren;
+                    removeChildAt(0);
+                };
+                return (addChild(c));
+            };
+            return (null);
+        }
+
+
+    }
+}//package com.ankamagames.tiphon.types
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class CharacterStatsList extends Object
-   {
-      
-      public function CharacterStatsList() {
-         super();
-      }
-   }
-}
+    public class CharacterStatsList 
+    {
+
+
+    }
+}//package d2hooks
+

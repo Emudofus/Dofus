@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class DofusShopSuccessfulPurchase extends Object
-   {
-      
-      public function DofusShopSuccessfulPurchase() {
-         super();
-      }
-   }
-}
+    public class DofusShopSuccessfulPurchase 
+    {
+
+
+    }
+}//package d2hooks
+

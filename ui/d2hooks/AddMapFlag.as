@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class AddMapFlag extends Object
-   {
-      
-      public function AddMapFlag() {
-         super();
-      }
-   }
-}
+    public class AddMapFlag 
+    {
+
+
+    }
+}//package d2hooks
+

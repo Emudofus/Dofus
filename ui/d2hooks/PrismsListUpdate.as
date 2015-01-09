@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class PrismsListUpdate extends Object
-   {
-      
-      public function PrismsListUpdate() {
-         super();
-      }
-   }
-}
+    public class PrismsListUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class CharacterNameSuggestioned extends Object
-   {
-      
-      public function CharacterNameSuggestioned() {
-         super();
-      }
-   }
-}
+    public class CharacterNameSuggestioned 
+    {
+
+
+    }
+}//package d2hooks
+

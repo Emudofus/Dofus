@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class EnabledChannels extends Object
-   {
-      
-      public function EnabledChannels() {
-         super();
-      }
-   }
-}
+    public class EnabledChannels 
+    {
+
+
+    }
+}//package d2hooks
+

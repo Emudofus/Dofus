@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class StopCinematic extends Object
-   {
-      
-      public function StopCinematic() {
-         super();
-      }
-   }
-}
+    public class StopCinematic 
+    {
+
+
+    }
+}//package d2hooks
+

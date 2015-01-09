@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class MoodResult extends Object
-   {
-      
-      public function MoodResult() {
-         super();
-      }
-   }
-}
+    public class MoodResult 
+    {
+
+
+    }
+}//package d2hooks
+

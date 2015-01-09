@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class WorldRightClick extends Object
-   {
-      
-      public function WorldRightClick() {
-         super();
-      }
-   }
-}
+    public class WorldRightClick 
+    {
+
+
+    }
+}//package d2hooks
+

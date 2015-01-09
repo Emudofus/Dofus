@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class TitlesListUpdated extends Object
-   {
-      
-      public function TitlesListUpdated() {
-         super();
-      }
-   }
-}
+    public class TitlesListUpdated 
+    {
+
+
+    }
+}//package d2hooks
+

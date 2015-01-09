@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class BreedsAvailable extends Object
-   {
-      
-      public function BreedsAvailable() {
-         super();
-      }
-   }
-}
+    public class BreedsAvailable 
+    {
+
+
+    }
+}//package d2hooks
+

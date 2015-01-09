@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class MouseCtrlDoubleClick extends Object
-   {
-      
-      public function MouseCtrlDoubleClick() {
-         super();
-      }
-   }
-}
+    public class MouseCtrlDoubleClick 
+    {
+
+
+    }
+}//package d2hooks
+

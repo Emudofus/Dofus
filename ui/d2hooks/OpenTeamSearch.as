@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class OpenTeamSearch extends Object
-   {
-      
-      public function OpenTeamSearch() {
-         super();
-      }
-   }
-}
+    public class OpenTeamSearch 
+    {
+
+
+    }
+}//package d2hooks
+

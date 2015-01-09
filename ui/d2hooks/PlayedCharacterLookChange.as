@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class PlayedCharacterLookChange extends Object
-   {
-      
-      public function PlayedCharacterLookChange() {
-         super();
-      }
-   }
-}
+    public class PlayedCharacterLookChange 
+    {
+
+
+    }
+}//package d2hooks
+

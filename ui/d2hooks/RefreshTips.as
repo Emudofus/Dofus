@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class RefreshTips extends Object
-   {
-      
-      public function RefreshTips() {
-         super();
-      }
-   }
-}
+    public class RefreshTips 
+    {
+
+
+    }
+}//package d2hooks
+

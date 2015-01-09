@@ -1,17 +1,18 @@
-package com.ankamagames.dofus.logic.game.approach.actions
+﻿package com.ankamagames.dofus.logic.game.approach.actions
 {
-   import com.ankamagames.jerakine.handlers.messages.Action;
-   
-   public class GiftAssignCancelAction extends Object implements Action
-   {
-      
-      public function GiftAssignCancelAction() {
-         super();
-      }
-      
-      public static function create() : * {
-         var action:GiftAssignCancelAction = new GiftAssignCancelAction();
-         return action;
-      }
-   }
-}
+    import com.ankamagames.jerakine.handlers.messages.Action;
+
+    public class GiftAssignCancelAction implements Action 
+    {
+
+
+        public static function create():GiftAssignCancelAction
+        {
+            var action:GiftAssignCancelAction = new (GiftAssignCancelAction)();
+            return (action);
+        }
+
+
+    }
+}//package com.ankamagames.dofus.logic.game.approach.actions
+

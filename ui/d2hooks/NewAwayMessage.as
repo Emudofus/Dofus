@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class NewAwayMessage extends Object
-   {
-      
-      public function NewAwayMessage() {
-         super();
-      }
-   }
-}
+    public class NewAwayMessage 
+    {
+
+
+    }
+}//package d2hooks
+

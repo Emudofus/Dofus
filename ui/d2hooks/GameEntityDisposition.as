@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class GameEntityDisposition extends Object
-   {
-      
-      public function GameEntityDisposition() {
-         super();
-      }
-   }
-}
+    public class GameEntityDisposition 
+    {
+
+
+    }
+}//package d2hooks
+

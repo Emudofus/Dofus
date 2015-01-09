@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class WeaponUpdate extends Object
-   {
-      
-      public function WeaponUpdate() {
-         super();
-      }
-   }
-}
+    public class WeaponUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

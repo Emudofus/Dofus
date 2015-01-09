@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ChatServerCopy extends Object
-   {
-      
-      public function ChatServerCopy() {
-         super();
-      }
-   }
-}
+    public class ChatServerCopy 
+    {
+
+
+    }
+}//package d2hooks
+

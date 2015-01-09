@@ -1,18 +1,20 @@
-package d2network
+﻿package d2network
 {
-   public class GroupMonsterStaticInformations extends Object
-   {
-      
-      public function GroupMonsterStaticInformations() {
-         super();
-      }
-      
-      public function get mainCreatureLightInfos() : MonsterInGroupLightInformations {
-         return new MonsterInGroupLightInformations();
-      }
-      
-      public function get underlings() : Object {
-         return new Object();
-      }
-   }
-}
+    public class GroupMonsterStaticInformations 
+    {
+
+
+        public function get mainCreatureLightInfos():MonsterInGroupLightInformations
+        {
+            return (new MonsterInGroupLightInformations());
+        }
+
+        public function get underlings():Object
+        {
+            return (new Object());
+        }
+
+
+    }
+}//package d2network
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ExchangeItemAutoCraftStoped extends Object
-   {
-      
-      public function ExchangeItemAutoCraftStoped() {
-         super();
-      }
-   }
-}
+    public class ExchangeItemAutoCraftStoped 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class MountUnSet extends Object
-   {
-      
-      public function MountUnSet() {
-         super();
-      }
-   }
-}
+    public class MountUnSet 
+    {
+
+
+    }
+}//package d2hooks
+

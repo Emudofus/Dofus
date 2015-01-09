@@ -1,14 +1,15 @@
-package d2network
+﻿package d2network
 {
-   public class GameFightFighterMonsterLightInformations extends GameFightFighterLightInformations
-   {
-      
-      public function GameFightFighterMonsterLightInformations() {
-         super();
-      }
-      
-      public function get creatureGenericId() : uint {
-         return new uint();
-      }
-   }
-}
+    public class GameFightFighterMonsterLightInformations extends GameFightFighterLightInformations 
+    {
+
+
+        public function get creatureGenericId():uint
+        {
+            return (new uint());
+        }
+
+
+    }
+}//package d2network
+

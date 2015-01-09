@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class AlliancePrismDialogQuestion extends Object
-   {
-      
-      public function AlliancePrismDialogQuestion() {
-         super();
-      }
-   }
-}
+    public class AlliancePrismDialogQuestion 
+    {
+
+
+    }
+}//package d2hooks
+

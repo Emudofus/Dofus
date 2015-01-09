@@ -1,10 +1,9 @@
-package d2network
+﻿package d2network
 {
-   public class GameRolePlayActorInformations extends GameContextActorInformations
-   {
-      
-      public function GameRolePlayActorInformations() {
-         super();
-      }
-   }
-}
+    public class GameRolePlayActorInformations extends GameContextActorInformations 
+    {
+
+
+    }
+}//package d2network
+

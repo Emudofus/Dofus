@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class EnemiesListUpdated extends Object
-   {
-      
-      public function EnemiesListUpdated() {
-         super();
-      }
-   }
-}
+    public class EnemiesListUpdated 
+    {
+
+
+    }
+}//package d2hooks
+

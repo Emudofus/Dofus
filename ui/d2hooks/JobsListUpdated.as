@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class JobsListUpdated extends Object
-   {
-      
-      public function JobsListUpdated() {
-         super();
-      }
-   }
-}
+    public class JobsListUpdated 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,16 +1,13 @@
-package com.ankamagames.dofus.network.enums
+﻿package com.ankamagames.dofus.network.enums
 {
-   public class MountEquipedErrorEnum extends Object
-   {
-      
-      public function MountEquipedErrorEnum() {
-         super();
-      }
-      
-      public static const UNSET:uint = 0;
-      
-      public static const SET:uint = 1;
-      
-      public static const RIDING:uint = 2;
-   }
-}
+    public class MountEquipedErrorEnum 
+    {
+
+        public static const UNSET:uint = 0;
+        public static const SET:uint = 1;
+        public static const RIDING:uint = 2;
+
+
+    }
+}//package com.ankamagames.dofus.network.enums
+

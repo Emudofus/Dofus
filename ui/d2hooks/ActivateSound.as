@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ActivateSound extends Object
-   {
-      
-      public function ActivateSound() {
-         super();
-      }
-   }
-}
+    public class ActivateSound 
+    {
+
+
+    }
+}//package d2hooks
+

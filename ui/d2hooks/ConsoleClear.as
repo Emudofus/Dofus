@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class ConsoleClear extends Object
-   {
-      
-      public function ConsoleClear() {
-         super();
-      }
-   }
-}
+    public class ConsoleClear 
+    {
+
+
+    }
+}//package d2hooks
+

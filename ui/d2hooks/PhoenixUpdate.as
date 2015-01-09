@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class PhoenixUpdate extends Object
-   {
-      
-      public function PhoenixUpdate() {
-         super();
-      }
-   }
-}
+    public class PhoenixUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class KrosmasterAuthToken extends Object
-   {
-      
-      public function KrosmasterAuthToken() {
-         super();
-      }
-   }
-}
+    public class KrosmasterAuthToken 
+    {
+
+
+    }
+}//package d2hooks
+

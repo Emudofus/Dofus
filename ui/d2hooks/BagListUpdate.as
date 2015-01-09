@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class BagListUpdate extends Object
-   {
-      
-      public function BagListUpdate() {
-         super();
-      }
-   }
-}
+    public class BagListUpdate 
+    {
+
+
+    }
+}//package d2hooks
+

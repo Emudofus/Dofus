@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class TextInformation extends Object
-   {
-      
-      public function TextInformation() {
-         super();
-      }
-   }
-}
+    public class TextInformation 
+    {
+
+
+    }
+}//package d2hooks
+

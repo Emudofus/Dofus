@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class PaddockSellBuyDialog extends Object
-   {
-      
-      public function PaddockSellBuyDialog() {
-         super();
-      }
-   }
-}
+    public class PaddockSellBuyDialog 
+    {
+
+
+    }
+}//package d2hooks
+

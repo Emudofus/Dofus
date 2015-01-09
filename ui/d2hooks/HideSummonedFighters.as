@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class HideSummonedFighters extends Object
-   {
-      
-      public function HideSummonedFighters() {
-         super();
-      }
-   }
-}
+    public class HideSummonedFighters 
+    {
+
+
+    }
+}//package d2hooks
+

@@ -1,10 +1,9 @@
-package d2hooks
+﻿package d2hooks
 {
-   public class RemoveAllFlags extends Object
-   {
-      
-      public function RemoveAllFlags() {
-         super();
-      }
-   }
-}
+    public class RemoveAllFlags 
+    {
+
+
+    }
+}//package d2hooks
+
