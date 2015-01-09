@@ -11,4 +11,4 @@ Ui Modules version :
 
 - 2.26 _(current)_
 
-To see previous versions, please check [master2](https://github.com/Emudofus/Dofus/tree/master2) branch.
+To see previous versions, please check old commits and [master](https://github.com/Emudofus/Dofus/tree/master) branch.
