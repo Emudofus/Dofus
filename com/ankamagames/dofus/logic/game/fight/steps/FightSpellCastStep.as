@@ -1,6 +1,7 @@
 ﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.jerakine.sequencer.AbstractSequencable;
+    import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
     import com.ankamagames.jerakine.sequencer.SerialSequencer;
     import com.ankamagames.dofus.internalDatacenter.communication.ChatBubble;
@@ -26,6 +27,7 @@
         private var _spellId:int;
         private var _spellRank:uint;
         private var _critical:uint;
+        private var _portalIds:Vector.<int>;
 
         public function FightSpellCastStep(fighterId:int, cellId:int, sourceCellId:int, spellId:int, spellRank:uint, critical:uint)
         {

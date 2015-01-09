@@ -651,7 +651,7 @@ class InteractiveItemEntity extends InteractiveItem
                         for each (action in npc.actions)
                         {
                             npcAction = NpcAction.getNpcActionById(action);
-                            str = (str + (((("<br/> Skill : " + npcAction.name) + " (id: ") + npcAction.id) + ")"));
+                            str = (str + (((("<br/> Skill : " + npcAction.name) + " (id: ") + npcAction.realId) + ")"));
                         };
                     };
                     this._cmd = (((('$("On parle avec le Pnj ' + npc.name) + " (id: ") + npc.id) + ')" );\n');

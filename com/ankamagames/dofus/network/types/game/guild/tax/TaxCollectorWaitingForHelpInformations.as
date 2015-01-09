@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.fight.ProtectedEntityWaitingForHelpInfo;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class TaxCollectorWaitingForHelpInformations extends TaxCollectorComplementaryInformations implements INetworkType 
     {
@@ -34,23 +34,23 @@
             this.waitingForHelpInfo = new ProtectedEntityWaitingForHelpInfo();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TaxCollectorWaitingForHelpInformations(output);
         }
 
-        public function serializeAs_TaxCollectorWaitingForHelpInformations(output:IDataOutput):void
+        public function serializeAs_TaxCollectorWaitingForHelpInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_TaxCollectorComplementaryInformations(output);
             this.waitingForHelpInfo.serializeAs_ProtectedEntityWaitingForHelpInfo(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TaxCollectorWaitingForHelpInformations(input);
         }
 
-        public function deserializeAs_TaxCollectorWaitingForHelpInformations(input:IDataInput):void
+        public function deserializeAs_TaxCollectorWaitingForHelpInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.waitingForHelpInfo = new ProtectedEntityWaitingForHelpInfo();

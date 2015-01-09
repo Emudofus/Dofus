@@ -12,8 +12,8 @@
     {
 
         private static const _log:Logger = Log.getLogger("ComicsManager");
-        private static const LOCAL_COMICS_READER_API_URL:String = "http://api.ankama.lan/game/comicreader";
-        private static const RELEASE_COMICS_READER_API_URL:String = "http://api.ankama.com/game/comicreader";
+        private static const LOCAL_COMICS_READER_API_URL:String = "http://apinc.ankama.lan/reader/read";
+        private static const RELEASE_COMICS_READER_API_URL:String = "http://apinc.ankama.com/reader/read";
         private static var _self:ComicsManager;
 
         private const _serviceType:String = "json";

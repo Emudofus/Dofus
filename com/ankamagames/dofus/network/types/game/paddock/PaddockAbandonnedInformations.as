@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.paddock
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PaddockAbandonnedInformations extends PaddockBuyableInformations implements INetworkType 
     {
@@ -30,23 +30,23 @@
             this.guildId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PaddockAbandonnedInformations(output);
         }
 
-        public function serializeAs_PaddockAbandonnedInformations(output:IDataOutput):void
+        public function serializeAs_PaddockAbandonnedInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_PaddockBuyableInformations(output);
             output.writeInt(this.guildId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PaddockAbandonnedInformations(input);
         }
 
-        public function deserializeAs_PaddockAbandonnedInformations(input:IDataInput):void
+        public function deserializeAs_PaddockAbandonnedInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.guildId = input.readInt();

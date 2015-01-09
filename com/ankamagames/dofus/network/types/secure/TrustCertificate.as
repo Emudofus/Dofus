@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.secure
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class TrustCertificate implements INetworkType 
@@ -32,12 +32,12 @@
             this.hash = "";
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TrustCertificate(output);
         }
 
-        public function serializeAs_TrustCertificate(output:IDataOutput):void
+        public function serializeAs_TrustCertificate(output:ICustomDataOutput):void
         {
             if (this.id < 0)
             {
@@ -47,12 +47,12 @@
             output.writeUTF(this.hash);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TrustCertificate(input);
         }
 
-        public function deserializeAs_TrustCertificate(input:IDataInput):void
+        public function deserializeAs_TrustCertificate(input:ICustomDataInput):void
         {
             this.id = input.readInt();
             if (this.id < 0)

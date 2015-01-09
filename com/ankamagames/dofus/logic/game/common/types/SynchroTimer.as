@@ -57,7 +57,7 @@
                 this._value = 0;
             };
             this._time = time;
-            if (this._callBack)
+            if (this._callBack != null)
             {
                 this._callBack.apply(this, [this]);
             };

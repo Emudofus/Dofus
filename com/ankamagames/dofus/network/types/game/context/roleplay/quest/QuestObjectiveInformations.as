@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class QuestObjectiveInformations implements INetworkType 
@@ -41,18 +41,18 @@
             this.dialogParams = new Vector.<String>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_QuestObjectiveInformations(output);
         }
 
-        public function serializeAs_QuestObjectiveInformations(output:IDataOutput):void
+        public function serializeAs_QuestObjectiveInformations(output:ICustomDataOutput):void
         {
             if (this.objectiveId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectiveId) + ") on element objectiveId.")));
             };
-            output.writeShort(this.objectiveId);
+            output.writeVarShort(this.objectiveId);
             output.writeBoolean(this.objectiveStatus);
             output.writeShort(this.dialogParams.length);
             var _i3:uint;
@@ -63,15 +63,15 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_QuestObjectiveInformations(input);
         }
 
-        public function deserializeAs_QuestObjectiveInformations(input:IDataInput):void
+        public function deserializeAs_QuestObjectiveInformations(input:ICustomDataInput):void
         {
             var _val3:String;
-            this.objectiveId = input.readShort();
+            this.objectiveId = input.readVarUhShort();
             if (this.objectiveId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectiveId) + ") on element of QuestObjectiveInformations.objectiveId.")));

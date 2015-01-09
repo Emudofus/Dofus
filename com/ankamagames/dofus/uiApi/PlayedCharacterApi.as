@@ -462,7 +462,7 @@
             var modif:CharacterSpellModification = CurrentPlayedFighterManager.getInstance().getSpellModifications(spellId, carac);
             if (((modif) && (modif.value)))
             {
-                return ((((modif.value.alignGiftBonus + modif.value.base) + modif.value.contextModif) + modif.value.objectsAndMountBonus));
+                return (((((modif.value.alignGiftBonus + modif.value.base) + modif.value.additionnal) + modif.value.contextModif) + modif.value.objectsAndMountBonus));
             };
             return (0);
         }
@@ -525,6 +525,12 @@
         public static function getExperienceBonusPercent():int
         {
             return (PlayedCharacterManager.getInstance().experiencePercent);
+        }
+
+        [Untrusted]
+        public static function getWaitingGifts():Array
+        {
+            return (PlayedCharacterManager.getInstance().waitingGifts);
         }
 
         [Untrusted]

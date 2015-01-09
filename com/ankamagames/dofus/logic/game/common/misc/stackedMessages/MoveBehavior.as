@@ -10,12 +10,17 @@
     import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterInformations;
     import com.ankamagames.jerakine.types.positions.MapPoint;
+    import com.ankamagames.jerakine.utils.system.AirScanner;
     import com.ankamagames.berilia.frames.ShortcutsFrame;
+    import com.ankamagames.jerakine.utils.system.SystemManager;
+    import com.ankamagames.jerakine.enum.OperatingSystem;
+    import com.ankamagames.jerakine.managers.OptionManager;
     import com.ankamagames.jerakine.messages.Message;
     import com.ankamagames.atouin.messages.EntityMovementStoppedMessage;
     import com.ankamagames.dofus.logic.game.roleplay.messages.CharacterMovementStoppedMessage;
     import com.ankamagames.dofus.misc.utils.EmbedAssets;
     import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayMovementFrame;
+    import com.ankamagames.atouin.AtouinConstants;
 
     public class MoveBehavior extends AbstractBehavior 
     {
@@ -79,7 +84,7 @@
                             position = (pMsgToProcess as EntityClickMessage).entity.position;
                         };
                     };
-                    this.forceWalk = ShortcutsFrame.ctrlKeyDown;
+                    this.forceWalk = ((AirScanner.isStreamingVersion()) ? false : (((OptionManager.getOptionManager("dofus")["enableForceWalk"] == true)) && (((ShortcutsFrame.ctrlKeyDown) || ((((SystemManager.getSingleton().os == OperatingSystem.MAC_OS)) && (ShortcutsFrame.altKeyDown)))))));
                     return (true);
                 };
             }
@@ -157,8 +162,14 @@
         override public function processMessageToWorker():void
         {
             var rpMovementFrame:RoleplayMovementFrame = (Kernel.getWorker().getFrame(RoleplayMovementFrame) as RoleplayMovementFrame);
-            rpMovementFrame.setForceWalkForNextMovement(this.forceWalk);
+            rpMovementFrame.forceNextMovementBehavior(((this.forceWalk) ? AtouinConstants.MOVEMENT_WALK : AtouinConstants.MOVEMENT_NORMAL));
             super.processMessageToWorker();
+        }
+
+        override public function isAvailableToProcess(pMsg:Message):Boolean
+        {
+            var rpMovementFrame:RoleplayMovementFrame = (Kernel.getWorker().getFrame(RoleplayMovementFrame) as RoleplayMovementFrame);
+            return (!(rpMovementFrame.isRequestingMovement));
         }
 
 

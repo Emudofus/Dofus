@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
 
     [Trusted]
@@ -68,24 +69,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_IdentificationSuccessMessage(output);
         }
 
-        public function serializeAs_IdentificationSuccessMessage(output:IDataOutput):void
+        public function serializeAs_IdentificationSuccessMessage(output:ICustomDataOutput):void
         {
             var _box0:uint;
             _box0 = BooleanByteWrapper.setFlag(_box0, 0, this.hasRights);
@@ -121,12 +122,12 @@
             output.writeDouble(this.subscriptionEndDate);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_IdentificationSuccessMessage(input);
         }
 
-        public function deserializeAs_IdentificationSuccessMessage(input:IDataInput):void
+        public function deserializeAs_IdentificationSuccessMessage(input:ICustomDataInput):void
         {
             var _box0:uint = input.readByte();
             this.hasRights = BooleanByteWrapper.getFlag(_box0, 0);

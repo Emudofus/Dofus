@@ -506,16 +506,16 @@
                     o.mouseX = StageShareManager.mouseX;
                     o.mouseY = StageShareManager.mouseY;
                 };
+                if (!(PlayerManager.getInstance().server))
+                {
+                    return (o);
+                };
                 if (PlayerManager.getInstance().nickname)
                 {
                     o.account = (((PlayerManager.getInstance().nickname + " (id: ") + PlayerManager.getInstance().accountId) + ")");
                 };
                 o.accountId = PlayerManager.getInstance().accountId;
                 o.serverId = PlayerManager.getInstance().server.id;
-                if (!(PlayerManager.getInstance().server))
-                {
-                    return (o);
-                };
                 o.server = (((PlayerManager.getInstance().server.name + " (id: ") + PlayerManager.getInstance().server.id) + ")");
                 if (!(PlayedCharacterManager.getInstance().infos))
                 {
@@ -524,7 +524,7 @@
                 o.character = (((PlayedCharacterManager.getInstance().infos.name + " (id: ") + PlayedCharacterManager.getInstance().id) + ")");
                 o.characterId = PlayedCharacterManager.getInstance().id;
                 currentMap = PlayedCharacterManager.getInstance().currentMap;
-                if (currentMap == null)
+                if (!(currentMap))
                 {
                     return (o);
                 };

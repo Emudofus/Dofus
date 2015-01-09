@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class AllianceInsiderPrismInformation extends PrismInformation implements INetworkType 
@@ -49,12 +49,12 @@
             this.modulesItemIds = new Vector.<uint>();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AllianceInsiderPrismInformation(output);
         }
 
-        public function serializeAs_AllianceInsiderPrismInformation(output:IDataOutput):void
+        public function serializeAs_AllianceInsiderPrismInformation(output:ICustomDataOutput):void
         {
             super.serializeAs_PrismInformation(output);
             if (this.lastTimeSlotModificationDate < 0)
@@ -66,12 +66,12 @@
             {
                 throw (new Error((("Forbidden value (" + this.lastTimeSlotModificationAuthorGuildId) + ") on element lastTimeSlotModificationAuthorGuildId.")));
             };
-            output.writeInt(this.lastTimeSlotModificationAuthorGuildId);
+            output.writeVarInt(this.lastTimeSlotModificationAuthorGuildId);
             if (this.lastTimeSlotModificationAuthorId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lastTimeSlotModificationAuthorId) + ") on element lastTimeSlotModificationAuthorId.")));
             };
-            output.writeInt(this.lastTimeSlotModificationAuthorId);
+            output.writeVarInt(this.lastTimeSlotModificationAuthorId);
             output.writeUTF(this.lastTimeSlotModificationAuthorName);
             output.writeShort(this.modulesItemIds.length);
             var _i5:uint;
@@ -81,17 +81,17 @@
                 {
                     throw (new Error((("Forbidden value (" + this.modulesItemIds[_i5]) + ") on element 5 (starting at 1) of modulesItemIds.")));
                 };
-                output.writeInt(this.modulesItemIds[_i5]);
+                output.writeVarInt(this.modulesItemIds[_i5]);
                 _i5++;
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AllianceInsiderPrismInformation(input);
         }
 
-        public function deserializeAs_AllianceInsiderPrismInformation(input:IDataInput):void
+        public function deserializeAs_AllianceInsiderPrismInformation(input:ICustomDataInput):void
         {
             var _val5:uint;
             super.deserialize(input);
@@ -100,12 +100,12 @@
             {
                 throw (new Error((("Forbidden value (" + this.lastTimeSlotModificationDate) + ") on element of AllianceInsiderPrismInformation.lastTimeSlotModificationDate.")));
             };
-            this.lastTimeSlotModificationAuthorGuildId = input.readInt();
+            this.lastTimeSlotModificationAuthorGuildId = input.readVarUhInt();
             if (this.lastTimeSlotModificationAuthorGuildId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lastTimeSlotModificationAuthorGuildId) + ") on element of AllianceInsiderPrismInformation.lastTimeSlotModificationAuthorGuildId.")));
             };
-            this.lastTimeSlotModificationAuthorId = input.readInt();
+            this.lastTimeSlotModificationAuthorId = input.readVarUhInt();
             if (this.lastTimeSlotModificationAuthorId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lastTimeSlotModificationAuthorId) + ") on element of AllianceInsiderPrismInformation.lastTimeSlotModificationAuthorId.")));
@@ -115,7 +115,7 @@
             var _i5:uint;
             while (_i5 < _modulesItemIdsLen)
             {
-                _val5 = input.readInt();
+                _val5 = input.readVarUhInt();
                 if (_val5 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val5) + ") on elements of modulesItemIds.")));

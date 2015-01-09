@@ -21,6 +21,7 @@
     import com.ankamagames.dofus.network.messages.game.approach.ServerOptionalFeaturesMessage;
     import com.ankamagames.dofus.network.messages.game.approach.ServerSettingsMessage;
     import com.ankamagames.dofus.network.messages.game.approach.ServerSessionConstantsMessage;
+    import com.ankamagames.dofus.network.messages.game.basic.CurrentServerStatusUpdateMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.AccountHouseMessage;
     import com.ankamagames.jerakine.handlers.messages.mouse.MouseWheelMessage;
     import flash.filesystem.File;
@@ -54,6 +55,7 @@
         private var _accountHouses:Vector.<AccountHouseInformations>;
         private var _stage:Stage;
         private var _mouseOnStage:Boolean = true;
+        private var _serverStatus:uint;
 
 
         public static function getInstance():MiscFrame
@@ -102,6 +104,11 @@
             return (this._serverSessionConstants[id]);
         }
 
+        public function getServerStatus():uint
+        {
+            return (this._serverStatus);
+        }
+
         public function process(msg:Message):Boolean
         {
             var mrcMsg:MouseRightClickMessage;
@@ -116,6 +123,7 @@
             var sofmsg:ServerOptionalFeaturesMessage;
             var ssmsg:ServerSettingsMessage;
             var sscmsg:ServerSessionConstantsMessage;
+            var cssum:CurrentServerStatusUpdateMessage;
             var ahm:AccountHouseMessage;
             var mwMsg:MouseWheelMessage;
             var currentW:DisplayObject;
@@ -261,6 +269,11 @@
                             };
                         };
                     };
+                    return (true);
+                case (msg is CurrentServerStatusUpdateMessage):
+                    cssum = (msg as CurrentServerStatusUpdateMessage);
+                    this._serverStatus = cssum.status;
+                    KernelEventsManager.getInstance().processCallback(HookList.ServerStatusUpdate, this._serverStatus);
                     return (true);
                 case (msg is AccountHouseMessage):
                     ahm = (msg as AccountHouseMessage);

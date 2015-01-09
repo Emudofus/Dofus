@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.data.items.effects
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ObjectEffectLadder extends ObjectEffectCreature implements INetworkType 
@@ -31,30 +31,30 @@
             this.monsterCount = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectEffectLadder(output);
         }
 
-        public function serializeAs_ObjectEffectLadder(output:IDataOutput):void
+        public function serializeAs_ObjectEffectLadder(output:ICustomDataOutput):void
         {
             super.serializeAs_ObjectEffectCreature(output);
             if (this.monsterCount < 0)
             {
                 throw (new Error((("Forbidden value (" + this.monsterCount) + ") on element monsterCount.")));
             };
-            output.writeInt(this.monsterCount);
+            output.writeVarInt(this.monsterCount);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectEffectLadder(input);
         }
 
-        public function deserializeAs_ObjectEffectLadder(input:IDataInput):void
+        public function deserializeAs_ObjectEffectLadder(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.monsterCount = input.readInt();
+            this.monsterCount = input.readVarUhInt();
             if (this.monsterCount < 0)
             {
                 throw (new Error((("Forbidden value (" + this.monsterCount) + ") on element of ObjectEffectLadder.monsterCount.")));

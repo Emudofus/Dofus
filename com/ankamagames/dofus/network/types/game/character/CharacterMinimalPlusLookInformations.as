@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class CharacterMinimalPlusLookInformations extends CharacterMinimalInformations implements INetworkType 
     {
@@ -36,23 +36,23 @@
             this.entityLook = new EntityLook();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharacterMinimalPlusLookInformations(output);
         }
 
-        public function serializeAs_CharacterMinimalPlusLookInformations(output:IDataOutput):void
+        public function serializeAs_CharacterMinimalPlusLookInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_CharacterMinimalInformations(output);
             this.entityLook.serializeAs_EntityLook(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharacterMinimalPlusLookInformations(input);
         }
 
-        public function deserializeAs_CharacterMinimalPlusLookInformations(input:IDataInput):void
+        public function deserializeAs_CharacterMinimalPlusLookInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.entityLook = new EntityLook();

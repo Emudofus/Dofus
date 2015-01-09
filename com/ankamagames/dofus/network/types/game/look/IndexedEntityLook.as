@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.look
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class IndexedEntityLook implements INetworkType 
@@ -36,12 +36,12 @@
             this.look = new EntityLook();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_IndexedEntityLook(output);
         }
 
-        public function serializeAs_IndexedEntityLook(output:IDataOutput):void
+        public function serializeAs_IndexedEntityLook(output:ICustomDataOutput):void
         {
             this.look.serializeAs_EntityLook(output);
             if (this.index < 0)
@@ -51,12 +51,12 @@
             output.writeByte(this.index);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_IndexedEntityLook(input);
         }
 
-        public function deserializeAs_IndexedEntityLook(input:IDataInput):void
+        public function deserializeAs_IndexedEntityLook(input:ICustomDataInput):void
         {
             this.look = new EntityLook();
             this.look.deserialize(input);

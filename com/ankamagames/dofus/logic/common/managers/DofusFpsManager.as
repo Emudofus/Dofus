@@ -96,7 +96,7 @@
             }
             else
             {
-                if (((!(hasAir)) || (((((hasAir) && (nativeWindow))) && (!(nativeWindow.active))))))
+                if (!(StageShareManager.isActive))
                 {
                     StageShareManager.stage.frameRate = 12;
                 };

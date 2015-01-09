@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ObjectGroundRemovedMessage extends NetworkMessage implements INetworkMessage 
@@ -39,40 +40,40 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectGroundRemovedMessage(output);
         }
 
-        public function serializeAs_ObjectGroundRemovedMessage(output:IDataOutput):void
+        public function serializeAs_ObjectGroundRemovedMessage(output:ICustomDataOutput):void
         {
             if ((((this.cell < 0)) || ((this.cell > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.cell) + ") on element cell.")));
             };
-            output.writeShort(this.cell);
+            output.writeVarShort(this.cell);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectGroundRemovedMessage(input);
         }
 
-        public function deserializeAs_ObjectGroundRemovedMessage(input:IDataInput):void
+        public function deserializeAs_ObjectGroundRemovedMessage(input:ICustomDataInput):void
         {
-            this.cell = input.readShort();
+            this.cell = input.readVarUhShort();
             if ((((this.cell < 0)) || ((this.cell > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.cell) + ") on element of ObjectGroundRemovedMessage.cell.")));

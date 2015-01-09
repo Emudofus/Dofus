@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class LivingObjectMessageMessage extends NetworkMessage implements INetworkMessage 
@@ -48,63 +49,63 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_LivingObjectMessageMessage(output);
         }
 
-        public function serializeAs_LivingObjectMessageMessage(output:IDataOutput):void
+        public function serializeAs_LivingObjectMessageMessage(output:ICustomDataOutput):void
         {
             if (this.msgId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.msgId) + ") on element msgId.")));
             };
-            output.writeShort(this.msgId);
-            if ((((this.timeStamp < 0)) || ((this.timeStamp > 0xFFFFFFFF))))
+            output.writeVarShort(this.msgId);
+            if (this.timeStamp < 0)
             {
                 throw (new Error((("Forbidden value (" + this.timeStamp) + ") on element timeStamp.")));
             };
-            output.writeUnsignedInt(this.timeStamp);
+            output.writeInt(this.timeStamp);
             output.writeUTF(this.owner);
-            if ((((this.objectGenericId < 0)) || ((this.objectGenericId > 0xFFFFFFFF))))
+            if (this.objectGenericId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectGenericId) + ") on element objectGenericId.")));
             };
-            output.writeUnsignedInt(this.objectGenericId);
+            output.writeVarShort(this.objectGenericId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_LivingObjectMessageMessage(input);
         }
 
-        public function deserializeAs_LivingObjectMessageMessage(input:IDataInput):void
+        public function deserializeAs_LivingObjectMessageMessage(input:ICustomDataInput):void
         {
-            this.msgId = input.readShort();
+            this.msgId = input.readVarUhShort();
             if (this.msgId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.msgId) + ") on element of LivingObjectMessageMessage.msgId.")));
             };
-            this.timeStamp = input.readUnsignedInt();
-            if ((((this.timeStamp < 0)) || ((this.timeStamp > 0xFFFFFFFF))))
+            this.timeStamp = input.readInt();
+            if (this.timeStamp < 0)
             {
                 throw (new Error((("Forbidden value (" + this.timeStamp) + ") on element of LivingObjectMessageMessage.timeStamp.")));
             };
             this.owner = input.readUTF();
-            this.objectGenericId = input.readUnsignedInt();
-            if ((((this.objectGenericId < 0)) || ((this.objectGenericId > 0xFFFFFFFF))))
+            this.objectGenericId = input.readVarUhShort();
+            if (this.objectGenericId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectGenericId) + ") on element of LivingObjectMessageMessage.objectGenericId.")));
             };

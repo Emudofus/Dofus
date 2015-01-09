@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import com.ankamagames.dofus.network.types.game.inventory.preset.Preset;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class InventoryPresetUpdateMessage extends NetworkMessage implements INetworkMessage 
@@ -45,34 +46,34 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_InventoryPresetUpdateMessage(output);
         }
 
-        public function serializeAs_InventoryPresetUpdateMessage(output:IDataOutput):void
+        public function serializeAs_InventoryPresetUpdateMessage(output:ICustomDataOutput):void
         {
             this.preset.serializeAs_Preset(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_InventoryPresetUpdateMessage(input);
         }
 
-        public function deserializeAs_InventoryPresetUpdateMessage(input:IDataInput):void
+        public function deserializeAs_InventoryPresetUpdateMessage(input:ICustomDataInput):void
         {
             this.preset = new Preset();
             this.preset.deserialize(input);

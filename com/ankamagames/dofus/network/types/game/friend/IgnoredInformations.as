@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.friend
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class IgnoredInformations extends AbstractContactInformations implements INetworkType 
     {
@@ -26,22 +26,22 @@
             super.reset();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_IgnoredInformations(output);
         }
 
-        public function serializeAs_IgnoredInformations(output:IDataOutput):void
+        public function serializeAs_IgnoredInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_AbstractContactInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_IgnoredInformations(input);
         }
 
-        public function deserializeAs_IgnoredInformations(input:IDataInput):void
+        public function deserializeAs_IgnoredInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
         }

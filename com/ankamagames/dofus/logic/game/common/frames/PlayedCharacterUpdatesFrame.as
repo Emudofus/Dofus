@@ -34,6 +34,13 @@
     import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassResetMessage;
     import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassUpdateMessage;
     import com.ankamagames.dofus.network.messages.game.basic.BasicTimeMessage;
+    import com.ankamagames.dofus.network.messages.game.startup.StartupActionsListMessage;
+    import com.ankamagames.dofus.network.messages.game.startup.StartupActionAddMessage;
+    import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignRequestAction;
+    import com.ankamagames.dofus.network.messages.game.startup.StartupActionsObjetAttributionMessage;
+    import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignAllRequestAction;
+    import com.ankamagames.dofus.network.messages.game.startup.StartupActionsAllAttributionMessage;
+    import com.ankamagames.dofus.network.messages.game.startup.StartupActionFinishedMessage;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayHumanoidInformations;
     import com.ankamagames.tiphon.types.look.TiphonEntityLook;
     import com.ankamagames.dofus.datacenter.breeds.Breed;
@@ -42,6 +49,9 @@
     import com.ankamagames.dofus.datacenter.spells.SpellLevel;
     import com.ankamagames.jerakine.sequencer.SerialSequencer;
     import com.ankamagames.dofus.internalDatacenter.people.PartyMemberWrapper;
+    import com.ankamagames.dofus.network.types.game.startup.StartupActionAddObject;
+    import com.ankamagames.dofus.network.types.game.data.items.ObjectItemInformationWithQuantity;
+    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
     import com.ankamagames.dofus.misc.EntityLookAdapter;
     import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionAlliance;
@@ -49,8 +59,9 @@
     import com.ankamagames.dofus.misc.lists.PrismHookList;
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
     import com.ankamagames.dofus.misc.lists.HookList;
-    import com.ankamagames.dofus.misc.lists.ChatHookList;
+    import com.ankamagames.dofus.network.enums.StatsUpgradeResultEnum;
     import com.ankamagames.jerakine.data.I18n;
+    import com.ankamagames.dofus.misc.lists.ChatHookList;
     import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
     import com.ankamagames.dofus.misc.lists.TriggerHookList;
     import com.ankamagames.dofus.types.sequences.AddGfxEntityStep;
@@ -67,6 +78,7 @@
     import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassUpdatePartyMemberMessage;
     import com.ankamagames.dofus.network.messages.game.atlas.compass.CompassUpdatePvpSeekMessage;
     import flash.utils.getTimer;
+    import com.ankamagames.dofus.misc.lists.RoleplayHookList;
     import com.ankamagames.jerakine.messages.Message;
     import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
     import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
@@ -125,6 +137,7 @@
             var sura:StatsUpgradeRequestAction;
             var surqmsg:StatsUpgradeRequestMessage;
             var surmsg:StatsUpgradeResultMessage;
+            var statUpgradeErrorText:String;
             var clumsg:CharacterLevelUpMessage;
             var messageId:uint;
             var cegmsg:CharacterExperienceGainMessage;
@@ -139,6 +152,16 @@
             var btmsg:BasicTimeMessage;
             var date:Date;
             var receptionDelay:int;
+            var salm:StartupActionsListMessage;
+            var giftList:Array;
+            var saam:StartupActionAddMessage;
+            var items:Array;
+            var gar:GiftAssignRequestAction;
+            var sao:StartupActionsObjetAttributionMessage;
+            var gaara:GiftAssignAllRequestAction;
+            var saaamsg:StartupActionsAllAttributionMessage;
+            var safm:StartupActionFinishedMessage;
+            var indexToDelete:int;
             var infos:GameRolePlayHumanoidInformations;
             var currentLook:TiphonEntityLook;
             var newLook:TiphonEntityLook;
@@ -172,6 +195,13 @@
             var pmFrame:PartyManagementFrame;
             var socialFrame2:SocialFrame;
             var memberInfo:PartyMemberWrapper;
+            var gift:StartupActionAddObject;
+            var _items:Array;
+            var item:ObjectItemInformationWithQuantity;
+            var obj:Object;
+            var iw:ItemWrapper;
+            var itema:ObjectItemInformationWithQuantity;
+            var giftAction:Object;
             switch (true)
             {
                 case (msg is SetCharacterRestrictionsMessage):
@@ -286,15 +316,35 @@
                 case (msg is StatsUpgradeRequestAction):
                     sura = (msg as StatsUpgradeRequestAction);
                     surqmsg = new StatsUpgradeRequestMessage();
-                    surqmsg.initStatsUpgradeRequestMessage(sura.statId, sura.boostPoint);
+                    surqmsg.initStatsUpgradeRequestMessage(sura.useAdditionnal, sura.statId, sura.boostPoint);
                     ConnectionsHandler.getConnection().send(surqmsg);
                     return (true);
                 case (msg is StatsUpgradeResultMessage):
                     surmsg = (msg as StatsUpgradeResultMessage);
-                    KernelEventsManager.getInstance().processCallback(HookList.StatsUpgradeResult, surmsg.nbCharacBoost);
-                    if (surmsg.nbCharacBoost == 0)
+                    switch (surmsg.result)
                     {
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, I18n.getUiText("ui.popup.statboostFailed.text"), ChatFrame.RED_CHANNEL_ID, TimeManager.getInstance().getTimestamp());
+                        case StatsUpgradeResultEnum.SUCCESS:
+                            KernelEventsManager.getInstance().processCallback(HookList.StatsUpgradeResult, surmsg.nbCharacBoost);
+                            break;
+                        case StatsUpgradeResultEnum.NONE:
+                            statUpgradeErrorText = I18n.getUiText("ui.popup.statboostFailed.text");
+                            break;
+                        case StatsUpgradeResultEnum.GUEST:
+                            statUpgradeErrorText = I18n.getUiText("ui.fight.guestAccount");
+                            break;
+                        case StatsUpgradeResultEnum.RESTRICTED:
+                            statUpgradeErrorText = I18n.getUiText("ui.charSel.deletionErrorUnsecureMode");
+                            break;
+                        case StatsUpgradeResultEnum.IN_FIGHT:
+                            statUpgradeErrorText = I18n.getUiText("ui.error.cantDoInFight");
+                            break;
+                        case StatsUpgradeResultEnum.NOT_ENOUGH_POINT:
+                            statUpgradeErrorText = I18n.getUiText("ui.popup.statboostFailed.notEnoughPoint");
+                            break;
+                    };
+                    if (statUpgradeErrorText)
+                    {
+                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, statUpgradeErrorText, ChatFrame.RED_CHANNEL_ID, TimeManager.getInstance().getTimestamp());
                     };
                     return (true);
                 case (msg is CharacterLevelUpMessage):
@@ -493,6 +543,78 @@
                     receptionDelay = (getTimer() - btmsg.receptionTime);
                     TimeManager.getInstance().serverTimeLag = (((btmsg.timestamp + ((btmsg.timezoneOffset * 60) * 1000)) - date.getTime()) + receptionDelay);
                     TimeManager.getInstance().serverUtcTimeLag = ((btmsg.timestamp - date.getTime()) + receptionDelay);
+                    return (true);
+                case (msg is StartupActionsListMessage):
+                    salm = (msg as StartupActionsListMessage);
+                    giftList = new Array();
+                    for each (gift in salm.actions)
+                    {
+                        _items = new Array();
+                        for each (item in gift.items)
+                        {
+                            iw = ItemWrapper.create(0, 0, item.objectGID, item.quantity, item.effects, false);
+                            _items.push(iw);
+                        };
+                        obj = {
+                            "uid":gift.uid,
+                            "title":gift.title,
+                            "text":gift.text,
+                            "items":_items
+                        };
+                        giftList.push(obj);
+                    };
+                    PlayedCharacterManager.getInstance().waitingGifts = giftList;
+                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.GiftsWaitingAllocation, (giftList.length > 0));
+                    return (true);
+                case (msg is StartupActionAddMessage):
+                    saam = (msg as StartupActionAddMessage);
+                    items = new Array();
+                    for each (itema in saam.newAction.items)
+                    {
+                        iw = ItemWrapper.create(0, 0, itema.objectGID, itema.quantity, itema.effects, false);
+                        items.push(iw);
+                    };
+                    obj = {
+                        "uid":saam.newAction.uid,
+                        "title":saam.newAction.title,
+                        "text":saam.newAction.text,
+                        "items":items
+                    };
+                    PlayedCharacterManager.getInstance().waitingGifts.push(obj);
+                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.GiftsWaitingAllocation, true);
+                    return (true);
+                case (msg is GiftAssignRequestAction):
+                    gar = (msg as GiftAssignRequestAction);
+                    sao = new StartupActionsObjetAttributionMessage();
+                    sao.initStartupActionsObjetAttributionMessage(gar.giftId, gar.characterId);
+                    ConnectionsHandler.getConnection().send(sao);
+                    return (true);
+                case (msg is GiftAssignAllRequestAction):
+                    gaara = (msg as GiftAssignAllRequestAction);
+                    saaamsg = new StartupActionsAllAttributionMessage();
+                    saaamsg.initStartupActionsAllAttributionMessage(gaara.characterId);
+                    ConnectionsHandler.getConnection().send(saaamsg);
+                    return (true);
+                case (msg is StartupActionFinishedMessage):
+                    safm = (msg as StartupActionFinishedMessage);
+                    indexToDelete = -1;
+                    for each (giftAction in PlayedCharacterManager.getInstance().waitingGifts)
+                    {
+                        if (giftAction.uid == safm.actionId)
+                        {
+                            indexToDelete = PlayedCharacterManager.getInstance().waitingGifts.indexOf(giftAction);
+                            break;
+                        };
+                    };
+                    if (indexToDelete > -1)
+                    {
+                        PlayedCharacterManager.getInstance().waitingGifts.splice(indexToDelete, 1);
+                        KernelEventsManager.getInstance().processCallback(HookList.GiftAssigned, safm.actionId);
+                        if (PlayedCharacterManager.getInstance().waitingGifts.length == 0)
+                        {
+                            KernelEventsManager.getInstance().processCallback(RoleplayHookList.GiftsWaitingAllocation, false);
+                        };
+                    };
                     return (true);
             };
             return (false);

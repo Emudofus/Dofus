@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ExchangeHandleMountStableMessage extends NetworkMessage implements INetworkMessage 
@@ -42,42 +43,42 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeHandleMountStableMessage(output);
         }
 
-        public function serializeAs_ExchangeHandleMountStableMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeHandleMountStableMessage(output:ICustomDataOutput):void
         {
             output.writeByte(this.actionType);
             if (this.rideId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.rideId) + ") on element rideId.")));
             };
-            output.writeInt(this.rideId);
+            output.writeVarInt(this.rideId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeHandleMountStableMessage(input);
         }
 
-        public function deserializeAs_ExchangeHandleMountStableMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeHandleMountStableMessage(input:ICustomDataInput):void
         {
             this.actionType = input.readByte();
-            this.rideId = input.readInt();
+            this.rideId = input.readVarUhInt();
             if (this.rideId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.rideId) + ") on element of ExchangeHandleMountStableMessage.rideId.")));

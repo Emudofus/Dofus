@@ -4,6 +4,7 @@
     import com.ankamagames.jerakine.logger.Logger;
     import com.ankamagames.jerakine.logger.Log;
     import flash.utils.getQualifiedClassName;
+    import com.ankamagames.dofus.network.messages.security.CheckIntegrityMessage;
     import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
     import com.ankamagames.jerakine.types.enums.Priority;
     import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
@@ -42,6 +43,7 @@
 
         private var _hasRights:Boolean;
         private var _isFantomas:Boolean;
+        private var _include_CheckIntegrityMessage:CheckIntegrityMessage = null;
         private var _loader:IResourceLoader;
 
 

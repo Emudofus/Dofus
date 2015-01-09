@@ -1827,7 +1827,7 @@
                         fightId = pemifmmsg.fightId;
                         memberName = pemifmmsg.memberName;
                         fightMapId = pemifmmsg.fightMap.mapId;
-                        fightInformation = new PartyFightInformationsData(fightMapId, fightId, memberName, pemifmmsg.memberId, pemifmmsg.secondsBeforeFightStart);
+                        fightInformation = new PartyFightInformationsData(fightMapId, fightId, memberName, pemifmmsg.memberId, (pemifmmsg.secondsBeforeFightStart * 100));
                         fightInformation.timeUntilFightbegin.addEventListener(TimerEvent.TIMER_COMPLETE, this.onFightStartTimerComplete);
                         fightInformation.timeUntilFightbegin.start();
                         if (!(this._partyFightsInformations[fightMapId]))

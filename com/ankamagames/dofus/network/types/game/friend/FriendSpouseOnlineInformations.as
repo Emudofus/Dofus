@@ -3,9 +3,9 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.roleplay.BasicGuildInformations;
-    import flash.utils.IDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
     import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FriendSpouseOnlineInformations extends FriendSpouseInformations implements INetworkType 
     {
@@ -42,12 +42,12 @@
             this.followSpouse = false;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FriendSpouseOnlineInformations(output);
         }
 
-        public function serializeAs_FriendSpouseOnlineInformations(output:IDataOutput):void
+        public function serializeAs_FriendSpouseOnlineInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_FriendSpouseInformations(output);
             var _box0:uint;
@@ -63,15 +63,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FriendSpouseOnlineInformations(input);
         }
 
-        public function deserializeAs_FriendSpouseOnlineInformations(input:IDataInput):void
+        public function deserializeAs_FriendSpouseOnlineInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             var _box0:uint = input.readByte();
@@ -82,7 +82,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.mapId) + ") on element of FriendSpouseOnlineInformations.mapId.")));
             };
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of FriendSpouseOnlineInformations.subAreaId.")));

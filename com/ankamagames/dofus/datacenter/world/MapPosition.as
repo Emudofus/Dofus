@@ -39,6 +39,7 @@
         public var outdoor:Boolean;
         public var capabilities:int;
         public var nameId:int;
+        public var showNameOnFingerpost:Boolean;
         public var sounds:Vector.<AmbientSound>;
         public var subAreaId:int;
         public var worldMap:int;

@@ -21,6 +21,7 @@
     import com.ankamagames.jerakine.utils.display.spellZone.SpellShapeEnum;
     import com.ankamagames.atouin.managers.InteractiveCellManager;
     import com.ankamagames.atouin.types.GraphicCell;
+    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
     import com.ankamagames.dofus.datacenter.monsters.Monster;
     import com.ankamagames.dofus.logic.game.fight.managers.FightersStateManager;
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
@@ -143,15 +144,17 @@
             {
                 if (nextCell)
                 {
-                    if (isBlockingCell(nextCell.cellId))
+                    if (isBlockingCell(nextCell.cellId, ((!(previousCell)) ? cellMp.cellId : previousCell.cellId)))
                     {
                         break;
                     };
                     force = (force - 1);
+                    previousCell = nextCell;
                     nextCell = nextCell.getNearestCellInDirection(pDirection);
                 };
                 i = (i + 1);
             };
+            previousCell = null;
             if (force <= 0)
             {
                 return (pushedEntities);
@@ -254,7 +257,7 @@
                     };
                     if (nextCell)
                     {
-                        if (isBlockingCell(nextCell.cellId))
+                        if (isBlockingCell(nextCell.cellId, previousCell.cellId))
                         {
                             nextCellEntity = EntitiesManager.getInstance().getEntityOnCell(nextCell.cellId, AnimatedCharacter);
                             if (nextCellEntity)
@@ -293,7 +296,7 @@
                             if (!(entityInSpellZone))
                             {
                                 cell = nextCell.getNearestCellInDirection(pDirection);
-                                if (((cell) && (!(isBlockingCell(cell.cellId)))))
+                                if (((cell) && (!(isBlockingCell(cell.cellId, nextCell.cellId)))))
                                 {
                                     break;
                                 };
@@ -381,7 +384,7 @@
                 while (i < pullEffectForce)
                 {
                     nextCell = cell.getNearestCellInDirection(orientation);
-                    if (((nextCell) && (!(isBlockingCell(nextCell.cellId)))))
+                    if (((nextCell) && (!(isBlockingCell(nextCell.cellId, cell.cellId)))))
                     {
                         pullDistance++;
                         cell = nextCell;
@@ -414,6 +417,7 @@
             var direction:int;
             var pushForce:int;
             var cellMp:MapPoint;
+            var previousCell:MapPoint;
             var nextCell:MapPoint;
             var force:int;
             var i:int;
@@ -438,11 +442,12 @@
                 {
                     if (nextCell)
                     {
-                        if (isBlockingCell(nextCell.cellId))
+                        if (isBlockingCell(nextCell.cellId, ((!(previousCell)) ? cellMp.cellId : previousCell.cellId)))
                         {
                             break;
                         };
                         force--;
+                        previousCell = nextCell;
                         nextCell = nextCell.getNearestCellInDirection(direction);
                     };
                     i++;
@@ -452,22 +457,59 @@
             return (false);
         }
 
-        public static function isBlockingCell(pCell:int):Boolean
+        public static function isBlockingCell(pCell:int, pFromCell:int, pCheckDiag:Boolean=true):Boolean
         {
+            var startCell:MapPoint;
+            var destCell:MapPoint;
+            var direction:uint;
+            var c1:MapPoint;
+            var c2:MapPoint;
             var gc:GraphicCell = InteractiveCellManager.getInstance().getCell(pCell);
-            return (((((gc) && (!(gc.visible)))) || (EntitiesManager.getInstance().getEntityOnCell(pCell, AnimatedCharacter))));
+            var blocking:Boolean = ((((gc) && (!(gc.visible)))) || (EntitiesManager.getInstance().getEntityOnCell(pCell, AnimatedCharacter)));
+            if (((!(blocking)) && (pCheckDiag)))
+            {
+                startCell = MapPoint.fromCellId(pFromCell);
+                destCell = MapPoint.fromCellId(pCell);
+                direction = startCell.orientationTo(destCell);
+                if ((direction % 2) == 0)
+                {
+                    switch (direction)
+                    {
+                        case DirectionsEnum.RIGHT:
+                            c1 = destCell.getNearestCellInDirection(DirectionsEnum.UP_LEFT);
+                            c2 = destCell.getNearestCellInDirection(DirectionsEnum.DOWN_LEFT);
+                            break;
+                        case DirectionsEnum.DOWN:
+                            c1 = destCell.getNearestCellInDirection(DirectionsEnum.UP_LEFT);
+                            c2 = destCell.getNearestCellInDirection(DirectionsEnum.UP_RIGHT);
+                            break;
+                        case DirectionsEnum.LEFT:
+                            c1 = destCell.getNearestCellInDirection(DirectionsEnum.UP_RIGHT);
+                            c2 = destCell.getNearestCellInDirection(DirectionsEnum.DOWN_RIGHT);
+                            break;
+                        case DirectionsEnum.UP:
+                            c1 = destCell.getNearestCellInDirection(DirectionsEnum.DOWN_LEFT);
+                            c2 = destCell.getNearestCellInDirection(DirectionsEnum.DOWN_RIGHT);
+                            break;
+                    };
+                    blocking = ((((c1) && (isBlockingCell(c1.cellId, -1, false)))) || (((c2) && (isBlockingCell(c2.cellId, -1, false)))));
+                };
+            };
+            return (blocking);
         }
 
         public static function isPathBlocked(pStartCell:int, pEndCell:int, pDirection:int):Boolean
         {
             var pathBlocked:Boolean;
+            var previousCell:MapPoint;
             var cellMp:MapPoint = MapPoint.fromCellId(pStartCell);
             while (((cellMp) && (!(pathBlocked))))
             {
+                previousCell = cellMp;
                 cellMp = cellMp.getNearestCellInDirection(pDirection);
                 if (cellMp)
                 {
-                    pathBlocked = isBlockingCell(cellMp.cellId);
+                    pathBlocked = isBlockingCell(cellMp.cellId, previousCell.cellId);
                     if (cellMp.cellId == pEndCell)
                     {
                         break;

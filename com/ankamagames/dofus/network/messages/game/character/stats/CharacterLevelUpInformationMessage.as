@@ -2,8 +2,9 @@
 {
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class CharacterLevelUpInformationMessage extends CharacterLevelUpMessage implements INetworkMessage 
@@ -43,24 +44,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharacterLevelUpInformationMessage(output);
         }
 
-        public function serializeAs_CharacterLevelUpInformationMessage(output:IDataOutput):void
+        public function serializeAs_CharacterLevelUpInformationMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_CharacterLevelUpMessage(output);
             output.writeUTF(this.name);
@@ -68,19 +69,19 @@
             {
                 throw (new Error((("Forbidden value (" + this.id) + ") on element id.")));
             };
-            output.writeInt(this.id);
+            output.writeVarInt(this.id);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharacterLevelUpInformationMessage(input);
         }
 
-        public function deserializeAs_CharacterLevelUpInformationMessage(input:IDataInput):void
+        public function deserializeAs_CharacterLevelUpInformationMessage(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.name = input.readUTF();
-            this.id = input.readInt();
+            this.id = input.readVarUhInt();
             if (this.id < 0)
             {
                 throw (new Error((("Forbidden value (" + this.id) + ") on element of CharacterLevelUpInformationMessage.id.")));

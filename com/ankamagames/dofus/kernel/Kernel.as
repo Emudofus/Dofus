@@ -41,6 +41,8 @@
     import com.ankamagames.atouin.Atouin;
     import com.ankamagames.atouin.utils.DataMapProvider;
     import com.ankamagames.dofus.types.entities.AnimatedCharacter;
+    import com.ankamagames.tiphon.display.TiphonSprite;
+    import com.ankamagames.dofus.logic.game.common.types.SubEntityHandler;
     import com.ankamagames.tiphon.engine.Tiphon;
     import com.ankamagames.dofus.types.enums.AnimationEnum;
     import com.ankamagames.tiphon.types.Skin;
@@ -252,6 +254,7 @@
             this.initOptions();
             Atouin.getInstance().showWorld(false);
             DataMapProvider.init(AnimatedCharacter);
+            TiphonSprite.subEntityHandler = SubEntityHandler.instance;
             Tiphon.getInstance().init(LangManager.getInstance().getEntry("config.gfx.path.skull"), LangManager.getInstance().getEntry("config.gfx.path.skin"), LangManager.getInstance().getEntry("config.gfx.path.animIndex"));
             Tiphon.getInstance().addRasterizeAnimation(AnimationEnum.ANIM_COURSE);
             Tiphon.getInstance().addRasterizeAnimation(AnimationEnum.ANIM_MARCHE);

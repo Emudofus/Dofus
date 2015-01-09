@@ -84,9 +84,9 @@
         }
 
         [Untrusted]
-        public function avaibleKeyboard():Array
+        public function availableKeyboards():Array
         {
-            return (BindsManager.getInstance().avaibleKeyboard.concat());
+            return (BindsManager.getInstance().availableKeyboards.concat());
         }
 
         [Trusted]

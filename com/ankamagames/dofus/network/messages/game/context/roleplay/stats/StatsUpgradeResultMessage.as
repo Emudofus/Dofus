@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class StatsUpgradeResultMessage extends NetworkMessage implements INetworkMessage 
@@ -13,6 +14,7 @@
         public static const protocolId:uint = 5609;
 
         private var _isInitialized:Boolean = false;
+        public var result:int = 0;
         public var nbCharacBoost:uint = 0;
 
 
@@ -26,8 +28,9 @@
             return (5609);
         }
 
-        public function initStatsUpgradeResultMessage(nbCharacBoost:uint=0):StatsUpgradeResultMessage
+        public function initStatsUpgradeResultMessage(result:int=0, nbCharacBoost:uint=0):StatsUpgradeResultMessage
         {
+            this.result = result;
             this.nbCharacBoost = nbCharacBoost;
             this._isInitialized = true;
             return (this);
@@ -35,44 +38,47 @@
 
         override public function reset():void
         {
+            this.result = 0;
             this.nbCharacBoost = 0;
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_StatsUpgradeResultMessage(output);
         }
 
-        public function serializeAs_StatsUpgradeResultMessage(output:IDataOutput):void
+        public function serializeAs_StatsUpgradeResultMessage(output:ICustomDataOutput):void
         {
+            output.writeByte(this.result);
             if (this.nbCharacBoost < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbCharacBoost) + ") on element nbCharacBoost.")));
             };
-            output.writeShort(this.nbCharacBoost);
+            output.writeVarShort(this.nbCharacBoost);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_StatsUpgradeResultMessage(input);
         }
 
-        public function deserializeAs_StatsUpgradeResultMessage(input:IDataInput):void
+        public function deserializeAs_StatsUpgradeResultMessage(input:ICustomDataInput):void
         {
-            this.nbCharacBoost = input.readShort();
+            this.result = input.readByte();
+            this.nbCharacBoost = input.readVarUhShort();
             if (this.nbCharacBoost < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbCharacBoost) + ") on element of StatsUpgradeResultMessage.nbCharacBoost.")));

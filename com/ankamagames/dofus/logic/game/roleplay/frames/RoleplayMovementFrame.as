@@ -46,9 +46,14 @@
     import com.ankamagames.dofus.network.messages.game.context.GameCautiousMapMovementRequestMessage;
     import com.ankamagames.dofus.network.messages.game.context.GameMapMovementRequestMessage;
     import com.ankamagames.berilia.frames.ShortcutsFrame;
+    import com.ankamagames.jerakine.utils.system.SystemManager;
+    import com.ankamagames.jerakine.enum.OperatingSystem;
+    import com.ankamagames.atouin.AtouinConstants;
+    import com.ankamagames.jerakine.utils.system.AirScanner;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.ChangeMapMessage;
     import com.ankamagames.dofus.network.messages.game.interactive.InteractiveUseRequestMessage;
     import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.GameRolePlayAttackMonsterRequestMessage;
 
     public class RoleplayMovementFrame implements Frame 
     {
@@ -59,11 +64,12 @@
         private var _wantToChangeMap:int = -1;
         private var _followingMove:MapPoint;
         private var _followingIe:Object;
+        private var _followingMonsterGroup:Object;
         private var _followingMessage;
         private var _isRequestingMovement:Boolean;
         private var _latestMovementRequest:uint;
         private var _destinationPoint:uint;
-        private var _forceWalkForNextMovement:Boolean;
+        private var _nextMovementBehavior:uint;
 
 
         public function get priority():int
@@ -71,10 +77,16 @@
             return (Priority.NORMAL);
         }
 
+        public function get isRequestingMovement():Boolean
+        {
+            return (this._isRequestingMovement);
+        }
+
         public function pushed():Boolean
         {
             this._wantToChangeMap = -1;
             this._followingIe = null;
+            this._followingMonsterGroup = null;
             this._followingMove = null;
             this._isRequestingMovement = false;
             this._latestMovementRequest = 0;
@@ -104,6 +116,11 @@
                     {
                         this.activateSkill(this._followingIe.skillInstanceId, this._followingIe.ie);
                         this._followingIe = null;
+                    };
+                    if (this._followingMonsterGroup)
+                    {
+                        this.requestMonsterFight(this._followingMonsterGroup.id);
+                        this._followingMonsterGroup = null;
                     };
                     return (true);
                 case (msg is GameMapMovementMessage):
@@ -150,6 +167,11 @@
                         {
                             this.activateSkill(this._followingIe.skillInstanceId, this._followingIe.ie);
                             this._followingIe = null;
+                        };
+                        if (this._followingMonsterGroup)
+                        {
+                            this.requestMonsterFight(this._followingMonsterGroup.id);
+                            this._followingMonsterGroup = null;
                         };
                         Kernel.getWorker().process(new CharacterMovementStoppedMessage());
                     };
@@ -237,6 +259,11 @@
             this._followingIe = interaction;
         }
 
+        function setFollowingMonsterFight(monsterGroup:Object):void
+        {
+            this._followingMonsterGroup = monsterGroup;
+        }
+
         public function setFollowingMessage(message:*):void
         {
             if (!((((message is INetworkMessage)) || ((message is Action)))))
@@ -246,9 +273,9 @@
             this._followingMessage = message;
         }
 
-        public function setForceWalkForNextMovement(pValue:Boolean)
+        public function forceNextMovementBehavior(pValue:uint):void
         {
-            this._forceWalkForNextMovement = pValue;
+            this._nextMovementBehavior = pValue;
         }
 
         function askMoveTo(cell:MapPoint):Boolean
@@ -298,14 +325,18 @@
                     this.activateSkill(this._followingIe.skillInstanceId, this._followingIe.ie);
                     this._followingIe = null;
                 };
+                if (this._followingMonsterGroup)
+                {
+                    this.requestMonsterFight(this._followingMonsterGroup.id);
+                    this._followingMonsterGroup = null;
+                };
                 return;
             };
-            if (((this._forceWalkForNextMovement) || (ShortcutsFrame.ctrlKeyDown)))
+            if (((((!(AirScanner.isStreamingVersion())) && ((OptionManager.getOptionManager("dofus")["enableForceWalk"] == true)))) && ((((this._nextMovementBehavior == AtouinConstants.MOVEMENT_WALK)) || ((((this._nextMovementBehavior == 0)) && (((ShortcutsFrame.ctrlKeyDown) || ((((SystemManager.getSingleton().os == OperatingSystem.MAC_OS)) && (ShortcutsFrame.altKeyDown)))))))))))
             {
                 gcmmrmsg = new GameCautiousMapMovementRequestMessage();
                 gcmmrmsg.initGameCautiousMapMovementRequestMessage(MapMovementAdapter.getServerMovement(path), PlayedCharacterManager.getInstance().currentMap.mapId);
                 ConnectionsHandler.getConnection().send(gcmmrmsg);
-                this._forceWalkForNextMovement = false;
             }
             else
             {
@@ -313,6 +344,7 @@
                 _local_3.initGameMapMovementRequestMessage(MapMovementAdapter.getServerMovement(path), PlayedCharacterManager.getInstance().currentMap.mapId);
                 ConnectionsHandler.getConnection().send(_local_3);
             };
+            this._nextMovementBehavior = 0;
             this._latestMovementRequest = getTimer();
         }
 
@@ -335,6 +367,13 @@
                 iurmsg.initInteractiveUseRequestMessage(ie.elementId, skillInstanceId);
                 ConnectionsHandler.getConnection().send(iurmsg);
             };
+        }
+
+        function requestMonsterFight(monsterGroupId:uint):void
+        {
+            var grpamrmsg:GameRolePlayAttackMonsterRequestMessage = new GameRolePlayAttackMonsterRequestMessage();
+            grpamrmsg.initGameRolePlayAttackMonsterRequestMessage(monsterGroupId);
+            ConnectionsHandler.getConnection().send(grpamrmsg);
         }
 
 

@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -50,12 +50,12 @@
             this.fightTeamsOptions = new Vector.<FightOptionsInformations>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightCommonInformations(output);
         }
 
-        public function serializeAs_FightCommonInformations(output:IDataOutput):void
+        public function serializeAs_FightCommonInformations(output:ICustomDataOutput):void
         {
             output.writeInt(this.fightId);
             output.writeByte(this.fightType);
@@ -75,7 +75,7 @@
                 {
                     throw (new Error((("Forbidden value (" + this.fightTeamsPositions[_i4]) + ") on element 4 (starting at 1) of fightTeamsPositions.")));
                 };
-                output.writeShort(this.fightTeamsPositions[_i4]);
+                output.writeVarShort(this.fightTeamsPositions[_i4]);
                 _i4++;
             };
             output.writeShort(this.fightTeamsOptions.length);
@@ -87,12 +87,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightCommonInformations(input);
         }
 
-        public function deserializeAs_FightCommonInformations(input:IDataInput):void
+        public function deserializeAs_FightCommonInformations(input:ICustomDataInput):void
         {
             var _id3:uint;
             var _item3:FightTeamInformations;
@@ -118,7 +118,7 @@
             var _i4:uint;
             while (_i4 < _fightTeamsPositionsLen)
             {
-                _val4 = input.readShort();
+                _val4 = input.readVarUhShort();
                 if ((((_val4 < 0)) || ((_val4 > 559))))
                 {
                     throw (new Error((("Forbidden value (" + _val4) + ") on elements of fightTeamsPositions.")));

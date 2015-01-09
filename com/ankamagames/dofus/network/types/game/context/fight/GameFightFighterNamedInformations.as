@@ -4,8 +4,9 @@
     import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import __AS3__.vec.Vector;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GameFightFighterNamedInformations extends GameFightFighterInformations implements INetworkType 
     {
@@ -26,9 +27,9 @@
             return (158);
         }
 
-        public function initGameFightFighterNamedInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, name:String="", status:PlayerStatus=null):GameFightFighterNamedInformations
+        public function initGameFightFighterNamedInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, previousPositions:Vector.<uint>=null, name:String="", status:PlayerStatus=null):GameFightFighterNamedInformations
         {
-            super.initGameFightFighterInformations(contextualId, look, disposition, teamId, wave, alive, stats);
+            super.initGameFightFighterInformations(contextualId, look, disposition, teamId, wave, alive, stats, previousPositions);
             this.name = name;
             this.status = status;
             return (this);
@@ -41,24 +42,24 @@
             this.status = new PlayerStatus();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameFightFighterNamedInformations(output);
         }
 
-        public function serializeAs_GameFightFighterNamedInformations(output:IDataOutput):void
+        public function serializeAs_GameFightFighterNamedInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameFightFighterInformations(output);
             output.writeUTF(this.name);
             this.status.serializeAs_PlayerStatus(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameFightFighterNamedInformations(input);
         }
 
-        public function deserializeAs_GameFightFighterNamedInformations(input:IDataInput):void
+        public function deserializeAs_GameFightFighterNamedInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.name = input.readUTF();

@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class PaddockContentInformations extends PaddockInformations implements INetworkType 
@@ -55,12 +55,12 @@
             this.mountsInformations = new Vector.<MountInformationsForPaddock>();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PaddockContentInformations(output);
         }
 
-        public function serializeAs_PaddockContentInformations(output:IDataOutput):void
+        public function serializeAs_PaddockContentInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_PaddockInformations(output);
             output.writeInt(this.paddockId);
@@ -79,7 +79,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
             output.writeBoolean(this.abandonned);
             output.writeShort(this.mountsInformations.length);
             var _i7:uint;
@@ -90,12 +90,12 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PaddockContentInformations(input);
         }
 
-        public function deserializeAs_PaddockContentInformations(input:IDataInput):void
+        public function deserializeAs_PaddockContentInformations(input:ICustomDataInput):void
         {
             var _item7:MountInformationsForPaddock;
             super.deserialize(input);
@@ -111,7 +111,7 @@
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element of PaddockContentInformations.worldY.")));
             };
             this.mapId = input.readInt();
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of PaddockContentInformations.subAreaId.")));

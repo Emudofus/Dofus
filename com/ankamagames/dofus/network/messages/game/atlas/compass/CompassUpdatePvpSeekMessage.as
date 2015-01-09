@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import com.ankamagames.dofus.network.types.game.context.MapCoordinates;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class CompassUpdatePvpSeekMessage extends CompassUpdateMessage implements INetworkMessage 
@@ -44,43 +45,43 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CompassUpdatePvpSeekMessage(output);
         }
 
-        public function serializeAs_CompassUpdatePvpSeekMessage(output:IDataOutput):void
+        public function serializeAs_CompassUpdatePvpSeekMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_CompassUpdateMessage(output);
             if (this.memberId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.memberId) + ") on element memberId.")));
             };
-            output.writeInt(this.memberId);
+            output.writeVarInt(this.memberId);
             output.writeUTF(this.memberName);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CompassUpdatePvpSeekMessage(input);
         }
 
-        public function deserializeAs_CompassUpdatePvpSeekMessage(input:IDataInput):void
+        public function deserializeAs_CompassUpdatePvpSeekMessage(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.memberId = input.readInt();
+            this.memberId = input.readVarUhInt();
             if (this.memberId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.memberId) + ") on element of CompassUpdatePvpSeekMessage.memberId.")));

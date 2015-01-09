@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.actions.fight.AbstractFightDispellableEffect;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
 
     [Trusted]
@@ -42,31 +42,31 @@
             this.effect = new AbstractFightDispellableEffect();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightDispellableEffectExtendedInformations(output);
         }
 
-        public function serializeAs_FightDispellableEffectExtendedInformations(output:IDataOutput):void
+        public function serializeAs_FightDispellableEffectExtendedInformations(output:ICustomDataOutput):void
         {
             if (this.actionId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.actionId) + ") on element actionId.")));
             };
-            output.writeShort(this.actionId);
+            output.writeVarShort(this.actionId);
             output.writeInt(this.sourceId);
             output.writeShort(this.effect.getTypeId());
             this.effect.serialize(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightDispellableEffectExtendedInformations(input);
         }
 
-        public function deserializeAs_FightDispellableEffectExtendedInformations(input:IDataInput):void
+        public function deserializeAs_FightDispellableEffectExtendedInformations(input:ICustomDataInput):void
         {
-            this.actionId = input.readShort();
+            this.actionId = input.readVarUhShort();
             if (this.actionId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.actionId) + ") on element of FightDispellableEffectExtendedInformations.actionId.")));

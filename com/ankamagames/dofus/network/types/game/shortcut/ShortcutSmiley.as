@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.shortcut
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class ShortcutSmiley extends Shortcut implements INetworkType 
     {
@@ -30,12 +30,12 @@
             this.smileyId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ShortcutSmiley(output);
         }
 
-        public function serializeAs_ShortcutSmiley(output:IDataOutput):void
+        public function serializeAs_ShortcutSmiley(output:ICustomDataOutput):void
         {
             super.serializeAs_Shortcut(output);
             if (this.smileyId < 0)
@@ -45,12 +45,12 @@
             output.writeByte(this.smileyId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ShortcutSmiley(input);
         }
 
-        public function deserializeAs_ShortcutSmiley(input:IDataInput):void
+        public function deserializeAs_ShortcutSmiley(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.smileyId = input.readByte();

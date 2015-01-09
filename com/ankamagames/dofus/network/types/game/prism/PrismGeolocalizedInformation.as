@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.prism
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
 
     [Trusted]
@@ -46,12 +46,12 @@
             this.prism = new PrismInformation();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PrismGeolocalizedInformation(output);
         }
 
-        public function serializeAs_PrismGeolocalizedInformation(output:IDataOutput):void
+        public function serializeAs_PrismGeolocalizedInformation(output:ICustomDataOutput):void
         {
             super.serializeAs_PrismSubareaEmptyInfo(output);
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))
@@ -69,12 +69,12 @@
             this.prism.serialize(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PrismGeolocalizedInformation(input);
         }
 
-        public function deserializeAs_PrismGeolocalizedInformation(input:IDataInput):void
+        public function deserializeAs_PrismGeolocalizedInformation(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.worldX = input.readShort();

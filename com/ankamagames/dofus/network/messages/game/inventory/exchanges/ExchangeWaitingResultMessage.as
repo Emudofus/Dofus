@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ExchangeWaitingResultMessage extends NetworkMessage implements INetworkMessage 
@@ -39,34 +40,34 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeWaitingResultMessage(output);
         }
 
-        public function serializeAs_ExchangeWaitingResultMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeWaitingResultMessage(output:ICustomDataOutput):void
         {
             output.writeBoolean(this.bwait);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeWaitingResultMessage(input);
         }
 
-        public function deserializeAs_ExchangeWaitingResultMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeWaitingResultMessage(input:ICustomDataInput):void
         {
             this.bwait = input.readBoolean();
         }

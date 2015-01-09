@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class TeleportToBuddyAnswerMessage extends NetworkMessage implements INetworkMessage 
@@ -45,51 +46,51 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TeleportToBuddyAnswerMessage(output);
         }
 
-        public function serializeAs_TeleportToBuddyAnswerMessage(output:IDataOutput):void
+        public function serializeAs_TeleportToBuddyAnswerMessage(output:ICustomDataOutput):void
         {
             if (this.dungeonId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.dungeonId) + ") on element dungeonId.")));
             };
-            output.writeShort(this.dungeonId);
+            output.writeVarShort(this.dungeonId);
             if (this.buddyId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.buddyId) + ") on element buddyId.")));
             };
-            output.writeInt(this.buddyId);
+            output.writeVarInt(this.buddyId);
             output.writeBoolean(this.accept);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TeleportToBuddyAnswerMessage(input);
         }
 
-        public function deserializeAs_TeleportToBuddyAnswerMessage(input:IDataInput):void
+        public function deserializeAs_TeleportToBuddyAnswerMessage(input:ICustomDataInput):void
         {
-            this.dungeonId = input.readShort();
+            this.dungeonId = input.readVarUhShort();
             if (this.dungeonId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.dungeonId) + ") on element of TeleportToBuddyAnswerMessage.dungeonId.")));
             };
-            this.buddyId = input.readInt();
+            this.buddyId = input.readVarUhInt();
             if (this.buddyId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.buddyId) + ") on element of TeleportToBuddyAnswerMessage.buddyId.")));

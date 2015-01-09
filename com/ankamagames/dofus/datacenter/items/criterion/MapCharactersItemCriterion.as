@@ -3,6 +3,11 @@
     import com.ankamagames.jerakine.interfaces.IDataCenter;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
     import com.ankamagames.jerakine.data.I18n;
+    import flash.utils.Dictionary;
+    import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
+    import com.ankamagames.dofus.kernel.Kernel;
+    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
+    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayCharacterInformations;
 
     public class MapCharactersItemCriterion extends ItemCriterion implements IDataCenter 
     {
@@ -43,7 +48,22 @@
 
         override protected function getCriterion():int
         {
-            return (PlayedCharacterManager.getInstance().infos.level);
+            var nbCharacters:int;
+            var entitiesInfos:Dictionary;
+            var actorInfo:GameContextActorInformations;
+            var entitiesFrame:RoleplayEntitiesFrame = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame);
+            if (entitiesFrame)
+            {
+                entitiesInfos = entitiesFrame.getEntitiesDictionnary();
+                for each (actorInfo in entitiesInfos)
+                {
+                    if ((actorInfo is GameRolePlayCharacterInformations))
+                    {
+                        nbCharacters++;
+                    };
+                };
+            };
+            return (nbCharacters);
         }
 
 

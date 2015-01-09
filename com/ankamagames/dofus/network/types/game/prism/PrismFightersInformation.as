@@ -4,8 +4,8 @@
     import com.ankamagames.dofus.network.types.game.fight.ProtectedEntityWaitingForHelpInfo;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -48,18 +48,18 @@
             this.enemyCharactersInformations = new Vector.<CharacterMinimalPlusLookInformations>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PrismFightersInformation(output);
         }
 
-        public function serializeAs_PrismFightersInformation(output:IDataOutput):void
+        public function serializeAs_PrismFightersInformation(output:ICustomDataOutput):void
         {
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
             this.waitingForHelpInfo.serializeAs_ProtectedEntityWaitingForHelpInfo(output);
             output.writeShort(this.allyCharactersInformations.length);
             var _i3:uint;
@@ -79,18 +79,18 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PrismFightersInformation(input);
         }
 
-        public function deserializeAs_PrismFightersInformation(input:IDataInput):void
+        public function deserializeAs_PrismFightersInformation(input:ICustomDataInput):void
         {
             var _id3:uint;
             var _item3:CharacterMinimalPlusLookInformations;
             var _id4:uint;
             var _item4:CharacterMinimalPlusLookInformations;
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of PrismFightersInformation.subAreaId.")));

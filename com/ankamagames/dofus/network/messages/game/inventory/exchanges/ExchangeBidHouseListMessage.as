@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ExchangeBidHouseListMessage extends NetworkMessage implements INetworkMessage 
@@ -39,40 +40,40 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeBidHouseListMessage(output);
         }
 
-        public function serializeAs_ExchangeBidHouseListMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeBidHouseListMessage(output:ICustomDataOutput):void
         {
             if (this.id < 0)
             {
                 throw (new Error((("Forbidden value (" + this.id) + ") on element id.")));
             };
-            output.writeInt(this.id);
+            output.writeVarShort(this.id);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeBidHouseListMessage(input);
         }
 
-        public function deserializeAs_ExchangeBidHouseListMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeBidHouseListMessage(input:ICustomDataInput):void
         {
-            this.id = input.readInt();
+            this.id = input.readVarUhShort();
             if (this.id < 0)
             {
                 throw (new Error((("Forbidden value (" + this.id) + ") on element of ExchangeBidHouseListMessage.id.")));

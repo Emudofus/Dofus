@@ -11,6 +11,7 @@
     import com.ankamagames.dofus.datacenter.servers.Server;
     import com.ankamagames.dofus.datacenter.servers.ServerPopulation;
     import com.ankamagames.dofus.datacenter.breeds.Breed;
+    import com.ankamagames.dofus.datacenter.breeds.BreedRole;
     import com.ankamagames.dofus.datacenter.breeds.Head;
     import com.ankamagames.dofus.datacenter.spells.Spell;
     import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
@@ -169,6 +170,18 @@
         public function getBreeds():Array
         {
             return (Breed.getBreeds());
+        }
+
+        [Untrusted]
+        public function getBreedRole(id:int):BreedRole
+        {
+            return (BreedRole.getBreedRoleById(id));
+        }
+
+        [Untrusted]
+        public function getBreedRoles():Array
+        {
+            return (BreedRole.getBreedRoles());
         }
 
         [Untrusted]

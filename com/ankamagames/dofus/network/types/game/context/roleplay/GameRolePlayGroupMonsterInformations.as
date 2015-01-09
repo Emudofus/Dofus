@@ -3,9 +3,9 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
     import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
 
     public class GameRolePlayGroupMonsterInformations extends GameRolePlayActorInformations implements INetworkType 
@@ -56,12 +56,12 @@
             this.hasAVARewardToken = false;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayGroupMonsterInformations(output);
         }
 
-        public function serializeAs_GameRolePlayGroupMonsterInformations(output:IDataOutput):void
+        public function serializeAs_GameRolePlayGroupMonsterInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameRolePlayActorInformations(output);
             var _box0:uint;
@@ -84,12 +84,12 @@
             output.writeByte(this.alignmentSide);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayGroupMonsterInformations(input);
         }
 
-        public function deserializeAs_GameRolePlayGroupMonsterInformations(input:IDataInput):void
+        public function deserializeAs_GameRolePlayGroupMonsterInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             var _box0:uint = input.readByte();

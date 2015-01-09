@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ShortcutBarSwapRequestMessage extends NetworkMessage implements INetworkMessage 
@@ -45,56 +46,56 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ShortcutBarSwapRequestMessage(output);
         }
 
-        public function serializeAs_ShortcutBarSwapRequestMessage(output:IDataOutput):void
+        public function serializeAs_ShortcutBarSwapRequestMessage(output:ICustomDataOutput):void
         {
             output.writeByte(this.barType);
             if ((((this.firstSlot < 0)) || ((this.firstSlot > 99))))
             {
                 throw (new Error((("Forbidden value (" + this.firstSlot) + ") on element firstSlot.")));
             };
-            output.writeInt(this.firstSlot);
+            output.writeByte(this.firstSlot);
             if ((((this.secondSlot < 0)) || ((this.secondSlot > 99))))
             {
                 throw (new Error((("Forbidden value (" + this.secondSlot) + ") on element secondSlot.")));
             };
-            output.writeInt(this.secondSlot);
+            output.writeByte(this.secondSlot);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ShortcutBarSwapRequestMessage(input);
         }
 
-        public function deserializeAs_ShortcutBarSwapRequestMessage(input:IDataInput):void
+        public function deserializeAs_ShortcutBarSwapRequestMessage(input:ICustomDataInput):void
         {
             this.barType = input.readByte();
             if (this.barType < 0)
             {
                 throw (new Error((("Forbidden value (" + this.barType) + ") on element of ShortcutBarSwapRequestMessage.barType.")));
             };
-            this.firstSlot = input.readInt();
+            this.firstSlot = input.readByte();
             if ((((this.firstSlot < 0)) || ((this.firstSlot > 99))))
             {
                 throw (new Error((("Forbidden value (" + this.firstSlot) + ") on element of ShortcutBarSwapRequestMessage.firstSlot.")));
             };
-            this.secondSlot = input.readInt();
+            this.secondSlot = input.readByte();
             if ((((this.secondSlot < 0)) || ((this.secondSlot > 99))))
             {
                 throw (new Error((("Forbidden value (" + this.secondSlot) + ") on element of ShortcutBarSwapRequestMessage.secondSlot.")));

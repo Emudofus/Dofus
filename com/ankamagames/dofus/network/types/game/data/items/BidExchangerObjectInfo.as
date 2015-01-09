@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -44,18 +44,18 @@
             this.prices = new Vector.<uint>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_BidExchangerObjectInfo(output);
         }
 
-        public function serializeAs_BidExchangerObjectInfo(output:IDataOutput):void
+        public function serializeAs_BidExchangerObjectInfo(output:ICustomDataOutput):void
         {
             if (this.objectUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectUID) + ") on element objectUID.")));
             };
-            output.writeInt(this.objectUID);
+            output.writeVarInt(this.objectUID);
             output.writeShort(this.effects.length);
             var _i2:uint;
             while (_i2 < this.effects.length)
@@ -77,17 +77,17 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_BidExchangerObjectInfo(input);
         }
 
-        public function deserializeAs_BidExchangerObjectInfo(input:IDataInput):void
+        public function deserializeAs_BidExchangerObjectInfo(input:ICustomDataInput):void
         {
             var _id2:uint;
             var _item2:ObjectEffect;
             var _val3:uint;
-            this.objectUID = input.readInt();
+            this.objectUID = input.readVarUhInt();
             if (this.objectUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectUID) + ") on element of BidExchangerObjectInfo.objectUID.")));

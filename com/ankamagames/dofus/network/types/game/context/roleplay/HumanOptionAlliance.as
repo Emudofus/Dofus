@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class HumanOptionAlliance extends HumanOption implements INetworkType 
@@ -36,24 +36,24 @@
             this.allianceInformations = new AllianceInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_HumanOptionAlliance(output);
         }
 
-        public function serializeAs_HumanOptionAlliance(output:IDataOutput):void
+        public function serializeAs_HumanOptionAlliance(output:ICustomDataOutput):void
         {
             super.serializeAs_HumanOption(output);
             this.allianceInformations.serializeAs_AllianceInformations(output);
             output.writeByte(this.aggressable);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_HumanOptionAlliance(input);
         }
 
-        public function deserializeAs_HumanOptionAlliance(input:IDataInput):void
+        public function deserializeAs_HumanOptionAlliance(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.allianceInformations = new AllianceInformations();

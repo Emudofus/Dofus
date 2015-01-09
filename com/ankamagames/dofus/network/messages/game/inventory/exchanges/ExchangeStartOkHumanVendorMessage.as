@@ -5,8 +5,9 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.ObjectItemToSellInHumanVendorShop;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -50,30 +51,30 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeStartOkHumanVendorMessage(output);
         }
 
-        public function serializeAs_ExchangeStartOkHumanVendorMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeStartOkHumanVendorMessage(output:ICustomDataOutput):void
         {
             if (this.sellerId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.sellerId) + ") on element sellerId.")));
             };
-            output.writeInt(this.sellerId);
+            output.writeVarInt(this.sellerId);
             output.writeShort(this.objectsInfos.length);
             var _i2:uint;
             while (_i2 < this.objectsInfos.length)
@@ -83,15 +84,15 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeStartOkHumanVendorMessage(input);
         }
 
-        public function deserializeAs_ExchangeStartOkHumanVendorMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeStartOkHumanVendorMessage(input:ICustomDataInput):void
         {
             var _item2:ObjectItemToSellInHumanVendorShop;
-            this.sellerId = input.readInt();
+            this.sellerId = input.readVarUhInt();
             if (this.sellerId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.sellerId) + ") on element of ExchangeStartOkHumanVendorMessage.sellerId.")));

@@ -27,7 +27,6 @@
         {
             this._listDataObject = new Dictionary();
             this._dataTf = new TextField();
-            this._dataTf.selectable = false;
             this._dataTf.multiline = true;
             this._dataTf.thickness = 200;
             this._dataTf.autoSize = "left";

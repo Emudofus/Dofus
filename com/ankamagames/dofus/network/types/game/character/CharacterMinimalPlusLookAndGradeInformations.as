@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class CharacterMinimalPlusLookAndGradeInformations extends CharacterMinimalPlusLookInformations implements INetworkType 
     {
@@ -31,30 +31,30 @@
             this.grade = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharacterMinimalPlusLookAndGradeInformations(output);
         }
 
-        public function serializeAs_CharacterMinimalPlusLookAndGradeInformations(output:IDataOutput):void
+        public function serializeAs_CharacterMinimalPlusLookAndGradeInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_CharacterMinimalPlusLookInformations(output);
             if (this.grade < 0)
             {
                 throw (new Error((("Forbidden value (" + this.grade) + ") on element grade.")));
             };
-            output.writeInt(this.grade);
+            output.writeVarInt(this.grade);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharacterMinimalPlusLookAndGradeInformations(input);
         }
 
-        public function deserializeAs_CharacterMinimalPlusLookAndGradeInformations(input:IDataInput):void
+        public function deserializeAs_CharacterMinimalPlusLookAndGradeInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.grade = input.readInt();
+            this.grade = input.readVarUhInt();
             if (this.grade < 0)
             {
                 throw (new Error((("Forbidden value (" + this.grade) + ") on element of CharacterMinimalPlusLookAndGradeInformations.grade.")));

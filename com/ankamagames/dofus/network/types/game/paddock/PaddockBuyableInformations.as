@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.paddock
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PaddockBuyableInformations extends PaddockInformations implements INetworkType 
     {
@@ -33,31 +33,31 @@
             this.locked = false;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PaddockBuyableInformations(output);
         }
 
-        public function serializeAs_PaddockBuyableInformations(output:IDataOutput):void
+        public function serializeAs_PaddockBuyableInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_PaddockInformations(output);
             if (this.price < 0)
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element price.")));
             };
-            output.writeInt(this.price);
+            output.writeVarInt(this.price);
             output.writeBoolean(this.locked);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PaddockBuyableInformations(input);
         }
 
-        public function deserializeAs_PaddockBuyableInformations(input:IDataInput):void
+        public function deserializeAs_PaddockBuyableInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.price = input.readInt();
+            this.price = input.readVarUhInt();
             if (this.price < 0)
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element of PaddockBuyableInformations.price.")));

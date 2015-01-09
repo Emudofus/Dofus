@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ActorOrientation implements INetworkType 
@@ -32,23 +32,23 @@
             this.direction = 1;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ActorOrientation(output);
         }
 
-        public function serializeAs_ActorOrientation(output:IDataOutput):void
+        public function serializeAs_ActorOrientation(output:ICustomDataOutput):void
         {
             output.writeInt(this.id);
             output.writeByte(this.direction);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ActorOrientation(input);
         }
 
-        public function deserializeAs_ActorOrientation(input:IDataInput):void
+        public function deserializeAs_ActorOrientation(input:ICustomDataInput):void
         {
             this.id = input.readInt();
             this.direction = input.readByte();

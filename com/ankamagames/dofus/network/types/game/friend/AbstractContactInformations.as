@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.friend
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class AbstractContactInformations implements INetworkType 
     {
@@ -31,12 +31,12 @@
             this.accountName = "";
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AbstractContactInformations(output);
         }
 
-        public function serializeAs_AbstractContactInformations(output:IDataOutput):void
+        public function serializeAs_AbstractContactInformations(output:ICustomDataOutput):void
         {
             if (this.accountId < 0)
             {
@@ -46,12 +46,12 @@
             output.writeUTF(this.accountName);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AbstractContactInformations(input);
         }
 
-        public function deserializeAs_AbstractContactInformations(input:IDataInput):void
+        public function deserializeAs_AbstractContactInformations(input:ICustomDataInput):void
         {
             this.accountId = input.readInt();
             if (this.accountId < 0)

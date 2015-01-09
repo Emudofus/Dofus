@@ -4,8 +4,8 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -43,19 +43,19 @@
             this.options = new Vector.<HumanOption>();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayMerchantInformations(output);
         }
 
-        public function serializeAs_GameRolePlayMerchantInformations(output:IDataOutput):void
+        public function serializeAs_GameRolePlayMerchantInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameRolePlayNamedActorInformations(output);
             if (this.sellType < 0)
             {
                 throw (new Error((("Forbidden value (" + this.sellType) + ") on element sellType.")));
             };
-            output.writeInt(this.sellType);
+            output.writeByte(this.sellType);
             output.writeShort(this.options.length);
             var _i2:uint;
             while (_i2 < this.options.length)
@@ -66,17 +66,17 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayMerchantInformations(input);
         }
 
-        public function deserializeAs_GameRolePlayMerchantInformations(input:IDataInput):void
+        public function deserializeAs_GameRolePlayMerchantInformations(input:ICustomDataInput):void
         {
             var _id2:uint;
             var _item2:HumanOption;
             super.deserialize(input);
-            this.sellType = input.readInt();
+            this.sellType = input.readByte();
             if (this.sellType < 0)
             {
                 throw (new Error((("Forbidden value (" + this.sellType) + ") on element of GameRolePlayMerchantInformations.sellType.")));

@@ -5,8 +5,8 @@
     import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.companion.PartyCompanionBaseInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -60,12 +60,12 @@
             this.status = new PlayerStatus();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PartyGuestInformations(output);
         }
 
-        public function serializeAs_PartyGuestInformations(output:IDataOutput):void
+        public function serializeAs_PartyGuestInformations(output:ICustomDataOutput):void
         {
             if (this.guestId < 0)
             {
@@ -92,12 +92,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PartyGuestInformations(input);
         }
 
-        public function deserializeAs_PartyGuestInformations(input:IDataInput):void
+        public function deserializeAs_PartyGuestInformations(input:ICustomDataInput):void
         {
             var _item8:PartyCompanionBaseInformations;
             this.guestId = input.readInt();

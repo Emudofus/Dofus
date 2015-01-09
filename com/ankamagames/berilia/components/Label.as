@@ -15,6 +15,7 @@
     import flash.text.StyleSheet;
     import flash.text.TextFieldType;
     import com.ankamagames.berilia.factories.HyperlinkFactory;
+    import flash.events.MouseEvent;
     import flash.text.TextFieldAutoSize;
     import com.ankamagames.berilia.managers.CssManager;
     import com.ankamagames.jerakine.types.Callback;
@@ -24,7 +25,6 @@
     import flash.text.GridFitType;
     import com.ankamagames.jerakine.managers.FontManager;
     import flash.text.AntiAliasType;
-    import flash.events.MouseEvent;
     import flash.display.DisplayObjectContainer;
     import com.ankamagames.berilia.types.graphic.ButtonContainer;
     import com.ankamagames.berilia.Berilia;
@@ -37,6 +37,9 @@
     import com.ankamagames.berilia.types.graphic.UiRootContainer;
     import flash.geom.Matrix;
     import flash.display.BitmapData;
+    import com.ankamagames.jerakine.utils.misc.StringUtils;
+    import flash.geom.Point;
+    import com.ankamagames.berilia.events.LinkInteractionEvent;
     import flash.text.*;
 
     public class Label extends GraphicContainer implements UIComponent, IRectangle, FinalizableUIComponent 
@@ -83,9 +86,13 @@
         protected var _currentStyleSheet:StyleSheet;
         protected var _useCustomFormat:Boolean = false;
         protected var _neverIndent:Boolean = false;
+        protected var _hasHandCursor:Boolean = false;
         private var _useTooltipExtension:Boolean = true;
         private var _textFieldTooltipExtension:TextField;
         private var _textTooltipExtensionColor:uint;
+        private var _mouseOverHyperLink:Boolean;
+        private var _lastHyperLinkId:int;
+        private var _hyperLinks:Array;
         protected var _sCssClass:String;
 
         public function Label()
@@ -148,6 +155,8 @@
             if (this._hyperlinkEnabled)
             {
                 HyperlinkFactory.createTextClickHandler(this._tText, this._useStyleSheet);
+                HyperlinkFactory.createRollOverHandler(this._tText);
+                this.parseLinks();
             };
             if (this._currentStyleSheet)
             {
@@ -168,6 +177,10 @@
         public function set htmlText(val:String):void
         {
             this._tText.htmlText = val;
+            if (this._hyperlinkEnabled)
+            {
+                this.parseLinks();
+            };
         }
 
         public function get hyperlinkEnabled():Boolean
@@ -181,6 +194,17 @@
             mouseEnabled = bValue;
             mouseChildren = bValue;
             this._tText.mouseEnabled = bValue;
+            if (bValue)
+            {
+                this._hyperLinks = new Array();
+                this._tText.addEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
+                this._tText.addEventListener(MouseEvent.ROLL_OUT, this.hyperlinkRollOut);
+            }
+            else
+            {
+                this._tText.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
+                this._tText.removeEventListener(MouseEvent.ROLL_OUT, this.hyperlinkRollOut);
+            };
         }
 
         public function get useStyleSheet():Boolean
@@ -548,13 +572,17 @@
         {
             if (bool)
             {
+                this._hasHandCursor = handCursor;
                 handCursor = false;
                 mouseEnabled = false;
                 this._tText.mouseEnabled = false;
             }
             else
             {
-                handCursor = true;
+                if (!(handCursor))
+                {
+                    handCursor = this._hasHandCursor;
+                };
                 mouseEnabled = true;
                 this._tText.mouseEnabled = true;
             };
@@ -615,6 +643,11 @@
             this.changeCssClassSize(size, style);
         }
 
+        public function setCssFont(font:String, style:String=null):void
+        {
+            this.changeCssClassFont(font, style);
+        }
+
         public function setStyleSheet(styles:StyleSheet):void
         {
             this._useStyleSheet = true;
@@ -657,6 +690,8 @@
                 removeChild(this._tText);
             };
             TooltipManager.hide("TextExtension");
+            this._tText.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
+            this._tText.removeEventListener(MouseEvent.ROLL_OUT, this.hyperlinkRollOut);
         }
 
         override public function free():void
@@ -729,6 +764,26 @@
             };
         }
 
+        private function changeCssClassFont(font:String, style:String=null):void
+        {
+            var _local_3:*;
+            if (style)
+            {
+                if (this.aStyleObj[style] == null)
+                {
+                    this.aStyleObj[style] = new Object();
+                };
+                this.aStyleObj[style].fontFamily = font;
+            }
+            else
+            {
+                for each (_local_3 in this.aStyleObj)
+                {
+                    _local_3.fontFamily = font;
+                };
+            };
+        }
+
         public function appendText(sTxt:String, style:String=null):void
         {
             var textFormat:TextFormat;
@@ -747,6 +802,10 @@
                 sTxt = HyperlinkFactory.decode(sTxt);
             };
             this._tText.htmlText = (this._tText.htmlText + sTxt);
+            if (this._hyperlinkEnabled)
+            {
+                this.parseLinks();
+            };
         }
 
         public function activeSmallHyperlink():void
@@ -878,6 +937,8 @@
             if (this._hyperlinkEnabled)
             {
                 HyperlinkFactory.createTextClickHandler(this._tText, true);
+                HyperlinkFactory.createRollOverHandler(this._tText);
+                this.parseLinks();
             };
             if (this._nTextHeight)
             {
@@ -1007,7 +1068,7 @@
                 while (true)
                 {
                     textWidth = this._tText.textWidth;
-                    if ((((((textWidth > currentTextFieldWidth)) || ((this._tText.textHeight > this._tText.height)))) || (((this._bFixedHeightForMultiline) && ((this._tText.textHeight > this.height))))))
+                    if ((((((textWidth > (currentTextFieldWidth + 1))) || ((this._tText.textHeight > this._tText.height)))) || (((this._bFixedHeightForMultiline) && ((this._tText.textHeight > this.height))))))
                     {
                         currentSize--;
                         if (currentSize < sizeMin)
@@ -1045,6 +1106,60 @@
             };
         }
 
+        public function truncateText(pMaxHeight:Number, pCleanTruncature:Boolean=true):void
+        {
+            var numLines:int;
+            var nbVisibleLines:int;
+            var nbVisibleChars:int;
+            var i:int;
+            var h:Number;
+            var lineHeight:Number;
+            var lineBreakIndex:int;
+            var periodIndex:int;
+            this._nHeight = (__height = (this._tText.height = pMaxHeight));
+            if (((this._tText.wordWrap) && ((this._tText.numLines > 0))))
+            {
+                numLines = this._tText.numLines;
+                h = 4;
+                lineHeight = this._tText.getLineMetrics(0).height;
+                i = 0;
+                while (i < numLines)
+                {
+                    h = (h + lineHeight);
+                    if (h < this._tText.height)
+                    {
+                        nbVisibleLines++;
+                        nbVisibleChars = (nbVisibleChars + this._tText.getLineLength(i));
+                    }
+                    else
+                    {
+                        break;
+                    };
+                    i++;
+                };
+                this._tText.text = this._tText.text.substr(0, nbVisibleChars);
+                if (pCleanTruncature)
+                {
+                    lineBreakIndex = this._tText.text.lastIndexOf(String.fromCharCode(10));
+                    periodIndex = this._tText.text.lastIndexOf(".");
+                    if (((!((lineBreakIndex == -1))) || (!((periodIndex == -1)))))
+                    {
+                        this._tText.text = this._tText.text.substring(0, Math.max(lineBreakIndex, periodIndex));
+                        this._tText.appendText("...");
+                        this._nHeight = (__height = (this._tText.height = (this._tText.height - ((nbVisibleLines - this._tText.numLines) * lineHeight))));
+                    }
+                    else
+                    {
+                        this.addEllipsis();
+                    };
+                }
+                else
+                {
+                    this.addEllipsis();
+                };
+            };
+        }
+
         public function removeTooltipExtension():void
         {
             if (this._textFieldTooltipExtension)
@@ -1055,6 +1170,27 @@
                 this._textFieldTooltipExtension.removeEventListener(MouseEvent.ROLL_OVER, this.onTooltipExtensionOver);
                 this._textFieldTooltipExtension.removeEventListener(MouseEvent.ROLL_OUT, this.onTooltipExtensionOut);
                 this._textFieldTooltipExtension = null;
+            };
+        }
+
+        private function addEllipsis():void
+        {
+            var i:int;
+            var nbSpaces:int;
+            if ((this._tText.text.length - 3) > 0)
+            {
+                this._tText.text = this._tText.text.substr(0, (this._tText.text.length - 3));
+                i = (this._tText.text.length - 1);
+                while ((((i >= 0)) && ((this._tText.text.charAt(i) == " "))))
+                {
+                    nbSpaces++;
+                    i--;
+                };
+                if (nbSpaces > 0)
+                {
+                    this._tText.text = this._tText.text.substr(0, (this._tText.text.length - nbSpaces));
+                };
+                this._tText.appendText("...");
             };
         }
 
@@ -1209,6 +1345,8 @@
                 if (this._hyperlinkEnabled)
                 {
                     HyperlinkFactory.createTextClickHandler(this._tText);
+                    HyperlinkFactory.createRollOverHandler(this._tText);
+                    this.parseLinks();
                 };
                 this._finalized = true;
                 ui = getUi();
@@ -1229,6 +1367,152 @@
             var bmpdt:BitmapData = new BitmapData(this.width, this.height, true, 0xFF0000);
             bmpdt.draw(this._tText, m, null, null, null, true);
             return (bmpdt);
+        }
+
+        private function parseLinks():void
+        {
+            var textrun:Object;
+            var textrunText:String;
+            var openSquareBrackets:Array;
+            var closeSquareBrackets:Array;
+            var nbBrackets:int;
+            var i:int;
+            var j:int;
+            var textruns:Array = this._tText.getTextRuns();
+            var nbRuns:int = textruns.length;
+            this._lastHyperLinkId = -1;
+            this._hyperLinks.length = 0;
+            i = 0;
+            while (i < nbRuns)
+            {
+                textrun = textruns[i];
+                if (((textrun.textFormat) && ((textrun.textFormat.url.length > 0))))
+                {
+                    textrunText = this._tText.text.substring(textrun.beginIndex, textrun.endIndex);
+                    openSquareBrackets = StringUtils.getAllIndexOf("[", textrunText);
+                    closeSquareBrackets = StringUtils.getAllIndexOf("]", textrunText);
+                    if ((((openSquareBrackets.length > 1)) && ((openSquareBrackets.length == closeSquareBrackets.length))))
+                    {
+                        nbBrackets = openSquareBrackets.length;
+                        j = 0;
+                        while (j < nbBrackets)
+                        {
+                            this._hyperLinks.push({
+                                "beginIndex":(textrun.beginIndex + openSquareBrackets[j]),
+                                "endIndex":(textrun.beginIndex + closeSquareBrackets[j]),
+                                "textFormat":textrun.textFormat
+                            });
+                            j++;
+                        };
+                    }
+                    else
+                    {
+                        this._hyperLinks.push(textrun);
+                    };
+                };
+                i++;
+            };
+        }
+
+        private function getHyperLinkId(pCharIndex:int):int
+        {
+            var hyperLinkId:int;
+            var i:int;
+            var nbLinks:int = this._hyperLinks.length;
+            i = 0;
+            while (i < nbLinks)
+            {
+                if ((((pCharIndex >= this._hyperLinks[i].beginIndex)) && ((pCharIndex <= this._hyperLinks[i].endIndex))))
+                {
+                    return (i);
+                };
+                i++;
+            };
+            return (-1);
+        }
+
+        private function onMouseMove(pEvent:MouseEvent):void
+        {
+            var charIndex:int;
+            var textHeight:Number;
+            var nbVisibleLines:int;
+            var lineHeight:Number;
+            var i:int;
+            var numLines:int;
+            var bottomMargin:Number;
+            var labelGlobalPos:Point;
+            var mouseOverText:Boolean;
+            var hyperLinkId:int;
+            var url:String;
+            var params:Array;
+            var type:String;
+            var pos:Point;
+            var data:String;
+            if (this._tText.length > 0)
+            {
+                charIndex = this._tText.getCharIndexAtPoint(pEvent.localX, pEvent.localY);
+                textHeight = 4;
+                lineHeight = this._tText.getLineMetrics(0).height;
+                numLines = this._tText.numLines;
+                i = 0;
+                while (i < numLines)
+                {
+                    textHeight = (textHeight + lineHeight);
+                    if (textHeight <= this._tText.height)
+                    {
+                        nbVisibleLines++;
+                    }
+                    else
+                    {
+                        break;
+                    };
+                    i++;
+                };
+                bottomMargin = (this._tText.height - (nbVisibleLines * lineHeight));
+                labelGlobalPos = parent.localToGlobal(new Point(x, y));
+                mouseOverText = (((pEvent.stageY > ((labelGlobalPos.y + this._tText.height) - bottomMargin))) ? false : true);
+                if (((mouseOverText) && (!((charIndex == -1)))))
+                {
+                    hyperLinkId = this.getHyperLinkId(charIndex);
+                    url = (((hyperLinkId >= 0)) ? this._hyperLinks[hyperLinkId].textFormat.url : null);
+                    if (url)
+                    {
+                        if (((this._mouseOverHyperLink) && ((((this._lastHyperLinkId >= 0)) && (!((hyperLinkId == this._lastHyperLinkId)))))))
+                        {
+                            this._mouseOverHyperLink = true;
+                            this.hyperlinkRollOut();
+                        };
+                        if (!(this._mouseOverHyperLink))
+                        {
+                            params = url.replace("event:", "").split(",");
+                            type = params.shift();
+                            pos = new Point(pEvent.stageX, (labelGlobalPos.y + this._tText.getCharBoundaries(charIndex).y));
+                            data = ((((((type + ",") + Math.round(pos.x)) + ",") + Math.round(pos.y)) + ",") + params.join(","));
+                            this._tText.dispatchEvent(new LinkInteractionEvent(LinkInteractionEvent.ROLL_OVER, data));
+                            this._mouseOverHyperLink = true;
+                            this._lastHyperLinkId = hyperLinkId;
+                        };
+                    }
+                    else
+                    {
+                        this.hyperlinkRollOut();
+                    };
+                }
+                else
+                {
+                    this.hyperlinkRollOut();
+                };
+            };
+        }
+
+        private function hyperlinkRollOut(pEvent:MouseEvent=null):void
+        {
+            if (((pEvent) || (this._mouseOverHyperLink)))
+            {
+                TooltipManager.hideAll();
+                this._tText.dispatchEvent(new LinkInteractionEvent(LinkInteractionEvent.ROLL_OUT));
+            };
+            this._mouseOverHyperLink = false;
         }
 
 

@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import __AS3__.vec.Vector;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -50,24 +51,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ChallengeTargetsListMessage(output);
         }
 
-        public function serializeAs_ChallengeTargetsListMessage(output:IDataOutput):void
+        public function serializeAs_ChallengeTargetsListMessage(output:ICustomDataOutput):void
         {
             output.writeShort(this.targetIds.length);
             var _i1:uint;
@@ -89,12 +90,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ChallengeTargetsListMessage(input);
         }
 
-        public function deserializeAs_ChallengeTargetsListMessage(input:IDataInput):void
+        public function deserializeAs_ChallengeTargetsListMessage(input:ICustomDataInput):void
         {
             var _val1:int;
             var _val2:int;

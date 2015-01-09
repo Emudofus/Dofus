@@ -13,6 +13,7 @@
     import com.ankamagames.dofus.logic.game.fight.frames.FightSpellCastFrame;
     import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
+    import com.ankamagames.dofus.network.enums.GameActionFightInvisibilityStateEnum;
     import com.ankamagames.dofus.datacenter.effects.Effect;
 
     public class StatBuff extends BasicBuff 
@@ -174,6 +175,9 @@
                         infos.stats[this._statName] = (infos.stats[this._statName] + this.delta);
                     };
                     break;
+                case "invisibilityState":
+                    infos.stats["invisibilityState"] = GameActionFightInvisibilityStateEnum.INVISIBLE;
+                    break;
                 default:
                     if (infos)
                     {
@@ -274,7 +278,7 @@
                         break;
                     case "summonableCreaturesBoost":
                         break;
-                    case "range:":
+                    case "range":
                         break;
                 };
             };
@@ -348,6 +352,9 @@
                     {
                         infos.stats[this._statName] = (infos.stats[this._statName] - this.delta);
                     };
+                    return;
+                case "invisibilityState":
+                    infos.stats["invisibilityState"] = GameActionFightInvisibilityStateEnum.VISIBLE;
                     return;
                 default:
                     if (infos)

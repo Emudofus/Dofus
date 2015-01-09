@@ -7,7 +7,9 @@
     import com.ankamagames.performance.tests.TestDisplayPerformance;
     import com.ankamagames.jerakine.types.DataStoreType;
     import com.ankamagames.jerakine.types.enums.DataStoreEnum;
+    import flash.utils.Timer;
     import com.ankamagames.jerakine.managers.StoreDataManager;
+    import flash.events.TimerEvent;
     import flash.display.Stage;
     import __AS3__.vec.*;
 
@@ -23,6 +25,7 @@
         private static var _totalTestToDo:uint;
         private static var _onCompleteCallback:Function;
         private static var _lastTests:Vector.<IBenchmarkTest>;
+        private static var _timer:Timer;
 
 
         public static function get hasCachedResults():Boolean
@@ -49,6 +52,9 @@
             _totalTestToDo = tests.length;
             _onCompleteCallback = onCompleteCallback;
             isDone = false;
+            _timer = new Timer(5000, 1);
+            _timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimedOut);
+            _timer.start();
             _lastTests = new Vector.<IBenchmarkTest>();
             for each (testClass in tests)
             {
@@ -58,17 +64,43 @@
             };
         }
 
+        protected static function onTimedOut(event:TimerEvent):void
+        {
+            var test:IBenchmarkTest;
+            for each (test in _lastTests)
+            {
+                test.cancel();
+            };
+            endBenchmark();
+        }
+
+        private static function cleanTimer():void
+        {
+            if (_timer)
+            {
+                _timer.stop();
+                _timer.removeEventListener(TimerEvent.TIMER_COMPLETE, onTimedOut);
+                _timer = null;
+            };
+        }
+
         public static function onTestCompleted(test:IBenchmarkTest):void
         {
             _totalTestToDo--;
             if (_totalTestToDo == 0)
             {
-                Benchmark.isDone = true;
-                if (_onCompleteCallback != null)
-                {
-                    _onCompleteCallback();
-                    _onCompleteCallback = null;
-                };
+                endBenchmark();
+            };
+        }
+
+        private static function endBenchmark():void
+        {
+            cleanTimer();
+            Benchmark.isDone = true;
+            if (_onCompleteCallback != null)
+            {
+                _onCompleteCallback();
+                _onCompleteCallback = null;
             };
         }
 

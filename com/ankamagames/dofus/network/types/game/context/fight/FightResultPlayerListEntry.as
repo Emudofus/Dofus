@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -41,12 +41,12 @@
             this.additional = new Vector.<FightResultAdditionalData>();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightResultPlayerListEntry(output);
         }
 
-        public function serializeAs_FightResultPlayerListEntry(output:IDataOutput):void
+        public function serializeAs_FightResultPlayerListEntry(output:ICustomDataOutput):void
         {
             super.serializeAs_FightResultFighterListEntry(output);
             if ((((this.level < 1)) || ((this.level > 200))))
@@ -64,12 +64,12 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightResultPlayerListEntry(input);
         }
 
-        public function deserializeAs_FightResultPlayerListEntry(input:IDataInput):void
+        public function deserializeAs_FightResultPlayerListEntry(input:ICustomDataInput):void
         {
             var _id2:uint;
             var _item2:FightResultAdditionalData;

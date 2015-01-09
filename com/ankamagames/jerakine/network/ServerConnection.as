@@ -83,7 +83,14 @@
 
         public function close():void
         {
-            this._socket.close();
+            if (this._socket.connected)
+            {
+                this._socket.close();
+            }
+            else
+            {
+                _log.warn("Tried to close a socket while it had already been disconnected.");
+            };
         }
 
         public function get rawParser():RawDataParser
@@ -272,6 +279,10 @@
             {
                 if (this._connecting)
                 {
+                    if (!(this._outputBuffer))
+                    {
+                        this._outputBuffer = new Array();
+                    };
                     this._outputBuffer.push(msg);
                 };
                 return;
@@ -482,7 +493,7 @@
 
         protected function lowSend(msg:INetworkMessage, autoFlush:Boolean=true):void
         {
-            msg.pack(this._socket);
+            msg.pack(new CustomDataWrapper(this._socket));
             this._latestSent = getTimer();
             this._lastSent = getTimer();
             this._sendSequenceId++;
@@ -520,7 +531,7 @@
                     if (src.bytesAvailable >= messageLength)
                     {
                         this.updateLatency();
-                        msg = this._rawParser.parse(src, messageId, messageLength);
+                        msg = this._rawParser.parse(new CustomDataWrapper(src), messageId, messageLength);
                         MEMORY_LOG[msg] = 1;
                         if (DEBUG_LOW_LEVEL_VERBOSE)
                         {
@@ -566,7 +577,7 @@
                     src.readBytes(this._inputBuffer, this._inputBuffer.length, (this._splittedPacketLength - this._inputBuffer.length));
                     this._inputBuffer.position = 0;
                     this.updateLatency();
-                    msg = this._rawParser.parse(this._inputBuffer, this._splittedPacketId, this._splittedPacketLength);
+                    msg = this._rawParser.parse(new CustomDataWrapper(this._inputBuffer), this._splittedPacketId, this._splittedPacketLength);
                     MEMORY_LOG[msg] = 1;
                     this._splittedPacket = false;
                     this._inputBuffer = new ByteArray();
@@ -670,7 +681,7 @@
             {
                 this._lagometer.stop();
             };
-            if (this._socket..connected)
+            if (this._socket.connected)
             {
                 _log.error(("Security error while connected : " + see.text));
                 this._handler.process(new ServerConnectionFailedMessage(this, see.text));

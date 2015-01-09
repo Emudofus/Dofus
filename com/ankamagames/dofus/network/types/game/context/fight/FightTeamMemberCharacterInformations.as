@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightTeamMemberCharacterInformations extends FightTeamMemberInformations implements INetworkType 
     {
@@ -33,33 +33,33 @@
             this.level = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightTeamMemberCharacterInformations(output);
         }
 
-        public function serializeAs_FightTeamMemberCharacterInformations(output:IDataOutput):void
+        public function serializeAs_FightTeamMemberCharacterInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_FightTeamMemberInformations(output);
             output.writeUTF(this.name);
-            if (this.level < 0)
+            if ((((this.level < 0)) || ((this.level > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.level) + ") on element level.")));
             };
-            output.writeShort(this.level);
+            output.writeByte(this.level);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightTeamMemberCharacterInformations(input);
         }
 
-        public function deserializeAs_FightTeamMemberCharacterInformations(input:IDataInput):void
+        public function deserializeAs_FightTeamMemberCharacterInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.name = input.readUTF();
-            this.level = input.readShort();
-            if (this.level < 0)
+            this.level = input.readUnsignedByte();
+            if ((((this.level < 0)) || ((this.level > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.level) + ") on element of FightTeamMemberCharacterInformations.level.")));
             };

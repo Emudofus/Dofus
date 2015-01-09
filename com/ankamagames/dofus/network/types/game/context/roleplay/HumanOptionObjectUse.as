@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class HumanOptionObjectUse extends HumanOption implements INetworkType 
@@ -35,12 +35,12 @@
             this.objectGID = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_HumanOptionObjectUse(output);
         }
 
-        public function serializeAs_HumanOptionObjectUse(output:IDataOutput):void
+        public function serializeAs_HumanOptionObjectUse(output:ICustomDataOutput):void
         {
             super.serializeAs_HumanOption(output);
             output.writeByte(this.delayTypeId);
@@ -53,15 +53,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.objectGID) + ") on element objectGID.")));
             };
-            output.writeShort(this.objectGID);
+            output.writeVarShort(this.objectGID);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_HumanOptionObjectUse(input);
         }
 
-        public function deserializeAs_HumanOptionObjectUse(input:IDataInput):void
+        public function deserializeAs_HumanOptionObjectUse(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.delayTypeId = input.readByte();
@@ -74,7 +74,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.delayEndTime) + ") on element of HumanOptionObjectUse.delayEndTime.")));
             };
-            this.objectGID = input.readShort();
+            this.objectGID = input.readVarUhShort();
             if (this.objectGID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectGID) + ") on element of HumanOptionObjectUse.objectGID.")));

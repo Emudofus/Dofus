@@ -6,8 +6,9 @@
     import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStep;
     import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntFlag;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -71,24 +72,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TreasureHuntMessage(output);
         }
 
-        public function serializeAs_TreasureHuntMessage(output:IDataOutput):void
+        public function serializeAs_TreasureHuntMessage(output:ICustomDataOutput):void
         {
             output.writeByte(this.questType);
             output.writeInt(this.startMapId);
@@ -109,12 +110,12 @@
             {
                 throw (new Error((("Forbidden value (" + this.checkPointCurrent) + ") on element checkPointCurrent.")));
             };
-            output.writeInt(this.checkPointCurrent);
+            output.writeVarInt(this.checkPointCurrent);
             if (this.checkPointTotal < 0)
             {
                 throw (new Error((("Forbidden value (" + this.checkPointTotal) + ") on element checkPointTotal.")));
             };
-            output.writeInt(this.checkPointTotal);
+            output.writeVarInt(this.checkPointTotal);
             output.writeInt(this.availableRetryCount);
             output.writeShort(this.flags.length);
             var _i8:uint;
@@ -125,12 +126,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TreasureHuntMessage(input);
         }
 
-        public function deserializeAs_TreasureHuntMessage(input:IDataInput):void
+        public function deserializeAs_TreasureHuntMessage(input:ICustomDataInput):void
         {
             var _id3:uint;
             var _item3:TreasureHuntStep;
@@ -156,12 +157,12 @@
             {
                 throw (new Error((("Forbidden value (" + this.totalStepCount) + ") on element of TreasureHuntMessage.totalStepCount.")));
             };
-            this.checkPointCurrent = input.readInt();
+            this.checkPointCurrent = input.readVarUhInt();
             if (this.checkPointCurrent < 0)
             {
                 throw (new Error((("Forbidden value (" + this.checkPointCurrent) + ") on element of TreasureHuntMessage.checkPointCurrent.")));
             };
-            this.checkPointTotal = input.readInt();
+            this.checkPointTotal = input.readVarUhInt();
             if (this.checkPointTotal < 0)
             {
                 throw (new Error((("Forbidden value (" + this.checkPointTotal) + ") on element of TreasureHuntMessage.checkPointTotal.")));

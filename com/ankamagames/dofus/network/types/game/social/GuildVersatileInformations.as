@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.social
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class GuildVersatileInformations implements INetworkType 
@@ -38,59 +38,59 @@
             this.nbMembers = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GuildVersatileInformations(output);
         }
 
-        public function serializeAs_GuildVersatileInformations(output:IDataOutput):void
+        public function serializeAs_GuildVersatileInformations(output:ICustomDataOutput):void
         {
             if (this.guildId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.guildId) + ") on element guildId.")));
             };
-            output.writeInt(this.guildId);
+            output.writeVarInt(this.guildId);
             if (this.leaderId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.leaderId) + ") on element leaderId.")));
             };
-            output.writeInt(this.leaderId);
-            if ((((this.guildLevel < 0)) || ((this.guildLevel > 0xFFFF))))
+            output.writeVarInt(this.leaderId);
+            if ((((this.guildLevel < 1)) || ((this.guildLevel > 200))))
             {
                 throw (new Error((("Forbidden value (" + this.guildLevel) + ") on element guildLevel.")));
             };
-            output.writeShort(this.guildLevel);
-            if ((((this.nbMembers < 0)) || ((this.nbMembers > 0xFFFF))))
+            output.writeByte(this.guildLevel);
+            if ((((this.nbMembers < 1)) || ((this.nbMembers > 240))))
             {
                 throw (new Error((("Forbidden value (" + this.nbMembers) + ") on element nbMembers.")));
             };
-            output.writeShort(this.nbMembers);
+            output.writeByte(this.nbMembers);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GuildVersatileInformations(input);
         }
 
-        public function deserializeAs_GuildVersatileInformations(input:IDataInput):void
+        public function deserializeAs_GuildVersatileInformations(input:ICustomDataInput):void
         {
-            this.guildId = input.readInt();
+            this.guildId = input.readVarUhInt();
             if (this.guildId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.guildId) + ") on element of GuildVersatileInformations.guildId.")));
             };
-            this.leaderId = input.readInt();
+            this.leaderId = input.readVarUhInt();
             if (this.leaderId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.leaderId) + ") on element of GuildVersatileInformations.leaderId.")));
             };
-            this.guildLevel = input.readUnsignedShort();
-            if ((((this.guildLevel < 0)) || ((this.guildLevel > 0xFFFF))))
+            this.guildLevel = input.readUnsignedByte();
+            if ((((this.guildLevel < 1)) || ((this.guildLevel > 200))))
             {
                 throw (new Error((("Forbidden value (" + this.guildLevel) + ") on element of GuildVersatileInformations.guildLevel.")));
             };
-            this.nbMembers = input.readUnsignedShort();
-            if ((((this.nbMembers < 0)) || ((this.nbMembers > 0xFFFF))))
+            this.nbMembers = input.readUnsignedByte();
+            if ((((this.nbMembers < 1)) || ((this.nbMembers > 240))))
             {
                 throw (new Error((("Forbidden value (" + this.nbMembers) + ") on element of GuildVersatileInformations.nbMembers.")));
             };

@@ -34,6 +34,8 @@
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
     import flash.filesystem.File;
+    import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+    import com.ankamagames.jerakine.data.I18n;
     import flash.filesystem.FileStream;
     import flash.filesystem.FileMode;
     import __AS3__.vec.*;
@@ -1029,8 +1031,13 @@
 
         private function saveText(e:Event):void
         {
-            var file:File = new File();
-            file.browseForSave("Save");
+            var fileName:String = ((File.desktopDirectory.nativePath + File.separator) + "dofus_chat-");
+            var d:Date = new Date();
+            fileName = (fileName + TimeManager.getInstance().formatDateIRL(d.time).split("/").join("-"));
+            fileName = (fileName + ("." + TimeManager.getInstance().formatClock(d.time).replace(":", "")));
+            fileName = (fileName + ".txt");
+            var file:File = new File(fileName);
+            file.browseForSave(I18n.getUiText("ui.common.save"));
             file.addEventListener(Event.SELECT, this.onFileSelect);
         }
 

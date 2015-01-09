@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class MonsterInGroupLightInformations implements INetworkType 
     {
@@ -31,12 +31,12 @@
             this.grade = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_MonsterInGroupLightInformations(output);
         }
 
-        public function serializeAs_MonsterInGroupLightInformations(output:IDataOutput):void
+        public function serializeAs_MonsterInGroupLightInformations(output:ICustomDataOutput):void
         {
             output.writeInt(this.creatureGenericId);
             if (this.grade < 0)
@@ -46,12 +46,12 @@
             output.writeByte(this.grade);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_MonsterInGroupLightInformations(input);
         }
 
-        public function deserializeAs_MonsterInGroupLightInformations(input:IDataInput):void
+        public function deserializeAs_MonsterInGroupLightInformations(input:ICustomDataInput):void
         {
             this.creatureGenericId = input.readInt();
             this.grade = input.readByte();

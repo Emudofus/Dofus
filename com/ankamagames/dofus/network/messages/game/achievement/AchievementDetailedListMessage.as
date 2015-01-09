@@ -5,8 +5,9 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.achievement.Achievement;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -51,24 +52,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AchievementDetailedListMessage(output);
         }
 
-        public function serializeAs_AchievementDetailedListMessage(output:IDataOutput):void
+        public function serializeAs_AchievementDetailedListMessage(output:ICustomDataOutput):void
         {
             output.writeShort(this.startedAchievements.length);
             var _i1:uint;
@@ -86,12 +87,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AchievementDetailedListMessage(input);
         }
 
-        public function deserializeAs_AchievementDetailedListMessage(input:IDataInput):void
+        public function deserializeAs_AchievementDetailedListMessage(input:ICustomDataInput):void
         {
             var _item1:Achievement;
             var _item2:Achievement;

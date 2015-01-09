@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class MapCoordinatesExtended extends MapCoordinatesAndId implements INetworkType 
     {
@@ -30,30 +30,30 @@
             this.subAreaId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_MapCoordinatesExtended(output);
         }
 
-        public function serializeAs_MapCoordinatesExtended(output:IDataOutput):void
+        public function serializeAs_MapCoordinatesExtended(output:ICustomDataOutput):void
         {
             super.serializeAs_MapCoordinatesAndId(output);
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_MapCoordinatesExtended(input);
         }
 
-        public function deserializeAs_MapCoordinatesExtended(input:IDataInput):void
+        public function deserializeAs_MapCoordinatesExtended(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of MapCoordinatesExtended.subAreaId.")));

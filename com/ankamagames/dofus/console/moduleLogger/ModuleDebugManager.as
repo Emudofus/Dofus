@@ -19,7 +19,7 @@
     {
 
         private static const WIDTH:int = 220;
-        private static const HEIGHT:int = 40;
+        private static const HEIGHT:int = 42;
         private static var _ui:Sprite;
         private static var _fpsShape:Shape;
         private static var _textField:TextField;

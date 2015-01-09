@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.interactive.skill
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class SkillActionDescriptionTimed extends SkillActionDescription implements INetworkType 
@@ -31,12 +31,12 @@
             this.time = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_SkillActionDescriptionTimed(output);
         }
 
-        public function serializeAs_SkillActionDescriptionTimed(output:IDataOutput):void
+        public function serializeAs_SkillActionDescriptionTimed(output:ICustomDataOutput):void
         {
             super.serializeAs_SkillActionDescription(output);
             if ((((this.time < 0)) || ((this.time > 0xFF))))
@@ -46,12 +46,12 @@
             output.writeByte(this.time);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_SkillActionDescriptionTimed(input);
         }
 
-        public function deserializeAs_SkillActionDescriptionTimed(input:IDataInput):void
+        public function deserializeAs_SkillActionDescriptionTimed(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.time = input.readUnsignedByte();

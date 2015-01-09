@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import __AS3__.vec.Vector;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GameFightCompanionInformations extends GameFightFighterInformations implements INetworkType 
     {
@@ -21,9 +22,9 @@
             return (450);
         }
 
-        public function initGameFightCompanionInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, companionGenericId:uint=0, level:uint=0, masterId:int=0):GameFightCompanionInformations
+        public function initGameFightCompanionInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, previousPositions:Vector.<uint>=null, companionGenericId:uint=0, level:uint=0, masterId:int=0):GameFightCompanionInformations
         {
-            super.initGameFightFighterInformations(contextualId, look, disposition, teamId, wave, alive, stats);
+            super.initGameFightFighterInformations(contextualId, look, disposition, teamId, wave, alive, stats, previousPositions);
             this.companionGenericId = companionGenericId;
             this.level = level;
             this.masterId = masterId;
@@ -38,42 +39,42 @@
             this.masterId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameFightCompanionInformations(output);
         }
 
-        public function serializeAs_GameFightCompanionInformations(output:IDataOutput):void
+        public function serializeAs_GameFightCompanionInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameFightFighterInformations(output);
             if (this.companionGenericId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.companionGenericId) + ") on element companionGenericId.")));
             };
-            output.writeShort(this.companionGenericId);
-            if (this.level < 0)
+            output.writeByte(this.companionGenericId);
+            if ((((this.level < 0)) || ((this.level > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.level) + ") on element level.")));
             };
-            output.writeShort(this.level);
+            output.writeByte(this.level);
             output.writeInt(this.masterId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameFightCompanionInformations(input);
         }
 
-        public function deserializeAs_GameFightCompanionInformations(input:IDataInput):void
+        public function deserializeAs_GameFightCompanionInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.companionGenericId = input.readShort();
+            this.companionGenericId = input.readByte();
             if (this.companionGenericId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.companionGenericId) + ") on element of GameFightCompanionInformations.companionGenericId.")));
             };
-            this.level = input.readShort();
-            if (this.level < 0)
+            this.level = input.readUnsignedByte();
+            if ((((this.level < 0)) || ((this.level > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.level) + ") on element of GameFightCompanionInformations.level.")));
             };

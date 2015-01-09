@@ -23,6 +23,7 @@
         public static const MAX_GROUND_CACHE_MEMORY:int = 5;
         public static const GROUND_MAP_VERSION:int = 1;
         public static const MIN_DISK_SPACE_AVAILABLE:Number = (Math.pow(2, 20) * 0x0200);
+        public static const PSEUDO_INFINITE:int = 63;
         public static const PATHFINDER_MIN_X:int = 0;
         public static const PATHFINDER_MAX_X:int = (33 + 1);//34
         public static const PATHFINDER_MIN_Y:int = -19;
@@ -35,6 +36,8 @@
         public static const RESOLUTION_HIGH_QUALITY:Point = new Point(1276, 876);
         public static const RESOLUTION_MEDIUM_QUALITY:Point = new Point(957, 657);
         public static const RESOLUTION_LOW_QUALITY:Point = new Point(638, 438);
+        public static const MOVEMENT_WALK:uint = 1;
+        public static const MOVEMENT_NORMAL:uint = 2;
 
 
     }

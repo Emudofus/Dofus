@@ -5,8 +5,8 @@
     import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.companion.PartyCompanionMemberInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PartyMemberArenaInformations extends PartyMemberInformations implements INetworkType 
     {
@@ -34,30 +34,30 @@
             this.rank = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PartyMemberArenaInformations(output);
         }
 
-        public function serializeAs_PartyMemberArenaInformations(output:IDataOutput):void
+        public function serializeAs_PartyMemberArenaInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_PartyMemberInformations(output);
             if ((((this.rank < 0)) || ((this.rank > 2300))))
             {
                 throw (new Error((("Forbidden value (" + this.rank) + ") on element rank.")));
             };
-            output.writeShort(this.rank);
+            output.writeVarShort(this.rank);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PartyMemberArenaInformations(input);
         }
 
-        public function deserializeAs_PartyMemberArenaInformations(input:IDataInput):void
+        public function deserializeAs_PartyMemberArenaInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.rank = input.readShort();
+            this.rank = input.readVarUhShort();
             if ((((this.rank < 0)) || ((this.rank > 2300))))
             {
                 throw (new Error((("Forbidden value (" + this.rank) + ") on element of PartyMemberArenaInformations.rank.")));

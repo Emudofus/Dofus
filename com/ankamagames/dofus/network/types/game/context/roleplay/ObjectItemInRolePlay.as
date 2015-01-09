@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ObjectItemInRolePlay implements INetworkType 
@@ -32,38 +32,38 @@
             this.objectGID = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectItemInRolePlay(output);
         }
 
-        public function serializeAs_ObjectItemInRolePlay(output:IDataOutput):void
+        public function serializeAs_ObjectItemInRolePlay(output:ICustomDataOutput):void
         {
             if ((((this.cellId < 0)) || ((this.cellId > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.cellId) + ") on element cellId.")));
             };
-            output.writeShort(this.cellId);
+            output.writeVarShort(this.cellId);
             if (this.objectGID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectGID) + ") on element objectGID.")));
             };
-            output.writeShort(this.objectGID);
+            output.writeVarShort(this.objectGID);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectItemInRolePlay(input);
         }
 
-        public function deserializeAs_ObjectItemInRolePlay(input:IDataInput):void
+        public function deserializeAs_ObjectItemInRolePlay(input:ICustomDataInput):void
         {
-            this.cellId = input.readShort();
+            this.cellId = input.readVarUhShort();
             if ((((this.cellId < 0)) || ((this.cellId > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.cellId) + ") on element of ObjectItemInRolePlay.cellId.")));
             };
-            this.objectGID = input.readShort();
+            this.objectGID = input.readVarUhShort();
             if (this.objectGID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectGID) + ") on element of ObjectItemInRolePlay.objectGID.")));

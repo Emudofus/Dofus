@@ -240,14 +240,14 @@
                     i = (this._nowX - 1);
                     while (i < (this._nowX + 2))
                     {
-                        if ((((((((((((j >= _minY)) && ((j < _maxY)))) && ((i >= _minX)))) && ((i < _maxX)))) && (!((((j == this._nowY)) && ((i == this._nowX))))))) && (((((this._allowDiag) || ((j == this._nowY)))) || ((((i == this._nowX)) && (((((((this._bAllowDiagCornering) || ((j == this._nowY)))) || ((i == this._nowX)))) || (((this._map.pointMov(this._nowX, j, this._bAllowTroughEntity, this._previousCellId)) || (this._map.pointMov(i, this._nowY, this._bAllowTroughEntity, this._previousCellId))))))))))))
+                        if ((((((((((((j >= _minY)) && ((j < _maxY)))) && ((i >= _minX)))) && ((i < _maxX)))) && (!((((j == this._nowY)) && ((i == this._nowX))))))) && (((((this._allowDiag) || ((j == this._nowY)))) || ((((i == this._nowX)) && (((((((this._bAllowDiagCornering) || ((j == this._nowY)))) || ((i == this._nowX)))) || (((this._map.pointMov(this._nowX, j, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId)) || (this._map.pointMov(i, this._nowY, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))))))))))))
                         {
-                            if (((((((!(this._map.pointMov(this._nowX, j, this._bAllowTroughEntity, this._previousCellId))) && (!(this._map.pointMov(i, this._nowY, this._bAllowTroughEntity, this._previousCellId))))) && (!(this._bIsFighting)))) && (this._allowDiag)))
+                            if (((((((!(this._map.pointMov(this._nowX, j, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))) && (!(this._map.pointMov(i, this._nowY, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))))) && (!(this._bIsFighting)))) && (this._allowDiag)))
                             {
                             }
                             else
                             {
-                                if (this._map.pointMov(i, j, this._bAllowTroughEntity, this._previousCellId))
+                                if (this._map.pointMov(i, j, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))
                                 {
                                     if (!(this.isClosed(j, i)))
                                     {
@@ -398,7 +398,7 @@
                                 nextY = returnPath[(k + 3)].y;
                                 interX = (kX + Math.round(((nextX - kX) / 2)));
                                 interY = (kY + Math.round(((nextY - kY) / 2)));
-                                if (((this._map.pointMov(interX, interY, true, this._previousCellId)) && ((this._map.pointWeight(interX, interY) < 2))))
+                                if (((this._map.pointMov(interX, interY, true, this._previousCellId, this._endPoint.cellId)) && ((this._map.pointWeight(interX, interY) < 2))))
                                 {
                                     tmpMapPoint = MapPoint.fromCoords(interX, interY);
                                     returnPathOpti.push(tmpMapPoint);
@@ -429,7 +429,7 @@
                                         }
                                         else
                                         {
-                                            if ((((((((kX == nextX)) && (!((kX == interX))))) && ((this._map.pointWeight(kX, interY) < 2)))) && (this._map.pointMov(kX, interY, this._bAllowTroughEntity, this._previousCellId))))
+                                            if ((((((((kX == nextX)) && (!((kX == interX))))) && ((this._map.pointWeight(kX, interY) < 2)))) && (this._map.pointMov(kX, interY, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))))
                                             {
                                                 tmpMapPoint = MapPoint.fromCoords(kX, interY);
                                                 returnPathOpti.push(tmpMapPoint);
@@ -438,7 +438,7 @@
                                             }
                                             else
                                             {
-                                                if ((((((((kY == nextY)) && (!((kY == interY))))) && ((this._map.pointWeight(interX, kY) < 2)))) && (this._map.pointMov(interX, kY, this._bAllowTroughEntity, this._previousCellId))))
+                                                if ((((((((kY == nextY)) && (!((kY == interY))))) && ((this._map.pointWeight(interX, kY) < 2)))) && (this._map.pointMov(interX, kY, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))))
                                                 {
                                                     tmpMapPoint = MapPoint.fromCoords(interX, kY);
                                                     returnPathOpti.push(tmpMapPoint);
@@ -534,7 +534,7 @@
                 j = -(distanceMaxToCheck);
                 while (j < distanceMaxToCheck)
                 {
-                    if (!(map.pointMov((x + i), (y + j), true, this._previousCellId)))
+                    if (!(map.pointMov((x + i), (y + j), true, this._previousCellId, this._endPoint.cellId)))
                     {
                         distanceMin = Math.min(distanceMin, MapPoint(MapPoint.fromCoords(x, y)).distanceToCell(MapPoint.fromCoords((x + i), (y + j))));
                     };

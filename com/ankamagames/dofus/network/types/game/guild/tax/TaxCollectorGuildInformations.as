@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.context.roleplay.BasicGuildInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class TaxCollectorGuildInformations extends TaxCollectorComplementaryInformations implements INetworkType 
     {
@@ -34,23 +34,23 @@
             this.guild = new BasicGuildInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TaxCollectorGuildInformations(output);
         }
 
-        public function serializeAs_TaxCollectorGuildInformations(output:IDataOutput):void
+        public function serializeAs_TaxCollectorGuildInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_TaxCollectorComplementaryInformations(output);
             this.guild.serializeAs_BasicGuildInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TaxCollectorGuildInformations(input);
         }
 
-        public function deserializeAs_TaxCollectorGuildInformations(input:IDataInput):void
+        public function deserializeAs_TaxCollectorGuildInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.guild = new BasicGuildInformations();

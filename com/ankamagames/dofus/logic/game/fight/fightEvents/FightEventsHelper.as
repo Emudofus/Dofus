@@ -14,6 +14,7 @@
     import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
     import flash.utils.Dictionary;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
     import com.ankamagames.dofus.datacenter.misc.TypeAction;
     import com.ankamagames.jerakine.data.XmlConfig;
@@ -431,6 +432,12 @@
                             break;
                         case "other":
                             removeEventFromEventsList(pEventList, listToConcat);
+                            if ((((((evt.name == FightEventEnum.FIGHTER_TEMPORARY_BOOSTED)) && (evt.params[4]))) && ((evt.params[4] is EffectInstance))))
+                            {
+                                evt.params[1] = EffectInstance(evt.params[4]).description;
+                                evt.params[2] = EffectInstance(evt.params[4]).duration;
+                                evt.params[3] = EffectInstance(evt.params[4]).durationString;
+                            };
                             if ((((evt.name == "fighterLifeLoss")) && (!((groupPvLostAndDeath.indexOf(listToConcat[0].targetId) == -1)))))
                             {
                                 sendFightLogToChat(evt, "", list, true, true);
@@ -441,7 +448,7 @@
                             };
                             break;
                         case "none":
-                            trace("probleme de regroupement");
+                            _log.warn("Failed to group FightEvents for the team 'none'");
                             break;
                         default:
                             for each (t in pEntitiesList)
@@ -604,7 +611,7 @@
         private static function sendFightLogToChat(pFightEvent:FightEvent, pTargetsTeam:String="", pTargetsList:Vector.<int>=null, pActiveColoration:Boolean=true, pAddDeathInTheSameMsg:Boolean=false):void
         {
             var name:String = (((((pFightEvent.name == FightEventEnum.FIGHTER_LIFE_LOSS)) && (pAddDeathInTheSameMsg))) ? ("fightLifeLossAndDeath") : pFightEvent.name);
-            var params:Array = pFightEvent.params;
+            var params:Array = pFightEvent.params.concat();
             if (pActiveColoration)
             {
                 if ((((pFightEvent.name == FightEventEnum.FIGHTER_LIFE_LOSS)) || ((pFightEvent.name == FightEventEnum.FIGHTER_SHIELD_LOSS))))

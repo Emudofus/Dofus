@@ -4,6 +4,8 @@
     {
 
         function canSeeThrough():Boolean;
+        function canWalkThrough():Boolean;
+        function canWalkTo():Boolean;
 
     }
 }//package com.ankamagames.jerakine.interfaces

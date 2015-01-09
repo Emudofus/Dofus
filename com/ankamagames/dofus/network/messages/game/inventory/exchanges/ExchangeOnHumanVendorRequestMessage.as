@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ExchangeOnHumanVendorRequestMessage extends NetworkMessage implements INetworkMessage 
@@ -42,51 +43,51 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeOnHumanVendorRequestMessage(output);
         }
 
-        public function serializeAs_ExchangeOnHumanVendorRequestMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeOnHumanVendorRequestMessage(output:ICustomDataOutput):void
         {
             if (this.humanVendorId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.humanVendorId) + ") on element humanVendorId.")));
             };
-            output.writeInt(this.humanVendorId);
-            if (this.humanVendorCell < 0)
+            output.writeVarInt(this.humanVendorId);
+            if ((((this.humanVendorCell < 0)) || ((this.humanVendorCell > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.humanVendorCell) + ") on element humanVendorCell.")));
             };
-            output.writeInt(this.humanVendorCell);
+            output.writeVarShort(this.humanVendorCell);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeOnHumanVendorRequestMessage(input);
         }
 
-        public function deserializeAs_ExchangeOnHumanVendorRequestMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeOnHumanVendorRequestMessage(input:ICustomDataInput):void
         {
-            this.humanVendorId = input.readInt();
+            this.humanVendorId = input.readVarUhInt();
             if (this.humanVendorId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.humanVendorId) + ") on element of ExchangeOnHumanVendorRequestMessage.humanVendorId.")));
             };
-            this.humanVendorCell = input.readInt();
-            if (this.humanVendorCell < 0)
+            this.humanVendorCell = input.readVarUhShort();
+            if ((((this.humanVendorCell < 0)) || ((this.humanVendorCell > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.humanVendorCell) + ") on element of ExchangeOnHumanVendorRequestMessage.humanVendorCell.")));
             };

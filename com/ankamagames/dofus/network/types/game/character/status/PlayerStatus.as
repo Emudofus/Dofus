@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.character.status
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PlayerStatus implements INetworkType 
     {
@@ -28,22 +28,22 @@
             this.statusId = 1;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PlayerStatus(output);
         }
 
-        public function serializeAs_PlayerStatus(output:IDataOutput):void
+        public function serializeAs_PlayerStatus(output:ICustomDataOutput):void
         {
             output.writeByte(this.statusId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PlayerStatus(input);
         }
 
-        public function deserializeAs_PlayerStatus(input:IDataInput):void
+        public function deserializeAs_PlayerStatus(input:ICustomDataInput):void
         {
             this.statusId = input.readByte();
             if (this.statusId < 0)

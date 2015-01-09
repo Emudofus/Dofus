@@ -19,7 +19,9 @@
     import flash.events.KeyboardEvent;
     import com.ankamagames.dofus.logic.common.actions.RemoveBehaviorToStackAction;
     import com.ankamagames.jerakine.utils.display.StageShareManager;
+    import com.ankamagames.dofus.network.messages.game.context.GameContextCreateMessage;
     import com.ankamagames.dofus.logic.game.roleplay.messages.InteractiveElementActivationMessage;
+    import com.ankamagames.dofus.network.enums.GameContextEnum;
     import com.ankamagames.dofus.logic.common.actions.EmptyStackAction;
     import com.ankamagames.atouin.messages.CellClickMessage;
     import com.ankamagames.atouin.messages.AdjacentMapClickMessage;
@@ -54,6 +56,7 @@
         private var _keyDown:Boolean = false;
         private var _paused:Boolean = false;
         private var _waitingMessage:Message;
+        private var _enabled:Boolean;
 
         public function StackManagementFrame()
         {
@@ -62,6 +65,7 @@
             this._ignoredMsg = new Vector.<Message>();
             this._stackOutputMessage = new Vector.<AbstractBehavior>();
             this.initStopMessages();
+            this._enabled = true;
         }
 
         private function onActivate(pEvt:Event):void
@@ -75,7 +79,7 @@
         public function onKeyDown(pEvt:KeyboardEvent):void
         {
             var m:AddBehaviorToStackAction;
-            if (((!(this._keyDown)) && ((pEvt.keyCode == KEY_CODE))))
+            if (((((this._enabled) && (!(this._keyDown)))) && ((pEvt.keyCode == KEY_CODE))))
             {
                 this._keyDown = true;
                 this.initStackInputMessages(AbstractBehavior.NORMAL);
@@ -180,26 +184,49 @@
 
         public function process(msg:Message):Boolean
         {
-            var _local_2:AddBehaviorToStackAction;
-            var _local_3:RemoveBehaviorToStackAction;
-            var _local_4:AbstractBehavior;
-            var _local_5:String;
-            var _local_6:Boolean;
+            var gccmsg:GameContextCreateMessage;
+            var _local_3:AddBehaviorToStackAction;
+            var _local_4:RemoveBehaviorToStackAction;
+            var _local_5:AbstractBehavior;
+            var _local_6:String;
             var _local_7:Boolean;
             var _local_8:Boolean;
+            var _local_9:Boolean;
             var b:String;
             var behavior:AbstractBehavior;
-            var _local_11:MoveBehavior;
-            var _local_12:ChangeMapBehavior;
-            var _local_13:InteractiveElementBehavior;
+            var _local_12:MoveBehavior;
+            var _local_13:ChangeMapBehavior;
+            var _local_14:InteractiveElementBehavior;
             var ieBehaviorIndex:int;
             var ieam:InteractiveElementActivationMessage;
             var stop:Boolean;
+            if ((msg is GameContextCreateMessage))
+            {
+                gccmsg = (msg as GameContextCreateMessage);
+                if (gccmsg.context == GameContextEnum.FIGHT)
+                {
+                    this.stopWatchingActions();
+                    this.emptyStack();
+                    this._keyDown = false;
+                    this._enabled = false;
+                }
+                else
+                {
+                    if (gccmsg.context == GameContextEnum.ROLE_PLAY)
+                    {
+                        this._enabled = true;
+                    };
+                };
+            };
+            if (!(this._enabled))
+            {
+                return (false);
+            };
             switch (true)
             {
                 case (msg is AddBehaviorToStackAction):
-                    _local_2 = (msg as AddBehaviorToStackAction);
-                    for each (b in _local_2.behavior)
+                    _local_3 = (msg as AddBehaviorToStackAction);
+                    for each (b in _local_3.behavior)
                     {
                         switch (b)
                         {
@@ -214,8 +241,8 @@
                     };
                     return (true);
                 case (msg is RemoveBehaviorToStackAction):
-                    _local_3 = (msg as RemoveBehaviorToStackAction);
-                    switch (_local_3.behavior)
+                    _local_4 = (msg as RemoveBehaviorToStackAction);
+                    switch (_local_4.behavior)
                     {
                         case StackActionEnum.REMOVE_ALL:
                             this.stopWatchingActions();
@@ -226,44 +253,44 @@
                     this.emptyStack();
                     return (true);
                 default:
-                    _local_5 = getQualifiedClassName(msg).split("::")[1];
-                    _local_6 = (((_local_5 == "InteractiveUsedMessage")) || ((_local_5 == "InteractiveUseErrorMessage")));
-                    if (((this._paused) && (((!((ACTION_MESSAGES.indexOf(_local_5) == -1))) || (_local_6)))))
+                    _local_6 = getQualifiedClassName(msg).split("::")[1];
+                    _local_7 = (((_local_6 == "InteractiveUsedMessage")) || ((_local_6 == "InteractiveUseErrorMessage")));
+                    if (((this._paused) && (((!((ACTION_MESSAGES.indexOf(_local_6) == -1))) || (_local_7)))))
                     {
                         for each (behavior in this._stackOutputMessage)
                         {
                             switch (true)
                             {
                                 case (behavior is MoveBehavior):
-                                    _local_11 = (behavior as MoveBehavior);
-                                    if ((((msg is CellClickMessage)) && (((msg as CellClickMessage).cellId == _local_11.getMapPoint().cellId))))
+                                    _local_12 = (behavior as MoveBehavior);
+                                    if ((((msg is CellClickMessage)) && (((msg as CellClickMessage).cellId == _local_12.getMapPoint().cellId))))
                                     {
                                         this._waitingMessage = msg;
                                         return (false);
                                     };
                                     break;
                                 case (behavior is ChangeMapBehavior):
-                                    _local_12 = (behavior as ChangeMapBehavior);
-                                    if ((((msg is AdjacentMapClickMessage)) && (((msg as AdjacentMapClickMessage).cellId == _local_12.getMapPoint().cellId))))
+                                    _local_13 = (behavior as ChangeMapBehavior);
+                                    if ((((msg is AdjacentMapClickMessage)) && (((msg as AdjacentMapClickMessage).cellId == _local_13.getMapPoint().cellId))))
                                     {
                                         this._waitingMessage = msg;
                                         return (false);
                                     };
                                     break;
                                 case (behavior is InteractiveElementBehavior):
-                                    _local_13 = (behavior as InteractiveElementBehavior);
-                                    if ((((msg is InteractiveElementActivationMessage)) && (((msg as InteractiveElementActivationMessage).interactiveElement.elementId == _local_13.interactiveElement.elementId))))
+                                    _local_14 = (behavior as InteractiveElementBehavior);
+                                    if ((((msg is InteractiveElementActivationMessage)) && (((msg as InteractiveElementActivationMessage).interactiveElement.elementId == _local_14.interactiveElement.elementId))))
                                     {
                                         this._waitingMessage = msg;
                                         return (false);
                                     };
-                                    if (((_local_6) && ((_local_13.interactiveElement.elementId == (msg as Object).elemId))))
+                                    if (((_local_7) && ((_local_14.interactiveElement.elementId == (msg as Object).elemId))))
                                     {
-                                        _local_13.processOutputMessage(msg, this._currentMode);
-                                        this.removeCheckPoint(_local_13);
-                                        ieBehaviorIndex = this._stackOutputMessage.indexOf(_local_13);
+                                        _local_14.processOutputMessage(msg, this._currentMode);
+                                        this.removeCheckPoint(_local_14);
+                                        ieBehaviorIndex = this._stackOutputMessage.indexOf(_local_14);
                                         ieam = (this._waitingMessage as InteractiveElementActivationMessage);
-                                        if (((ieam) && ((ieam.interactiveElement.elementId == _local_13.interactiveElement.elementId))))
+                                        if (((ieam) && ((ieam.interactiveElement.elementId == _local_14.interactiveElement.elementId))))
                                         {
                                             this._waitingMessage = null;
                                         };
@@ -278,11 +305,11 @@
                         };
                         return (false);
                     };
-                    for each (_local_4 in this._stackInputMessage)
+                    for each (_local_5 in this._stackInputMessage)
                     {
-                        _local_4.checkAvailability(msg);
+                        _local_5.checkAvailability(msg);
                     };
-                    if (this._stopMessages.indexOf(_local_5) != -1)
+                    if (this._stopMessages.indexOf(_local_6) != -1)
                     {
                         stop = true;
                         if ((msg is EmotePlayMessage))
@@ -303,9 +330,9 @@
                         this._ignoredMsg.splice(this._ignoredMsg.indexOf(msg), 1);
                         return (false);
                     };
-                    _local_7 = this.processStackInputMessages(msg);
-                    _local_8 = this.processStackOutputMessages(msg);
-                    return (_local_7);
+                    _local_8 = this.processStackInputMessages(msg);
+                    _local_9 = this.processStackOutputMessages(msg);
+                    return (_local_8);
             };
         }
 

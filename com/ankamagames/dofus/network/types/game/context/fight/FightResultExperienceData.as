@@ -1,9 +1,9 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
     import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightResultExperienceData extends FightResultAdditionalData implements INetworkType 
     {
@@ -23,7 +23,7 @@
         public var experienceForMount:uint = 0;
         public var showExperienceForMount:Boolean = false;
         public var isIncarnationExperience:Boolean = false;
-        public var rerollExperienceMul:int = 0;
+        public var rerollExperienceMul:uint = 0;
 
 
         override public function getTypeId():uint
@@ -31,7 +31,7 @@
             return (192);
         }
 
-        public function initFightResultExperienceData(experience:Number=0, showExperience:Boolean=false, experienceLevelFloor:Number=0, showExperienceLevelFloor:Boolean=false, experienceNextLevelFloor:Number=0, showExperienceNextLevelFloor:Boolean=false, experienceFightDelta:int=0, showExperienceFightDelta:Boolean=false, experienceForGuild:uint=0, showExperienceForGuild:Boolean=false, experienceForMount:uint=0, showExperienceForMount:Boolean=false, isIncarnationExperience:Boolean=false, rerollExperienceMul:int=0):FightResultExperienceData
+        public function initFightResultExperienceData(experience:Number=0, showExperience:Boolean=false, experienceLevelFloor:Number=0, showExperienceLevelFloor:Boolean=false, experienceNextLevelFloor:Number=0, showExperienceNextLevelFloor:Boolean=false, experienceFightDelta:int=0, showExperienceFightDelta:Boolean=false, experienceForGuild:uint=0, showExperienceForGuild:Boolean=false, experienceForMount:uint=0, showExperienceForMount:Boolean=false, isIncarnationExperience:Boolean=false, rerollExperienceMul:uint=0):FightResultExperienceData
         {
             this.experience = experience;
             this.showExperience = showExperience;
@@ -68,12 +68,12 @@
             this.rerollExperienceMul = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightResultExperienceData(output);
         }
 
-        public function serializeAs_FightResultExperienceData(output:IDataOutput):void
+        public function serializeAs_FightResultExperienceData(output:ICustomDataOutput):void
         {
             super.serializeAs_FightResultAdditionalData(output);
             var _box0:uint;
@@ -89,37 +89,41 @@
             {
                 throw (new Error((("Forbidden value (" + this.experience) + ") on element experience.")));
             };
-            output.writeDouble(this.experience);
+            output.writeVarLong(this.experience);
             if ((((this.experienceLevelFloor < 0)) || ((this.experienceLevelFloor > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experienceLevelFloor) + ") on element experienceLevelFloor.")));
             };
-            output.writeDouble(this.experienceLevelFloor);
+            output.writeVarLong(this.experienceLevelFloor);
             if ((((this.experienceNextLevelFloor < 0)) || ((this.experienceNextLevelFloor > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experienceNextLevelFloor) + ") on element experienceNextLevelFloor.")));
             };
             output.writeDouble(this.experienceNextLevelFloor);
-            output.writeInt(this.experienceFightDelta);
+            output.writeVarInt(this.experienceFightDelta);
             if (this.experienceForGuild < 0)
             {
                 throw (new Error((("Forbidden value (" + this.experienceForGuild) + ") on element experienceForGuild.")));
             };
-            output.writeInt(this.experienceForGuild);
+            output.writeVarInt(this.experienceForGuild);
             if (this.experienceForMount < 0)
             {
                 throw (new Error((("Forbidden value (" + this.experienceForMount) + ") on element experienceForMount.")));
             };
-            output.writeInt(this.experienceForMount);
-            output.writeInt(this.rerollExperienceMul);
+            output.writeVarInt(this.experienceForMount);
+            if (this.rerollExperienceMul < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.rerollExperienceMul) + ") on element rerollExperienceMul.")));
+            };
+            output.writeByte(this.rerollExperienceMul);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightResultExperienceData(input);
         }
 
-        public function deserializeAs_FightResultExperienceData(input:IDataInput):void
+        public function deserializeAs_FightResultExperienceData(input:ICustomDataInput):void
         {
             super.deserialize(input);
             var _box0:uint = input.readByte();
@@ -130,12 +134,12 @@
             this.showExperienceForGuild = BooleanByteWrapper.getFlag(_box0, 4);
             this.showExperienceForMount = BooleanByteWrapper.getFlag(_box0, 5);
             this.isIncarnationExperience = BooleanByteWrapper.getFlag(_box0, 6);
-            this.experience = input.readDouble();
+            this.experience = input.readVarUhLong();
             if ((((this.experience < 0)) || ((this.experience > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experience) + ") on element of FightResultExperienceData.experience.")));
             };
-            this.experienceLevelFloor = input.readDouble();
+            this.experienceLevelFloor = input.readVarUhLong();
             if ((((this.experienceLevelFloor < 0)) || ((this.experienceLevelFloor > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experienceLevelFloor) + ") on element of FightResultExperienceData.experienceLevelFloor.")));
@@ -145,18 +149,22 @@
             {
                 throw (new Error((("Forbidden value (" + this.experienceNextLevelFloor) + ") on element of FightResultExperienceData.experienceNextLevelFloor.")));
             };
-            this.experienceFightDelta = input.readInt();
-            this.experienceForGuild = input.readInt();
+            this.experienceFightDelta = input.readVarInt();
+            this.experienceForGuild = input.readVarUhInt();
             if (this.experienceForGuild < 0)
             {
                 throw (new Error((("Forbidden value (" + this.experienceForGuild) + ") on element of FightResultExperienceData.experienceForGuild.")));
             };
-            this.experienceForMount = input.readInt();
+            this.experienceForMount = input.readVarUhInt();
             if (this.experienceForMount < 0)
             {
                 throw (new Error((("Forbidden value (" + this.experienceForMount) + ") on element of FightResultExperienceData.experienceForMount.")));
             };
-            this.rerollExperienceMul = input.readInt();
+            this.rerollExperienceMul = input.readByte();
+            if (this.rerollExperienceMul < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.rerollExperienceMul) + ") on element of FightResultExperienceData.rerollExperienceMul.")));
+            };
         }
 
 

@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.context.roleplay.AllianceInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class AlliancePrismInformation extends PrismInformation implements INetworkType 
     {
@@ -36,23 +36,23 @@
             this.alliance = new AllianceInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AlliancePrismInformation(output);
         }
 
-        public function serializeAs_AlliancePrismInformation(output:IDataOutput):void
+        public function serializeAs_AlliancePrismInformation(output:ICustomDataOutput):void
         {
             super.serializeAs_PrismInformation(output);
             this.alliance.serializeAs_AllianceInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AlliancePrismInformation(input);
         }
 
-        public function deserializeAs_AlliancePrismInformation(input:IDataInput):void
+        public function deserializeAs_AlliancePrismInformation(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.alliance = new AllianceInformations();

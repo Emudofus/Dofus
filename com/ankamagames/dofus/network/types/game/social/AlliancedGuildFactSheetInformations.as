@@ -4,8 +4,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.context.roleplay.BasicNamedAllianceInformations;
     import com.ankamagames.dofus.network.types.game.guild.GuildEmblem;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class AlliancedGuildFactSheetInformations extends GuildInformations implements INetworkType 
@@ -39,23 +39,23 @@
             this.allianceInfos = new BasicNamedAllianceInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AlliancedGuildFactSheetInformations(output);
         }
 
-        public function serializeAs_AlliancedGuildFactSheetInformations(output:IDataOutput):void
+        public function serializeAs_AlliancedGuildFactSheetInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GuildInformations(output);
             this.allianceInfos.serializeAs_BasicNamedAllianceInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AlliancedGuildFactSheetInformations(input);
         }
 
-        public function deserializeAs_AlliancedGuildFactSheetInformations(input:IDataInput):void
+        public function deserializeAs_AlliancedGuildFactSheetInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.allianceInfos = new BasicNamedAllianceInformations();

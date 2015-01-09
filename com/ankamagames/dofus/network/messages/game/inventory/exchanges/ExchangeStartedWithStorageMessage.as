@@ -2,8 +2,9 @@
 {
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ExchangeStartedWithStorageMessage extends ExchangeStartedMessage implements INetworkMessage 
@@ -40,42 +41,42 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeStartedWithStorageMessage(output);
         }
 
-        public function serializeAs_ExchangeStartedWithStorageMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeStartedWithStorageMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_ExchangeStartedMessage(output);
             if (this.storageMaxSlot < 0)
             {
                 throw (new Error((("Forbidden value (" + this.storageMaxSlot) + ") on element storageMaxSlot.")));
             };
-            output.writeInt(this.storageMaxSlot);
+            output.writeVarInt(this.storageMaxSlot);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeStartedWithStorageMessage(input);
         }
 
-        public function deserializeAs_ExchangeStartedWithStorageMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeStartedWithStorageMessage(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.storageMaxSlot = input.readInt();
+            this.storageMaxSlot = input.readVarUhInt();
             if (this.storageMaxSlot < 0)
             {
                 throw (new Error((("Forbidden value (" + this.storageMaxSlot) + ") on element of ExchangeStartedWithStorageMessage.storageMaxSlot.")));

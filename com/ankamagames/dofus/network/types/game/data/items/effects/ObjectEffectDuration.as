@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.data.items.effects
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ObjectEffectDuration extends ObjectEffect implements INetworkType 
@@ -37,50 +37,50 @@
             this.minutes = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectEffectDuration(output);
         }
 
-        public function serializeAs_ObjectEffectDuration(output:IDataOutput):void
+        public function serializeAs_ObjectEffectDuration(output:ICustomDataOutput):void
         {
             super.serializeAs_ObjectEffect(output);
             if (this.days < 0)
             {
                 throw (new Error((("Forbidden value (" + this.days) + ") on element days.")));
             };
-            output.writeShort(this.days);
+            output.writeVarShort(this.days);
             if (this.hours < 0)
             {
                 throw (new Error((("Forbidden value (" + this.hours) + ") on element hours.")));
             };
-            output.writeShort(this.hours);
+            output.writeByte(this.hours);
             if (this.minutes < 0)
             {
                 throw (new Error((("Forbidden value (" + this.minutes) + ") on element minutes.")));
             };
-            output.writeShort(this.minutes);
+            output.writeByte(this.minutes);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectEffectDuration(input);
         }
 
-        public function deserializeAs_ObjectEffectDuration(input:IDataInput):void
+        public function deserializeAs_ObjectEffectDuration(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.days = input.readShort();
+            this.days = input.readVarUhShort();
             if (this.days < 0)
             {
                 throw (new Error((("Forbidden value (" + this.days) + ") on element of ObjectEffectDuration.days.")));
             };
-            this.hours = input.readShort();
+            this.hours = input.readByte();
             if (this.hours < 0)
             {
                 throw (new Error((("Forbidden value (" + this.hours) + ") on element of ObjectEffectDuration.hours.")));
             };
-            this.minutes = input.readShort();
+            this.minutes = input.readByte();
             if (this.minutes < 0)
             {
                 throw (new Error((("Forbidden value (" + this.minutes) + ") on element of ObjectEffectDuration.minutes.")));

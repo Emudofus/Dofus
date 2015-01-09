@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class HouseInformationsForGuild implements INetworkType 
@@ -59,12 +59,12 @@
             this.guildshareParams = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_HouseInformationsForGuild(output);
         }
 
-        public function serializeAs_HouseInformationsForGuild(output:IDataOutput):void
+        public function serializeAs_HouseInformationsForGuild(output:ICustomDataOutput):void
         {
             if (this.houseId < 0)
             {
@@ -75,7 +75,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element modelId.")));
             };
-            output.writeInt(this.modelId);
+            output.writeVarInt(this.modelId);
             output.writeUTF(this.ownerName);
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))
             {
@@ -92,7 +92,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
             output.writeShort(this.skillListIds.length);
             var _i8:uint;
             while (_i8 < this.skillListIds.length)
@@ -100,19 +100,19 @@
                 output.writeInt(this.skillListIds[_i8]);
                 _i8++;
             };
-            if ((((this.guildshareParams < 0)) || ((this.guildshareParams > 0xFFFFFFFF))))
+            if (this.guildshareParams < 0)
             {
                 throw (new Error((("Forbidden value (" + this.guildshareParams) + ") on element guildshareParams.")));
             };
-            output.writeUnsignedInt(this.guildshareParams);
+            output.writeVarInt(this.guildshareParams);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_HouseInformationsForGuild(input);
         }
 
-        public function deserializeAs_HouseInformationsForGuild(input:IDataInput):void
+        public function deserializeAs_HouseInformationsForGuild(input:ICustomDataInput):void
         {
             var _val8:int;
             this.houseId = input.readInt();
@@ -120,7 +120,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.houseId) + ") on element of HouseInformationsForGuild.houseId.")));
             };
-            this.modelId = input.readInt();
+            this.modelId = input.readVarUhInt();
             if (this.modelId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element of HouseInformationsForGuild.modelId.")));
@@ -137,7 +137,7 @@
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element of HouseInformationsForGuild.worldY.")));
             };
             this.mapId = input.readInt();
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of HouseInformationsForGuild.subAreaId.")));
@@ -150,8 +150,8 @@
                 this.skillListIds.push(_val8);
                 _i8++;
             };
-            this.guildshareParams = input.readUnsignedInt();
-            if ((((this.guildshareParams < 0)) || ((this.guildshareParams > 0xFFFFFFFF))))
+            this.guildshareParams = input.readVarUhInt();
+            if (this.guildshareParams < 0)
             {
                 throw (new Error((("Forbidden value (" + this.guildshareParams) + ") on element of HouseInformationsForGuild.guildshareParams.")));
             };

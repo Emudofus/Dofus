@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class ObjectItemToSellInNpcShop extends ObjectItemMinimalInformation implements INetworkType 
     {
@@ -35,31 +35,31 @@
             this.buyCriterion = "";
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectItemToSellInNpcShop(output);
         }
 
-        public function serializeAs_ObjectItemToSellInNpcShop(output:IDataOutput):void
+        public function serializeAs_ObjectItemToSellInNpcShop(output:ICustomDataOutput):void
         {
             super.serializeAs_ObjectItemMinimalInformation(output);
             if (this.objectPrice < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectPrice) + ") on element objectPrice.")));
             };
-            output.writeInt(this.objectPrice);
+            output.writeVarInt(this.objectPrice);
             output.writeUTF(this.buyCriterion);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectItemToSellInNpcShop(input);
         }
 
-        public function deserializeAs_ObjectItemToSellInNpcShop(input:IDataInput):void
+        public function deserializeAs_ObjectItemToSellInNpcShop(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.objectPrice = input.readInt();
+            this.objectPrice = input.readVarUhInt();
             if (this.objectPrice < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectPrice) + ") on element of ObjectItemToSellInNpcShop.objectPrice.")));

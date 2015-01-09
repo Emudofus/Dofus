@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -40,19 +40,19 @@
             this.effects = new Vector.<ObjectEffect>();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectItemMinimalInformation(output);
         }
 
-        public function serializeAs_ObjectItemMinimalInformation(output:IDataOutput):void
+        public function serializeAs_ObjectItemMinimalInformation(output:ICustomDataOutput):void
         {
             super.serializeAs_Item(output);
             if (this.objectGID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectGID) + ") on element objectGID.")));
             };
-            output.writeShort(this.objectGID);
+            output.writeVarShort(this.objectGID);
             output.writeShort(this.effects.length);
             var _i2:uint;
             while (_i2 < this.effects.length)
@@ -63,17 +63,17 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectItemMinimalInformation(input);
         }
 
-        public function deserializeAs_ObjectItemMinimalInformation(input:IDataInput):void
+        public function deserializeAs_ObjectItemMinimalInformation(input:ICustomDataInput):void
         {
             var _id2:uint;
             var _item2:ObjectEffect;
             super.deserialize(input);
-            this.objectGID = input.readShort();
+            this.objectGID = input.readVarUhShort();
             if (this.objectGID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectGID) + ") on element of ObjectItemMinimalInformation.objectGID.")));

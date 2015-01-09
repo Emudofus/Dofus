@@ -6,6 +6,7 @@
     import flash.filesystem.FileStream;
     import flash.filesystem.File;
     import com.ankamagames.jerakine.utils.system.AirScanner;
+    import com.ankamagames.jerakine.utils.system.CommandLineArguments;
     import flash.filesystem.FileMode;
     import flash.net.ObjectEncoding;
     import com.ankamagames.jerakine.utils.errors.CustomSharedObjectFileFormatError;
@@ -52,16 +53,23 @@
         {
             var tmp:Array;
             var dir:File;
-            var tmp2:Array;
+            var _local_3:Array;
             if (!(COMMON_FOLDER))
             {
                 tmp = File.applicationDirectory.nativePath.split(File.separator);
                 if (AirScanner.hasAir())
                 {
-                    tmp2 = File.applicationStorageDirectory.nativePath.split(File.separator);
-                    tmp2.pop();
-                    tmp2.pop();
-                    COMMON_FOLDER = ((tmp2.join(File.separator) + File.separator) + tmp[(tmp.length - 2)]);
+                    if (CommandLineArguments.getInstance().hasArgument("prefs"))
+                    {
+                        COMMON_FOLDER = CommandLineArguments.getInstance().getArgument("prefs");
+                    }
+                    else
+                    {
+                        _local_3 = File.applicationStorageDirectory.nativePath.split(File.separator);
+                        _local_3.pop();
+                        _local_3.pop();
+                        COMMON_FOLDER = ((_local_3.join(File.separator) + File.separator) + tmp[(tmp.length - 2)]);
+                    };
                 }
                 else
                 {

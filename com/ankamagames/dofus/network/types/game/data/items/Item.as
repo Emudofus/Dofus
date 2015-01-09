@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.data.items
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class Item implements INetworkType 
     {
@@ -24,19 +24,19 @@
         {
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
         }
 
-        public function serializeAs_Item(output:IDataOutput):void
+        public function serializeAs_Item(output:ICustomDataOutput):void
         {
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
         }
 
-        public function deserializeAs_Item(input:IDataInput):void
+        public function deserializeAs_Item(input:ICustomDataInput):void
         {
         }
 

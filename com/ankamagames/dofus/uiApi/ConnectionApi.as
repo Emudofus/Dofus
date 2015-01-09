@@ -9,6 +9,7 @@
     import com.ankamagames.dofus.logic.game.approach.frames.GameServerApproachFrame;
     import com.ankamagames.dofus.logic.common.managers.PlayerManager;
     import com.ankamagames.dofus.datacenter.servers.Server;
+    import com.ankamagames.dofus.network.enums.ServerStatusEnum;
     import com.ankamagames.dofus.BuildInfos;
     import com.ankamagames.dofus.network.enums.BuildTypeEnum;
 
@@ -100,16 +101,16 @@
                 firstPop = -1;
                 for each (server in serversList)
                 {
-                    if ((((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE)) && ((server.id == 36))))
+                    if ((((((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE)) && ((server.id == 36)))) && ((server.status == ServerStatusEnum.ONLINE))))
                     {
                         return (server);
                     };
                     data = Server.getServerById(server.id);
-                    if ((((server.status == 3)) && ((firstPop == -1))))
+                    if ((((server.status == ServerStatusEnum.ONLINE)) && ((firstPop == -1))))
                     {
                         firstPop = server.completion;
                     };
-                    if (((((!((firstPop == -1))) && ((data.population.id == firstPop)))) && ((server.status == 3))))
+                    if (((((!((firstPop == -1))) && ((data.population.id == firstPop)))) && ((server.status == ServerStatusEnum.ONLINE))))
                     {
                         if (((!((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE))) || ((data.name.indexOf("Test") == -1))))
                         {

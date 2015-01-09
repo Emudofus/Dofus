@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.interactive
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class MapObstacle implements INetworkType 
@@ -32,29 +32,29 @@
             this.state = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_MapObstacle(output);
         }
 
-        public function serializeAs_MapObstacle(output:IDataOutput):void
+        public function serializeAs_MapObstacle(output:ICustomDataOutput):void
         {
             if ((((this.obstacleCellId < 0)) || ((this.obstacleCellId > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.obstacleCellId) + ") on element obstacleCellId.")));
             };
-            output.writeShort(this.obstacleCellId);
+            output.writeVarShort(this.obstacleCellId);
             output.writeByte(this.state);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_MapObstacle(input);
         }
 
-        public function deserializeAs_MapObstacle(input:IDataInput):void
+        public function deserializeAs_MapObstacle(input:ICustomDataInput):void
         {
-            this.obstacleCellId = input.readShort();
+            this.obstacleCellId = input.readVarUhShort();
             if ((((this.obstacleCellId < 0)) || ((this.obstacleCellId > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.obstacleCellId) + ") on element of MapObstacle.obstacleCellId.")));

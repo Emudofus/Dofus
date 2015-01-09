@@ -6,6 +6,7 @@
     import com.ankamagames.dofus.BuildInfos;
     import com.ankamagames.dofus.network.enums.BuildTypeEnum;
     import com.ankamagames.dofus.misc.utils.RpcServiceCenter;
+    import com.ankamagames.dofus.logic.common.managers.PlayerManager;
     import com.ankamagames.berilia.Berilia;
     import com.ankamagames.berilia.types.event.UiUnloadEvent;
     import com.ankamagames.berilia.managers.KernelEventsManager;
@@ -66,7 +67,7 @@
             {
                 this._serviceBaseUrl = RELEASE_GAME_SERVICE_URL;
             };
-            RpcServiceCenter.getInstance().makeRpcCall(((this._serviceBaseUrl + "authentification.") + this._serviceType), this._serviceType, this._serviceVersion, "Authentification", [key], this.onAuthentification);
+            RpcServiceCenter.getInstance().makeRpcCall(((this._serviceBaseUrl + "authentification.") + this._serviceType), this._serviceType, this._serviceVersion, "Authentification", [key, PlayerManager.getInstance().server.id, PlayedCharacterManager.getInstance().id], this.onAuthentification);
             this.open();
         }
 

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GameFightFighterNamedLightInformations extends GameFightFighterLightInformations implements INetworkType 
     {
@@ -17,7 +17,7 @@
             return (456);
         }
 
-        public function initGameFightFighterNamedLightInformations(id:int=0, wave:int=0, level:uint=0, breed:int=0, sex:Boolean=false, alive:Boolean=false, name:String=""):GameFightFighterNamedLightInformations
+        public function initGameFightFighterNamedLightInformations(id:int=0, wave:uint=0, level:uint=0, breed:int=0, sex:Boolean=false, alive:Boolean=false, name:String=""):GameFightFighterNamedLightInformations
         {
             super.initGameFightFighterLightInformations(id, wave, level, breed, sex, alive);
             this.name = name;
@@ -30,23 +30,23 @@
             this.name = "";
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameFightFighterNamedLightInformations(output);
         }
 
-        public function serializeAs_GameFightFighterNamedLightInformations(output:IDataOutput):void
+        public function serializeAs_GameFightFighterNamedLightInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameFightFighterLightInformations(output);
             output.writeUTF(this.name);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameFightFighterNamedLightInformations(input);
         }
 
-        public function deserializeAs_GameFightFighterNamedLightInformations(input:IDataInput):void
+        public function deserializeAs_GameFightFighterNamedLightInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.name = input.readUTF();

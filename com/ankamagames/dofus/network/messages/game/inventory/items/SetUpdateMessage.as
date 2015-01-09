@@ -5,8 +5,9 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -55,30 +56,30 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_SetUpdateMessage(output);
         }
 
-        public function serializeAs_SetUpdateMessage(output:IDataOutput):void
+        public function serializeAs_SetUpdateMessage(output:ICustomDataOutput):void
         {
             if (this.setId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.setId) + ") on element setId.")));
             };
-            output.writeShort(this.setId);
+            output.writeVarShort(this.setId);
             output.writeShort(this.setObjects.length);
             var _i2:uint;
             while (_i2 < this.setObjects.length)
@@ -87,7 +88,7 @@
                 {
                     throw (new Error((("Forbidden value (" + this.setObjects[_i2]) + ") on element 2 (starting at 1) of setObjects.")));
                 };
-                output.writeShort(this.setObjects[_i2]);
+                output.writeVarShort(this.setObjects[_i2]);
                 _i2++;
             };
             output.writeShort(this.setEffects.length);
@@ -100,17 +101,17 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_SetUpdateMessage(input);
         }
 
-        public function deserializeAs_SetUpdateMessage(input:IDataInput):void
+        public function deserializeAs_SetUpdateMessage(input:ICustomDataInput):void
         {
             var _val2:uint;
             var _id3:uint;
             var _item3:ObjectEffect;
-            this.setId = input.readShort();
+            this.setId = input.readVarUhShort();
             if (this.setId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.setId) + ") on element of SetUpdateMessage.setId.")));
@@ -119,7 +120,7 @@
             var _i2:uint;
             while (_i2 < _setObjectsLen)
             {
-                _val2 = input.readShort();
+                _val2 = input.readVarUhShort();
                 if (_val2 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val2) + ") on elements of setObjects.")));

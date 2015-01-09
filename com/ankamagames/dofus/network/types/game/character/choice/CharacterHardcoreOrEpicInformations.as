@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class CharacterHardcoreOrEpicInformations extends CharacterBaseInformations implements INetworkType 
@@ -38,12 +38,12 @@
             this.deathMaxLevel = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharacterHardcoreOrEpicInformations(output);
         }
 
-        public function serializeAs_CharacterHardcoreOrEpicInformations(output:IDataOutput):void
+        public function serializeAs_CharacterHardcoreOrEpicInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_CharacterBaseInformations(output);
             output.writeByte(this.deathState);
@@ -51,7 +51,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.deathCount) + ") on element deathCount.")));
             };
-            output.writeShort(this.deathCount);
+            output.writeVarShort(this.deathCount);
             if ((((this.deathMaxLevel < 1)) || ((this.deathMaxLevel > 200))))
             {
                 throw (new Error((("Forbidden value (" + this.deathMaxLevel) + ") on element deathMaxLevel.")));
@@ -59,12 +59,12 @@
             output.writeByte(this.deathMaxLevel);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharacterHardcoreOrEpicInformations(input);
         }
 
-        public function deserializeAs_CharacterHardcoreOrEpicInformations(input:IDataInput):void
+        public function deserializeAs_CharacterHardcoreOrEpicInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.deathState = input.readByte();
@@ -72,7 +72,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.deathState) + ") on element of CharacterHardcoreOrEpicInformations.deathState.")));
             };
-            this.deathCount = input.readShort();
+            this.deathCount = input.readVarUhShort();
             if (this.deathCount < 0)
             {
                 throw (new Error((("Forbidden value (" + this.deathCount) + ") on element of CharacterHardcoreOrEpicInformations.deathCount.")));

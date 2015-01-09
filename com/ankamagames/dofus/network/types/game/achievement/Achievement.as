@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -43,18 +43,18 @@
             this.startedObjectives = new Vector.<AchievementStartedObjective>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_Achievement(output);
         }
 
-        public function serializeAs_Achievement(output:IDataOutput):void
+        public function serializeAs_Achievement(output:ICustomDataOutput):void
         {
             if (this.id < 0)
             {
                 throw (new Error((("Forbidden value (" + this.id) + ") on element id.")));
             };
-            output.writeShort(this.id);
+            output.writeVarShort(this.id);
             output.writeShort(this.finishedObjective.length);
             var _i2:uint;
             while (_i2 < this.finishedObjective.length)
@@ -71,16 +71,16 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_Achievement(input);
         }
 
-        public function deserializeAs_Achievement(input:IDataInput):void
+        public function deserializeAs_Achievement(input:ICustomDataInput):void
         {
             var _item2:AchievementObjective;
             var _item3:AchievementStartedObjective;
-            this.id = input.readShort();
+            this.id = input.readVarUhShort();
             if (this.id < 0)
             {
                 throw (new Error((("Forbidden value (" + this.id) + ") on element of Achievement.id.")));

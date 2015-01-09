@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay.party
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class NamedPartyTeamWithOutcome implements INetworkType 
     {
@@ -35,27 +35,27 @@
             this.team = new NamedPartyTeam();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_NamedPartyTeamWithOutcome(output);
         }
 
-        public function serializeAs_NamedPartyTeamWithOutcome(output:IDataOutput):void
+        public function serializeAs_NamedPartyTeamWithOutcome(output:ICustomDataOutput):void
         {
             this.team.serializeAs_NamedPartyTeam(output);
-            output.writeShort(this.outcome);
+            output.writeVarShort(this.outcome);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_NamedPartyTeamWithOutcome(input);
         }
 
-        public function deserializeAs_NamedPartyTeamWithOutcome(input:IDataInput):void
+        public function deserializeAs_NamedPartyTeamWithOutcome(input:ICustomDataInput):void
         {
             this.team = new NamedPartyTeam();
             this.team.deserialize(input);
-            this.outcome = input.readShort();
+            this.outcome = input.readVarUhShort();
             if (this.outcome < 0)
             {
                 throw (new Error((("Forbidden value (" + this.outcome) + ") on element of NamedPartyTeamWithOutcome.outcome.")));

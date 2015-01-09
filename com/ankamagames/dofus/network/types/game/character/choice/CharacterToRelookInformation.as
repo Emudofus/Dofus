@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class CharacterToRelookInformation extends AbstractCharacterToRefurbishInformation implements INetworkType 
@@ -28,22 +28,22 @@
             super.reset();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharacterToRelookInformation(output);
         }
 
-        public function serializeAs_CharacterToRelookInformation(output:IDataOutput):void
+        public function serializeAs_CharacterToRelookInformation(output:ICustomDataOutput):void
         {
             super.serializeAs_AbstractCharacterToRefurbishInformation(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharacterToRelookInformation(input);
         }
 
-        public function deserializeAs_CharacterToRelookInformation(input:IDataInput):void
+        public function deserializeAs_CharacterToRelookInformation(input:ICustomDataInput):void
         {
             super.deserialize(input);
         }

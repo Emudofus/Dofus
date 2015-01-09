@@ -2,9 +2,9 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
     import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class HouseInformations implements INetworkType 
@@ -51,12 +51,12 @@
             this.modelId = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_HouseInformations(output);
         }
 
-        public function serializeAs_HouseInformations(output:IDataOutput):void
+        public function serializeAs_HouseInformations(output:ICustomDataOutput):void
         {
             var _box0:uint;
             _box0 = BooleanByteWrapper.setFlag(_box0, 0, this.isOnSale);
@@ -83,15 +83,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element modelId.")));
             };
-            output.writeShort(this.modelId);
+            output.writeVarShort(this.modelId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_HouseInformations(input);
         }
 
-        public function deserializeAs_HouseInformations(input:IDataInput):void
+        public function deserializeAs_HouseInformations(input:ICustomDataInput):void
         {
             var _val2:uint;
             var _box0:uint = input.readByte();
@@ -115,7 +115,7 @@
                 _i2++;
             };
             this.ownerName = input.readUTF();
-            this.modelId = input.readShort();
+            this.modelId = input.readVarUhShort();
             if (this.modelId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element of HouseInformations.modelId.")));

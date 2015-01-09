@@ -22,11 +22,7 @@
             add("allowAnimsFun", true);
             add("turnPicture", true);
             add("mapCoordinates", true);
-            add("showEntityInfos", true);
-            add("showMovementRange", false);
-            add("showLineOfSight", true);
             add("remindTurn", true);
-            add("showGlowOverTarget", true);
             add("confirmItemDrop", true);
             add("switchUiSkin", "black");
             add("allowBannerShortcuts", true);
@@ -43,7 +39,7 @@
             add("allowLog", ((!((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE))) && (!(AirScanner.isStreamingVersion()))));
             add("allowDebug", false);
             add("flashQuality", 2);
-            add("cellSelectionOnly", false);
+            add("cellSelectionOnly", true);
             add("orderFighters", false);
             add("showAlignmentWings", false);
             add("showTacticMode", false);
@@ -66,7 +62,9 @@
             add("lastMapUiWasPocket", true);
             add("cartographyPocketPosition", new Point(390, 312));
             add("cartographyPocketSize", new Point(500, 440));
-            add("cartographyPocketAlpha", 0.6);
+            add("cartographyPocketAlpha", 0.75);
+            add("enableForceWalk", true);
+            add("showMountsInFight", true);
         }
 
     }

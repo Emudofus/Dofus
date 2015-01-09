@@ -18,6 +18,7 @@
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
     import com.ankamagames.dofus.network.messages.game.context.GameMapMovementMessage;
+    import com.ankamagames.jerakine.types.positions.MovementPath;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightPointsVariationMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightLifeAndShieldPointsLostMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightLifePointsGainMessage;
@@ -27,6 +28,7 @@
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightSlideMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightSummonMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightMarkCellsMessage;
+    import com.ankamagames.dofus.datacenter.spells.SpellLevel;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightUnmarkCellsMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightChangeLookMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightInvisibilityMessage;
@@ -48,6 +50,8 @@
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightStealKamaMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightTackledMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightTriggerGlyphTrapMessage;
+    import com.ankamagames.dofus.logic.game.fight.types.MarkInstance;
+    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightActivateGlyphTrapMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightDispellableEffectMessage;
     import com.ankamagames.dofus.network.types.game.actions.fight.AbstractFightDispellableEffect;
     import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
@@ -58,7 +62,6 @@
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightInvisibleDetectedMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnListMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightCloseCombatMessage;
-    import com.ankamagames.dofus.datacenter.spells.SpellLevel;
     import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
     import com.ankamagames.dofus.datacenter.spells.Spell;
     import com.ankamagames.dofus.logic.game.common.frames.SpellInventoryManagementFrame;
@@ -67,6 +70,7 @@
     import com.ankamagames.tiphon.display.TiphonSprite;
     import com.ankamagames.atouin.types.GraphicCell;
     import flash.geom.Point;
+    import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
     import com.ankamagames.dofus.network.messages.game.context.fight.character.GameFightShowFighterRandomStaticPoseMessage;
     import flash.display.Sprite;
     import com.ankamagames.dofus.network.messages.game.context.fight.character.GameFightShowFighterMessage;
@@ -75,6 +79,7 @@
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightCharacterInformations;
     import com.ankamagames.dofus.logic.game.fight.types.StateBuff;
     import com.ankamagames.dofus.network.enums.FightSpellCastCriticalEnum;
+    import com.ankamagames.dofus.logic.game.fight.managers.MarkedCellsManager;
     import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
     import com.ankamagames.jerakine.types.positions.MapPoint;
     import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
@@ -86,22 +91,20 @@
     import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
     import com.ankamagames.atouin.managers.InteractiveCellManager;
     import com.ankamagames.dofus.logic.game.common.managers.MapMovementAdapter;
+    import com.ankamagames.dofus.logic.game.fight.miscs.ActionIdConverter;
     import com.ankamagames.dofus.logic.game.fight.miscs.TackleUtil;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightTriggerEffectMessage;
     import com.ankamagames.dofus.network.messages.game.actions.sequence.SequenceEndMessage;
     import com.ankamagames.dofus.network.messages.game.actions.sequence.SequenceStartMessage;
-    import com.ankamagames.dofus.logic.game.fight.miscs.ActionIdConverter;
+    import com.ankamagames.dofus.network.enums.GameActionMarkTypeEnum;
     import com.ankamagames.dofus.logic.game.fight.steps.FightLeavingStateStep;
     import com.ankamagames.dofus.logic.game.fight.steps.FightEnteringStateStep;
     import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostEffect;
     import com.ankamagames.dofus.logic.game.fight.types.StatBuff;
     import com.ankamagames.dofus.network.messages.game.actions.AbstractGameActionMessage;
     import com.ankamagames.jerakine.messages.Message;
-    import com.ankamagames.jerakine.script.BinaryScript;
-    import com.ankamagames.dofus.scripts.SpellFxRunner;
-    import com.ankamagames.dofus.scripts.DofusEmbedScript;
     import flash.utils.getTimer;
-    import com.ankamagames.jerakine.script.ScriptExec;
+    import com.ankamagames.dofus.scripts.SpellScriptManager;
     import com.ankamagames.jerakine.types.Callback;
     import com.ankamagames.tiphon.sequence.WaitAnimationEventStep;
     import com.ankamagames.tiphon.sequence.PlayAnimationStep;
@@ -123,7 +126,6 @@
     import com.ankamagames.jerakine.types.events.SequencerEvent;
     import com.ankamagames.jerakine.sequencer.CallbackStep;
     import com.ankamagames.dofus.logic.game.fight.steps.FightEntityMovementStep;
-    import com.ankamagames.jerakine.types.positions.MovementPath;
     import com.ankamagames.dofus.logic.game.fight.steps.FightTeleportStep;
     import com.ankamagames.dofus.logic.game.fight.steps.FightExchangePositionsStep;
     import com.ankamagames.dofus.logic.game.fight.steps.FightEntitySlideStep;
@@ -156,6 +158,7 @@
     import com.ankamagames.dofus.logic.game.fight.steps.FightCloseCombatStep;
     import com.ankamagames.dofus.logic.game.fight.steps.FightStealingKamasStep;
     import com.ankamagames.dofus.logic.game.fight.steps.FightTackledStep;
+    import com.ankamagames.dofus.logic.game.fight.steps.FightMarkActivateStep;
     import com.ankamagames.dofus.logic.game.fight.steps.FightDisplayBuffStep;
     import com.ankamagames.dofus.logic.game.fight.steps.FightModifyEffectsDurationStep;
     import com.ankamagames.dofus.logic.game.fight.steps.FightCarryCharacterStep;
@@ -187,6 +190,8 @@
         private var _fightBattleFrame:FightBattleFrame;
         private var _fightEntitiesFrame:FightEntitiesFrame;
         private var _instanceId:uint;
+        private var _teleportThroughPortal:Boolean;
+        private var _teleportPortalId:int;
 
         public function FightSequenceFrame(pFightBattleFrame:FightBattleFrame, parent:FightSequenceFrame=null)
         {
@@ -285,75 +290,81 @@
 
         public function process(msg:Message):Boolean
         {
-            var _local_2:GameActionFightSpellCastMessage;
-            var _local_3:Boolean;
-            var _local_4:uint;
-            var _local_5:int;
-            var _local_6:Boolean;
-            var _local_7:Dictionary;
-            var _local_8:GameFightFighterInformations;
-            var _local_9:PlayedCharacterManager;
-            var _local_10:Boolean;
-            var _local_11:GameFightFighterInformations;
-            var _local_12:GameMapMovementMessage;
-            var _local_13:GameActionFightPointsVariationMessage;
-            var _local_14:GameActionFightLifeAndShieldPointsLostMessage;
-            var _local_15:GameActionFightLifePointsGainMessage;
-            var _local_16:GameActionFightLifePointsLostMessage;
-            var _local_17:GameActionFightTeleportOnSameMapMessage;
-            var _local_18:GameActionFightExchangePositionsMessage;
-            var _local_19:GameActionFightSlideMessage;
-            var _local_20:GameActionFightSummonMessage;
-            var _local_21:GameActionFightMarkCellsMessage;
-            var _local_22:GameActionFightUnmarkCellsMessage;
-            var _local_23:GameActionFightChangeLookMessage;
-            var _local_24:GameActionFightInvisibilityMessage;
-            var _local_25:GameContextActorInformations;
-            var _local_26:GameActionFightLeaveMessage;
-            var _local_27:Dictionary;
-            var _local_28:GameContextActorInformations;
-            var _local_29:GameActionFightDeathMessage;
-            var _local_30:Dictionary;
-            var _local_31:GameFightFighterInformations;
-            var _local_32:int;
-            var _local_33:GameFightFighterInformations;
-            var _local_34:GameFightFighterInformations;
-            var _local_35:GameFightFighterInformations;
-            var _local_36:GameContextActorInformations;
-            var _local_37:FightTurnFrame;
-            var _local_38:Boolean;
-            var _local_39:FightContextFrame;
-            var _local_40:GameActionFightVanishMessage;
-            var _local_41:GameContextActorInformations;
-            var _local_42:FightContextFrame;
-            var _local_43:GameActionFightDispellEffectMessage;
-            var _local_44:GameActionFightDispellSpellMessage;
-            var _local_45:GameActionFightDispellMessage;
-            var _local_46:GameActionFightDodgePointLossMessage;
-            var _local_47:GameActionFightSpellCooldownVariationMessage;
-            var _local_48:GameActionFightSpellImmunityMessage;
-            var _local_49:GameActionFightInvisibleObstacleMessage;
-            var _local_50:GameActionFightKillMessage;
-            var _local_51:GameActionFightReduceDamagesMessage;
-            var _local_52:GameActionFightReflectDamagesMessage;
-            var _local_53:GameActionFightReflectSpellMessage;
-            var _local_54:GameActionFightStealKamaMessage;
-            var _local_55:GameActionFightTackledMessage;
-            var _local_56:GameActionFightTriggerGlyphTrapMessage;
-            var _local_57:int;
-            var _local_58:GameActionFightDispellableEffectMessage;
-            var _local_59:CastingSpell;
-            var _local_60:AbstractFightDispellableEffect;
-            var _local_61:BasicBuff;
-            var _local_62:GameActionFightModifyEffectsDurationMessage;
-            var _local_63:GameActionFightCarryCharacterMessage;
-            var _local_64:GameActionFightThrowCharacterMessage;
-            var _local_65:uint;
-            var _local_66:GameActionFightDropCharacterMessage;
-            var _local_67:uint;
-            var _local_68:GameActionFightInvisibleDetectedMessage;
-            var _local_69:GameFightTurnListMessage;
-            var _local_70:GameActionFightCloseCombatMessage;
+            var fightContextFrame:FightContextFrame;
+            var _local_3:GameActionFightSpellCastMessage;
+            var _local_4:Boolean;
+            var _local_5:uint;
+            var _local_6:int;
+            var _local_7:Boolean;
+            var _local_8:Dictionary;
+            var _local_9:GameFightFighterInformations;
+            var _local_10:PlayedCharacterManager;
+            var _local_11:Boolean;
+            var _local_12:GameFightFighterInformations;
+            var _local_13:GameMapMovementMessage;
+            var _local_14:MovementPath;
+            var _local_15:Vector.<uint>;
+            var _local_16:GameActionFightPointsVariationMessage;
+            var _local_17:GameActionFightLifeAndShieldPointsLostMessage;
+            var _local_18:GameActionFightLifePointsGainMessage;
+            var _local_19:GameActionFightLifePointsLostMessage;
+            var _local_20:GameActionFightTeleportOnSameMapMessage;
+            var _local_21:Boolean;
+            var _local_22:GameActionFightExchangePositionsMessage;
+            var _local_23:GameActionFightSlideMessage;
+            var _local_24:GameActionFightSummonMessage;
+            var _local_25:GameActionFightMarkCellsMessage;
+            var _local_26:uint;
+            var _local_27:SpellLevel;
+            var _local_28:GameActionFightUnmarkCellsMessage;
+            var _local_29:GameActionFightChangeLookMessage;
+            var _local_30:GameActionFightInvisibilityMessage;
+            var _local_31:GameContextActorInformations;
+            var _local_32:GameActionFightLeaveMessage;
+            var _local_33:Dictionary;
+            var _local_34:GameContextActorInformations;
+            var _local_35:GameActionFightDeathMessage;
+            var _local_36:Dictionary;
+            var _local_37:GameFightFighterInformations;
+            var _local_38:int;
+            var _local_39:GameFightFighterInformations;
+            var _local_40:GameFightFighterInformations;
+            var _local_41:GameFightFighterInformations;
+            var _local_42:GameContextActorInformations;
+            var _local_43:FightTurnFrame;
+            var _local_44:Boolean;
+            var _local_45:GameActionFightVanishMessage;
+            var _local_46:GameContextActorInformations;
+            var _local_47:GameActionFightDispellEffectMessage;
+            var _local_48:GameActionFightDispellSpellMessage;
+            var _local_49:GameActionFightDispellMessage;
+            var _local_50:GameActionFightDodgePointLossMessage;
+            var _local_51:GameActionFightSpellCooldownVariationMessage;
+            var _local_52:GameActionFightSpellImmunityMessage;
+            var _local_53:GameActionFightInvisibleObstacleMessage;
+            var _local_54:GameActionFightKillMessage;
+            var _local_55:GameActionFightReduceDamagesMessage;
+            var _local_56:GameActionFightReflectDamagesMessage;
+            var _local_57:GameActionFightReflectSpellMessage;
+            var _local_58:GameActionFightStealKamaMessage;
+            var _local_59:GameActionFightTackledMessage;
+            var _local_60:GameActionFightTriggerGlyphTrapMessage;
+            var _local_61:int;
+            var _local_62:MarkInstance;
+            var _local_63:GameActionFightActivateGlyphTrapMessage;
+            var _local_64:GameActionFightDispellableEffectMessage;
+            var _local_65:CastingSpell;
+            var _local_66:AbstractFightDispellableEffect;
+            var _local_67:BasicBuff;
+            var _local_68:GameActionFightModifyEffectsDurationMessage;
+            var _local_69:GameActionFightCarryCharacterMessage;
+            var _local_70:GameActionFightThrowCharacterMessage;
+            var _local_71:uint;
+            var _local_72:GameActionFightDropCharacterMessage;
+            var _local_73:uint;
+            var _local_74:GameActionFightInvisibleDetectedMessage;
+            var _local_75:GameFightTurnListMessage;
+            var _local_76:GameActionFightCloseCombatMessage;
             var spellTargetEntities:Array;
             var isSpellKnown:Boolean;
             var playerSpellLevel:SpellLevel;
@@ -370,17 +381,20 @@
             var ts:TiphonSprite;
             var targetedCell:GraphicCell;
             var cellPos:Point;
+            var spellEffect:EffectInstanceDice;
             var gfsfrsmsg:GameFightShowFighterRandomStaticPoseMessage;
             var illusionCreature:Sprite;
-            var _local_89:GameFightShowFighterMessage;
-            var _local_90:Sprite;
-            var _local_91:int;
+            var _local_96:GameFightShowFighterMessage;
+            var _local_97:Sprite;
+            var _local_98:int;
             var isBomb:Boolean;
             var isCreature:Boolean;
-            var _local_94:GameContextActorInformations;
-            var _local_95:GameFightMonsterInformations;
+            var _local_101:GameContextActorInformations;
+            var _local_102:GameFightMonsterInformations;
             var monsterS:Monster;
-            var _local_97:GameFightCharacterInformations;
+            var _local_104:GameFightCharacterInformations;
+            var _local_105:Spell;
+            var _local_106:EffectInstanceDice;
             var gcaiL:GameContextActorInformations;
             var summonerIdL:int;
             var summonedEntityInfosL:GameFightMonsterInformations;
@@ -397,44 +411,46 @@
                 case (msg is GameActionFightSpellCastMessage):
                     if ((msg is GameActionFightSpellCastMessage))
                     {
-                        _local_2 = (msg as GameActionFightSpellCastMessage);
+                        _local_3 = (msg as GameActionFightSpellCastMessage);
                     }
                     else
                     {
-                        _local_70 = (msg as GameActionFightCloseCombatMessage);
-                        _local_3 = true;
-                        _local_4 = _local_70.weaponGenericId;
-                        _local_2 = new GameActionFightSpellCastMessage();
-                        _local_2.initGameActionFightSpellCastMessage(_local_70.actionId, _local_70.sourceId, _local_70.targetId, _local_70.destinationCellId, _local_70.critical, _local_70.silentCast, 0, 1);
+                        _local_76 = (msg as GameActionFightCloseCombatMessage);
+                        _local_4 = true;
+                        _local_5 = _local_76.weaponGenericId;
+                        _local_3 = new GameActionFightSpellCastMessage();
+                        _local_3.initGameActionFightSpellCastMessage(_local_76.actionId, _local_76.sourceId, _local_76.targetId, _local_76.destinationCellId, _local_76.critical, _local_76.silentCast, 0, 1);
                     };
-                    _local_5 = this.fightEntitiesFrame.getEntityInfos(_local_2.sourceId).disposition.cellId;
+                    _local_6 = this.fightEntitiesFrame.getEntityInfos(_local_3.sourceId).disposition.cellId;
                     if (this._castingSpell)
                     {
-                        if (((_local_3) && (!((_local_4 == 0)))))
+                        if (((_local_4) && (!((_local_5 == 0)))))
                         {
-                            this.pushCloseCombatStep(_local_2.sourceId, _local_4, _local_2.critical);
+                            this.pushCloseCombatStep(_local_3.sourceId, _local_5, _local_3.critical);
                         }
                         else
                         {
-                            this.pushSpellCastStep(_local_2.sourceId, _local_2.destinationCellId, _local_5, _local_2.spellId, _local_2.spellLevel, _local_2.critical);
+                            this.pushSpellCastStep(_local_3.sourceId, _local_3.destinationCellId, _local_6, _local_3.spellId, _local_3.spellLevel, _local_3.critical);
                         };
                         _log.error((("Il ne peut y avoir qu'un seul cast de sort par séquence (" + msg) + ")"));
                         break;
                     };
                     this._castingSpell = new CastingSpell();
-                    this._castingSpell.casterId = _local_2.sourceId;
-                    this._castingSpell.spell = Spell.getSpellById(_local_2.spellId);
-                    this._castingSpell.spellRank = this._castingSpell.spell.getSpellLevel(_local_2.spellLevel);
-                    this._castingSpell.isCriticalFail = (_local_2.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL);
-                    this._castingSpell.isCriticalHit = (_local_2.critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
-                    this._castingSpell.silentCast = _local_2.silentCast;
+                    this._castingSpell.casterId = _local_3.sourceId;
+                    this._castingSpell.spell = Spell.getSpellById(_local_3.spellId);
+                    this._castingSpell.spellRank = this._castingSpell.spell.getSpellLevel(_local_3.spellLevel);
+                    this._castingSpell.isCriticalFail = (_local_3.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL);
+                    this._castingSpell.isCriticalHit = (_local_3.critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+                    this._castingSpell.silentCast = _local_3.silentCast;
+                    this._castingSpell.portalIds = _local_3.portalsIds;
+                    this._castingSpell.portalMapPoints = MarkedCellsManager.getInstance().getMapPointsFromMarkIds(_local_3.portalsIds);
                     if (!(this._fightBattleFrame.currentPlayerId))
                     {
                         BuffManager.getInstance().spellBuffsToIgnore.push(this._castingSpell);
                     };
-                    if (_local_2.destinationCellId != -1)
+                    if (_local_3.destinationCellId != -1)
                     {
-                        this._castingSpell.targetedCell = MapPoint.fromCellId(_local_2.destinationCellId);
+                        this._castingSpell.targetedCell = MapPoint.fromCellId(_local_3.destinationCellId);
                     };
                     if (this._castingSpell.isCriticalFail)
                     {
@@ -449,47 +465,47 @@
                         this._fxScriptId = 7;
                         this._castingSpell.weaponId = GameActionFightCloseCombatMessage(msg).weaponGenericId;
                     };
-                    if ((((_local_2.sourceId == CurrentPlayedFighterManager.getInstance().currentFighterId)) && (!((_local_2.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)))))
+                    if ((((_local_3.sourceId == CurrentPlayedFighterManager.getInstance().currentFighterId)) && (!((_local_3.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)))))
                     {
                         spellTargetEntities = new Array();
-                        spellTargetEntities.push(_local_2.targetId);
-                        CurrentPlayedFighterManager.getInstance().getSpellCastManager().castSpell(_local_2.spellId, _local_2.spellLevel, spellTargetEntities);
+                        spellTargetEntities.push(_local_3.targetId);
+                        CurrentPlayedFighterManager.getInstance().getSpellCastManager().castSpell(_local_3.spellId, _local_3.spellLevel, spellTargetEntities);
                     };
-                    _local_6 = (_local_2.critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
-                    _local_7 = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
-                    _local_8 = _local_7[_local_2.sourceId];
-                    if (((_local_3) && (!((_local_4 == 0)))))
+                    _local_7 = (_local_3.critical == FightSpellCastCriticalEnum.CRITICAL_HIT);
+                    _local_8 = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
+                    _local_9 = _local_8[_local_3.sourceId];
+                    if (((_local_4) && (!((_local_5 == 0)))))
                     {
-                        this.pushCloseCombatStep(_local_2.sourceId, _local_4, _local_2.critical);
+                        this.pushCloseCombatStep(_local_3.sourceId, _local_5, _local_3.critical);
                     }
                     else
                     {
-                        this.pushSpellCastStep(_local_2.sourceId, _local_2.destinationCellId, _local_5, _local_2.spellId, _local_2.spellLevel, _local_2.critical);
+                        this.pushSpellCastStep(_local_3.sourceId, _local_3.destinationCellId, _local_6, _local_3.spellId, _local_3.spellLevel, _local_3.critical);
                     };
-                    if (_local_2.sourceId == CurrentPlayedFighterManager.getInstance().currentFighterId)
+                    if (_local_3.sourceId == CurrentPlayedFighterManager.getInstance().currentFighterId)
                     {
                         KernelEventsManager.getInstance().processCallback(TriggerHookList.FightSpellCast);
                     };
-                    _local_9 = PlayedCharacterManager.getInstance();
-                    _local_10 = false;
-                    if (((((_local_7[_local_9.id]) && (_local_8))) && (((_local_7[_local_9.id] as GameFightFighterInformations).teamId == _local_8.teamId))))
+                    _local_10 = PlayedCharacterManager.getInstance();
+                    _local_11 = false;
+                    if (((((_local_8[_local_10.id]) && (_local_9))) && (((_local_8[_local_10.id] as GameFightFighterInformations).teamId == _local_9.teamId))))
                     {
-                        _local_10 = true;
+                        _local_11 = true;
                     };
-                    if (((((!((_local_2.sourceId == _local_9.id))) && (_local_10))) && (!(this._castingSpell.isCriticalFail))))
+                    if (((((!((_local_3.sourceId == _local_10.id))) && (_local_11))) && (!(this._castingSpell.isCriticalFail))))
                     {
                         isSpellKnown = false;
-                        for each (spellKnown in _local_9.spellsInventory)
+                        for each (spellKnown in _local_10.spellsInventory)
                         {
-                            if (spellKnown.id == _local_2.spellId)
+                            if (spellKnown.id == _local_3.spellId)
                             {
                                 isSpellKnown = true;
                                 playerSpellLevel = spellKnown.spellLevelInfos;
                                 break;
                             };
                         };
-                        spell = Spell.getSpellById(_local_2.spellId);
-                        castSpellLevel = spell.getSpellLevel(_local_2.spellLevel);
+                        spell = Spell.getSpellById(_local_3.spellId);
+                        castSpellLevel = spell.getSpellLevel(_local_3.spellLevel);
                         if (castSpellLevel.globalCooldown)
                         {
                             if (isSpellKnown)
@@ -502,33 +518,33 @@
                                 {
                                     gcdValue = castSpellLevel.globalCooldown;
                                 };
-                                this.pushSpellCooldownVariationStep(_local_9.id, 0, _local_2.spellId, gcdValue);
+                                this.pushSpellCooldownVariationStep(_local_10.id, 0, _local_3.spellId, gcdValue);
                             };
                             fightEntities = this.fightEntitiesFrame.getEntitiesDictionnary();
                             simf = (Kernel.getWorker().getFrame(SpellInventoryManagementFrame) as SpellInventoryManagementFrame);
                             for each (fighterInfos in fightEntities)
                             {
-                                if ((((((fighterInfos is GameFightCompanionInformations)) && (!((_local_2.sourceId == fighterInfos.contextualId))))) && (((fighterInfos as GameFightCompanionInformations).masterId == _local_9.id))))
+                                if ((((((fighterInfos is GameFightCompanionInformations)) && (!((_local_3.sourceId == fighterInfos.contextualId))))) && (((fighterInfos as GameFightCompanionInformations).masterId == _local_10.id))))
                                 {
                                     gfsc = new GameFightSpellCooldown();
-                                    gfsc.initGameFightSpellCooldown(_local_2.spellId, castSpellLevel.globalCooldown);
+                                    gfsc.initGameFightSpellCooldown(_local_3.spellId, castSpellLevel.globalCooldown);
                                     simf.addSpellGlobalCoolDownInfo(fighterInfos.contextualId, gfsc);
                                 };
                             };
                         };
                     };
-                    _local_32 = PlayedCharacterManager.getInstance().id;
-                    _local_33 = (this.fightEntitiesFrame.getEntityInfos(_local_2.sourceId) as GameFightFighterInformations);
-                    _local_35 = (this.fightEntitiesFrame.getEntityInfos(_local_32) as GameFightFighterInformations);
-                    if (_local_6)
+                    _local_38 = PlayedCharacterManager.getInstance().id;
+                    _local_39 = (this.fightEntitiesFrame.getEntityInfos(_local_3.sourceId) as GameFightFighterInformations);
+                    _local_41 = (this.fightEntitiesFrame.getEntityInfos(_local_38) as GameFightFighterInformations);
+                    if (_local_7)
                     {
-                        if (_local_2.sourceId == _local_32)
+                        if (_local_3.sourceId == _local_38)
                         {
                             SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_OWNER);
                         }
                         else
                         {
-                            if (((_local_35) && ((_local_33.teamId == _local_35.teamId))))
+                            if (((_local_41) && ((_local_39.teamId == _local_41.teamId))))
                             {
                                 SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_CC_ALLIED);
                             }
@@ -540,15 +556,15 @@
                     }
                     else
                     {
-                        if (_local_2.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
+                        if (_local_3.critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
                         {
-                            if (_local_2.sourceId == _local_32)
+                            if (_local_3.sourceId == _local_38)
                             {
                                 SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_OWNER);
                             }
                             else
                             {
-                                if (((_local_35) && ((_local_33.teamId == _local_35.teamId))))
+                                if (((_local_41) && ((_local_39.teamId == _local_41.teamId))))
                                 {
                                     SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_EC_ALLIED);
                                 }
@@ -559,8 +575,8 @@
                             };
                         };
                     };
-                    _local_11 = (this.fightEntitiesFrame.getEntityInfos(_local_2.targetId) as GameFightFighterInformations);
-                    if (((_local_11) && ((_local_11.disposition.cellId == -1))))
+                    _local_12 = (this.fightEntitiesFrame.getEntityInfos(_local_3.targetId) as GameFightFighterInformations);
+                    if (((_local_12) && ((_local_12.disposition.cellId == -1))))
                     {
                         for each (ei in this._castingSpell.spellRank.effects)
                         {
@@ -572,7 +588,7 @@
                         };
                         if (shape == SpellShapeEnum.P)
                         {
-                            ts = (DofusEntities.getEntity(_local_2.targetId) as TiphonSprite);
+                            ts = (DofusEntities.getEntity(_local_3.targetId) as TiphonSprite);
                             if (((((ts) && (this._castingSpell))) && (this._castingSpell.targetedCell)))
                             {
                                 targetedCell = InteractiveCellManager.getInstance().getCell(this._castingSpell.targetedCell.cellId);
@@ -584,83 +600,116 @@
                     };
                     return (true);
                 case (msg is GameMapMovementMessage):
-                    _local_12 = (msg as GameMapMovementMessage);
-                    if (_local_12.actorId == CurrentPlayedFighterManager.getInstance().currentFighterId)
+                    _local_13 = (msg as GameMapMovementMessage);
+                    if (_local_13.actorId == CurrentPlayedFighterManager.getInstance().currentFighterId)
                     {
                         KernelEventsManager.getInstance().processCallback(TriggerHookList.PlayerFightMove);
                     };
-                    this.pushMovementStep(_local_12.actorId, MapMovementAdapter.getClientMovement(_local_12.keyMovements));
+                    _local_14 = MapMovementAdapter.getClientMovement(_local_13.keyMovements);
+                    _local_15 = _local_14.getCells();
+                    fightContextFrame = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
+                    fightContextFrame.saveFighterPosition(_local_13.actorId, _local_15[(_local_15.length - 2)]);
+                    this.pushMovementStep(_local_13.actorId, _local_14);
                     return (true);
                 case (msg is GameActionFightPointsVariationMessage):
-                    _local_13 = (msg as GameActionFightPointsVariationMessage);
-                    this.pushPointsVariationStep(_local_13.targetId, _local_13.actionId, _local_13.delta);
+                    _local_16 = (msg as GameActionFightPointsVariationMessage);
+                    this.pushPointsVariationStep(_local_16.targetId, _local_16.actionId, _local_16.delta);
                     return (true);
                 case (msg is GameActionFightLifeAndShieldPointsLostMessage):
-                    _local_14 = (msg as GameActionFightLifeAndShieldPointsLostMessage);
-                    this.pushShieldPointsVariationStep(_local_14.targetId, -(_local_14.shieldLoss), _local_14.actionId);
-                    this.pushLifePointsVariationStep(_local_14.targetId, -(_local_14.loss), -(_local_14.permanentDamages), _local_14.actionId);
+                    _local_17 = (msg as GameActionFightLifeAndShieldPointsLostMessage);
+                    this.pushShieldPointsVariationStep(_local_17.targetId, -(_local_17.shieldLoss), _local_17.actionId);
+                    this.pushLifePointsVariationStep(_local_17.targetId, -(_local_17.loss), -(_local_17.permanentDamages), _local_17.actionId);
                     return (true);
                 case (msg is GameActionFightLifePointsGainMessage):
-                    _local_15 = (msg as GameActionFightLifePointsGainMessage);
-                    this.pushLifePointsVariationStep(_local_15.targetId, _local_15.delta, 0, _local_15.actionId);
+                    _local_18 = (msg as GameActionFightLifePointsGainMessage);
+                    this.pushLifePointsVariationStep(_local_18.targetId, _local_18.delta, 0, _local_18.actionId);
                     return (true);
                 case (msg is GameActionFightLifePointsLostMessage):
-                    _local_16 = (msg as GameActionFightLifePointsLostMessage);
-                    this.pushLifePointsVariationStep(_local_16.targetId, -(_local_16.loss), -(_local_16.permanentDamages), _local_16.actionId);
+                    _local_19 = (msg as GameActionFightLifePointsLostMessage);
+                    this.pushLifePointsVariationStep(_local_19.targetId, -(_local_19.loss), -(_local_19.permanentDamages), _local_19.actionId);
                     return (true);
                 case (msg is GameActionFightTeleportOnSameMapMessage):
-                    _local_17 = (msg as GameActionFightTeleportOnSameMapMessage);
-                    this.pushTeleportStep(_local_17.targetId, _local_17.cellId);
+                    _local_20 = (msg as GameActionFightTeleportOnSameMapMessage);
+                    fightContextFrame = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
+                    if (((this._castingSpell) && (this._castingSpell.spellRank)))
+                    {
+                        for each (spellEffect in this._castingSpell.spellRank.effects)
+                        {
+                            if (spellEffect.effectId == 1100)
+                            {
+                                _local_21 = true;
+                                break;
+                            };
+                        };
+                    };
+                    if (!(_local_21))
+                    {
+                        if (!(this._teleportThroughPortal))
+                        {
+                            fightContextFrame.saveFighterPosition(_local_20.targetId, fightContextFrame.entitiesFrame.getEntityInfos(_local_20.targetId).disposition.cellId);
+                        }
+                        else
+                        {
+                            fightContextFrame.saveFighterPosition(_local_20.targetId, MarkedCellsManager.getInstance().getMarkDatas(this._teleportPortalId).cells[0]);
+                        };
+                    };
+                    this.pushTeleportStep(_local_20.targetId, _local_20.cellId);
+                    this._teleportThroughPortal = false;
                     return (true);
                 case (msg is GameActionFightExchangePositionsMessage):
-                    _local_18 = (msg as GameActionFightExchangePositionsMessage);
-                    this.pushExchangePositionsStep(_local_18.sourceId, _local_18.casterCellId, _local_18.targetId, _local_18.targetCellId);
+                    _local_22 = (msg as GameActionFightExchangePositionsMessage);
+                    fightContextFrame = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
+                    fightContextFrame.saveFighterPosition(_local_22.sourceId, _local_22.casterCellId);
+                    fightContextFrame.saveFighterPosition(_local_22.targetId, _local_22.targetCellId);
+                    this.pushExchangePositionsStep(_local_22.sourceId, _local_22.casterCellId, _local_22.targetId, _local_22.targetCellId);
                     return (true);
                 case (msg is GameActionFightSlideMessage):
-                    _local_19 = (msg as GameActionFightSlideMessage);
-                    this.pushSlideStep(_local_19.targetId, _local_19.startCellId, _local_19.endCellId);
+                    _local_23 = (msg as GameActionFightSlideMessage);
+                    fightContextFrame = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
+                    fightContextFrame.saveFighterPosition(_local_23.targetId, fightContextFrame.entitiesFrame.getEntityInfos(_local_23.targetId).disposition.cellId);
+                    this.pushSlideStep(_local_23.targetId, _local_23.startCellId, _local_23.endCellId);
                     return (true);
                 case (msg is GameActionFightSummonMessage):
-                    _local_20 = (msg as GameActionFightSummonMessage);
-                    if ((((_local_20.actionId == 0x0400)) || ((_local_20.actionId == 1097))))
+                    _local_24 = (msg as GameActionFightSummonMessage);
+                    if ((((_local_24.actionId == 0x0400)) || ((_local_24.actionId == 1097))))
                     {
                         gfsfrsmsg = new GameFightShowFighterRandomStaticPoseMessage();
-                        gfsfrsmsg.initGameFightShowFighterRandomStaticPoseMessage(_local_20.summon);
+                        gfsfrsmsg.initGameFightShowFighterRandomStaticPoseMessage(_local_24.summon);
                         Kernel.getWorker().getFrame(FightEntitiesFrame).process(gfsfrsmsg);
-                        illusionCreature = (DofusEntities.getEntity(_local_20.summon.contextualId) as Sprite);
+                        illusionCreature = (DofusEntities.getEntity(_local_24.summon.contextualId) as Sprite);
                         if (illusionCreature)
                         {
                             illusionCreature.visible = false;
                         };
-                        this.pushVisibilityStep(_local_20.summon.contextualId, true);
+                        this.pushVisibilityStep(_local_24.summon.contextualId, true);
                     }
                     else
                     {
-                        _local_89 = new GameFightShowFighterMessage();
-                        _local_89.initGameFightShowFighterMessage(_local_20.summon);
-                        Kernel.getWorker().getFrame(FightEntitiesFrame).process(_local_89);
-                        _local_90 = (DofusEntities.getEntity(_local_20.summon.contextualId) as Sprite);
-                        if (_local_90)
+                        _local_96 = new GameFightShowFighterMessage();
+                        _local_96.initGameFightShowFighterMessage(_local_24.summon);
+                        Kernel.getWorker().getFrame(FightEntitiesFrame).process(_local_96);
+                        _local_97 = (DofusEntities.getEntity(_local_24.summon.contextualId) as Sprite);
+                        if (_local_97)
                         {
-                            _local_90.visible = false;
+                            _local_97.visible = false;
                         };
-                        this.pushSummonStep(_local_20.sourceId, _local_20.summon);
-                        if ((((_local_20.sourceId == CurrentPlayedFighterManager.getInstance().currentFighterId)) && (!((_local_20.actionId == 185)))))
+                        this.pushSummonStep(_local_24.sourceId, _local_24.summon);
+                        if ((((_local_24.sourceId == CurrentPlayedFighterManager.getInstance().currentFighterId)) && (!((_local_24.actionId == 185)))))
                         {
                             isBomb = false;
                             isCreature = false;
-                            if (_local_20.actionId == 1008)
+                            if (_local_24.actionId == 1008)
                             {
                                 isBomb = true;
                             }
                             else
                             {
-                                _local_94 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_20.summon.contextualId);
+                                _local_101 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_24.summon.contextualId);
                                 isBomb = false;
-                                _local_95 = (_local_94 as GameFightMonsterInformations);
-                                if (_local_95)
+                                _local_102 = (_local_101 as GameFightMonsterInformations);
+                                if (_local_102)
                                 {
-                                    monsterS = Monster.getMonsterById(_local_95.creatureGenericId);
+                                    monsterS = Monster.getMonsterById(_local_102.creatureGenericId);
                                     if (((monsterS) && (monsterS.useBombSlot)))
                                     {
                                         isBomb = true;
@@ -672,10 +721,10 @@
                                 }
                                 else
                                 {
-                                    _local_97 = (_local_94 as GameFightCharacterInformations);
+                                    _local_104 = (_local_101 as GameFightCharacterInformations);
                                 };
                             };
-                            if (((isCreature) || (_local_97)))
+                            if (((isCreature) || (_local_104)))
                             {
                                 CurrentPlayedFighterManager.getInstance().addSummonedCreature();
                             }
@@ -687,56 +736,72 @@
                                 };
                             };
                         };
-                        _local_91 = this._fightBattleFrame.getNextPlayableCharacterId();
-                        if (((((!((this._fightBattleFrame.currentPlayerId == CurrentPlayedFighterManager.getInstance().currentFighterId))) && (!((_local_91 == CurrentPlayedFighterManager.getInstance().currentFighterId))))) && ((_local_91 == _local_20.summon.contextualId))))
+                        _local_98 = this._fightBattleFrame.getNextPlayableCharacterId();
+                        if (((((!((this._fightBattleFrame.currentPlayerId == CurrentPlayedFighterManager.getInstance().currentFighterId))) && (!((_local_98 == CurrentPlayedFighterManager.getInstance().currentFighterId))))) && ((_local_98 == _local_24.summon.contextualId))))
                         {
                             this._fightBattleFrame.prepareNextPlayableCharacter();
                         };
                     };
                     return (true);
                 case (msg is GameActionFightMarkCellsMessage):
-                    _local_21 = (msg as GameActionFightMarkCellsMessage);
-                    if (this._castingSpell)
+                    _local_25 = (msg as GameActionFightMarkCellsMessage);
+                    _local_26 = _local_25.mark.markSpellId;
+                    if (((this._castingSpell) && (!((this._castingSpell.spell.id == 1750)))))
                     {
-                        this._castingSpell.markId = _local_21.mark.markId;
-                        this._castingSpell.markType = _local_21.mark.markType;
-                        this.pushMarkCellsStep(_local_21.mark.markId, _local_21.mark.markType, _local_21.mark.cells, _local_21.mark.markSpellId);
+                        this._castingSpell.markId = _local_25.mark.markId;
+                        this._castingSpell.markType = _local_25.mark.markType;
+                        _local_27 = this._castingSpell.spellRank;
+                    }
+                    else
+                    {
+                        _local_105 = Spell.getSpellById(_local_26);
+                        _local_27 = _local_105.getSpellLevel(_local_25.mark.markSpellLevel);
+                        for each (_local_106 in _local_27.effects)
+                        {
+                            if ((((((_local_106.effectId == ActionIdConverter.ACTION_FIGHT_ADD_TRAP_CASTING_SPELL)) || ((_local_106.effectId == ActionIdConverter.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL)))) || ((_local_106.effectId == ActionIdConverter.ACTION_FIGHT_ADD_GLYPH_CASTING_SPELL_ENDTURN))))
+                            {
+                                _local_26 = (_local_106.parameter0 as uint);
+                                _local_27 = Spell.getSpellById(_local_26).getSpellLevel((_local_106.parameter1 as uint));
+                                break;
+                            };
+                        };
                     };
+                    this.pushMarkCellsStep(_local_25.mark.markId, _local_25.mark.markType, _local_25.mark.cells, _local_26, _local_27, _local_25.mark.markTeamId, _local_25.mark.markimpactCell);
                     return (true);
                 case (msg is GameActionFightUnmarkCellsMessage):
-                    _local_22 = (msg as GameActionFightUnmarkCellsMessage);
-                    this.pushUnmarkCellsStep(_local_22.markId);
+                    _local_28 = (msg as GameActionFightUnmarkCellsMessage);
+                    this.pushUnmarkCellsStep(_local_28.markId);
                     return (true);
                 case (msg is GameActionFightChangeLookMessage):
-                    _local_23 = (msg as GameActionFightChangeLookMessage);
-                    this.pushChangeLookStep(_local_23.targetId, _local_23.entityLook);
+                    _local_29 = (msg as GameActionFightChangeLookMessage);
+                    this.pushChangeLookStep(_local_29.targetId, _local_29.entityLook);
                     return (true);
                 case (msg is GameActionFightInvisibilityMessage):
-                    _local_24 = (msg as GameActionFightInvisibilityMessage);
-                    _local_25 = this.fightEntitiesFrame.getEntityInfos(_local_24.targetId);
-                    FightEntitiesFrame.getCurrentInstance().setLastKnownEntityPosition(_local_24.targetId, _local_25.disposition.cellId);
-                    FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(_local_24.targetId, 0, true);
-                    this.pushChangeVisibilityStep(_local_24.targetId, _local_24.state);
+                    _local_30 = (msg as GameActionFightInvisibilityMessage);
+                    _local_31 = this.fightEntitiesFrame.getEntityInfos(_local_30.targetId);
+                    FightEntitiesFrame.getCurrentInstance().setLastKnownEntityPosition(_local_30.targetId, _local_31.disposition.cellId);
+                    FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(_local_30.targetId, 0, true);
+                    this.pushChangeVisibilityStep(_local_30.targetId, _local_30.state);
                     return (true);
                 case (msg is GameActionFightLeaveMessage):
-                    _local_26 = (msg as GameActionFightLeaveMessage);
-                    _local_27 = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
-                    for each (gcaiL in _local_27)
+                    _local_32 = (msg as GameActionFightLeaveMessage);
+                    _local_33 = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
+                    for each (gcaiL in _local_33)
                     {
                         if ((gcaiL is GameFightFighterInformations))
                         {
                             summonerIdL = (gcaiL as GameFightFighterInformations).stats.summoner;
-                            if (summonerIdL == _local_26.targetId)
+                            if (summonerIdL == _local_32.targetId)
                             {
                                 this.pushDeathStep(gcaiL.contextualId);
                             };
                         };
                     };
-                    this.pushDeathStep(_local_26.targetId, false);
-                    _local_28 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_26.targetId);
-                    if ((_local_28 is GameFightMonsterInformations))
+                    this.pushDeathStep(_local_32.targetId, false);
+                    _local_34 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_32.targetId);
+                    if ((_local_34 is GameFightMonsterInformations))
                     {
-                        summonedEntityInfosL = (_local_28 as GameFightMonsterInformations);
+                        summonedEntityInfosL = (_local_34 as GameFightMonsterInformations);
                         if (CurrentPlayedFighterManager.getInstance().checkPlayableEntity(summonedEntityInfosL.stats.summoner))
                         {
                             monster = Monster.getMonsterById(summonedEntityInfosL.creatureGenericId);
@@ -752,36 +817,36 @@
                     };
                     return (true);
                 case (msg is GameActionFightDeathMessage):
-                    _local_29 = (msg as GameActionFightDeathMessage);
-                    _local_30 = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
-                    for each (gcai in _local_30)
+                    _local_35 = (msg as GameActionFightDeathMessage);
+                    _local_36 = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
+                    for each (gcai in _local_36)
                     {
                         if ((gcai is GameFightFighterInformations))
                         {
-                            _local_31 = (gcai as GameFightFighterInformations);
-                            if (((_local_31.alive) && ((_local_31.stats.summoner == _local_29.targetId))))
+                            _local_37 = (gcai as GameFightFighterInformations);
+                            if (((_local_37.alive) && ((_local_37.stats.summoner == _local_35.targetId))))
                             {
                                 this.pushDeathStep(gcai.contextualId);
                             };
                         };
                     };
-                    _local_32 = PlayedCharacterManager.getInstance().id;
-                    _local_33 = (this.fightEntitiesFrame.getEntityInfos(_local_29.sourceId) as GameFightFighterInformations);
-                    _local_34 = (this.fightEntitiesFrame.getEntityInfos(_local_29.targetId) as GameFightFighterInformations);
-                    _local_35 = (this.fightEntitiesFrame.getEntityInfos(_local_32) as GameFightFighterInformations);
-                    if (((!((_local_29.targetId == this._fightBattleFrame.currentPlayerId))) && ((((this._fightBattleFrame.slaveId == _local_29.targetId)) || ((this._fightBattleFrame.masterId == _local_29.targetId))))))
+                    _local_38 = PlayedCharacterManager.getInstance().id;
+                    _local_39 = (this.fightEntitiesFrame.getEntityInfos(_local_35.sourceId) as GameFightFighterInformations);
+                    _local_40 = (this.fightEntitiesFrame.getEntityInfos(_local_35.targetId) as GameFightFighterInformations);
+                    _local_41 = (this.fightEntitiesFrame.getEntityInfos(_local_38) as GameFightFighterInformations);
+                    if (((!((_local_35.targetId == this._fightBattleFrame.currentPlayerId))) && ((((this._fightBattleFrame.slaveId == _local_35.targetId)) || ((this._fightBattleFrame.masterId == _local_35.targetId))))))
                     {
-                        this._fightBattleFrame.prepareNextPlayableCharacter(_local_29.targetId);
+                        this._fightBattleFrame.prepareNextPlayableCharacter(_local_35.targetId);
                     };
-                    if (_local_29.targetId == _local_32)
+                    if (_local_35.targetId == _local_38)
                     {
-                        if (_local_29.sourceId == _local_29.targetId)
+                        if (_local_35.sourceId == _local_35.targetId)
                         {
                             SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILLED_HIMSELF);
                         }
                         else
                         {
-                            if (_local_33.teamId != _local_35.teamId)
+                            if (_local_39.teamId != _local_41.teamId)
                             {
                                 SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILLED_BY_ENEMY);
                             }
@@ -793,9 +858,9 @@
                     }
                     else
                     {
-                        if (_local_29.sourceId == _local_32)
+                        if (_local_35.sourceId == _local_38)
                         {
-                            if (_local_34.teamId != _local_35.teamId)
+                            if (_local_40.teamId != _local_41.teamId)
                             {
                                 SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_KILL_ENEMY);
                             }
@@ -805,13 +870,13 @@
                             };
                         };
                     };
-                    this.pushDeathStep(_local_29.targetId);
-                    _local_36 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_29.targetId);
-                    _local_37 = (Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame);
-                    _local_38 = ((((((_local_37) && (_local_37.myTurn))) && (!((_local_29.targetId == _local_32))))) && (TackleUtil.isTackling(_local_35, _local_34, _local_37.lastPath)));
-                    if ((_local_36 is GameFightMonsterInformations))
+                    this.pushDeathStep(_local_35.targetId);
+                    _local_42 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_35.targetId);
+                    _local_43 = (Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame);
+                    _local_44 = ((((((_local_43) && (_local_43.myTurn))) && (!((_local_35.targetId == _local_38))))) && (TackleUtil.isTackling(_local_41, _local_40, _local_43.lastPath)));
+                    if ((_local_42 is GameFightMonsterInformations))
                     {
-                        summonedEntityInfos = (_local_36 as GameFightMonsterInformations);
+                        summonedEntityInfos = (_local_42 as GameFightMonsterInformations);
                         summonedEntityInfos.alive = false;
                         if (CurrentPlayedFighterManager.getInstance().checkPlayableEntity(summonedEntityInfos.stats.summoner))
                         {
@@ -829,12 +894,12 @@
                     }
                     else
                     {
-                        if ((_local_36 is GameFightFighterInformations))
+                        if ((_local_42 is GameFightFighterInformations))
                         {
-                            (_local_36 as GameFightFighterInformations).alive = false;
-                            if ((_local_36 as GameFightFighterInformations).stats.summoner != 0)
+                            (_local_42 as GameFightFighterInformations).alive = false;
+                            if ((_local_42 as GameFightFighterInformations).stats.summoner != 0)
                             {
-                                summonedFighterEntityInfos = (_local_36 as GameFightFighterInformations);
+                                summonedFighterEntityInfos = (_local_42 as GameFightFighterInformations);
                                 if (CurrentPlayedFighterManager.getInstance().checkPlayableEntity(summonedFighterEntityInfos.stats.summoner))
                                 {
                                     CurrentPlayedFighterManager.getInstance().removeSummonedCreature(summonedFighterEntityInfos.stats.summoner);
@@ -843,85 +908,85 @@
                             };
                         };
                     };
-                    _local_39 = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
-                    if (_local_39)
+                    fightContextFrame = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
+                    if (fightContextFrame)
                     {
-                        _local_39.outEntity(_local_29.targetId);
+                        fightContextFrame.outEntity(_local_35.targetId);
                     };
-                    FightEntitiesFrame.getCurrentInstance().updateRemovedEntity(_local_29.targetId);
-                    if (_local_38)
+                    FightEntitiesFrame.getCurrentInstance().updateRemovedEntity(_local_35.targetId);
+                    if (_local_44)
                     {
-                        _local_37.updatePath();
+                        _local_43.updatePath();
                     };
                     return (true);
                 case (msg is GameActionFightVanishMessage):
-                    _local_40 = (msg as GameActionFightVanishMessage);
-                    this.pushVanishStep(_local_40.targetId, _local_40.sourceId);
-                    _local_41 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_40.targetId);
-                    if ((_local_41 is GameFightFighterInformations))
+                    _local_45 = (msg as GameActionFightVanishMessage);
+                    this.pushVanishStep(_local_45.targetId, _local_45.sourceId);
+                    _local_46 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_45.targetId);
+                    if ((_local_46 is GameFightFighterInformations))
                     {
-                        (_local_41 as GameFightFighterInformations).alive = false;
+                        (_local_46 as GameFightFighterInformations).alive = false;
                     };
-                    _local_42 = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
-                    if (_local_42)
+                    fightContextFrame = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
+                    if (fightContextFrame)
                     {
-                        _local_42.outEntity(_local_40.targetId);
+                        fightContextFrame.outEntity(_local_45.targetId);
                     };
-                    FightEntitiesFrame.getCurrentInstance().updateRemovedEntity(_local_40.targetId);
+                    FightEntitiesFrame.getCurrentInstance().updateRemovedEntity(_local_45.targetId);
                     return (true);
                 case (msg is GameActionFightTriggerEffectMessage):
                     return (true);
                 case (msg is GameActionFightDispellEffectMessage):
-                    _local_43 = (msg as GameActionFightDispellEffectMessage);
-                    this.pushDispellEffectStep(_local_43.targetId, _local_43.boostUID);
+                    _local_47 = (msg as GameActionFightDispellEffectMessage);
+                    this.pushDispellEffectStep(_local_47.targetId, _local_47.boostUID);
                     return (true);
                 case (msg is GameActionFightDispellSpellMessage):
-                    _local_44 = (msg as GameActionFightDispellSpellMessage);
-                    this.pushDispellSpellStep(_local_44.targetId, _local_44.spellId);
+                    _local_48 = (msg as GameActionFightDispellSpellMessage);
+                    this.pushDispellSpellStep(_local_48.targetId, _local_48.spellId);
                     return (true);
                 case (msg is GameActionFightDispellMessage):
-                    _local_45 = (msg as GameActionFightDispellMessage);
-                    this.pushDispellStep(_local_45.targetId);
+                    _local_49 = (msg as GameActionFightDispellMessage);
+                    this.pushDispellStep(_local_49.targetId);
                     return (true);
                 case (msg is GameActionFightDodgePointLossMessage):
-                    _local_46 = (msg as GameActionFightDodgePointLossMessage);
-                    this.pushPointsLossDodgeStep(_local_46.targetId, _local_46.actionId, _local_46.amount);
+                    _local_50 = (msg as GameActionFightDodgePointLossMessage);
+                    this.pushPointsLossDodgeStep(_local_50.targetId, _local_50.actionId, _local_50.amount);
                     return (true);
                 case (msg is GameActionFightSpellCooldownVariationMessage):
-                    _local_47 = (msg as GameActionFightSpellCooldownVariationMessage);
-                    this.pushSpellCooldownVariationStep(_local_47.targetId, _local_47.actionId, _local_47.spellId, _local_47.value);
+                    _local_51 = (msg as GameActionFightSpellCooldownVariationMessage);
+                    this.pushSpellCooldownVariationStep(_local_51.targetId, _local_51.actionId, _local_51.spellId, _local_51.value);
                     return (true);
                 case (msg is GameActionFightSpellImmunityMessage):
-                    _local_48 = (msg as GameActionFightSpellImmunityMessage);
-                    this.pushSpellImmunityStep(_local_48.targetId);
+                    _local_52 = (msg as GameActionFightSpellImmunityMessage);
+                    this.pushSpellImmunityStep(_local_52.targetId);
                     return (true);
                 case (msg is GameActionFightInvisibleObstacleMessage):
-                    _local_49 = (msg as GameActionFightInvisibleObstacleMessage);
-                    this.pushInvisibleObstacleStep(_local_49.sourceId, _local_49.sourceSpellId);
+                    _local_53 = (msg as GameActionFightInvisibleObstacleMessage);
+                    this.pushInvisibleObstacleStep(_local_53.sourceId, _local_53.sourceSpellId);
                     return (true);
                 case (msg is GameActionFightKillMessage):
-                    _local_50 = (msg as GameActionFightKillMessage);
-                    this.pushKillStep(_local_50.targetId, _local_50.sourceId);
+                    _local_54 = (msg as GameActionFightKillMessage);
+                    this.pushKillStep(_local_54.targetId, _local_54.sourceId);
                     return (true);
                 case (msg is GameActionFightReduceDamagesMessage):
-                    _local_51 = (msg as GameActionFightReduceDamagesMessage);
-                    this.pushReducedDamagesStep(_local_51.targetId, _local_51.amount);
+                    _local_55 = (msg as GameActionFightReduceDamagesMessage);
+                    this.pushReducedDamagesStep(_local_55.targetId, _local_55.amount);
                     return (true);
                 case (msg is GameActionFightReflectDamagesMessage):
-                    _local_52 = (msg as GameActionFightReflectDamagesMessage);
-                    this.pushReflectedDamagesStep(_local_52.sourceId);
+                    _local_56 = (msg as GameActionFightReflectDamagesMessage);
+                    this.pushReflectedDamagesStep(_local_56.sourceId);
                     return (true);
                 case (msg is GameActionFightReflectSpellMessage):
-                    _local_53 = (msg as GameActionFightReflectSpellMessage);
-                    this.pushReflectedSpellStep(_local_53.targetId);
+                    _local_57 = (msg as GameActionFightReflectSpellMessage);
+                    this.pushReflectedSpellStep(_local_57.targetId);
                     return (true);
                 case (msg is GameActionFightStealKamaMessage):
-                    _local_54 = (msg as GameActionFightStealKamaMessage);
-                    this.pushStealKamasStep(_local_54.sourceId, _local_54.targetId, _local_54.amount);
+                    _local_58 = (msg as GameActionFightStealKamaMessage);
+                    this.pushStealKamasStep(_local_58.sourceId, _local_58.targetId, _local_58.amount);
                     return (true);
                 case (msg is GameActionFightTackledMessage):
-                    _local_55 = (msg as GameActionFightTackledMessage);
-                    this.pushTackledStep(_local_55.sourceId);
+                    _local_59 = (msg as GameActionFightTackledMessage);
+                    this.pushTackledStep(_local_59.sourceId);
                     return (true);
                 case (msg is GameActionFightTriggerGlyphTrapMessage):
                     if (this._castingSpell)
@@ -931,44 +996,54 @@
                         this._fightBattleFrame.currentSequenceFrame.process(msg);
                         return (true);
                     };
-                    _local_56 = (msg as GameActionFightTriggerGlyphTrapMessage);
-                    this.pushMarkTriggeredStep(_local_56.triggeringCharacterId, _local_56.sourceId, _local_56.markId);
+                    _local_60 = (msg as GameActionFightTriggerGlyphTrapMessage);
+                    this.pushMarkTriggeredStep(_local_60.triggeringCharacterId, _local_60.sourceId, _local_60.markId);
                     this._fxScriptId = 1;
                     this._castingSpell = new CastingSpell();
-                    this._castingSpell.casterId = _local_56.sourceId;
-                    _local_57 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_56.triggeringCharacterId).disposition.cellId;
-                    if (_local_57 != -1)
+                    this._castingSpell.casterId = _local_60.sourceId;
+                    _local_61 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_60.triggeringCharacterId).disposition.cellId;
+                    if (_local_61 != -1)
                     {
-                        this._castingSpell.targetedCell = MapPoint.fromCellId(_local_57);
+                        this._castingSpell.targetedCell = MapPoint.fromCellId(_local_61);
                         this._castingSpell.spell = Spell.getSpellById(1750);
                         this._castingSpell.spellRank = this._castingSpell.spell.getSpellLevel(1);
                     };
+                    _local_62 = MarkedCellsManager.getInstance().getMarkDatas(_local_60.markId);
+                    if (((_local_62) && ((_local_62.markType == GameActionMarkTypeEnum.PORTAL))))
+                    {
+                        this._teleportThroughPortal = true;
+                        this._teleportPortalId = _local_62.markId;
+                    };
+                    return (true);
+                case (msg is GameActionFightActivateGlyphTrapMessage):
+                    _local_63 = (msg as GameActionFightActivateGlyphTrapMessage);
+                    this.pushMarkActivateStep(_local_63.markId, _local_63.active);
                     return (true);
                 case (msg is GameActionFightDispellableEffectMessage):
-                    _local_58 = (msg as GameActionFightDispellableEffectMessage);
-                    if (_local_58.actionId == ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST)
+                    _local_64 = (msg as GameActionFightDispellableEffectMessage);
+                    if (_local_64.actionId == ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST)
                     {
-                        _local_59 = new CastingSpell(false);
+                        _local_65 = new CastingSpell(false);
                     }
                     else
                     {
-                        _local_59 = new CastingSpell((this._castingSpell == null));
+                        _local_65 = new CastingSpell((this._castingSpell == null));
                     };
                     if (this._castingSpell)
                     {
-                        _local_59.castingSpellId = this._castingSpell.castingSpellId;
-                        if (this._castingSpell.castingSpellId == _local_58.effect.spellId)
+                        _local_65.castingSpellId = this._castingSpell.castingSpellId;
+                        if (this._castingSpell.castingSpellId == _local_64.effect.spellId)
                         {
-                            _local_59.spellRank = this._castingSpell.spellRank;
+                            _local_65.spellRank = this._castingSpell.spellRank;
                         };
                     };
-                    _local_59.spell = Spell.getSpellById(_local_58.effect.spellId);
-                    _local_59.casterId = _local_58.sourceId;
-                    _local_60 = _local_58.effect;
-                    _local_61 = BuffManager.makeBuffFromEffect(_local_60, _local_59, _local_58.actionId);
-                    if ((_local_61 is StateBuff))
+                    _local_65.spell = Spell.getSpellById(_local_64.effect.spellId);
+                    _local_65.casterId = _local_64.sourceId;
+                    _local_66 = _local_64.effect;
+                    _local_67 = BuffManager.makeBuffFromEffect(_local_66, _local_65, _local_64.actionId);
+                    if ((_local_67 is StateBuff))
                     {
-                        sb = (_local_61 as StateBuff);
+                        sb = (_local_67 as StateBuff);
                         if (sb.actionId == 952)
                         {
                             step = new FightLeavingStateStep(sb.targetId, sb.stateId);
@@ -977,60 +1052,60 @@
                         {
                             step = new FightEnteringStateStep(sb.targetId, sb.stateId, sb.effects.durationString);
                         };
-                        if (_local_59 != null)
+                        if (_local_65 != null)
                         {
-                            step.castingSpellId = _local_59.castingSpellId;
+                            step.castingSpellId = _local_65.castingSpellId;
                         };
                         this._stepsBuffer.push(step);
                     };
-                    if ((_local_60 is FightTemporaryBoostEffect))
+                    if ((_local_66 is FightTemporaryBoostEffect))
                     {
-                        actionId = _local_58.actionId;
+                        actionId = _local_64.actionId;
                         if (((((((((((!((actionId == ActionIdConverter.ACTION_CHARACTER_MAKE_INVISIBLE))) && (!((actionId == ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST))))) && (!((actionId == ActionIdConverter.ACTION_CHARACTER_CHANGE_LOOK))))) && (!((actionId == ActionIdConverter.ACTION_CHARACTER_CHANGE_COLOR))))) && (!((actionId == ActionIdConverter.ACTION_CHARACTER_ADD_APPEARANCE))))) && (!((actionId == ActionIdConverter.ACTION_FIGHT_SET_STATE)))))
                         {
-                            this.pushTemporaryBoostStep(_local_58.effect.targetId, _local_61.effects.description, _local_61.effects.duration, _local_61.effects.durationString);
+                            this.pushTemporaryBoostStep(_local_64.effect.targetId, _local_67.effects.description, _local_67.effects.duration, _local_67.effects.durationString, _local_67.effects);
                         };
                         if (actionId == ActionIdConverter.ACTION_CHARACTER_BOOST_SHIELD)
                         {
-                            this.pushShieldPointsVariationStep(_local_58.effect.targetId, (_local_61 as StatBuff).delta, actionId);
+                            this.pushShieldPointsVariationStep(_local_64.effect.targetId, (_local_67 as StatBuff).delta, actionId);
                         };
                     };
-                    this.pushDisplayBuffStep(_local_61);
+                    this.pushDisplayBuffStep(_local_67);
                     return (true);
                 case (msg is GameActionFightModifyEffectsDurationMessage):
-                    _local_62 = (msg as GameActionFightModifyEffectsDurationMessage);
-                    this.pushModifyEffectsDurationStep(_local_62.sourceId, _local_62.targetId, _local_62.delta);
+                    _local_68 = (msg as GameActionFightModifyEffectsDurationMessage);
+                    this.pushModifyEffectsDurationStep(_local_68.sourceId, _local_68.targetId, _local_68.delta);
                     return (false);
                 case (msg is GameActionFightCarryCharacterMessage):
-                    _local_63 = (msg as GameActionFightCarryCharacterMessage);
-                    if (_local_63.cellId != -1)
+                    _local_69 = (msg as GameActionFightCarryCharacterMessage);
+                    if (_local_69.cellId != -1)
                     {
-                        this.pushCarryCharacterStep(_local_63.sourceId, _local_63.targetId, _local_63.cellId);
+                        this.pushCarryCharacterStep(_local_69.sourceId, _local_69.targetId, _local_69.cellId);
                     };
                     return (false);
                 case (msg is GameActionFightThrowCharacterMessage):
-                    _local_64 = (msg as GameActionFightThrowCharacterMessage);
-                    _local_65 = ((this._castingSpell) ? this._castingSpell.targetedCell.cellId : _local_64.cellId);
-                    this.pushThrowCharacterStep(_local_64.sourceId, _local_64.targetId, _local_65);
+                    _local_70 = (msg as GameActionFightThrowCharacterMessage);
+                    _local_71 = ((this._castingSpell) ? this._castingSpell.targetedCell.cellId : _local_70.cellId);
+                    this.pushThrowCharacterStep(_local_70.sourceId, _local_70.targetId, _local_71);
                     return (false);
                 case (msg is GameActionFightDropCharacterMessage):
-                    _local_66 = (msg as GameActionFightDropCharacterMessage);
-                    _local_67 = _local_66.cellId;
-                    if ((((_local_67 == -1)) && (this._castingSpell)))
+                    _local_72 = (msg as GameActionFightDropCharacterMessage);
+                    _local_73 = _local_72.cellId;
+                    if ((((_local_73 == -1)) && (this._castingSpell)))
                     {
-                        _local_67 = this._castingSpell.targetedCell.cellId;
+                        _local_73 = this._castingSpell.targetedCell.cellId;
                     };
-                    this.pushThrowCharacterStep(_local_66.sourceId, _local_66.targetId, _local_67);
+                    this.pushThrowCharacterStep(_local_72.sourceId, _local_72.targetId, _local_73);
                     return (false);
                 case (msg is GameActionFightInvisibleDetectedMessage):
-                    _local_68 = (msg as GameActionFightInvisibleDetectedMessage);
-                    this.pushFightInvisibleTemporarilyDetectedStep(_local_68.sourceId, _local_68.cellId);
-                    FightEntitiesFrame.getCurrentInstance().setLastKnownEntityPosition(_local_68.targetId, _local_68.cellId);
-                    FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(_local_68.targetId, 0);
+                    _local_74 = (msg as GameActionFightInvisibleDetectedMessage);
+                    this.pushFightInvisibleTemporarilyDetectedStep(_local_74.sourceId, _local_74.cellId);
+                    FightEntitiesFrame.getCurrentInstance().setLastKnownEntityPosition(_local_74.targetId, _local_74.cellId);
+                    FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(_local_74.targetId, 0);
                     return (true);
                 case (msg is GameFightTurnListMessage):
-                    _local_69 = (msg as GameFightTurnListMessage);
-                    this.pushTurnListStep(_local_69.ids, _local_69.deadsIds);
+                    _local_75 = (msg as GameFightTurnListMessage);
+                    this.pushTurnListStep(_local_75.ids, _local_75.deadsIds);
                     return (true);
                 case (msg is AbstractGameActionMessage):
                     _log.error((("Unsupported game action " + msg) + " ! This action was discarded."));
@@ -1041,8 +1116,6 @@
 
         public function execute(callback:Function=null):void
         {
-            var script:BinaryScript;
-            var scriptRunner:SpellFxRunner;
             this._sequencer = new SerialSequencer(FIGHT_SEQUENCERS_CATEGORY);
             if (this._parent)
             {
@@ -1055,10 +1128,16 @@
             };
             if (this._fxScriptId > 0)
             {
-                script = DofusEmbedScript.getScript(this._fxScriptId);
-                scriptRunner = new SpellFxRunner(this);
+                if (((this._castingSpell) && (this._castingSpell.spell)))
+                {
+                    _log.info((((((("Executing SpellScript" + this._fxScriptId) + " for spell '") + this._castingSpell.spell.name) + "' (") + this._castingSpell.spell.id) + ")"));
+                }
+                else
+                {
+                    _log.info((("Executing SpellScript" + this._fxScriptId) + " for unknown spell"));
+                };
                 this._scriptStarted = getTimer();
-                ScriptExec.exec(script, scriptRunner, true, new Callback(this.executeBuffer, callback, true, true), new Callback(this.executeBuffer, callback, true, false));
+                SpellScriptManager.getInstance().runSpellScript(this._fxScriptId, this, new Callback(this.executeBuffer, callback, true, true), new Callback(this.executeBuffer, callback, true, false));
             }
             else
             {
@@ -1415,9 +1494,9 @@
             this._stepsBuffer.push(step);
         }
 
-        private function pushMarkCellsStep(markId:int, markType:int, cells:Vector.<GameActionMarkedCell>, markSpellId:int):void
+        private function pushMarkCellsStep(markId:int, markType:int, cells:Vector.<GameActionMarkedCell>, markSpellId:int, markSpellLevel:SpellLevel, teamId:int, markImpactCell:int):void
         {
-            var step:FightMarkCellsStep = new FightMarkCellsStep(markId, markType, this._castingSpell.spellRank, cells, markSpellId);
+            var step:FightMarkCellsStep = new FightMarkCellsStep(markId, markType, cells, markSpellId, markSpellLevel, teamId, markImpactCell);
             if (this.castingSpell != null)
             {
                 step.castingSpellId = this.castingSpell.castingSpellId;
@@ -1495,9 +1574,9 @@
             this._stepsBuffer.push(step);
         }
 
-        private function pushTemporaryBoostStep(fighterId:int, statName:String, duration:int, durationText:String):void
+        private function pushTemporaryBoostStep(fighterId:int, statName:String, duration:int, durationText:String, effect:EffectInstance):void
         {
-            var step:FightTemporaryBoostStep = new FightTemporaryBoostStep(fighterId, statName, duration, durationText);
+            var step:FightTemporaryBoostStep = new FightTemporaryBoostStep(fighterId, statName, duration, durationText, effect);
             if (this.castingSpell != null)
             {
                 step.castingSpellId = this.castingSpell.castingSpellId;
@@ -1707,6 +1786,16 @@
             this._stepsBuffer.push(step);
         }
 
+        private function pushMarkActivateStep(markId:int, active:Boolean):void
+        {
+            var step:FightMarkActivateStep = new FightMarkActivateStep(markId, active);
+            if (this.castingSpell != null)
+            {
+                step.castingSpellId = this.castingSpell.castingSpellId;
+            };
+            this._stepsBuffer.push(step);
+        }
+
         private function pushDisplayBuffStep(buff:BasicBuff):void
         {
             var step:FightDisplayBuffStep = new FightDisplayBuffStep(buff);
@@ -1744,6 +1833,8 @@
             if (this.castingSpell != null)
             {
                 step.castingSpellId = this.castingSpell.castingSpellId;
+                step.portals = this.castingSpell.portalMapPoints;
+                step.portalIds = this.castingSpell.portalIds;
             };
             this._stepsBuffer.push(step);
         }

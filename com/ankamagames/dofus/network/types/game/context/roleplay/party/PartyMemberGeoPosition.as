@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay.party
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class PartyMemberGeoPosition implements INetworkType 
@@ -41,12 +41,12 @@
             this.subAreaId = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PartyMemberGeoPosition(output);
         }
 
-        public function serializeAs_PartyMemberGeoPosition(output:IDataOutput):void
+        public function serializeAs_PartyMemberGeoPosition(output:ICustomDataOutput):void
         {
             if (this.memberId < 0)
             {
@@ -68,15 +68,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PartyMemberGeoPosition(input);
         }
 
-        public function deserializeAs_PartyMemberGeoPosition(input:IDataInput):void
+        public function deserializeAs_PartyMemberGeoPosition(input:ICustomDataInput):void
         {
             this.memberId = input.readInt();
             if (this.memberId < 0)
@@ -94,7 +94,7 @@
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element of PartyMemberGeoPosition.worldY.")));
             };
             this.mapId = input.readInt();
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of PartyMemberGeoPosition.subAreaId.")));

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.mount
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class UpdateMountIntBoost extends UpdateMountBoost implements INetworkType 
     {
@@ -17,7 +17,7 @@
             return (357);
         }
 
-        public function initUpdateMountIntBoost(type:int=0, value:int=0):UpdateMountIntBoost
+        public function initUpdateMountIntBoost(type:uint=0, value:int=0):UpdateMountIntBoost
         {
             super.initUpdateMountBoost(type);
             this.value = value;
@@ -30,23 +30,23 @@
             this.value = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_UpdateMountIntBoost(output);
         }
 
-        public function serializeAs_UpdateMountIntBoost(output:IDataOutput):void
+        public function serializeAs_UpdateMountIntBoost(output:ICustomDataOutput):void
         {
             super.serializeAs_UpdateMountBoost(output);
             output.writeInt(this.value);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_UpdateMountIntBoost(input);
         }
 
-        public function deserializeAs_UpdateMountIntBoost(input:IDataInput):void
+        public function deserializeAs_UpdateMountIntBoost(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.value = input.readInt();

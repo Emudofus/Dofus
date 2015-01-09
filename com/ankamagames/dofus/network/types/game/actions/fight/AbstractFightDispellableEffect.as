@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.actions.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class AbstractFightDispellableEffect implements INetworkType 
@@ -47,18 +47,18 @@
             this.parentBoostUid = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AbstractFightDispellableEffect(output);
         }
 
-        public function serializeAs_AbstractFightDispellableEffect(output:IDataOutput):void
+        public function serializeAs_AbstractFightDispellableEffect(output:ICustomDataOutput):void
         {
             if (this.uid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.uid) + ") on element uid.")));
             };
-            output.writeInt(this.uid);
+            output.writeVarInt(this.uid);
             output.writeInt(this.targetId);
             output.writeShort(this.turnDuration);
             output.writeByte(this.dispelable);
@@ -66,27 +66,27 @@
             {
                 throw (new Error((("Forbidden value (" + this.spellId) + ") on element spellId.")));
             };
-            output.writeShort(this.spellId);
+            output.writeVarShort(this.spellId);
             if (this.effectId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.effectId) + ") on element effectId.")));
             };
-            output.writeInt(this.effectId);
+            output.writeVarInt(this.effectId);
             if (this.parentBoostUid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.parentBoostUid) + ") on element parentBoostUid.")));
             };
-            output.writeInt(this.parentBoostUid);
+            output.writeVarInt(this.parentBoostUid);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AbstractFightDispellableEffect(input);
         }
 
-        public function deserializeAs_AbstractFightDispellableEffect(input:IDataInput):void
+        public function deserializeAs_AbstractFightDispellableEffect(input:ICustomDataInput):void
         {
-            this.uid = input.readInt();
+            this.uid = input.readVarUhInt();
             if (this.uid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.uid) + ") on element of AbstractFightDispellableEffect.uid.")));
@@ -98,17 +98,17 @@
             {
                 throw (new Error((("Forbidden value (" + this.dispelable) + ") on element of AbstractFightDispellableEffect.dispelable.")));
             };
-            this.spellId = input.readShort();
+            this.spellId = input.readVarUhShort();
             if (this.spellId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.spellId) + ") on element of AbstractFightDispellableEffect.spellId.")));
             };
-            this.effectId = input.readInt();
+            this.effectId = input.readVarUhInt();
             if (this.effectId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.effectId) + ") on element of AbstractFightDispellableEffect.effectId.")));
             };
-            this.parentBoostUid = input.readInt();
+            this.parentBoostUid = input.readVarUhInt();
             if (this.parentBoostUid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.parentBoostUid) + ") on element of AbstractFightDispellableEffect.parentBoostUid.")));

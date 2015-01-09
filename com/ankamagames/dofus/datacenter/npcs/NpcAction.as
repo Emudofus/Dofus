@@ -14,6 +14,7 @@
         public static const MODULE:String = "NpcActions";
 
         public var id:int;
+        public var realId:int;
         public var nameId:uint;
         private var _name:String;
 

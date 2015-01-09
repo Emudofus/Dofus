@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import __AS3__.vec.Vector;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -48,24 +49,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeObjectsRemovedMessage(output);
         }
 
-        public function serializeAs_ExchangeObjectsRemovedMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeObjectsRemovedMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_ExchangeObjectMessage(output);
             output.writeShort(this.objectUID.length);
@@ -76,17 +77,17 @@
                 {
                     throw (new Error((("Forbidden value (" + this.objectUID[_i1]) + ") on element 1 (starting at 1) of objectUID.")));
                 };
-                output.writeInt(this.objectUID[_i1]);
+                output.writeVarInt(this.objectUID[_i1]);
                 _i1++;
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeObjectsRemovedMessage(input);
         }
 
-        public function deserializeAs_ExchangeObjectsRemovedMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeObjectsRemovedMessage(input:ICustomDataInput):void
         {
             var _val1:uint;
             super.deserialize(input);
@@ -94,7 +95,7 @@
             var _i1:uint;
             while (_i1 < _objectUIDLen)
             {
-                _val1 = input.readInt();
+                _val1 = input.readVarUhInt();
                 if (_val1 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val1) + ") on elements of objectUID.")));

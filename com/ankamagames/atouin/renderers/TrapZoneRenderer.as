@@ -13,12 +13,14 @@
 
         private var _aZoneTile:Array;
         private var _aCellTile:Array;
+        private var _visible:Boolean;
         public var strata:uint;
 
-        public function TrapZoneRenderer(nStrata:uint=10)
+        public function TrapZoneRenderer(nStrata:uint=10, visible:Boolean=true)
         {
             this._aZoneTile = new Array();
             this._aCellTile = new Array();
+            this._visible = visible;
             this.strata = nStrata;
         }
 
@@ -43,6 +45,7 @@
                     tzt.mouseChildren = false;
                     tzt.mouseEnabled = false;
                     tzt.strata = this.strata;
+                    tzt.visible = this._visible;
                     tzt.filters = [new ColorMatrixFilter([0, 0, 0, 0, oColor.red, 0, 0, 0, 0, oColor.green, 0, 0, 0, 0, oColor.blue, 0, 0, 0, 0.7, 0])];
                 };
                 this._aCellTile[j] = cells[j];

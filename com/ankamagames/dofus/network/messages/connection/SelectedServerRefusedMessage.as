@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class SelectedServerRefusedMessage extends NetworkMessage implements INetworkMessage 
@@ -13,7 +14,7 @@
         public static const protocolId:uint = 41;
 
         private var _isInitialized:Boolean = false;
-        public var serverId:int = 0;
+        public var serverId:uint = 0;
         public var error:uint = 1;
         public var serverStatus:uint = 1;
 
@@ -28,7 +29,7 @@
             return (41);
         }
 
-        public function initSelectedServerRefusedMessage(serverId:int=0, error:uint=1, serverStatus:uint=1):SelectedServerRefusedMessage
+        public function initSelectedServerRefusedMessage(serverId:uint=0, error:uint=1, serverStatus:uint=1):SelectedServerRefusedMessage
         {
             this.serverId = serverId;
             this.error = error;
@@ -45,38 +46,46 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_SelectedServerRefusedMessage(output);
         }
 
-        public function serializeAs_SelectedServerRefusedMessage(output:IDataOutput):void
+        public function serializeAs_SelectedServerRefusedMessage(output:ICustomDataOutput):void
         {
-            output.writeShort(this.serverId);
+            if (this.serverId < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.serverId) + ") on element serverId.")));
+            };
+            output.writeVarShort(this.serverId);
             output.writeByte(this.error);
             output.writeByte(this.serverStatus);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_SelectedServerRefusedMessage(input);
         }
 
-        public function deserializeAs_SelectedServerRefusedMessage(input:IDataInput):void
+        public function deserializeAs_SelectedServerRefusedMessage(input:ICustomDataInput):void
         {
-            this.serverId = input.readShort();
+            this.serverId = input.readVarUhShort();
+            if (this.serverId < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.serverId) + ") on element of SelectedServerRefusedMessage.serverId.")));
+            };
             this.error = input.readByte();
             if (this.error < 0)
             {

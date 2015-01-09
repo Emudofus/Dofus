@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class GameFightSpellCooldown implements INetworkType 
@@ -32,12 +32,12 @@
             this.cooldown = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameFightSpellCooldown(output);
         }
 
-        public function serializeAs_GameFightSpellCooldown(output:IDataOutput):void
+        public function serializeAs_GameFightSpellCooldown(output:ICustomDataOutput):void
         {
             output.writeInt(this.spellId);
             if (this.cooldown < 0)
@@ -47,12 +47,12 @@
             output.writeByte(this.cooldown);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameFightSpellCooldown(input);
         }
 
-        public function deserializeAs_GameFightSpellCooldown(input:IDataInput):void
+        public function deserializeAs_GameFightSpellCooldown(input:ICustomDataInput):void
         {
             this.spellId = input.readInt();
             this.cooldown = input.readByte();

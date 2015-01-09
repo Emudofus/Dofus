@@ -6,7 +6,7 @@
         function get width():int;
         function get height():int;
         function pointLos(_arg_1:int, _arg_2:int, _arg_3:Boolean=true):Boolean;
-        function pointMov(_arg_1:int, _arg_2:int, _arg_3:Boolean=true, _arg_4:int=-1):Boolean;
+        function pointMov(_arg_1:int, _arg_2:int, _arg_3:Boolean=true, _arg_4:int=-1, _arg_5:int=-1):Boolean;
         function farmCell(_arg_1:int, _arg_2:int):Boolean;
         function pointSpecialEffects(_arg_1:int, _arg_2:int):uint;
         function pointWeight(_arg_1:int, _arg_2:int, _arg_3:Boolean=true):Number;

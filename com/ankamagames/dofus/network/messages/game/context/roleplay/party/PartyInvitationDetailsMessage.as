@@ -5,8 +5,9 @@
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyInvitationMemberInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyGuestInformations;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -68,24 +69,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PartyInvitationDetailsMessage(output);
         }
 
-        public function serializeAs_PartyInvitationDetailsMessage(output:IDataOutput):void
+        public function serializeAs_PartyInvitationDetailsMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_AbstractPartyMessage(output);
             output.writeByte(this.partyType);
@@ -94,13 +95,13 @@
             {
                 throw (new Error((("Forbidden value (" + this.fromId) + ") on element fromId.")));
             };
-            output.writeInt(this.fromId);
+            output.writeVarInt(this.fromId);
             output.writeUTF(this.fromName);
             if (this.leaderId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.leaderId) + ") on element leaderId.")));
             };
-            output.writeInt(this.leaderId);
+            output.writeVarInt(this.leaderId);
             output.writeShort(this.members.length);
             var _i6:uint;
             while (_i6 < this.members.length)
@@ -117,12 +118,12 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PartyInvitationDetailsMessage(input);
         }
 
-        public function deserializeAs_PartyInvitationDetailsMessage(input:IDataInput):void
+        public function deserializeAs_PartyInvitationDetailsMessage(input:ICustomDataInput):void
         {
             var _item6:PartyInvitationMemberInformations;
             var _item7:PartyGuestInformations;
@@ -133,13 +134,13 @@
                 throw (new Error((("Forbidden value (" + this.partyType) + ") on element of PartyInvitationDetailsMessage.partyType.")));
             };
             this.partyName = input.readUTF();
-            this.fromId = input.readInt();
+            this.fromId = input.readVarUhInt();
             if (this.fromId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.fromId) + ") on element of PartyInvitationDetailsMessage.fromId.")));
             };
             this.fromName = input.readUTF();
-            this.leaderId = input.readInt();
+            this.leaderId = input.readVarUhInt();
             if (this.leaderId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.leaderId) + ") on element of PartyInvitationDetailsMessage.leaderId.")));

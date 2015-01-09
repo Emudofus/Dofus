@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GameRolePlayNamedActorInformations extends GameRolePlayActorInformations implements INetworkType 
     {
@@ -32,23 +32,23 @@
             this.name = "";
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayNamedActorInformations(output);
         }
 
-        public function serializeAs_GameRolePlayNamedActorInformations(output:IDataOutput):void
+        public function serializeAs_GameRolePlayNamedActorInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameRolePlayActorInformations(output);
             output.writeUTF(this.name);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayNamedActorInformations(input);
         }
 
-        public function deserializeAs_GameRolePlayNamedActorInformations(input:IDataInput):void
+        public function deserializeAs_GameRolePlayNamedActorInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.name = input.readUTF();

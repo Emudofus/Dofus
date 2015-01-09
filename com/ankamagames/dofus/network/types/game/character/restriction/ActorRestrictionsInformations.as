@@ -1,9 +1,9 @@
 ﻿package com.ankamagames.dofus.network.types.game.character.restriction
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
     import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class ActorRestrictionsInformations implements INetworkType 
     {
@@ -89,12 +89,12 @@
             this.cantWalk8Directions = false;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ActorRestrictionsInformations(output);
         }
 
-        public function serializeAs_ActorRestrictionsInformations(output:IDataOutput):void
+        public function serializeAs_ActorRestrictionsInformations(output:ICustomDataOutput):void
         {
             var _box0:uint;
             _box0 = BooleanByteWrapper.setFlag(_box0, 0, this.cantBeAggressed);
@@ -125,12 +125,12 @@
             output.writeByte(_box2);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ActorRestrictionsInformations(input);
         }
 
-        public function deserializeAs_ActorRestrictionsInformations(input:IDataInput):void
+        public function deserializeAs_ActorRestrictionsInformations(input:ICustomDataInput):void
         {
             var _box0:uint = input.readByte();
             this.cantBeAggressed = BooleanByteWrapper.getFlag(_box0, 0);

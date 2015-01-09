@@ -89,7 +89,7 @@
             var _local_12:ExchangeObjectAddedMessage;
             var _local_13:ItemWrapper;
             var _local_14:ExchangeObjectsAddedMessage;
-            var _local_15:*;
+            var _local_15:Array;
             var _local_16:ExchangeObjectRemovedMessage;
             var _local_17:ExchangeObjectsRemovedMessage;
             var _local_18:Array;

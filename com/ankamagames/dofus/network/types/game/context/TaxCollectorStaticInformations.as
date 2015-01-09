@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GuildInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class TaxCollectorStaticInformations implements INetworkType 
     {
@@ -40,39 +40,39 @@
             this.guildIdentity = new GuildInformations();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TaxCollectorStaticInformations(output);
         }
 
-        public function serializeAs_TaxCollectorStaticInformations(output:IDataOutput):void
+        public function serializeAs_TaxCollectorStaticInformations(output:ICustomDataOutput):void
         {
             if (this.firstNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.firstNameId) + ") on element firstNameId.")));
             };
-            output.writeShort(this.firstNameId);
+            output.writeVarShort(this.firstNameId);
             if (this.lastNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lastNameId) + ") on element lastNameId.")));
             };
-            output.writeShort(this.lastNameId);
+            output.writeVarShort(this.lastNameId);
             this.guildIdentity.serializeAs_GuildInformations(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TaxCollectorStaticInformations(input);
         }
 
-        public function deserializeAs_TaxCollectorStaticInformations(input:IDataInput):void
+        public function deserializeAs_TaxCollectorStaticInformations(input:ICustomDataInput):void
         {
-            this.firstNameId = input.readShort();
+            this.firstNameId = input.readVarUhShort();
             if (this.firstNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.firstNameId) + ") on element of TaxCollectorStaticInformations.firstNameId.")));
             };
-            this.lastNameId = input.readShort();
+            this.lastNameId = input.readVarUhShort();
             if (this.lastNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lastNameId) + ") on element of TaxCollectorStaticInformations.lastNameId.")));

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.house
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class AccountHouseInformations implements INetworkType 
     {
@@ -43,12 +43,12 @@
             this.subAreaId = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AccountHouseInformations(output);
         }
 
-        public function serializeAs_AccountHouseInformations(output:IDataOutput):void
+        public function serializeAs_AccountHouseInformations(output:ICustomDataOutput):void
         {
             if (this.houseId < 0)
             {
@@ -59,7 +59,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element modelId.")));
             };
-            output.writeShort(this.modelId);
+            output.writeVarShort(this.modelId);
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.worldX) + ") on element worldX.")));
@@ -75,22 +75,22 @@
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AccountHouseInformations(input);
         }
 
-        public function deserializeAs_AccountHouseInformations(input:IDataInput):void
+        public function deserializeAs_AccountHouseInformations(input:ICustomDataInput):void
         {
             this.houseId = input.readInt();
             if (this.houseId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.houseId) + ") on element of AccountHouseInformations.houseId.")));
             };
-            this.modelId = input.readShort();
+            this.modelId = input.readVarUhShort();
             if (this.modelId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element of AccountHouseInformations.modelId.")));
@@ -106,7 +106,7 @@
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element of AccountHouseInformations.worldY.")));
             };
             this.mapId = input.readInt();
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of AccountHouseInformations.subAreaId.")));

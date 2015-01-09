@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class TreasureHuntStepFollowDirectionToPOI extends TreasureHuntStep implements INetworkType 
     {
@@ -31,12 +31,12 @@
             this.poiLabelId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TreasureHuntStepFollowDirectionToPOI(output);
         }
 
-        public function serializeAs_TreasureHuntStepFollowDirectionToPOI(output:IDataOutput):void
+        public function serializeAs_TreasureHuntStepFollowDirectionToPOI(output:ICustomDataOutput):void
         {
             super.serializeAs_TreasureHuntStep(output);
             output.writeByte(this.direction);
@@ -44,15 +44,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.poiLabelId) + ") on element poiLabelId.")));
             };
-            output.writeInt(this.poiLabelId);
+            output.writeVarShort(this.poiLabelId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TreasureHuntStepFollowDirectionToPOI(input);
         }
 
-        public function deserializeAs_TreasureHuntStepFollowDirectionToPOI(input:IDataInput):void
+        public function deserializeAs_TreasureHuntStepFollowDirectionToPOI(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.direction = input.readByte();
@@ -60,7 +60,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.direction) + ") on element of TreasureHuntStepFollowDirectionToPOI.direction.")));
             };
-            this.poiLabelId = input.readInt();
+            this.poiLabelId = input.readVarUhShort();
             if (this.poiLabelId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.poiLabelId) + ") on element of TreasureHuntStepFollowDirectionToPOI.poiLabelId.")));

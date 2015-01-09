@@ -83,7 +83,14 @@
                     };
                     return;
                 case "clearuicache":
-                    UiRenderManager.getInstance().clearCache();
+                    if (((args) && (args[0])))
+                    {
+                        UiRenderManager.getInstance().clearCacheFromUiName(args[0]);
+                    }
+                    else
+                    {
+                        UiRenderManager.getInstance().clearCache();
+                    };
                     return;
                 case "setuiscale":
                     Berilia.getInstance().scale = Number(args[0]);
@@ -103,7 +110,14 @@
                     console.output(StringUtils.formatArray(_local_5, ["Instance ID", "Ui name", "Class", "Module", "Trusted"]));
                     return;
                 case "reloadui":
-                    UiModuleManager.getInstance().loadModule(args[0]);
+                    if (args[0])
+                    {
+                        UiModuleManager.getInstance().loadModule(args[0]);
+                    }
+                    else
+                    {
+                        console.output("Failed to reload ui, no id found in command arguments");
+                    };
                     return;
                 case "fps":
                     Dofus.getInstance().toggleFPS();
@@ -240,7 +254,7 @@
                 case "unloadui":
                     return ("Unload UI with the given UI instance name.");
                 case "clearuicache":
-                    return ("Clear all UI in cache (will force xml parsing).");
+                    return ("Clear an UI/all UIs (if no paramter) in cache (will force xml parsing)");
                 case "setuiscale":
                     return ("Set scale for all scalable UI. Usage: setUiScale <Number> (100% = 1.0)");
                 case "useuicache":
@@ -248,7 +262,7 @@
                 case "uilist":
                     return ("Get current UI list");
                 case "reloadui":
-                    return ("Unload and reload an Ui");
+                    return ("Unload and reload an UI/all UIs (if no paramter))");
                 case "fps":
                     return ("Toggle FPS");
                 case "chatoutput":

@@ -26,6 +26,7 @@
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightThrowCharacterMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightDropCharacterMessage;
     import com.ankamagames.dofus.network.messages.game.character.status.PlayerStatusUpdateMessage;
+    import com.ankamagames.dofus.logic.game.fight.actions.ShowMountsInFightAction;
     import flash.display.Sprite;
     import com.ankamagames.dofus.network.types.game.context.IdentifiedEntityDispositionInformations;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.MapComplementaryInformationsWithCoordsMessage;
@@ -75,6 +76,8 @@
     import com.ankamagames.dofus.logic.game.fight.steps.FightChangeVisibilityStep;
     import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
     import com.ankamagames.dofus.network.enums.TeamEnum;
+    import com.ankamagames.dofus.misc.utils.LookCleaner;
+    import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import flash.geom.ColorTransform;
     import flash.filters.GlowFilter;
     import com.ankamagames.jerakine.entities.interfaces.IEntity;
@@ -84,7 +87,6 @@
     import com.ankamagames.berilia.components.Label;
     import com.ankamagames.jerakine.types.Uri;
     import com.ankamagames.jerakine.data.XmlConfig;
-    import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.logic.game.fight.miscs.FightEntitiesHolder;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
     import __AS3__.vec.*;
@@ -105,6 +107,7 @@
         private var _lastKnownMovementPoint:Dictionary;
         private var _lastKnownPlayerStatus:Dictionary;
         private var _realFightersLooks:Dictionary;
+        private var _mountsVisible:Boolean;
 
         public function FightEntitiesFrame()
         {
@@ -130,6 +133,7 @@
             this._lastKnownPlayerStatus = new Dictionary();
             this._realFightersLooks = new Dictionary();
             _creaturesFightMode = OptionManager.getOptionManager("dofus")["creaturesFightMode"];
+            this._mountsVisible = OptionManager.getOptionManager("dofus")["showMountsInFight"];
             return (super.pushed());
         }
 
@@ -161,24 +165,26 @@
             var _local_3:int;
             var _local_4:GameContextActorInformations;
             var _local_5:GameFightShowFighterMessage;
-            var _local_6:GameFightHumanReadyStateMessage;
-            var _local_7:AnimatedCharacter;
-            var _local_8:GameEntityDispositionMessage;
-            var _local_9:GameEntitiesDispositionMessage;
-            var _local_10:GameContextRefreshEntityLookMessage;
-            var _local_11:TiphonSprite;
-            var _local_12:int;
-            var _local_13:ShowCellSpectatorMessage;
-            var _local_14:String;
-            var _local_15:ShowCellMessage;
-            var _local_16:FightContextFrame;
-            var _local_17:String;
+            var _local_6:FightContextFrame;
+            var _local_7:GameFightHumanReadyStateMessage;
+            var _local_8:AnimatedCharacter;
+            var _local_9:GameEntityDispositionMessage;
+            var _local_10:GameEntitiesDispositionMessage;
+            var _local_11:GameContextRefreshEntityLookMessage;
+            var _local_12:TiphonSprite;
+            var _local_13:int;
+            var _local_14:ShowCellSpectatorMessage;
+            var _local_15:String;
+            var _local_16:ShowCellMessage;
+            var _local_17:FightContextFrame;
             var _local_18:String;
-            var _local_19:MapComplementaryInformationsDataMessage;
-            var _local_20:GameActionFightCarryCharacterMessage;
-            var _local_21:GameActionFightThrowCharacterMessage;
-            var _local_22:GameActionFightDropCharacterMessage;
-            var _local_23:PlayerStatusUpdateMessage;
+            var _local_19:String;
+            var _local_20:MapComplementaryInformationsDataMessage;
+            var _local_21:GameActionFightCarryCharacterMessage;
+            var _local_22:GameActionFightThrowCharacterMessage;
+            var _local_23:GameActionFightDropCharacterMessage;
+            var _local_24:PlayerStatusUpdateMessage;
+            var _local_25:ShowMountsInFightAction;
             var staticRandomAnimModifier:IAnimationModifier;
             var swords:Sprite;
             var disposition:IdentifiedEntityDispositionInformations;
@@ -234,32 +240,37 @@
                             };
                         };
                     };
+                    _local_6 = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
+                    if (!(_local_6.fightersPositionsHistory[_local_5.informations.contextualId]))
+                    {
+                        _local_6.fightersPositionsHistory[_local_5.informations.contextualId] = _local_5.informations.previousPositions.reverse().concat();
+                    };
                     return (true);
                 case (msg is GameFightHumanReadyStateMessage):
-                    _local_6 = (msg as GameFightHumanReadyStateMessage);
-                    _local_7 = this.addOrUpdateActor((getEntityInfos(_local_6.characterId) as GameFightFighterInformations));
-                    if (_local_6.isReady)
+                    _local_7 = (msg as GameFightHumanReadyStateMessage);
+                    _local_8 = this.addOrUpdateActor((getEntityInfos(_local_7.characterId) as GameFightFighterInformations));
+                    if (_local_7.isReady)
                     {
                         swords = EmbedAssets.getSprite("SWORDS_CLIP");
-                        _local_7.addBackground("readySwords", swords);
+                        _local_8.addBackground("readySwords", swords);
                     }
                     else
                     {
-                        _local_7.removeBackground("readySwords");
+                        _local_8.removeBackground("readySwords");
                     };
                     return (true);
                 case (msg is GameEntityDispositionMessage):
-                    _local_8 = (msg as GameEntityDispositionMessage);
-                    if (_local_8.disposition.id == CurrentPlayedFighterManager.getInstance().currentFighterId)
+                    _local_9 = (msg as GameEntityDispositionMessage);
+                    if (_local_9.disposition.id == CurrentPlayedFighterManager.getInstance().currentFighterId)
                     {
                         SoundManager.getInstance().manager.playUISound(UISoundEnum.FIGHT_POSITION);
                     };
-                    this.updateActorDisposition(_local_8.disposition.id, _local_8.disposition);
-                    KernelEventsManager.getInstance().processCallback(FightHookList.GameEntityDisposition, _local_8.disposition.id, _local_8.disposition.cellId, _local_8.disposition.direction);
+                    this.updateActorDisposition(_local_9.disposition.id, _local_9.disposition);
+                    KernelEventsManager.getInstance().processCallback(FightHookList.GameEntityDisposition, _local_9.disposition.id, _local_9.disposition.cellId, _local_9.disposition.direction);
                     return (true);
                 case (msg is GameEntitiesDispositionMessage):
-                    _local_9 = (msg as GameEntitiesDispositionMessage);
-                    for each (disposition in _local_9.dispositions)
+                    _local_10 = (msg as GameEntitiesDispositionMessage);
+                    for each (disposition in _local_10.dispositions)
                     {
                         if (((getEntityInfos(disposition.id)) && (!((GameFightFighterInformations(getEntityInfos(disposition.id)).stats.invisibilityState == GameActionFightInvisibilityStateEnum.INVISIBLE)))))
                         {
@@ -269,42 +280,42 @@
                     };
                     return (true);
                 case (msg is GameContextRefreshEntityLookMessage):
-                    _local_10 = (msg as GameContextRefreshEntityLookMessage);
-                    _local_11 = (DofusEntities.getEntity(_local_10.id) as TiphonSprite);
-                    if (_local_11)
+                    _local_11 = (msg as GameContextRefreshEntityLookMessage);
+                    _local_12 = (DofusEntities.getEntity(_local_11.id) as TiphonSprite);
+                    if (_local_12)
                     {
-                        _local_11.setAnimation(AnimationEnum.ANIM_STATIQUE);
+                        _local_12.setAnimation(AnimationEnum.ANIM_STATIQUE);
                     };
-                    updateActorLook(_local_10.id, _local_10.look);
+                    this.updateActorLook(_local_11.id, _local_11.look);
                     return (true);
                 case (msg is ToggleDematerializationAction):
                     this.showCreaturesInFight(!(_creaturesFightMode));
                     KernelEventsManager.getInstance().processCallback(FightHookList.DematerializationChanged, _creaturesFightMode);
                     return (true);
                 case (msg is RemoveEntityAction):
-                    _local_12 = RemoveEntityAction(msg).actorId;
-                    this._entitiesNumber[_local_12] = null;
-                    removeActor(_local_12);
-                    KernelEventsManager.getInstance().processCallback(FightHookList.UpdatePreFightersList, _local_12);
-                    delete this._realFightersLooks[_local_12];
+                    _local_13 = RemoveEntityAction(msg).actorId;
+                    this._entitiesNumber[_local_13] = null;
+                    removeActor(_local_13);
+                    KernelEventsManager.getInstance().processCallback(FightHookList.UpdatePreFightersList, _local_13);
+                    delete this._realFightersLooks[_local_13];
                     return (true);
                 case (msg is ShowCellSpectatorMessage):
-                    _local_13 = (msg as ShowCellSpectatorMessage);
-                    HyperlinkShowCellManager.showCell(_local_13.cellId);
-                    _local_14 = I18n.getUiText("ui.fight.showCell", [_local_13.playerName, _local_13.cellId]);
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_14, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                    _local_14 = (msg as ShowCellSpectatorMessage);
+                    HyperlinkShowCellManager.showCell(_local_14.cellId);
+                    _local_15 = I18n.getUiText("ui.fight.showCell", [_local_14.playerName, _local_14.cellId]);
+                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_15, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     return (true);
                 case (msg is ShowCellMessage):
-                    _local_15 = (msg as ShowCellMessage);
-                    HyperlinkShowCellManager.showCell(_local_15.cellId);
-                    _local_16 = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
-                    _local_17 = ((_local_16) ? _local_16.getFighterName(_local_15.sourceId) : "???");
-                    _local_18 = I18n.getUiText("ui.fight.showCell", [_local_17, (((("{cell," + _local_15.cellId) + "::") + _local_15.cellId) + "}")]);
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_18, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                    _local_16 = (msg as ShowCellMessage);
+                    HyperlinkShowCellManager.showCell(_local_16.cellId);
+                    _local_17 = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
+                    _local_18 = ((_local_17) ? _local_17.getFighterName(_local_16.sourceId) : "???");
+                    _local_19 = I18n.getUiText("ui.fight.showCell", [_local_18, (((("{cell," + _local_16.cellId) + "::") + _local_16.cellId) + "}")]);
+                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_19, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     return (true);
                 case (msg is MapComplementaryInformationsDataMessage):
-                    _local_19 = (msg as MapComplementaryInformationsDataMessage);
-                    _interactiveElements = _local_19.interactiveElements;
+                    _local_20 = (msg as MapComplementaryInformationsDataMessage);
+                    _interactiveElements = _local_20.interactiveElements;
                     if ((msg is MapComplementaryInformationsWithCoordsMessage))
                     {
                         mciwcmsg = (msg as MapComplementaryInformationsWithCoordsMessage);
@@ -334,7 +345,7 @@
                         }
                         else
                         {
-                            _worldPoint = new WorldPointWrapper(_local_19.mapId);
+                            _worldPoint = new WorldPointWrapper(_local_20.mapId);
                             if (PlayedCharacterManager.getInstance().isInHouse)
                             {
                                 KernelEventsManager.getInstance().processCallback(HookList.HouseExit);
@@ -343,15 +354,15 @@
                             PlayedCharacterManager.getInstance().isInHisHouse = false;
                         };
                     };
-                    _currentSubAreaId = _local_19.subAreaId;
+                    _currentSubAreaId = _local_20.subAreaId;
                     PlayedCharacterManager.getInstance().currentMap = _worldPoint;
                     PlayedCharacterManager.getInstance().currentSubArea = SubArea.getSubAreaById(_currentSubAreaId);
                     TooltipManager.hide();
-                    for each (mo in _local_19.obstacles)
+                    for each (mo in _local_20.obstacles)
                     {
                         InteractiveCellManager.getInstance().updateCell(mo.obstacleCellId, (mo.state == MapObstacleStateEnum.OBSTACLE_OPENED));
                     };
-                    for each (ie in _local_19.interactiveElements)
+                    for each (ie in _local_20.interactiveElements)
                     {
                         if (ie.enabledSkills.length)
                         {
@@ -365,7 +376,7 @@
                             };
                         };
                     };
-                    for each (se in _local_19.statedElements)
+                    for each (se in _local_20.statedElements)
                     {
                         this.updateStatedElement(se);
                     };
@@ -373,32 +384,37 @@
                     KernelEventsManager.getInstance().processCallback(HookList.MapFightCount, 0);
                     return (true);
                 case (msg is GameActionFightCarryCharacterMessage):
-                    _local_20 = (msg as GameActionFightCarryCharacterMessage);
-                    if (_local_20.cellId != -1)
+                    _local_21 = (msg as GameActionFightCarryCharacterMessage);
+                    if (_local_21.cellId != -1)
                     {
                         for each (ent in _entities)
                         {
-                            if (ent.contextualId == _local_20.targetId)
+                            if (ent.contextualId == _local_21.targetId)
                             {
-                                (ent.disposition as FightEntityDispositionInformations).carryingCharacterId = _local_20.sourceId;
-                                this._tempFighterList.push(new TmpFighterInfos(ent.contextualId, _local_20.sourceId));
+                                (ent.disposition as FightEntityDispositionInformations).carryingCharacterId = _local_21.sourceId;
+                                this._tempFighterList.push(new TmpFighterInfos(ent.contextualId, _local_21.sourceId));
                                 break;
                             };
                         };
                     };
                     return (true);
                 case (msg is GameActionFightThrowCharacterMessage):
-                    _local_21 = (msg as GameActionFightThrowCharacterMessage);
-                    this.dropEntity(_local_21.targetId);
-                    return (true);
-                case (msg is GameActionFightDropCharacterMessage):
-                    _local_22 = (msg as GameActionFightDropCharacterMessage);
+                    _local_22 = (msg as GameActionFightThrowCharacterMessage);
                     this.dropEntity(_local_22.targetId);
                     return (true);
+                case (msg is GameActionFightDropCharacterMessage):
+                    _local_23 = (msg as GameActionFightDropCharacterMessage);
+                    this.dropEntity(_local_23.targetId);
+                    return (true);
                 case (msg is PlayerStatusUpdateMessage):
-                    _local_23 = (msg as PlayerStatusUpdateMessage);
-                    this._lastKnownPlayerStatus[_local_23.playerId] = _local_23.status.statusId;
+                    _local_24 = (msg as PlayerStatusUpdateMessage);
+                    this._lastKnownPlayerStatus[_local_24.playerId] = _local_24.status.statusId;
                     return (false);
+                case (msg is ShowMountsInFightAction):
+                    _local_25 = (msg as ShowMountsInFightAction);
+                    OptionManager.getOptionManager("dofus")["showMountsInFight"] = _local_25.visibility;
+                    this.switchMountsVisibility(_local_25.visibility);
+                    return (true);
             };
             return (false);
         }
@@ -433,6 +449,16 @@
                 this.updateFighter(ent);
             };
             _justSwitchingCreaturesFightMode = false;
+        }
+
+        public function switchMountsVisibility(pMountsVisibility:Boolean):void
+        {
+            var entityInfos:GameFightFighterInformations;
+            this._mountsVisible = pMountsVisibility;
+            for each (entityInfos in _entities)
+            {
+                this.updateFighter(entityInfos);
+            };
         }
 
         public function entityIsIllusion(id:int):Boolean
@@ -771,7 +797,17 @@
             };
         }
 
-        private function addCircleToFighter(pAc:AnimatedCharacter, pColor:uint):void
+        override protected function updateActorLook(actorId:int, newLook:EntityLook, smoke:Boolean=false):AnimatedCharacter
+        {
+            var ac:AnimatedCharacter = super.updateActorLook(actorId, newLook, smoke);
+            if (((ac) && (!((actorId == PlayedCharacterManager.getInstance().id)))))
+            {
+                KernelEventsManager.getInstance().processCallback(HookList.FighterLookChange, actorId, LookCleaner.clean(ac.look));
+            };
+            return (ac);
+        }
+
+        public function addCircleToFighter(pAc:TiphonSprite, pColor:uint):void
         {
             var circle:Sprite = new Sprite();
             var teamCircle:Sprite = EmbedAssets.getSprite("TEAM_CIRCLE_CLIP");
@@ -988,6 +1024,13 @@
                             };
                         };
                     };
+                }
+                else
+                {
+                    if (e.propertyName == "showMountsInFight")
+                    {
+                        this.switchMountsVisibility(e.propertyValue);
+                    };
                 };
             };
         }
@@ -1019,6 +1062,11 @@
         public function getRealFighterLook(pFighterId:int):EntityLook
         {
             return (this._realFightersLooks[pFighterId]);
+        }
+
+        public function get charactersMountsVisible():Boolean
+        {
+            return (this._mountsVisible);
         }
 
         override protected function updateActorDisposition(actorId:int, newDisposition:EntityDispositionInformations):void

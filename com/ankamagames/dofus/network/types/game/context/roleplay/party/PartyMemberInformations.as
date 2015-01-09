@@ -6,8 +6,8 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.companion.PartyCompanionMemberInformations;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -75,29 +75,29 @@
             this.status = new PlayerStatus();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PartyMemberInformations(output);
         }
 
-        public function serializeAs_PartyMemberInformations(output:IDataOutput):void
+        public function serializeAs_PartyMemberInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_CharacterBaseInformations(output);
             if (this.lifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lifePoints) + ") on element lifePoints.")));
             };
-            output.writeInt(this.lifePoints);
+            output.writeVarInt(this.lifePoints);
             if (this.maxLifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxLifePoints) + ") on element maxLifePoints.")));
             };
-            output.writeInt(this.maxLifePoints);
+            output.writeVarInt(this.maxLifePoints);
             if (this.prospecting < 0)
             {
                 throw (new Error((("Forbidden value (" + this.prospecting) + ") on element prospecting.")));
             };
-            output.writeShort(this.prospecting);
+            output.writeVarShort(this.prospecting);
             if ((((this.regenRate < 0)) || ((this.regenRate > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.regenRate) + ") on element regenRate.")));
@@ -107,7 +107,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.initiative) + ") on element initiative.")));
             };
-            output.writeShort(this.initiative);
+            output.writeVarShort(this.initiative);
             output.writeByte(this.alignmentSide);
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))
             {
@@ -124,7 +124,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
             output.writeShort(this.status.getTypeId());
             this.status.serialize(output);
             output.writeShort(this.companions.length);
@@ -136,26 +136,26 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PartyMemberInformations(input);
         }
 
-        public function deserializeAs_PartyMemberInformations(input:IDataInput):void
+        public function deserializeAs_PartyMemberInformations(input:ICustomDataInput):void
         {
             var _item12:PartyCompanionMemberInformations;
             super.deserialize(input);
-            this.lifePoints = input.readInt();
+            this.lifePoints = input.readVarUhInt();
             if (this.lifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lifePoints) + ") on element of PartyMemberInformations.lifePoints.")));
             };
-            this.maxLifePoints = input.readInt();
+            this.maxLifePoints = input.readVarUhInt();
             if (this.maxLifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxLifePoints) + ") on element of PartyMemberInformations.maxLifePoints.")));
             };
-            this.prospecting = input.readShort();
+            this.prospecting = input.readVarUhShort();
             if (this.prospecting < 0)
             {
                 throw (new Error((("Forbidden value (" + this.prospecting) + ") on element of PartyMemberInformations.prospecting.")));
@@ -165,7 +165,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.regenRate) + ") on element of PartyMemberInformations.regenRate.")));
             };
-            this.initiative = input.readShort();
+            this.initiative = input.readVarUhShort();
             if (this.initiative < 0)
             {
                 throw (new Error((("Forbidden value (" + this.initiative) + ") on element of PartyMemberInformations.initiative.")));
@@ -182,7 +182,7 @@
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element of PartyMemberInformations.worldY.")));
             };
             this.mapId = input.readInt();
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of PartyMemberInformations.subAreaId.")));

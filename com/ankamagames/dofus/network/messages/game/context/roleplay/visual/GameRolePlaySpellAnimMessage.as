@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class GameRolePlaySpellAnimMessage extends NetworkMessage implements INetworkMessage 
@@ -48,36 +49,36 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlaySpellAnimMessage(output);
         }
 
-        public function serializeAs_GameRolePlaySpellAnimMessage(output:IDataOutput):void
+        public function serializeAs_GameRolePlaySpellAnimMessage(output:ICustomDataOutput):void
         {
             output.writeInt(this.casterId);
             if ((((this.targetCellId < 0)) || ((this.targetCellId > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.targetCellId) + ") on element targetCellId.")));
             };
-            output.writeShort(this.targetCellId);
+            output.writeVarShort(this.targetCellId);
             if (this.spellId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.spellId) + ") on element spellId.")));
             };
-            output.writeShort(this.spellId);
+            output.writeVarShort(this.spellId);
             if ((((this.spellLevel < 1)) || ((this.spellLevel > 6))))
             {
                 throw (new Error((("Forbidden value (" + this.spellLevel) + ") on element spellLevel.")));
@@ -85,20 +86,20 @@
             output.writeByte(this.spellLevel);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlaySpellAnimMessage(input);
         }
 
-        public function deserializeAs_GameRolePlaySpellAnimMessage(input:IDataInput):void
+        public function deserializeAs_GameRolePlaySpellAnimMessage(input:ICustomDataInput):void
         {
             this.casterId = input.readInt();
-            this.targetCellId = input.readShort();
+            this.targetCellId = input.readVarUhShort();
             if ((((this.targetCellId < 0)) || ((this.targetCellId > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.targetCellId) + ") on element of GameRolePlaySpellAnimMessage.targetCellId.")));
             };
-            this.spellId = input.readShort();
+            this.spellId = input.readVarUhShort();
             if (this.spellId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.spellId) + ") on element of GameRolePlaySpellAnimMessage.spellId.")));

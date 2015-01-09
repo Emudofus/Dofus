@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -39,12 +39,12 @@
             this.steps = new Vector.<int>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_EntityMovementInformations(output);
         }
 
-        public function serializeAs_EntityMovementInformations(output:IDataOutput):void
+        public function serializeAs_EntityMovementInformations(output:ICustomDataOutput):void
         {
             output.writeInt(this.id);
             output.writeShort(this.steps.length);
@@ -56,12 +56,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_EntityMovementInformations(input);
         }
 
-        public function deserializeAs_EntityMovementInformations(input:IDataInput):void
+        public function deserializeAs_EntityMovementInformations(input:ICustomDataInput):void
         {
             var _val2:int;
             this.id = input.readInt();

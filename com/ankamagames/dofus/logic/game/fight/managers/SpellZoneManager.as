@@ -100,7 +100,7 @@
             {
                 for each (fx in spell.effects)
                 {
-                    if (((((!((fx.zoneShape == 0))) && ((fx.zoneSize < 63)))) && ((((fx.zoneSize > ray)) || ((((fx.zoneSize == ray)) && ((shape == SpellShapeEnum.P))))))))
+                    if (((((!((fx.zoneShape == 0))) && ((fx.zoneSize < 63)))) && ((((fx.zoneSize > ray)) || ((((fx.zoneSize == ray)) && ((((shape == SpellShapeEnum.P)) || ((fx.zoneMinSize < minRay))))))))))
                     {
                         shape = fx.zoneShape;
                         ray = uint(fx.zoneSize);

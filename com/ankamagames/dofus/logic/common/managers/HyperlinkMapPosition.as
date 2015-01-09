@@ -23,7 +23,7 @@
             return ((((("[" + posX) + ",") + posY) + "]"));
         }
 
-        public static function rollOver(pX:int, pY:int, posX:int, posY:int):void
+        public static function rollOver(pX:int, pY:int, worldMapId:int, posX:int, posY:int):void
         {
             var target:Rectangle = new Rectangle(pX, pY, 10, 10);
             var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.position"));

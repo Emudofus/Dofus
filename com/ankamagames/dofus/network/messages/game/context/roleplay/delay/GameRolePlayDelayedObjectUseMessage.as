@@ -2,8 +2,9 @@
 {
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class GameRolePlayDelayedObjectUseMessage extends GameRolePlayDelayedActionMessage implements INetworkMessage 
@@ -40,42 +41,42 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayDelayedObjectUseMessage(output);
         }
 
-        public function serializeAs_GameRolePlayDelayedObjectUseMessage(output:IDataOutput):void
+        public function serializeAs_GameRolePlayDelayedObjectUseMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_GameRolePlayDelayedActionMessage(output);
             if (this.objectGID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectGID) + ") on element objectGID.")));
             };
-            output.writeShort(this.objectGID);
+            output.writeVarShort(this.objectGID);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayDelayedObjectUseMessage(input);
         }
 
-        public function deserializeAs_GameRolePlayDelayedObjectUseMessage(input:IDataInput):void
+        public function deserializeAs_GameRolePlayDelayedObjectUseMessage(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.objectGID = input.readShort();
+            this.objectGID = input.readVarUhShort();
             if (this.objectGID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectGID) + ") on element of GameRolePlayDelayedObjectUseMessage.objectGID.")));

@@ -95,7 +95,7 @@
             Berilia.getInstance().removeEventListener(UiRenderEvent.UIRenderComplete, this.onLoadUi);
             Berilia.getInstance().removeEventListener(UiUnloadEvent.UNLOAD_UI_COMPLETE, this.onUnLoadUi);
             this.updateMouseOverMonstersIds(this._roleplayWorldFrame.mouseOverEntityId);
-            if (StageShareManager.stage.nativeWindow.active)
+            if (StageShareManager.isActive)
             {
                 this.displayMouseOverEntityTooltip(true);
             };

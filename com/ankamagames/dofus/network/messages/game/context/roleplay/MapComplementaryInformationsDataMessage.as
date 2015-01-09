@@ -10,8 +10,9 @@
     import com.ankamagames.dofus.network.types.game.interactive.MapObstacle;
     import com.ankamagames.dofus.network.types.game.context.fight.FightCommonInformations;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -79,30 +80,30 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_MapComplementaryInformationsDataMessage(output);
         }
 
-        public function serializeAs_MapComplementaryInformationsDataMessage(output:IDataOutput):void
+        public function serializeAs_MapComplementaryInformationsDataMessage(output:ICustomDataOutput):void
         {
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
             if (this.mapId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.mapId) + ") on element mapId.")));
@@ -155,12 +156,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_MapComplementaryInformationsDataMessage(input);
         }
 
-        public function deserializeAs_MapComplementaryInformationsDataMessage(input:IDataInput):void
+        public function deserializeAs_MapComplementaryInformationsDataMessage(input:ICustomDataInput):void
         {
             var _id3:uint;
             var _item3:HouseInformations;
@@ -171,7 +172,7 @@
             var _item6:StatedElement;
             var _item7:MapObstacle;
             var _item8:FightCommonInformations;
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of MapComplementaryInformationsDataMessage.subAreaId.")));

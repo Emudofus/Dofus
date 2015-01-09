@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay.party
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.enums.PlayableBreedEnum;
 
     public class DungeonPartyFinderPlayer implements INetworkType 
@@ -41,49 +41,49 @@
             this.level = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_DungeonPartyFinderPlayer(output);
         }
 
-        public function serializeAs_DungeonPartyFinderPlayer(output:IDataOutput):void
+        public function serializeAs_DungeonPartyFinderPlayer(output:ICustomDataOutput):void
         {
             if (this.playerId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.playerId) + ") on element playerId.")));
             };
-            output.writeInt(this.playerId);
+            output.writeVarInt(this.playerId);
             output.writeUTF(this.playerName);
             output.writeByte(this.breed);
             output.writeBoolean(this.sex);
-            if (this.level < 0)
+            if ((((this.level < 0)) || ((this.level > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.level) + ") on element level.")));
             };
-            output.writeShort(this.level);
+            output.writeByte(this.level);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_DungeonPartyFinderPlayer(input);
         }
 
-        public function deserializeAs_DungeonPartyFinderPlayer(input:IDataInput):void
+        public function deserializeAs_DungeonPartyFinderPlayer(input:ICustomDataInput):void
         {
-            this.playerId = input.readInt();
+            this.playerId = input.readVarUhInt();
             if (this.playerId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.playerId) + ") on element of DungeonPartyFinderPlayer.playerId.")));
             };
             this.playerName = input.readUTF();
             this.breed = input.readByte();
-            if ((((this.breed < PlayableBreedEnum.Feca)) || ((this.breed > PlayableBreedEnum.Steamer))))
+            if ((((this.breed < PlayableBreedEnum.Feca)) || ((this.breed > PlayableBreedEnum.Eliatrope))))
             {
                 throw (new Error((("Forbidden value (" + this.breed) + ") on element of DungeonPartyFinderPlayer.breed.")));
             };
             this.sex = input.readBoolean();
-            this.level = input.readShort();
-            if (this.level < 0)
+            this.level = input.readUnsignedByte();
+            if ((((this.level < 0)) || ((this.level > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.level) + ") on element of DungeonPartyFinderPlayer.level.")));
             };

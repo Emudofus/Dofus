@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import __AS3__.vec.Vector;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -56,24 +57,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TitlesAndOrnamentsListMessage(output);
         }
 
-        public function serializeAs_TitlesAndOrnamentsListMessage(output:IDataOutput):void
+        public function serializeAs_TitlesAndOrnamentsListMessage(output:ICustomDataOutput):void
         {
             output.writeShort(this.titles.length);
             var _i1:uint;
@@ -83,7 +84,7 @@
                 {
                     throw (new Error((("Forbidden value (" + this.titles[_i1]) + ") on element 1 (starting at 1) of titles.")));
                 };
-                output.writeShort(this.titles[_i1]);
+                output.writeVarShort(this.titles[_i1]);
                 _i1++;
             };
             output.writeShort(this.ornaments.length);
@@ -94,27 +95,27 @@
                 {
                     throw (new Error((("Forbidden value (" + this.ornaments[_i2]) + ") on element 2 (starting at 1) of ornaments.")));
                 };
-                output.writeShort(this.ornaments[_i2]);
+                output.writeVarShort(this.ornaments[_i2]);
                 _i2++;
             };
             if (this.activeTitle < 0)
             {
                 throw (new Error((("Forbidden value (" + this.activeTitle) + ") on element activeTitle.")));
             };
-            output.writeShort(this.activeTitle);
+            output.writeVarShort(this.activeTitle);
             if (this.activeOrnament < 0)
             {
                 throw (new Error((("Forbidden value (" + this.activeOrnament) + ") on element activeOrnament.")));
             };
-            output.writeShort(this.activeOrnament);
+            output.writeVarShort(this.activeOrnament);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TitlesAndOrnamentsListMessage(input);
         }
 
-        public function deserializeAs_TitlesAndOrnamentsListMessage(input:IDataInput):void
+        public function deserializeAs_TitlesAndOrnamentsListMessage(input:ICustomDataInput):void
         {
             var _val1:uint;
             var _val2:uint;
@@ -122,7 +123,7 @@
             var _i1:uint;
             while (_i1 < _titlesLen)
             {
-                _val1 = input.readShort();
+                _val1 = input.readVarUhShort();
                 if (_val1 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val1) + ") on elements of titles.")));
@@ -134,7 +135,7 @@
             var _i2:uint;
             while (_i2 < _ornamentsLen)
             {
-                _val2 = input.readShort();
+                _val2 = input.readVarUhShort();
                 if (_val2 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val2) + ") on elements of ornaments.")));
@@ -142,12 +143,12 @@
                 this.ornaments.push(_val2);
                 _i2++;
             };
-            this.activeTitle = input.readShort();
+            this.activeTitle = input.readVarUhShort();
             if (this.activeTitle < 0)
             {
                 throw (new Error((("Forbidden value (" + this.activeTitle) + ") on element of TitlesAndOrnamentsListMessage.activeTitle.")));
             };
-            this.activeOrnament = input.readShort();
+            this.activeOrnament = input.readVarUhShort();
             if (this.activeOrnament < 0)
             {
                 throw (new Error((("Forbidden value (" + this.activeOrnament) + ") on element of TitlesAndOrnamentsListMessage.activeOrnament.")));

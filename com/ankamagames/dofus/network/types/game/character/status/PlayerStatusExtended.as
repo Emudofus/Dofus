@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.character.status
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PlayerStatusExtended extends PlayerStatus implements INetworkType 
     {
@@ -30,23 +30,23 @@
             this.message = "";
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PlayerStatusExtended(output);
         }
 
-        public function serializeAs_PlayerStatusExtended(output:IDataOutput):void
+        public function serializeAs_PlayerStatusExtended(output:ICustomDataOutput):void
         {
             super.serializeAs_PlayerStatus(output);
             output.writeUTF(this.message);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PlayerStatusExtended(input);
         }
 
-        public function deserializeAs_PlayerStatusExtended(input:IDataInput):void
+        public function deserializeAs_PlayerStatusExtended(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.message = input.readUTF();

@@ -50,7 +50,6 @@
     import com.ankamagames.berilia.types.data.UiData;
     import com.ankamagames.jerakine.resources.ResourceType;
     import com.ankamagames.berilia.types.data.PreCompiledUiModule;
-    import com.ankamagames.jerakine.utils.misc.StringUtils;
     import flash.filesystem.FileMode;
     import by.blooddy.crypto.MD5;
     import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;
@@ -59,7 +58,6 @@
     import flash.events.IOErrorEvent;
     import flash.display.Loader;
     import flash.display.LoaderInfo;
-    import com.ankamagames.berilia.types.messages.ModuleLoadedMessage;
     import com.ankamagames.berilia.types.shortcut.ShortcutCategory;
     import com.ankamagames.jerakine.resources.events.ResourceLoaderProgressEvent;
     import com.ankamagames.berilia.uiRender.XmlParsor;
@@ -486,8 +484,8 @@
                 _local_3 = m.mainClass;
                 (_local_3["unload"]());
             };
-            BindsManager.getInstance().removeEventListenerByName(("__module_" + m.id));
-            KernelEventsManager.getInstance().removeEventListenerByName(("__module_" + m.id));
+            BindsManager.getInstance().removeAllEventListeners(("__module_" + m.id));
+            KernelEventsManager.getInstance().removeAllEventListeners(("__module_" + m.id));
             delete this._modules[id];
             this._disabledModules[id] = m;
         }
@@ -499,15 +497,21 @@
 
         private function onTimeOut():void
         {
-            for (;;)
-            {
-                //unresolved jump
-                _log.error("SharedDefinition load Timeout");
-                continue;
-            };
-            var _local_0 = this;
+            goto _label_2;
             
         _label_1: 
+            EnterFrameDispatcher.removeEventListener(this.timeOutFrameCount);
+            for (;;)
+            {
+                this.switchToNoHttpMode();
+                goto _label_1;
+                var _local_2 = _local_2;
+                
+            _label_2: 
+                _log.error("SharedDefinition load Timeout");
+                continue;
+                return;
+            };
             return;
         }
 
@@ -520,7 +524,7 @@
                 {
                     return;
                 };
-                var _local_0 = this;
+                var _local_3 = _local_3;
             };
             return;
         }
@@ -535,12 +539,17 @@
             var ts:uint;
             while (true)
             {
-                goto _label_1;
+                goto _label_2;
             };
-            var _local_10 = _local_10;
             
         _label_1: 
             this._moduleLaunchWaitForSharedDefinition = false;
+            goto _label_3;
+            
+        _label_2: 
+            goto _label_1;
+            
+        _label_3: 
             var modules:Array = new Array();
             for each (module in this._unInitializedModules)
             {
@@ -555,53 +564,46 @@
             };
             while (modules.length > 0)
             {
-                while (true)
-                {
-                    goto _label_2;
-                };
-                
-            _label_2: 
-                notLoaded = new Array();
-                for each (m in modules)
+                for (;;)
                 {
                     //unresolved jump
+                    continue;
+                };
+                for each (m in modules)
+                {
+                    while (true)
+                    {
+                        ApiBinder.addApiData("currentUi", null);
+                        missingName = ApiBinder.initApi(m.mainClass, m, this._sharedDefinition);
+                        goto _label_4;
+                    };
+                    var _local_10 = _local_10;
                     
-                _label_3: 
-                    missingName = ApiBinder.initApi(m.mainClass, m, this._sharedDefinition);
+                _label_4: 
                     if (missingName)
                     {
-                        goto _label_6;
-                        
-                    _label_4: 
-                        notLoaded.push(m);
-                        //unresolved jump
-                        
-                    _label_5: 
-                        goto _label_4;
-                        var _local_0 = this;
-                        
-                    _label_6: 
                         missingModule = m;
-                        goto _label_5;
+                        notLoaded.push(m);
                     }
                     else
                     {
                         if (m.mainClass)
                         {
-                            while (goto _label_8, (ts = getTimer()), true)
+                            while (true)
                             {
-                                goto _label_9;
+                                delete this._unInitializedModules[m.id];
+                                goto _label_6;
+                                
+                            _label_5: 
+                                ts = getTimer();
+                                goto _label_7;
                             };
                             var _local_9 = _local_9;
                             
+                        _label_6: 
+                            goto _label_5;
+                            
                         _label_7: 
-                            //unresolved jump
-                            
-                        _label_8: 
-                            delete this._unInitializedModules[m.id];
-                            goto _label_7;
-                            
-                        _label_9: 
                             ErrorManager.tryFunction(m.mainClass.main, null, ("Une erreur est survenue lors de l'appel à la fonction main() du module " + m.id));
                         }
                         else
@@ -612,23 +614,22 @@
                 };
                 if (notLoaded.length == modules.length)
                 {
-                    goto _label_11;
+                    ErrorManager.addError(((("Le module " + missingModule.id) + " demande une référence vers un module inexistant : ") + missingName));
+                    goto _label_9;
+                    
+                _label_8: 
+                    continue;
                 };
                 
-            _label_10: 
+            _label_9: 
                 modules = notLoaded;
-                continue;
-                
-            _label_11: 
-                ErrorManager.addError(((("Le module " + missingModule.id) + " demande une référence vers un module inexistant : ") + missingName));
-                goto _label_10;
-                var _local_11 = _local_11;
+                goto _label_8;
             };
             while (Berilia.getInstance().handler.process(new AllModulesLoadedMessage()), true)
             {
                 return;
             };
-            _local_0 = this;
+            var _local_8 = _local_8;
             return;
         }
 
@@ -638,16 +639,16 @@
             {
                 goto _label_1;
             };
-            var _local_0 = this;
+            var _local_2 = _local_2;
             
         _label_1: 
-            if (_local_0._uiFiles.length)
+            if (this._uiFiles.length)
             {
-                _local_0._uiLoader.load(_local_0._uiFiles, null, TxtAdapter);
+                this._uiLoader.load(this._uiFiles, null, TxtAdapter);
             }
             else
             {
-                _local_0.onAllUiChecked(null);
+                this.onAllUiChecked(null);
             };
             return;
         }
@@ -672,39 +673,39 @@
                             CssManager.getInstance().load(file.uri);
                             goto _label_1;
                         };
-                        var _local_9 = _local_9;
+                        var _local_0 = this;
                         
                     _label_1: 
                         continue;
                     case "jpg":
                     case "png":
-                        while (true)
+                        while ((uri = new Uri(FileUtils.getFilePath(file.normalizedUri))), true)
                         {
-                            uri = new Uri(FileUtils.getFilePath(file.normalizedUri));
-                            goto _label_3;
+                            goto _label_2;
                         };
+                        var _local_8 = _local_8;
                         
                     _label_2: 
-                        goto _label_4;
-                        
-                    _label_3: 
                         _local_4 = UriCacheFactory.getCacheFromUri(uri);
-                        goto _label_2;
-                        
-                    _label_4: 
                         if (!(_local_4))
                         {
                             goto _label_6;
+                            
+                        _label_3: 
+                            goto _label_7;
                         };
                         
-                    _label_5: 
+                    _label_4: 
                         this._cacheLoader.load(file, _local_4);
-                        goto _label_7;
+                        goto _label_3;
+                        var _local_7 = _local_7;
+                        
+                    _label_5: 
+                        goto _label_4;
                         
                     _label_6: 
                         _local_4 = UriCacheFactory.init(uri.uri, new Cache(files.length, new LruGarbageCollector()));
                         goto _label_5;
-                        var _local_0 = this;
                         
                     _label_7: 
                         continue;
@@ -714,7 +715,7 @@
                             ErrorManager.addError((("Impossible de mettre en cache le fichier " + file.uri) + ", le type n'est pas supporté (uniquement css, jpg et png)"));
                             //unresolved jump
                         };
-                        var _local_7 = _local_7;
+                        var _local_5 = _local_5;
                 };
             };
             return;
@@ -722,6 +723,13 @@
 
         private function onLoadError(e:ResourceErrorEvent):void
         {
+            while (true)
+            {
+                goto _label_1;
+            };
+            var _local_6 = _local_6;
+            
+        _label_1: 
             _log.error(("onLoadError() - " + e.errorMsg));
             var sduri:Uri = new Uri(HttpServer.getInstance().getUrlTo("SharedDefinitions.swf"));
             if (e.uri == sduri)
@@ -751,7 +759,12 @@
                     case "metas":
                         return;
                     default:
-                        ErrorManager.addError((((("Impossible de charger le fichier " + e.uri) + " (") + e.errorMsg) + ")"));
+                        while (true)
+                        {
+                            ErrorManager.addError((((("Impossible de charger le fichier " + e.uri) + " (") + e.errorMsg) + ")"));
+                            //unresolved jump
+                        };
+                        var _local_3 = _local_3;
                 };
             };
             return;
@@ -759,40 +772,45 @@
 
         private function switchToNoHttpMode():void
         {
-            for (;;_log.fatal("Failed Loading SharedDefinitions, Going no HttpServer Style !"), goto _label_2)
+            goto _label_1;
+            while (this._sharedDefinitionLoader.cancel(), goto _label_2, true)
             {
-                this._useHttpServer = false;
+                _log.fatal("Failed Loading SharedDefinitions, Going no HttpServer Style !");
                 continue;
-                
-            _label_1: 
-                this._sharedDefinitionLoader.cancel();
-                goto _label_3;
+                var _local_3 = _local_3;
             };
+            var sharedDefUri = sharedDefUri;
+            
+        _label_1: 
+            this._useHttpServer = false;
+            //unresolved jump
             var _local_2 = _local_2;
             
         _label_2: 
-            goto _label_1;
-            var _local_0 = this;
-            
-        _label_3: 
-            var sharedDefUri:Uri = new Uri("SharedDefinitions.swf");
+            sharedDefUri = new Uri("SharedDefinitions.swf");
             for (;;)
             {
-                return;
-                
-            _label_4: 
-                continue;
+                this.sharedDefinitionContainer = sharedDefUri;
+                //unresolved jump
                 sharedDefUri.loaderContext = new LoaderContext(false, new ApplicationDomain());
-                goto _label_4;
-                var _local_3 = _local_3;
+                continue;
             };
             return;
         }
 
         private function onUiLoadError(e:ResourceErrorEvent):void
         {
-            ErrorManager.addError((((("Impossible de charger le fichier d'interface " + e.uri) + " (") + e.errorMsg) + ")"));
-            Berilia.getInstance().handler.process(new ModuleRessourceLoadFailedMessage(e.uri.tag, e.uri));
+            for (;;)
+            {
+                Berilia.getInstance().handler.process(new ModuleRessourceLoadFailedMessage(e.uri.tag, e.uri));
+                //unresolved jump
+                
+            _label_1: 
+                ErrorManager.addError((((("Impossible de charger le fichier d'interface " + e.uri) + " (") + e.errorMsg) + ")"));
+                continue;
+                goto _label_1;
+                var _local_5 = _local_5;
+            };
             this._uiFileToLoad--;
             return;
         }
@@ -822,7 +840,7 @@
                         this.onDMLoad(e);
                         goto _label_2;
                     };
-                    var _local_0 = this;
+                    var _local_3 = _local_3;
                     
                 _label_2: 
                     return;
@@ -832,6 +850,7 @@
                         this.onShortcutLoad(e);
                         goto _label_3;
                     };
+                    var _local_2 = _local_2;
                     
                 _label_3: 
                     return;
@@ -841,7 +860,6 @@
                         this.onHashLoaded(e);
                         goto _label_4;
                     };
-                    var _local_3 = _local_3;
                     
                 _label_4: 
                     return;
@@ -867,16 +885,19 @@
             var ui:UiData;
             var _local_18:Array;
             var _local_19:File;
-            //unresolved jump
-            
-        _label_1: 
-            for (;;)
+            while (true)
             {
-                continue;
                 goto _label_2;
             };
+            var _local_22 = _local_22;
+            
+        _label_1: 
+            goto _label_3;
             
         _label_2: 
+            goto _label_1;
+            
+        _label_3: 
             if (e.resourceType == ResourceType.RESOURCE_XML)
             {
                 um = UiModule.createFromXml((e.resource as XML), FileUtils.getFilePath(e.uri.path), File(e.uri.tag).parent.name);
@@ -884,81 +905,86 @@
             else
             {
                 um = PreCompiledUiModule.fromRaw(e.resource, FileUtils.getFilePath(e.uri.path), File(e.uri.tag).parent.name);
-                goto _label_4;
+                goto _label_5;
             };
             
-        _label_3: 
-            this._unInitializedModules[um.id] = um;
-            goto _label_5;
-            
         _label_4: 
-            goto _label_3;
+            this._unInitializedModules[um.id] = um;
+            goto _label_6;
             
         _label_5: 
+            goto _label_4;
+            
+        _label_6: 
             if (um.script)
             {
-                while (true)
+                for (;;)
                 {
-                    scriptUrl = StringUtils.convertLatinToUtf(unescape(um.script));
-                    goto _label_7;
+                    goto _label_9;
                     
-                _label_6: 
+                _label_7: 
+                    scriptUrl = unescape(um.script);
+                    continue;
+                    
+                _label_8: 
+                    goto _label_7;
+                    var _local_20 = _local_20;
                     goto _label_8;
                 };
                 
-            _label_7: 
-                scriptUri = new Uri(scriptUrl);
-                goto _label_6;
-                var _local_20 = _local_20;
-                
-            _label_8: 
+            _label_9: 
                 if (Berilia.getInstance().checkModuleAuthority)
                 {
-                    goto _label_11;
-                    
-                _label_9: 
-                    goto _label_12;
+                    while ((scriptFile = scriptUri.toFile()), true)
+                    {
+                        goto _label_10;
+                    };
                     
                 _label_10: 
                     _log.debug(("hash " + scriptUri));
-                    goto _label_9;
-                    
-                _label_11: 
-                    scriptFile = scriptUri.toFile();
-                    goto _label_10;
-                    
-                _label_12: 
                     if (scriptFile.exists)
                     {
-                        goto _label_14;
-                        while (fs.readBytes(swfContent), for (;;)
+                        while (goto _label_14, fs.close(), true)
                         {
-                            fs.open(scriptFile, FileMode.READ);
-                            //unresolved jump
+                            goto _label_18;
                             
-                        _label_13: 
-                            fs = new FileStream();
-                            continue;
-                            goto _label_15;
-                        }, (var _local_24 = _local_24), true)
-                        {
-                            swfContent = new ByteArray();
-                            continue;
+                        _label_11: 
+                            goto _label_17;
                         };
+                        
+                    _label_12: 
+                        fs.open(scriptFile, FileMode.READ);
+                        goto _label_16;
+                        
+                    _label_13: 
+                        fs = new FileStream();
+                        goto _label_12;
                         
                     _label_14: 
                         goto _label_13;
                         
                     _label_15: 
-                        fs.close();
+                        //unresolved jump
+                        var _local_0 = this;
+                        
+                    _label_16: 
+                        swfContent = new ByteArray();
+                        goto _label_11;
+                        var _local_25 = _local_25;
+                        
+                    _label_17: 
+                        fs.readBytes(swfContent);
+                        goto _label_15;
+                        
+                    _label_18: 
                         if (scriptUri.fileType == "swf")
                         {
-                            while ((um.trusted = (MD5.hashBytes(swfContent) == this._modulesHashs[scriptUri.fileName])), true)
+                            while ((um.trusted = (MD5.hashBytes(swfContent) == _local_0._modulesHashs[scriptUri.fileName])), true)
                             {
-                                goto _label_16;
+                                goto _label_19;
                             };
                             
-                        _label_16: 
+                        _label_19: 
                             if (!(um.trusted))
                             {
                                 _log.error(("Hash incorrect pour le module " + um.id));
@@ -968,33 +994,29 @@
                         {
                             if (scriptUri.fileType == "swfs")
                             {
-                                while (goto _label_17, true)
-                                {
-                                    sig = new Signature(SignedFileAdapter.defaultSignatureKey);
-                                    goto _label_18;
-                                };
+                                goto _label_22;
                                 
-                            _label_17: 
+                            _label_20: 
                                 fooOutput = new ByteArray();
-                                //unresolved jump
+                                goto _label_23;
                                 
-                            _label_18: 
+                            _label_21: 
+                                goto _label_20;
+                                
+                            _label_22: 
+                                goto _label_21;
+                                
+                            _label_23: 
+                                sig = new Signature(SignedFileAdapter.defaultSignatureKey);
                                 if (!(sig.verify(swfContent, fooOutput)))
                                 {
                                     _log.fatal(("Invalid signature in " + scriptFile.nativePath));
-                                    this._moduleCount--;
-                                    this._scriptNum--;
-                                    goto _label_21;
-                                    
-                                _label_19: 
-                                    return;
-                                    
-                                _label_20: 
-                                    goto _label_19;
-                                    
-                                _label_21: 
-                                    um.trusted = false;
-                                    goto _label_20;
+                                    _local_0._moduleCount--;
+                                    _local_0._scriptNum--;
+                                    while ((um.trusted = false), true)
+                                    {
+                                        return;
+                                    };
                                 };
                                 um.trusted = true;
                             };
@@ -1021,127 +1043,120 @@
                     _log.fatal((("Le module " + um.id) + " est désactivé"));
                     this._moduleCount--;
                     this._scriptNum--;
-                    while ((this._disabledModules[um.id] = um), true)
+                    this._disabledModules[um.id] = um;
+                    while (true)
                     {
                         return;
                     };
-                    return;
+                    var _local_24 = _local_24;
                 };
                 if (um.shortcuts)
                 {
-                    while ((shortcutsUri = new Uri(um.shortcuts)), true)
+                    for (;;)
                     {
-                        while ((shortcutsUri.tag = um.id), true)
-                        {
-                            goto _label_23;
-                        };
-                        var files = files;
+                        //unresolved jump
+                        continue;
                         
-                    _label_22: 
-                        goto _label_24;
+                    _label_24: 
+                        this._loader.load(shortcutsUri);
+                        goto _label_26;
                     };
                     
-                _label_23: 
-                    this._loader.load(shortcutsUri);
-                    goto _label_22;
+                _label_25: 
+                    goto _label_24;
                 };
                 
-            _label_24: 
+            _label_26: 
                 if (((this._useHttpServer) && (!((scriptUri.fileType == "swfs")))))
                 {
-                    mp = File.applicationDirectory.nativePath.split("\\").join("/");
-                    if (scriptUrl.indexOf(mp) != -1)
+                    while ((mp = File.applicationDirectory.nativePath.split("\\").join("/")), true)
                     {
-                        scriptUrl = scriptUrl.substr((scriptUrl.indexOf(mp) + mp.length));
-                        goto _label_26;
-                        
-                    _label_25: 
-                        _log.trace(("[WebServer] Load " + scriptUrl));
                         goto _label_27;
                     };
-                    
-                _label_26: 
-                    scriptUrl = HttpServer.getInstance().getUrlTo(scriptUrl);
-                    goto _label_28;
+                    var _local_23 = _local_23;
                     
                 _label_27: 
-                    this._loadModuleFunction(scriptUrl, this.onModuleScriptLoaded, this.onScriptLoadFail, um);
-                    //unresolved jump
+                    if (scriptUrl.indexOf(mp) != -1)
+                    {
+                        while ((scriptUrl = scriptUrl.substr((scriptUrl.indexOf(mp) + mp.length))), goto _label_29, _log.trace(("[WebServer] Load " + scriptUrl)), true)
+                        {
+                            this._loadModuleFunction(scriptUrl, this.onModuleScriptLoaded, this.onScriptLoadFail, um);
+                            //unresolved jump
+                        };
+                    };
                     
                 _label_28: 
-                    goto _label_25;
+                    scriptUrl = HttpServer.getInstance().getUrlTo(scriptUrl);
+                    //unresolved jump
+                    
+                _label_29: 
+                    goto _label_28;
+                    var files = files;
                 }
                 else
                 {
                     if (um.trusted)
                     {
-                        while ((scriptUri.tag = um.id), goto _label_31, true)
-                        {
-                            scriptUri.loaderContext.applicationDomain = new ApplicationDomain(this._sharedDefinition);
-                            goto _label_32;
-                        };
-                        
-                    _label_29: 
-                        _log.trace(("[Classic] Load " + scriptUri));
-                        goto _label_33;
+                        goto _label_34;
                         
                     _label_30: 
-                        this._loadingModule[um] = um.id;
-                        goto _label_29;
+                        //unresolved jump
                         
                     _label_31: 
                         scriptUri.loaderContext = new LoaderContext();
-                        //unresolved jump
-                        var _local_23 = _local_23;
-                        
-                    _label_32: 
                         goto _label_30;
                         
-                    _label_33: 
+                    _label_32: 
+                        while (_log.trace(("[Classic] Load " + scriptUri)), goto _label_36, (scriptUri.loaderContext.applicationDomain = new ApplicationDomain(this._sharedDefinition)), true)
+                        {
+                            goto _label_35;
+                            
+                        _label_33: 
+                            goto _label_31;
+                        };
+                        
+                    _label_34: 
+                        scriptUri.tag = um.id;
+                        goto _label_33;
+                        
+                    _label_35: 
+                        this._loadingModule[um] = um.id;
+                        goto _label_32;
+                        
+                    _label_36: 
                         this._loader.load(scriptUri, null, ((!((scriptUri.fileType == "swfs"))) ? BinaryAdapter : AdvancedSignedFileAdapter));
                     }
                     else
                     {
                         this._moduleCount--;
                         this._scriptNum--;
-                        while (ErrorManager.addError((((("Failed to load custom module " + um.author) + "_") + um.name) + ", because the local HTTP server is not available.")), true)
+                        ErrorManager.addError((((("Failed to load custom module " + um.author) + "_") + um.name) + ", because the local HTTP server is not available."));
+                        while (true)
                         {
                             return;
                         };
-                        var _local_22 = _local_22;
                     };
                 };
             };
             files = new Array();
             if (!((um is PreCompiledUiModule)))
             {
+                _loop_1:
                 for each (ui in um.uis)
                 {
                     if (ui.file)
                     {
-                        goto _label_37;
-                        
-                    _label_34: 
-                        continue;
-                        
-                    _label_35: 
-                        this._uiFiles.push(uiUri);
-                        goto _label_34;
-                        var _local_21 = _local_21;
-                        
-                    _label_36: 
-                        uiUri.tag = {
+                        while ((uiUri = new Uri(ui.file)), goto _label_37, (uiUri.tag = {
                             "mod":um.id,
                             "base":ui.file
+                        }), true)
+                        {
+                            this._uiFiles.push(uiUri);
+                            continue _loop_1;
                         };
-                        goto _label_38;
                         
                     _label_37: 
-                        uiUri = new Uri(ui.file);
-                        goto _label_36;
-                        
-                    _label_38: 
-                        goto _label_35;
+                        //unresolved jump
                     };
                 };
             };
@@ -1149,7 +1164,9 @@
             files = new Array();
             for each (path in um.cachedFiles)
             {
-                currentFile = root.resolvePath(path);
+                //unresolved jump
+                
+            _label_38: 
                 if (currentFile.exists)
                 {
                     if (!(currentFile.isDirectory))
@@ -1180,13 +1197,17 @@
             {
                 return;
             };
-            var _local_0 = this;
             return;
         }
 
         private function onScriptLoadFail(e:IOErrorEvent, uiModule:UiModule):void
         {
-            _log.error((("Le script du module " + uiModule.id) + " est introuvable"));
+            while (true)
+            {
+                _log.error((("Le script du module " + uiModule.id) + " est introuvable"));
+                //unresolved jump
+            };
+            var _local_5 = _local_5;
             if (!(--this._scriptNum))
             {
                 this.launchUiCheck();
@@ -1200,24 +1221,25 @@
             {
                 goto _label_1;
             };
-            var _local_5 = _local_5;
+            var moduleLoader = moduleLoader;
             
         _label_1: 
             var uiModule:UiModule = this._unInitializedModules[e.uri.tag];
-            var moduleLoader:Loader = new Loader();
+            moduleLoader = new Loader();
             this._moduleScriptLoadedRef[moduleLoader] = uiModule;
             var lc:LoaderContext = new LoaderContext(false, new ApplicationDomain(this._sharedDefinition));
-            for (;;moduleLoader.loadBytes((e.resource as ByteArray), lc), goto _label_2, (var _local_0 = this), continue, (uiModule = uiModule))
+            while (AirScanner.allowByteCodeExecution(lc, true), true)
             {
-                goto _label_3;
-                
-            _label_2: 
-                return;
+                moduleLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onModuleScriptLoaded);
+                while (true)
+                {
+                    moduleLoader.loadBytes((e.resource as ByteArray), lc);
+                    goto _label_2;
+                };
+                var _local_6 = _local_6;
             };
             
-        _label_3: 
-            moduleLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onModuleScriptLoaded);
-            //unresolved jump
+        _label_2: 
             return;
         }
 
@@ -1234,76 +1256,54 @@
             {
                 goto _label_2;
             };
-            var _local_6 = _local_6;
             
         _label_2: 
             if (!(uiModule))
             {
-                goto _label_10;
-                
-            _label_3: 
-                goto _label_7;
-                
-            _label_4: 
-                goto _label_12;
-                
-            _label_5: 
-                uiModule.applicationDomain = l.contentLoaderInfo.applicationDomain;
-                goto _label_17;
-                
-            _label_6: 
-                goto _label_13;
-                
-            _label_7: 
-                _log.trace(((((("Load script " + uiModule.id) + ", ") + ((this._moduleCount - this._scriptNum) + 1)) + "/") + this._moduleCount));
-                goto _label_9;
+                goto _label_11;
             };
             
-        _label_8: 
+        _label_3: 
             delete this._loadingModule[uiModule];
-            goto _label_3;
-            var _local_4 = _local_4;
-            
-        _label_9: 
-            goto _label_16;
-            
-        _label_10: 
-            uiModule = this._moduleScriptLoadedRef[l];
-            goto _label_18;
-            
-        _label_11: 
-            uiModule.mainClass = l.content;
-            goto _label_15;
-            
-        _label_12: 
-            delete this._disabledModules[uiModule.id];
-            goto _label_6;
-            var _local_5 = _local_5;
-            
-        _label_13: 
-            Berilia.getInstance().handler.process(new ModuleLoadedMessage(uiModule.id));
-            //unresolved jump
-            
-        _label_14: 
-            this._modules[uiModule.id] = uiModule;
-            goto _label_4;
+            for (;;)
+            {
+                //unresolved jump
+                goto _label_12;
+                
+            _label_4: 
+                uiModule.applicationDomain = l.contentLoaderInfo.applicationDomain;
+                goto _label_7;
+                
+            _label_5: 
+                uiModule.mainClass = l.content;
+                continue;
+                
+            _label_6: 
+                goto _label_10;
+            };
             var _local_7 = _local_7;
             
-        _label_15: 
-            goto _label_14;
-            
-        _label_16: 
-            uiModule.loader = l;
-            goto _label_19;
-            
-        _label_17: 
-            goto _label_11;
-            
-        _label_18: 
-            goto _label_8;
-            
-        _label_19: 
+        _label_7: 
             goto _label_5;
+            var _local_6 = _local_6;
+            
+        _label_8: 
+            //unresolved jump
+            
+        _label_9: 
+            goto _label_3;
+            
+        _label_10: 
+            uiModule.loader = l;
+            goto _label_4;
+            
+        _label_11: 
+            uiModule = this._moduleScriptLoadedRef[l];
+            goto _label_9;
+            
+        _label_12: 
+            _log.trace(((((("Load script " + uiModule.id) + ", ") + ((this._moduleCount - this._scriptNum) + 1)) + "/") + this._moduleCount));
+            goto _label_6;
             if (!(--this._scriptNum))
             {
                 this.launchUiCheck();
@@ -1324,107 +1324,86 @@
             {
                 goto _label_1;
             };
-            var _local_0 = this;
             
         _label_1: 
             var shortcutsXml:XML = e.resource;
             for each (category in shortcutsXml..category)
             {
-                goto _label_3;
+                //unresolved jump
                 
             _label_2: 
-                goto _label_4;
-                
-            _label_3: 
                 //unresolved jump
-                
-            _label_4: 
-                //unresolved jump
-                var _local_13 = _local_13;
                 for each (shortcut in category..shortcut)
                 {
                     if (((!(shortcut.@name)) || (!(shortcut.@name.toString().length))))
                     {
-                        goto _label_7;
-                        
-                    _label_5: 
-                        goto _label_8;
-                        
-                    _label_6: 
-                        return;
-                        
-                    _label_7: 
-                        ErrorManager.addError(("Le fichier de raccourci est mal formé, il manque la priopriété name dans le fichier " + e.uri));
-                        goto _label_6;
-                        var _local_14 = _local_14;
+                        goto _label_3;
+                    }
+                    else
+                    {
+                        permanent = false;
+                        goto _label_4;
                     };
-                    permanent = false;
-                    goto _label_5;
+                    return;
                     
-                _label_8: 
+                _label_3: 
+                    ErrorManager.addError(("Le fichier de raccourci est mal formé, il manque la priopriété name dans le fichier " + e.uri));
+                    //unresolved jump
+                    
+                _label_4: 
                     if (((shortcut.@permanent) && ((shortcut.@permanent == "true"))))
                     {
-                        goto _label_10;
+                        //unresolved jump
                     };
                     
-                _label_9: 
+                _label_5: 
                     visible = true;
-                    goto _label_11;
+                    while (goto _label_6, (permanent = true), true)
+                    {
+                        goto _label_5;
+                    };
+                    var _local_10 = _local_10;
                     
-                _label_10: 
-                    permanent = true;
-                    goto _label_9;
-                    var _local_11 = _local_11;
-                    
-                _label_11: 
+                _label_6: 
                     if (((shortcut.@visible) && ((shortcut.@visible == "false"))))
                     {
-                        goto _label_14;
-                        
-                    _label_12: 
-                        goto _label_16;
-                        
-                    _label_13: 
-                        goto _label_15;
-                        
-                    _label_14: 
-                        visible = false;
-                        goto _label_13;
+                        goto _label_9;
                     };
                     
-                _label_15: 
+                _label_7: 
                     required = false;
-                    goto _label_12;
+                    goto _label_10;
                     
-                _label_16: 
+                _label_8: 
+                    goto _label_7;
+                    var _local_12 = _local_12;
+                    
+                _label_9: 
+                    visible = false;
+                    goto _label_8;
+                    
+                _label_10: 
                     if (((shortcut.@required) && ((shortcut.@required == "true"))))
                     {
-                        while ((required = true), true)
-                        {
-                            goto _label_17;
-                        };
+                        required = true;
                     };
-                    
-                _label_17: 
                     holdKeys = false;
                     if (((shortcut.@holdKeys) && ((shortcut.@holdKeys == "true"))))
                     {
-                        goto _label_19;
-                        
-                    _label_18: 
-                        continue;
-                        
-                    _label_19: 
-                        holdKeys = true;
-                        goto _label_21;
+                        goto _label_13;
                     };
                     
-                _label_20: 
+                _label_11: 
                     new Shortcut(shortcut.@name, (shortcut.@textfieldEnabled == "true"), LangManager.getInstance().replaceKey(shortcut.toString()), cat, !(permanent), visible, required, holdKeys, LangManager.getInstance().replaceKey(shortcut.@tooltipContent));
-                    goto _label_18;
+                    continue;
                     
-                _label_21: 
-                    goto _label_20;
+                _label_12: 
+                    goto _label_11;
+                    
+                _label_13: 
+                    holdKeys = true;
+                    goto _label_12;
+                    var _local_11 = _local_11;
                 };
             };
             return;
@@ -1433,15 +1412,10 @@
         private function onHashLoaded(e:ResourceLoadedEvent):void
         {
             var file:XML;
-            _loop_1:
             for each (file in e.resource..file)
             {
-                while (true)
-                {
-                    this._modulesHashs[file.@name.toString()] = file.toString();
-                    continue _loop_1;
-                };
-                var _local_6 = _local_6;
+                //unresolved jump
+                var _local_4 = _local_4;
             };
             return;
         }
@@ -1464,20 +1438,20 @@
             _loop_1:
             for (url in this._clearUi)
             {
-                //unresolved jump
-                var _local_0 = this;
+                for (;;)
+                {
+                    //unresolved jump
+                    continue;
+                };
+                var _local_11 = _local_11;
                 
             _label_1: 
-                //unresolved jump
-                
-            _label_2: 
                 if (uiDataList[url])
                 {
-                    while (_local_0._unparsedXml.push(uiDataList[url]), true)
+                    while (this._unparsedXml.push(uiDataList[url]), true)
                     {
                         continue _loop_1;
                     };
-                    var _local_11 = _local_11;
                 };
             };
             this._unparsedXmlCount = (this._unparsedXmlTotalCount = this._unparsedXml.length);
@@ -1485,7 +1459,6 @@
             {
                 return;
             };
-            var _local_9 = _local_9;
             return;
         }
 
@@ -1499,37 +1472,40 @@
                 if (this._parserAvaibleCount)
                 {
                     this._parserAvaibleCount--;
-                    for (;;continue, (xmlParsor = xmlParsor))
+                    while ((uiData = (this._unparsedXml.shift() as UiData)), true)
                     {
-                        goto _label_3;
-                        
-                    _label_1: 
                         goto _label_5;
                         
+                    _label_1: 
+                        goto _label_8;
+                        
                     _label_2: 
-                        goto _label_7;
+                        goto _label_6;
                         
                     _label_3: 
-                        xmlParsor = new XmlParsor();
-                        continue;
-                        
-                    _label_4: 
-                        goto _label_6;
                         xmlParsor.rootPath = uiData.module.rootPath;
                         goto _label_4;
                     };
                     
-                _label_5: 
-                    xmlParsor.addEventListener(ParsingErrorEvent.ERROR, this.onXmlParsingError);
+                _label_4: 
+                    xmlParsor.addEventListener(Event.COMPLETE, this.onXmlParsed, false, 0, true);
                     goto _label_2;
                     var _local_3 = _local_3;
                     
+                _label_5: 
+                    xmlParsor = new XmlParsor();
+                    goto _label_7;
+                    
                 _label_6: 
-                    xmlParsor.addEventListener(Event.COMPLETE, this.onXmlParsed, false, 0, true);
+                    xmlParsor.addEventListener(ParsingErrorEvent.ERROR, this.onXmlParsingError);
                     goto _label_1;
-                    var _local_0 = this;
+                    var _local_5 = _local_5;
                     
                 _label_7: 
+                    goto _label_3;
+                    var _local_4 = _local_4;
+                    
+                _label_8: 
                     xmlParsor.processFile(uiData.file);
                 };
             }
@@ -1539,11 +1515,10 @@
                 while (true)
                 {
                     Berilia.getInstance().handler.process(new AllUiXmlParsedMessage());
-                    goto _label_8;
+                    goto _label_9;
                 };
-                var _local_6 = _local_6;
                 
-            _label_8: 
+            _label_9: 
                 if (((!(this._useSharedDefinition)) || (this._sharedDefinition)))
                 {
                     this.launchModule();
@@ -1560,35 +1535,33 @@
         {
             if (e.uiDefinition)
             {
-                while ((e.uiDefinition.name = XmlParsor(e.target).url), goto _label_2, UiRenderManager.getInstance().setUiDefinition(e.uiDefinition), true)
+                while ((e.uiDefinition.name = XmlParsor(e.target).url), true)
                 {
+                    UiRenderManager.getInstance().setUiDefinition(e.uiDefinition);
                     goto _label_1;
                 };
-                var _local_3 = _local_3;
+                var _local_2 = _local_2;
                 
             _label_1: 
                 Berilia.getInstance().handler.process(new UiXmlParsedMessage(e.uiDefinition.name));
-                //unresolved jump
-                
-            _label_2: 
-                //unresolved jump
             };
             this._parserAvaibleCount++;
             while (this.parseNextXml(), true)
             {
                 return;
             };
-            var _local_5 = _local_5;
             return;
         }
 
         private function onXmlParsingError(e:ParsingErrorEvent):void
         {
-            while (Berilia.getInstance().handler.process(new UiXmlParsedErrorMessage(e.url, e.msg)), true)
+            while (true)
             {
-                return;
+                Berilia.getInstance().handler.process(new UiXmlParsedErrorMessage(e.url, e.msg));
+                goto _label_1;
             };
-            var _local_3 = _local_3;
+            
+        _label_1: 
             return;
         }
 
@@ -1598,71 +1571,91 @@
             var filePath:String;
             var modName:String;
             var templateUri:Uri;
-            while (//unresolved jump
-, goto _label_2, true)
-            {
-                goto _label_1;
-            };
+            goto _label_6;
             
         _label_1: 
-            //unresolved jump
-            var uriPos = uriPos;
+            goto _label_5;
             
         _label_2: 
+            goto _label_1;
+            var base = base;
+            
+        _label_3: 
+            goto _label_8;
+            
+        _label_4: 
+            goto _label_2;
+            var versionOk = versionOk;
+            
+        _label_5: 
+            goto _label_7;
+            
+        _label_6: 
+            goto _label_4;
+            var mod = mod;
+            
+        _label_7: 
+            goto _label_3;
+            var xml = xml;
+            
+        _label_8: 
             if (this._resetState)
             {
                 return;
             };
-            uriPos = this._uiFiles.indexOf(e.uri);
+            var uriPos:int = this._uiFiles.indexOf(e.uri);
             this._uiFiles.splice(this._uiFiles.indexOf(e.uri), 1);
-            var mod:UiModule = this._unInitializedModules[e.uri.tag.mod];
-            var base:String = e.uri.tag.base;
+            mod = this._unInitializedModules[e.uri.tag.mod];
+            base = e.uri.tag.base;
             var md5:String = ((!((this._versions[e.uri.uri] == null))) ? this._versions[e.uri.uri] : MD5.hash((e.resource as String)));
-            var versionOk:Boolean = (md5 == UiRenderManager.getInstance().getUiVersion(e.uri.uri));
+            versionOk = (md5 == UiRenderManager.getInstance().getUiVersion(e.uri.uri));
             if (!(versionOk))
             {
                 while ((this._clearUi[e.uri.uri] = md5), true)
                 {
-                    goto _label_3;
+                    goto _label_9;
                 };
-                var _local_14 = _local_14;
+                var _local_0 = this;
                 
-            _label_3: 
+            _label_9: 
                 if (e.uri.tag.template)
                 {
-                    this._clearUi[e.uri.tag.base] = this._versions[e.uri.tag.base];
-                    goto _label_5;
+                    _local_0._clearUi[e.uri.tag.base] = _local_0._versions[e.uri.tag.base];
+                    goto _label_11;
                 };
             };
             
-        _label_4: 
+        _label_10: 
             this._versions[e.uri.uri] = md5;
-            goto _label_6;
+            goto _label_12;
             
-        _label_5: 
-            goto _label_4;
+        _label_11: 
+            goto _label_10;
             
-        _label_6: 
-            var xml:String = (e.resource as String);
-            _loop_1:
+        _label_12: 
+            xml = (e.resource as String);
             while ((res = this._regImport.exec(xml)))
             {
-                while (true)
+                while (goto _label_13, (filePath = LangManager.getInstance().replaceKey(res[1])), true)
                 {
-                    goto _label_7;
+                    goto _label_14;
                 };
                 
-            _label_7: 
-                filePath = LangManager.getInstance().replaceKey(res[1]);
+            _label_13: 
+                //unresolved jump
+                
+            _label_14: 
                 if (filePath.indexOf("mod://") != -1)
                 {
                     while (true)
                     {
                         modName = filePath.substr(6, (filePath.indexOf("/", 6) - 6));
-                        filePath = (this._modulesPaths[modName] + filePath.substr((6 + modName.length)));
-                        //unresolved jump
+                        while (true)
+                        {
+                            filePath = (this._modulesPaths[modName] + filePath.substr((6 + modName.length)));
+                            //unresolved jump
+                        };
                     };
-                    var _local_12 = _local_12;
                 }
                 else
                 {
@@ -1673,46 +1666,32 @@
                 };
                 if (this._clearUi[filePath])
                 {
-                    this._clearUi[e.uri.uri] = md5;
-                    goto _label_10;
-                    
-                _label_8: 
-                    //unresolved jump
-                    
-                _label_9: 
-                    this._clearUi[base] = this._versions[base];
-                    goto _label_8;
-                    
-                _label_10: 
-                    goto _label_9;
-                    var _local_15 = _local_15;
-                }
-                else
-                {
-                    if (!(this._uiLoaded[filePath]))
+                    for (;;)
                     {
-                        while (true)
-                        {
-                            this._uiLoaded[filePath] = true;
-                            //unresolved jump
-                        };
-                        this._uiFileToLoad++;
-                        for (;;)
-                        {
-                            this._uiLoader.load(templateUri, null, TxtAdapter);
-                            continue _loop_1;
-                            
-                        _label_11: 
-                            templateUri.tag = {
-                                "mod":mod.id,
-                                "base":base,
-                                "template":true
-                            };
-                            continue;
-                            templateUri = new Uri(filePath);
-                            goto _label_11;
-                        };
+                        this._clearUi[base] = this._versions[base];
+                        //unresolved jump
+                        this._clearUi[e.uri.uri] = md5;
+                        continue;
                     };
+                    
+                _label_15: 
+                    continue;
+                };
+                if (!!(this._uiLoaded[filePath])) continue;
+                while (true)
+                {
+                    this._uiLoaded[filePath] = true;
+                    //unresolved jump
+                };
+                this._uiFileToLoad++;
+                while ((templateUri = new Uri(filePath)), true)
+                {
+                    templateUri.tag = {
+                        "mod":mod.id,
+                        "base":base,
+                        "template":true
+                    };
+                    //unresolved jump
                 };
             };
             if (!(--this._uiFileToLoad))
@@ -1721,6 +1700,7 @@
                 {
                     return;
                 };
+                var _local_14 = _local_14;
             };
             return;
         }
@@ -1729,13 +1709,19 @@
         {
             var file:File;
             var dm:File;
-            while (true)
-            {
-                goto _label_1;
-            };
-            var _local_8 = _local_8;
+            goto _label_3;
             
         _label_1: 
+            goto _label_4;
+            
+        _label_2: 
+            goto _label_1;
+            
+        _label_3: 
+            goto _label_2;
+            var _local_7 = _local_7;
+            
+        _label_4: 
             if (rootPath.nativePath.indexOf(".svn") != -1)
             {
                 return (null);
@@ -1770,10 +1756,10 @@
                 {
                     while ((dm = this.searchDmFile(file)), true)
                     {
-                        goto _label_2;
+                        goto _label_5;
                     };
                     
-                _label_2: 
+                _label_5: 
                     if (dm)
                     {
                         break;
@@ -1785,67 +1771,71 @@
 
         private function onSharedDefinitionLoad(e:ResourceLoadedEvent):void
         {
+            //unresolved jump
+            
+        _label_1: 
             for (;;)
             {
-                goto _label_2;
-                
-            _label_1: 
-                //unresolved jump
                 continue;
+                EnterFrameDispatcher.removeEventListener(this.timeOutFrameCount);
+                goto _label_2;
             };
-            var sharedSecureComponent = sharedSecureComponent;
+            var directAccessObject = directAccessObject;
             
         _label_2: 
-            goto _label_1;
-            
-        _label_3: 
             var aswf:ASwf = (e.resource as ASwf);
             this._sharedDefinition = aswf.applicationDomain;
-            sharedSecureComponent = this._sharedDefinition.getDefinition("d2components::SecureComponent");
+            var sharedSecureComponent:Object = this._sharedDefinition.getDefinition("d2components::SecureComponent");
             sharedSecureComponent.init(SecureCenter.ACCESS_KEY, SecureCenter.unsecureContent, SecureCenter.secure, SecureCenter.unsecure, DescribeTypeCache.getVariables);
             var sharedReadOnlyData:Object = this._sharedDefinition.getDefinition("utils::ReadOnlyData");
             sharedReadOnlyData.init(SecureCenter.ACCESS_KEY, SecureCenter.unsecureContent, SecureCenter.secure, SecureCenter.unsecure);
-            var directAccessObject:Object = this._sharedDefinition.getDefinition("utils::DirectAccessObject");
+            directAccessObject = this._sharedDefinition.getDefinition("utils::DirectAccessObject");
             goto _label_7;
             
+        _label_3: 
+            goto _label_9;
+            
         _label_4: 
-            this._sharedDefinitionInstance = Object(aswf.content);
-            goto _label_8;
+            this._loadModuleFunction = Object(aswf.content).loadModule;
+            goto _label_3;
             
         _label_5: 
-            while (SecureCenter.init(sharedSecureComponent, sharedReadOnlyData, directAccessObject), goto _label_6, (this._loadModuleFunction = Object(aswf.content).loadModule), true)
-            {
-                goto _label_9;
-            };
+            goto _label_4;
             
         _label_6: 
-            goto _label_4;
+            goto _label_8;
             
         _label_7: 
             directAccessObject.init(SecureCenter.ACCESS_KEY);
-            goto _label_5;
-            var _local_0 = this;
+            goto _label_6;
+            var _local_7 = _local_7;
             
         _label_8: 
-            //unresolved jump
+            SecureCenter.init(sharedSecureComponent, sharedReadOnlyData, directAccessObject);
+            while (true)
+            {
+                this._sharedDefinitionInstance = Object(aswf.content);
+                goto _label_5;
+            };
+            var _local_6 = _local_6;
             
         _label_9: 
-            if (_local_0._waitingInit)
+            if (this._waitingInit)
             {
-                while (_local_0.init(_local_0._filter, _local_0._filterInclude), true)
+                while (this.init(this._filter, this._filterInclude), true)
                 {
                     goto _label_10;
                 };
-                var _local_6 = _local_6;
             };
             
         _label_10: 
-            if (_local_0._moduleLaunchWaitForSharedDefinition)
+            if (this._moduleLaunchWaitForSharedDefinition)
             {
-                while (_local_0.launchModule(), true)
+                while (this.launchModule(), true)
                 {
                     return;
                 };
+                var _local_0 = this;
             };
             return;
         }

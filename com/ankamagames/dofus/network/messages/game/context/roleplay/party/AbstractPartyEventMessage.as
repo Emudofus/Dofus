@@ -2,8 +2,9 @@
 {
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class AbstractPartyEventMessage extends AbstractPartyMessage implements INetworkMessage 
@@ -37,34 +38,34 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AbstractPartyEventMessage(output);
         }
 
-        public function serializeAs_AbstractPartyEventMessage(output:IDataOutput):void
+        public function serializeAs_AbstractPartyEventMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_AbstractPartyMessage(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AbstractPartyEventMessage(input);
         }
 
-        public function deserializeAs_AbstractPartyEventMessage(input:IDataInput):void
+        public function deserializeAs_AbstractPartyEventMessage(input:ICustomDataInput):void
         {
             super.deserialize(input);
         }

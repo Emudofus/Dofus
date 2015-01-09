@@ -40,10 +40,16 @@
             TooltipManager.show(spellWrapper, target, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), false, "Hyperlink", 6, 2, 50, true, null, null, null, null, true);
         }
 
-        public static function getSpellName(spellId:int, spellLevel:int):String
+        public static function getSpellLevelName(spellId:int, spellLevel:int):String
         {
             var spellWrapper:SpellWrapper = SpellWrapper.create(-1, spellId, spellLevel);
             return (((((("[" + spellWrapper.name) + " ") + I18n.getUiText("ui.common.short.level")) + spellLevel) + "]"));
+        }
+
+        public static function getSpellName(spellId:int, spellLevel:int):String
+        {
+            var spellWrapper:SpellWrapper = SpellWrapper.create(-1, spellId, spellLevel);
+            return ((("[" + spellWrapper.name) + "]"));
         }
 
         public static function showSpellArea(casterId:int, targetCellId:int, sourceCellId:int, spellId:int, spellLevelId:int):void

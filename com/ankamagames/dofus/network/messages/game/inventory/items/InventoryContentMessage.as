@@ -5,8 +5,9 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -50,24 +51,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_InventoryContentMessage(output);
         }
 
-        public function serializeAs_InventoryContentMessage(output:IDataOutput):void
+        public function serializeAs_InventoryContentMessage(output:ICustomDataOutput):void
         {
             output.writeShort(this.objects.length);
             var _i1:uint;
@@ -80,15 +81,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.kamas) + ") on element kamas.")));
             };
-            output.writeInt(this.kamas);
+            output.writeVarInt(this.kamas);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_InventoryContentMessage(input);
         }
 
-        public function deserializeAs_InventoryContentMessage(input:IDataInput):void
+        public function deserializeAs_InventoryContentMessage(input:ICustomDataInput):void
         {
             var _item1:ObjectItem;
             var _objectsLen:uint = input.readUnsignedShort();
@@ -100,7 +101,7 @@
                 this.objects.push(_item1);
                 _i1++;
             };
-            this.kamas = input.readInt();
+            this.kamas = input.readVarUhInt();
             if (this.kamas < 0)
             {
                 throw (new Error((("Forbidden value (" + this.kamas) + ") on element of InventoryContentMessage.kamas.")));

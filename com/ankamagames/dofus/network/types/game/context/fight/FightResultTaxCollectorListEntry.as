@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.context.roleplay.BasicGuildInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightResultTaxCollectorListEntry extends FightResultFighterListEntry implements INetworkType 
     {
@@ -41,12 +41,12 @@
             this.guildInfo = new BasicGuildInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightResultTaxCollectorListEntry(output);
         }
 
-        public function serializeAs_FightResultTaxCollectorListEntry(output:IDataOutput):void
+        public function serializeAs_FightResultTaxCollectorListEntry(output:ICustomDataOutput):void
         {
             super.serializeAs_FightResultFighterListEntry(output);
             if ((((this.level < 1)) || ((this.level > 200))))
@@ -58,12 +58,12 @@
             output.writeInt(this.experienceForGuild);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightResultTaxCollectorListEntry(input);
         }
 
-        public function deserializeAs_FightResultTaxCollectorListEntry(input:IDataInput):void
+        public function deserializeAs_FightResultTaxCollectorListEntry(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.level = input.readUnsignedByte();

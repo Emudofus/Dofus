@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GuildInformations;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class GuildJoinedMessage extends NetworkMessage implements INetworkMessage 
@@ -50,45 +51,45 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GuildJoinedMessage(output);
         }
 
-        public function serializeAs_GuildJoinedMessage(output:IDataOutput):void
+        public function serializeAs_GuildJoinedMessage(output:ICustomDataOutput):void
         {
             this.guildInfo.serializeAs_GuildInformations(output);
-            if ((((this.memberRights < 0)) || ((this.memberRights > 0xFFFFFFFF))))
+            if (this.memberRights < 0)
             {
                 throw (new Error((("Forbidden value (" + this.memberRights) + ") on element memberRights.")));
             };
-            output.writeUnsignedInt(this.memberRights);
+            output.writeVarInt(this.memberRights);
             output.writeBoolean(this.enabled);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GuildJoinedMessage(input);
         }
 
-        public function deserializeAs_GuildJoinedMessage(input:IDataInput):void
+        public function deserializeAs_GuildJoinedMessage(input:ICustomDataInput):void
         {
             this.guildInfo = new GuildInformations();
             this.guildInfo.deserialize(input);
-            this.memberRights = input.readUnsignedInt();
-            if ((((this.memberRights < 0)) || ((this.memberRights > 0xFFFFFFFF))))
+            this.memberRights = input.readVarUhInt();
+            if (this.memberRights < 0)
             {
                 throw (new Error((("Forbidden value (" + this.memberRights) + ") on element of GuildJoinedMessage.memberRights.")));
             };

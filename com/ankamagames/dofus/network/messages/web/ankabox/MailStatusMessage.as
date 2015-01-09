@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class MailStatusMessage extends NetworkMessage implements INetworkMessage 
@@ -42,50 +43,50 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_MailStatusMessage(output);
         }
 
-        public function serializeAs_MailStatusMessage(output:IDataOutput):void
+        public function serializeAs_MailStatusMessage(output:ICustomDataOutput):void
         {
             if (this.unread < 0)
             {
                 throw (new Error((("Forbidden value (" + this.unread) + ") on element unread.")));
             };
-            output.writeShort(this.unread);
+            output.writeVarShort(this.unread);
             if (this.total < 0)
             {
                 throw (new Error((("Forbidden value (" + this.total) + ") on element total.")));
             };
-            output.writeShort(this.total);
+            output.writeVarShort(this.total);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_MailStatusMessage(input);
         }
 
-        public function deserializeAs_MailStatusMessage(input:IDataInput):void
+        public function deserializeAs_MailStatusMessage(input:ICustomDataInput):void
         {
-            this.unread = input.readShort();
+            this.unread = input.readVarUhShort();
             if (this.unread < 0)
             {
                 throw (new Error((("Forbidden value (" + this.unread) + ") on element of MailStatusMessage.unread.")));
             };
-            this.total = input.readShort();
+            this.total = input.readVarUhShort();
             if (this.total < 0)
             {
                 throw (new Error((("Forbidden value (" + this.total) + ") on element of MailStatusMessage.total.")));

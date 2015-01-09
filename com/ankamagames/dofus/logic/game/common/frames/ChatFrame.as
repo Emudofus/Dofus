@@ -84,6 +84,7 @@
     import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
     import com.ankamagames.dofus.network.types.game.social.AbstractSocialGroupInfos;
     import com.ankamagames.dofus.network.types.game.data.items.ObjectItemQuantity;
+    import com.ankamagames.dofus.internalDatacenter.sales.OfflineSaleWrapper;
     import com.ankamagames.dofus.network.ProtocolConstantsEnum;
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
     import com.ankamagames.jerakine.utils.misc.StringUtils;
@@ -133,6 +134,8 @@
     import com.ankamagames.dofus.datacenter.items.Item;
     import com.ankamagames.dofus.network.messages.web.ankabox.NewMailMessage;
     import com.ankamagames.dofus.logic.game.common.actions.chat.ClearChatAction;
+    import com.ankamagames.jerakine.utils.pattern.PatternDecoder;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapComplementaryInformationsDataMessage;
     import com.ankamagames.jerakine.messages.Message;
     import com.ankamagames.berilia.types.data.ExtendedStyleSheet;
     import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterBaseCharacteristic;
@@ -151,6 +154,8 @@
     {
 
         protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ChatFrame));
+        private static const MERCHANT_SOLD_OFFLINE_MSG_ID:uint = 226;
+        private static const BID_SOLD_OFFLINE_MSG_ID:uint = 73;
         public static const GUILD_SOUND:uint = 0;
         public static const PARTY_SOUND:uint = 1;
         public static const PRIVATE_SOUND:uint = 2;
@@ -173,6 +178,8 @@
         private var _aChatColors:Array;
         private var _ankaboxEnabled:Boolean = false;
         private var _aSmilies:Array;
+        private var _offlineSales:Array;
+        private var _offlineSalesInit:Boolean;
 
         public function ChatFrame()
         {
@@ -319,6 +326,11 @@
             return (this._ankaboxEnabled);
         }
 
+        public function get offlineSales():Array
+        {
+            return (this._offlineSales);
+        }
+
         public function process(msg:Message):Boolean
         {
             var content:String;
@@ -453,6 +465,7 @@
             var bubble:ChatBubble;
             var oic:ObjectItem;
             var iTimsg:* = undefined;
+            var saleType:uint;
             var channel:uint;
             var timestamp:Number;
             var iTaimsg:* = undefined;
@@ -463,6 +476,10 @@
             var type:uint;
             var nbsmsgNid:uint;
             var object:ObjectItemQuantity;
+            var totalKamas:uint;
+            var nbOfflineSales:uint;
+            var offlineSale:OfflineSaleWrapper;
+            var offlineSalesMsg:String;
             switch (true)
             {
                 case (msg is BasicWhoIsRequestAction):
@@ -479,7 +496,7 @@
                     nwira = (msg as NumericWhoIsRequestAction);
                     nwirmsg = new NumericWhoIsRequestMessage();
                     nwirmsg.initNumericWhoIsRequestMessage(nwira.playerId);
-                    ConnectionsHandler.getConnection().send(bwirmsg);
+                    ConnectionsHandler.getConnection().send(nwirmsg);
                     return (true);
                 case (msg is ChatTextOutputAction):
                     ch = ChatTextOutputAction(msg).channel;
@@ -890,6 +907,24 @@
                             textId = InfoMessage.getInfoMessageById(207).textId;
                         };
                         params.push(timsg.msgId);
+                    };
+                    if ((((timsg.msgId == BID_SOLD_OFFLINE_MSG_ID)) || ((timsg.msgId == MERCHANT_SOLD_OFFLINE_MSG_ID))))
+                    {
+                        if (!(this._offlineSales))
+                        {
+                            this._offlineSales = new Array();
+                            this._offlineSalesInit = true;
+                        };
+                        if (timsg.msgId == BID_SOLD_OFFLINE_MSG_ID)
+                        {
+                            saleType = OfflineSaleWrapper.TYPE_BIDHOUSE;
+                        }
+                        else
+                        {
+                            saleType = OfflineSaleWrapper.TYPE_MERCHANT;
+                        };
+                        this._offlineSales.push(OfflineSaleWrapper.create(saleType, parseInt(timsg.parameters[1]), parseInt(timsg.parameters[3]), parseInt(timsg.parameters[0])));
+                        return (true);
                     };
                     msgContent = I18n.getText(textId);
                     if (msgContent)
@@ -1312,6 +1347,22 @@
                         this._aParagraphesByChannel[indTabChan] = new Array();
                     };
                     return (true);
+                case (msg is MapComplementaryInformationsDataMessage):
+                    if (((this._offlineSales) && (this._offlineSalesInit)))
+                    {
+                        nbOfflineSales = this._offlineSales.length;
+                        i = 0;
+                        while (i < nbOfflineSales)
+                        {
+                            offlineSale = this._offlineSales[i];
+                            totalKamas = (totalKamas + offlineSale.kamas);
+                            i = (i + 1);
+                        };
+                        offlineSalesMsg = (("{offlineSales::" + PatternDecoder.combine(I18n.getUiText("ui.sell.offlineSales", [nbOfflineSales, StringUtils.kamasToString(totalKamas, "")]), "n", (nbOfflineSales <= 1))) + "}");
+                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, offlineSalesMsg, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, this.getTimestamp(), false, true);
+                        this._offlineSalesInit = false;
+                    };
+                    return (false);
             };
             return (false);
         }
@@ -1379,7 +1430,7 @@
             {
                 signe = "";
             };
-            return (((((pCarac.base + " (") + signe) + bonuses) + ")"));
+            return ((((((pCarac.base + pCarac.additionnal) + " (") + signe) + bonuses) + ")"));
         }
 
         private function playAlertSound(pType:uint):void

@@ -8,6 +8,7 @@
     import com.ankamagames.atouin.types.Selection;
     import flash.utils.Timer;
     import com.ankamagames.berilia.types.data.LinkedCursorData;
+    import com.ankamagames.dofus.logic.game.fight.types.FightTeleportationPreview;
     import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
     import com.ankamagames.dofus.datacenter.effects.EffectInstance;
     import com.ankamagames.tiphon.types.look.TiphonEntityLook;
@@ -32,6 +33,7 @@
     import com.ankamagames.atouin.messages.CellOverMessage;
     import com.ankamagames.jerakine.entities.messages.EntityMouseOverMessage;
     import com.ankamagames.dofus.logic.game.fight.actions.TimelineEntityOverAction;
+    import com.ankamagames.dofus.logic.game.fight.actions.TimelineEntityOutAction;
     import com.ankamagames.atouin.messages.CellClickMessage;
     import com.ankamagames.jerakine.entities.messages.EntityClickMessage;
     import com.ankamagames.dofus.logic.game.fight.actions.TimelineEntityClickAction;
@@ -45,29 +47,37 @@
     import com.ankamagames.berilia.managers.LinkedCursorSpriteManager;
     import com.ankamagames.atouin.renderers.ZoneDARenderer;
     import com.ankamagames.jerakine.types.zones.IZone;
+    import com.ankamagames.atouin.managers.SelectionManager;
     import com.ankamagames.atouin.enums.PlacementStrataEnums;
     import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
-    import com.ankamagames.atouin.managers.SelectionManager;
     import com.ankamagames.jerakine.types.positions.MapPoint;
     import com.ankamagames.atouin.Atouin;
     import com.ankamagames.jerakine.types.zones.Cross;
     import __AS3__.vec.Vector;
+    import com.ankamagames.dofus.logic.game.fight.types.MarkInstance;
     import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterBaseCharacteristic;
     import com.ankamagames.atouin.AtouinConstants;
     import com.ankamagames.atouin.utils.DataMapProvider;
     import com.ankamagames.jerakine.types.zones.Lozenge;
     import com.ankamagames.jerakine.types.zones.Custom;
+    import com.ankamagames.jerakine.map.LosDetector;
+    import com.ankamagames.dofus.logic.game.fight.managers.MarkedCellsManager;
+    import com.ankamagames.dofus.network.enums.GameActionMarkTypeEnum;
+    import com.ankamagames.dofus.logic.game.fight.managers.LinkedCellsManager;
+    import com.ankamagames.jerakine.utils.display.Dofus2Line;
+    import com.ankamagames.dofus.logic.game.fight.miscs.DamageUtil;
+    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
+    import com.ankamagames.dofus.logic.game.fight.managers.FightersStateManager;
     import com.ankamagames.berilia.types.tooltip.TooltipPlacer;
     import com.ankamagames.berilia.managers.TooltipManager;
+    import com.ankamagames.dofus.logic.game.fight.miscs.ActionIdConverter;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightCastOnTargetRequestMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightCastRequestMessage;
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
-    import com.ankamagames.jerakine.map.LosDetector;
     import com.ankamagames.dofus.datacenter.spells.SpellLevel;
     import com.ankamagames.atouin.managers.MapDisplayManager;
     import com.ankamagames.atouin.data.map.CellData;
     import com.ankamagames.dofus.types.entities.Glyph;
-    import com.ankamagames.dofus.network.enums.GameActionMarkTypeEnum;
     import com.ankamagames.atouin.managers.*;
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.map.*;
@@ -81,17 +91,21 @@
         protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightSpellCastFrame));
         private static const RANGE_COLOR:Color = new Color(5533093);
         private static const LOS_COLOR:Color = new Color(2241433);
+        private static const PORTAL_COLOR:Color = new Color(251623);
         private static const TARGET_COLOR:Color = new Color(14487842);
         private static const SELECTION_RANGE:String = "SpellCastRange";
+        private static const SELECTION_PORTALS:String = "SpellCastPortals";
         private static const SELECTION_LOS:String = "SpellCastLos";
         private static const SELECTION_TARGET:String = "SpellCastTarget";
         private static const FORBIDDEN_CURSOR_NAME:String = "SpellCastForbiddenCusror";
+        private static const TELEPORTATION_EFFECTS:Array = [1100, 1104, 1105, 1106];
         private static var _currentTargetIsTargetable:Boolean;
 
         private var _spellLevel:Object;
         private var _spellId:uint;
         private var _rangeSelection:Selection;
         private var _losSelection:Selection;
+        private var _portalsSelection:Selection;
         private var _targetSelection:Selection;
         private var _currentCell:int = -1;
         private var _virtualCast:Boolean;
@@ -100,9 +114,11 @@
         private var _lastTargetStatus:Boolean = true;
         private var _isInfiniteTarget:Boolean;
         private var _usedWrapper;
+        private var _targetingThroughPortal:Boolean;
         private var _clearTargetTimer:Timer;
         private var _spellmaximumRange:uint;
         private var _invocationPreview:Array;
+        private var _fightTeleportationPreview:FightTeleportationPreview;
 
         public function FightSpellCastFrame(spellId:uint)
         {
@@ -164,6 +180,7 @@
                                 (ts as AnimatedCharacter).setCanSeeThrough(true);
                                 (ts as AnimatedCharacter).transparencyAllowed = true;
                                 (ts as AnimatedCharacter).alpha = 0.65;
+                                (ts as AnimatedCharacter).mouseEnabled = false;
                                 this._invocationPreview.push(ts);
                                 j++;
                             };
@@ -274,9 +291,11 @@
             var _local_3:EntityMouseOverMessage;
             var _local_4:TimelineEntityOverAction;
             var _local_5:IEntity;
-            var _local_6:CellClickMessage;
-            var _local_7:EntityClickMessage;
-            var _local_8:TimelineEntityClickAction;
+            var _local_6:TimelineEntityOutAction;
+            var _local_7:IEntity;
+            var _local_8:CellClickMessage;
+            var _local_9:EntityClickMessage;
+            var _local_10:TimelineEntityClickAction;
             var previewEntity:IEntity;
             switch (true)
             {
@@ -305,31 +324,36 @@
                         this.refreshTarget();
                     };
                     return (false);
+                case (msg is TimelineEntityOutAction):
+                    _local_6 = (msg as TimelineEntityOutAction);
+                    _local_7 = DofusEntities.getEntity(_local_6.targetId);
+                    if (((((_local_7) && (_local_7.position))) && ((_local_7.position.cellId == this._currentCell))))
+                    {
+                        this.removeTeleportationPreview();
+                    };
+                    return (false);
                 case (msg is CellClickMessage):
-                    _local_6 = (msg as CellClickMessage);
-                    this.castSpell(_local_6.cellId);
+                    _local_8 = (msg as CellClickMessage);
+                    this.castSpell(_local_8.cellId);
                     return (true);
                 case (msg is EntityClickMessage):
-                    _local_7 = (msg as EntityClickMessage);
+                    _local_9 = (msg as EntityClickMessage);
                     if (this._invocationPreview.length > 0)
                     {
                         for each (previewEntity in this._invocationPreview)
                         {
-                            if (previewEntity.id == _local_7.entity.id)
+                            if (previewEntity.id == _local_9.entity.id)
                             {
-                                this.castSpell(_local_7.entity.position.cellId);
+                                this.castSpell(_local_9.entity.position.cellId);
                                 return (true);
                             };
                         };
-                    }
-                    else
-                    {
-                        this.castSpell(_local_7.entity.position.cellId, _local_7.entity.id);
                     };
+                    this.castSpell(_local_9.entity.position.cellId, _local_9.entity.id);
                     return (true);
                 case (msg is TimelineEntityClickAction):
-                    _local_8 = (msg as TimelineEntityClickAction);
-                    this.castSpell(0, _local_8.fighterId);
+                    _local_10 = (msg as TimelineEntityClickAction);
+                    this.castSpell(0, _local_10.fighterId);
                     return (true);
                 case (msg is AdjacentMapClickMessage):
                 case (msg is MouseRightClickMessage):
@@ -371,6 +395,7 @@
             this.removeTarget();
             this.removeInvocationPreview();
             LinkedCursorSpriteManager.getInstance().removeItem(FORBIDDEN_CURSOR_NAME);
+            this.removeTeleportationPreview();
             try
             {
                 KernelEventsManager.getInstance().processCallback(HookList.CancelCastSpell, SpellWrapper.getFirstSpellWrapperById(this._spellId, CurrentPlayedFighterManager.getInstance().currentFighterId));
@@ -383,17 +408,18 @@
 
         public function refreshTarget(force:Boolean=false):void
         {
+            var newTarget:int;
             var currentFighterId:int;
             var entityInfos:GameFightFighterInformations;
             var renderer:ZoneDARenderer;
             var spellZone:IZone;
-            var _local_9:Boolean;
+            var _local_10:Boolean;
             var playerX:int;
             var playerY:int;
             var distance:int;
             var positionArray:Array;
             var i:int;
-            var _local_15:IEntity;
+            var _local_16:IEntity;
             var preview:IEntity;
             if (this._clearTargetTimer.running)
             {
@@ -404,11 +430,23 @@
             {
                 return;
             };
+            this._targetingThroughPortal = false;
+            if (((((SelectionManager.getInstance().isInside(target, SELECTION_PORTALS)) && (SelectionManager.getInstance().isInside(target, SELECTION_LOS)))) && (!((this._spellId == 0)))))
+            {
+                newTarget = -1;
+                newTarget = this.getTargetThroughPortal(target, true);
+                if (newTarget != target)
+                {
+                    this._targetingThroughPortal = true;
+                    target = newTarget;
+                };
+            };
             if (((!(force)) && ((this._currentCell == target))))
             {
                 if (((this._targetSelection) && (this.isValidCell(target))))
                 {
                     this.showTargetsTooltips(this._targetSelection);
+                    this.showTeleportationPreview();
                 };
                 return;
             };
@@ -437,7 +475,14 @@
                 entityInfos = (FightEntitiesFrame.getCurrentInstance().getEntityInfos(currentFighterId) as GameFightFighterInformations);
                 if (entityInfos)
                 {
-                    this._targetSelection.zone.direction = MapPoint(MapPoint.fromCellId(entityInfos.disposition.cellId)).advancedOrientationTo(MapPoint.fromCellId(target), false);
+                    if (this._targetingThroughPortal)
+                    {
+                        this._targetSelection.zone.direction = MapPoint(MapPoint.fromCellId(entityInfos.disposition.cellId)).advancedOrientationTo(MapPoint.fromCellId(FightContextFrame.currentCell), false);
+                    }
+                    else
+                    {
+                        this._targetSelection.zone.direction = MapPoint(MapPoint.fromCellId(entityInfos.disposition.cellId)).advancedOrientationTo(MapPoint.fromCellId(target), false);
+                    };
                 };
                 renderer = (this._targetSelection.renderer as ZoneDARenderer);
                 if (((Atouin.getInstance().options.transparentOverlayMode) && (!((this._spellmaximumRange == 63)))))
@@ -450,9 +495,9 @@
                     if (renderer.currentStrata == PlacementStrataEnums.STRATA_NO_Z_ORDER)
                     {
                         renderer.currentStrata = PlacementStrataEnums.STRATA_AREA;
-                        _local_9 = true;
+                        _local_10 = true;
                     };
-                    SelectionManager.getInstance().update(SELECTION_TARGET, target, _local_9);
+                    SelectionManager.getInstance().update(SELECTION_TARGET, target, _local_10);
                 };
                 if (myTurn)
                 {
@@ -497,13 +542,14 @@
                     }
                     else
                     {
-                        _local_15 = this._invocationPreview[0];
-                        (_local_15 as AnimatedCharacter).visible = true;
-                        _local_15.position = MapPoint.fromCellId(this._currentCell);
-                        (_local_15 as AnimatedCharacter).setDirection(MapPoint.fromCellId(entityInfos.disposition.cellId).advancedOrientationTo(MapPoint.fromCellId(this._currentCell), true));
-                        (_local_15 as AnimatedCharacter).display(PlacementStrataEnums.STRATA_PLAYER);
+                        _local_16 = this._invocationPreview[0];
+                        (_local_16 as AnimatedCharacter).visible = true;
+                        _local_16.position = MapPoint.fromCellId(this._currentCell);
+                        (_local_16 as AnimatedCharacter).setDirection(MapPoint.fromCellId(entityInfos.disposition.cellId).advancedOrientationTo(MapPoint.fromCellId(this._currentCell), true));
+                        (_local_16 as AnimatedCharacter).display(PlacementStrataEnums.STRATA_PLAYER);
                     };
                 };
+                this.showTeleportationPreview();
             }
             else
             {
@@ -521,6 +567,7 @@
                 this.removeTarget();
                 this._lastTargetStatus = false;
                 this.hideTargetsTooltips();
+                this.removeTeleportationPreview();
             };
         }
 
@@ -538,11 +585,24 @@
         public function drawRange():void
         {
             var shapePlus:Cross;
-            var rangeCell:Vector.<uint>;
-            var noLosRangeCell:Vector.<uint>;
-            var num:int;
-            var i:int;
+            var sc:uint;
+            var _local_14:Vector.<uint>;
+            var _local_15:Vector.<uint>;
+            var _local_16:int;
+            var _local_17:int;
             var cellId:uint;
+            var cAfterPortal:int;
+            var exitPortal:int;
+            var c:uint;
+            var entryMarkPortal:MarkInstance;
+            var teamPortals:Vector.<MapPoint>;
+            var portalsCellIds:Vector.<uint>;
+            var lastPortalMp:MapPoint;
+            var newTargetMp:MapPoint;
+            var cellsFromLine:Vector.<Point>;
+            var mp:MapPoint;
+            var cellFromLine:Point;
+            var cellsWithLosOk:Vector.<uint>;
             var currentFighterId:int = CurrentPlayedFighterManager.getInstance().currentFighterId;
             var entityInfos:GameFightFighterInformations = (FightEntitiesFrame.getCurrentInstance().getEntityInfos(currentFighterId) as GameFightFighterInformations);
             var origin:uint = entityInfos.disposition.cellId;
@@ -567,11 +627,10 @@
             {
                 range = 0;
             };
-            var testLos:Boolean = ((this._spellLevel.castTestLos) && (Dofus.getInstance().options.showLineOfSight));
             this._rangeSelection = new Selection();
             this._rangeSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA);
             (this._rangeSelection.renderer as ZoneDARenderer).showFarmCell = false;
-            this._rangeSelection.color = ((testLos) ? RANGE_COLOR : LOS_COLOR);
+            this._rangeSelection.color = RANGE_COLOR;
             this._rangeSelection.alpha = true;
             if (((this._spellLevel.castInLine) && (this._spellLevel.castInDiagonal)))
             {
@@ -599,30 +658,227 @@
                     };
                 };
             };
-            this._losSelection = null;
-            if (testLos)
+            var untargetableCells:Vector.<uint> = new Vector.<uint>();
+            this._losSelection = new Selection();
+            this._losSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA);
+            (this._losSelection.renderer as ZoneDARenderer).showFarmCell = false;
+            this._losSelection.color = LOS_COLOR;
+            var allCells:Vector.<uint> = this._rangeSelection.zone.getCells(origin);
+            if (!(this._spellLevel.castTestLos))
             {
-                this.drawLos(origin);
-            };
-            if (this._losSelection)
+                this._losSelection.zone = new Custom(allCells);
+            }
+            else
             {
+                this._losSelection.zone = new Custom(LosDetector.getCell(DataMapProvider.getInstance(), allCells, MapPoint.fromCellId(origin)));
                 this._rangeSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA, 0.5);
                 (this._rangeSelection.renderer as ZoneDARenderer).showFarmCell = false;
-                rangeCell = new Vector.<uint>();
-                noLosRangeCell = this._rangeSelection.zone.getCells(origin);
-                num = noLosRangeCell.length;
-                while (i < num)
+                _local_14 = this._rangeSelection.zone.getCells(origin);
+                _local_15 = this._losSelection.zone.getCells(origin);
+                _local_16 = _local_14.length;
+                _local_17 = 0;
+                while (_local_17 < _local_16)
                 {
-                    cellId = noLosRangeCell[i];
-                    if (this._losSelection.cells.indexOf(cellId) == -1)
+                    cellId = _local_14[_local_17];
+                    if (_local_15.indexOf(cellId) == -1)
                     {
-                        rangeCell.push(cellId);
+                        untargetableCells.push(cellId);
                     };
-                    i++;
+                    _local_17++;
                 };
-                this._rangeSelection.zone = new Custom(rangeCell);
             };
-            SelectionManager.getInstance().addSelection(this._rangeSelection, SELECTION_RANGE, origin);
+            var mpWithPortals:Vector.<MapPoint> = MarkedCellsManager.getInstance().getMarksMapPoint(GameActionMarkTypeEnum.PORTAL);
+            var portalUsableCells:Vector.<uint> = new Vector.<uint>();
+            var cells:Vector.<uint> = new Vector.<uint>();
+            if (((mpWithPortals) && ((mpWithPortals.length >= 2))))
+            {
+                for each (c in this._losSelection.zone.getCells(origin))
+                {
+                    cAfterPortal = this.getTargetThroughPortal(c);
+                    if (cAfterPortal != c)
+                    {
+                        this._targetingThroughPortal = true;
+                        if (this.isValidCell(cAfterPortal, true))
+                        {
+                            if (this._spellLevel.castTestLos)
+                            {
+                                entryMarkPortal = MarkedCellsManager.getInstance().getMarkAtCellId(c, GameActionMarkTypeEnum.PORTAL);
+                                teamPortals = MarkedCellsManager.getInstance().getMarksMapPoint(GameActionMarkTypeEnum.PORTAL, entryMarkPortal.teamId);
+                                portalsCellIds = LinkedCellsManager.getInstance().getLinks(MapPoint.fromCellId(c), teamPortals);
+                                exitPortal = portalsCellIds.pop();
+                                lastPortalMp = MapPoint.fromCellId(exitPortal);
+                                newTargetMp = MapPoint.fromCellId(cAfterPortal);
+                                cellsFromLine = Dofus2Line.getLine(lastPortalMp.cellId, newTargetMp.cellId);
+                                for each (cellFromLine in cellsFromLine)
+                                {
+                                    mp = MapPoint.fromCoords(cellFromLine.x, cellFromLine.y);
+                                    cells.push(mp.cellId);
+                                };
+                                cellsWithLosOk = LosDetector.getCell(DataMapProvider.getInstance(), cells, lastPortalMp);
+                                if (cellsWithLosOk.indexOf(cAfterPortal) > -1)
+                                {
+                                    portalUsableCells.push(c);
+                                }
+                                else
+                                {
+                                    untargetableCells.push(c);
+                                };
+                            }
+                            else
+                            {
+                                portalUsableCells.push(c);
+                            };
+                        }
+                        else
+                        {
+                            untargetableCells.push(c);
+                        };
+                        this._targetingThroughPortal = false;
+                    };
+                };
+            };
+            var losCells:Vector.<uint> = new Vector.<uint>();
+            for each (sc in this._losSelection.zone.getCells(origin))
+            {
+                if (untargetableCells.indexOf(sc) == -1)
+                {
+                    losCells.push(sc);
+                };
+            };
+            this._losSelection.zone = new Custom(losCells);
+            SelectionManager.getInstance().addSelection(this._losSelection, SELECTION_LOS, origin);
+            if (untargetableCells.length > 0)
+            {
+                this._rangeSelection.zone = new Custom(untargetableCells);
+                SelectionManager.getInstance().addSelection(this._rangeSelection, SELECTION_RANGE, origin);
+            };
+            if (portalUsableCells.length > 0)
+            {
+                this._portalsSelection = new Selection();
+                this._portalsSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA);
+                this._portalsSelection.color = PORTAL_COLOR;
+                this._portalsSelection.alpha = true;
+                this._portalsSelection.zone = new Custom(portalUsableCells);
+                SelectionManager.getInstance().addSelection(this._portalsSelection, SELECTION_PORTALS, origin);
+            };
+        }
+
+        private function showTeleportationPreview():void
+        {
+            var effects:Vector.<EffectInstance>;
+            var effect:EffectInstance;
+            var fcf:FightContextFrame;
+            var spellZone:IZone;
+            var spellZoneCells:Vector.<uint>;
+            var currentCell:uint;
+            var entitiesIds:Vector.<int>;
+            var entityId:int;
+            var entityInfos:GameFightFighterInformations;
+            var targetedEntities:Vector.<int>;
+            var casterId:int;
+            var spellWTmp:SpellWrapper;
+            var tpEffectId:uint;
+            var nbTeleportationEffects:int;
+            var spellW:SpellWrapper = (this._usedWrapper as SpellWrapper);
+            if (spellW)
+            {
+                effects = spellW.effects.concat(spellW.criticalEffect);
+                fcf = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
+                currentCell = this._currentCell;
+                entitiesIds = fcf.entitiesFrame.getEntitiesIdsList();
+                targetedEntities = new Vector.<int>(0);
+                casterId = PlayedCharacterManager.getInstance().id;
+                for each (effect in effects)
+                {
+                    if (effect.effectId == 1160)
+                    {
+                        spellWTmp = SpellWrapper.create(0, (effect.parameter0 as uint), spellW.spellLevel);
+                        if (this.hasTeleportation(spellWTmp))
+                        {
+                            for each (entityId in entitiesIds)
+                            {
+                                entityInfos = (fcf.entitiesFrame.getEntityInfos(entityId) as GameFightFighterInformations);
+                                if (((entityInfos.alive) && (DamageUtil.verifySpellEffectMask(casterId, entityId, effect))))
+                                {
+                                    currentCell = entityInfos.disposition.cellId;
+                                    effects = spellWTmp.effects.concat(spellWTmp.criticalEffect);
+                                    break;
+                                };
+                            };
+                            break;
+                        };
+                    };
+                };
+                for each (effect in effects)
+                {
+                    if (TELEPORTATION_EFFECTS.indexOf(effect.effectId) != -1)
+                    {
+                        tpEffectId = effect.effectId;
+                        spellZone = SpellZoneManager.getInstance().getZone(effect.zoneShape, (effect.zoneSize as uint), (effect.zoneMinSize as uint));
+                        spellZoneCells = spellZone.getCells(currentCell);
+                        for each (entityId in entitiesIds)
+                        {
+                            entityInfos = (fcf.entitiesFrame.getEntityInfos(entityId) as GameFightFighterInformations);
+                            if (((((((((((((entityInfos.alive) && (!((spellZoneCells.indexOf(entityInfos.disposition.cellId) == -1))))) && (DofusEntities.getEntity(entityId)))) && ((targetedEntities.indexOf(entityId) == -1)))) && (DamageUtil.verifySpellEffectMask(casterId, entityId, effect)))) && (!((((currentCell == entityInfos.disposition.cellId)) && ((((tpEffectId == 1104)) || ((tpEffectId == 1106))))))))) && (this.canTeleport(entityInfos.contextualId))))
+                            {
+                                targetedEntities.push(entityId);
+                            };
+                        };
+                        nbTeleportationEffects++;
+                    };
+                };
+                if ((((((targetedEntities.length == 0)) && ((tpEffectId == 1104)))) && (this.canTeleport(casterId))))
+                {
+                    targetedEntities.push(casterId);
+                };
+                if (this._fightTeleportationPreview)
+                {
+                    this._fightTeleportationPreview.remove();
+                };
+                if (targetedEntities.length > 0)
+                {
+                    this._fightTeleportationPreview = new FightTeleportationPreview(targetedEntities, tpEffectId, currentCell, fcf.entitiesFrame.getEntityInfos(casterId).disposition.cellId, (nbTeleportationEffects > 1));
+                    this._fightTeleportationPreview.show();
+                };
+            };
+        }
+
+        private function canTeleport(pEntityId:int):Boolean
+        {
+            var monster:Monster;
+            var fcf:FightContextFrame = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame);
+            var entityInfos:GameFightFighterInformations = (fcf.entitiesFrame.getEntityInfos(pEntityId) as GameFightFighterInformations);
+            if ((entityInfos is GameFightMonsterInformations))
+            {
+                monster = Monster.getMonsterById((entityInfos as GameFightMonsterInformations).creatureGenericId);
+                if (!(monster.canSwitchPos))
+                {
+                    return (false);
+                };
+            };
+            var entityStates:Array = FightersStateManager.getInstance().getStates(pEntityId);
+            return (((!(entityStates)) || ((((entityStates.indexOf(6) == -1)) && ((entityStates.indexOf(97) == -1))))));
+        }
+
+        private function hasTeleportation(pSpellW:SpellWrapper):Boolean
+        {
+            var effect:EffectInstance;
+            for each (effect in pSpellW.effects)
+            {
+                if (TELEPORTATION_EFFECTS.indexOf(effect.effectId) != -1)
+                {
+                    return (true);
+                };
+            };
+            return (false);
+        }
+
+        private function removeTeleportationPreview():void
+        {
+            if (this._fightTeleportationPreview)
+            {
+                this._fightTeleportationPreview.remove();
+            };
         }
 
         private function showTargetsTooltips(pSelection:Selection):void
@@ -655,7 +911,7 @@
                 entityInfos = (fcf.entitiesFrame.getEntityInfos(entityId) as GameFightFighterInformations);
                 if (entityInfos.alive)
                 {
-                    fcf.displayEntityTooltip(entityId, this._spellLevel);
+                    fcf.displayEntityTooltip(entityId, this._spellLevel, null, false, this._currentCell);
                 };
             };
         }
@@ -711,6 +967,85 @@
             this.refreshTarget();
         }
 
+        private function getTargetThroughPortal(target:int, drawLinks:Boolean=false):int
+        {
+            var targetPortal:MapPoint;
+            var portalMark:MarkInstance;
+            var portalp:MapPoint;
+            var effect:EffectInstance;
+            var _local_16:MapPoint;
+            var entryVector:Vector.<uint>;
+            var exitVector:Vector.<uint>;
+            if (((this._spellLevel) && (this._spellLevel.effects)))
+            {
+                for each (effect in this._spellLevel.effects)
+                {
+                    if (effect.effectId == ActionIdConverter.ACTION_FIGHT_DISABLE_PORTAL)
+                    {
+                        return (target);
+                    };
+                };
+            };
+            var currentFighterId:int = CurrentPlayedFighterManager.getInstance().currentFighterId;
+            var entityInfos:GameFightFighterInformations = (FightEntitiesFrame.getCurrentInstance().getEntityInfos(currentFighterId) as GameFightFighterInformations);
+            if (!(entityInfos))
+            {
+                return (target);
+            };
+            var markedCellsManager:MarkedCellsManager = MarkedCellsManager.getInstance();
+            var mpWithPortals:Vector.<MapPoint> = markedCellsManager.getMarksMapPoint(GameActionMarkTypeEnum.PORTAL);
+            if (((!(mpWithPortals)) || ((mpWithPortals.length < 2))))
+            {
+                return (target);
+            };
+            for each (portalp in mpWithPortals)
+            {
+                portalMark = markedCellsManager.getMarkAtCellId(portalp.cellId, GameActionMarkTypeEnum.PORTAL);
+                if (((portalMark) && (portalMark.active)))
+                {
+                    if (portalp.cellId == target)
+                    {
+                        targetPortal = portalp;
+                        break;
+                    };
+                };
+            };
+            if (!(targetPortal))
+            {
+                return (target);
+            };
+            mpWithPortals = markedCellsManager.getMarksMapPoint(GameActionMarkTypeEnum.PORTAL, portalMark.teamId);
+            var portalsCellIds:Vector.<uint> = LinkedCellsManager.getInstance().getLinks(targetPortal, mpWithPortals);
+            var exitPoint:MapPoint = MapPoint.fromCellId(portalsCellIds.pop());
+            var fighterPoint:MapPoint = MapPoint.fromCellId(entityInfos.disposition.cellId);
+            if (!(fighterPoint))
+            {
+                return (target);
+            };
+            var symmetricalTargetX:int = ((targetPortal.x - fighterPoint.x) + exitPoint.x);
+            var symmetricalTargetY:int = ((targetPortal.y - fighterPoint.y) + exitPoint.y);
+            if (!(MapPoint.isInMap(symmetricalTargetX, symmetricalTargetY)))
+            {
+                return ((AtouinConstants.MAP_CELLS_COUNT + 1));
+            };
+            _local_16 = MapPoint.fromCoords(symmetricalTargetX, symmetricalTargetY);
+            if (drawLinks)
+            {
+                entryVector = new Vector.<uint>();
+                entryVector.push(fighterPoint.cellId);
+                entryVector.push(targetPortal.cellId);
+                LinkedCellsManager.getInstance().drawLinks("spellEntryLink", entryVector, 10, TARGET_COLOR.color, 1);
+                if (_local_16.cellId < AtouinConstants.MAP_CELLS_COUNT)
+                {
+                    exitVector = new Vector.<uint>();
+                    exitVector.push(exitPoint.cellId);
+                    exitVector.push(_local_16.cellId);
+                    LinkedCellsManager.getInstance().drawLinks("spellExitLink", exitVector, 6, TARGET_COLOR.color, 1);
+                };
+            };
+            return (_local_16.cellId);
+        }
+
         private function castSpell(cell:uint, targetId:int=0):void
         {
             var gafcotrmsg:GameActionFightCastOnTargetRequestMessage;
@@ -755,17 +1090,6 @@
             Kernel.getWorker().removeFrame(this);
         }
 
-        private function drawLos(origin:uint):void
-        {
-            this._losSelection = new Selection();
-            this._losSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_AREA);
-            (this._losSelection.renderer as ZoneDARenderer).showFarmCell = false;
-            this._losSelection.color = LOS_COLOR;
-            var cells:Vector.<uint> = this._rangeSelection.zone.getCells(origin);
-            this._losSelection.zone = new Custom(LosDetector.getCell(DataMapProvider.getInstance(), cells, MapPoint.fromCellId(origin)));
-            SelectionManager.getInstance().addSelection(this._losSelection, SELECTION_LOS, origin);
-        }
-
         private function removeRange():void
         {
             var s:Selection = SelectionManager.getInstance().getSelection(SELECTION_RANGE);
@@ -780,6 +1104,12 @@
                 los.remove();
                 this._losSelection = null;
             };
+            var ps:Selection = SelectionManager.getInstance().getSelection(SELECTION_PORTALS);
+            if (ps)
+            {
+                ps.remove();
+                this._portalsSelection = null;
+            };
             this._isInfiniteTarget = false;
         }
 
@@ -793,15 +1123,16 @@
             };
         }
 
-        private function isValidCell(cell:uint):Boolean
+        private function isValidCell(cell:uint, ignorePortal:Boolean=false):Boolean
         {
             var spellLevel:SpellLevel;
             var entity:IEntity;
             var isGlyph:Boolean;
             var mustContinue:Boolean;
             var preview:IEntity;
+            var valid:Boolean;
             var cellData:CellData = MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cell];
-            if (cellData.farmCell)
+            if (((!(cellData)) || (cellData.farmCell)))
             {
                 return (false);
             };
@@ -845,11 +1176,27 @@
                     };
                 };
             };
-            if (((this._spellLevel.castTestLos) && (Dofus.getInstance().options.showLineOfSight)))
+            if (((this._targetingThroughPortal) && (!(ignorePortal))))
             {
-                return (SelectionManager.getInstance().isInside(cell, SELECTION_LOS));
+                valid = this.isValidCell(this.getTargetThroughPortal(cell), true);
+                if (!(valid))
+                {
+                    return (false);
+                };
             };
-            return (SelectionManager.getInstance().isInside(cell, SELECTION_RANGE));
+            if (this._targetingThroughPortal)
+            {
+                if (cellData.nonWalkableDuringFight)
+                {
+                    return (false);
+                };
+                if (cellData.mov)
+                {
+                    return (true);
+                };
+                return (false);
+            };
+            return (SelectionManager.getInstance().isInside(cell, SELECTION_LOS));
         }
 
 

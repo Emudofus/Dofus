@@ -74,7 +74,6 @@
         private var _dragging:Boolean;
         private var _currentMap:Map;
         private var _availableMaps:Array;
-        private var _layersVisibility:Array;
         private var _arrowPool:Array;
         private var _arrowAllocation:Dictionary;
         private var _reverseArrowAllocation:Dictionary;
@@ -85,6 +84,7 @@
         private var _flagCursorVisible:Boolean;
         private var _mouseOnArrow:Boolean = false;
         private var _zoomLevels:Array;
+        private var _zoomLevelsPercent:Array;
         private var _visibleMapAreas:Vector.<MapArea>;
         private var _mapToClear:Map;
         public var mapWidth:Number;
@@ -247,10 +247,21 @@
             return (this._zoomLevels);
         }
 
+        public function get allLayersVisible():Boolean
+        {
+            var layer:Sprite;
+            for each (layer in this._layers)
+            {
+                if (!(layer.visible))
+                {
+                    return (false);
+                };
+            };
+            return (true);
+        }
+
         public function finalize():void
         {
-            var zoom:Number;
-            var zoomsToRemove:Vector.<Number>;
             var arrow:Texture;
             var child:InteractiveObject;
             destroy(this._mapBitmapContainer);
@@ -298,7 +309,14 @@
                 };
                 i++;
             };
-            var updateAvailableZooms:Boolean;
+            this.setupZoomLevels(width, height);
+            getUi().iAmFinalized(this);
+        }
+
+        public function setupZoomLevels(width:Number, height:Number):void
+        {
+            var zoom:Number;
+            var zoomsToRemove:Vector.<Number>;
             for each (zoom in this._zoomLevels)
             {
                 if (((this._currentMap) && (((((this._currentMap.initialWidth * zoom) < width)) || (((this._currentMap.initialHeight * zoom) < height))))))
@@ -318,7 +336,11 @@
                 };
                 Berilia.getInstance().handler.process(new MapMoveMessage(this));
             };
-            getUi().iAmFinalized(this);
+            this._zoomLevelsPercent = [];
+            for each (zoom in this._zoomLevels)
+            {
+                this._zoomLevelsPercent.push(int((zoom * 100)));
+            };
         }
 
         public function addLayer(name:String):void
@@ -609,6 +631,16 @@
             };
         }
 
+        public function showAllLayers(visible:Boolean=true):void
+        {
+            var layer:Sprite;
+            for each (layer in this._layers)
+            {
+                layer.visible = visible;
+            };
+            this.updateMapElements();
+        }
+
         public function moveToPixel(x:int, y:int, zoomFactor:Number):void
         {
             this._mapContainer.x = x;
@@ -707,6 +739,18 @@
             };
             this.updateVisibleChunck();
             Berilia.getInstance().handler.process(new MapMoveMessage(this));
+        }
+
+        private function zoomWithScalePercent(scalePercent:int, coord:Point=null):void
+        {
+            if (this._zoomLevelsPercent.indexOf(scalePercent) != -1)
+            {
+                this.zoom((scalePercent / 100), coord);
+            }
+            else
+            {
+                _log.warn((((("Can't zoom, a scale of " + String((scalePercent / 100))) + " (") + scalePercent) + ") is not defined"));
+            };
         }
 
         public function zoom(scale:Number, coord:Point=null):void
@@ -1375,7 +1419,7 @@
             var _local_3:MouseOutMessage;
             var _local_4:MouseClickMessage;
             var _local_5:MouseWheelMessage;
-            var _local_6:Number;
+            var _local_6:int;
             var _local_7:Point;
             var _local_8:MouseRightClickMessage;
             var me:MapElement;
@@ -1502,7 +1546,7 @@
                     return (false);
                 case (msg is MouseWheelMessage):
                     _local_5 = (msg as MouseWheelMessage);
-                    _local_6 = (this._mapContainer.scaleX + ((((_local_5.mouseEvent.delta > 0)) ? 1 : -1) * this.zoomStep));
+                    _local_6 = ((this._mapContainer.scaleX * 100) + ((((_local_5.mouseEvent.delta > 0)) ? 100 : -100) * this.zoomStep));
                     _local_7 = new Point(_local_5.mouseEvent.localX, _local_5.mouseEvent.localY);
                     switch (true)
                     {
@@ -1516,7 +1560,7 @@
                             _local_7.y = _local_5.mouseEvent.target.y;
                             break;
                     };
-                    this.zoom(_local_6, _local_7);
+                    this.zoomWithScalePercent(_local_6, _local_7);
                     Berilia.getInstance().handler.process(new MapMoveMessage(this));
                     return (true);
                 case (msg is MouseRightClickMessage):

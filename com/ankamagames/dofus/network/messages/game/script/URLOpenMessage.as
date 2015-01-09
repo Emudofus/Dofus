@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class URLOpenMessage extends NetworkMessage implements INetworkMessage 
@@ -39,40 +40,40 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_URLOpenMessage(output);
         }
 
-        public function serializeAs_URLOpenMessage(output:IDataOutput):void
+        public function serializeAs_URLOpenMessage(output:ICustomDataOutput):void
         {
             if (this.urlId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.urlId) + ") on element urlId.")));
             };
-            output.writeInt(this.urlId);
+            output.writeByte(this.urlId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_URLOpenMessage(input);
         }
 
-        public function deserializeAs_URLOpenMessage(input:IDataInput):void
+        public function deserializeAs_URLOpenMessage(input:ICustomDataInput):void
         {
-            this.urlId = input.readInt();
+            this.urlId = input.readByte();
             if (this.urlId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.urlId) + ") on element of URLOpenMessage.urlId.")));

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.actions.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class FightTemporarySpellImmunityEffect extends AbstractFightDispellableEffect implements INetworkType 
@@ -31,23 +31,23 @@
             this.immuneSpellId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightTemporarySpellImmunityEffect(output);
         }
 
-        public function serializeAs_FightTemporarySpellImmunityEffect(output:IDataOutput):void
+        public function serializeAs_FightTemporarySpellImmunityEffect(output:ICustomDataOutput):void
         {
             super.serializeAs_AbstractFightDispellableEffect(output);
             output.writeInt(this.immuneSpellId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightTemporarySpellImmunityEffect(input);
         }
 
-        public function deserializeAs_FightTemporarySpellImmunityEffect(input:IDataInput):void
+        public function deserializeAs_FightTemporarySpellImmunityEffect(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.immuneSpellId = input.readInt();

@@ -159,6 +159,7 @@
                 {
                     carac = new CharacterBaseCharacteristic();
                     carac.base = 0;
+                    carac.additionnal = 0;
                     carac.alignGiftBonus = 0;
                     carac.contextModif = this.delta;
                     carac.objectsAndMountBonus = 0;

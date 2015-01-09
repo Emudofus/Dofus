@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import __AS3__.vec.Vector;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.enums.PlayableBreedEnum;
     import __AS3__.vec.*;
 
@@ -59,24 +60,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharacterCreationRequestMessage(output);
         }
 
-        public function serializeAs_CharacterCreationRequestMessage(output:IDataOutput):void
+        public function serializeAs_CharacterCreationRequestMessage(output:ICustomDataOutput):void
         {
             output.writeUTF(this.name);
             output.writeByte(this.breed);
@@ -91,19 +92,19 @@
             {
                 throw (new Error((("Forbidden value (" + this.cosmeticId) + ") on element cosmeticId.")));
             };
-            output.writeInt(this.cosmeticId);
+            output.writeVarShort(this.cosmeticId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharacterCreationRequestMessage(input);
         }
 
-        public function deserializeAs_CharacterCreationRequestMessage(input:IDataInput):void
+        public function deserializeAs_CharacterCreationRequestMessage(input:ICustomDataInput):void
         {
             this.name = input.readUTF();
             this.breed = input.readByte();
-            if ((((this.breed < PlayableBreedEnum.Feca)) || ((this.breed > PlayableBreedEnum.Steamer))))
+            if ((((this.breed < PlayableBreedEnum.Feca)) || ((this.breed > PlayableBreedEnum.Eliatrope))))
             {
                 throw (new Error((("Forbidden value (" + this.breed) + ") on element of CharacterCreationRequestMessage.breed.")));
             };
@@ -114,7 +115,7 @@
                 this.colors[_i4] = input.readInt();
                 _i4++;
             };
-            this.cosmeticId = input.readInt();
+            this.cosmeticId = input.readVarUhShort();
             if (this.cosmeticId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.cosmeticId) + ") on element of CharacterCreationRequestMessage.cosmeticId.")));

@@ -14,6 +14,7 @@
     import com.ankamagames.dofus.misc.utils.StatisticReportingManager;
     import com.ankamagames.dofus.BuildInfos;
     import com.ankamagames.dofus.logic.game.approach.managers.PartManager;
+    import com.ankamagames.dofus.logic.connection.messages.UpdaterConnectionStatusMessage;
 
     public class UpdaterConnexionHandler 
     {
@@ -74,6 +75,10 @@
         {
             StatisticReportingManager.getInstance().report(((("UpdaterConnexion - " + BuildInfos.BUILD_TYPE) + " - ") + BuildInfos.BUILD_VERSION), "success");
             PartManager.getInstance().initialize();
+            if (!(AirScanner.isStreamingVersion()))
+            {
+                Kernel.getWorker().process(new UpdaterConnectionStatusMessage(true));
+            };
         }
 
         public function onIoError(e:IOErrorEvent):void
@@ -85,6 +90,10 @@
             else
             {
                 StatisticReportingManager.getInstance().report(((("UpdaterConnexion - " + BuildInfos.BUILD_TYPE) + " - ") + BuildInfos.BUILD_VERSION), "noupdater");
+            };
+            if (!(AirScanner.isStreamingVersion()))
+            {
+                Kernel.getWorker().process(new UpdaterConnectionStatusMessage(false));
             };
             _log.error("Can't etablish connection with updater");
         }

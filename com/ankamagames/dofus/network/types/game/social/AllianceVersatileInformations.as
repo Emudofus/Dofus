@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.social
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class AllianceVersatileInformations implements INetworkType 
@@ -38,58 +38,58 @@
             this.nbSubarea = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AllianceVersatileInformations(output);
         }
 
-        public function serializeAs_AllianceVersatileInformations(output:IDataOutput):void
+        public function serializeAs_AllianceVersatileInformations(output:ICustomDataOutput):void
         {
             if (this.allianceId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.allianceId) + ") on element allianceId.")));
             };
-            output.writeInt(this.allianceId);
+            output.writeVarInt(this.allianceId);
             if (this.nbGuilds < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbGuilds) + ") on element nbGuilds.")));
             };
-            output.writeShort(this.nbGuilds);
+            output.writeVarShort(this.nbGuilds);
             if (this.nbMembers < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbMembers) + ") on element nbMembers.")));
             };
-            output.writeShort(this.nbMembers);
+            output.writeVarShort(this.nbMembers);
             if (this.nbSubarea < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbSubarea) + ") on element nbSubarea.")));
             };
-            output.writeShort(this.nbSubarea);
+            output.writeVarShort(this.nbSubarea);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AllianceVersatileInformations(input);
         }
 
-        public function deserializeAs_AllianceVersatileInformations(input:IDataInput):void
+        public function deserializeAs_AllianceVersatileInformations(input:ICustomDataInput):void
         {
-            this.allianceId = input.readInt();
+            this.allianceId = input.readVarUhInt();
             if (this.allianceId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.allianceId) + ") on element of AllianceVersatileInformations.allianceId.")));
             };
-            this.nbGuilds = input.readShort();
+            this.nbGuilds = input.readVarUhShort();
             if (this.nbGuilds < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbGuilds) + ") on element of AllianceVersatileInformations.nbGuilds.")));
             };
-            this.nbMembers = input.readShort();
+            this.nbMembers = input.readVarUhShort();
             if (this.nbMembers < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbMembers) + ") on element of AllianceVersatileInformations.nbMembers.")));
             };
-            this.nbSubarea = input.readShort();
+            this.nbSubarea = input.readVarUhShort();
             if (this.nbSubarea < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbSubarea) + ") on element of AllianceVersatileInformations.nbSubarea.")));

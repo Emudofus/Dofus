@@ -59,6 +59,11 @@
             return (this._random);
         }
 
+        public function set random(pRandom:int):void
+        {
+            this._random = pRandom;
+        }
+
         public function applyDamageMultiplier(pMultiplier:Number):void
         {
             this.minDamage = (this.minDamage * pMultiplier);

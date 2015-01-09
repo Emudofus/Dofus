@@ -11,6 +11,7 @@
     import com.ankamagames.jerakine.data.GameData;
     import com.ankamagames.jerakine.utils.display.spellZone.ZoneEffect;
     import com.ankamagames.dofus.datacenter.monsters.Monster;
+    import com.ankamagames.dofus.logic.game.fight.miscs.ActionIdConverter;
     import __AS3__.vec.*;
 
     public class SpellLevel implements ICellZoneProvider, IDataCenter 
@@ -131,11 +132,11 @@
             var monsterS:Monster;
             for each (effect in this.effects)
             {
-                if ((((effect.effectId == 180)) || ((effect.effectId == 1011))))
+                if ((((effect.effectId == ActionIdConverter.ACTION_CHARACTER_ADD_DOUBLE)) || ((effect.effectId == ActionIdConverter.ACTION_SUMMON_SLAVE))))
                 {
                     return (true);
                 };
-                if (effect.effectId == 181)
+                if (effect.effectId == ActionIdConverter.ACTION_SUMMON_CREATURE)
                 {
                     summonId = effect.diceNum;
                     monsterS = Monster.getMonsterById(summonId);
@@ -155,11 +156,11 @@
             var monsterS:Monster;
             for each (effect in this.effects)
             {
-                if (effect.effectId == 1008)
+                if (effect.effectId == ActionIdConverter.ACTION_SUMMON_BOMB)
                 {
                     return (true);
                 };
-                if (effect.effectId == 181)
+                if (effect.effectId == ActionIdConverter.ACTION_SUMMON_CREATURE)
                 {
                     summonId = effect.diceNum;
                     monsterS = Monster.getMonsterById(summonId);
@@ -167,6 +168,19 @@
                     {
                         return (true);
                     };
+                };
+            };
+            return (false);
+        }
+
+        public function get canThrowPlayer():Boolean
+        {
+            var effect:EffectInstanceDice;
+            for each (effect in this.effects)
+            {
+                if (effect.effectId == ActionIdConverter.ACTION_THROW_CARRIED_CHARACTER)
+                {
+                    return (true);
                 };
             };
             return (false);

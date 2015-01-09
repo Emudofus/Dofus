@@ -81,10 +81,10 @@
     import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.HousePropertiesMessage;
     import com.ankamagames.dofus.network.types.game.interactive.MapObstacle;
     import com.ankamagames.dofus.network.types.game.context.ActorOrientation;
-    import com.ankamagames.tiphon.display.TiphonSprite;
     import com.ankamagames.dofus.logic.game.common.frames.EmoticonFrame;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.emote.EmotePlayRequestMessage;
     import com.ankamagames.dofus.network.types.game.paddock.PaddockItem;
+    import com.ankamagames.tiphon.display.TiphonSprite;
     import flash.display.Sprite;
     import com.ankamagames.dofus.datacenter.quest.Quest;
     import flash.geom.Rectangle;
@@ -97,7 +97,6 @@
     import com.ankamagames.dofus.logic.common.managers.PlayerManager;
     import com.ankamagames.berilia.managers.TooltipManager;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterInformations;
-    import com.ankamagames.atouin.managers.EntitiesManager;
     import com.ankamagames.tiphon.events.TiphonEvent;
     import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionEmote;
     import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionObjectUse;
@@ -111,8 +110,6 @@
     import com.ankamagames.dofus.types.enums.AnimationEnum;
     import com.ankamagames.dofus.network.enums.AggressableStatusEnum;
     import com.ankamagames.dofus.logic.game.common.managers.SpeakingItemManager;
-    import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
-    import com.ankamagames.dofus.types.entities.AnimStatiqueSubEntityBehavior;
     import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
     import com.ankamagames.dofus.network.enums.PlayerLifeStatusEnum;
     import com.ankamagames.jerakine.types.enums.DirectionsEnum;
@@ -126,6 +123,9 @@
     import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
     import com.ankamagames.atouin.messages.MapZoomMessage;
     import com.ankamagames.jerakine.messages.Message;
+    import com.ankamagames.dofus.types.data.Follower;
+    import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
+    import com.ankamagames.dofus.types.entities.AnimStatiqueSubEntityBehavior;
     import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
     import com.ankamagames.dofus.logic.game.roleplay.types.Fight;
     import com.ankamagames.dofus.logic.game.roleplay.types.GameContextPaddockItemInformations;
@@ -137,6 +137,7 @@
     import com.ankamagames.dofus.network.types.game.context.roleplay.AlternativeMonstersInGroupLightInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GroupMonsterStaticInformationsWithAlternatives;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GroupMonsterStaticInformations;
+    import com.ankamagames.dofus.network.types.game.context.roleplay.MonsterInGroupInformations;
     import com.ankamagames.dofus.network.types.game.look.IndexedEntityLook;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcWithQuestInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionFollowers;
@@ -147,6 +148,7 @@
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
     import com.ankamagames.tiphon.types.IAnimationModifier;
     import com.ankamagames.tiphon.types.TiphonUtility;
+    import com.ankamagames.atouin.managers.EntitiesManager;
     import com.ankamagames.dofus.network.types.game.context.fight.FightTeamInformations;
     import com.ankamagames.jerakine.entities.interfaces.IEntity;
     import com.ankamagames.dofus.factories.RolePlayEntitiesFactory;
@@ -176,6 +178,7 @@
     import com.ankamagames.dofus.datacenter.sounds.SoundBones;
     import flash.utils.getQualifiedClassName;
     import com.ankamagames.tiphon.engine.TiphonEventsManager;
+    import com.ankamagames.jerakine.types.ASwf;
     import flash.display.MovieClip;
     import flash.utils.clearTimeout;
     import com.ankamagames.dofus.network.messages.game.context.mount.PaddockMoveItemRequestMessage;
@@ -423,7 +426,6 @@
             var rpInfos:GameRolePlayCharacterInformations;
             var k:int;
             var orientation:ActorOrientation;
-            var rider:TiphonSprite;
             var myAura:Emoticon;
             var rpEmoticonFrame:EmoticonFrame;
             var emoteId2:uint;
@@ -511,12 +513,12 @@
                         TooltipManager.hide();
                         updateCreaturesLimit();
                         newCreatureMode = false;
+                        if (!(this._playersId))
+                        {
+                            this._playersId = new Array();
+                        };
                         for each (actor in _local_3.actors)
                         {
-                            if (!(this._playersId))
-                            {
-                                this._playersId = new Array();
-                            };
                             if ((((actor.contextualId > 0)) && ((this._playersId.indexOf(actor.contextualId) == -1))))
                             {
                                 this._playersId.push(actor.contextualId);
@@ -526,7 +528,7 @@
                                 this._monstersIds.push(actor.contextualId);
                             };
                         };
-                        _entitiesVisibleNumber = EntitiesManager.getInstance().entitiesCount;
+                        _entitiesVisibleNumber = (this._playersId.length + this._monstersIds.length);
                         if ((((_creaturesLimit == 0)) || ((((_creaturesLimit < 50)) && ((_entitiesVisibleNumber >= _creaturesLimit))))))
                         {
                             _creaturesMode = true;
@@ -771,55 +773,7 @@
                         _log.error((("GameRolePlaySetAnimationMessage : l'entitée " + _local_13.informations.contextualId) + " n'a pas ete trouvee"));
                         return (true);
                     };
-                    if (_local_13.animation == AnimationEnum.ANIM_STATIQUE)
-                    {
-                        this._currentEmoticon = 0;
-                        _local_14.setAnimation(_local_13.animation);
-                        this._emoteTimesBySprite[_local_14.name] = 0;
-                    }
-                    else
-                    {
-                        if (!(_local_13.directions8))
-                        {
-                            if ((_local_14.getDirection() % 2) == 0)
-                            {
-                                _local_14.setDirection((_local_14.getDirection() + 1));
-                            };
-                        };
-                        if (((_creaturesMode) || (!(_local_14.hasAnimation(_local_13.animation, _local_14.getDirection())))))
-                        {
-                            _log.error((((("L'animation " + _local_13.animation) + "_") + _local_14.getDirection()) + " est introuvable."));
-                            _local_14.visible = true;
-                        }
-                        else
-                        {
-                            if (!(_creaturesMode))
-                            {
-                                this._emoteTimesBySprite[_local_14.name] = _local_13.duration;
-                                _local_14.removeEventListener(TiphonEvent.ANIMATION_END, this.onAnimationEnd);
-                                _local_14.addEventListener(TiphonEvent.ANIMATION_END, this.onAnimationEnd);
-                                rider = (_local_14.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0) as TiphonSprite);
-                                if (rider)
-                                {
-                                    rider.removeEventListener(TiphonEvent.ANIMATION_ADDED, this.onAnimationAdded);
-                                    rider.addEventListener(TiphonEvent.ANIMATION_ADDED, this.onAnimationAdded);
-                                };
-                                _local_14.setAnimation(_local_13.animation);
-                                if (_local_13.playStaticOnly)
-                                {
-                                    if (((_local_14.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET)) && (_local_14.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length)))
-                                    {
-                                        _local_14.setSubEntityBehaviour(1, new AnimStatiqueSubEntityBehavior());
-                                    };
-                                    _local_14.stopAnimationAtLastFrame();
-                                    if (rider)
-                                    {
-                                        rider.stopAnimationAtLastFrame();
-                                    };
-                                };
-                            };
-                        };
-                    };
+                    this.playAnimationOnEntity(_local_14, _local_13.animation, _local_13.directions8, _local_13.duration, _local_13.playStaticOnly);
                     return (true);
                 case (msg is EntityMovementCompleteMessage):
                     _local_15 = (msg as EntityMovementCompleteMessage);
@@ -1134,9 +1088,71 @@
                             this.updateSwordOptions(fightTeam.fight.fightId, fightTeam.teamInfos.teamId);
                         };
                     };
-                    return (false);
+                    return (true);
             };
             return (false);
+        }
+
+        private function playAnimationOnEntity(characterEntity:AnimatedCharacter, animation:String, directions8:Boolean, duration:uint, playStaticOnly:Boolean):void
+        {
+            var f:Follower;
+            var rider:TiphonSprite;
+            if (animation == AnimationEnum.ANIM_STATIQUE)
+            {
+                this._currentEmoticon = 0;
+                characterEntity.setAnimation(animation);
+                this._emoteTimesBySprite[characterEntity.name] = 0;
+            }
+            else
+            {
+                if (!(directions8))
+                {
+                    if ((characterEntity.getDirection() % 2) == 0)
+                    {
+                        characterEntity.setDirection((characterEntity.getDirection() + 1));
+                    };
+                };
+                if (((_creaturesMode) || (!(characterEntity.hasAnimation(animation, characterEntity.getDirection())))))
+                {
+                    _log.error((((("L'animation " + animation) + "_") + characterEntity.getDirection()) + " est introuvable."));
+                    characterEntity.visible = true;
+                }
+                else
+                {
+                    if (!(_creaturesMode))
+                    {
+                        this._emoteTimesBySprite[characterEntity.name] = duration;
+                        characterEntity.removeEventListener(TiphonEvent.ANIMATION_END, this.onAnimationEnd);
+                        characterEntity.addEventListener(TiphonEvent.ANIMATION_END, this.onAnimationEnd);
+                        rider = (characterEntity.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0) as TiphonSprite);
+                        if (rider)
+                        {
+                            rider.removeEventListener(TiphonEvent.ANIMATION_ADDED, this.onAnimationAdded);
+                            rider.addEventListener(TiphonEvent.ANIMATION_ADDED, this.onAnimationAdded);
+                        };
+                        characterEntity.setAnimation(animation);
+                        if (playStaticOnly)
+                        {
+                            if (((characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET)) && (characterEntity.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length)))
+                            {
+                                characterEntity.setSubEntityBehaviour(1, new AnimStatiqueSubEntityBehavior());
+                            };
+                            characterEntity.stopAnimationAtLastFrame();
+                            if (rider)
+                            {
+                                rider.stopAnimationAtLastFrame();
+                            };
+                        };
+                    };
+                };
+            };
+            for each (f in characterEntity.followers)
+            {
+                if ((((f.type == Follower.TYPE_PET)) && ((f.entity is AnimatedCharacter))))
+                {
+                    this.playAnimationOnEntity((f.entity as AnimatedCharacter), animation, directions8, duration, playStaticOnly);
+                };
+            };
         }
 
         private function initNewMap():void
@@ -1307,7 +1323,7 @@
             };
             if (followersLooks)
             {
-                this.manageFollowers((DofusEntities.getEntity(pMonstersInfo.contextualId) as AnimatedCharacter), followersLooks, followersSpeeds);
+                this.manageFollowers((DofusEntities.getEntity(pMonstersInfo.contextualId) as AnimatedCharacter), followersLooks, followersSpeeds, null, true);
             };
         }
 
@@ -1349,16 +1365,21 @@
 
         override public function addOrUpdateActor(infos:GameContextActorInformations, animationModifier:IAnimationModifier=null):AnimatedCharacter
         {
+            var ac:AnimatedCharacter;
             var _local_4:Sprite;
             var _local_5:Quest;
             var _local_6:GameRolePlayGroupMonsterInformations;
             var _local_7:Boolean;
             var _local_8:Vector.<EntityLook>;
-            var option:*;
+            var _local_9:Vector.<uint>;
             var _local_10:Array;
+            var migi:MonsterInGroupInformations;
+            var option:*;
+            var _local_13:Array;
             var indexedEL:IndexedEntityLook;
             var iEL:IndexedEntityLook;
-            var ac:AnimatedCharacter = super.addOrUpdateActor(infos);
+            var tel:TiphonEntityLook;
+            ac = super.addOrUpdateActor(infos);
             switch (true)
             {
                 case (infos is GameRolePlayNpcWithQuestInformations):
@@ -1406,6 +1427,17 @@
                 case (infos is GameRolePlayGroupMonsterInformations):
                     _local_6 = (infos as GameRolePlayGroupMonsterInformations);
                     _local_7 = Monster.getMonsterById(_local_6.staticInfos.mainCreatureLightInfos.creatureGenericId).isMiniBoss;
+                    if (((((!(_local_7)) && (_local_6.staticInfos.underlings))) && ((_local_6.staticInfos.underlings.length > 0))))
+                    {
+                        for each (migi in _local_6.staticInfos.underlings)
+                        {
+                            _local_7 = Monster.getMonsterById(migi.creatureGenericId).isMiniBoss;
+                            if (_local_7)
+                            {
+                                break;
+                            };
+                        };
+                    };
                     this.updateMonstersGroup(_local_6);
                     if (this._monstersIds.indexOf(infos.contextualId) == -1)
                     {
@@ -1434,20 +1466,22 @@
                         this._playersId.push(infos.contextualId);
                     };
                     _local_8 = new Vector.<EntityLook>();
+                    _local_9 = new Vector.<uint>();
                     for each (option in (infos as GameRolePlayHumanoidInformations).humanoidInfo.options)
                     {
                         switch (true)
                         {
                             case (option is HumanOptionFollowers):
-                                _local_10 = new Array();
+                                _local_13 = new Array();
                                 for each (indexedEL in option.followingCharactersLook)
                                 {
-                                    _local_10.push(indexedEL);
+                                    _local_13.push(indexedEL);
                                 };
-                                _local_10.sortOn("index");
-                                for each (iEL in _local_10)
+                                _local_13.sortOn("index");
+                                for each (iEL in _local_13)
                                 {
                                     _local_8.push(iEL.look);
+                                    _local_9.push(Follower.TYPE_NETWORK);
                                 };
                                 break;
                             case (option is HumanOptionAlliance):
@@ -1455,7 +1489,13 @@
                                 break;
                         };
                     };
-                    this.manageFollowers(ac, _local_8);
+                    _local_10 = ac.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET_FOLLOWER);
+                    for each (tel in _local_10)
+                    {
+                        _local_8.push(EntityLookAdapter.toNetwork(tel));
+                        _local_9.push(Follower.TYPE_PET);
+                    };
+                    this.manageFollowers(ac, _local_8, null, _local_9);
                     if (ac.look.getBone() == 1)
                     {
                         ac.addAnimationModifier(_customAnimModifier);
@@ -1494,10 +1534,63 @@
         override protected function updateActorLook(actorId:int, newLook:EntityLook, smoke:Boolean=false):AnimatedCharacter
         {
             var anim:String;
+            var pets:Array;
+            var toAdd:Array;
+            var found:Boolean;
+            var tel:TiphonEntityLook;
+            var toRemove:Array;
+            var f:Follower;
             var ac:AnimatedCharacter = (DofusEntities.getEntity(actorId) as AnimatedCharacter);
             if (ac)
             {
                 anim = (TiphonUtility.getEntityWithoutMount(ac) as TiphonSprite).getAnimation();
+                pets = EntityLookAdapter.fromNetwork(newLook).getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET_FOLLOWER);
+                toAdd = [];
+                found = false;
+                for each (tel in pets)
+                {
+                    found = false;
+                    for each (f in ac.followers)
+                    {
+                        if ((((((f.type == Follower.TYPE_PET)) && ((f.entity is TiphonSprite)))) && ((f.entity as TiphonSprite).look.equals(tel))))
+                        {
+                            found = true;
+                            break;
+                        };
+                    };
+                    if (!(found))
+                    {
+                        toAdd.push(tel);
+                    };
+                };
+                for each (tel in toAdd)
+                {
+                    ac.addFollower(this.createFollower(tel, ac, Follower.TYPE_PET), true);
+                };
+                toRemove = [];
+                for each (f in ac.followers)
+                {
+                    found = false;
+                    if (f.type == Follower.TYPE_PET)
+                    {
+                        for each (tel in pets)
+                        {
+                            if ((((f.entity is TiphonSprite)) && ((f.entity as TiphonSprite).look.equals(tel))))
+                            {
+                                found = true;
+                                break;
+                            };
+                        };
+                        if (!(found))
+                        {
+                            toRemove.push(f);
+                        };
+                    };
+                };
+                for each (f in toRemove)
+                {
+                    ac.removeFollower(f);
+                };
                 if (((!((anim.indexOf("_Statique_") == -1))) && (((!(this._lastStaticAnimations[actorId])) || (!((this._lastStaticAnimations[actorId] == anim)))))))
                 {
                     this._lastStaticAnimations[actorId] = {"anim":anim};
@@ -1536,13 +1629,12 @@
             ac.removeBackground("questRepeatableObjectiveClip");
         }
 
-        private function manageFollowers(char:AnimatedCharacter, followers:Vector.<EntityLook>, speedAdjust:Vector.<Number>=null):void
+        private function manageFollowers(char:AnimatedCharacter, followers:Vector.<EntityLook>, speedAdjust:Vector.<Number>=null, types:Vector.<uint>=null, areMonsters:Boolean=false):void
         {
             var num:int;
             var i:int;
             var followerBaseLook:EntityLook;
             var followerEntityLook:TiphonEntityLook;
-            var followerEntity:AnimatedCharacter;
             if (!(char.followersEqual(followers)))
             {
                 char.removeAllFollowers();
@@ -1552,15 +1644,20 @@
                 {
                     followerBaseLook = followers[i];
                     followerEntityLook = EntityLookAdapter.fromNetwork(followerBaseLook);
-                    followerEntity = new AnimatedCharacter(EntitiesManager.getInstance().getFreeEntityId(), followerEntityLook, char);
-                    if (speedAdjust)
-                    {
-                        followerEntity.speedAdjust = speedAdjust[i];
-                    };
-                    char.addFollower(followerEntity);
+                    char.addFollower(this.createFollower(followerEntityLook, char, ((types) ? types[i] : ((areMonsters) ? Follower.TYPE_MONSTER : (Follower.TYPE_NETWORK))), ((!((speedAdjust == null))) ? speedAdjust[i] : null)));
                     i++;
                 };
             };
+        }
+
+        private function createFollower(look:TiphonEntityLook, parent:AnimatedCharacter, type:uint, speedAdjust:Number=0):Follower
+        {
+            var followerEntity:AnimatedCharacter = new AnimatedCharacter(EntitiesManager.getInstance().getFreeEntityId(), look, parent);
+            if (speedAdjust)
+            {
+                followerEntity.speedAdjust = speedAdjust;
+            };
+            return (new Follower(followerEntity, type));
         }
 
         private function addFight(infos:FightCommonInformations):void
@@ -1821,7 +1918,8 @@
             {
                 realEntityLook = EntityLookAdapter.fromNetwork((_entities[PlayedCharacterManager.getInstance().id] as GameContextActorInformations).look);
             };
-            if (((((_creaturesMode) || (_creaturesFightMode))) && (realEntityLook)))
+            var followerPetLook:Array = realEntityLook.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET_FOLLOWER);
+            if (((((((_creaturesMode) || (_creaturesFightMode))) || (((followerPetLook) && (!((followerPetLook.length == 0))))))) && (realEntityLook)))
             {
                 bonesToLoad = TiphonMultiBonesManager.getInstance().getAllBonesFromLook(realEntityLook);
                 TiphonMultiBonesManager.getInstance().forceBonesLoading(bonesToLoad, new Callback(this.updateUsableEmotesList, realEntityLook));
@@ -1949,7 +2047,9 @@
 
         private function onGroundObjectLoaded(e:ResourceLoadedEvent):void
         {
-            var objectMc:MovieClip = e.resource;
+            var objectMc:MovieClip = (((e.resource is ASwf)) ? e.resource.content : e.resource);
+            objectMc.width = 34;
+            objectMc.height = 34;
             objectMc.x = (objectMc.x - (objectMc.width / 2));
             objectMc.y = (objectMc.y - (objectMc.height / 2));
             if (this._objects[e.uri])

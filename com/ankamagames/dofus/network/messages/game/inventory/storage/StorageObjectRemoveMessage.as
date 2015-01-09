@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class StorageObjectRemoveMessage extends NetworkMessage implements INetworkMessage 
@@ -39,40 +40,40 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_StorageObjectRemoveMessage(output);
         }
 
-        public function serializeAs_StorageObjectRemoveMessage(output:IDataOutput):void
+        public function serializeAs_StorageObjectRemoveMessage(output:ICustomDataOutput):void
         {
             if (this.objectUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectUID) + ") on element objectUID.")));
             };
-            output.writeInt(this.objectUID);
+            output.writeVarInt(this.objectUID);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_StorageObjectRemoveMessage(input);
         }
 
-        public function deserializeAs_StorageObjectRemoveMessage(input:IDataInput):void
+        public function deserializeAs_StorageObjectRemoveMessage(input:ICustomDataInput):void
         {
-            this.objectUID = input.readInt();
+            this.objectUID = input.readVarUhInt();
             if (this.objectUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectUID) + ") on element of StorageObjectRemoveMessage.objectUID.")));

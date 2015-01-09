@@ -6,7 +6,7 @@
     {
 
 
-        public static function create()
+        public static function create():GiftAssignCancelAction
         {
             var action:GiftAssignCancelAction = new (GiftAssignCancelAction)();
             return (action);

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.interactive.skill
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class SkillActionDescriptionCraft extends SkillActionDescription implements INetworkType 
@@ -34,12 +34,12 @@
             this.probability = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_SkillActionDescriptionCraft(output);
         }
 
-        public function serializeAs_SkillActionDescriptionCraft(output:IDataOutput):void
+        public function serializeAs_SkillActionDescriptionCraft(output:ICustomDataOutput):void
         {
             super.serializeAs_SkillActionDescription(output);
             if (this.maxSlots < 0)
@@ -54,12 +54,12 @@
             output.writeByte(this.probability);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_SkillActionDescriptionCraft(input);
         }
 
-        public function deserializeAs_SkillActionDescriptionCraft(input:IDataInput):void
+        public function deserializeAs_SkillActionDescriptionCraft(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.maxSlots = input.readByte();

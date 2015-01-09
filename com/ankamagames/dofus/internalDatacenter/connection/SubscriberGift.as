@@ -5,37 +5,72 @@
     public class SubscriberGift implements IDataCenter 
     {
 
-        private var _id:uint;
-        private var _description:String;
-        private var _uri:String;
-        private var _link:String;
+        private var _name:String;
+        private var _price:int;
+        private var _priceCrossed:String;
+        private var _visualUri:String;
+        private var _newTag:Boolean;
+        private var _promotionTag:Boolean;
+        private var _redirect:Boolean;
+        private var _title:String;
+        private var _onCliqueUri:String;
 
-        public function SubscriberGift(id:uint, description:String, uri:String, link:String)
+        public function SubscriberGift(name:String, price:int, priceCrossed:String, visualUri:String, newTag:Boolean, promotionTag:Boolean, redirect:Boolean, title:String, onCliqueUri:String)
         {
-            this._id = id;
-            this._description = description;
-            this._link = link;
-            this._uri = uri;
+            this._name = name;
+            this._price = price;
+            this._priceCrossed = priceCrossed;
+            this._visualUri = visualUri;
+            this._newTag = newTag;
+            this._promotionTag = promotionTag;
+            this._redirect = redirect;
+            this._title = title;
+            this._onCliqueUri = onCliqueUri;
         }
 
-        public function get id():uint
+        public function get name():String
         {
-            return (this._id);
+            return (this._name);
         }
 
-        public function get description():String
+        public function get price():int
         {
-            return (this._description);
+            return (this._price);
         }
 
-        public function get uri():String
+        public function get priceCrossed():String
         {
-            return (this._uri);
+            return (this._priceCrossed);
         }
 
-        public function get link():String
+        public function get visualUri():String
         {
-            return (this._link);
+            return (this._visualUri);
+        }
+
+        public function get newTag():Boolean
+        {
+            return (this._newTag);
+        }
+
+        public function get promotionTag():Boolean
+        {
+            return (this._promotionTag);
+        }
+
+        public function get redirect():Boolean
+        {
+            return (this._redirect);
+        }
+
+        public function get title():String
+        {
+            return (this._title);
+        }
+
+        public function get onCliqueUri():String
+        {
+            return (this._onCliqueUri);
         }
 
 

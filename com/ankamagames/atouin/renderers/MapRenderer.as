@@ -39,8 +39,8 @@
     import com.ankamagames.atouin.managers.DataGroundMapManager;
     import com.ankamagames.atouin.AtouinConstants;
     import com.ankamagames.atouin.enums.GroundCache;
-    import flash.system.LoaderContext;
     import com.ankamagames.atouin.data.elements.subtypes.AnimatedGraphicalElementData;
+    import flash.system.LoaderContext;
     import com.ankamagames.atouin.types.events.RenderMapEvent;
     import com.ankamagames.jerakine.resources.adapters.impl.AdvancedSwfAdapter;
     import com.ankamagames.tiphon.display.RasterizedAnimation;
@@ -314,8 +314,6 @@
             var gfxUri:Array = new Array();
             var swfUri:Array = new Array();
             var gfxList:Array = this._map.getGfxList(this._hasGroundJPG);
-            var lc:LoaderContext = new LoaderContext();
-            AirScanner.allowByteCodeExecution(lc, true);
             for each (elementData in gfxList)
             {
                 if (!((elementData is NormalGraphicalElementData)))

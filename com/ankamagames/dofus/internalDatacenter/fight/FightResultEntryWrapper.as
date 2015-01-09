@@ -14,6 +14,7 @@
     import com.ankamagames.dofus.datacenter.npcs.TaxCollectorFirstname;
     import com.ankamagames.dofus.datacenter.npcs.TaxCollectorName;
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterNamedInformations;
+    import com.ankamagames.dofus.network.types.game.context.fight.GameFightCharacterInformations;
     import com.ankamagames.dofus.network.types.game.context.fight.FightResultExperienceData;
     import com.ankamagames.dofus.network.types.game.context.fight.FightResultPvpData;
     import com.ankamagames.dofus.network.types.game.context.fight.FightResultFighterListEntry;
@@ -31,6 +32,8 @@
         public var level:int;
         public var type:int;
         public var fightInitiator:Boolean;
+        public var breed:int = 0;
+        public var gender:int = 0;
         public var wave:int;
         public var isLastOfHisWave:Boolean = false;
         public var rerollXpMultiplicator:int;
@@ -103,6 +106,11 @@
                             this.level = _local_3.level;
                             this.id = _local_3.id;
                             this.alive = _local_3.alive;
+                            if ((infos is GameFightCharacterInformations))
+                            {
+                                this.breed = (infos as GameFightCharacterInformations).breed;
+                                this.gender = int((infos as GameFightCharacterInformations).sex);
+                            };
                             this.type = 0;
                             if (_local_3.additional.length == 0)
                             {

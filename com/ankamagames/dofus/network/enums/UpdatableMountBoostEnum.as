@@ -3,12 +3,12 @@
     public class UpdatableMountBoostEnum 
     {
 
-        public static const STAMINA:int = 3;
-        public static const MATURITY:int = 5;
-        public static const ENERGY:int = 1;
-        public static const SERENITY:int = 2;
-        public static const LOVE:int = 4;
-        public static const TIREDNESS:int = 6;
+        public static const STAMINA:uint = 3;
+        public static const MATURITY:uint = 5;
+        public static const ENERGY:uint = 1;
+        public static const SERENITY:uint = 2;
+        public static const LOVE:uint = 4;
+        public static const TIREDNESS:uint = 6;
 
 
     }

@@ -48,12 +48,15 @@
         public static const FIGHTER_TELEPORTED:String = "fighterTeleported";
         public static const FIGHTER_TRIGGERED_GLYPH:String = "fighterTriggeredGlyph";
         public static const FIGHTER_TRIGGERED_TRAP:String = "fighterTriggeredTrap";
+        public static const FIGHTER_TRIGGERED_PORTAL:String = "fighterTriggeredPortal";
         public static const FIGHTER_CARRY:String = "fighterCarry";
         public static const FIGHTER_THROW:String = "fighterThrow";
         public static const GLYPH_APPEARED:String = "glyphAppeared";
         public static const GLYPH_DISAPPEARED:String = "glyphDisappeared";
         public static const TRAP_APPEARED:String = "trapAppeared";
         public static const TRAP_DISAPPEARED:String = "trapDisappeared";
+        public static const PORTAL_APPEARED:String = "portalAppeared";
+        public static const PORTAL_DISAPPEARED:String = "portalDisappeared";
 
 
     }

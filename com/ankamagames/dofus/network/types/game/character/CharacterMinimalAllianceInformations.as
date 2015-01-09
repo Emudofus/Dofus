@@ -4,8 +4,8 @@
     import com.ankamagames.dofus.network.types.game.context.roleplay.BasicAllianceInformations;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.roleplay.BasicGuildInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class CharacterMinimalAllianceInformations extends CharacterMinimalGuildInformations implements INetworkType 
     {
@@ -38,23 +38,23 @@
             this.alliance = new BasicAllianceInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharacterMinimalAllianceInformations(output);
         }
 
-        public function serializeAs_CharacterMinimalAllianceInformations(output:IDataOutput):void
+        public function serializeAs_CharacterMinimalAllianceInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_CharacterMinimalGuildInformations(output);
             this.alliance.serializeAs_BasicAllianceInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharacterMinimalAllianceInformations(input);
         }
 
-        public function deserializeAs_CharacterMinimalAllianceInformations(input:IDataInput):void
+        public function deserializeAs_CharacterMinimalAllianceInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.alliance = new BasicAllianceInformations();

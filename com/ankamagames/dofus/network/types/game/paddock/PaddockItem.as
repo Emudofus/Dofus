@@ -3,8 +3,8 @@
     import com.ankamagames.dofus.network.types.game.context.roleplay.ObjectItemInRolePlay;
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.mount.ItemDurability;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class PaddockItem extends ObjectItemInRolePlay implements INetworkType 
@@ -38,23 +38,23 @@
             this.durability = new ItemDurability();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PaddockItem(output);
         }
 
-        public function serializeAs_PaddockItem(output:IDataOutput):void
+        public function serializeAs_PaddockItem(output:ICustomDataOutput):void
         {
             super.serializeAs_ObjectItemInRolePlay(output);
             this.durability.serializeAs_ItemDurability(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PaddockItem(input);
         }
 
-        public function deserializeAs_PaddockItem(input:IDataInput):void
+        public function deserializeAs_PaddockItem(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.durability = new ItemDurability();

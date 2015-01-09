@@ -466,7 +466,7 @@
                                                 sameEffectExists = true;
                                                 oldValue = Effect.getEffectById(oldEffect.actionId).bonusType;
                                                 newValue = Effect.getEffectById(newEffect.actionId).bonusType;
-                                                if ((newEffect is ObjectEffectInteger))
+                                                if ((((newEffect is ObjectEffectInteger)) && ((oldEffect is ObjectEffectInteger))))
                                                 {
                                                     oldValue = (oldValue * ObjectEffectInteger(oldEffect).value);
                                                     newValue = (newValue * ObjectEffectInteger(newEffect).value);
@@ -488,7 +488,7 @@
                                                 }
                                                 else
                                                 {
-                                                    if ((newEffect is ObjectEffectDice))
+                                                    if ((((newEffect is ObjectEffectDice)) && ((oldEffect is ObjectEffectDice))))
                                                     {
                                                         oldValue = ObjectEffectDice(oldEffect).diceNum;
                                                         newValue = ObjectEffectDice(newEffect).diceNum;
@@ -518,7 +518,7 @@
                                                 };
                                             };
                                         };
-                                        if (!(sameEffectExists))
+                                        if (((!(sameEffectExists)) && ((oldEffect is ObjectEffectInteger))))
                                         {
                                             effectInteger = new EffectInstanceInteger();
                                             effectInteger.effectId = oldEffect.actionId;

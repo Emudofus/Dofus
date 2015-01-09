@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GameRolePlayNpcInformations extends GameRolePlayActorInformations implements INetworkType 
     {
@@ -38,42 +38,42 @@
             this.specialArtworkId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayNpcInformations(output);
         }
 
-        public function serializeAs_GameRolePlayNpcInformations(output:IDataOutput):void
+        public function serializeAs_GameRolePlayNpcInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameRolePlayActorInformations(output);
             if (this.npcId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.npcId) + ") on element npcId.")));
             };
-            output.writeShort(this.npcId);
+            output.writeVarShort(this.npcId);
             output.writeBoolean(this.sex);
             if (this.specialArtworkId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.specialArtworkId) + ") on element specialArtworkId.")));
             };
-            output.writeShort(this.specialArtworkId);
+            output.writeVarShort(this.specialArtworkId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayNpcInformations(input);
         }
 
-        public function deserializeAs_GameRolePlayNpcInformations(input:IDataInput):void
+        public function deserializeAs_GameRolePlayNpcInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.npcId = input.readShort();
+            this.npcId = input.readVarUhShort();
             if (this.npcId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.npcId) + ") on element of GameRolePlayNpcInformations.npcId.")));
             };
             this.sex = input.readBoolean();
-            this.specialArtworkId = input.readShort();
+            this.specialArtworkId = input.readVarUhShort();
             if (this.specialArtworkId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.specialArtworkId) + ") on element of GameRolePlayNpcInformations.specialArtworkId.")));

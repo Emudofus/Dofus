@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.shortcut
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class Shortcut implements INetworkType 
     {
@@ -28,28 +28,28 @@
             this.slot = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_Shortcut(output);
         }
 
-        public function serializeAs_Shortcut(output:IDataOutput):void
+        public function serializeAs_Shortcut(output:ICustomDataOutput):void
         {
             if ((((this.slot < 0)) || ((this.slot > 99))))
             {
                 throw (new Error((("Forbidden value (" + this.slot) + ") on element slot.")));
             };
-            output.writeInt(this.slot);
+            output.writeByte(this.slot);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_Shortcut(input);
         }
 
-        public function deserializeAs_Shortcut(input:IDataInput):void
+        public function deserializeAs_Shortcut(input:ICustomDataInput):void
         {
-            this.slot = input.readInt();
+            this.slot = input.readByte();
             if ((((this.slot < 0)) || ((this.slot > 99))))
             {
                 throw (new Error((("Forbidden value (" + this.slot) + ") on element of Shortcut.slot.")));

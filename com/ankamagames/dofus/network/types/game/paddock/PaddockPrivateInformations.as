@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GuildInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PaddockPrivateInformations extends PaddockAbandonnedInformations implements INetworkType 
     {
@@ -36,23 +36,23 @@
             this.guildInfo = new GuildInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PaddockPrivateInformations(output);
         }
 
-        public function serializeAs_PaddockPrivateInformations(output:IDataOutput):void
+        public function serializeAs_PaddockPrivateInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_PaddockAbandonnedInformations(output);
             this.guildInfo.serializeAs_GuildInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PaddockPrivateInformations(input);
         }
 
-        public function deserializeAs_PaddockPrivateInformations(input:IDataInput):void
+        public function deserializeAs_PaddockPrivateInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.guildInfo = new GuildInformations();

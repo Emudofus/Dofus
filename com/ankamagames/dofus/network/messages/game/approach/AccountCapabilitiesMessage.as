@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class AccountCapabilitiesMessage extends NetworkMessage implements INetworkMessage 
@@ -13,7 +14,7 @@
         public static const protocolId:uint = 6216;
 
         private var _isInitialized:Boolean = false;
-        public var accountId:int = 0;
+        public var accountId:uint = 0;
         public var tutorialAvailable:Boolean = false;
         public var breedsVisible:uint = 0;
         public var breedsAvailable:uint = 0;
@@ -30,7 +31,7 @@
             return (6216);
         }
 
-        public function initAccountCapabilitiesMessage(accountId:int=0, tutorialAvailable:Boolean=false, breedsVisible:uint=0, breedsAvailable:uint=0, status:int=-1):AccountCapabilitiesMessage
+        public function initAccountCapabilitiesMessage(accountId:uint=0, tutorialAvailable:Boolean=false, breedsVisible:uint=0, breedsAvailable:uint=0, status:int=-1):AccountCapabilitiesMessage
         {
             this.accountId = accountId;
             this.tutorialAvailable = tutorialAvailable;
@@ -51,33 +52,37 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AccountCapabilitiesMessage(output);
         }
 
-        public function serializeAs_AccountCapabilitiesMessage(output:IDataOutput):void
+        public function serializeAs_AccountCapabilitiesMessage(output:ICustomDataOutput):void
         {
+            if (this.accountId < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.accountId) + ") on element accountId.")));
+            };
             output.writeInt(this.accountId);
             output.writeBoolean(this.tutorialAvailable);
-            if (this.breedsVisible < 0)
+            if ((((this.breedsVisible < 0)) || ((this.breedsVisible > 0xFFFF))))
             {
                 throw (new Error((("Forbidden value (" + this.breedsVisible) + ") on element breedsVisible.")));
             };
             output.writeShort(this.breedsVisible);
-            if (this.breedsAvailable < 0)
+            if ((((this.breedsAvailable < 0)) || ((this.breedsAvailable > 0xFFFF))))
             {
                 throw (new Error((("Forbidden value (" + this.breedsAvailable) + ") on element breedsAvailable.")));
             };
@@ -85,22 +90,26 @@
             output.writeByte(this.status);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AccountCapabilitiesMessage(input);
         }
 
-        public function deserializeAs_AccountCapabilitiesMessage(input:IDataInput):void
+        public function deserializeAs_AccountCapabilitiesMessage(input:ICustomDataInput):void
         {
             this.accountId = input.readInt();
+            if (this.accountId < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.accountId) + ") on element of AccountCapabilitiesMessage.accountId.")));
+            };
             this.tutorialAvailable = input.readBoolean();
-            this.breedsVisible = input.readShort();
-            if (this.breedsVisible < 0)
+            this.breedsVisible = input.readUnsignedShort();
+            if ((((this.breedsVisible < 0)) || ((this.breedsVisible > 0xFFFF))))
             {
                 throw (new Error((("Forbidden value (" + this.breedsVisible) + ") on element of AccountCapabilitiesMessage.breedsVisible.")));
             };
-            this.breedsAvailable = input.readShort();
-            if (this.breedsAvailable < 0)
+            this.breedsAvailable = input.readUnsignedShort();
+            if ((((this.breedsAvailable < 0)) || ((this.breedsAvailable > 0xFFFF))))
             {
                 throw (new Error((("Forbidden value (" + this.breedsAvailable) + ") on element of AccountCapabilitiesMessage.breedsAvailable.")));
             };

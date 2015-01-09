@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.prism
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PrismInformation implements INetworkType 
     {
@@ -40,12 +40,12 @@
             this.rewardTokenCount = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PrismInformation(output);
         }
 
-        public function serializeAs_PrismInformation(output:IDataOutput):void
+        public function serializeAs_PrismInformation(output:ICustomDataOutput):void
         {
             if (this.typeId < 0)
             {
@@ -67,15 +67,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.rewardTokenCount) + ") on element rewardTokenCount.")));
             };
-            output.writeInt(this.rewardTokenCount);
+            output.writeVarInt(this.rewardTokenCount);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PrismInformation(input);
         }
 
-        public function deserializeAs_PrismInformation(input:IDataInput):void
+        public function deserializeAs_PrismInformation(input:ICustomDataInput):void
         {
             this.typeId = input.readByte();
             if (this.typeId < 0)
@@ -97,7 +97,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.placementDate) + ") on element of PrismInformation.placementDate.")));
             };
-            this.rewardTokenCount = input.readInt();
+            this.rewardTokenCount = input.readVarUhInt();
             if (this.rewardTokenCount < 0)
             {
                 throw (new Error((("Forbidden value (" + this.rewardTokenCount) + ") on element of PrismInformation.rewardTokenCount.")));

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class MapCoordinatesAndId extends MapCoordinates implements INetworkType 
     {
@@ -30,23 +30,23 @@
             this.mapId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_MapCoordinatesAndId(output);
         }
 
-        public function serializeAs_MapCoordinatesAndId(output:IDataOutput):void
+        public function serializeAs_MapCoordinatesAndId(output:ICustomDataOutput):void
         {
             super.serializeAs_MapCoordinates(output);
             output.writeInt(this.mapId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_MapCoordinatesAndId(input);
         }
 
-        public function deserializeAs_MapCoordinatesAndId(input:IDataInput):void
+        public function deserializeAs_MapCoordinatesAndId(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.mapId = input.readInt();

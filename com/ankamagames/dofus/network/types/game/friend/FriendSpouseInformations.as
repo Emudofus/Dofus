@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.roleplay.BasicGuildInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FriendSpouseInformations implements INetworkType 
     {
@@ -58,12 +58,12 @@
             this.spouseEntityLook = new EntityLook();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FriendSpouseInformations(output);
         }
 
-        public function serializeAs_FriendSpouseInformations(output:IDataOutput):void
+        public function serializeAs_FriendSpouseInformations(output:ICustomDataOutput):void
         {
             if (this.spouseAccountId < 0)
             {
@@ -74,7 +74,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.spouseId) + ") on element spouseId.")));
             };
-            output.writeInt(this.spouseId);
+            output.writeVarInt(this.spouseId);
             output.writeUTF(this.spouseName);
             if ((((this.spouseLevel < 1)) || ((this.spouseLevel > 200))))
             {
@@ -88,19 +88,19 @@
             output.writeByte(this.alignmentSide);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FriendSpouseInformations(input);
         }
 
-        public function deserializeAs_FriendSpouseInformations(input:IDataInput):void
+        public function deserializeAs_FriendSpouseInformations(input:ICustomDataInput):void
         {
             this.spouseAccountId = input.readInt();
             if (this.spouseAccountId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.spouseAccountId) + ") on element of FriendSpouseInformations.spouseAccountId.")));
             };
-            this.spouseId = input.readInt();
+            this.spouseId = input.readVarUhInt();
             if (this.spouseId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.spouseId) + ") on element of FriendSpouseInformations.spouseId.")));

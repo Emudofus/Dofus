@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
 
     public class GameRolePlayHumanoidInformations extends GameRolePlayNamedActorInformations implements INetworkType 
@@ -40,12 +40,12 @@
             this.humanoidInfo = new HumanInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayHumanoidInformations(output);
         }
 
-        public function serializeAs_GameRolePlayHumanoidInformations(output:IDataOutput):void
+        public function serializeAs_GameRolePlayHumanoidInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameRolePlayNamedActorInformations(output);
             output.writeShort(this.humanoidInfo.getTypeId());
@@ -57,12 +57,12 @@
             output.writeInt(this.accountId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayHumanoidInformations(input);
         }
 
-        public function deserializeAs_GameRolePlayHumanoidInformations(input:IDataInput):void
+        public function deserializeAs_GameRolePlayHumanoidInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             var _id1:uint = input.readUnsignedShort();

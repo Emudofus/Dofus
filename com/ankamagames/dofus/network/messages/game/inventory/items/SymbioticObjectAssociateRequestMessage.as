@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class SymbioticObjectAssociateRequestMessage extends NetworkMessage implements INetworkMessage 
@@ -48,30 +49,30 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_SymbioticObjectAssociateRequestMessage(output);
         }
 
-        public function serializeAs_SymbioticObjectAssociateRequestMessage(output:IDataOutput):void
+        public function serializeAs_SymbioticObjectAssociateRequestMessage(output:ICustomDataOutput):void
         {
             if (this.symbioteUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.symbioteUID) + ") on element symbioteUID.")));
             };
-            output.writeInt(this.symbioteUID);
+            output.writeVarInt(this.symbioteUID);
             if ((((this.symbiotePos < 0)) || ((this.symbiotePos > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.symbiotePos) + ") on element symbiotePos.")));
@@ -81,7 +82,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.hostUID) + ") on element hostUID.")));
             };
-            output.writeInt(this.hostUID);
+            output.writeVarInt(this.hostUID);
             if ((((this.hostPos < 0)) || ((this.hostPos > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.hostPos) + ") on element hostPos.")));
@@ -89,14 +90,14 @@
             output.writeByte(this.hostPos);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_SymbioticObjectAssociateRequestMessage(input);
         }
 
-        public function deserializeAs_SymbioticObjectAssociateRequestMessage(input:IDataInput):void
+        public function deserializeAs_SymbioticObjectAssociateRequestMessage(input:ICustomDataInput):void
         {
-            this.symbioteUID = input.readInt();
+            this.symbioteUID = input.readVarUhInt();
             if (this.symbioteUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.symbioteUID) + ") on element of SymbioticObjectAssociateRequestMessage.symbioteUID.")));
@@ -106,7 +107,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.symbiotePos) + ") on element of SymbioticObjectAssociateRequestMessage.symbiotePos.")));
             };
-            this.hostUID = input.readInt();
+            this.hostUID = input.readVarUhInt();
             if (this.hostUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.hostUID) + ") on element of SymbioticObjectAssociateRequestMessage.hostUID.")));

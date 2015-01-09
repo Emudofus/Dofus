@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class EntityLook implements INetworkType 
@@ -50,18 +50,18 @@
             this.subentities = new Vector.<SubEntity>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_EntityLook(output);
         }
 
-        public function serializeAs_EntityLook(output:IDataOutput):void
+        public function serializeAs_EntityLook(output:ICustomDataOutput):void
         {
             if (this.bonesId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.bonesId) + ") on element bonesId.")));
             };
-            output.writeShort(this.bonesId);
+            output.writeVarShort(this.bonesId);
             output.writeShort(this.skins.length);
             var _i2:uint;
             while (_i2 < this.skins.length)
@@ -70,7 +70,7 @@
                 {
                     throw (new Error((("Forbidden value (" + this.skins[_i2]) + ") on element 2 (starting at 1) of skins.")));
                 };
-                output.writeShort(this.skins[_i2]);
+                output.writeVarShort(this.skins[_i2]);
                 _i2++;
             };
             output.writeShort(this.indexedColors.length);
@@ -84,7 +84,7 @@
             var _i4:uint;
             while (_i4 < this.scales.length)
             {
-                output.writeShort(this.scales[_i4]);
+                output.writeVarShort(this.scales[_i4]);
                 _i4++;
             };
             output.writeShort(this.subentities.length);
@@ -96,18 +96,18 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_EntityLook(input);
         }
 
-        public function deserializeAs_EntityLook(input:IDataInput):void
+        public function deserializeAs_EntityLook(input:ICustomDataInput):void
         {
             var _val2:uint;
             var _val3:int;
             var _val4:int;
             var _item5:SubEntity;
-            this.bonesId = input.readShort();
+            this.bonesId = input.readVarUhShort();
             if (this.bonesId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.bonesId) + ") on element of EntityLook.bonesId.")));
@@ -116,7 +116,7 @@
             var _i2:uint;
             while (_i2 < _skinsLen)
             {
-                _val2 = input.readShort();
+                _val2 = input.readVarUhShort();
                 if (_val2 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val2) + ") on elements of skins.")));
@@ -136,7 +136,7 @@
             var _i4:uint;
             while (_i4 < _scalesLen)
             {
-                _val4 = input.readShort();
+                _val4 = input.readVarShort();
                 this.scales.push(_val4);
                 _i4++;
             };

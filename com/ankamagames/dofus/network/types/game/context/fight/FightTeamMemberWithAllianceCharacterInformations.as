@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.context.roleplay.BasicAllianceInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightTeamMemberWithAllianceCharacterInformations extends FightTeamMemberCharacterInformations implements INetworkType 
     {
@@ -36,23 +36,23 @@
             this.allianceInfos = new BasicAllianceInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightTeamMemberWithAllianceCharacterInformations(output);
         }
 
-        public function serializeAs_FightTeamMemberWithAllianceCharacterInformations(output:IDataOutput):void
+        public function serializeAs_FightTeamMemberWithAllianceCharacterInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_FightTeamMemberCharacterInformations(output);
             this.allianceInfos.serializeAs_BasicAllianceInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightTeamMemberWithAllianceCharacterInformations(input);
         }
 
-        public function deserializeAs_FightTeamMemberWithAllianceCharacterInformations(input:IDataInput):void
+        public function deserializeAs_FightTeamMemberWithAllianceCharacterInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.allianceInfos = new BasicAllianceInformations();

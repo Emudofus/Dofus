@@ -13,9 +13,6 @@
     import com.ankamagames.dofus.network.messages.updater.parts.GetPartInfoMessage;
     import com.ankamagames.dofus.network.messages.updater.parts.PartInfoMessage;
     import com.ankamagames.dofus.network.messages.updater.parts.DownloadCurrentSpeedMessage;
-    import com.ankamagames.dofus.network.messages.game.packs.PackRestrictedSubAreaMessage;
-    import com.ankamagames.dofus.datacenter.world.SubArea;
-    import com.ankamagames.dofus.datacenter.misc.Pack;
     import com.ankamagames.dofus.network.messages.updater.parts.DownloadErrorMessage;
     import com.ankamagames.dofus.kernel.updater.UpdaterConnexionHandler;
     import com.ankamagames.dofus.logic.game.approach.managers.PartManager;
@@ -52,10 +49,7 @@
             var _local_8:PartInfoMessage;
             var _local_9:int;
             var _local_10:DownloadCurrentSpeedMessage;
-            var _local_11:PackRestrictedSubAreaMessage;
-            var _local_12:SubArea;
-            var _local_13:Pack;
-            var _local_14:DownloadErrorMessage;
+            var _local_11:DownloadErrorMessage;
             switch (true)
             {
                 case (msg is GetPartsListAction):
@@ -91,20 +85,9 @@
                     DownloadMonitoring.getInstance().downloadSpeed = _local_10.downloadSpeed;
                     KernelEventsManager.getInstance().processCallback(HookList.DownloadSpeed, _local_10.downloadSpeed);
                     return (true);
-                case (msg is PackRestrictedSubAreaMessage):
-                    _local_11 = (msg as PackRestrictedSubAreaMessage);
-                    _local_12 = SubArea.getSubAreaById(_local_11.subAreaId);
-                    _local_13 = Pack.getPackById(_local_12.packId);
-                    if (_local_13.name == "subscribed")
-                    {
-                        PartManager.getInstance().checkAndDownload("all");
-                    };
-                    PartManager.getInstance().checkAndDownload(_local_13.name);
-                    KernelEventsManager.getInstance().processCallback(HookList.PackRestrictedSubArea, _local_11.subAreaId);
-                    return (true);
                 case (msg is DownloadErrorMessage):
-                    _local_14 = (msg as DownloadErrorMessage);
-                    KernelEventsManager.getInstance().processCallback(HookList.DownloadError, _local_14.errorId, (((_local_14.message.length > 0)) ? _local_14.message : (null)), (((_local_14.helpUrl.length > 0)) ? _local_14.helpUrl : null));
+                    _local_11 = (msg as DownloadErrorMessage);
+                    KernelEventsManager.getInstance().processCallback(HookList.DownloadError, _local_11.errorId, (((_local_11.message.length > 0)) ? _local_11.message : (null)), (((_local_11.helpUrl.length > 0)) ? _local_11.helpUrl : null));
                     return (true);
             };
             return (false);

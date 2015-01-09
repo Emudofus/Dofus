@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.character.alignment
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class ActorExtendedAlignmentInformations extends ActorAlignmentInformations implements INetworkType 
     {
@@ -39,51 +39,51 @@
             this.aggressable = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ActorExtendedAlignmentInformations(output);
         }
 
-        public function serializeAs_ActorExtendedAlignmentInformations(output:IDataOutput):void
+        public function serializeAs_ActorExtendedAlignmentInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_ActorAlignmentInformations(output);
             if ((((this.honor < 0)) || ((this.honor > 20000))))
             {
                 throw (new Error((("Forbidden value (" + this.honor) + ") on element honor.")));
             };
-            output.writeShort(this.honor);
+            output.writeVarShort(this.honor);
             if ((((this.honorGradeFloor < 0)) || ((this.honorGradeFloor > 20000))))
             {
                 throw (new Error((("Forbidden value (" + this.honorGradeFloor) + ") on element honorGradeFloor.")));
             };
-            output.writeShort(this.honorGradeFloor);
+            output.writeVarShort(this.honorGradeFloor);
             if ((((this.honorNextGradeFloor < 0)) || ((this.honorNextGradeFloor > 20000))))
             {
                 throw (new Error((("Forbidden value (" + this.honorNextGradeFloor) + ") on element honorNextGradeFloor.")));
             };
-            output.writeShort(this.honorNextGradeFloor);
+            output.writeVarShort(this.honorNextGradeFloor);
             output.writeByte(this.aggressable);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ActorExtendedAlignmentInformations(input);
         }
 
-        public function deserializeAs_ActorExtendedAlignmentInformations(input:IDataInput):void
+        public function deserializeAs_ActorExtendedAlignmentInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.honor = input.readUnsignedShort();
+            this.honor = input.readVarUhShort();
             if ((((this.honor < 0)) || ((this.honor > 20000))))
             {
                 throw (new Error((("Forbidden value (" + this.honor) + ") on element of ActorExtendedAlignmentInformations.honor.")));
             };
-            this.honorGradeFloor = input.readUnsignedShort();
+            this.honorGradeFloor = input.readVarUhShort();
             if ((((this.honorGradeFloor < 0)) || ((this.honorGradeFloor > 20000))))
             {
                 throw (new Error((("Forbidden value (" + this.honorGradeFloor) + ") on element of ActorExtendedAlignmentInformations.honorGradeFloor.")));
             };
-            this.honorNextGradeFloor = input.readUnsignedShort();
+            this.honorNextGradeFloor = input.readVarUhShort();
             if ((((this.honorNextGradeFloor < 0)) || ((this.honorNextGradeFloor > 20000))))
             {
                 throw (new Error((("Forbidden value (" + this.honorNextGradeFloor) + ") on element of ActorExtendedAlignmentInformations.honorNextGradeFloor.")));

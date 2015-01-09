@@ -45,9 +45,6 @@
                 case "version":
                     console.output(this.getVersion());
                     return;
-                case "ver":
-                    console.output(this.getVersion());
-                    return;
                 case "about":
                     console.output(this.getVersion());
                     return;
@@ -82,8 +79,6 @@
             switch (cmd)
             {
                 case "version":
-                    return (I18n.getUiText("ui.chat.console.help.version"));
-                case "ver":
                     return (I18n.getUiText("ui.chat.console.help.version"));
                 case "about":
                     return (I18n.getUiText("ui.chat.console.help.version"));

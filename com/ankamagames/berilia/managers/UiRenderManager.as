@@ -153,6 +153,29 @@
             StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_DEFINITION, DATASTORE_CATEGORY_CACHE, this._aCache);
         }
 
+        public function clearCacheFromUiName(name:String):void
+        {
+            var id:String;
+            var url:String;
+            name = (name + ".xml").toLowerCase();
+            for (url in this._aCache)
+            {
+                if (url.toLowerCase().indexOf(name) != -1)
+                {
+                    id = url;
+                    break;
+                };
+            };
+            if (id)
+            {
+                this.clearCacheFromId(id);
+            }
+            else
+            {
+                _log.error((("Couldn't clear cache for ui '" + name) + "', didn't find any reference to it!"));
+            };
+        }
+
         public function getUiDefinition(uiId:String):UiDefinition
         {
             return (this._aCache[uiId]);

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay.party
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class NamedPartyTeam implements INetworkType 
     {
@@ -31,23 +31,23 @@
             this.partyName = "";
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_NamedPartyTeam(output);
         }
 
-        public function serializeAs_NamedPartyTeam(output:IDataOutput):void
+        public function serializeAs_NamedPartyTeam(output:ICustomDataOutput):void
         {
             output.writeByte(this.teamId);
             output.writeUTF(this.partyName);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_NamedPartyTeam(input);
         }
 
-        public function deserializeAs_NamedPartyTeam(input:IDataInput):void
+        public function deserializeAs_NamedPartyTeam(input:ICustomDataInput):void
         {
             this.teamId = input.readByte();
             if (this.teamId < 0)

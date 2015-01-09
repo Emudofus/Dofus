@@ -6,21 +6,23 @@
     import flash.utils.getQualifiedClassName;
     import com.ankamagames.dofus.logic.connection.actions.LoginValidationAction;
     import com.ankamagames.dofus.network.types.secure.TrustCertificate;
+    import com.ankamagames.berilia.managers.UiModuleManager;
     import com.ankamagames.jerakine.utils.errors.SingletonError;
     import flash.utils.ByteArray;
-    import com.hurlant.util.der.PEM;
     import com.hurlant.crypto.rsa.RSAKey;
+    import com.hurlant.util.der.PEM;
+    import com.ankamagames.jerakine.data.I18n;
     import com.ankamagames.jerakine.utils.crypto.Base64;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.logic.shield.SecureModeManager;
     import com.ankamagames.dofus.logic.game.common.frames.ProtectPishingFrame;
     import by.blooddy.crypto.MD5;
+    import com.ankamagames.dofus.logic.connection.actions.LoginValidationWithTicketAction;
     import com.ankamagames.dofus.network.messages.connection.IdentificationMessage;
     import com.ankamagames.dofus.network.messages.connection.IdentificationAccountForceMessage;
     import com.ankamagames.dofus.BuildInfos;
     import com.ankamagames.dofus.network.enums.BuildTypeEnum;
     import com.ankamagames.jerakine.utils.system.AirScanner;
-    import com.ankamagames.dofus.logic.connection.actions.LoginValidationWithTicketAction;
     import com.ankamagames.jerakine.data.XmlConfig;
     import com.ankamagames.dofus.network.enums.ClientInstallTypeEnum;
     import com.ankamagames.dofus.network.enums.ClientTechnologyEnum;
@@ -33,6 +35,7 @@
         protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AuthentificationManager));
         private static var _self:AuthentificationManager;
 
+        private var commonMod:Object;
         private var _publicKey:String;
         private var _salt:String;
         private var _lva:LoginValidationAction;
@@ -46,6 +49,7 @@
 
         public function AuthentificationManager()
         {
+            this.commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
             this._verifyKey = AuthentificationManager__verifyKey;
             super();
             if (_self != null)
@@ -99,12 +103,20 @@
             while (i < publicKey.length)
             {
                 baSignedKey.writeByte(publicKey[i]);
-                i++;
+                i = (i + 1);
             };
             baSignedKey.position = 0;
             var key:ByteArray = new ByteArray();
             var readKey:RSAKey = PEM.readRSAPublicKey((new this._verifyKey() as ByteArray).readUTFBytes((new this._verifyKey() as ByteArray).length));
-            readKey.verify(baSignedKey, key, baSignedKey.length);
+            try
+            {
+                readKey.verify(baSignedKey, key, baSignedKey.length);
+            }
+            catch(e:Error)
+            {
+                commonMod.openPopup(I18n.getUiText("ui.common.error"), "Il est impossible d'authentifier le serveur (ted)", [I18n.getUiText("ui.common.ok")]);
+                return;
+            };
             this._publicKey = (("-----BEGIN PUBLIC KEY-----\n" + Base64.encodeByteArray(key)) + "-----END PUBLIC KEY-----");
         }
 
@@ -124,6 +136,11 @@
         public function get canAutoConnectWithToken():Boolean
         {
             return (!((this.nextToken == null)));
+        }
+
+        public function get isLoggingWithTicket():Boolean
+        {
+            return ((this._lva is LoginValidationWithTicketAction));
         }
 
         public function getIdentificationMessage():IdentificationMessage
@@ -177,108 +194,103 @@
         {
             var baOut:ByteArray;
             var n:int;
-            goto _label_4;
-            
-        _label_1: 
-            goto _label_5;
+            while (true)
+            {
+                goto _label_2;
+                
+            _label_1: 
+                goto _label_3;
+            };
+            var _local_9 = _local_9;
             
         _label_2: 
             goto _label_1;
-            var _local_9 = _local_9;
             
         _label_3: 
-            goto _label_2;
-            
-        _label_4: 
-            while (true)
-            {
-                goto _label_3;
-                var _local_10 = _local_10;
-            };
-            
-        _label_5: 
             var baIn:ByteArray = new ByteArray();
             if (certificate)
             {
-                while (baIn.writeUTFBytes(this._salt), true)
-                {
-                    goto _label_7;
-                };
-                while (baIn.writeByte(login.length), goto _label_9, goto _label_6, (var i = i), true)
+                baIn.writeUTFBytes(this._salt);
+                for (;;)
                 {
                     baIn.writeUTFBytes(pwd);
                     //unresolved jump
                     
+                _label_4: 
+                    baIn.writeByte(login.length);
+                    //unresolved jump
+                    
+                _label_5: 
+                    baIn.writeUnsignedInt(certificate.id);
+                    goto _label_6;
+                    goto _label_5;
+                    var _local_10 = _local_10;
+                    
                 _label_6: 
-                    baIn.writeUTFBytes(certificate.hash);
+                    goto _label_8;
+                    
+                _label_7: 
+                    baIn.writeUTFBytes(login);
                     continue;
-                    var _local_0 = this;
                 };
                 
-            _label_7: 
-                baIn.writeUnsignedInt(certificate.id);
-                //unresolved jump
-                
             _label_8: 
-                baIn.writeUTFBytes(login);
-                //unresolved jump
-                
-            _label_9: 
-                goto _label_8;
+                baIn.writeUTFBytes(certificate.hash);
+                goto _label_4;
             }
             else
             {
                 baIn.writeUTFBytes(this._salt);
                 goto _label_12;
                 
-            _label_10: 
-                baIn.writeUTFBytes(login);
-                goto _label_14;
-                
-            _label_11: 
-                baIn.writeByte(login.length);
-                goto _label_15;
-                
-            _label_12: 
+            _label_9: 
                 goto _label_11;
-                _local_0 = this;
+                
+            _label_10: 
+                baIn.writeByte(login.length);
+                goto _label_13;
             };
             
-        _label_13: 
+        _label_11: 
             baOut = RSA.publicEncrypt(this._publicKey, baIn);
-            goto _label_16;
+            goto _label_14;
+            
+        _label_12: 
+            goto _label_10;
+            
+        _label_13: 
+            baIn.writeUTFBytes(login);
+            while (true)
+            {
+                baIn.writeUTFBytes(pwd);
+                goto _label_9;
+            };
             
         _label_14: 
-            baIn.writeUTFBytes(pwd);
-            goto _label_13;
-            
-        _label_15: 
-            goto _label_10;
-            var ret = ret;
-            
-        _label_16: 
-            ret = new Vector.<int>();
+            var ret:Vector.<int> = new Vector.<int>();
             baOut.position = 0;
-            i = 0;
-            _loop_1:
+            var i:int;
             while (baOut.bytesAvailable != 0)
             {
-                goto _label_17;
-                while ((ret[i] = n), goto _label_19, true)
+                goto _label_18;
+                
+            _label_15: 
+                continue;
+                
+            _label_16: 
+                ret[i] = n;
+                //unresolved jump
+                while ((n = baOut.readByte()), goto _label_17, (_local_9 = _local_9), true)
                 {
-                    n = baOut.readByte();
-                    continue;
+                    i++;
+                    goto _label_15;
                     
                 _label_17: 
-                    //unresolved jump
+                    goto _label_16;
                     
                 _label_18: 
-                    continue _loop_1;
+                    continue;
                 };
-                
-            _label_19: 
-                i++;
-                goto _label_18;
             };
             return (ret);
         }

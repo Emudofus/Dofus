@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.inventory.preset
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PresetItem implements INetworkType 
     {
@@ -34,44 +34,44 @@
             this.objUid = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PresetItem(output);
         }
 
-        public function serializeAs_PresetItem(output:IDataOutput):void
+        public function serializeAs_PresetItem(output:ICustomDataOutput):void
         {
             output.writeByte(this.position);
             if (this.objGid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objGid) + ") on element objGid.")));
             };
-            output.writeInt(this.objGid);
+            output.writeVarShort(this.objGid);
             if (this.objUid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objUid) + ") on element objUid.")));
             };
-            output.writeInt(this.objUid);
+            output.writeVarInt(this.objUid);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PresetItem(input);
         }
 
-        public function deserializeAs_PresetItem(input:IDataInput):void
+        public function deserializeAs_PresetItem(input:ICustomDataInput):void
         {
             this.position = input.readUnsignedByte();
             if ((((this.position < 0)) || ((this.position > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.position) + ") on element of PresetItem.position.")));
             };
-            this.objGid = input.readInt();
+            this.objGid = input.readVarUhShort();
             if (this.objGid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objGid) + ") on element of PresetItem.objGid.")));
             };
-            this.objUid = input.readInt();
+            this.objUid = input.readVarUhInt();
             if (this.objUid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objUid) + ") on element of PresetItem.objUid.")));

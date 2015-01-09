@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -49,19 +49,19 @@
             this.objectPrice = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectItemToSell(output);
         }
 
-        public function serializeAs_ObjectItemToSell(output:IDataOutput):void
+        public function serializeAs_ObjectItemToSell(output:ICustomDataOutput):void
         {
             super.serializeAs_Item(output);
             if (this.objectGID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectGID) + ") on element objectGID.")));
             };
-            output.writeShort(this.objectGID);
+            output.writeVarShort(this.objectGID);
             output.writeShort(this.effects.length);
             var _i2:uint;
             while (_i2 < this.effects.length)
@@ -74,30 +74,30 @@
             {
                 throw (new Error((("Forbidden value (" + this.objectUID) + ") on element objectUID.")));
             };
-            output.writeInt(this.objectUID);
+            output.writeVarInt(this.objectUID);
             if (this.quantity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.quantity) + ") on element quantity.")));
             };
-            output.writeInt(this.quantity);
+            output.writeVarInt(this.quantity);
             if (this.objectPrice < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectPrice) + ") on element objectPrice.")));
             };
-            output.writeInt(this.objectPrice);
+            output.writeVarInt(this.objectPrice);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectItemToSell(input);
         }
 
-        public function deserializeAs_ObjectItemToSell(input:IDataInput):void
+        public function deserializeAs_ObjectItemToSell(input:ICustomDataInput):void
         {
             var _id2:uint;
             var _item2:ObjectEffect;
             super.deserialize(input);
-            this.objectGID = input.readShort();
+            this.objectGID = input.readVarUhShort();
             if (this.objectGID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectGID) + ") on element of ObjectItemToSell.objectGID.")));
@@ -112,17 +112,17 @@
                 this.effects.push(_item2);
                 _i2++;
             };
-            this.objectUID = input.readInt();
+            this.objectUID = input.readVarUhInt();
             if (this.objectUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectUID) + ") on element of ObjectItemToSell.objectUID.")));
             };
-            this.quantity = input.readInt();
+            this.quantity = input.readVarUhInt();
             if (this.quantity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.quantity) + ") on element of ObjectItemToSell.quantity.")));
             };
-            this.objectPrice = input.readInt();
+            this.objectPrice = input.readVarUhInt();
             if (this.objectPrice < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectPrice) + ") on element of ObjectItemToSell.objectPrice.")));

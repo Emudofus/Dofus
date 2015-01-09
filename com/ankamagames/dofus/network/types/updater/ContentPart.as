@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.updater
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ContentPart implements INetworkType 
@@ -32,23 +32,23 @@
             this.state = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ContentPart(output);
         }
 
-        public function serializeAs_ContentPart(output:IDataOutput):void
+        public function serializeAs_ContentPart(output:ICustomDataOutput):void
         {
             output.writeUTF(this.id);
             output.writeByte(this.state);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ContentPart(input);
         }
 
-        public function deserializeAs_ContentPart(input:IDataInput):void
+        public function deserializeAs_ContentPart(input:ICustomDataInput):void
         {
             this.id = input.readUTF();
             this.state = input.readByte();

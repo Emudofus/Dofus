@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class PaddockMoveItemRequestMessage extends NetworkMessage implements INetworkMessage 
@@ -42,50 +43,50 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PaddockMoveItemRequestMessage(output);
         }
 
-        public function serializeAs_PaddockMoveItemRequestMessage(output:IDataOutput):void
+        public function serializeAs_PaddockMoveItemRequestMessage(output:ICustomDataOutput):void
         {
             if ((((this.oldCellId < 0)) || ((this.oldCellId > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.oldCellId) + ") on element oldCellId.")));
             };
-            output.writeShort(this.oldCellId);
+            output.writeVarShort(this.oldCellId);
             if ((((this.newCellId < 0)) || ((this.newCellId > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.newCellId) + ") on element newCellId.")));
             };
-            output.writeShort(this.newCellId);
+            output.writeVarShort(this.newCellId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PaddockMoveItemRequestMessage(input);
         }
 
-        public function deserializeAs_PaddockMoveItemRequestMessage(input:IDataInput):void
+        public function deserializeAs_PaddockMoveItemRequestMessage(input:ICustomDataInput):void
         {
-            this.oldCellId = input.readShort();
+            this.oldCellId = input.readVarUhShort();
             if ((((this.oldCellId < 0)) || ((this.oldCellId > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.oldCellId) + ") on element of PaddockMoveItemRequestMessage.oldCellId.")));
             };
-            this.newCellId = input.readShort();
+            this.newCellId = input.readVarUhShort();
             if ((((this.newCellId < 0)) || ((this.newCellId > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.newCellId) + ") on element of PaddockMoveItemRequestMessage.newCellId.")));

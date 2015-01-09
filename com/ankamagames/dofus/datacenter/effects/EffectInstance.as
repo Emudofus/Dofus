@@ -19,8 +19,8 @@
     import com.ankamagames.dofus.datacenter.monsters.MonsterSuperRace;
     import com.ankamagames.dofus.datacenter.monsters.MonsterRace;
     import com.ankamagames.dofus.datacenter.appearance.Title;
-    import com.ankamagames.dofus.datacenter.spells.SpellState;
     import com.ankamagames.jerakine.utils.display.spellZone.SpellShapeEnum;
+    import com.ankamagames.dofus.datacenter.spells.SpellState;
     import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceInteger;
     import com.ankamagames.jerakine.data.XmlConfig;
     import com.ankamagames.dofus.types.enums.LanguageEnum;
@@ -332,12 +332,6 @@
             return (((o) ? o.name : UNKNOWN_NAME));
         }
 
-        private function getSpellStateName(id:int):String
-        {
-            var o:SpellState = SpellState.getSpellStateById(id);
-            return (((o) ? o.name : UNKNOWN_NAME));
-        }
-
         private function parseZone():void
         {
             var params:Array;
@@ -394,12 +388,13 @@
         private function prepareDescription(desc:String, effectId:uint):String
         {
             var aTmp:Array;
-            var _local_5:String;
+            var _local_5:SpellState;
             var _local_6:String;
             var _local_7:String;
             var _local_8:String;
             var _local_9:String;
             var _local_10:String;
+            var _local_11:String;
             if (desc == null)
             {
                 return ("");
@@ -441,7 +436,7 @@
                         aTmp[0] = this.getSpellName(aTmp[0]);
                         break;
                     case 1175:
-                        aTmp[0] = (((("{spell," + aTmp[0]) + ",") + aTmp[1]) + "}");
+                        aTmp[0] = (((("{spellNoLvl," + aTmp[0]) + ",") + aTmp[1]) + "}");
                         break;
                     case 406:
                         aTmp[2] = this.getSpellName(aTmp[2]);
@@ -567,13 +562,18 @@
                     case 950:
                     case 951:
                     case 952:
-                        if (aTmp[2])
+                        _local_5 = ((!((aTmp[2] == null))) ? SpellState.getSpellStateById(aTmp[2]) : SpellState.getSpellStateById(aTmp[0]));
+                        if (_local_5)
                         {
-                            aTmp[2] = this.getSpellStateName(aTmp[2]);
+                            if (_local_5.isSilent)
+                            {
+                                return ("");
+                            };
+                            aTmp[2] = _local_5.name;
                         }
                         else
                         {
-                            aTmp[2] = this.getSpellStateName(aTmp[0]);
+                            aTmp[2] = UNKNOWN_NAME;
                         };
                         break;
                     case 961:
@@ -597,23 +597,32 @@
                     case 805:
                     case 808:
                     case 983:
+                        if ((((((aTmp[0] == undefined)) && ((aTmp[1] == undefined)))) && ((aTmp[2] > 0))))
+                        {
+                            aTmp[0] = aTmp[2];
+                            break;
+                        };
+                        if ((((((aTmp[0] == null)) && ((aTmp[1] == null)))) && ((aTmp[2] == null))))
+                        {
+                            break;
+                        };
                         aTmp[2] = (((aTmp[2])==undefined) ? 0 : aTmp[2]);
-                        _local_5 = aTmp[0];
-                        _local_6 = aTmp[1].substr(0, 2);
-                        _local_7 = aTmp[1].substr(2, 2);
-                        _local_8 = aTmp[2].substr(0, 2);
-                        _local_9 = aTmp[2].substr(2, 2);
-                        _local_10 = XmlConfig.getInstance().getEntry("config.lang.current");
-                        switch (_local_10)
+                        _local_6 = aTmp[0];
+                        _local_7 = aTmp[1].substr(0, 2);
+                        _local_8 = aTmp[1].substr(2, 2);
+                        _local_9 = aTmp[2].substr(0, 2);
+                        _local_10 = aTmp[2].substr(2, 2);
+                        _local_11 = XmlConfig.getInstance().getEntry("config.lang.current");
+                        switch (_local_11)
                         {
                             case LanguageEnum.LANG_FR:
-                                aTmp[0] = ((((((((_local_7 + "/") + _local_6) + "/") + _local_5) + " ") + _local_8) + ":") + _local_9);
+                                aTmp[0] = ((((((((_local_8 + "/") + _local_7) + "/") + _local_6) + " ") + _local_9) + ":") + _local_10);
                                 break;
                             case LanguageEnum.LANG_EN:
-                                aTmp[0] = ((((((((_local_6 + "/") + _local_7) + "/") + _local_5) + " ") + _local_8) + ":") + _local_9);
+                                aTmp[0] = ((((((((_local_7 + "/") + _local_8) + "/") + _local_6) + " ") + _local_9) + ":") + _local_10);
                                 break;
                             default:
-                                aTmp[0] = ((((((((_local_6 + "/") + _local_7) + "/") + _local_5) + " ") + _local_8) + ":") + _local_9);
+                                aTmp[0] = ((((((((_local_7 + "/") + _local_8) + "/") + _local_6) + " ") + _local_9) + ":") + _local_10);
                         };
                         break;
                 };

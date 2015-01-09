@@ -98,7 +98,7 @@
             return (false);
         }
 
-        public function pointMov(x:int, y:int, bAllowTroughEntity:Boolean=true, previousCellId:int=-1):Boolean
+        public function pointMov(x:int, y:int, bAllowTroughEntity:Boolean=true, previousCellId:int=-1, endCellId:int=-1):Boolean
         {
             var useNewSystem:Boolean;
             var cellId:uint;
@@ -134,9 +134,15 @@
                     {
                         for each (o in cellEntities)
                         {
-                            if (!(IObstacle(o).canSeeThrough()))
+                            if ((((endCellId == cellId)) && (o.canWalkTo())))
                             {
-                                return (false);
+                            }
+                            else
+                            {
+                                if (!(o.canWalkThrough()))
+                                {
+                                    return (false);
+                                };
                             };
                         };
                     };
@@ -240,7 +246,7 @@
             {
                 for each (o in cellEntities)
                 {
-                    if (!(IObstacle(o).canSeeThrough()))
+                    if (!(IObstacle(o).canWalkTo()))
                     {
                         return (true);
                     };

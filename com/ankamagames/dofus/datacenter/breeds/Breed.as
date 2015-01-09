@@ -36,6 +36,7 @@
         public var statsPointsForVitality:Vector.<Vector.<uint>>;
         public var statsPointsForWisdom:Vector.<Vector.<uint>>;
         public var breedSpellsId:Vector.<uint>;
+        public var breedRoles:Vector.<BreedRoleByBreed>;
         public var maleColors:Vector.<uint>;
         public var femaleColors:Vector.<uint>;
         public var spawnMap:uint;

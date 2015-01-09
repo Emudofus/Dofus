@@ -236,7 +236,7 @@
                     sNewVal = this._aLang[sKey];
                     if (sNewVal == null)
                     {
-                        if (!(isNaN(parseInt(sKey, 10))))
+                        if (int(sKey) > 0)
                         {
                             sNewVal = I18n.getText(parseInt(sKey, 10));
                         };
@@ -253,7 +253,7 @@
                             };
                             if (sNewVal == null)
                             {
-                                sNewVal = ("!" + sKey);
+                                sNewVal = (("[" + sKey) + "]");
                                 aFind = this.findCategory(sKey);
                                 if (aFind.length)
                                 {

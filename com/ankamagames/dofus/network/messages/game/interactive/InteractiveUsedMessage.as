@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class InteractiveUsedMessage extends NetworkMessage implements INetworkMessage 
@@ -48,70 +49,70 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_InteractiveUsedMessage(output);
         }
 
-        public function serializeAs_InteractiveUsedMessage(output:IDataOutput):void
+        public function serializeAs_InteractiveUsedMessage(output:ICustomDataOutput):void
         {
             if (this.entityId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.entityId) + ") on element entityId.")));
             };
-            output.writeInt(this.entityId);
+            output.writeVarInt(this.entityId);
             if (this.elemId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.elemId) + ") on element elemId.")));
             };
-            output.writeInt(this.elemId);
+            output.writeVarInt(this.elemId);
             if (this.skillId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.skillId) + ") on element skillId.")));
             };
-            output.writeShort(this.skillId);
+            output.writeVarShort(this.skillId);
             if (this.duration < 0)
             {
                 throw (new Error((("Forbidden value (" + this.duration) + ") on element duration.")));
             };
-            output.writeShort(this.duration);
+            output.writeVarShort(this.duration);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_InteractiveUsedMessage(input);
         }
 
-        public function deserializeAs_InteractiveUsedMessage(input:IDataInput):void
+        public function deserializeAs_InteractiveUsedMessage(input:ICustomDataInput):void
         {
-            this.entityId = input.readInt();
+            this.entityId = input.readVarUhInt();
             if (this.entityId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.entityId) + ") on element of InteractiveUsedMessage.entityId.")));
             };
-            this.elemId = input.readInt();
+            this.elemId = input.readVarUhInt();
             if (this.elemId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.elemId) + ") on element of InteractiveUsedMessage.elemId.")));
             };
-            this.skillId = input.readShort();
+            this.skillId = input.readVarUhShort();
             if (this.skillId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.skillId) + ") on element of InteractiveUsedMessage.skillId.")));
             };
-            this.duration = input.readShort();
+            this.duration = input.readVarUhShort();
             if (this.duration < 0)
             {
                 throw (new Error((("Forbidden value (" + this.duration) + ") on element of InteractiveUsedMessage.duration.")));

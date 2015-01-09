@@ -7,6 +7,7 @@
     import com.ankamagames.tiphon.display.TiphonSprite;
     import flash.display.Shape;
     import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+    import com.ankamagames.jerakine.sequencer.SerialSequencer;
     import com.ankamagames.tiphon.types.ISubEntityBehavior;
     import com.ankamagames.tiphon.types.IAnimationModifier;
     import com.ankamagames.tiphon.types.ISkinModifier;
@@ -15,7 +16,6 @@
     import flash.events.MouseEvent;
     import flash.geom.Rectangle;
     import com.ankamagames.tiphon.types.DisplayInfoSprite;
-    import com.ankamagames.jerakine.sequencer.SerialSequencer;
     import com.ankamagames.tiphon.sequence.SetDirectionStep;
     import com.ankamagames.tiphon.sequence.PlayAnimationStep;
     import com.ankamagames.tiphon.sequence.SetAnimationStep;
@@ -44,23 +44,20 @@
         private var _direction:uint = 1;
         private var _animation:String = "AnimStatique";
         private var _view:String;
-        private var _scale:Number = 1;
         private var _mask:Shape;
         private var _mask2:Shape;
         private var _lookUpdate:TiphonEntityLook;
         private var _listenForUpdate:Boolean = false;
         private var _waitingForEquipement:Array;
-        private var _skipResize:Boolean = false;
-        private var _staticDisplay:Boolean = false;
         private var _useCache:Boolean = false;
         private var _fromCache:Boolean = false;
         private var _cache:Object;
         private var _gotoAndStop:int = 0;
-        private var _originalScaleX:Number;
-        private var _originalScaleY:Number;
+        private var _autoSize:Boolean = false;
+        private var _sequencer:SerialSequencer;
         public var yOffset:int = 0;
         public var xOffset:int = 0;
-        public var autoSize:Boolean = true;
+        public var entityScale:Number = 1;
         public var useFade:Boolean = true;
         public var clearSubEntities:Boolean = true;
         public var clearAuras:Boolean = true;
@@ -68,8 +65,6 @@
 
         public function EntityDisplayer()
         {
-            this._waitingForEquipement = new Array();
-            super();
             mouseChildren = false;
             MEMORY_LOG[this] = 1;
         }
@@ -111,6 +106,11 @@
             };
             if (this._entity)
             {
+                this._entity.stopAnimation();
+                if (((this._sequencer) && (this._sequencer.running)))
+                {
+                    this._sequencer.clear();
+                };
                 this._entity.visible = !((look == null));
             };
             if (this.withoutMount)
@@ -177,6 +177,11 @@
             };
         }
 
+        public function get direction():uint
+        {
+            return (this._direction);
+        }
+
         public function set animation(anim:String):void
         {
             this._animation = anim;
@@ -184,6 +189,11 @@
             {
                 TiphonSprite(this._entity).setAnimation(anim);
             };
+        }
+
+        public function get animation():String
+        {
+            return (this._animation);
         }
 
         public function set gotoAndStop(value:int):void
@@ -205,35 +215,21 @@
             };
         }
 
-        public function set staticDisplay(b:Boolean):void
+        public function get autoSize():Boolean
         {
-            this._staticDisplay = b;
+            return (this._autoSize);
         }
 
-        public function get staticDisplay():Boolean
+        override public function set width(nW:Number):void
         {
-            return (this._staticDisplay);
+            super.width = nW;
+            this._autoSize = ((!((nW == 0))) && (!((height == 0))));
         }
 
-        override public function set scale(n:Number):void
+        override public function set height(nH:Number):void
         {
-            super.scale;
-            this._scale = n;
-        }
-
-        override public function get scale():Number
-        {
-            return (this._scale);
-        }
-
-        public function get direction():uint
-        {
-            return (this._direction);
-        }
-
-        public function get animation():String
-        {
-            return (this._animation);
+            super.height = nH;
+            this._autoSize = ((!((nH == 0))) && (!((width == 0))));
         }
 
         public function set view(value:String):void
@@ -291,7 +287,7 @@
 
         public function updateMask():void
         {
-            if ((((this._scale > 1)) || (!((this.yOffset == 0)))))
+            if ((((((this.entityScale > 1)) || (!((this.yOffset == 0))))) || (!((this.xOffset == 0)))))
             {
                 if (this._mask)
                 {
@@ -351,13 +347,13 @@
                     entRatio = (this._entity.width / this._entity.height);
                     if (this._entity.width > this._entity.height)
                     {
-                        this._entity.height = ((width / entRatio) * this._scale);
-                        this._entity.width = (width * this._scale);
+                        this._entity.height = ((width / entRatio) * this.entityScale);
+                        this._entity.width = (width * this.entityScale);
                     }
                     else
                     {
-                        this._entity.width = ((height * entRatio) * this._scale);
-                        this._entity.height = (height * this._scale);
+                        this._entity.width = ((height * entRatio) * this.entityScale);
+                        this._entity.height = (height * this.entityScale);
                     };
                     b = TiphonSprite(this._entity).getBounds(this);
                     this._entity.x = ((((width - this._entity.width) / 2) - b.left) + this.xOffset);
@@ -375,13 +371,13 @@
                 entRatio = (this._entity.width / this._entity.height);
                 if (this._entity.width > this._entity.height)
                 {
-                    this._entity.height = ((width / entRatio) * this._scale);
-                    this._entity.width = (width * this._scale);
+                    this._entity.height = ((width / entRatio) * this.entityScale);
+                    this._entity.width = (width * this.entityScale);
                 }
                 else
                 {
-                    this._entity.width = ((height * entRatio) * this._scale);
-                    this._entity.height = (height * this._scale);
+                    this._entity.width = ((height * entRatio) * this.entityScale);
+                    this._entity.height = (height * this.entityScale);
                 };
                 b = TiphonSprite(this._entity).getBounds(this);
                 this._entity.x = ((((width - this._entity.width) / 2) - b.left) + this.xOffset);
@@ -391,7 +387,6 @@
 
         public function setAnimationAndDirection(anim:String, dir:uint):void
         {
-            var _local_3:SerialSequencer;
             if (!(this._fromCache))
             {
                 this._animation = anim;
@@ -404,11 +399,21 @@
                     }
                     else
                     {
-                        _local_3 = new SerialSequencer();
-                        _local_3.addStep(new SetDirectionStep(TiphonSprite(this._entity), this._direction));
-                        _local_3.addStep(new PlayAnimationStep(TiphonSprite(this._entity), this._animation, false));
-                        _local_3.addStep(new SetAnimationStep(TiphonSprite(this._entity), "AnimStatique"));
-                        _local_3.start();
+                        if (!(this._sequencer))
+                        {
+                            this._sequencer = new SerialSequencer();
+                        }
+                        else
+                        {
+                            if (this._sequencer.running)
+                            {
+                                this._sequencer.clear();
+                            };
+                        };
+                        this._sequencer.addStep(new SetDirectionStep(TiphonSprite(this._entity), this._direction));
+                        this._sequencer.addStep(new PlayAnimationStep(TiphonSprite(this._entity), this._animation, false));
+                        this._sequencer.addStep(new SetAnimationStep(TiphonSprite(this._entity), "AnimStatique"));
+                        this._sequencer.start();
                     };
                 };
             };
@@ -521,7 +526,13 @@
                 };
                 this._cache = null;
             };
+            if (this._sequencer)
+            {
+                this._sequencer.clear();
+                this._sequencer = null;
+            };
             this._lookUpdate = null;
+            this._waitingForEquipement = null;
             EnterFrameDispatcher.removeEventListener(this.onFade);
             removeEventListener(MouseEvent.MOUSE_OVER, this.mouseOver);
             removeEventListener(MouseEvent.MOUSE_OUT, this.mouseOut);
@@ -551,6 +562,14 @@
             };
         }
 
+        public function destroyCurrentEntity():void
+        {
+            if (((this._entity) && (this._entity.parent)))
+            {
+                removeChild(this._entity);
+            };
+        }
+
         private function onCharacterReady(e:Event):void
         {
             var cat:*;
@@ -570,14 +589,6 @@
                     this._entity.stopAnimation(this._gotoAndStop);
                 };
                 this._gotoAndStop = 0;
-            };
-            if (this._staticDisplay)
-            {
-                if (this._skipResize)
-                {
-                    return;
-                };
-                this._skipResize = true;
             };
             if (_animationModifier[this._entity.look.getBone()])
             {
@@ -610,7 +621,7 @@
                     this._oldEntity = null;
                 };
             };
-            if (((!(this._entity.height)) || (!(this.autoSize))))
+            if (((!(this._entity.height)) || (!(this._autoSize))))
             {
                 Berilia.getInstance().handler.process(new EntityReadyMessage(InteractiveObject(this)));
                 return;
@@ -620,14 +631,6 @@
             if (Berilia.getInstance().handler)
             {
                 Berilia.getInstance().handler.process(new EntityReadyMessage(InteractiveObject(this)));
-            };
-        }
-
-        public function destroyCurrentEntity():void
-        {
-            if (((this._entity) && (this._entity.parent)))
-            {
-                removeChild(this._entity);
             };
         }
 
@@ -679,8 +682,6 @@
                 key = this._entity.look.toString();
                 this._cache[key] = this._entity;
             };
-            this._originalScaleX = (this._entity as TiphonSprite).look.getScaleX();
-            this._originalScaleY = (this._entity as TiphonSprite).look.getScaleY();
             for (cat in _subEntitiesBehaviors)
             {
                 if (_subEntitiesBehaviors[cat])
@@ -691,7 +692,7 @@
             (this._entity as EventDispatcher).addEventListener(TiphonEvent.RENDER_SUCCEED, this.onCharacterReady);
             addChild(this._entity);
             this.setAnimationAndDirection(this._animation, this._direction);
-            if (this._waitingForEquipement.length)
+            if (((this._waitingForEquipement) && (this._waitingForEquipement.length)))
             {
                 this.equipCharacter(this._waitingForEquipement, 0);
             };

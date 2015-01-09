@@ -496,8 +496,11 @@
 
         private function onWindowDeactivate(pEvent:Event):void
         {
-            Berilia.getInstance().docMain.stage.focus = null;
-            FocusHandler.getInstance().setFocus(null);
+            if (((Berilia.getInstance().docMain) && (Berilia.getInstance().docMain.stage)))
+            {
+                Berilia.getInstance().docMain.stage.focus = null;
+                FocusHandler.getInstance().setFocus(null);
+            };
         }
 
 

@@ -5,8 +5,9 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.DungeonPartyFinderPlayer;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -54,30 +55,30 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_DungeonPartyFinderRoomContentUpdateMessage(output);
         }
 
-        public function serializeAs_DungeonPartyFinderRoomContentUpdateMessage(output:IDataOutput):void
+        public function serializeAs_DungeonPartyFinderRoomContentUpdateMessage(output:ICustomDataOutput):void
         {
             if (this.dungeonId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.dungeonId) + ") on element dungeonId.")));
             };
-            output.writeShort(this.dungeonId);
+            output.writeVarShort(this.dungeonId);
             output.writeShort(this.addedPlayers.length);
             var _i2:uint;
             while (_i2 < this.addedPlayers.length)
@@ -93,21 +94,21 @@
                 {
                     throw (new Error((("Forbidden value (" + this.removedPlayersIds[_i3]) + ") on element 3 (starting at 1) of removedPlayersIds.")));
                 };
-                output.writeInt(this.removedPlayersIds[_i3]);
+                output.writeVarInt(this.removedPlayersIds[_i3]);
                 _i3++;
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_DungeonPartyFinderRoomContentUpdateMessage(input);
         }
 
-        public function deserializeAs_DungeonPartyFinderRoomContentUpdateMessage(input:IDataInput):void
+        public function deserializeAs_DungeonPartyFinderRoomContentUpdateMessage(input:ICustomDataInput):void
         {
             var _item2:DungeonPartyFinderPlayer;
             var _val3:uint;
-            this.dungeonId = input.readShort();
+            this.dungeonId = input.readVarUhShort();
             if (this.dungeonId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.dungeonId) + ") on element of DungeonPartyFinderRoomContentUpdateMessage.dungeonId.")));
@@ -125,7 +126,7 @@
             var _i3:uint;
             while (_i3 < _removedPlayersIdsLen)
             {
-                _val3 = input.readInt();
+                _val3 = input.readVarUhInt();
                 if (_val3 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val3) + ") on elements of removedPlayersIds.")));

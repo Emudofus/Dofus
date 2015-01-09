@@ -631,7 +631,6 @@
         public function buildSoundLabel(entityId:int, animationType:String, params:String):String
         {
             var r:RegExp;
-            var entity:TiphonSprite;
             if (params != null)
             {
                 r = /^\s*(.*?)\s*$/g;
@@ -652,7 +651,13 @@
                 _log.error((entityId + " : donnés incomplètes pour ce bones, impossible de créer les sons"));
                 return (null);
             };
-            var bonesId:int = infos.look.bonesId;
+            var entity:TiphonSprite = (DofusEntities.getEntity(entityId) as TiphonSprite);
+            if (((!(entity)) || (!(entity.look))))
+            {
+                _log.error((entityId + " : donnés incomplètes pour ce bones, impossible de créer les sons"));
+                return (null);
+            };
+            var bonesId:int = entity.look.getBone();
             var sb:SoundBones = SoundBones.getSoundBonesById(bonesId);
             var soundEvents:Vector.<SoundEventParamWrapper> = new Vector.<SoundEventParamWrapper>();
             if (sb != null)
@@ -661,12 +666,6 @@
             };
             if (soundEvents.length <= 0)
             {
-                entity = (DofusEntities.getEntity(entityId) as TiphonSprite);
-                if (((!(entity)) || (!(entity.look))))
-                {
-                    _log.error((entityId + " : donnés incomplètes pour ce bones, impossible de créer les sons"));
-                    return (null);
-                };
                 bonesId = (TiphonUtility.getEntityWithoutMount(entity) as TiphonSprite).look.getBone();
                 sb = SoundBones.getSoundBonesById(bonesId);
                 if (sb != null)

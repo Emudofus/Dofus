@@ -32,11 +32,13 @@
         private var _validate:Boolean = true;
         private var _partTransformData:Dictionary;
         private var _transformData:Dictionary;
+        private var _baseSkins:Dictionary;
 
         public function Skin()
         {
             this._partTransformData = new Dictionary();
             this._transformData = new Dictionary();
+            this._baseSkins = new Dictionary();
             super();
             this._partToSwl = new Dictionary();
             this._skinParts = new Array();
@@ -113,6 +115,7 @@
             {
                 oldSkinGfxId = gfxId;
                 gfxId = _alternativeSkin[gfxId][alternativeSkinIndex];
+                this._baseSkins[gfxId] = oldSkinGfxId;
             };
             var parts:Array = new Array();
             var i:uint;
@@ -198,6 +201,7 @@
             this._skinParts = new Array();
             this._skinClass = new Array();
             this._aSkinPartOrdered = new Array();
+            this._baseSkins = new Dictionary();
         }
 
         public function addTransform(part:String, skinId:uint, data:TransformData):void
@@ -259,6 +263,10 @@
                             while (j >= -1)
                             {
                                 gfxId = (((j >= 0)) ? this._aSkinPartOrdered[j] : 0);
+                                if (((this._baseSkins[gfxId]) && (!((this._baseSkins[gfxId] == gfxId)))))
+                                {
+                                    gfxId = this._baseSkins[gfxId];
+                                };
                                 if (skinTransform[gfxId])
                                 {
                                     td = skinTransform[gfxId];

@@ -74,7 +74,7 @@
                     readableCriterionRef = I18n.getUiText("ui.stats.takleEvade");
                     break;
                 default:
-                    readableCriterionRef = StringUtils.replace(this._criterionRef, ["CS", "Cs", "CV", "Cv", "CA", "Ca", "CI", "Ci", "CW", "Cw", "CC", "Cc", "CA", "PG", "PJ", "Pj", "PM", "PA", "PN", "PE", "<NO>", "PS", "PR", "PL", "PK", "Pg", "Pr", "Ps", "Pa", "PP", "PZ", "CM", "Qa"], I18n.getUiText("ui.item.characteristics").split(","));
+                    readableCriterionRef = StringUtils.replace(this._criterionRef, ["CS", "Cs", "CV", "Cv", "CA", "Ca", "CI", "Ci", "CW", "Cw", "CC", "Cc", "PG", "PJ", "Pj", "PM", "PA", "PN", "PE", "<NO>", "PS", "PR", "PL", "PK", "Pg", "Pr", "Ps", "Pa", "PP", "PZ", "CM", "Qa", "CP", "ca", "cc", "ci", "cs", "cv", "cw"], I18n.getUiText("ui.item.characteristics").split(","));
             };
             return (((((readableCriterionRef + " ") + this._operator.text) + " ") + this._criterionValue));
         }
@@ -171,13 +171,31 @@
                 case "CT":
                     criterion = this.getTotalCharac(player.characteristics.tackleBlock);
                     break;
+                case "ca":
+                    criterion = player.characteristics.agility.additionnal;
+                    break;
+                case "cc":
+                    criterion = player.characteristics.chance.additionnal;
+                    break;
+                case "ci":
+                    criterion = player.characteristics.intelligence.additionnal;
+                    break;
+                case "cs":
+                    criterion = player.characteristics.strength.additionnal;
+                    break;
+                case "cv":
+                    criterion = player.characteristics.vitality.additionnal;
+                    break;
+                case "cw":
+                    criterion = player.characteristics.wisdom.additionnal;
+                    break;
             };
             return (criterion);
         }
 
         private function getTotalCharac(pCharac:CharacterBaseCharacteristic):int
         {
-            return ((((pCharac.base + pCharac.alignGiftBonus) + pCharac.contextModif) + pCharac.objectsAndMountBonus));
+            return (((((pCharac.base + pCharac.additionnal) + pCharac.alignGiftBonus) + pCharac.contextModif) + pCharac.objectsAndMountBonus));
         }
 
 

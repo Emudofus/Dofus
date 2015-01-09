@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class TreasureHuntStepFollowDirection extends TreasureHuntStep implements INetworkType 
     {
@@ -31,12 +31,12 @@
             this.mapCount = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TreasureHuntStepFollowDirection(output);
         }
 
-        public function serializeAs_TreasureHuntStepFollowDirection(output:IDataOutput):void
+        public function serializeAs_TreasureHuntStepFollowDirection(output:ICustomDataOutput):void
         {
             super.serializeAs_TreasureHuntStep(output);
             output.writeByte(this.direction);
@@ -44,15 +44,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.mapCount) + ") on element mapCount.")));
             };
-            output.writeInt(this.mapCount);
+            output.writeVarShort(this.mapCount);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TreasureHuntStepFollowDirection(input);
         }
 
-        public function deserializeAs_TreasureHuntStepFollowDirection(input:IDataInput):void
+        public function deserializeAs_TreasureHuntStepFollowDirection(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.direction = input.readByte();
@@ -60,7 +60,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.direction) + ") on element of TreasureHuntStepFollowDirection.direction.")));
             };
-            this.mapCount = input.readInt();
+            this.mapCount = input.readVarUhShort();
             if (this.mapCount < 0)
             {
                 throw (new Error((("Forbidden value (" + this.mapCount) + ") on element of TreasureHuntStepFollowDirection.mapCount.")));

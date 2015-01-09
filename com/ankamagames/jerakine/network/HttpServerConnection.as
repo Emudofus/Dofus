@@ -133,7 +133,7 @@
                 messageLength = this.readMessageLength(staticHeader, src);
                 if (src.bytesAvailable >= messageLength)
                 {
-                    return (this.rawParser.parse(src, messageId, messageLength));
+                    return (this.rawParser.parse(new CustomDataWrapper(src), messageId, messageLength));
                 };
             };
             return (null);

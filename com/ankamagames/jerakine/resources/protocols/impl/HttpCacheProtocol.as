@@ -19,6 +19,7 @@
     import flash.filesystem.FileMode;
     import com.ankamagames.jerakine.resources.adapters.impl.BinaryAdapter;
     import com.ankamagames.jerakine.resources.ResourceObserverWrapper;
+    import flash.utils.getTimer;
     import com.ankamagames.jerakine.resources.adapters.impl.AdvancedSwfAdapter;
     import __AS3__.vec.*;
 
@@ -42,11 +43,15 @@
         private static var _buff_crc:ByteArray = new ByteArray();
         private static var _urlRewritePattern;
         private static var _urlRewriteReplace;
+        private static var _remoteLoadingErrorHandler;
+        private static var _pendingFail:Vector.<PendingFail>;
+        private static const REMOTE_MIN_CHECK_INTERVAL:int = 10000;
 
         private var _parent:AbstractFileProtocol;
         private var _serverRootDir:String;
         private var _serverRootUnversionedDir:String;
         private var _isLoadingFilelist:Boolean = false;
+        private var _lastRemoteCheckTimestamp:Number = 0;
 
         public function HttpCacheProtocol()
         {
@@ -60,10 +65,11 @@
             };
         }
 
-        public static function init(replacePattern:*, replaceNeedle:*):void
+        public static function init(replacePattern:*, replaceNeedle:*, remoteLoadingErrorHandler:Function=null):void
         {
             _urlRewritePattern = replacePattern;
             _urlRewriteReplace = replaceNeedle;
+            _remoteLoadingErrorHandler = remoteLoadingErrorHandler;
         }
 
 
@@ -323,10 +329,15 @@
             return (inStr.replace(pattern, "/"));
         }
 
-        private function onRemoteFileFailed(uri:Uri, errorMsg:String, errorCode:uint):void
+        private function onRemoteFileFailed(uri:Uri, errorMsg:String, errorCode:uint, canQueue:Boolean=true):void
         {
             var path:String;
-            var _local_5:*;
+            if (((_pendingFail) && (canQueue)))
+            {
+                _log.warn((((uri.path + ": download failed (") + errorMsg) + "), wait for remote check"));
+                _pendingFail.push(new PendingFail(uri, errorMsg, errorCode));
+                return;
+            };
             _log.warn((((uri.path + ": download failed (") + errorMsg) + ")"));
             if (((!((_attemptToDownloadFile[uri] == null))) && ((_attemptToDownloadFile[uri] <= LIMITE_ATTEMPT_FOR_DOWNLOAD))))
             {
@@ -343,12 +354,45 @@
             }
             else
             {
-                _log.warn((((uri.path + ": download definitively failed (") + errorMsg) + ")"));
-                _local_5 = _dataLoading[uri];
-                if (((_local_5) && (_local_5.observer)))
+                if (((((canQueue) && (!((_remoteLoadingErrorHandler == null))))) && (((getTimer() - this._lastRemoteCheckTimestamp) > REMOTE_MIN_CHECK_INTERVAL))))
                 {
-                    IResourceObserver(_local_5.observer).onFailed(uri, errorMsg, errorCode);
+                    _log.warn((((uri.path + ": download failed (") + errorMsg) + "), wait for remote check (1ft)"));
+                    this._lastRemoteCheckTimestamp = getTimer();
+                    _pendingFail = new Vector.<PendingFail>();
+                    _pendingFail.push(new PendingFail(uri, errorMsg, errorCode));
+                    _remoteLoadingErrorHandler(this.onRemoteLoadingErrorHandlerResponse);
+                }
+                else
+                {
+                    this.definitiveFail(uri, errorMsg, errorCode);
                 };
+            };
+        }
+
+        private function onRemoteLoadingErrorHandlerResponse(settingsChanged:Boolean):void
+        {
+            var pf:PendingFail;
+            for each (pf in _pendingFail)
+            {
+                if (settingsChanged)
+                {
+                    _attemptToDownloadFile[pf.uri] = 0;
+                    this.onRemoteFileFailed(pf.uri, pf.errorMsg, pf.errorCode, false);
+                }
+                else
+                {
+                    this.definitiveFail(pf.uri, pf.errorMsg, pf.errorCode);
+                };
+            };
+        }
+
+        private function definitiveFail(uri:Uri, errorMsg:String, errorCode:uint):void
+        {
+            _log.warn((((uri.path + ": download definitively failed (") + errorMsg) + ")"));
+            var data:* = _dataLoading[uri];
+            if (((data) && (data.observer)))
+            {
+                IResourceObserver(data.observer).onFailed(uri, errorMsg, errorCode);
             };
         }
 
@@ -441,4 +485,22 @@
 
     }
 }//package com.ankamagames.jerakine.resources.protocols.impl
+
+import com.ankamagames.jerakine.types.Uri;
+
+class PendingFail 
+{
+
+    public var uri:Uri;
+    public var errorMsg:String;
+    public var errorCode:uint;
+
+    public function PendingFail(uri:Uri, errorMsg:String, errorCode:uint)
+    {
+        this.uri = uri;
+        this.errorMsg = errorMsg;
+        this.errorCode = errorCode;
+    }
+
+}
 

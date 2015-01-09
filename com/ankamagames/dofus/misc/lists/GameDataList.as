@@ -17,6 +17,8 @@
     import com.ankamagames.dofus.datacenter.spells.SpellType;
     import com.ankamagames.dofus.datacenter.spells.SpellState;
     import com.ankamagames.dofus.datacenter.breeds.Breed;
+    import com.ankamagames.dofus.datacenter.breeds.BreedRole;
+    import com.ankamagames.dofus.datacenter.breeds.BreedRoleByBreed;
     import com.ankamagames.dofus.datacenter.breeds.Head;
     import com.ankamagames.dofus.datacenter.world.SuperArea;
     import com.ankamagames.dofus.datacenter.world.Area;
@@ -143,6 +145,8 @@
         public static const spellType:SpellType = null;
         public static const spellState:SpellState = null;
         public static const breed:Breed = null;
+        public static const breedRole:BreedRole = null;
+        public static const breedRoleByBreed:BreedRoleByBreed = null;
         public static const head:Head = null;
         public static const superArea:SuperArea = null;
         public static const area:Area = null;

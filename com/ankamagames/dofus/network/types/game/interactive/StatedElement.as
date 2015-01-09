@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.interactive
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class StatedElement implements INetworkType 
@@ -35,12 +35,12 @@
             this.elementState = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_StatedElement(output);
         }
 
-        public function serializeAs_StatedElement(output:IDataOutput):void
+        public function serializeAs_StatedElement(output:ICustomDataOutput):void
         {
             if (this.elementId < 0)
             {
@@ -51,32 +51,32 @@
             {
                 throw (new Error((("Forbidden value (" + this.elementCellId) + ") on element elementCellId.")));
             };
-            output.writeShort(this.elementCellId);
+            output.writeVarShort(this.elementCellId);
             if (this.elementState < 0)
             {
                 throw (new Error((("Forbidden value (" + this.elementState) + ") on element elementState.")));
             };
-            output.writeInt(this.elementState);
+            output.writeVarInt(this.elementState);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_StatedElement(input);
         }
 
-        public function deserializeAs_StatedElement(input:IDataInput):void
+        public function deserializeAs_StatedElement(input:ICustomDataInput):void
         {
             this.elementId = input.readInt();
             if (this.elementId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.elementId) + ") on element of StatedElement.elementId.")));
             };
-            this.elementCellId = input.readShort();
+            this.elementCellId = input.readVarUhShort();
             if ((((this.elementCellId < 0)) || ((this.elementCellId > 559))))
             {
                 throw (new Error((("Forbidden value (" + this.elementCellId) + ") on element of StatedElement.elementCellId.")));
             };
-            this.elementState = input.readInt();
+            this.elementState = input.readVarUhInt();
             if (this.elementState < 0)
             {
                 throw (new Error((("Forbidden value (" + this.elementState) + ") on element of StatedElement.elementState.")));

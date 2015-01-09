@@ -3,9 +3,12 @@
     import com.ankamagames.dofus.scripts.SpellFxRunner;
     import com.ankamagames.dofus.logic.game.fight.types.CastingSpell;
     import com.ankamagames.dofus.datacenter.items.Item;
+    import __AS3__.vec.Vector;
+    import com.ankamagames.jerakine.types.positions.MapPoint;
+    import com.ankamagames.dofus.logic.game.fight.managers.MarkedCellsManager;
+    import com.ankamagames.dofus.types.entities.Glyph;
     import com.ankamagames.dofus.logic.game.fight.steps.IFightStep;
     import com.ankamagames.jerakine.sequencer.ISequencable;
-    import __AS3__.vec.Vector;
     import com.ankamagames.jerakine.types.Uri;
     import com.ankamagames.tiphon.TiphonConstants;
     import com.ankamagames.dofus.types.entities.ExplosionEntity;
@@ -57,6 +60,21 @@
             };
             var v:* = spell.spell.getParamByName(name, IsCriticalHit(spell));
             return (((!(isNaN(v))) || (!((v == null)))));
+        }
+
+        public static function GetPortalCells(runner:SpellFxRunner):Vector.<MapPoint>
+        {
+            return (runner.castingSpell.portalMapPoints);
+        }
+
+        public static function GetPortalIds(runner:SpellFxRunner):Vector.<int>
+        {
+            return (runner.castingSpell.portalIds);
+        }
+
+        public static function GetPortalEntity(runner:SpellFxRunner, portalId:int):Glyph
+        {
+            return (MarkedCellsManager.getInstance().getGlyph(portalId));
         }
 
         public static function GetStepType(step:ISequencable):String

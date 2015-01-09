@@ -64,19 +64,18 @@
         public function run():void
         {
             this._loader.load(this._urlRequest);
-            this._timer = new Timer(4000, 1);
+            this._timer = new Timer(MAX_DURATION, 1);
             this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerComplete);
+            this._timer.start();
+        }
+
+        public function cancel():void
+        {
+            this.clean();
         }
 
         private function onTimerComplete(event:TimerEvent):void
         {
-            try
-            {
-                this._loader.close();
-            }
-            catch(error:Error)
-            {
-            };
             this.onError(null);
         }
 
@@ -103,12 +102,25 @@
 
         private function clean():void
         {
-            this._timer.stop();
-            this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerComplete);
-            this._loader.removeEventListener(Event.OPEN, this.onOpen);
-            this._loader.removeEventListener(Event.COMPLETE, this.onComplete);
-            this._loader.removeEventListener(IOErrorEvent.IO_ERROR, this.onError);
-            this._loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onError);
+            if (this._timer)
+            {
+                this._timer.stop();
+                this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerComplete);
+                this._timer = null;
+                try
+                {
+                    this._loader.close();
+                }
+                catch(error:Error)
+                {
+                };
+                this._loader.removeEventListener(Event.OPEN, this.onOpen);
+                this._loader.removeEventListener(Event.COMPLETE, this.onComplete);
+                this._loader.removeEventListener(IOErrorEvent.IO_ERROR, this.onError);
+                this._loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onError);
+                this._loader = null;
+                this._urlRequest = null;
+            };
         }
 
         public function getResults():String

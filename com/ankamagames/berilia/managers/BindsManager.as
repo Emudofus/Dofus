@@ -1,8 +1,5 @@
 ﻿package com.ankamagames.berilia.managers
 {
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
     import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
     import com.ankamagames.jerakine.utils.errors.SingletonError;
     import com.ankamagames.jerakine.managers.StoreDataManager;
@@ -36,12 +33,11 @@
     {
 
         private static var _self:BindsManager;
-        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(BindsManager));
 
         private var _aRegisterKey:Array;
         private var _loader:IResourceLoader;
         private var _loaderKeyboard:IResourceLoader;
-        private var _avaibleKeyboard:Array;
+        private var _availableKeyboards:Array;
         private var _waitingBinds:Array;
         private var _bindsToCheck:Array;
         private var _shortcutsLoaded:Boolean;
@@ -49,14 +45,13 @@
 
         public function BindsManager()
         {
-            this._aRegisterKey = [];
-            this._avaibleKeyboard = new Array();
-            super();
             if (_self != null)
             {
                 throw (new SingletonError("ShortcutsManager constructor should not be called directly."));
             };
             _self = this;
+            this._aRegisterKey = new Array();
+            this._availableKeyboards = new Array();
         }
 
         public static function getInstance():BindsManager
@@ -77,9 +72,9 @@
         }
 
 
-        public function get avaibleKeyboard():Array
+        public function get availableKeyboards():Array
         {
-            return (this._avaibleKeyboard);
+            return (this._availableKeyboards);
         }
 
         public function get currentLocale():String
@@ -384,10 +379,10 @@
                         };
                         _log.info(((("Dispatch " + args) + " to ") + e.listener));
                         ModuleLogger.log(s, e.listener);
-                        result = e.getCallback().apply(null, args);
+                        result = e.callback.apply(null, args);
                         if ((((result === null)) || (!((result is Boolean)))))
                         {
-                            throw (new ApiError((e.getCallback() + " does not return a Boolean value")));
+                            throw (new ApiError((e.callback + " does not return a Boolean value")));
                         };
                         bContinue = !(result);
                     };
@@ -426,7 +421,7 @@
         public function changeKeyboard(locale:String, removeOldBind:Boolean=false):void
         {
             var k:LocalizedKeyboard;
-            for each (k in this._avaibleKeyboard)
+            for each (k in this._availableKeyboards)
             {
                 if (k.locale == locale)
                 {
@@ -705,7 +700,7 @@
         public function keyboardFileLoaded(e:ResourceLoadedEvent):void
         {
             var xml:XML = XML(e.resource);
-            this._avaibleKeyboard.push(new LocalizedKeyboard(e.uri, xml.@locale, xml.@description));
+            this._availableKeyboards.push(new LocalizedKeyboard(e.uri, xml.@locale, xml.@description));
         }
 
         public function keyboardFileAllLoaded(e:ResourceLoaderProgressEvent):void

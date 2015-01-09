@@ -3,7 +3,6 @@
     import com.ankamagames.jerakine.console.ConsoleInstructionHandler;
     import com.ankamagames.jerakine.console.ConsoleHandler;
     import com.ankamagames.dofus.console.debug.frames.UpdaterDebugFrame;
-    import com.ankamagames.dofus.network.enums.PartStateEnum;
     import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.dofus.network.types.updater.ContentPart;
 
@@ -16,15 +15,6 @@
 
         private static function stateToString(state:int):String
         {
-            switch (state)
-            {
-                case PartStateEnum.PART_BEING_UPDATER:
-                    return ("PART_BEING_UPDATER");
-                case PartStateEnum.PART_NOT_INSTALLED:
-                    return ("PART_NOT_INSTALLED");
-                case PartStateEnum.PART_UP_TO_DATE:
-                    return ("PART_UP_TO_DATE");
-            };
             return ("(unknow state)");
         }
 

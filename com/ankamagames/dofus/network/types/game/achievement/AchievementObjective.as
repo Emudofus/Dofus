@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.achievement
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class AchievementObjective implements INetworkType 
@@ -32,38 +32,38 @@
             this.maxValue = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AchievementObjective(output);
         }
 
-        public function serializeAs_AchievementObjective(output:IDataOutput):void
+        public function serializeAs_AchievementObjective(output:ICustomDataOutput):void
         {
             if (this.id < 0)
             {
                 throw (new Error((("Forbidden value (" + this.id) + ") on element id.")));
             };
-            output.writeInt(this.id);
+            output.writeVarInt(this.id);
             if (this.maxValue < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxValue) + ") on element maxValue.")));
             };
-            output.writeShort(this.maxValue);
+            output.writeVarShort(this.maxValue);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AchievementObjective(input);
         }
 
-        public function deserializeAs_AchievementObjective(input:IDataInput):void
+        public function deserializeAs_AchievementObjective(input:ICustomDataInput):void
         {
-            this.id = input.readInt();
+            this.id = input.readVarUhInt();
             if (this.id < 0)
             {
                 throw (new Error((("Forbidden value (" + this.id) + ") on element of AchievementObjective.id.")));
             };
-            this.maxValue = input.readShort();
+            this.maxValue = input.readVarUhShort();
             if (this.maxValue < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxValue) + ") on element of AchievementObjective.maxValue.")));

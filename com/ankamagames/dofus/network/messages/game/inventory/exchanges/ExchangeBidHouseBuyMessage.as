@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ExchangeBidHouseBuyMessage extends NetworkMessage implements INetworkMessage 
@@ -45,60 +46,60 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeBidHouseBuyMessage(output);
         }
 
-        public function serializeAs_ExchangeBidHouseBuyMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeBidHouseBuyMessage(output:ICustomDataOutput):void
         {
             if (this.uid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.uid) + ") on element uid.")));
             };
-            output.writeInt(this.uid);
+            output.writeVarInt(this.uid);
             if (this.qty < 0)
             {
                 throw (new Error((("Forbidden value (" + this.qty) + ") on element qty.")));
             };
-            output.writeInt(this.qty);
+            output.writeVarInt(this.qty);
             if (this.price < 0)
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element price.")));
             };
-            output.writeInt(this.price);
+            output.writeVarInt(this.price);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeBidHouseBuyMessage(input);
         }
 
-        public function deserializeAs_ExchangeBidHouseBuyMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeBidHouseBuyMessage(input:ICustomDataInput):void
         {
-            this.uid = input.readInt();
+            this.uid = input.readVarUhInt();
             if (this.uid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.uid) + ") on element of ExchangeBidHouseBuyMessage.uid.")));
             };
-            this.qty = input.readInt();
+            this.qty = input.readVarUhInt();
             if (this.qty < 0)
             {
                 throw (new Error((("Forbidden value (" + this.qty) + ") on element of ExchangeBidHouseBuyMessage.qty.")));
             };
-            this.price = input.readInt();
+            this.price = input.readVarUhInt();
             if (this.price < 0)
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element of ExchangeBidHouseBuyMessage.price.")));

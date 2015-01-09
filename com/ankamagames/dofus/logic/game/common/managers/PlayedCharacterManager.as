@@ -62,10 +62,12 @@
         public var experiencePercent:int = 0;
         public var achievementPoints:int = 0;
         public var achievementPercent:int = 0;
+        public var waitingGifts:Array;
 
         public function PlayedCharacterManager()
         {
             this.lastCoord = new Point(0, 0);
+            this.waitingGifts = new Array();
             super();
             if (_self != null)
             {

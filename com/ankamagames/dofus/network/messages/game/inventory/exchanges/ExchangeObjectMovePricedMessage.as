@@ -2,8 +2,9 @@
 {
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ExchangeObjectMovePricedMessage extends ExchangeObjectMoveMessage implements INetworkMessage 
@@ -12,7 +13,7 @@
         public static const protocolId:uint = 5514;
 
         private var _isInitialized:Boolean = false;
-        public var price:int = 0;
+        public var price:uint = 0;
 
 
         override public function get isInitialized():Boolean
@@ -25,7 +26,7 @@
             return (5514);
         }
 
-        public function initExchangeObjectMovePricedMessage(objectUID:uint=0, quantity:int=0, price:int=0):ExchangeObjectMovePricedMessage
+        public function initExchangeObjectMovePricedMessage(objectUID:uint=0, quantity:int=0, price:uint=0):ExchangeObjectMovePricedMessage
         {
             super.initExchangeObjectMoveMessage(objectUID, quantity);
             this.price = price;
@@ -40,38 +41,46 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeObjectMovePricedMessage(output);
         }
 
-        public function serializeAs_ExchangeObjectMovePricedMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeObjectMovePricedMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_ExchangeObjectMoveMessage(output);
-            output.writeInt(this.price);
+            if (this.price < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.price) + ") on element price.")));
+            };
+            output.writeVarInt(this.price);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeObjectMovePricedMessage(input);
         }
 
-        public function deserializeAs_ExchangeObjectMovePricedMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeObjectMovePricedMessage(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.price = input.readInt();
+            this.price = input.readVarUhInt();
+            if (this.price < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.price) + ") on element of ExchangeObjectMovePricedMessage.price.")));
+            };
         }
 
 

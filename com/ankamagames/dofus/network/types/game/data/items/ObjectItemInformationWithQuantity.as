@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ObjectItemInformationWithQuantity extends ObjectItemMinimalInformation implements INetworkType 
@@ -33,30 +33,30 @@
             this.quantity = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectItemInformationWithQuantity(output);
         }
 
-        public function serializeAs_ObjectItemInformationWithQuantity(output:IDataOutput):void
+        public function serializeAs_ObjectItemInformationWithQuantity(output:ICustomDataOutput):void
         {
             super.serializeAs_ObjectItemMinimalInformation(output);
             if (this.quantity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.quantity) + ") on element quantity.")));
             };
-            output.writeInt(this.quantity);
+            output.writeVarInt(this.quantity);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectItemInformationWithQuantity(input);
         }
 
-        public function deserializeAs_ObjectItemInformationWithQuantity(input:IDataInput):void
+        public function deserializeAs_ObjectItemInformationWithQuantity(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.quantity = input.readInt();
+            this.quantity = input.readVarUhInt();
             if (this.quantity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.quantity) + ") on element of ObjectItemInformationWithQuantity.quantity.")));

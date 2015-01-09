@@ -13,6 +13,7 @@
         public var nameId:uint;
         public var preventsSpellCast:Boolean;
         public var preventsFight:Boolean;
+        public var isSilent:Boolean;
         private var _name:String;
 
 

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.character
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class AbstractCharacterInformation implements INetworkType 
     {
@@ -28,28 +28,28 @@
             this.id = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AbstractCharacterInformation(output);
         }
 
-        public function serializeAs_AbstractCharacterInformation(output:IDataOutput):void
+        public function serializeAs_AbstractCharacterInformation(output:ICustomDataOutput):void
         {
             if (this.id < 0)
             {
                 throw (new Error((("Forbidden value (" + this.id) + ") on element id.")));
             };
-            output.writeInt(this.id);
+            output.writeVarInt(this.id);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AbstractCharacterInformation(input);
         }
 
-        public function deserializeAs_AbstractCharacterInformation(input:IDataInput):void
+        public function deserializeAs_AbstractCharacterInformation(input:ICustomDataInput):void
         {
-            this.id = input.readInt();
+            this.id = input.readVarUhInt();
             if (this.id < 0)
             {
                 throw (new Error((("Forbidden value (" + this.id) + ") on element of AbstractCharacterInformation.id.")));

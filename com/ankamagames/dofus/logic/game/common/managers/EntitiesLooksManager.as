@@ -29,6 +29,7 @@
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightTaxCollectorInformations;
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightMutantInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
+    import com.ankamagames.dofus.logic.game.fight.managers.FightersStateManager;
 
     public class EntitiesLooksManager 
     {
@@ -188,6 +189,9 @@
             var _local_11:int;
             var _local_12:Boolean;
             var _local_13:Breed;
+            var fighterLook:TiphonEntityLook;
+            var oldBone:int;
+            var entityStates:Array;
             var look:TiphonEntityLook = EntityLookAdapter.fromNetwork(pInfos.look);
             if (((this.isCreatureMode()) || (pForceCreature)))
             {
@@ -287,6 +291,40 @@
                         return (look);
                 };
                 look.setScales(0.9, 0.9);
+            }
+            else
+            {
+                if ((((pInfos is GameFightCharacterInformations)) && (!((this._entitiesFrame as FightEntitiesFrame).charactersMountsVisible))))
+                {
+                    fighterLook = look.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0);
+                    if (!(fighterLook))
+                    {
+                        fighterLook = look;
+                    };
+                    oldBone = fighterLook.getBone();
+                    look = TiphonUtility.getLookWithoutMount(look);
+                    if (oldBone == 2)
+                    {
+                        entityStates = FightersStateManager.getInstance().getStates(pInfos.contextualId);
+                        if (entityStates)
+                        {
+                            if (entityStates.indexOf(98) == -1)
+                            {
+                                if (entityStates.indexOf(99) != -1)
+                                {
+                                    look.setBone(1575);
+                                }
+                                else
+                                {
+                                    if (entityStates.indexOf(100) != -1)
+                                    {
+                                        look.setBone(1576);
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
             };
             return (look);
         }

@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class TreasureHuntLegendaryRequestMessage extends NetworkMessage implements INetworkMessage 
@@ -39,40 +40,40 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TreasureHuntLegendaryRequestMessage(output);
         }
 
-        public function serializeAs_TreasureHuntLegendaryRequestMessage(output:IDataOutput):void
+        public function serializeAs_TreasureHuntLegendaryRequestMessage(output:ICustomDataOutput):void
         {
             if (this.legendaryId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.legendaryId) + ") on element legendaryId.")));
             };
-            output.writeShort(this.legendaryId);
+            output.writeVarShort(this.legendaryId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TreasureHuntLegendaryRequestMessage(input);
         }
 
-        public function deserializeAs_TreasureHuntLegendaryRequestMessage(input:IDataInput):void
+        public function deserializeAs_TreasureHuntLegendaryRequestMessage(input:ICustomDataInput):void
         {
-            this.legendaryId = input.readShort();
+            this.legendaryId = input.readVarUhShort();
             if (this.legendaryId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.legendaryId) + ") on element of TreasureHuntLegendaryRequestMessage.legendaryId.")));

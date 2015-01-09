@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class HumanOptionGuild extends HumanOption implements INetworkType 
@@ -34,23 +34,23 @@
             this.guildInformations = new GuildInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_HumanOptionGuild(output);
         }
 
-        public function serializeAs_HumanOptionGuild(output:IDataOutput):void
+        public function serializeAs_HumanOptionGuild(output:ICustomDataOutput):void
         {
             super.serializeAs_HumanOption(output);
             this.guildInformations.serializeAs_GuildInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_HumanOptionGuild(input);
         }
 
-        public function deserializeAs_HumanOptionGuild(input:IDataInput):void
+        public function deserializeAs_HumanOptionGuild(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.guildInformations = new GuildInformations();

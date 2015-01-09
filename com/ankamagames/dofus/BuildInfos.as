@@ -6,11 +6,11 @@
     public final class BuildInfos 
     {
 
-        public static var BUILD_VERSION:Version = new Version(2, 23, 1);
+        public static var BUILD_VERSION:Version = new Version(2, 26, 6);
         public static var BUILD_TYPE:uint = BuildTypeEnum.BETA;//1
-        public static var BUILD_REVISION:int = 87936;
+        public static var BUILD_REVISION:int = 91209;
         public static var BUILD_PATCH:int = 0;
-        public static const BUILD_DATE:String = "Sep 4, 2014 - 10:52:19 CEST";
+        public static const BUILD_DATE:String = "Dec 15, 2014 - 10:32:14 CET";
 
 
     }

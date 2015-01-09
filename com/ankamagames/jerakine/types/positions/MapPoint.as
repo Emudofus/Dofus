@@ -119,6 +119,11 @@
             this.setFromCoords();
         }
 
+        public function get coordinates():Point
+        {
+            return (new Point(this._nX, this._nY));
+        }
+
         public function distanceTo(mp:MapPoint):uint
         {
             return (Math.sqrt((Math.pow((mp.x - this.x), 2) + Math.pow((mp.y - this.y), 2))));
@@ -321,6 +326,17 @@
                 return (this);
             };
             return (mp);
+        }
+
+        public function pointSymetry(pCentralPoint:MapPoint):MapPoint
+        {
+            var destX:int = ((2 * pCentralPoint.x) - this.x);
+            var destY:int = ((2 * pCentralPoint.y) - this.y);
+            if (isInMap(destX, destY))
+            {
+                return (MapPoint.fromCoords(destX, destY));
+            };
+            return (null);
         }
 
         public function equals(mp:MapPoint):Boolean

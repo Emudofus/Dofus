@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.data.items.effects
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ObjectEffect implements INetworkType 
@@ -29,28 +29,28 @@
             this.actionId = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectEffect(output);
         }
 
-        public function serializeAs_ObjectEffect(output:IDataOutput):void
+        public function serializeAs_ObjectEffect(output:ICustomDataOutput):void
         {
             if (this.actionId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.actionId) + ") on element actionId.")));
             };
-            output.writeShort(this.actionId);
+            output.writeVarShort(this.actionId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectEffect(input);
         }
 
-        public function deserializeAs_ObjectEffect(input:IDataInput):void
+        public function deserializeAs_ObjectEffect(input:ICustomDataInput):void
         {
-            this.actionId = input.readShort();
+            this.actionId = input.readVarUhShort();
             if (this.actionId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.actionId) + ") on element of ObjectEffect.actionId.")));

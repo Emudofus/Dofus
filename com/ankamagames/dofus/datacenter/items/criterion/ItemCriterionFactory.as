@@ -41,6 +41,12 @@
                 case "CW":
                 case "Ct":
                 case "CT":
+                case "ca":
+                case "cc":
+                case "ci":
+                case "cs":
+                case "cv":
+                case "cw":
                     criterion = new ItemCriterion(pServerCriterionForm);
                     break;
                 case "OA":

@@ -29,6 +29,7 @@
     import com.ankamagames.dofus.logic.game.fight.frames.FightBattleFrame;
     import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
     import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
     import __AS3__.vec.*;
@@ -402,7 +403,7 @@
             {
                 if (buff.canBeDispell(forceUndispellable, int.MIN_VALUE, dying))
                 {
-                    KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, buff, targetId, "Dispell");
+                    KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, buff.id, targetId, "Dispell");
                     buff.onRemoved();
                     deletedBuffs.push(buff);
                 }
@@ -488,12 +489,13 @@
                 }
                 else
                 {
+                    KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, buff.id, targetId, "Dispell");
                     this._buffs[targetId].splice(this._buffs[targetId].indexOf(buff), 1);
                     buff.onRemoved();
-                    KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, buff, targetId, "Dispell");
                     if (targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
                     {
                         KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
+                        SpellWrapper.refreshAllPlayerSpellHolder(targetId);
                     };
                 };
             };

@@ -4,8 +4,8 @@
     import com.ankamagames.dofus.network.types.game.context.roleplay.quest.GameRolePlayNpcQuestFlag;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GameRolePlayNpcWithQuestInformations extends GameRolePlayNpcInformations implements INetworkType 
     {
@@ -38,23 +38,23 @@
             this.questFlag = new GameRolePlayNpcQuestFlag();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayNpcWithQuestInformations(output);
         }
 
-        public function serializeAs_GameRolePlayNpcWithQuestInformations(output:IDataOutput):void
+        public function serializeAs_GameRolePlayNpcWithQuestInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameRolePlayNpcInformations(output);
             this.questFlag.serializeAs_GameRolePlayNpcQuestFlag(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayNpcWithQuestInformations(input);
         }
 
-        public function deserializeAs_GameRolePlayNpcWithQuestInformations(input:IDataInput):void
+        public function deserializeAs_GameRolePlayNpcWithQuestInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.questFlag = new GameRolePlayNpcQuestFlag();

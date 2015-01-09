@@ -8,11 +8,12 @@
     import flash.events.Event;
     import com.ankamagames.performance.DisplayObjectDummy;
     import com.ankamagames.performance.Benchmark;
+    import flash.external.ExternalInterface;
 
     public class TestDisplayPerformance implements IBenchmarkTest 
     {
 
-        private static const TOTAL_OBJECTS:uint = 500;
+        private static const TOTAL_OBJECTS:uint = 3000;
         private static const MAX_DURATION:uint = 4000;
         private static var _results:Array;
         private static var _stage:Stage;
@@ -44,12 +45,16 @@
             this._lastTimer = 0;
             this._tickTimer = 0;
             this._ctr = new Sprite();
-            this._ctr.alpha = 0;
             this._ctr.mouseEnabled = (this._ctr.mouseChildren = false);
-            _stage.addChild(this._ctr);
+            _stage.addChildAt(this._ctr, 0);
             this.addDummies(TOTAL_OBJECTS);
             this._startTime = getTimer();
             _stage.addEventListener(Event.ENTER_FRAME, this.onFrame);
+        }
+
+        public function cancel():void
+        {
+            this.clean();
         }
 
         private function onFrame(event:Event):void
@@ -106,7 +111,7 @@
             };
         }
 
-        private function endTest(result:Object):void
+        private function endTest(result:uint):void
         {
             if (!(_results))
             {
@@ -138,12 +143,24 @@
 
         private function clean():void
         {
-            _stage.removeEventListener(Event.ENTER_FRAME, this.onFrame);
-            _stage.removeChild(this._ctr);
-            _stage = null;
-            this._ctr = null;
-            this._recordedFps = null;
-            random = null;
+            if (_stage)
+            {
+                _stage.removeEventListener(Event.ENTER_FRAME, this.onFrame);
+                _stage.removeChild(this._ctr);
+                _stage = null;
+                this._ctr = null;
+                this._recordedFps = null;
+                random = null;
+            };
+        }
+
+        private function logToConsole(txt:String):void
+        {
+            if (ExternalInterface.available)
+            {
+                ExternalInterface.call("eval", (("console.log('" + txt) + "')"));
+            };
+            trace(txt);
         }
 
 

@@ -568,6 +568,11 @@
             this.mouseChildren = !(bValue);
         }
 
+        public function get handCursor():Boolean
+        {
+            return (((this.buttonMode) && (!(this.mouseChildren))));
+        }
+
         override public function set mouseEnabled(v:Boolean):void
         {
             var ctr:DisplayObjectContainer;

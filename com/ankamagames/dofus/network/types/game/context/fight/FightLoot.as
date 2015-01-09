@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class FightLoot implements INetworkType 
@@ -38,12 +38,12 @@
             this.kamas = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightLoot(output);
         }
 
-        public function serializeAs_FightLoot(output:IDataOutput):void
+        public function serializeAs_FightLoot(output:ICustomDataOutput):void
         {
             output.writeShort(this.objects.length);
             var _i1:uint;
@@ -53,29 +53,29 @@
                 {
                     throw (new Error((("Forbidden value (" + this.objects[_i1]) + ") on element 1 (starting at 1) of objects.")));
                 };
-                output.writeShort(this.objects[_i1]);
+                output.writeVarShort(this.objects[_i1]);
                 _i1++;
             };
             if (this.kamas < 0)
             {
                 throw (new Error((("Forbidden value (" + this.kamas) + ") on element kamas.")));
             };
-            output.writeInt(this.kamas);
+            output.writeVarInt(this.kamas);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightLoot(input);
         }
 
-        public function deserializeAs_FightLoot(input:IDataInput):void
+        public function deserializeAs_FightLoot(input:ICustomDataInput):void
         {
             var _val1:uint;
             var _objectsLen:uint = input.readUnsignedShort();
             var _i1:uint;
             while (_i1 < _objectsLen)
             {
-                _val1 = input.readShort();
+                _val1 = input.readVarUhShort();
                 if (_val1 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val1) + ") on elements of objects.")));
@@ -83,7 +83,7 @@
                 this.objects.push(_val1);
                 _i1++;
             };
-            this.kamas = input.readInt();
+            this.kamas = input.readVarUhInt();
             if (this.kamas < 0)
             {
                 throw (new Error((("Forbidden value (" + this.kamas) + ") on element of FightLoot.kamas.")));

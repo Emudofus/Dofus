@@ -51,6 +51,9 @@
                     this.addProjectile(1017);
                     evt = FightEventEnum.FIGHTER_TRIGGERED_TRAP;
                     break;
+                case GameActionMarkTypeEnum.PORTAL:
+                    evt = FightEventEnum.FIGHTER_TRIGGERED_PORTAL;
+                    break;
                 default:
                     _log.warn((("Unknown mark type triggered (" + mi.markType) + ")."));
             };

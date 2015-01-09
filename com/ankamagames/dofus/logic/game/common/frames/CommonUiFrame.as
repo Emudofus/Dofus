@@ -4,7 +4,6 @@
     import com.ankamagames.jerakine.logger.Logger;
     import com.ankamagames.jerakine.logger.Log;
     import flash.utils.getQualifiedClassName;
-    import flash.utils.Dictionary;
     import com.ankamagames.dofus.logic.game.common.actions.OpenSmileysAction;
     import com.ankamagames.dofus.logic.game.common.actions.OpenBookAction;
     import com.ankamagames.dofus.logic.game.common.actions.OpenTeamSearchAction;
@@ -14,7 +13,6 @@
     import com.ankamagames.dofus.logic.game.common.actions.OpenInventoryAction;
     import com.ankamagames.dofus.network.messages.game.script.CinematicMessage;
     import com.ankamagames.dofus.network.messages.game.context.display.DisplayNumericalValueMessage;
-    import flash.utils.Timer;
     import com.ankamagames.dofus.logic.connection.messages.DelayedSystemMessageDisplayMessage;
     import com.ankamagames.dofus.network.messages.server.basic.SystemMessageDisplayMessage;
     import com.ankamagames.dofus.network.messages.game.ui.ClientUIOpenedByObjectMessage;
@@ -28,7 +26,6 @@
     import com.ankamagames.dofus.network.messages.game.guest.GuestModeMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.GameFightOptionStateUpdateMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.GameFightOptionToggleMessage;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayInteractivesFrame;
     import com.ankamagames.berilia.managers.KernelEventsManager;
     import com.ankamagames.dofus.misc.lists.HookList;
     import com.ankamagames.dofus.misc.lists.TriggerHookList;
@@ -41,11 +38,6 @@
     import com.ankamagames.dofus.logic.game.common.actions.OpenMainMenuAction;
     import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
     import com.ankamagames.dofus.logic.game.common.actions.OpenStatsAction;
-    import com.ankamagames.dofus.kernel.Kernel;
-    import com.ankamagames.jerakine.entities.interfaces.IAnimated;
-    import com.ankamagames.dofus.types.enums.AnimationEnum;
-    import com.ankamagames.dofus.network.enums.NumericalValueTypeEnum;
-    import flash.events.TimerEvent;
     import com.ankamagames.dofus.logic.common.frames.DisconnectionHandlerFrame;
     import com.ankamagames.dofus.misc.lists.CustomUiHookList;
     import com.ankamagames.dofus.network.enums.TextInformationTypeEnum;
@@ -59,6 +51,7 @@
     import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
     import com.ankamagames.dofus.network.enums.GuestLimitationEnum;
     import com.ankamagames.dofus.network.enums.FightOptionsEnum;
+    import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
     import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
@@ -67,7 +60,6 @@
     import com.ankamagames.dofus.logic.game.fight.actions.ToggleLockFightAction;
     import com.ankamagames.dofus.logic.game.fight.actions.ToggleHelpWantedAction;
     import com.ankamagames.jerakine.messages.Message;
-    import com.ankamagames.dofus.network.messages.game.context.display.DisplayNumericalValueWithAgeBonusMessage;
     import com.ankamagames.dofus.types.characteristicContextual.CharacteristicContextualManager;
     import flash.text.TextFormat;
     import com.ankamagames.dofus.misc.utils.ParamsDecoder;
@@ -76,8 +68,6 @@
     {
 
         protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CommonUiFrame));
-
-        private var _dnvmsgs:Dictionary;
 
 
         public function get priority():int
@@ -99,35 +89,33 @@
             var _local_11:DisplayNumericalValueMessage;
             var _local_12:IEntity;
             var _local_13:uint;
-            var _local_14:Timer;
-            var _local_15:DelayedSystemMessageDisplayMessage;
-            var _local_16:SystemMessageDisplayMessage;
-            var _local_17:ClientUIOpenedByObjectMessage;
-            var _local_18:ClientUIOpenedMessage;
-            var _local_19:EntityTalkMessage;
-            var _local_20:IDisplayable;
-            var _local_21:String;
-            var _local_22:uint;
-            var _local_23:Array;
-            var _local_24:uint;
-            var _local_25:Array;
-            var _local_26:ChatBubble;
-            var _local_27:SubscriptionLimitationMessage;
-            var _local_28:String;
-            var _local_29:SubscriptionZoneMessage;
-            var _local_30:GuestLimitationMessage;
-            var _local_31:String;
-            var _local_32:GuestModeMessage;
-            var _local_33:GameFightOptionStateUpdateMessage;
-            var _local_34:uint;
-            var _local_35:GameFightOptionToggleMessage;
-            var _local_36:uint;
-            var _local_37:GameFightOptionToggleMessage;
-            var _local_38:uint;
-            var _local_39:GameFightOptionToggleMessage;
-            var _local_40:uint;
-            var _local_41:GameFightOptionToggleMessage;
-            var _local_42:RoleplayInteractivesFrame;
+            var _local_14:DelayedSystemMessageDisplayMessage;
+            var _local_15:SystemMessageDisplayMessage;
+            var _local_16:ClientUIOpenedByObjectMessage;
+            var _local_17:ClientUIOpenedMessage;
+            var _local_18:EntityTalkMessage;
+            var _local_19:IDisplayable;
+            var _local_20:String;
+            var _local_21:uint;
+            var _local_22:Array;
+            var _local_23:uint;
+            var _local_24:Array;
+            var _local_25:ChatBubble;
+            var _local_26:SubscriptionLimitationMessage;
+            var _local_27:String;
+            var _local_28:SubscriptionZoneMessage;
+            var _local_29:GuestLimitationMessage;
+            var _local_30:String;
+            var _local_31:GuestModeMessage;
+            var _local_32:GameFightOptionStateUpdateMessage;
+            var _local_33:uint;
+            var _local_34:GameFightOptionToggleMessage;
+            var _local_35:uint;
+            var _local_36:GameFightOptionToggleMessage;
+            var _local_37:uint;
+            var _local_38:GameFightOptionToggleMessage;
+            var _local_39:uint;
+            var _local_40:GameFightOptionToggleMessage;
             var dsmdmsg2:DelayedSystemMessageDisplayMessage;
             var prm:*;
             switch (true)
@@ -186,132 +174,110 @@
                 case (msg is DisplayNumericalValueMessage):
                     _local_11 = (msg as DisplayNumericalValueMessage);
                     _local_12 = DofusEntities.getEntity(_local_11.entityId);
-                    _local_13 = 0;
-                    switch (_local_11.type)
-                    {
-                        case NumericalValueTypeEnum.NUMERICAL_VALUE_COLLECT:
-                            _local_13 = 7615756;
-                            _local_42 = (Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame);
-                            if (((((_local_42) && (_local_12))) && (!(((_local_12 as IAnimated).getAnimation() == AnimationEnum.ANIM_STATIQUE)))))
-                            {
-                                _local_14 = _local_42.getInteractiveActionTimer(_local_12);
-                            };
-                            break;
-                        default:
-                            _log.warn(("DisplayNumericalValueMessage with unsupported type : " + _local_11.type));
-                            return (false);
-                    };
-                    if (((_local_14) && (_local_14.running)))
-                    {
-                        this._dnvmsgs[_local_14] = _local_11;
-                        _local_14.addEventListener(TimerEvent.TIMER, this.onAnimEnd);
-                    }
-                    else
-                    {
-                        this.displayNumericalValue(_local_12, _local_11, _local_13);
-                    };
+                    _local_13 = 7615756;
+                    this.displayValue(_local_12, _local_11.value.toString(), _local_13, 1, 2500);
                     return (true);
                 case (msg is DelayedSystemMessageDisplayMessage):
-                    _local_15 = (msg as DelayedSystemMessageDisplayMessage);
-                    this.systemMessageDisplay(_local_15);
+                    _local_14 = (msg as DelayedSystemMessageDisplayMessage);
+                    this.systemMessageDisplay(_local_14);
                     return (true);
                 case (msg is SystemMessageDisplayMessage):
-                    _local_16 = (msg as SystemMessageDisplayMessage);
-                    if (_local_16.hangUp)
+                    _local_15 = (msg as SystemMessageDisplayMessage);
+                    if (_local_15.hangUp)
                     {
                         dsmdmsg2 = new DelayedSystemMessageDisplayMessage();
-                        dsmdmsg2.initDelayedSystemMessageDisplayMessage(_local_16.hangUp, _local_16.msgId, _local_16.parameters);
+                        dsmdmsg2.initDelayedSystemMessageDisplayMessage(_local_15.hangUp, _local_15.msgId, _local_15.parameters);
                         DisconnectionHandlerFrame.messagesAfterReset.push(dsmdmsg2);
                     };
-                    this.systemMessageDisplay(_local_16);
+                    this.systemMessageDisplay(_local_15);
                     return (true);
                 case (msg is ClientUIOpenedByObjectMessage):
-                    _local_17 = (msg as ClientUIOpenedByObjectMessage);
-                    KernelEventsManager.getInstance().processCallback(CustomUiHookList.ClientUIOpened, _local_17.type, _local_17.uid);
+                    _local_16 = (msg as ClientUIOpenedByObjectMessage);
+                    KernelEventsManager.getInstance().processCallback(CustomUiHookList.ClientUIOpened, _local_16.type, _local_16.uid);
                     return (true);
                 case (msg is ClientUIOpenedMessage):
-                    _local_18 = (msg as ClientUIOpenedMessage);
-                    KernelEventsManager.getInstance().processCallback(CustomUiHookList.ClientUIOpened, _local_18.type, 0);
+                    _local_17 = (msg as ClientUIOpenedMessage);
+                    KernelEventsManager.getInstance().processCallback(CustomUiHookList.ClientUIOpened, _local_17.type, 0);
                     return (true);
                 case (msg is EntityTalkMessage):
-                    _local_19 = (msg as EntityTalkMessage);
-                    _local_20 = (DofusEntities.getEntity(_local_19.entityId) as IDisplayable);
-                    _local_23 = new Array();
-                    _local_24 = TextInformationTypeEnum.TEXT_ENTITY_TALK;
-                    if (_local_20 == null)
+                    _local_18 = (msg as EntityTalkMessage);
+                    _local_19 = (DofusEntities.getEntity(_local_18.entityId) as IDisplayable);
+                    _local_22 = new Array();
+                    _local_23 = TextInformationTypeEnum.TEXT_ENTITY_TALK;
+                    if (_local_19 == null)
                     {
                         return (true);
                     };
-                    _local_25 = new Array();
-                    for each (prm in _local_19.parameters)
+                    _local_24 = new Array();
+                    for each (prm in _local_18.parameters)
                     {
-                        _local_25.push(prm);
+                        _local_24.push(prm);
                     };
-                    if (InfoMessage.getInfoMessageById(((_local_24 * 10000) + _local_19.textId)))
+                    if (InfoMessage.getInfoMessageById(((_local_23 * 10000) + _local_18.textId)))
                     {
-                        _local_22 = InfoMessage.getInfoMessageById(((_local_24 * 10000) + _local_19.textId)).textId;
-                        if (_local_25 != null)
+                        _local_21 = InfoMessage.getInfoMessageById(((_local_23 * 10000) + _local_18.textId)).textId;
+                        if (_local_24 != null)
                         {
-                            if (((_local_25[0]) && (!((_local_25[0].indexOf("~") == -1)))))
+                            if (((_local_24[0]) && (!((_local_24[0].indexOf("~") == -1)))))
                             {
-                                _local_23 = _local_25[0].split("~");
+                                _local_22 = _local_24[0].split("~");
                             }
                             else
                             {
-                                _local_23 = _local_25;
+                                _local_22 = _local_24;
                             };
                         };
                     }
                     else
                     {
-                        _log.error((("Texte " + ((_local_24 * 10000) + _local_19.textId)) + " not found."));
-                        _local_21 = ("" + _local_19.textId);
+                        _log.error((("Texte " + ((_local_23 * 10000) + _local_18.textId)) + " not found."));
+                        _local_20 = ("" + _local_18.textId);
                     };
-                    if (!(_local_21))
+                    if (!(_local_20))
                     {
-                        _local_21 = I18n.getText(_local_22, _local_23);
+                        _local_20 = I18n.getText(_local_21, _local_22);
                     };
-                    _local_26 = new ChatBubble(_local_21);
-                    TooltipManager.show(_local_26, _local_20.absoluteBounds, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), true, ("entityMsg" + _local_19.entityId), LocationEnum.POINT_BOTTOMLEFT, LocationEnum.POINT_TOPRIGHT, 0, true, null, null);
+                    _local_25 = new ChatBubble(_local_20);
+                    TooltipManager.show(_local_25, _local_19.absoluteBounds, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), true, ("entityMsg" + _local_18.entityId), LocationEnum.POINT_BOTTOMLEFT, LocationEnum.POINT_TOPRIGHT, 0, true, null, null);
                     return (true);
                 case (msg is SubscriptionLimitationMessage):
-                    _local_27 = (msg as SubscriptionLimitationMessage);
-                    _log.error(("SubscriptionLimitationMessage reason " + _local_27.reason));
-                    _local_28 = "";
-                    switch (_local_27.reason)
+                    _local_26 = (msg as SubscriptionLimitationMessage);
+                    _log.error(("SubscriptionLimitationMessage reason " + _local_26.reason));
+                    _local_27 = "";
+                    switch (_local_26.reason)
                     {
                         case SubscriptionRequiredEnum.LIMIT_ON_JOB_XP:
-                            _local_28 = I18n.getUiText("ui.payzone.limitJobXp");
+                            _local_27 = I18n.getUiText("ui.payzone.limitJobXp");
                             break;
                         case SubscriptionRequiredEnum.LIMIT_ON_JOB_USE:
-                            _local_28 = I18n.getUiText("ui.payzone.limitJobXp");
+                            _local_27 = I18n.getUiText("ui.payzone.limitJobXp");
                             break;
                         case SubscriptionRequiredEnum.LIMIT_ON_MAP:
-                            _local_28 = I18n.getUiText("ui.payzone.limit");
+                            _local_27 = I18n.getUiText("ui.payzone.limit");
                             break;
                         case SubscriptionRequiredEnum.LIMIT_ON_ITEM:
-                            _local_28 = I18n.getUiText("ui.payzone.limitItem");
+                            _local_27 = I18n.getUiText("ui.payzone.limitItem");
                             break;
                         case SubscriptionRequiredEnum.LIMIT_ON_VENDOR:
-                            _local_28 = I18n.getUiText("ui.payzone.limitVendor");
+                            _local_27 = I18n.getUiText("ui.payzone.limitVendor");
                             break;
                         case SubscriptionRequiredEnum.LIMITED_TO_SUBSCRIBER:
                         default:
-                            _local_28 = I18n.getUiText("ui.payzone.limit");
+                            _local_27 = I18n.getUiText("ui.payzone.limit");
                     };
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_28, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_27, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     KernelEventsManager.getInstance().processCallback(HookList.NonSubscriberPopup);
                     return (true);
                 case (msg is SubscriptionZoneMessage):
-                    _local_29 = (msg as SubscriptionZoneMessage);
-                    _log.error(("SubscriptionZoneMessage active " + _local_29.active));
-                    KernelEventsManager.getInstance().processCallback(HookList.SubscriptionZone, _local_29.active);
+                    _local_28 = (msg as SubscriptionZoneMessage);
+                    _log.error(("SubscriptionZoneMessage active " + _local_28.active));
+                    KernelEventsManager.getInstance().processCallback(HookList.SubscriptionZone, _local_28.active);
                     return (true);
                 case (msg is GuestLimitationMessage):
-                    _local_30 = (msg as GuestLimitationMessage);
-                    _log.error(("GuestLimitationMessage reason " + _local_30.reason));
-                    _local_31 = "";
-                    switch (_local_30.reason)
+                    _local_29 = (msg as GuestLimitationMessage);
+                    _log.error(("GuestLimitationMessage reason " + _local_29.reason));
+                    _local_30 = "";
+                    switch (_local_29.reason)
                     {
                         case GuestLimitationEnum.GUEST_LIMIT_ON_JOB_XP:
                         case GuestLimitationEnum.GUEST_LIMIT_ON_JOB_USE:
@@ -321,37 +287,37 @@
                         case GuestLimitationEnum.GUEST_LIMIT_ON_GUILD:
                         case GuestLimitationEnum.GUEST_LIMIT_ON_CHAT:
                         default:
-                            _local_31 = I18n.getUiText("ui.fight.guestAccount");
+                            _local_30 = I18n.getUiText("ui.fight.guestAccount");
                     };
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_31, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_30, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     KernelEventsManager.getInstance().processCallback(HookList.GuestLimitationPopup);
                     return (true);
                 case (msg is GuestModeMessage):
-                    _local_32 = (msg as GuestModeMessage);
-                    _log.error(("GuestModeMessage active " + _local_32.active));
-                    KernelEventsManager.getInstance().processCallback(HookList.GuestMode, _local_32.active);
+                    _local_31 = (msg as GuestModeMessage);
+                    _log.error(("GuestModeMessage active " + _local_31.active));
+                    KernelEventsManager.getInstance().processCallback(HookList.GuestMode, _local_31.active);
                     return (true);
                 case (msg is GameFightOptionStateUpdateMessage):
-                    _local_33 = (msg as GameFightOptionStateUpdateMessage);
-                    switch (_local_33.option)
+                    _local_32 = (msg as GameFightOptionStateUpdateMessage);
+                    switch (_local_32.option)
                     {
                         case FightOptionsEnum.FIGHT_OPTION_SET_SECRET:
-                            KernelEventsManager.getInstance().processCallback(HookList.OptionWitnessForbidden, _local_33.state);
+                            KernelEventsManager.getInstance().processCallback(HookList.OptionWitnessForbidden, _local_32.state);
                             break;
                         case FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY:
                             if (Kernel.getWorker().getFrame(FightContextFrame))
                             {
-                                KernelEventsManager.getInstance().processCallback(HookList.OptionLockParty, _local_33.state);
+                                KernelEventsManager.getInstance().processCallback(HookList.OptionLockParty, _local_32.state);
                             };
                             break;
                         case FightOptionsEnum.FIGHT_OPTION_SET_CLOSED:
-                            if (PlayedCharacterManager.getInstance().teamId == _local_33.teamId)
+                            if (PlayedCharacterManager.getInstance().teamId == _local_32.teamId)
                             {
-                                KernelEventsManager.getInstance().processCallback(HookList.OptionLockFight, _local_33.state);
+                                KernelEventsManager.getInstance().processCallback(HookList.OptionLockFight, _local_32.state);
                             };
                             break;
                         case FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP:
-                            KernelEventsManager.getInstance().processCallback(HookList.OptionHelpWanted, _local_33.state);
+                            KernelEventsManager.getInstance().processCallback(HookList.OptionHelpWanted, _local_32.state);
                             break;
                     };
                     if (Kernel.getWorker().getFrame(RoleplayEntitiesFrame))
@@ -360,28 +326,28 @@
                     };
                     return (true);
                 case (msg is ToggleWitnessForbiddenAction):
-                    _local_34 = FightOptionsEnum.FIGHT_OPTION_SET_SECRET;
-                    _local_35 = new GameFightOptionToggleMessage();
-                    _local_35.initGameFightOptionToggleMessage(_local_34);
-                    ConnectionsHandler.getConnection().send(_local_35);
+                    _local_33 = FightOptionsEnum.FIGHT_OPTION_SET_SECRET;
+                    _local_34 = new GameFightOptionToggleMessage();
+                    _local_34.initGameFightOptionToggleMessage(_local_33);
+                    ConnectionsHandler.getConnection().send(_local_34);
                     return (true);
                 case (msg is ToggleLockPartyAction):
-                    _local_36 = FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY;
-                    _local_37 = new GameFightOptionToggleMessage();
-                    _local_37.initGameFightOptionToggleMessage(_local_36);
-                    ConnectionsHandler.getConnection().send(_local_37);
+                    _local_35 = FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY;
+                    _local_36 = new GameFightOptionToggleMessage();
+                    _local_36.initGameFightOptionToggleMessage(_local_35);
+                    ConnectionsHandler.getConnection().send(_local_36);
                     return (true);
                 case (msg is ToggleLockFightAction):
-                    _local_38 = FightOptionsEnum.FIGHT_OPTION_SET_CLOSED;
-                    _local_39 = new GameFightOptionToggleMessage();
-                    _local_39.initGameFightOptionToggleMessage(_local_38);
-                    ConnectionsHandler.getConnection().send(_local_39);
+                    _local_37 = FightOptionsEnum.FIGHT_OPTION_SET_CLOSED;
+                    _local_38 = new GameFightOptionToggleMessage();
+                    _local_38.initGameFightOptionToggleMessage(_local_37);
+                    ConnectionsHandler.getConnection().send(_local_38);
                     return (true);
                 case (msg is ToggleHelpWantedAction):
-                    _local_40 = FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP;
-                    _local_41 = new GameFightOptionToggleMessage();
-                    _local_41.initGameFightOptionToggleMessage(_local_40);
-                    ConnectionsHandler.getConnection().send(_local_41);
+                    _local_39 = FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP;
+                    _local_40 = new GameFightOptionToggleMessage();
+                    _local_40.initGameFightOptionToggleMessage(_local_39);
+                    ConnectionsHandler.getConnection().send(_local_40);
                     return (true);
             };
             return (false);
@@ -389,31 +355,12 @@
 
         public function pushed():Boolean
         {
-            this._dnvmsgs = new Dictionary(true);
             return (true);
         }
 
         public function pulled():Boolean
         {
             return (true);
-        }
-
-        private function onAnimEnd(pTimerEvent:TimerEvent):void
-        {
-            pTimerEvent.currentTarget.removeEventListener(TimerEvent.TIMER, this.onAnimEnd);
-            var dnvmsg:DisplayNumericalValueMessage = this._dnvmsgs[pTimerEvent.currentTarget];
-            this.displayNumericalValue(DofusEntities.getEntity(dnvmsg.entityId), dnvmsg, 7615756, 1, 1500);
-            delete this._dnvmsgs[pTimerEvent.currentTarget];
-        }
-
-        private function displayNumericalValue(pEntity:IEntity, pMsg:DisplayNumericalValueMessage, pColor:uint, pScrollSpeed:Number=1, pScrollDuration:uint=2500):void
-        {
-            this.displayValue(pEntity, pMsg.value.toString(), pColor, pScrollSpeed, pScrollDuration);
-            var dnvwabmsg:DisplayNumericalValueWithAgeBonusMessage = (pMsg as DisplayNumericalValueWithAgeBonusMessage);
-            if (dnvwabmsg)
-            {
-                this.displayValue(pEntity, dnvwabmsg.valueOfBonus.toString(), 0xFF5500, pScrollSpeed, pScrollDuration);
-            };
         }
 
         private function displayValue(pEntity:IEntity, pValue:String, pColor:uint, pScrollSpeed:Number, pScrollDuration:uint):void

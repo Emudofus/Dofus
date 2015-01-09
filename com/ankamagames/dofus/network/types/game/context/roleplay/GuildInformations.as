@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.guild.GuildEmblem;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GuildInformations extends BasicGuildInformations implements INetworkType 
     {
@@ -36,23 +36,23 @@
             this.guildEmblem = new GuildEmblem();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GuildInformations(output);
         }
 
-        public function serializeAs_GuildInformations(output:IDataOutput):void
+        public function serializeAs_GuildInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_BasicGuildInformations(output);
             this.guildEmblem.serializeAs_GuildEmblem(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GuildInformations(input);
         }
 
-        public function deserializeAs_GuildInformations(input:IDataInput):void
+        public function deserializeAs_GuildInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.guildEmblem = new GuildEmblem();

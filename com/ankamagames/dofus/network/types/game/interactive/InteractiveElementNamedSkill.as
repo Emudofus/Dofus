@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.interactive
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class InteractiveElementNamedSkill extends InteractiveElementSkill implements INetworkType 
@@ -31,30 +31,30 @@
             this.nameId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_InteractiveElementNamedSkill(output);
         }
 
-        public function serializeAs_InteractiveElementNamedSkill(output:IDataOutput):void
+        public function serializeAs_InteractiveElementNamedSkill(output:ICustomDataOutput):void
         {
             super.serializeAs_InteractiveElementSkill(output);
             if (this.nameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nameId) + ") on element nameId.")));
             };
-            output.writeInt(this.nameId);
+            output.writeVarInt(this.nameId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_InteractiveElementNamedSkill(input);
         }
 
-        public function deserializeAs_InteractiveElementNamedSkill(input:IDataInput):void
+        public function deserializeAs_InteractiveElementNamedSkill(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.nameId = input.readInt();
+            this.nameId = input.readVarUhInt();
             if (this.nameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nameId) + ") on element of InteractiveElementNamedSkill.nameId.")));

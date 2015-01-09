@@ -247,9 +247,6 @@
                         };
                     };
                     return;
-                case "showsmilies":
-                    KernelEventsManager.getInstance().processCallback(HookList.ShowSmilies);
-                    return;
                 case "shieldmax":
                 case "shieldmed":
                 case "shieldmin":
@@ -349,8 +346,6 @@
                     return ("Enable/disable synchro sequence");
                 case "throw":
                     return ("Throw an exception (test only) option:[async|sync]");
-                case "showsmilies":
-                    return ("Activate/Deactivate smilies detection");
                 case "debugmouseover":
                     return ("Activate/Deactivate mouse over debug : It will show which objects receive event and their bounds.");
                 case "idletime":
@@ -363,8 +358,6 @@
                     return (I18n.getUiText("ui.shield.changeHelp1"));
                 case "shieldmax":
                     return (I18n.getUiText("ui.shield.changeHelp2"));
-                case "showsmilies":
-                    return (I18n.getUiText("ui.chat.console.help.emoticons"));
             };
             return ((("No help for command '" + cmd) + "'"));
         }

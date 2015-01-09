@@ -4,8 +4,8 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -43,19 +43,19 @@
             this.alternatives = new Vector.<GroupMonsterStaticInformations>();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayGroupMonsterWaveInformations(output);
         }
 
-        public function serializeAs_GameRolePlayGroupMonsterWaveInformations(output:IDataOutput):void
+        public function serializeAs_GameRolePlayGroupMonsterWaveInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameRolePlayGroupMonsterInformations(output);
-            if ((((this.nbWaves < 0)) || ((this.nbWaves > 0xFFFFFFFF))))
+            if (this.nbWaves < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbWaves) + ") on element nbWaves.")));
             };
-            output.writeUnsignedInt(this.nbWaves);
+            output.writeByte(this.nbWaves);
             output.writeShort(this.alternatives.length);
             var _i2:uint;
             while (_i2 < this.alternatives.length)
@@ -66,18 +66,18 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayGroupMonsterWaveInformations(input);
         }
 
-        public function deserializeAs_GameRolePlayGroupMonsterWaveInformations(input:IDataInput):void
+        public function deserializeAs_GameRolePlayGroupMonsterWaveInformations(input:ICustomDataInput):void
         {
             var _id2:uint;
             var _item2:GroupMonsterStaticInformations;
             super.deserialize(input);
-            this.nbWaves = input.readUnsignedInt();
-            if ((((this.nbWaves < 0)) || ((this.nbWaves > 0xFFFFFFFF))))
+            this.nbWaves = input.readByte();
+            if (this.nbWaves < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbWaves) + ") on element of GameRolePlayGroupMonsterWaveInformations.nbWaves.")));
             };

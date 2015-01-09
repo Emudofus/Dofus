@@ -46,6 +46,11 @@
             return (this._aPath);
         }
 
+        public function set path(value:Array):void
+        {
+            this._aPath = value;
+        }
+
         public function get length():uint
         {
             return (this._aPath.length);

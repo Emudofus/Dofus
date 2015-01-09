@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
 
     [Trusted]
@@ -16,7 +17,7 @@
 
         private var _isInitialized:Boolean = false;
         public var subAreaId:uint = 0;
-        public var fightId:Number = 0;
+        public var fightId:uint = 0;
         public var defender:CharacterMinimalPlusLookInformations;
 
         public function PrismFightDefenderAddMessage()
@@ -35,7 +36,7 @@
             return (5895);
         }
 
-        public function initPrismFightDefenderAddMessage(subAreaId:uint=0, fightId:Number=0, defender:CharacterMinimalPlusLookInformations=null):PrismFightDefenderAddMessage
+        public function initPrismFightDefenderAddMessage(subAreaId:uint=0, fightId:uint=0, defender:CharacterMinimalPlusLookInformations=null):PrismFightDefenderAddMessage
         {
             this.subAreaId = subAreaId;
             this.fightId = fightId;
@@ -52,53 +53,53 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PrismFightDefenderAddMessage(output);
         }
 
-        public function serializeAs_PrismFightDefenderAddMessage(output:IDataOutput):void
+        public function serializeAs_PrismFightDefenderAddMessage(output:ICustomDataOutput):void
         {
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
-            if ((((this.fightId < -9007199254740992)) || ((this.fightId > 9007199254740992))))
+            output.writeVarShort(this.subAreaId);
+            if (this.fightId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.fightId) + ") on element fightId.")));
             };
-            output.writeDouble(this.fightId);
+            output.writeVarShort(this.fightId);
             output.writeShort(this.defender.getTypeId());
             this.defender.serialize(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PrismFightDefenderAddMessage(input);
         }
 
-        public function deserializeAs_PrismFightDefenderAddMessage(input:IDataInput):void
+        public function deserializeAs_PrismFightDefenderAddMessage(input:ICustomDataInput):void
         {
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of PrismFightDefenderAddMessage.subAreaId.")));
             };
-            this.fightId = input.readDouble();
-            if ((((this.fightId < -9007199254740992)) || ((this.fightId > 9007199254740992))))
+            this.fightId = input.readVarUhShort();
+            if (this.fightId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.fightId) + ") on element of PrismFightDefenderAddMessage.fightId.")));
             };

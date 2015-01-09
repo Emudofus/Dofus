@@ -12,6 +12,8 @@
     import flash.geom.Rectangle;
     import flash.ui.Mouse;
     import com.ankamagames.atouin.managers.InteractiveCellManager;
+    import com.ankamagames.berilia.managers.KernelEventsManager;
+    import com.ankamagames.dofus.misc.lists.HookList;
     import com.ankamagames.berilia.Berilia;
     import flash.display.DisplayObject;
     import com.ankamagames.dofus.logic.game.roleplay.frames.InfoEntitiesFrame;
@@ -24,6 +26,7 @@
     import com.ankamagames.atouin.messages.AdjacentMapClickMessage;
     import com.ankamagames.atouin.messages.MapLoadedMessage;
     import com.ankamagames.atouin.managers.MapDisplayManager;
+    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
     import com.ankamagames.atouin.messages.MapZoomMessage;
     import com.ankamagames.jerakine.messages.Message;
     import com.ankamagames.jerakine.types.enums.Priority;
@@ -76,6 +79,7 @@
             {
                 Mouse.hide();
                 InteractiveCellManager.getInstance().setInteraction(false);
+                KernelEventsManager.getInstance().processCallback(HookList.CloseContextMenu);
                 window = new Rectangle();
                 window.x = (window.y = 0);
                 window.width = ((-(StageShareManager.startWidth) * Atouin.getInstance().currentZoom) + StageShareManager.startWidth);
@@ -161,6 +165,7 @@
 
         public function process(msg:Message):Boolean
         {
+            var _local_2:Boolean;
             switch (true)
             {
                 case (msg is EntityClickMessage):
@@ -171,6 +176,7 @@
                         this._wasDragging = false;
                         return (true);
                     };
+                    break;
                 case (msg is MapLoadedMessage):
                     this._allowDrag = (this._mapZoomed = false);
                     return (false);
@@ -179,7 +185,8 @@
                     {
                         this._allowDrag = (this._mapZoomed = true);
                     };
-                    return (false);
+                    _local_2 = PlayedCharacterManager.getInstance().isFighting;
+                    return (_local_2);
             };
             return (false);
         }

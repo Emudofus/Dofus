@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.paddock
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PaddockInformations implements INetworkType 
     {
@@ -31,38 +31,38 @@
             this.maxItems = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PaddockInformations(output);
         }
 
-        public function serializeAs_PaddockInformations(output:IDataOutput):void
+        public function serializeAs_PaddockInformations(output:ICustomDataOutput):void
         {
             if (this.maxOutdoorMount < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxOutdoorMount) + ") on element maxOutdoorMount.")));
             };
-            output.writeShort(this.maxOutdoorMount);
+            output.writeVarShort(this.maxOutdoorMount);
             if (this.maxItems < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxItems) + ") on element maxItems.")));
             };
-            output.writeShort(this.maxItems);
+            output.writeVarShort(this.maxItems);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PaddockInformations(input);
         }
 
-        public function deserializeAs_PaddockInformations(input:IDataInput):void
+        public function deserializeAs_PaddockInformations(input:ICustomDataInput):void
         {
-            this.maxOutdoorMount = input.readShort();
+            this.maxOutdoorMount = input.readVarUhShort();
             if (this.maxOutdoorMount < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxOutdoorMount) + ") on element of PaddockInformations.maxOutdoorMount.")));
             };
-            this.maxItems = input.readShort();
+            this.maxItems = input.readVarUhShort();
             if (this.maxItems < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxItems) + ") on element of PaddockInformations.maxItems.")));

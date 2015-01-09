@@ -14,6 +14,8 @@
     import com.ankamagames.atouin.Atouin;
     import com.ankamagames.dofus.internalDatacenter.world.WorldPointWrapper;
     import com.ankamagames.atouin.managers.InteractiveCellManager;
+    import com.ankamagames.atouin.types.DebugToolTip;
+    import com.ankamagames.atouin.managers.SelectionManager;
 
     public class DisplayMapInstructionHandler implements ConsoleInstructionHandler 
     {
@@ -78,6 +80,14 @@
                     Atouin.getInstance().options.showCellIdOnOver = !(Atouin.getInstance().options.showCellIdOnOver);
                     console.output(("showCellIdOnOver : " + Atouin.getInstance().options.showCellIdOnOver));
                     InteractiveCellManager.getInstance().setInteraction(true, Atouin.getInstance().options.showCellIdOnOver, Atouin.getInstance().options.showCellIdOnOver);
+                    if (!(Atouin.getInstance().options.showCellIdOnOver))
+                    {
+                        if (DebugToolTip.getInstance().parent)
+                        {
+                            DebugToolTip.getInstance().parent.removeChild(DebugToolTip.getInstance());
+                        };
+                        SelectionManager.getInstance().getSelection("infoOverCell").remove();
+                    };
                     return;
                 case "playerjump":
                     Atouin.getInstance().options.virtualPlayerJump = !(Atouin.getInstance().options.virtualPlayerJump);

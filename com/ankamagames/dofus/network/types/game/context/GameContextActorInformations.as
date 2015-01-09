@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
 
     public class GameContextActorInformations implements INetworkType 
@@ -41,12 +41,12 @@
             this.look = new EntityLook();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameContextActorInformations(output);
         }
 
-        public function serializeAs_GameContextActorInformations(output:IDataOutput):void
+        public function serializeAs_GameContextActorInformations(output:ICustomDataOutput):void
         {
             output.writeInt(this.contextualId);
             this.look.serializeAs_EntityLook(output);
@@ -54,12 +54,12 @@
             this.disposition.serialize(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameContextActorInformations(input);
         }
 
-        public function deserializeAs_GameContextActorInformations(input:IDataInput):void
+        public function deserializeAs_GameContextActorInformations(input:ICustomDataInput):void
         {
             this.contextualId = input.readInt();
             this.look = new EntityLook();

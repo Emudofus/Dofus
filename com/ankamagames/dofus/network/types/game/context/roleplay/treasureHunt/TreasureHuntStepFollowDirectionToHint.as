@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class TreasureHuntStepFollowDirectionToHint extends TreasureHuntStep implements INetworkType 
     {
@@ -31,12 +31,12 @@
             this.npcId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TreasureHuntStepFollowDirectionToHint(output);
         }
 
-        public function serializeAs_TreasureHuntStepFollowDirectionToHint(output:IDataOutput):void
+        public function serializeAs_TreasureHuntStepFollowDirectionToHint(output:ICustomDataOutput):void
         {
             super.serializeAs_TreasureHuntStep(output);
             output.writeByte(this.direction);
@@ -44,15 +44,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.npcId) + ") on element npcId.")));
             };
-            output.writeShort(this.npcId);
+            output.writeVarShort(this.npcId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TreasureHuntStepFollowDirectionToHint(input);
         }
 
-        public function deserializeAs_TreasureHuntStepFollowDirectionToHint(input:IDataInput):void
+        public function deserializeAs_TreasureHuntStepFollowDirectionToHint(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.direction = input.readByte();
@@ -60,7 +60,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.direction) + ") on element of TreasureHuntStepFollowDirectionToHint.direction.")));
             };
-            this.npcId = input.readShort();
+            this.npcId = input.readVarUhShort();
             if (this.npcId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.npcId) + ") on element of TreasureHuntStepFollowDirectionToHint.npcId.")));

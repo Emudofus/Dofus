@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class Preset implements INetworkType 
@@ -44,12 +44,12 @@
             this.objects = new Vector.<PresetItem>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_Preset(output);
         }
 
-        public function serializeAs_Preset(output:IDataOutput):void
+        public function serializeAs_Preset(output:ICustomDataOutput):void
         {
             if (this.presetId < 0)
             {
@@ -71,12 +71,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_Preset(input);
         }
 
-        public function deserializeAs_Preset(input:IDataInput):void
+        public function deserializeAs_Preset(input:ICustomDataInput):void
         {
             var _item4:PresetItem;
             this.presetId = input.readByte();

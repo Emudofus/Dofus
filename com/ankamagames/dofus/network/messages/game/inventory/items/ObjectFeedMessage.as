@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ObjectFeedMessage extends NetworkMessage implements INetworkMessage 
@@ -45,60 +46,60 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectFeedMessage(output);
         }
 
-        public function serializeAs_ObjectFeedMessage(output:IDataOutput):void
+        public function serializeAs_ObjectFeedMessage(output:ICustomDataOutput):void
         {
             if (this.objectUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectUID) + ") on element objectUID.")));
             };
-            output.writeInt(this.objectUID);
+            output.writeVarInt(this.objectUID);
             if (this.foodUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.foodUID) + ") on element foodUID.")));
             };
-            output.writeInt(this.foodUID);
+            output.writeVarInt(this.foodUID);
             if (this.foodQuantity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.foodQuantity) + ") on element foodQuantity.")));
             };
-            output.writeShort(this.foodQuantity);
+            output.writeVarInt(this.foodQuantity);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectFeedMessage(input);
         }
 
-        public function deserializeAs_ObjectFeedMessage(input:IDataInput):void
+        public function deserializeAs_ObjectFeedMessage(input:ICustomDataInput):void
         {
-            this.objectUID = input.readInt();
+            this.objectUID = input.readVarUhInt();
             if (this.objectUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectUID) + ") on element of ObjectFeedMessage.objectUID.")));
             };
-            this.foodUID = input.readInt();
+            this.foodUID = input.readVarUhInt();
             if (this.foodUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.foodUID) + ") on element of ObjectFeedMessage.foodUID.")));
             };
-            this.foodQuantity = input.readShort();
+            this.foodQuantity = input.readVarUhInt();
             if (this.foodQuantity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.foodQuantity) + ") on element of ObjectFeedMessage.foodQuantity.")));

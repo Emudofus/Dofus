@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.character
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class CharacterMinimalInformations extends AbstractCharacterInformation implements INetworkType 
     {
@@ -33,12 +33,12 @@
             this.name = "";
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharacterMinimalInformations(output);
         }
 
-        public function serializeAs_CharacterMinimalInformations(output:IDataOutput):void
+        public function serializeAs_CharacterMinimalInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_AbstractCharacterInformation(output);
             if ((((this.level < 1)) || ((this.level > 200))))
@@ -49,12 +49,12 @@
             output.writeUTF(this.name);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharacterMinimalInformations(input);
         }
 
-        public function deserializeAs_CharacterMinimalInformations(input:IDataInput):void
+        public function deserializeAs_CharacterMinimalInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.level = input.readUnsignedByte();

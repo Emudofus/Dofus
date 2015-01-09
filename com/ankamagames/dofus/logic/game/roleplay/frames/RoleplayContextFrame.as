@@ -15,8 +15,12 @@
     import com.ankamagames.dofus.logic.game.common.frames.SpellForgetDialogFrame;
     import com.ankamagames.dofus.internalDatacenter.guild.PaddockWrapper;
     import com.ankamagames.dofus.types.entities.AnimatedCharacter;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.ObtainedItemMessage;
+    import com.ankamagames.berilia.components.Texture;
+    import flash.text.TextFormat;
     import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.dofus.logic.game.common.frames.SocialFrame;
+    import flash.filters.GlowFilter;
     import com.ankamagames.dofus.logic.game.common.frames.StackManagementFrame;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.CurrentMapMessage;
     import com.ankamagames.dofus.datacenter.world.SubArea;
@@ -53,6 +57,7 @@
     import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectFoundWhileRecoltingMessage;
     import com.ankamagames.dofus.datacenter.items.Item;
     import com.ankamagames.dofus.internalDatacenter.communication.CraftSmileyItem;
+    import flash.utils.Timer;
     import com.ankamagames.dofus.logic.game.roleplay.actions.PlayerFightRequestAction;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.GameRolePlayPlayerFightRequestMessage;
     import com.ankamagames.dofus.logic.game.roleplay.actions.PlayerFightFriendlyAnswerAction;
@@ -93,8 +98,6 @@
     import com.ankamagames.dofus.network.messages.game.context.roleplay.paddock.PaddockSellBuyDialogMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.visual.GameRolePlaySpellAnimMessage;
     import com.ankamagames.dofus.logic.game.roleplay.types.RoleplaySpellCastProvider;
-    import com.ankamagames.dofus.scripts.SpellFxRunner;
-    import com.ankamagames.dofus.logic.game.common.actions.roleplay.BasicSwitchModeAction;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.ErrorMapNotFoundMessage;
     import com.ankamagames.atouin.data.map.Map;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
@@ -107,7 +110,6 @@
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayCharacterInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.job.JobMultiCraftAvailableSkillsMessage;
-    import com.ankamagames.dofus.network.messages.game.basic.BasicSetAwayModeRequestMessage;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
     import com.ankamagames.dofus.network.messages.server.basic.SystemMessageDisplayMessage;
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
@@ -161,6 +163,9 @@
     import com.ankamagames.dofus.misc.lists.ChatHookList;
     import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
     import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+    import com.ankamagames.dofus.types.enums.AnimationEnum;
+    import flash.events.TimerEvent;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.ObtainedItemWithBonusMessage;
     import com.ankamagames.dofus.misc.lists.SocialHookList;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMutantInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNamedActorInformations;
@@ -186,8 +191,7 @@
     import com.ankamagames.dofus.network.messages.game.context.roleplay.paddock.PaddockPropertiesMessage;
     import com.ankamagames.dofus.datacenter.spells.Spell;
     import com.ankamagames.jerakine.types.positions.MapPoint;
-    import com.ankamagames.jerakine.script.ScriptExec;
-    import com.ankamagames.dofus.scripts.DofusEmbedScript;
+    import com.ankamagames.dofus.scripts.SpellScriptManager;
     import com.ankamagames.jerakine.types.Callback;
     import com.ankamagames.jerakine.messages.Message;
     import com.ankamagames.dofus.datacenter.npcs.TaxCollectorFirstname;
@@ -200,6 +204,9 @@
     import com.ankamagames.jerakine.utils.display.AngleToOrientation;
     import com.ankamagames.dofus.datacenter.communication.Emoticon;
     import com.ankamagames.dofus.network.messages.game.context.GameMapChangeOrientationRequestMessage;
+    import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+    import com.ankamagames.jerakine.types.Uri;
+    import com.ankamagames.dofus.types.characteristicContextual.CharacteristicContextualManager;
     import __AS3__.vec.Vector;
 
     public class RoleplayContextFrame implements Frame 
@@ -236,6 +243,11 @@
         private var _currentPaddock:PaddockWrapper;
         private var _playerEntity:AnimatedCharacter;
         private var _interactionIsLimited:Boolean = false;
+        private var _obtainedItemMsg:ObtainedItemMessage;
+        private var _itemIcon:Texture;
+        private var _itemBonusIcon:Texture;
+        private var _obtainedItemTextFormat:TextFormat;
+        private var _obtainedItemBonusTextFormat:TextFormat;
 
 
         public function get crafterId():uint
@@ -324,6 +336,13 @@
                 this._emoticonFrame = (Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame);
             };
             this._playersMultiCraftSkill = new Array();
+            this._obtainedItemTextFormat = new TextFormat("Verdana", 24, 7615756, true);
+            this._obtainedItemBonusTextFormat = new TextFormat("Verdana", 24, 0xFF5500, true);
+            this._itemIcon = new Texture();
+            this._itemBonusIcon = new Texture();
+            var itemIconFilter:GlowFilter = new GlowFilter(0, 1, 2, 2, 2, 1);
+            this._itemIcon.filters = [itemIconFilter];
+            this._itemBonusIcon.filters = [itemIconFilter];
             var stackFrame:StackManagementFrame = (Kernel.getWorker().getFrame(StackManagementFrame) as StackManagementFrame);
             stackFrame.paused = false;
             return (true);
@@ -381,59 +400,62 @@
             var _local_49:String;
             var _local_50:String;
             var _local_51:String;
-            var _local_52:PlayerFightRequestAction;
-            var _local_53:GameRolePlayPlayerFightRequestMessage;
-            var _local_54:IEntity;
-            var _local_55:PlayerFightFriendlyAnswerAction;
-            var _local_56:GameRolePlayPlayerFightFriendlyAnswerMessage;
-            var _local_57:GameRolePlayPlayerFightFriendlyAnsweredMessage;
-            var _local_58:GameRolePlayFightRequestCanceledMessage;
-            var _local_59:GameRolePlayPlayerFightFriendlyRequestedMessage;
-            var _local_60:GameRolePlayFreeSoulRequestMessage;
-            var _local_61:LeaveDialogRequestMessage;
-            var _local_62:ExchangeErrorMessage;
-            var _local_63:String;
-            var _local_64:uint;
-            var _local_65:GameRolePlayAggressionMessage;
-            var _local_66:LeaveDialogRequestMessage;
-            var _local_67:ExchangeShopStockMouvmentAddAction;
-            var _local_68:ExchangeObjectMovePricedMessage;
-            var _local_69:ExchangeShopStockMouvmentRemoveAction;
-            var _local_70:ExchangeObjectMoveMessage;
-            var _local_71:ExchangeBuyAction;
-            var _local_72:ExchangeBuyMessage;
-            var _local_73:ExchangeSellAction;
-            var _local_74:ExchangeSellMessage;
-            var _local_75:ExchangeBuyOkMessage;
-            var _local_76:ExchangeSellOkMessage;
-            var _local_77:ExchangePlayerRequestAction;
-            var _local_78:ExchangePlayerRequestMessage;
-            var _local_79:ExchangePlayerMultiCraftRequestAction;
-            var _local_80:ExchangePlayerMultiCraftRequestMessage;
-            var _local_81:JobAllowMultiCraftRequestSetAction;
-            var _local_82:JobAllowMultiCraftRequestSetMessage;
-            var _local_83:JobAllowMultiCraftRequestMessage;
-            var _local_84:uint;
-            var _local_85:SpellForgetUIMessage;
-            var _local_86:ChallengeFightJoinRefusedMessage;
-            var _local_87:SpellForgottenMessage;
-            var _local_88:ExchangeCraftResultMessage;
-            var _local_89:uint;
-            var _local_90:ExchangeCraftInformationObjectMessage;
-            var _local_91:CraftSmileyItem;
-            var _local_92:GameRolePlayDelayedActionMessage;
-            var _local_93:DocumentReadingBeginMessage;
-            var _local_94:ComicReadingBeginMessage;
-            var _local_95:Comic;
-            var _local_96:PaddockSellBuyDialogMessage;
-            var _local_97:LeaveDialogRequestMessage;
-            var _local_98:GameRolePlaySpellAnimMessage;
-            var _local_99:RoleplaySpellCastProvider;
-            var _local_100:SpellFxRunner;
-            var _local_101:BasicSwitchModeAction;
+            var _local_52:ObtainedItemMessage;
+            var _local_53:RoleplayInteractivesFrame;
+            var _local_54:AnimatedCharacter;
+            var _local_55:Timer;
+            var _local_56:PlayerFightRequestAction;
+            var _local_57:GameRolePlayPlayerFightRequestMessage;
+            var _local_58:IEntity;
+            var _local_59:PlayerFightFriendlyAnswerAction;
+            var _local_60:GameRolePlayPlayerFightFriendlyAnswerMessage;
+            var _local_61:GameRolePlayPlayerFightFriendlyAnsweredMessage;
+            var _local_62:GameRolePlayFightRequestCanceledMessage;
+            var _local_63:GameRolePlayPlayerFightFriendlyRequestedMessage;
+            var _local_64:GameRolePlayFreeSoulRequestMessage;
+            var _local_65:LeaveDialogRequestMessage;
+            var _local_66:ExchangeErrorMessage;
+            var _local_67:String;
+            var _local_68:uint;
+            var _local_69:GameRolePlayAggressionMessage;
+            var _local_70:LeaveDialogRequestMessage;
+            var _local_71:ExchangeShopStockMouvmentAddAction;
+            var _local_72:ExchangeObjectMovePricedMessage;
+            var _local_73:ExchangeShopStockMouvmentRemoveAction;
+            var _local_74:ExchangeObjectMoveMessage;
+            var _local_75:ExchangeBuyAction;
+            var _local_76:ExchangeBuyMessage;
+            var _local_77:ExchangeSellAction;
+            var _local_78:ExchangeSellMessage;
+            var _local_79:ExchangeBuyOkMessage;
+            var _local_80:ExchangeSellOkMessage;
+            var _local_81:ExchangePlayerRequestAction;
+            var _local_82:ExchangePlayerRequestMessage;
+            var _local_83:ExchangePlayerMultiCraftRequestAction;
+            var _local_84:ExchangePlayerMultiCraftRequestMessage;
+            var _local_85:JobAllowMultiCraftRequestSetAction;
+            var _local_86:JobAllowMultiCraftRequestSetMessage;
+            var _local_87:JobAllowMultiCraftRequestMessage;
+            var _local_88:uint;
+            var _local_89:SpellForgetUIMessage;
+            var _local_90:ChallengeFightJoinRefusedMessage;
+            var _local_91:SpellForgottenMessage;
+            var _local_92:ExchangeCraftResultMessage;
+            var _local_93:uint;
+            var _local_94:ExchangeCraftInformationObjectMessage;
+            var _local_95:CraftSmileyItem;
+            var _local_96:GameRolePlayDelayedActionMessage;
+            var _local_97:DocumentReadingBeginMessage;
+            var _local_98:ComicReadingBeginMessage;
+            var _local_99:Comic;
+            var _local_100:PaddockSellBuyDialogMessage;
+            var _local_101:LeaveDialogRequestMessage;
+            var _local_102:GameRolePlaySpellAnimMessage;
+            var _local_103:RoleplaySpellCastProvider;
+            var _local_104:int;
             var decryptionKeyString:String;
-            var _local_103:Object;
-            var _local_104:ErrorMapNotFoundMessage;
+            var _local_106:Object;
+            var _local_107:ErrorMapNotFoundMessage;
             var currentMapX:int;
             var currentMapY:int;
             var currentWorldId:int;
@@ -447,27 +469,28 @@
             var portalEntity:GameRolePlayPortalInformations;
             var area:Area;
             var areaName:String;
+            var _local_121:LeaveDialogRequestMessage;
             var absoluteBounds:IRectangle;
+            var _local_123:uint;
             var infos:GameRolePlayCharacterInformations;
-            var _local_120:int;
-            var _local_121:int;
+            var _local_125:int;
+            var _local_126:int;
             var rcf:RoleplayContextFrame;
             var playerInfo:GameRolePlayActorInformations;
             var name:String;
-            var _local_125:GameContextActorInformations;
-            var _local_126:JobMultiCraftAvailableSkillsMessage;
+            var _local_130:GameContextActorInformations;
+            var _local_131:JobMultiCraftAvailableSkillsMessage;
             var mcefp:MultiCraftEnableForPlayer;
             var alreadyIn:Boolean;
             var mcefplayer:MultiCraftEnableForPlayer;
-            var _local_130:uint;
-            var _local_131:int;
-            var _local_132:Item;
-            var _local_133:uint;
+            var _local_135:uint;
+            var _local_136:int;
+            var _local_137:Item;
+            var _local_138:uint;
             var absBounds:IRectangle;
             var csiD:CraftSmileyItem;
             var iconIdD:uint;
             var absBoundsD:IRectangle;
-            var bsamrmsg:BasicSetAwayModeRequestMessage;
             switch (true)
             {
                 case (msg is CurrentMapMessage):
@@ -559,11 +582,11 @@
                     switch (MapLoadingFailedMessage(msg).errorReason)
                     {
                         case MapLoadingFailedMessage.NO_FILE:
-                            _local_103 = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-                            _local_103.openPopup(I18n.getUiText("ui.popup.information"), I18n.getUiText("ui.popup.noMapdataFile"), [I18n.getUiText("ui.common.ok")]);
-                            _local_104 = new ErrorMapNotFoundMessage();
-                            _local_104.initErrorMapNotFoundMessage(MapLoadingFailedMessage(msg).id);
-                            ConnectionsHandler.getConnection().send(_local_104);
+                            _local_106 = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+                            _local_106.openPopup(I18n.getUiText("ui.popup.information"), I18n.getUiText("ui.popup.noMapdataFile"), [I18n.getUiText("ui.common.ok")]);
+                            _local_107 = new ErrorMapNotFoundMessage();
+                            _local_107.initErrorMapNotFoundMessage(MapLoadingFailedMessage(msg).id);
+                            ConnectionsHandler.getConnection().send(_local_107);
                             MapDisplayManager.getInstance().fromMap(new DefaultMap(MapLoadingFailedMessage(msg).id));
                             return (true);
                     };
@@ -769,6 +792,12 @@
                                     };
                                     areaName = area.name;
                                     KernelEventsManager.getInstance().processCallback(RoleplayHookList.PortalDialogCreation, _local_24.mapId, areaName, EntityLookAdapter.fromNetwork(portalEntity.look));
+                                }
+                                else
+                                {
+                                    _local_121 = new LeaveDialogRequestMessage();
+                                    ConnectionsHandler.getConnection().send(_local_121);
+                                    Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
                                 };
                             };
                         };
@@ -956,20 +985,39 @@
                     };
                     _local_48 = _local_44.quantity;
                     _local_49 = ((_local_44.genericId) ? Item.getItemById(_local_44.genericId).name : I18n.getUiText("ui.common.kamas"));
-                    _local_50 = Item.getItemById(_local_44.ressourceGenericId).name;
+                    _local_50 = Item.getItemById(_local_44.resourceGenericId).name;
                     _local_51 = I18n.getUiText("ui.common.itemFound", [_local_48, _local_49, _local_50]);
                     KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_51, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     return (true);
-                case (msg is PlayerFightRequestAction):
-                    _local_52 = PlayerFightRequestAction(msg);
-                    if (((!(_local_52.launch)) && (!(_local_52.friendly))))
+                case (msg is ObtainedItemMessage):
+                    _local_52 = (msg as ObtainedItemMessage);
+                    _local_53 = (Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame);
+                    _local_54 = (DofusEntities.getEntity(PlayedCharacterManager.getInstance().id) as AnimatedCharacter);
+                    if (((_local_53) && (!((_local_54.getAnimation() == AnimationEnum.ANIM_STATIQUE)))))
                     {
-                        infos = (this.entitiesFrame.getEntityInfos(_local_52.targetedPlayerId) as GameRolePlayCharacterInformations);
+                        _local_55 = _local_53.getInteractiveActionTimer(_local_54);
+                    };
+                    if (((_local_55) && (_local_55.running)))
+                    {
+                        this._obtainedItemMsg = _local_52;
+                        _local_55.addEventListener(TimerEvent.TIMER, this.onInteractiveAnimationEnd);
+                    }
+                    else
+                    {
+                        _local_123 = (((msg is ObtainedItemWithBonusMessage)) ? (msg as ObtainedItemWithBonusMessage).bonusQuantity : 0);
+                        this.displayObtainedItem(_local_52.genericId, _local_52.baseQuantity, _local_123);
+                    };
+                    return (true);
+                case (msg is PlayerFightRequestAction):
+                    _local_56 = PlayerFightRequestAction(msg);
+                    if (((!(_local_56.launch)) && (!(_local_56.friendly))))
+                    {
+                        infos = (this.entitiesFrame.getEntityInfos(_local_56.targetedPlayerId) as GameRolePlayCharacterInformations);
                         if (infos)
                         {
-                            if (_local_52.ava)
+                            if (_local_56.ava)
                             {
-                                KernelEventsManager.getInstance().processCallback(SocialHookList.AttackPlayer, _local_52.targetedPlayerId, true, infos.name, _local_121, _local_52.cellId);
+                                KernelEventsManager.getInstance().processCallback(SocialHookList.AttackPlayer, _local_56.targetedPlayerId, true, infos.name, _local_126, _local_56.cellId);
                                 return (true);
                             };
                             if (infos.alignmentInfos.alignmentSide == 0)
@@ -978,62 +1026,62 @@
                                 playerInfo = (rcf.entitiesFrame.getEntityInfos(PlayedCharacterManager.getInstance().id) as GameRolePlayActorInformations);
                                 if (!((playerInfo is GameRolePlayMutantInformations)))
                                 {
-                                    KernelEventsManager.getInstance().processCallback(SocialHookList.AttackPlayer, _local_52.targetedPlayerId, false, infos.name, 2, _local_52.cellId);
+                                    KernelEventsManager.getInstance().processCallback(SocialHookList.AttackPlayer, _local_56.targetedPlayerId, false, infos.name, 2, _local_56.cellId);
                                     return (true);
                                 };
                             };
-                            _local_120 = (infos.alignmentInfos.characterPower - _local_52.targetedPlayerId);
-                            _local_121 = PlayedCharacterManager.getInstance().levelDiff(_local_120);
-                            if (_local_121)
+                            _local_125 = (infos.alignmentInfos.characterPower - _local_56.targetedPlayerId);
+                            _local_126 = PlayedCharacterManager.getInstance().levelDiff(_local_125);
+                            if (_local_126)
                             {
-                                KernelEventsManager.getInstance().processCallback(SocialHookList.AttackPlayer, _local_52.targetedPlayerId, false, infos.name, _local_121, _local_52.cellId);
+                                KernelEventsManager.getInstance().processCallback(SocialHookList.AttackPlayer, _local_56.targetedPlayerId, false, infos.name, _local_126, _local_56.cellId);
                                 return (true);
                             };
                         };
                     };
-                    _local_53 = new GameRolePlayPlayerFightRequestMessage();
-                    _local_53.initGameRolePlayPlayerFightRequestMessage(_local_52.targetedPlayerId, _local_52.cellId, _local_52.friendly);
-                    _local_54 = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
-                    if ((_local_54 as IMovable).isMoving)
+                    _local_57 = new GameRolePlayPlayerFightRequestMessage();
+                    _local_57.initGameRolePlayPlayerFightRequestMessage(_local_56.targetedPlayerId, _local_56.cellId, _local_56.friendly);
+                    _local_58 = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
+                    if ((_local_58 as IMovable).isMoving)
                     {
-                        this._movementFrame.setFollowingMessage(_local_52);
-                        (_local_54 as IMovable).stop();
+                        this._movementFrame.setFollowingMessage(_local_56);
+                        (_local_58 as IMovable).stop();
                     }
                     else
                     {
-                        ConnectionsHandler.getConnection().send(_local_53);
+                        ConnectionsHandler.getConnection().send(_local_57);
                     };
                     return (true);
                 case (msg is PlayerFightFriendlyAnswerAction):
-                    _local_55 = PlayerFightFriendlyAnswerAction(msg);
-                    _local_56 = new GameRolePlayPlayerFightFriendlyAnswerMessage();
-                    _local_56.initGameRolePlayPlayerFightFriendlyAnswerMessage(this._currentWaitingFightId, _local_55.accept);
-                    _local_56.accept = _local_55.accept;
-                    _local_56.fightId = this._currentWaitingFightId;
-                    ConnectionsHandler.getConnection().send(_local_56);
+                    _local_59 = PlayerFightFriendlyAnswerAction(msg);
+                    _local_60 = new GameRolePlayPlayerFightFriendlyAnswerMessage();
+                    _local_60.initGameRolePlayPlayerFightFriendlyAnswerMessage(this._currentWaitingFightId, _local_59.accept);
+                    _local_60.accept = _local_59.accept;
+                    _local_60.fightId = this._currentWaitingFightId;
+                    ConnectionsHandler.getConnection().send(_local_60);
                     return (true);
                 case (msg is GameRolePlayPlayerFightFriendlyAnsweredMessage):
-                    _local_57 = (msg as GameRolePlayPlayerFightFriendlyAnsweredMessage);
-                    if (this._currentWaitingFightId == _local_57.fightId)
+                    _local_61 = (msg as GameRolePlayPlayerFightFriendlyAnsweredMessage);
+                    if (this._currentWaitingFightId == _local_61.fightId)
                     {
-                        KernelEventsManager.getInstance().processCallback(RoleplayHookList.PlayerFightFriendlyAnswered, _local_57.accept);
+                        KernelEventsManager.getInstance().processCallback(RoleplayHookList.PlayerFightFriendlyAnswered, _local_61.accept);
                     };
                     return (true);
                 case (msg is GameRolePlayFightRequestCanceledMessage):
-                    _local_58 = (msg as GameRolePlayFightRequestCanceledMessage);
-                    if (this._currentWaitingFightId == _local_58.fightId)
+                    _local_62 = (msg as GameRolePlayFightRequestCanceledMessage);
+                    if (this._currentWaitingFightId == _local_62.fightId)
                     {
                         KernelEventsManager.getInstance().processCallback(RoleplayHookList.PlayerFightFriendlyAnswered, false);
                     };
                     return (true);
                 case (msg is GameRolePlayPlayerFightFriendlyRequestedMessage):
-                    _local_59 = (msg as GameRolePlayPlayerFightFriendlyRequestedMessage);
-                    this._currentWaitingFightId = _local_59.fightId;
-                    if (_local_59.sourceId != PlayedCharacterManager.getInstance().id)
+                    _local_63 = (msg as GameRolePlayPlayerFightFriendlyRequestedMessage);
+                    this._currentWaitingFightId = _local_63.fightId;
+                    if (_local_63.sourceId != PlayedCharacterManager.getInstance().id)
                     {
-                        if (this._entitiesFrame.getEntityInfos(_local_59.sourceId))
+                        if (this._entitiesFrame.getEntityInfos(_local_63.sourceId))
                         {
-                            name = (this._entitiesFrame.getEntityInfos(_local_59.sourceId) as GameRolePlayNamedActorInformations).name;
+                            name = (this._entitiesFrame.getEntityInfos(_local_63.sourceId) as GameRolePlayNamedActorInformations).name;
                         };
                         if (this.socialFrame.isIgnored(name))
                         {
@@ -1043,182 +1091,182 @@
                     }
                     else
                     {
-                        _local_125 = this._entitiesFrame.getEntityInfos(_local_59.targetId);
-                        if (_local_125)
+                        _local_130 = this._entitiesFrame.getEntityInfos(_local_63.targetId);
+                        if (_local_130)
                         {
-                            KernelEventsManager.getInstance().processCallback(RoleplayHookList.PlayerFightRequestSent, GameRolePlayNamedActorInformations(_local_125).name, true);
+                            KernelEventsManager.getInstance().processCallback(RoleplayHookList.PlayerFightRequestSent, GameRolePlayNamedActorInformations(_local_130).name, true);
                         };
                     };
                     return (true);
                 case (msg is GameRolePlayFreeSoulRequestAction):
-                    _local_60 = new GameRolePlayFreeSoulRequestMessage();
-                    ConnectionsHandler.getConnection().send(_local_60);
+                    _local_64 = new GameRolePlayFreeSoulRequestMessage();
+                    ConnectionsHandler.getConnection().send(_local_64);
                     return (true);
                 case (msg is LeaveBidHouseAction):
-                    _local_61 = new LeaveDialogRequestMessage();
-                    _local_61.initLeaveDialogRequestMessage();
-                    ConnectionsHandler.getConnection().send(_local_61);
+                    _local_65 = new LeaveDialogRequestMessage();
+                    _local_65.initLeaveDialogRequestMessage();
+                    ConnectionsHandler.getConnection().send(_local_65);
                     return (true);
                 case (msg is ExchangeErrorMessage):
-                    _local_62 = (msg as ExchangeErrorMessage);
-                    _local_64 = ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO;
-                    switch (_local_62.errorType)
+                    _local_66 = (msg as ExchangeErrorMessage);
+                    _local_68 = ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO;
+                    switch (_local_66.errorType)
                     {
                         case ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchangeCharacterOccupied");
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchangeCharacterOccupied");
                             break;
                         case ExchangeErrorEnum.REQUEST_CHARACTER_TOOL_TOO_FAR:
-                            _local_63 = I18n.getUiText("ui.craft.notNearCraftTable");
+                            _local_67 = I18n.getUiText("ui.craft.notNearCraftTable");
                             break;
                         case ExchangeErrorEnum.REQUEST_IMPOSSIBLE:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchange");
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchange");
                             break;
                         case ExchangeErrorEnum.BID_SEARCH_ERROR:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchangeBIDSearchError");
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchangeBIDSearchError");
                             break;
                         case ExchangeErrorEnum.BUY_ERROR:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchangeBuyError");
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchangeBuyError");
                             break;
                         case ExchangeErrorEnum.MOUNT_PADDOCK_ERROR:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchangeMountPaddockError");
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchangeMountPaddockError");
                             break;
                         case ExchangeErrorEnum.REQUEST_CHARACTER_JOB_NOT_EQUIPED:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchangeCharacterJobNotEquiped");
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchangeCharacterJobNotEquiped");
                             break;
                         case ExchangeErrorEnum.REQUEST_CHARACTER_NOT_SUSCRIBER:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchangeCharacterNotSuscriber");
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchangeCharacterNotSuscriber");
                             break;
                         case ExchangeErrorEnum.REQUEST_CHARACTER_OVERLOADED:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchangeCharacterOverloaded");
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchangeCharacterOverloaded");
                             break;
                         case ExchangeErrorEnum.SELL_ERROR:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchangeSellError");
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchangeSellError");
                             break;
                         case ExchangeErrorEnum.REQUEST_CHARACTER_RESTRICTED:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchangeCharacterRestricted");
-                            _local_64 = ChatFrame.RED_CHANNEL_ID;
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchangeCharacterRestricted");
+                            _local_68 = ChatFrame.RED_CHANNEL_ID;
                             break;
                         case ExchangeErrorEnum.REQUEST_CHARACTER_GUEST:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchangeCharacterGuest");
-                            _local_64 = ChatFrame.RED_CHANNEL_ID;
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchangeCharacterGuest");
+                            _local_68 = ChatFrame.RED_CHANNEL_ID;
                             break;
                         default:
-                            _local_63 = I18n.getUiText("ui.exchange.cantExchange");
+                            _local_67 = I18n.getUiText("ui.exchange.cantExchange");
                     };
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_63, _local_64, TimeManager.getInstance().getTimestamp());
-                    KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeError, _local_62.errorType);
+                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_67, _local_68, TimeManager.getInstance().getTimestamp());
+                    KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeError, _local_66.errorType);
                     return (true);
                 case (msg is GameRolePlayAggressionMessage):
-                    _local_65 = (msg as GameRolePlayAggressionMessage);
-                    _local_51 = I18n.getUiText("ui.pvp.aAttackB", [GameRolePlayNamedActorInformations(this._entitiesFrame.getEntityInfos(_local_65.attackerId)).name, GameRolePlayNamedActorInformations(this._entitiesFrame.getEntityInfos(_local_65.defenderId)).name]);
+                    _local_69 = (msg as GameRolePlayAggressionMessage);
+                    _local_51 = I18n.getUiText("ui.pvp.aAttackB", [GameRolePlayNamedActorInformations(this._entitiesFrame.getEntityInfos(_local_69.attackerId)).name, GameRolePlayNamedActorInformations(this._entitiesFrame.getEntityInfos(_local_69.defenderId)).name]);
                     KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_51, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     _local_46 = PlayedCharacterManager.getInstance().id;
-                    if (_local_46 == _local_65.attackerId)
+                    if (_local_46 == _local_69.attackerId)
                     {
                         SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_AGRESS);
                     }
                     else
                     {
-                        if (_local_46 == _local_65.defenderId)
+                        if (_local_46 == _local_69.defenderId)
                         {
-                            KernelEventsManager.getInstance().processCallback(HookList.PlayerAggression, _local_65.attackerId, GameRolePlayNamedActorInformations(this._entitiesFrame.getEntityInfos(_local_65.attackerId)).name);
+                            KernelEventsManager.getInstance().processCallback(HookList.PlayerAggression, _local_69.attackerId, GameRolePlayNamedActorInformations(this._entitiesFrame.getEntityInfos(_local_69.attackerId)).name);
                             if (((AirScanner.hasAir()) && (ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.ATTACK))))
                             {
-                                KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.ATTACK, [GameRolePlayNamedActorInformations(this._entitiesFrame.getEntityInfos(_local_65.attackerId)).name]);
+                                KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.ATTACK, [GameRolePlayNamedActorInformations(this._entitiesFrame.getEntityInfos(_local_69.attackerId)).name]);
                             };
                             SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_AGRESSED);
                         };
                     };
                     return (true);
                 case (msg is LeaveShopStockAction):
-                    _local_66 = new LeaveDialogRequestMessage();
-                    _local_66.initLeaveDialogRequestMessage();
-                    ConnectionsHandler.getConnection().send(_local_66);
-                    return (true);
-                case (msg is ExchangeShopStockMouvmentAddAction):
-                    _local_67 = (msg as ExchangeShopStockMouvmentAddAction);
-                    _local_68 = new ExchangeObjectMovePricedMessage();
-                    _local_68.initExchangeObjectMovePricedMessage(_local_67.objectUID, _local_67.quantity, _local_67.price);
-                    ConnectionsHandler.getConnection().send(_local_68);
-                    return (true);
-                case (msg is ExchangeShopStockMouvmentRemoveAction):
-                    _local_69 = (msg as ExchangeShopStockMouvmentRemoveAction);
-                    _local_70 = new ExchangeObjectMoveMessage();
-                    _local_70.initExchangeObjectMoveMessage(_local_69.objectUID, _local_69.quantity);
+                    _local_70 = new LeaveDialogRequestMessage();
+                    _local_70.initLeaveDialogRequestMessage();
                     ConnectionsHandler.getConnection().send(_local_70);
                     return (true);
-                case (msg is ExchangeBuyAction):
-                    _local_71 = (msg as ExchangeBuyAction);
-                    _local_72 = new ExchangeBuyMessage();
-                    _local_72.initExchangeBuyMessage(_local_71.objectUID, _local_71.quantity);
+                case (msg is ExchangeShopStockMouvmentAddAction):
+                    _local_71 = (msg as ExchangeShopStockMouvmentAddAction);
+                    _local_72 = new ExchangeObjectMovePricedMessage();
+                    _local_72.initExchangeObjectMovePricedMessage(_local_71.objectUID, _local_71.quantity, _local_71.price);
                     ConnectionsHandler.getConnection().send(_local_72);
                     return (true);
-                case (msg is ExchangeSellAction):
-                    _local_73 = (msg as ExchangeSellAction);
-                    _local_74 = new ExchangeSellMessage();
-                    _local_74.initExchangeSellMessage(_local_73.objectUID, _local_73.quantity);
+                case (msg is ExchangeShopStockMouvmentRemoveAction):
+                    _local_73 = (msg as ExchangeShopStockMouvmentRemoveAction);
+                    _local_74 = new ExchangeObjectMoveMessage();
+                    _local_74.initExchangeObjectMoveMessage(_local_73.objectUID, _local_73.quantity);
                     ConnectionsHandler.getConnection().send(_local_74);
                     return (true);
+                case (msg is ExchangeBuyAction):
+                    _local_75 = (msg as ExchangeBuyAction);
+                    _local_76 = new ExchangeBuyMessage();
+                    _local_76.initExchangeBuyMessage(_local_75.objectUID, _local_75.quantity);
+                    ConnectionsHandler.getConnection().send(_local_76);
+                    return (true);
+                case (msg is ExchangeSellAction):
+                    _local_77 = (msg as ExchangeSellAction);
+                    _local_78 = new ExchangeSellMessage();
+                    _local_78.initExchangeSellMessage(_local_77.objectUID, _local_77.quantity);
+                    ConnectionsHandler.getConnection().send(_local_78);
+                    return (true);
                 case (msg is ExchangeBuyOkMessage):
-                    _local_75 = (msg as ExchangeBuyOkMessage);
+                    _local_79 = (msg as ExchangeBuyOkMessage);
                     KernelEventsManager.getInstance().processCallback(ExchangeHookList.BuyOk);
                     return (true);
                 case (msg is ExchangeSellOkMessage):
-                    _local_76 = (msg as ExchangeSellOkMessage);
+                    _local_80 = (msg as ExchangeSellOkMessage);
                     KernelEventsManager.getInstance().processCallback(ExchangeHookList.SellOk);
                     return (true);
                 case (msg is ExchangePlayerRequestAction):
-                    _local_77 = (msg as ExchangePlayerRequestAction);
-                    _local_78 = new ExchangePlayerRequestMessage();
-                    _local_78.initExchangePlayerRequestMessage(_local_77.exchangeType, _local_77.target);
-                    ConnectionsHandler.getConnection().send(_local_78);
+                    _local_81 = (msg as ExchangePlayerRequestAction);
+                    _local_82 = new ExchangePlayerRequestMessage();
+                    _local_82.initExchangePlayerRequestMessage(_local_81.exchangeType, _local_81.target);
+                    ConnectionsHandler.getConnection().send(_local_82);
                     return (true);
                 case (msg is ExchangePlayerMultiCraftRequestAction):
-                    _local_79 = (msg as ExchangePlayerMultiCraftRequestAction);
-                    switch (_local_79.exchangeType)
+                    _local_83 = (msg as ExchangePlayerMultiCraftRequestAction);
+                    switch (_local_83.exchangeType)
                     {
                         case ExchangeTypeEnum.MULTICRAFT_CRAFTER:
-                            this._customerID = _local_79.target;
+                            this._customerID = _local_83.target;
                             this._crafterId = PlayedCharacterManager.getInstance().id;
                             break;
                         case ExchangeTypeEnum.MULTICRAFT_CUSTOMER:
-                            this._crafterId = _local_79.target;
+                            this._crafterId = _local_83.target;
                             this._customerID = PlayedCharacterManager.getInstance().id;
                             break;
                     };
-                    _local_80 = new ExchangePlayerMultiCraftRequestMessage();
-                    _local_80.initExchangePlayerMultiCraftRequestMessage(_local_79.exchangeType, _local_79.target, _local_79.skillId);
-                    ConnectionsHandler.getConnection().send(_local_80);
+                    _local_84 = new ExchangePlayerMultiCraftRequestMessage();
+                    _local_84.initExchangePlayerMultiCraftRequestMessage(_local_83.exchangeType, _local_83.target, _local_83.skillId);
+                    ConnectionsHandler.getConnection().send(_local_84);
                     return (true);
                 case (msg is JobAllowMultiCraftRequestSetAction):
-                    _local_81 = (msg as JobAllowMultiCraftRequestSetAction);
-                    _local_82 = new JobAllowMultiCraftRequestSetMessage();
-                    _local_82.initJobAllowMultiCraftRequestSetMessage(_local_81.isPublic);
-                    ConnectionsHandler.getConnection().send(_local_82);
+                    _local_85 = (msg as JobAllowMultiCraftRequestSetAction);
+                    _local_86 = new JobAllowMultiCraftRequestSetMessage();
+                    _local_86.initJobAllowMultiCraftRequestSetMessage(_local_85.isPublic);
+                    ConnectionsHandler.getConnection().send(_local_86);
                     return (true);
                 case (msg is JobAllowMultiCraftRequestMessage):
-                    _local_83 = (msg as JobAllowMultiCraftRequestMessage);
-                    _local_84 = (msg as JobAllowMultiCraftRequestMessage).getMessageId();
-                    switch (_local_84)
+                    _local_87 = (msg as JobAllowMultiCraftRequestMessage);
+                    _local_88 = (msg as JobAllowMultiCraftRequestMessage).getMessageId();
+                    switch (_local_88)
                     {
                         case JobAllowMultiCraftRequestMessage.protocolId:
-                            PlayedCharacterManager.getInstance().publicMode = _local_83.enabled;
-                            KernelEventsManager.getInstance().processCallback(CraftHookList.JobAllowMultiCraftRequest, _local_83.enabled);
+                            PlayedCharacterManager.getInstance().publicMode = _local_87.enabled;
+                            KernelEventsManager.getInstance().processCallback(CraftHookList.JobAllowMultiCraftRequest, _local_87.enabled);
                             break;
                         case JobMultiCraftAvailableSkillsMessage.protocolId:
-                            _local_126 = (msg as JobMultiCraftAvailableSkillsMessage);
-                            if (_local_126.enabled)
+                            _local_131 = (msg as JobMultiCraftAvailableSkillsMessage);
+                            if (_local_131.enabled)
                             {
                                 mcefp = new MultiCraftEnableForPlayer();
-                                mcefp.playerId = _local_126.playerId;
-                                mcefp.skills = _local_126.skills;
+                                mcefp.playerId = _local_131.playerId;
+                                mcefp.skills = _local_131.skills;
                                 alreadyIn = false;
                                 for each (mcefplayer in this._playersMultiCraftSkill)
                                 {
                                     if (mcefplayer.playerId == mcefp.playerId)
                                     {
                                         alreadyIn = true;
-                                        mcefplayer.skills = _local_126.skills;
+                                        mcefplayer.skills = _local_131.skills;
                                     };
                                 };
                                 if (!(alreadyIn))
@@ -1228,28 +1276,28 @@
                             }
                             else
                             {
-                                _local_130 = 0;
-                                _local_131 = -1;
-                                _local_130 = 0;
-                                while (_local_130 < this._playersMultiCraftSkill.length)
+                                _local_135 = 0;
+                                _local_136 = -1;
+                                _local_135 = 0;
+                                while (_local_135 < this._playersMultiCraftSkill.length)
                                 {
-                                    if (this._playersMultiCraftSkill[_local_130].playerId == _local_126.playerId)
+                                    if (this._playersMultiCraftSkill[_local_135].playerId == _local_131.playerId)
                                     {
-                                        _local_131 = _local_130;
+                                        _local_136 = _local_135;
                                     };
-                                    _local_130++;
+                                    _local_135++;
                                 };
-                                if (_local_131 > -1)
+                                if (_local_136 > -1)
                                 {
-                                    this._playersMultiCraftSkill.splice(_local_131, 1);
+                                    this._playersMultiCraftSkill.splice(_local_136, 1);
                                 };
                             };
                             break;
                     };
                     return (true);
                 case (msg is SpellForgetUIMessage):
-                    _local_85 = (msg as SpellForgetUIMessage);
-                    if (_local_85.open)
+                    _local_89 = (msg as SpellForgetUIMessage);
+                    if (_local_89.open)
                     {
                         Kernel.getWorker().addFrame(this._spellForgetDialogFrame);
                     }
@@ -1258,11 +1306,11 @@
                         Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
                         Kernel.getWorker().removeFrame(this._spellForgetDialogFrame);
                     };
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.SpellForgetUI, _local_85.open);
+                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.SpellForgetUI, _local_89.open);
                     return (true);
                 case (msg is ChallengeFightJoinRefusedMessage):
-                    _local_86 = (msg as ChallengeFightJoinRefusedMessage);
-                    switch (_local_86.reason)
+                    _local_90 = (msg as ChallengeFightJoinRefusedMessage);
+                    switch (_local_90.reason)
                     {
                         case FighterRefusedReasonEnum.CHALLENGE_FULL:
                             _local_51 = I18n.getUiText("ui.fight.challengeFull");
@@ -1330,64 +1378,64 @@
                     };
                     return (true);
                 case (msg is SpellForgottenMessage):
-                    _local_87 = (msg as SpellForgottenMessage);
+                    _local_91 = (msg as SpellForgottenMessage);
                     return (true);
                 case (msg is ExchangeCraftResultMessage):
-                    _local_88 = (msg as ExchangeCraftResultMessage);
-                    _local_89 = _local_88.getMessageId();
-                    if (_local_89 != ExchangeCraftInformationObjectMessage.protocolId)
+                    _local_92 = (msg as ExchangeCraftResultMessage);
+                    _local_93 = _local_92.getMessageId();
+                    if (_local_93 != ExchangeCraftInformationObjectMessage.protocolId)
                     {
                         return (false);
                     };
-                    _local_90 = (msg as ExchangeCraftInformationObjectMessage);
-                    switch (_local_90.craftResult)
+                    _local_94 = (msg as ExchangeCraftInformationObjectMessage);
+                    switch (_local_94.craftResult)
                     {
                         case CraftResultEnum.CRAFT_SUCCESS:
                         case CraftResultEnum.CRAFT_FAILED:
-                            _local_132 = Item.getItemById(_local_90.objectGenericId);
-                            _local_133 = _local_132.iconId;
-                            _local_91 = new CraftSmileyItem(_local_90.playerId, _local_133, _local_90.craftResult);
+                            _local_137 = Item.getItemById(_local_94.objectGenericId);
+                            _local_138 = _local_137.iconId;
+                            _local_95 = new CraftSmileyItem(_local_94.playerId, _local_138, _local_94.craftResult);
                             break;
                         case CraftResultEnum.CRAFT_IMPOSSIBLE:
-                            _local_91 = new CraftSmileyItem(_local_90.playerId, -1, _local_90.craftResult);
+                            _local_95 = new CraftSmileyItem(_local_94.playerId, -1, _local_94.craftResult);
                             break;
                     };
-                    if ((DofusEntities.getEntity(_local_90.playerId) as IDisplayable))
+                    if ((DofusEntities.getEntity(_local_94.playerId) as IDisplayable))
                     {
-                        absBounds = (DofusEntities.getEntity(_local_90.playerId) as IDisplayable).absoluteBounds;
-                        TooltipManager.show(_local_91, absBounds, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), true, ("craftSmiley" + _local_90.playerId), LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, 0, true, null, null, null, null, false, -1);
+                        absBounds = (DofusEntities.getEntity(_local_94.playerId) as IDisplayable).absoluteBounds;
+                        TooltipManager.show(_local_95, absBounds, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), true, ("craftSmiley" + _local_94.playerId), LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, 0, true, null, null, null, null, false, -1);
                     };
                     return (true);
                 case (msg is GameRolePlayDelayedActionMessage):
-                    _local_92 = (msg as GameRolePlayDelayedActionMessage);
-                    if (_local_92.delayTypeId == DelayedActionTypeEnum.DELAYED_ACTION_OBJECT_USE)
+                    _local_96 = (msg as GameRolePlayDelayedActionMessage);
+                    if (_local_96.delayTypeId == DelayedActionTypeEnum.DELAYED_ACTION_OBJECT_USE)
                     {
                         iconIdD = Item.getItemById(548).iconId;
-                        csiD = new CraftSmileyItem(_local_92.delayedCharacterId, iconIdD, 2);
-                        absBoundsD = (DofusEntities.getEntity(_local_92.delayedCharacterId) as IDisplayable).absoluteBounds;
-                        TooltipManager.show(csiD, absBoundsD, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), true, ("craftSmiley" + _local_92.delayedCharacterId), LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, 0, true, null, null, null, null, false, -1);
+                        csiD = new CraftSmileyItem(_local_96.delayedCharacterId, iconIdD, 2);
+                        absBoundsD = (DofusEntities.getEntity(_local_96.delayedCharacterId) as IDisplayable).absoluteBounds;
+                        TooltipManager.show(csiD, absBoundsD, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), true, ("craftSmiley" + _local_96.delayedCharacterId), LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, 0, true, null, null, null, null, false, -1);
                     };
                     return (true);
                 case (msg is DocumentReadingBeginMessage):
-                    _local_93 = (msg as DocumentReadingBeginMessage);
+                    _local_97 = (msg as DocumentReadingBeginMessage);
                     TooltipManager.hideAll();
                     if (!(Kernel.getWorker().contains(DocumentFrame)))
                     {
                         Kernel.getWorker().addFrame(this._documentFrame);
                     };
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.DocumentReadingBegin, _local_93.documentId);
+                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.DocumentReadingBegin, _local_97.documentId);
                     return (true);
                 case (msg is ComicReadingBeginMessage):
-                    _local_94 = (msg as ComicReadingBeginMessage);
-                    _local_95 = Comic.getComicById(_local_94.comicId);
-                    if (_local_95)
+                    _local_98 = (msg as ComicReadingBeginMessage);
+                    _local_99 = Comic.getComicById(_local_98.comicId);
+                    if (_local_99)
                     {
                         TooltipManager.hideAll();
                         if (!(Kernel.getWorker().contains(DocumentFrame)))
                         {
                             Kernel.getWorker().addFrame(this._documentFrame);
                         };
-                        KernelEventsManager.getInstance().processCallback(ExternalGameHookList.OpenComic, _local_95.remoteId, _local_95.readerUrl, LangManager.getInstance().getEntry("config.lang.current"));
+                        KernelEventsManager.getInstance().processCallback(ExternalGameHookList.OpenComic, _local_99.remoteId, _local_99.readerUrl, LangManager.getInstance().getEntry("config.lang.current"));
                     };
                     return (true);
                 case (((msg is ZaapListMessage)) || ((msg is TeleportDestinationsListMessage))):
@@ -1398,53 +1446,32 @@
                     };
                     return (false);
                 case (msg is PaddockSellBuyDialogMessage):
-                    _local_96 = (msg as PaddockSellBuyDialogMessage);
+                    _local_100 = (msg as PaddockSellBuyDialogMessage);
                     TooltipManager.hideAll();
                     if (!(Kernel.getWorker().contains(PaddockFrame)))
                     {
                         Kernel.getWorker().addFrame(this._paddockFrame);
                     };
                     Kernel.getWorker().process(ChangeWorldInteractionAction.create(false));
-                    KernelEventsManager.getInstance().processCallback(MountHookList.PaddockSellBuyDialog, _local_96.bsell, _local_96.ownerId, _local_96.price);
+                    KernelEventsManager.getInstance().processCallback(MountHookList.PaddockSellBuyDialog, _local_100.bsell, _local_100.ownerId, _local_100.price);
                     return (true);
                 case (msg is LeaveExchangeMountAction):
-                    _local_97 = new LeaveDialogRequestMessage();
-                    _local_97.initLeaveDialogRequestMessage();
-                    ConnectionsHandler.getConnection().send(_local_97);
+                    _local_101 = new LeaveDialogRequestMessage();
+                    _local_101.initLeaveDialogRequestMessage();
+                    ConnectionsHandler.getConnection().send(_local_101);
                     return (true);
                 case (msg is PaddockPropertiesMessage):
                     this._currentPaddock = PaddockWrapper.create(PaddockPropertiesMessage(msg).properties);
                     return (true);
                 case (msg is GameRolePlaySpellAnimMessage):
-                    _local_98 = (msg as GameRolePlaySpellAnimMessage);
-                    _local_99 = new RoleplaySpellCastProvider();
-                    _local_99.castingSpell.casterId = _local_98.casterId;
-                    _local_99.castingSpell.spell = Spell.getSpellById(_local_98.spellId);
-                    _local_99.castingSpell.spellRank = _local_99.castingSpell.spell.getSpellLevel(_local_98.spellLevel);
-                    _local_99.castingSpell.targetedCell = MapPoint.fromCellId(_local_98.targetCellId);
-                    _local_100 = new SpellFxRunner(_local_99);
-                    ScriptExec.exec(DofusEmbedScript.getScript(_local_99.castingSpell.spell.getScriptId(_local_99.castingSpell.isCriticalHit)), _local_100, false, new Callback(this.executeSpellBuffer, null, true, true, _local_99), new Callback(this.executeSpellBuffer, null, true, false, _local_99));
-                    return (true);
-                case (msg is BasicSwitchModeAction):
-                    _local_101 = (msg as BasicSwitchModeAction);
-                    if (_local_101.type != currentStatus)
-                    {
-                        bsamrmsg = new BasicSetAwayModeRequestMessage();
-                        switch (_local_101.type)
-                        {
-                            case -1:
-                                bsamrmsg.initBasicSetAwayModeRequestMessage(false, (currentStatus == 0));
-                                break;
-                            case 0:
-                                bsamrmsg.initBasicSetAwayModeRequestMessage(true, true);
-                                break;
-                            case 1:
-                                bsamrmsg.initBasicSetAwayModeRequestMessage(true, false);
-                                break;
-                        };
-                        currentStatus = _local_101.type;
-                        ConnectionsHandler.getConnection().send(bsamrmsg);
-                    };
+                    _local_102 = (msg as GameRolePlaySpellAnimMessage);
+                    _local_103 = new RoleplaySpellCastProvider();
+                    _local_103.castingSpell.casterId = _local_102.casterId;
+                    _local_103.castingSpell.spell = Spell.getSpellById(_local_102.spellId);
+                    _local_103.castingSpell.spellRank = _local_103.castingSpell.spell.getSpellLevel(_local_102.spellLevel);
+                    _local_103.castingSpell.targetedCell = MapPoint.fromCellId(_local_102.targetCellId);
+                    _local_104 = _local_103.castingSpell.spell.getScriptId(_local_103.castingSpell.isCriticalHit);
+                    SpellScriptManager.getInstance().runSpellScript(_local_104, _local_103, new Callback(this.executeSpellBuffer, null, true, true, _local_103), new Callback(this.executeSpellBuffer, null, true, false, _local_103));
                     return (true);
             };
             return (false);
@@ -1562,6 +1589,34 @@
             var gmcormsg:GameMapChangeOrientationRequestMessage = new GameMapChangeOrientationRequestMessage();
             gmcormsg.initGameMapChangeOrientationRequestMessage(this._playerEntity.getDirection());
             ConnectionsHandler.getConnection().send(gmcormsg);
+        }
+
+        private function onInteractiveAnimationEnd(pTimerEvent:TimerEvent):void
+        {
+            var bonusQty:uint;
+            pTimerEvent.currentTarget.removeEventListener(TimerEvent.TIMER, this.onInteractiveAnimationEnd);
+            if (this._obtainedItemMsg)
+            {
+                bonusQty = (((this._obtainedItemMsg is ObtainedItemWithBonusMessage)) ? (this._obtainedItemMsg as ObtainedItemWithBonusMessage).bonusQuantity : 0);
+                this.displayObtainedItem(this._obtainedItemMsg.genericId, this._obtainedItemMsg.baseQuantity, bonusQty);
+            };
+            this._obtainedItemMsg = null;
+        }
+
+        private function displayObtainedItem(pItemGID:uint, pItemQuantity:uint, pItemBonusQuantity:uint=0):void
+        {
+            var entity:IEntity = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
+            var itemW:ItemWrapper = ItemWrapper.create(0, 0, pItemGID, 1, null);
+            var iconUri:Uri = itemW.getIconUri();
+            this._itemIcon.uri = iconUri;
+            this._itemIcon.finalize();
+            CharacteristicContextualManager.getInstance().addStatContextualWithIcon(this._itemIcon, pItemQuantity.toString(), entity, this._obtainedItemTextFormat, 1, 1, 1500);
+            if (pItemBonusQuantity > 0)
+            {
+                this._itemBonusIcon.uri = iconUri;
+                this._itemBonusIcon.finalize();
+                CharacteristicContextualManager.getInstance().addStatContextualWithIcon(this._itemBonusIcon, pItemBonusQuantity.toString(), entity, this._obtainedItemBonusTextFormat, 1, 1, 1500);
+            };
         }
 
         public function getMultiCraftSkills(pPlayerId:uint):Vector.<uint>

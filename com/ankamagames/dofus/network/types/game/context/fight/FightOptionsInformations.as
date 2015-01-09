@@ -1,9 +1,9 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
     import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightOptionsInformations implements INetworkType 
     {
@@ -38,12 +38,12 @@
             this.isAskingForHelp = false;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightOptionsInformations(output);
         }
 
-        public function serializeAs_FightOptionsInformations(output:IDataOutput):void
+        public function serializeAs_FightOptionsInformations(output:ICustomDataOutput):void
         {
             var _box0:uint;
             _box0 = BooleanByteWrapper.setFlag(_box0, 0, this.isSecret);
@@ -53,12 +53,12 @@
             output.writeByte(_box0);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightOptionsInformations(input);
         }
 
-        public function deserializeAs_FightOptionsInformations(input:IDataInput):void
+        public function deserializeAs_FightOptionsInformations(input:ICustomDataInput):void
         {
             var _box0:uint = input.readByte();
             this.isSecret = BooleanByteWrapper.getFlag(_box0, 0);

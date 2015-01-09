@@ -56,7 +56,6 @@
                 try
                 {
                     f = uri.toFile();
-                    _log.debug(((((((("loadDirectly() - uri: " + uri.toString()) + ", url: ") + f.url) + ", nativePath: ") + f.nativePath) + ", path: ") + path));
                     fs = new FileStream();
                     dataFormat = this.getDataFormat();
                     fs.open(uri.toFile(), FileMode.READ);
@@ -74,7 +73,6 @@
                 }
                 catch(error:Error)
                 {
-                    _log.error((("Loading file " + uri) + " through FileStream failed, trying to load it via URLRequest..."));
                     prepareLoader();
                     r = new URLRequest(path);
                     r.requestHeaders = [new URLRequestHeader("pragma", "no-cache")];

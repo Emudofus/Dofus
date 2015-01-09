@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightTeamMemberTaxCollectorInformations extends FightTeamMemberInformations implements INetworkType 
     {
@@ -42,24 +42,24 @@
             this.uid = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightTeamMemberTaxCollectorInformations(output);
         }
 
-        public function serializeAs_FightTeamMemberTaxCollectorInformations(output:IDataOutput):void
+        public function serializeAs_FightTeamMemberTaxCollectorInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_FightTeamMemberInformations(output);
             if (this.firstNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.firstNameId) + ") on element firstNameId.")));
             };
-            output.writeShort(this.firstNameId);
+            output.writeVarShort(this.firstNameId);
             if (this.lastNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lastNameId) + ") on element lastNameId.")));
             };
-            output.writeShort(this.lastNameId);
+            output.writeVarShort(this.lastNameId);
             if ((((this.level < 1)) || ((this.level > 200))))
             {
                 throw (new Error((("Forbidden value (" + this.level) + ") on element level.")));
@@ -69,28 +69,28 @@
             {
                 throw (new Error((("Forbidden value (" + this.guildId) + ") on element guildId.")));
             };
-            output.writeInt(this.guildId);
+            output.writeVarInt(this.guildId);
             if (this.uid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.uid) + ") on element uid.")));
             };
-            output.writeInt(this.uid);
+            output.writeVarInt(this.uid);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightTeamMemberTaxCollectorInformations(input);
         }
 
-        public function deserializeAs_FightTeamMemberTaxCollectorInformations(input:IDataInput):void
+        public function deserializeAs_FightTeamMemberTaxCollectorInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.firstNameId = input.readShort();
+            this.firstNameId = input.readVarUhShort();
             if (this.firstNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.firstNameId) + ") on element of FightTeamMemberTaxCollectorInformations.firstNameId.")));
             };
-            this.lastNameId = input.readShort();
+            this.lastNameId = input.readVarUhShort();
             if (this.lastNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lastNameId) + ") on element of FightTeamMemberTaxCollectorInformations.lastNameId.")));
@@ -100,12 +100,12 @@
             {
                 throw (new Error((("Forbidden value (" + this.level) + ") on element of FightTeamMemberTaxCollectorInformations.level.")));
             };
-            this.guildId = input.readInt();
+            this.guildId = input.readVarUhInt();
             if (this.guildId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.guildId) + ") on element of FightTeamMemberTaxCollectorInformations.guildId.")));
             };
-            this.uid = input.readInt();
+            this.uid = input.readVarUhInt();
             if (this.uid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.uid) + ") on element of FightTeamMemberTaxCollectorInformations.uid.")));

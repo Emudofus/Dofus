@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.achievement
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class AchievementStartedObjective extends AchievementObjective implements INetworkType 
@@ -31,30 +31,30 @@
             this.value = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AchievementStartedObjective(output);
         }
 
-        public function serializeAs_AchievementStartedObjective(output:IDataOutput):void
+        public function serializeAs_AchievementStartedObjective(output:ICustomDataOutput):void
         {
             super.serializeAs_AchievementObjective(output);
             if (this.value < 0)
             {
                 throw (new Error((("Forbidden value (" + this.value) + ") on element value.")));
             };
-            output.writeShort(this.value);
+            output.writeVarShort(this.value);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AchievementStartedObjective(input);
         }
 
-        public function deserializeAs_AchievementStartedObjective(input:IDataInput):void
+        public function deserializeAs_AchievementStartedObjective(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.value = input.readShort();
+            this.value = input.readVarUhShort();
             if (this.value < 0)
             {
                 throw (new Error((("Forbidden value (" + this.value) + ") on element of AchievementStartedObjective.value.")));

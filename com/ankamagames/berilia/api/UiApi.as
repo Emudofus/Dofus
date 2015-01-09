@@ -338,6 +338,21 @@
             ie.events[eventMsg] = eventMsg;
         }
 
+        [Untrusted]
+        public function removeComponentHook(target:GraphicContainer, hookName:String):void
+        {
+            var eventMsg:String = this.getEventClassName(hookName);
+            if (!(eventMsg))
+            {
+                throw (new ApiError((("Hook [" + hookName) + "] does not exist")));
+            };
+            var ie:InstanceEvent = UIEventManager.getInstance().instances[target];
+            if (((((ie) && (ie.events))) && (ie.events[eventMsg])))
+            {
+                delete ie.events[eventMsg];
+            };
+        }
+
         [Trusted]
         public function bindApi(targetTexture:Texture, propertyName:String, value:*):Boolean
         {

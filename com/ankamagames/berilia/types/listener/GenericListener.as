@@ -1,11 +1,12 @@
 ﻿package com.ankamagames.berilia.types.listener
 {
+    import com.ankamagames.jerakine.interfaces.IDestroyable;
     import com.ankamagames.jerakine.logger.Logger;
     import com.ankamagames.jerakine.logger.Log;
     import flash.utils.getQualifiedClassName;
     import com.ankamagames.jerakine.utils.memory.WeakReference;
 
-    public class GenericListener 
+    public class GenericListener implements IDestroyable 
     {
 
         public static const LISTENER_TYPE_UI:uint = 0;
@@ -58,7 +59,7 @@
             this._oListener = oListener;
         }
 
-        public function getCallback():Function
+        public function get callback():Function
         {
             return (this._fCallback);
         }
@@ -86,6 +87,20 @@
         public function get listenerContext():WeakReference
         {
             return (this._nListenerContext);
+        }
+
+        public function destroy():void
+        {
+            this._sEvent = null;
+            this._oListener = null;
+            this._fCallback = null;
+            this._nSortIndex = 0;
+            this._nListenerType = 0;
+            if (this._nListenerContext)
+            {
+                this._nListenerContext.destroy();
+            };
+            this._nListenerContext = null;
         }
 
 

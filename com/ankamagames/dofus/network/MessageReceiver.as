@@ -33,6 +33,7 @@
     import com.ankamagames.dofus.network.messages.game.approach.AuthenticationTicketRefusedMessage;
     import com.ankamagames.dofus.network.messages.game.approach.AlreadyConnectedMessage;
     import com.ankamagames.dofus.network.messages.game.approach.AccountLoggingKickedMessage;
+    import com.ankamagames.dofus.network.messages.game.approach.ReloginTokenStatusMessage;
     import com.ankamagames.dofus.network.messages.game.approach.ServerSettingsMessage;
     import com.ankamagames.dofus.network.messages.game.approach.ServerSessionConstantsMessage;
     import com.ankamagames.dofus.network.messages.game.approach.ServerOptionalFeaturesMessage;
@@ -41,6 +42,7 @@
     import com.ankamagames.dofus.network.messages.security.CheckFileRequestMessage;
     import com.ankamagames.dofus.network.messages.security.RawDataMessage;
     import com.ankamagames.dofus.network.messages.game.startup.StartupActionsListMessage;
+    import com.ankamagames.dofus.network.messages.game.startup.StartupActionAddMessage;
     import com.ankamagames.dofus.network.messages.game.startup.StartupActionFinishedMessage;
     import com.ankamagames.dofus.network.messages.game.character.creation.CharacterCreationResultMessage;
     import com.ankamagames.dofus.network.messages.game.character.deletion.CharacterDeletionErrorMessage;
@@ -48,12 +50,12 @@
     import com.ankamagames.dofus.network.messages.game.character.creation.CharacterNameSuggestionFailureMessage;
     import com.ankamagames.dofus.network.messages.game.character.choice.BasicCharactersListMessage;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListMessage;
+    import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListWithRemodelingMessage;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListWithModificationsMessage;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListErrorMessage;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectedSuccessMessage;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectedForceMessage;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectedErrorMessage;
-    import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectedErrorMissingMapPackMessage;
     import com.ankamagames.dofus.network.messages.game.moderation.PopupWarningMessage;
     import com.ankamagames.dofus.network.messages.game.basic.BasicDateMessage;
     import com.ankamagames.dofus.network.messages.game.basic.BasicTimeMessage;
@@ -100,7 +102,6 @@
     import com.ankamagames.dofus.network.messages.debug.DebugClearHighlightCellsMessage;
     import com.ankamagames.dofus.network.messages.debug.DebugInClientMessage;
     import com.ankamagames.dofus.network.messages.game.context.display.DisplayNumericalValueMessage;
-    import com.ankamagames.dofus.network.messages.game.context.display.DisplayNumericalValueWithAgeBonusMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.CurrentMapMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.TeleportOnSameMapMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.MapFightCountMessage;
@@ -143,6 +144,10 @@
     import com.ankamagames.dofus.network.messages.game.context.fight.GameFightJoinMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSpectatorJoinMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.GameFightPlacementPossiblePositionsMessage;
+    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightPlacementSwapPositionsErrorMessage;
+    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightPlacementSwapPositionsOfferMessage;
+    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightPlacementSwapPositionsCancelledMessage;
+    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightPlacementSwapPositionsMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.GameFightOptionStateUpdateMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.GameFightUpdateTeamMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.GameFightRemoveTeamMemberMessage;
@@ -206,6 +211,7 @@
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightMarkCellsMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightUnmarkCellsMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightTriggerGlyphTrapMessage;
+    import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightActivateGlyphTrapMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightInvisibleObstacleMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightCarryCharacterMessage;
     import com.ankamagames.dofus.network.messages.game.actions.fight.GameActionFightThrowCharacterMessage;
@@ -256,7 +262,6 @@
     import com.ankamagames.dofus.network.messages.game.context.fight.challenge.ChallengeInfoMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.challenge.ChallengeTargetUpdateMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.challenge.ChallengeResultMessage;
-    import com.ankamagames.dofus.network.messages.game.context.fight.challenge.ChallengeDungeonStackedBonusMessage;
     import com.ankamagames.dofus.network.messages.game.achievement.AchievementListMessage;
     import com.ankamagames.dofus.network.messages.game.achievement.AchievementDetailsMessage;
     import com.ankamagames.dofus.network.messages.game.achievement.AchievementDetailedListMessage;
@@ -265,8 +270,6 @@
     import com.ankamagames.dofus.network.messages.game.achievement.AchievementRewardSuccessMessage;
     import com.ankamagames.dofus.network.messages.game.achievement.AchievementRewardErrorMessage;
     import com.ankamagames.dofus.network.messages.game.achievement.FriendGuildWarnOnAchievementCompleteStateMessage;
-    import com.ankamagames.dofus.network.messages.game.context.dungeon.DungeonEnteredMessage;
-    import com.ankamagames.dofus.network.messages.game.context.dungeon.DungeonLeftMessage;
     import com.ankamagames.dofus.network.messages.game.context.dungeon.DungeonKeyRingMessage;
     import com.ankamagames.dofus.network.messages.game.context.dungeon.DungeonKeyRingUpdateMessage;
     import com.ankamagames.dofus.network.messages.game.pvp.UpdateMapPlayersAgressableStatusMessage;
@@ -390,7 +393,6 @@
     import com.ankamagames.dofus.network.messages.game.prism.PrismSetSabotagedRefusedMessage;
     import com.ankamagames.dofus.network.messages.game.prism.PrismFightDefenderAddMessage;
     import com.ankamagames.dofus.network.messages.game.prism.PrismFightDefenderLeaveMessage;
-    import com.ankamagames.dofus.network.messages.game.prism.PrismFightDefendersSwapMessage;
     import com.ankamagames.dofus.network.messages.game.prism.PrismFightAttackerAddMessage;
     import com.ankamagames.dofus.network.messages.game.prism.PrismFightAttackerRemoveMessage;
     import com.ankamagames.dofus.network.messages.game.prism.PrismsListMessage;
@@ -634,14 +636,13 @@
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntDigRequestAnswerFailedMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFlagRequestAnswerMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntAvailableRetryCountUpdateMessage;
-    import com.ankamagames.dofus.network.messages.game.packs.PackRestrictedSubAreaMessage;
     import com.ankamagames.dofus.network.messages.updater.parts.PartsListMessage;
     import com.ankamagames.dofus.network.messages.updater.parts.PartInfoMessage;
     import com.ankamagames.dofus.network.messages.updater.parts.DownloadCurrentSpeedMessage;
     import com.ankamagames.dofus.network.messages.updater.parts.DownloadErrorMessage;
     import com.ankamagames.jerakine.managers.StoreDataManager;
     import com.ankamagames.jerakine.network.INetworkMessage;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class MessageReceiver implements RawDataParser 
     {
@@ -678,6 +679,7 @@
             _messagesTypes[112] = AuthenticationTicketRefusedMessage;
             _messagesTypes[109] = AlreadyConnectedMessage;
             _messagesTypes[6029] = AccountLoggingKickedMessage;
+            _messagesTypes[6539] = ReloginTokenStatusMessage;
             _messagesTypes[6340] = ServerSettingsMessage;
             _messagesTypes[6434] = ServerSessionConstantsMessage;
             _messagesTypes[6305] = ServerOptionalFeaturesMessage;
@@ -686,6 +688,7 @@
             _messagesTypes[6154] = CheckFileRequestMessage;
             _messagesTypes[6253] = RawDataMessage;
             _messagesTypes[1301] = StartupActionsListMessage;
+            _messagesTypes[6538] = StartupActionAddMessage;
             _messagesTypes[1304] = StartupActionFinishedMessage;
             _messagesTypes[161] = CharacterCreationResultMessage;
             _messagesTypes[166] = CharacterDeletionErrorMessage;
@@ -693,12 +696,12 @@
             _messagesTypes[164] = CharacterNameSuggestionFailureMessage;
             _messagesTypes[6475] = BasicCharactersListMessage;
             _messagesTypes[151] = CharactersListMessage;
+            _messagesTypes[6550] = CharactersListWithRemodelingMessage;
             _messagesTypes[6120] = CharactersListWithModificationsMessage;
             _messagesTypes[5545] = CharactersListErrorMessage;
             _messagesTypes[153] = CharacterSelectedSuccessMessage;
             _messagesTypes[6068] = CharacterSelectedForceMessage;
             _messagesTypes[5836] = CharacterSelectedErrorMessage;
-            _messagesTypes[6300] = CharacterSelectedErrorMissingMapPackMessage;
             _messagesTypes[6134] = PopupWarningMessage;
             _messagesTypes[177] = BasicDateMessage;
             _messagesTypes[175] = BasicTimeMessage;
@@ -745,7 +748,6 @@
             _messagesTypes[2002] = DebugClearHighlightCellsMessage;
             _messagesTypes[6028] = DebugInClientMessage;
             _messagesTypes[5808] = DisplayNumericalValueMessage;
-            _messagesTypes[6361] = DisplayNumericalValueWithAgeBonusMessage;
             _messagesTypes[220] = CurrentMapMessage;
             _messagesTypes[6048] = TeleportOnSameMapMessage;
             _messagesTypes[210] = MapFightCountMessage;
@@ -788,6 +790,10 @@
             _messagesTypes[702] = GameFightJoinMessage;
             _messagesTypes[6504] = GameFightSpectatorJoinMessage;
             _messagesTypes[703] = GameFightPlacementPossiblePositionsMessage;
+            _messagesTypes[6548] = GameFightPlacementSwapPositionsErrorMessage;
+            _messagesTypes[6542] = GameFightPlacementSwapPositionsOfferMessage;
+            _messagesTypes[6546] = GameFightPlacementSwapPositionsCancelledMessage;
+            _messagesTypes[6544] = GameFightPlacementSwapPositionsMessage;
             _messagesTypes[5927] = GameFightOptionStateUpdateMessage;
             _messagesTypes[5572] = GameFightUpdateTeamMessage;
             _messagesTypes[711] = GameFightRemoveTeamMemberMessage;
@@ -851,6 +857,7 @@
             _messagesTypes[5540] = GameActionFightMarkCellsMessage;
             _messagesTypes[5570] = GameActionFightUnmarkCellsMessage;
             _messagesTypes[5741] = GameActionFightTriggerGlyphTrapMessage;
+            _messagesTypes[6545] = GameActionFightActivateGlyphTrapMessage;
             _messagesTypes[5820] = GameActionFightInvisibleObstacleMessage;
             _messagesTypes[5830] = GameActionFightCarryCharacterMessage;
             _messagesTypes[5829] = GameActionFightThrowCharacterMessage;
@@ -901,7 +908,6 @@
             _messagesTypes[6022] = ChallengeInfoMessage;
             _messagesTypes[6123] = ChallengeTargetUpdateMessage;
             _messagesTypes[6019] = ChallengeResultMessage;
-            _messagesTypes[6151] = ChallengeDungeonStackedBonusMessage;
             _messagesTypes[6205] = AchievementListMessage;
             _messagesTypes[6378] = AchievementDetailsMessage;
             _messagesTypes[6358] = AchievementDetailedListMessage;
@@ -910,8 +916,6 @@
             _messagesTypes[6376] = AchievementRewardSuccessMessage;
             _messagesTypes[6375] = AchievementRewardErrorMessage;
             _messagesTypes[6383] = FriendGuildWarnOnAchievementCompleteStateMessage;
-            _messagesTypes[6152] = DungeonEnteredMessage;
-            _messagesTypes[6149] = DungeonLeftMessage;
             _messagesTypes[6299] = DungeonKeyRingMessage;
             _messagesTypes[6296] = DungeonKeyRingUpdateMessage;
             _messagesTypes[6454] = UpdateMapPlayersAgressableStatusMessage;
@@ -1035,7 +1039,6 @@
             _messagesTypes[6466] = PrismSetSabotagedRefusedMessage;
             _messagesTypes[5895] = PrismFightDefenderAddMessage;
             _messagesTypes[5892] = PrismFightDefenderLeaveMessage;
-            _messagesTypes[5902] = PrismFightDefendersSwapMessage;
             _messagesTypes[5893] = PrismFightAttackerAddMessage;
             _messagesTypes[5897] = PrismFightAttackerRemoveMessage;
             _messagesTypes[6440] = PrismsListMessage;
@@ -1279,7 +1282,6 @@
             _messagesTypes[6509] = TreasureHuntDigRequestAnswerFailedMessage;
             _messagesTypes[6507] = TreasureHuntFlagRequestAnswerMessage;
             _messagesTypes[6491] = TreasureHuntAvailableRetryCountUpdateMessage;
-            _messagesTypes[6186] = PackRestrictedSubAreaMessage;
             _messagesTypes[1502] = PartsListMessage;
             _messagesTypes[1508] = PartInfoMessage;
             _messagesTypes[1511] = DownloadCurrentSpeedMessage;
@@ -1317,6 +1319,7 @@
             StoreDataManager.getInstance().registerClass(new AuthenticationTicketRefusedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AlreadyConnectedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AccountLoggingKickedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new ReloginTokenStatusMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ServerSettingsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ServerSessionConstantsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ServerOptionalFeaturesMessage(), true, true);
@@ -1325,6 +1328,7 @@
             StoreDataManager.getInstance().registerClass(new CheckFileRequestMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new RawDataMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new StartupActionsListMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new StartupActionAddMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new StartupActionFinishedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterCreationResultMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterDeletionErrorMessage(), true, true);
@@ -1332,12 +1336,12 @@
             StoreDataManager.getInstance().registerClass(new CharacterNameSuggestionFailureMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new BasicCharactersListMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharactersListMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new CharactersListWithRemodelingMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharactersListWithModificationsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharactersListErrorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterSelectedSuccessMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterSelectedForceMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterSelectedErrorMessage(), true, true);
-            StoreDataManager.getInstance().registerClass(new CharacterSelectedErrorMissingMapPackMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PopupWarningMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new BasicDateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new BasicTimeMessage(), true, true);
@@ -1384,7 +1388,6 @@
             StoreDataManager.getInstance().registerClass(new DebugClearHighlightCellsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DebugInClientMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DisplayNumericalValueMessage(), true, true);
-            StoreDataManager.getInstance().registerClass(new DisplayNumericalValueWithAgeBonusMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CurrentMapMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TeleportOnSameMapMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new MapFightCountMessage(), true, true);
@@ -1427,6 +1430,10 @@
             StoreDataManager.getInstance().registerClass(new GameFightJoinMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameFightSpectatorJoinMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameFightPlacementPossiblePositionsMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new GameFightPlacementSwapPositionsErrorMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new GameFightPlacementSwapPositionsOfferMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new GameFightPlacementSwapPositionsCancelledMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new GameFightPlacementSwapPositionsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameFightOptionStateUpdateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameFightUpdateTeamMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameFightRemoveTeamMemberMessage(), true, true);
@@ -1490,6 +1497,7 @@
             StoreDataManager.getInstance().registerClass(new GameActionFightMarkCellsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameActionFightUnmarkCellsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameActionFightTriggerGlyphTrapMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new GameActionFightActivateGlyphTrapMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameActionFightInvisibleObstacleMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameActionFightCarryCharacterMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameActionFightThrowCharacterMessage(), true, true);
@@ -1540,7 +1548,6 @@
             StoreDataManager.getInstance().registerClass(new ChallengeInfoMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ChallengeTargetUpdateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ChallengeResultMessage(), true, true);
-            StoreDataManager.getInstance().registerClass(new ChallengeDungeonStackedBonusMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AchievementListMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AchievementDetailsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AchievementDetailedListMessage(), true, true);
@@ -1549,8 +1556,6 @@
             StoreDataManager.getInstance().registerClass(new AchievementRewardSuccessMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AchievementRewardErrorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new FriendGuildWarnOnAchievementCompleteStateMessage(), true, true);
-            StoreDataManager.getInstance().registerClass(new DungeonEnteredMessage(), true, true);
-            StoreDataManager.getInstance().registerClass(new DungeonLeftMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DungeonKeyRingMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DungeonKeyRingUpdateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new UpdateMapPlayersAgressableStatusMessage(), true, true);
@@ -1674,7 +1679,6 @@
             StoreDataManager.getInstance().registerClass(new PrismSetSabotagedRefusedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PrismFightDefenderAddMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PrismFightDefenderLeaveMessage(), true, true);
-            StoreDataManager.getInstance().registerClass(new PrismFightDefendersSwapMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PrismFightAttackerAddMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PrismFightAttackerRemoveMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PrismsListMessage(), true, true);
@@ -1918,7 +1922,6 @@
             StoreDataManager.getInstance().registerClass(new TreasureHuntDigRequestAnswerFailedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TreasureHuntFlagRequestAnswerMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TreasureHuntAvailableRetryCountUpdateMessage(), true, true);
-            StoreDataManager.getInstance().registerClass(new PackRestrictedSubAreaMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PartsListMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PartInfoMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DownloadCurrentSpeedMessage(), true, true);
@@ -1926,7 +1929,7 @@
         }
 
 
-        public function parse(input:IDataInput, messageId:uint, messageLength:uint):INetworkMessage
+        public function parse(input:ICustomDataInput, messageId:uint, messageLength:uint):INetworkMessage
         {
             var messageType:Class = _messagesTypes[messageId];
             if (!(messageType))

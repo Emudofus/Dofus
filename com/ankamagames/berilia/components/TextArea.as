@@ -6,6 +6,9 @@
     import flash.utils.getQualifiedClassName;
     import flash.events.Event;
     import flash.events.MouseEvent;
+    import com.ankamagames.jerakine.utils.system.AirScanner;
+    import com.ankamagames.jerakine.utils.display.StageShareManager;
+    import flash.events.NativeWindowBoundsEvent;
     import com.ankamagames.jerakine.types.Uri;
     import com.ankamagames.jerakine.handlers.messages.mouse.MouseWheelMessage;
     import com.ankamagames.jerakine.messages.Message;
@@ -37,6 +40,10 @@
             _tText.multiline = true;
             _tText.mouseEnabled = true;
             _tText.mouseWheelEnabled = false;
+            if (AirScanner.hasAir())
+            {
+                StageShareManager.stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, this.onWindowResize);
+            };
         }
 
         public function get scrollBottomMargin():int
@@ -152,6 +159,20 @@
             this._bHideScroll = hideScroll;
         }
 
+        override public function get htmlText():String
+        {
+            return (super.htmlText);
+        }
+
+        override public function set htmlText(pHtmlText:String):void
+        {
+            super.htmlText = pHtmlText;
+            if (this._bFinalized)
+            {
+                this.updateScrollBar();
+            };
+        }
+
         override public function appendText(sTxt:String, style:String=null):void
         {
             super.appendText(sTxt, style);
@@ -192,6 +213,11 @@
             };
             this._sbScrollBar = null;
             _tText.removeEventListener(MouseEvent.MOUSE_WHEEL, this.onTextWheel);
+            if (AirScanner.hasAir())
+            {
+                StageShareManager.stage.removeEventListener(Event.FRAME_CONSTRUCTED, this.onFrameConstructed);
+                StageShareManager.stage.nativeWindow.removeEventListener(NativeWindowBoundsEvent.RESIZE, this.onWindowResize);
+            };
             super.remove();
         }
 
@@ -204,9 +230,14 @@
             return (super.process(msg));
         }
 
+        public function hideScrollBar():void
+        {
+            this._sbScrollBar.visible = false;
+        }
+
         private function updateScrollBar(reset:Boolean=false):void
         {
-            if ((_tText.numLines * _tText.getLineMetrics(0).height) < height)
+            if ((((_tText.scrollV == 1)) && ((_tText.bottomScrollV == _tText.numLines))))
             {
                 _tText.scrollV = 0;
                 this._sbScrollBar.disabled = true;
@@ -266,6 +297,20 @@
         private function onScroll(e:Event):void
         {
             _tText.scrollV = ((this._sbScrollBar.value / this._sbScrollBar.max) * _tText.maxScrollV);
+        }
+
+        private function onWindowResize(pEvent:NativeWindowBoundsEvent):void
+        {
+            StageShareManager.stage.addEventListener(Event.FRAME_CONSTRUCTED, this.onFrameConstructed);
+        }
+
+        private function onFrameConstructed(pEvent:Event):void
+        {
+            StageShareManager.stage.removeEventListener(Event.FRAME_CONSTRUCTED, this.onFrameConstructed);
+            if (((this._bFinalized) && (this._sbScrollBar)))
+            {
+                this.updateScrollBar();
+            };
         }
 
 

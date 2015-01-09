@@ -4,8 +4,9 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -33,7 +34,7 @@
             return (883);
         }
 
-        public function initChatServerWithObjectMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="", senderId:int=0, senderName:String="", senderAccountId:int=0, objects:Vector.<ObjectItem>=null):ChatServerWithObjectMessage
+        public function initChatServerWithObjectMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="", senderId:int=0, senderName:String="", senderAccountId:uint=0, objects:Vector.<ObjectItem>=null):ChatServerWithObjectMessage
         {
             super.initChatServerMessage(channel, content, timestamp, fingerprint, senderId, senderName, senderAccountId);
             this.objects = objects;
@@ -48,24 +49,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ChatServerWithObjectMessage(output);
         }
 
-        public function serializeAs_ChatServerWithObjectMessage(output:IDataOutput):void
+        public function serializeAs_ChatServerWithObjectMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_ChatServerMessage(output);
             output.writeShort(this.objects.length);
@@ -77,12 +78,12 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ChatServerWithObjectMessage(input);
         }
 
-        public function deserializeAs_ChatServerWithObjectMessage(input:IDataInput):void
+        public function deserializeAs_ChatServerWithObjectMessage(input:ICustomDataInput):void
         {
             var _item1:ObjectItem;
             super.deserialize(input);

@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class NpcGenericActionRequestMessage extends NetworkMessage implements INetworkMessage 
@@ -45,10 +46,10 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             if (HASH_FUNCTION != null)
             {
                 HASH_FUNCTION(data);
@@ -56,17 +57,17 @@
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_NpcGenericActionRequestMessage(output);
         }
 
-        public function serializeAs_NpcGenericActionRequestMessage(output:IDataOutput):void
+        public function serializeAs_NpcGenericActionRequestMessage(output:ICustomDataOutput):void
         {
             output.writeInt(this.npcId);
             if (this.npcActionId < 0)
@@ -77,12 +78,12 @@
             output.writeInt(this.npcMapId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_NpcGenericActionRequestMessage(input);
         }
 
-        public function deserializeAs_NpcGenericActionRequestMessage(input:IDataInput):void
+        public function deserializeAs_NpcGenericActionRequestMessage(input:ICustomDataInput):void
         {
             this.npcId = input.readInt();
             this.npcActionId = input.readByte();

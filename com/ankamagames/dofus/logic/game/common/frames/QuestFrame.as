@@ -222,7 +222,7 @@
             var _local_54:TreasureHuntMessage;
             var _local_55:MapPosition;
             var _local_56:TreasureHuntWrapper;
-            var i:int;
+            var _local_57:int;
             var _local_58:TreasureHuntAvailableRetryCountUpdateMessage;
             var _local_59:TreasureHuntFinishedMessage;
             var _local_60:TreasureHuntGiveUpRequestAction;
@@ -286,11 +286,11 @@
                             {
                                 dialogParams = new Array();
                                 nbParams = obj.dialogParams.length;
-                                i = 0;
-                                while (i < nbParams)
+                                _local_57 = 0;
+                                while (_local_57 < nbParams)
                                 {
-                                    dialogParams.push(obj.dialogParams[i]);
-                                    i++;
+                                    dialogParams.push(obj.dialogParams[_local_57]);
+                                    _local_57++;
                                 };
                             };
                             this._questsInformations[stepsInfos.questId].objectivesDialogParams[obj.objectiveId] = dialogParams;
@@ -618,14 +618,14 @@
                     };
                     _local_56 = TreasureHuntWrapper.create(_local_54.questType, _local_54.startMapId, _local_54.checkPointCurrent, _local_54.checkPointTotal, _local_54.totalStepCount, _local_54.availableRetryCount, _local_54.knownStepsList, _local_54.flags);
                     this._treasureHunts[_local_54.questType] = _local_56;
-                    i = 0;
+                    _local_57 = 0;
                     for each (fl in _local_54.flags)
                     {
-                        i++;
+                        _local_57++;
                         _local_55 = MapPosition.getMapPositionById(fl.mapId);
                         if (_local_55.worldMap > -1)
                         {
-                            KernelEventsManager.getInstance().processCallback(HookList.AddMapFlag, ((("flag_hunt_" + _local_54.questType) + "_") + i), (((((((I18n.getUiText(("ui.treasureHunt.huntType" + _local_54.questType)) + " - Indice n°") + i) + " [") + _local_55.posX) + ",") + _local_55.posY) + "]"), _local_55.worldMap, _local_55.posX, _local_55.posY, this._flagColors[fl.state], false, false, false);
+                            KernelEventsManager.getInstance().processCallback(HookList.AddMapFlag, ((("flag_hunt_" + _local_54.questType) + "_") + _local_57), (((((((I18n.getUiText(("ui.treasureHunt.huntType" + _local_54.questType)) + " - Indice n°") + _local_57) + " [") + _local_55.posX) + ",") + _local_55.posY) + "]"), _local_55.worldMap, _local_55.posX, _local_55.posY, this._flagColors[fl.state], false, false, false);
                         };
                     };
                     KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntUpdate, _local_56.questType);

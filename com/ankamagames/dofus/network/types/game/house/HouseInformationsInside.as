@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.house
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class HouseInformationsInside implements INetworkType 
     {
@@ -49,12 +49,12 @@
             this.isLocked = false;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_HouseInformationsInside(output);
         }
 
-        public function serializeAs_HouseInformationsInside(output:IDataOutput):void
+        public function serializeAs_HouseInformationsInside(output:ICustomDataOutput):void
         {
             if (this.houseId < 0)
             {
@@ -65,7 +65,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element modelId.")));
             };
-            output.writeShort(this.modelId);
+            output.writeVarShort(this.modelId);
             output.writeInt(this.ownerId);
             output.writeUTF(this.ownerName);
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))
@@ -78,27 +78,27 @@
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element worldY.")));
             };
             output.writeShort(this.worldY);
-            if ((((this.price < 0)) || ((this.price > 0xFFFFFFFF))))
+            if (this.price < 0)
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element price.")));
             };
-            output.writeUnsignedInt(this.price);
+            output.writeInt(this.price);
             output.writeBoolean(this.isLocked);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_HouseInformationsInside(input);
         }
 
-        public function deserializeAs_HouseInformationsInside(input:IDataInput):void
+        public function deserializeAs_HouseInformationsInside(input:ICustomDataInput):void
         {
             this.houseId = input.readInt();
             if (this.houseId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.houseId) + ") on element of HouseInformationsInside.houseId.")));
             };
-            this.modelId = input.readShort();
+            this.modelId = input.readVarUhShort();
             if (this.modelId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element of HouseInformationsInside.modelId.")));
@@ -115,8 +115,8 @@
             {
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element of HouseInformationsInside.worldY.")));
             };
-            this.price = input.readUnsignedInt();
-            if ((((this.price < 0)) || ((this.price > 0xFFFFFFFF))))
+            this.price = input.readInt();
+            if (this.price < 0)
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element of HouseInformationsInside.price.")));
             };

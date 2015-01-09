@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import __AS3__.vec.Vector;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -50,24 +51,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeBidPriceForSellerMessage(output);
         }
 
-        public function serializeAs_ExchangeBidPriceForSellerMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeBidPriceForSellerMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_ExchangeBidPriceMessage(output);
             output.writeBoolean(this.allIdentical);
@@ -79,17 +80,17 @@
                 {
                     throw (new Error((("Forbidden value (" + this.minimalPrices[_i2]) + ") on element 2 (starting at 1) of minimalPrices.")));
                 };
-                output.writeInt(this.minimalPrices[_i2]);
+                output.writeVarInt(this.minimalPrices[_i2]);
                 _i2++;
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeBidPriceForSellerMessage(input);
         }
 
-        public function deserializeAs_ExchangeBidPriceForSellerMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeBidPriceForSellerMessage(input:ICustomDataInput):void
         {
             var _val2:uint;
             super.deserialize(input);
@@ -98,7 +99,7 @@
             var _i2:uint;
             while (_i2 < _minimalPricesLen)
             {
-                _val2 = input.readInt();
+                _val2 = input.readVarUhInt();
                 if (_val2 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val2) + ") on elements of minimalPrices.")));

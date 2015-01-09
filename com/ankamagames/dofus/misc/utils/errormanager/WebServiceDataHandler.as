@@ -9,8 +9,6 @@
     import com.ankamagames.jerakine.logger.Log;
     import flash.utils.getQualifiedClassName;
     import com.ankamagames.jerakine.utils.errors.SingletonError;
-    import com.ankamagames.dofus.BuildInfos;
-    import com.ankamagames.dofus.network.enums.BuildTypeEnum;
     import com.ankamagames.jerakine.messages.Frame;
     import flash.display.BitmapData;
     import flash.geom.Matrix;
@@ -23,6 +21,7 @@
     import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
     import com.ankamagames.dofus.kernel.Kernel;
     import flash.events.Event;
+    import com.ankamagames.dofus.misc.utils.RpcServiceCenter;
     import flash.events.IOErrorEvent;
     import flash.utils.Timer;
     import flash.events.TimerEvent;
@@ -39,7 +38,6 @@
         public static const ALL_DATA_SENT:String = "everythings has been sent";
         private static const MIN_DELAY:int = 30;
         private static const MAX_DELAY:int = ((5 * 60) - MIN_DELAY);//270
-        private static var BASE_URL:String = "http://api.ankama.";
 
         private var _log:Logger;
         private var _exceptionsList:Vector.<DataExceptionModel>;
@@ -58,14 +56,6 @@
             if (pPrivate == null)
             {
                 throw (new SingletonError());
-            };
-            if ((((((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE)) || ((BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA)))) || ((BuildInfos.BUILD_TYPE == BuildTypeEnum.ALPHA))))
-            {
-                BASE_URL = (BASE_URL + "com");
-            }
-            else
-            {
-                BASE_URL = (BASE_URL + "lan");
             };
         }
 
@@ -231,7 +221,7 @@
 
         private function initWebService():void
         {
-            var url:String = (BASE_URL + "/dofus/logger.json");
+            var url:String = (RpcServiceCenter.getInstance().apiDomain + "/dofus/logger.json");
             this._webService = new RpcServiceManager(url, "json");
             this._webService.addEventListener(Event.COMPLETE, this.onDataSavedComplete);
             this._webService.addEventListener(IOErrorEvent.IO_ERROR, this.onDataSavedError);

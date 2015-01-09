@@ -33,6 +33,7 @@
         public var creatureBoneId:int;
         public var canBePushed:Boolean;
         public var fastAnimsFun:Boolean;
+        public var canSwitchPos:Boolean;
         private var _name:String;
 
 

@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import com.ankamagames.dofus.network.types.game.context.roleplay.AllianceInformations;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class AllianceMembershipMessage extends AllianceJoinedMessage implements INetworkMessage 
@@ -38,34 +39,34 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AllianceMembershipMessage(output);
         }
 
-        public function serializeAs_AllianceMembershipMessage(output:IDataOutput):void
+        public function serializeAs_AllianceMembershipMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_AllianceJoinedMessage(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AllianceMembershipMessage(input);
         }
 
-        public function deserializeAs_AllianceMembershipMessage(input:IDataInput):void
+        public function deserializeAs_AllianceMembershipMessage(input:ICustomDataInput):void
         {
             super.deserialize(input);
         }

@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class MountFeedRequestMessage extends NetworkMessage implements INetworkMessage 
@@ -48,62 +49,62 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_MountFeedRequestMessage(output);
         }
 
-        public function serializeAs_MountFeedRequestMessage(output:IDataOutput):void
+        public function serializeAs_MountFeedRequestMessage(output:ICustomDataOutput):void
         {
             if ((((this.mountUid < 0)) || ((this.mountUid > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.mountUid) + ") on element mountUid.")));
             };
-            output.writeDouble(this.mountUid);
+            output.writeVarLong(this.mountUid);
             output.writeByte(this.mountLocation);
             if (this.mountFoodUid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.mountFoodUid) + ") on element mountFoodUid.")));
             };
-            output.writeInt(this.mountFoodUid);
+            output.writeVarInt(this.mountFoodUid);
             if (this.quantity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.quantity) + ") on element quantity.")));
             };
-            output.writeInt(this.quantity);
+            output.writeVarInt(this.quantity);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_MountFeedRequestMessage(input);
         }
 
-        public function deserializeAs_MountFeedRequestMessage(input:IDataInput):void
+        public function deserializeAs_MountFeedRequestMessage(input:ICustomDataInput):void
         {
-            this.mountUid = input.readDouble();
+            this.mountUid = input.readVarUhLong();
             if ((((this.mountUid < 0)) || ((this.mountUid > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.mountUid) + ") on element of MountFeedRequestMessage.mountUid.")));
             };
             this.mountLocation = input.readByte();
-            this.mountFoodUid = input.readInt();
+            this.mountFoodUid = input.readVarUhInt();
             if (this.mountFoodUid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.mountFoodUid) + ") on element of MountFeedRequestMessage.mountFoodUid.")));
             };
-            this.quantity = input.readInt();
+            this.quantity = input.readVarUhInt();
             if (this.quantity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.quantity) + ") on element of MountFeedRequestMessage.quantity.")));

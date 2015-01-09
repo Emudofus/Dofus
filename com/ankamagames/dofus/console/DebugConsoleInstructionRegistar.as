@@ -58,7 +58,7 @@
             console.addHandler(["framelist", "framepriority"], new FrameInstructionHandler());
             console.addHandler(["addmovingcharacter", "setanimation", "setdirection", "memorylog", "bot-spectator", "bot-fight", "tiphon-error", "fpsmanager", "tacticmode"], new BenchmarkInstructionHandler());
             console.addHandler(["sendaction", "listactions", "sendhook"], new ActionsInstructionHandler());
-            console.addHandler(["debuglos", "tracepath", "debugcellsinline"], new IAInstructionHandler());
+            console.addHandler(["debuglos", "calculatepath", "tracepath", "debugcellsinline"], new IAInstructionHandler());
             console.addHandler(["setspellscriptparam", "setspellscript"], new FightInstructionHandler());
             console.addHandler(["playmusic", "stopmusic", "playambiance", "stopambiance", "addsoundinplaylist", "stopplaylist", "playplaylist", "activesounds", "adduisoundelement"], new SoundInstructionHandler());
             console.addHandler(["floodlivingobject"], new LivingObjectInstructionHandler());

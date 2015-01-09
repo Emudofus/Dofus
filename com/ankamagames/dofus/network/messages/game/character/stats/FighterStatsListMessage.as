@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class FighterStatsListMessage extends NetworkMessage implements INetworkMessage 
@@ -45,34 +46,34 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FighterStatsListMessage(output);
         }
 
-        public function serializeAs_FighterStatsListMessage(output:IDataOutput):void
+        public function serializeAs_FighterStatsListMessage(output:ICustomDataOutput):void
         {
             this.stats.serializeAs_CharacterCharacteristicsInformations(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FighterStatsListMessage(input);
         }
 
-        public function deserializeAs_FighterStatsListMessage(input:IDataInput):void
+        public function deserializeAs_FighterStatsListMessage(input:ICustomDataInput):void
         {
             this.stats = new CharacterCharacteristicsInformations();
             this.stats.deserialize(input);

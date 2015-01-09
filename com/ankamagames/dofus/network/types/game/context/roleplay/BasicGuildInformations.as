@@ -2,8 +2,8 @@
 {
     import com.ankamagames.dofus.network.types.game.social.AbstractSocialGroupInfos;
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class BasicGuildInformations extends AbstractSocialGroupInfos implements INetworkType 
     {
@@ -32,31 +32,31 @@
             this.guildName = "";
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_BasicGuildInformations(output);
         }
 
-        public function serializeAs_BasicGuildInformations(output:IDataOutput):void
+        public function serializeAs_BasicGuildInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_AbstractSocialGroupInfos(output);
             if (this.guildId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.guildId) + ") on element guildId.")));
             };
-            output.writeInt(this.guildId);
+            output.writeVarInt(this.guildId);
             output.writeUTF(this.guildName);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_BasicGuildInformations(input);
         }
 
-        public function deserializeAs_BasicGuildInformations(input:IDataInput):void
+        public function deserializeAs_BasicGuildInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.guildId = input.readInt();
+            this.guildId = input.readVarUhInt();
             if (this.guildId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.guildId) + ") on element of BasicGuildInformations.guildId.")));

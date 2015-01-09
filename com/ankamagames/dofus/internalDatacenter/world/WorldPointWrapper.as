@@ -18,10 +18,10 @@
         public var outdoorMapId:uint;
         private var _outdoorX:int;
         private var _outdoorY:int;
-        private var _topNeighbourId:int;
-        private var _bottomNeighbourId:int;
-        private var _leftNeighbourId:int;
-        private var _rightNeighbourId:int;
+        private var _topNeighbourId:int = -1;
+        private var _bottomNeighbourId:int = -1;
+        private var _leftNeighbourId:int = -1;
+        private var _rightNeighbourId:int = -1;
 
         public function WorldPointWrapper(mapid:uint, fixedOutdoor:Boolean=false, outx:int=0, outy:int=0)
         {
@@ -49,7 +49,7 @@
                 };
             };
             var dmc:DataMapContainer = MapDisplayManager.getInstance().getDataMapContainer();
-            if (((dmc) && (dmc.dataMap)))
+            if (((((dmc) && (dmc.dataMap))) && ((dmc.dataMap.id == mapid))))
             {
                 this._topNeighbourId = dmc.dataMap.topNeighbourId;
                 this._bottomNeighbourId = dmc.dataMap.bottomNeighbourId;

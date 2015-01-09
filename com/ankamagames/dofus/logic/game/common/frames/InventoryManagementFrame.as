@@ -858,6 +858,7 @@
                             apErrorMsg = I18n.getUiText("ui.shop.preview.error");
                             break;
                     };
+                    KernelEventsManager.getInstance().processCallback(InventoryHookList.AccessoryPreview, null);
                     if (apErrorMsg)
                     {
                         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, apErrorMsg, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());

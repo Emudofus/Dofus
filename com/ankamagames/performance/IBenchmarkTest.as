@@ -4,6 +4,7 @@
     {
 
         function run():void;
+        function cancel():void;
         function getResults():String;
 
     }

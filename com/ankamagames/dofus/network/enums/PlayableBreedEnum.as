@@ -19,6 +19,7 @@
         public static const Roublard:int = 13;
         public static const Zobal:int = 14;
         public static const Steamer:int = 15;
+        public static const Eliatrope:int = 16;
 
 
     }

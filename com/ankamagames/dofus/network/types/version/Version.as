@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.version
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class Version implements INetworkType 
     {
@@ -43,12 +43,12 @@
             this.buildType = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_Version(output);
         }
 
-        public function serializeAs_Version(output:IDataOutput):void
+        public function serializeAs_Version(output:ICustomDataOutput):void
         {
             if (this.major < 0)
             {
@@ -78,12 +78,12 @@
             output.writeByte(this.buildType);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_Version(input);
         }
 
-        public function deserializeAs_Version(input:IDataInput):void
+        public function deserializeAs_Version(input:ICustomDataInput):void
         {
             this.major = input.readByte();
             if (this.major < 0)

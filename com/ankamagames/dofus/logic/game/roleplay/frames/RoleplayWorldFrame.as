@@ -4,8 +4,6 @@
     import com.ankamagames.jerakine.logger.Logger;
     import com.ankamagames.jerakine.logger.Log;
     import flash.utils.getQualifiedClassName;
-    import com.ankamagames.jerakine.types.DataStoreType;
-    import flash.utils.Timer;
     import flash.geom.Point;
     import com.ankamagames.jerakine.data.XmlConfig;
     import com.ankamagames.berilia.components.Label;
@@ -15,10 +13,6 @@
     import flash.utils.Dictionary;
     import com.ankamagames.jerakine.types.enums.Priority;
     import com.ankamagames.dofus.kernel.Kernel;
-    import com.ankamagames.jerakine.utils.system.AirScanner;
-    import com.ankamagames.jerakine.types.enums.DataStoreEnum;
-    import com.ankamagames.jerakine.managers.StoreDataManager;
-    import flash.events.TimerEvent;
     import com.ankamagames.atouin.managers.FrustumManager;
     import com.ankamagames.berilia.frames.ShortcutsFrame;
     import com.ankamagames.jerakine.utils.display.StageShareManager;
@@ -27,6 +21,7 @@
     import com.ankamagames.atouin.messages.AdjacentMapOverMessage;
     import com.ankamagames.atouin.types.GraphicCell;
     import com.ankamagames.berilia.types.data.LinkedCursorData;
+    import com.ankamagames.dofus.internalDatacenter.world.WorldPointWrapper;
     import com.ankamagames.dofus.datacenter.world.SubArea;
     import com.ankamagames.jerakine.entities.messages.EntityMouseOverMessage;
     import com.ankamagames.jerakine.entities.interfaces.IInteractive;
@@ -48,6 +43,7 @@
     import com.ankamagames.atouin.messages.CellClickMessage;
     import com.ankamagames.atouin.messages.AdjacentMapClickMessage;
     import com.ankamagames.jerakine.entities.interfaces.IEntity;
+    import com.ankamagames.dofus.datacenter.world.MapPosition;
     import flash.display.DisplayObject;
     import com.ankamagames.tiphon.display.TiphonSprite;
     import com.ankamagames.jerakine.utils.display.Rectangle2;
@@ -73,8 +69,8 @@
     import com.ankamagames.atouin.messages.AdjacentMapOutMessage;
     import com.ankamagames.atouin.utils.CellIdConverter;
     import com.ankamagames.atouin.managers.InteractiveCellManager;
-    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
     import com.ankamagames.atouin.managers.MapDisplayManager;
+    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
     import com.ankamagames.jerakine.data.I18n;
     import com.ankamagames.atouin.AtouinConstants;
     import com.ankamagames.atouin.Atouin;
@@ -119,6 +115,9 @@
     import com.ankamagames.dofus.logic.game.common.actions.guild.GuildFightJoinRequestAction;
     import com.ankamagames.jerakine.entities.interfaces.IMovable;
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+    import com.ankamagames.jerakine.utils.system.SystemManager;
+    import com.ankamagames.jerakine.enum.OperatingSystem;
+    import com.ankamagames.jerakine.utils.system.AirScanner;
     import com.ankamagames.atouin.utils.DataMapProvider;
     import com.ankamagames.dofus.misc.lists.HookList;
     import com.ankamagames.dofus.logic.game.fight.actions.ShowAllNamesAction;
@@ -130,21 +129,11 @@
     import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeOnHumanVendorRequestMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyInvitationRequestMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.HouseKickIndoorMerchantRequestMessage;
-    import com.ankamagames.dofus.types.enums.LanguageEnum;
-    import com.ankamagames.jerakine.utils.system.SystemManager;
-    import com.ankamagames.jerakine.enum.WebBrowserEnum;
-    import flash.external.ExternalInterface;
-    import flash.net.navigateToURL;
-    import flash.net.URLRequest;
 
     public class RoleplayWorldFrame implements Frame 
     {
 
         protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RoleplayWorldFrame));
-        private static var _streamingFeedbackDelay:uint = 900000;
-        private static var _dataStoreType:DataStoreType;
-        private static var _streamingFeebackTimer:Timer;
-        private static var _feedbackPopupOnNextPush:Boolean = false;
         private static const NO_CURSOR:int = -1;
         private static const FIGHT_CURSOR:int = 3;
         private static const NPC_CURSOR:int = 1;
@@ -215,32 +204,6 @@
 
         public function pushed():Boolean
         {
-            if (AirScanner.isStreamingVersion())
-            {
-                if (!(_dataStoreType))
-                {
-                    _dataStoreType = new DataStoreType("betaStreaming", true, DataStoreEnum.LOCATION_LOCAL, DataStoreEnum.BIND_COMPUTER);
-                };
-                if (((_streamingFeebackTimer) && (_feedbackPopupOnNextPush)))
-                {
-                    _streamingFeebackTimer.reset();
-                    _streamingFeebackTimer.delay = 30000;
-                    _streamingFeebackTimer.start();
-                }
-                else
-                {
-                    if (((!(_streamingFeebackTimer)) && (!(StoreDataManager.getInstance().getData(_dataStoreType, "hasClickedFeedbackLink")))))
-                    {
-                        if (StoreDataManager.getInstance().getData(_dataStoreType, "hasRefusedToOpenFeedbackLink"))
-                        {
-                            _streamingFeedbackDelay = 3600000;
-                        };
-                        _streamingFeebackTimer = new Timer(_streamingFeedbackDelay, 1);
-                        _streamingFeebackTimer.addEventListener(TimerEvent.TIMER_COMPLETE, this.openFeedbackPopup);
-                        _streamingFeebackTimer.start();
-                    };
-                };
-            };
             FrustumManager.getInstance().setBorderInteraction(true);
             this._allowOnlyCharacterInteraction = false;
             this.cellClickEnabled = true;
@@ -257,10 +220,7 @@
                     Kernel.getWorker().removeFrame(_monstersInfoFrame);
                 };
             };
-            if (AirScanner.hasAir())
-            {
-                StageShareManager.stage.nativeWindow.addEventListener(Event.DEACTIVATE, this.onWindowDeactivate);
-            };
+            StageShareManager.stage.addEventListener(Event.DEACTIVATE, this.onWindowDeactivate);
             if (this._texturesReady)
             {
                 return (true);
@@ -302,51 +262,53 @@
             var _local_4:GraphicCell;
             var _local_5:Point;
             var _local_6:LinkedCursorData;
-            var _local_7:int;
-            var _local_8:SubArea;
-            var _local_9:Boolean;
-            var _local_10:int;
+            var _local_7:WorldPointWrapper;
+            var _local_8:int;
+            var _local_9:SubArea;
+            var _local_10:Boolean;
             var _local_11:int;
-            var _local_12:String;
-            var _local_13:Point;
-            var _local_14:EntityMouseOverMessage;
-            var _local_15:String;
-            var _local_16:IInteractive;
-            var _local_17:AnimatedCharacter;
-            var _local_18:*;
-            var _local_19:IRectangle;
-            var _local_20:String;
-            var _local_21:String;
-            var _local_22:Number;
-            var _local_23:MouseRightClickMessage;
-            var _local_24:Object;
-            var _local_25:IInteractive;
-            var _local_26:EntityMouseOutMessage;
-            var _local_27:EntityClickMessage;
-            var _local_28:IInteractive;
-            var _local_29:GameContextActorInformations;
-            var _local_30:Boolean;
-            var _local_31:InteractiveElementActivationMessage;
-            var _local_32:RoleplayInteractivesFrame;
-            var _local_33:InteractiveElementMouseOverMessage;
-            var _local_34:Object;
-            var _local_35:String;
-            var _local_36:String;
-            var _local_37:InteractiveElement;
-            var _local_38:InteractiveElementSkill;
-            var _local_39:Interactive;
-            var _local_40:uint;
-            var _local_41:RoleplayEntitiesFrame;
-            var _local_42:HouseWrapper;
-            var _local_43:Rectangle;
-            var _local_44:InteractiveElementMouseOutMessage;
-            var _local_45:ShowMonstersInfoAction;
-            var _local_46:MouseUpMessage;
-            var _local_47:ShortcutsFrame;
+            var _local_12:int;
+            var _local_13:String;
+            var _local_14:String;
+            var _local_15:Point;
+            var _local_16:EntityMouseOverMessage;
+            var _local_17:String;
+            var _local_18:IInteractive;
+            var _local_19:AnimatedCharacter;
+            var _local_20:*;
+            var _local_21:IRectangle;
+            var _local_22:String;
+            var _local_23:String;
+            var _local_24:Number;
+            var _local_25:MouseRightClickMessage;
+            var _local_26:Object;
+            var _local_27:IInteractive;
+            var _local_28:EntityMouseOutMessage;
+            var _local_29:EntityClickMessage;
+            var _local_30:IInteractive;
+            var _local_31:GameContextActorInformations;
+            var _local_32:Boolean;
+            var _local_33:InteractiveElementActivationMessage;
+            var _local_34:RoleplayInteractivesFrame;
+            var _local_35:InteractiveElementMouseOverMessage;
+            var _local_36:Object;
+            var _local_37:String;
+            var _local_38:String;
+            var _local_39:InteractiveElement;
+            var _local_40:InteractiveElementSkill;
+            var _local_41:Interactive;
+            var _local_42:uint;
+            var _local_43:RoleplayEntitiesFrame;
+            var _local_44:HouseWrapper;
+            var _local_45:Rectangle;
+            var _local_46:InteractiveElementMouseOutMessage;
+            var _local_47:ShowMonstersInfoAction;
+            var _local_48:MouseUpMessage;
+            var _local_49:ShortcutsFrame;
             var climsg:CellClickMessage;
             var amcmsg:AdjacentMapClickMessage;
             var playedEntity:IEntity;
-            var text:String;
+            var mapPos:MapPosition;
             var text2:String;
             var target2:Rectangle;
             var param:Object;
@@ -359,19 +321,19 @@
             var r1:Rectangle;
             var r2:Rectangle2;
             var fight:FightTeam;
-            var _local_64:AllianceInformations;
-            var _local_65:int;
-            var _local_66:GameRolePlayTaxCollectorInformations;
-            var _local_67:GuildInformations;
-            var _local_68:GuildWrapper;
-            var _local_69:AllianceWrapper;
-            var _local_70:GameRolePlayNpcInformations;
-            var _local_71:Npc;
-            var _local_72:AllianceFrame;
-            var _local_73:GameRolePlayTreasureHintInformations;
-            var _local_74:Npc;
-            var _local_75:uint;
-            var _local_76:uint;
+            var _local_66:AllianceInformations;
+            var _local_67:int;
+            var _local_68:GameRolePlayTaxCollectorInformations;
+            var _local_69:GuildInformations;
+            var _local_70:GuildWrapper;
+            var _local_71:AllianceWrapper;
+            var _local_72:GameRolePlayNpcInformations;
+            var _local_73:Npc;
+            var _local_74:AllianceFrame;
+            var _local_75:GameRolePlayTreasureHintInformations;
+            var _local_76:Npc;
+            var _local_77:uint;
+            var _local_78:uint;
             var rcf:RoleplayContextFrame;
             var actorInfos:GameContextActorInformations;
             var menu:Object;
@@ -385,10 +347,10 @@
             var team:FightTeam;
             var fighter:FightTeamMemberInformations;
             var guild:GuildWrapper;
-            var _local_90:IEntity;
-            var _local_91:Array;
-            var _local_92:int;
-            var _local_93:MapPoint;
+            var _local_92:IEntity;
+            var _local_93:Array;
+            var _local_94:int;
+            var _local_95:MapPoint;
             var mp:MapPoint;
             var elem:Object;
             var enabledSkills:String;
@@ -461,104 +423,123 @@
                     _local_4 = InteractiveCellManager.getInstance().getCell(_local_2.cellId);
                     _local_5 = _local_4.parent.localToGlobal(new Point(_local_4.x, _local_4.y));
                     _local_6 = new LinkedCursorData();
+                    if ((((((((PlayedCharacterManager.getInstance().currentMap.leftNeighbourId == -1)) && ((PlayedCharacterManager.getInstance().currentMap.rightNeighbourId == -1)))) && ((PlayedCharacterManager.getInstance().currentMap.topNeighbourId == -1)))) && ((PlayedCharacterManager.getInstance().currentMap.bottomNeighbourId == -1))))
+                    {
+                        _local_7 = new WorldPointWrapper(MapDisplayManager.getInstance().getDataMapContainer().id);
+                    }
+                    else
+                    {
+                        _local_7 = PlayedCharacterManager.getInstance().currentMap;
+                    };
                     if (_local_2.direction == DirectionsEnum.RIGHT)
                     {
-                        _local_7 = MapDisplayManager.getInstance().getDataMapContainer().dataMap.rightNeighbourId;
+                        _local_8 = _local_7.rightNeighbourId;
                     }
                     else
                     {
                         if (_local_2.direction == DirectionsEnum.DOWN)
                         {
-                            _local_7 = MapDisplayManager.getInstance().getDataMapContainer().dataMap.bottomNeighbourId;
+                            _local_8 = _local_7.bottomNeighbourId;
                         }
                         else
                         {
                             if (_local_2.direction == DirectionsEnum.LEFT)
                             {
-                                _local_7 = MapDisplayManager.getInstance().getDataMapContainer().dataMap.leftNeighbourId;
+                                _local_8 = _local_7.leftNeighbourId;
                             }
                             else
                             {
                                 if (_local_2.direction == DirectionsEnum.UP)
                                 {
-                                    _local_7 = MapDisplayManager.getInstance().getDataMapContainer().dataMap.topNeighbourId;
+                                    _local_8 = _local_7.topNeighbourId;
                                 };
                             };
                         };
                     };
-                    _local_8 = SubArea.getSubAreaByMapId(_local_7);
-                    _local_9 = false;
-                    _local_10 = 0;
+                    _local_9 = SubArea.getSubAreaByMapId(_local_8);
+                    _local_10 = false;
                     _local_11 = 0;
-                    if (((_local_8) && (!((_local_8.id == PlayedCharacterManager.getInstance().currentSubArea.id)))))
+                    _local_12 = 0;
+                    if (_local_9)
                     {
-                        _local_9 = true;
-                        text = I18n.getUiText("ui.common.toward", [_local_8.name]);
-                        text2 = ((I18n.getUiText("ui.common.level") + " ") + _local_8.level);
-                        this._mouseLabel.text = (((text.length > text2.length)) ? text : text2);
-                        _local_12 = ((text + "\n") + text2);
+                        if (_local_9.id != PlayedCharacterManager.getInstance().currentSubArea.id)
+                        {
+                            _local_10 = true;
+                            _local_14 = I18n.getUiText("ui.common.toward", [_local_9.name]);
+                            text2 = ((I18n.getUiText("ui.common.level") + " ") + _local_9.level);
+                        };
+                        mapPos = MapPosition.getMapPositionById(_local_8);
+                        if (((mapPos.showNameOnFingerpost) && (mapPos.name)))
+                        {
+                            _local_14 = I18n.getUiText("ui.common.toward", [mapPos.name]);
+                        };
+                        if (((_local_14) && (!((_local_14 == "")))))
+                        {
+                            this._mouseLabel.text = (((_local_14.length > text2.length)) ? _local_14 : text2);
+                            _local_13 = ((_local_14 + "\n") + text2);
+                        };
                     };
                     switch (_local_2.direction)
                     {
                         case DirectionsEnum.LEFT:
-                            _local_6.sprite = ((_local_9) ? this._mouseLeftBlue : this._mouseLeft);
+                            _local_6.sprite = ((_local_10) ? this._mouseLeftBlue : this._mouseLeft);
                             _local_6.lockX = true;
                             _local_6.sprite.x = (_local_2.zone.x + (_local_2.zone.width / 2));
                             _local_6.offset = new Point(0, 0);
                             _local_6.lockY = true;
                             _local_6.sprite.y = (_local_5.y + ((AtouinConstants.CELL_HEIGHT / 2) * Atouin.getInstance().currentZoom));
-                            if (_local_9)
+                            if (_local_10)
                             {
-                                _local_10 = 0;
-                                _local_11 = (_local_6.sprite.height / 2);
+                                _local_11 = 0;
+                                _local_12 = (_local_6.sprite.height / 2);
                             };
                             break;
                         case DirectionsEnum.UP:
-                            _local_6.sprite = ((_local_9) ? this._mouseTopBlue : this._mouseTop);
+                            _local_6.sprite = ((_local_10) ? this._mouseTopBlue : this._mouseTop);
                             _local_6.lockY = true;
                             _local_6.sprite.y = (_local_2.zone.y + (_local_2.zone.height / 2));
                             _local_6.offset = new Point(0, 0);
                             _local_6.lockX = true;
                             _local_6.sprite.x = (_local_5.x + ((AtouinConstants.CELL_WIDTH / 2) * Atouin.getInstance().currentZoom));
-                            if (_local_9)
+                            if (_local_10)
                             {
-                                _local_10 = (-(this._mouseLabel.textWidth) / 2);
-                                _local_11 = (_local_6.sprite.height + 5);
+                                _local_11 = (-(this._mouseLabel.textWidth) / 2);
+                                _local_12 = (_local_6.sprite.height + 5);
                             };
                             break;
                         case DirectionsEnum.DOWN:
-                            _local_6.sprite = ((_local_9) ? this._mouseBottomBlue : this._mouseBottom);
+                            _local_6.sprite = ((_local_10) ? this._mouseBottomBlue : this._mouseBottom);
                             _local_6.lockY = true;
                             _local_6.sprite.y = _local_2.zone.getBounds(_local_2.zone).top;
                             _local_6.offset = new Point(0, 0);
                             _local_6.lockX = true;
                             _local_6.sprite.x = (_local_5.x + ((AtouinConstants.CELL_WIDTH / 2) * Atouin.getInstance().currentZoom));
-                            if (_local_9)
+                            if (_local_10)
                             {
-                                _local_10 = (-(this._mouseLabel.textWidth) / 2);
-                                _local_11 = ((-(_local_6.sprite.height) - this._mouseLabel.textHeight) - 34);
+                                _local_11 = (-(this._mouseLabel.textWidth) / 2);
+                                _local_12 = ((-(_local_6.sprite.height) - this._mouseLabel.textHeight) - 34);
                             };
                             break;
                         case DirectionsEnum.RIGHT:
-                            _local_6.sprite = ((_local_9) ? this._mouseRightBlue : this._mouseRight);
+                            _local_6.sprite = ((_local_10) ? this._mouseRightBlue : this._mouseRight);
                             _local_6.lockX = true;
                             _local_6.sprite.x = (_local_2.zone.getBounds(_local_2.zone).left + (_local_2.zone.width / 2));
                             _local_6.offset = new Point(0, 0);
                             _local_6.lockY = true;
                             _local_6.sprite.y = (_local_5.y + ((AtouinConstants.CELL_HEIGHT / 2) * Atouin.getInstance().currentZoom));
-                            if (_local_9)
+                            if (_local_10)
                             {
-                                _local_10 = -(this._mouseLabel.textWidth);
-                                _local_11 = (_local_6.sprite.height / 2);
+                                _local_11 = -(this._mouseLabel.textWidth);
+                                _local_12 = (_local_6.sprite.height / 2);
                             };
                             break;
                     };
-                    if (_local_9)
+                    if (_local_10)
                     {
-                        target2 = new Rectangle((_local_6.sprite.x + _local_10), (_local_6.sprite.y + _local_11), 1, 1);
+                        target2 = new Rectangle((_local_6.sprite.x + _local_11), (_local_6.sprite.y + _local_12), 1, 1);
                         param = new Object();
                         param.classCss = "center";
-                        TooltipManager.show(_local_12, target2, UiModuleManager.getInstance().getModule("Ankama_GameUiCore"), false, "subareaChange", 0, 0, 0, true, null, null, param, ("Text" + _local_7), false, StrataEnum.STRATA_TOOLTIP, 1);
+                        TooltipManager.show(_local_13, target2, UiModuleManager.getInstance().getModule("Ankama_GameUiCore"), false, "subareaChange", 0, 0, 0, true, null, null, param, ("Text" + _local_8), false, StrataEnum.STRATA_TOOLTIP, 1);
                     };
                     LinkedCursorSpriteManager.getInstance().addItem("changeMapCursor", _local_6);
                     return (true);
@@ -567,10 +548,10 @@
                     {
                         return (false);
                     };
-                    _local_13 = new Point(StageShareManager.stage.mouseX, StageShareManager.stage.mouseY);
-                    if (Atouin.getInstance().options.frustum.containsPoint(_local_13))
+                    _local_15 = new Point(StageShareManager.stage.mouseX, StageShareManager.stage.mouseY);
+                    if (Atouin.getInstance().options.frustum.containsPoint(_local_15))
                     {
-                        objectsUnder = StageShareManager.stage.getObjectsUnderPoint(_local_13);
+                        objectsUnder = StageShareManager.stage.getObjectsUnderPoint(_local_15);
                         for each (o in objectsUnder)
                         {
                             if ((((o is GraphicContainer)) && (!(((o as GraphicContainer).customUnicName.indexOf("banner") == -1)))))
@@ -589,27 +570,27 @@
                     };
                     return (false);
                 case (msg is EntityMouseOverMessage):
-                    _local_14 = (msg as EntityMouseOverMessage);
-                    this._mouseOverEntityId = _local_14.entity.id;
-                    _local_15 = ("entity_" + _local_14.entity.id);
+                    _local_16 = (msg as EntityMouseOverMessage);
+                    this._mouseOverEntityId = _local_16.entity.id;
+                    _local_17 = ("entity_" + _local_16.entity.id);
                     this.displayCursor(NO_CURSOR);
-                    _local_16 = (_local_14.entity as IInteractive);
-                    _local_17 = (_local_16 as AnimatedCharacter);
-                    if (_local_17)
+                    _local_18 = (_local_16.entity as IInteractive);
+                    _local_19 = (_local_18 as AnimatedCharacter);
+                    if (_local_19)
                     {
-                        _local_17 = _local_17.getRootEntity();
-                        _local_17.highLightCharacterAndFollower(true);
-                        _local_16 = _local_17;
-                        if ((((OptionManager.getOptionManager("tiphon").auraMode == OptionEnum.AURA_ON_ROLLOVER)) && ((_local_17.getDirection() == DirectionsEnum.DOWN))))
+                        _local_19 = _local_19.getRootEntity();
+                        _local_19.highLightCharacterAndFollower(true);
+                        _local_18 = _local_19;
+                        if ((((OptionManager.getOptionManager("tiphon").auraMode == OptionEnum.AURA_ON_ROLLOVER)) && ((_local_19.getDirection() == DirectionsEnum.DOWN))))
                         {
-                            _local_17.visibleAura = true;
+                            _local_19.visibleAura = true;
                         };
                     };
-                    _local_18 = (this.roleplayContextFrame.entitiesFrame.getEntityInfos(_local_16.id) as GameRolePlayActorInformations);
-                    if ((_local_16 is TiphonSprite))
+                    _local_20 = (this.roleplayContextFrame.entitiesFrame.getEntityInfos(_local_18.id) as GameRolePlayActorInformations);
+                    if ((_local_18 is TiphonSprite))
                     {
-                        tooltipTarget = (_local_16 as TiphonSprite);
-                        rider = ((_local_16 as TiphonSprite).getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0) as TiphonSprite);
+                        tooltipTarget = (_local_18 as TiphonSprite);
+                        rider = ((_local_18 as TiphonSprite).getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0) as TiphonSprite);
                         isCreatureMode = ((Kernel.getWorker().getFrame(RoleplayEntitiesFrame)) && (RoleplayEntitiesFrame(Kernel.getWorker().getFrame(RoleplayEntitiesFrame)).isCreatureMode));
                         if (((rider) && (!(isCreatureMode))))
                         {
@@ -620,90 +601,90 @@
                         {
                             r1 = head.getBounds(StageShareManager.stage);
                             r2 = new Rectangle2(r1.x, r1.y, r1.width, r1.height);
-                            _local_19 = r2;
+                            _local_21 = r2;
                         };
                     };
-                    if (((!(_local_19)) || ((((_local_19.width == 0)) && ((_local_19.height == 0))))))
+                    if (((!(_local_21)) || ((((_local_21.width == 0)) && ((_local_21.height == 0))))))
                     {
-                        _local_19 = (_local_16 as IDisplayable).absoluteBounds;
+                        _local_21 = (_local_18 as IDisplayable).absoluteBounds;
                     };
-                    _local_20 = null;
-                    _local_22 = 0;
-                    if (this.roleplayContextFrame.entitiesFrame.isFight(_local_16.id))
+                    _local_22 = null;
+                    _local_24 = 0;
+                    if (this.roleplayContextFrame.entitiesFrame.isFight(_local_18.id))
                     {
                         if (this.allowOnlyCharacterInteraction)
                         {
                             return (false);
                         };
-                        fight = this.roleplayContextFrame.entitiesFrame.getFightTeam(_local_16.id);
-                        _local_18 = new RoleplayTeamFightersTooltipInformation(fight);
-                        _local_20 = "roleplayFight";
+                        fight = this.roleplayContextFrame.entitiesFrame.getFightTeam(_local_18.id);
+                        _local_20 = new RoleplayTeamFightersTooltipInformation(fight);
+                        _local_22 = "roleplayFight";
                         this.displayCursor(FIGHT_CURSOR, !(PlayedCharacterManager.getInstance().restrictions.cantAttackMonster));
                         if (((fight.hasOptions()) || (fight.hasGroupMember())))
                         {
-                            _local_22 = 35;
+                            _local_24 = 35;
                         };
                     }
                     else
                     {
                         switch (true)
                         {
-                            case (_local_18 is GameRolePlayCharacterInformations):
-                                if (_local_18.contextualId == PlayedCharacterManager.getInstance().id)
+                            case (_local_20 is GameRolePlayCharacterInformations):
+                                if (_local_20.contextualId == PlayedCharacterManager.getInstance().id)
                                 {
-                                    _local_65 = 0;
+                                    _local_67 = 0;
                                 }
                                 else
                                 {
-                                    _local_75 = (_local_18.alignmentInfos.characterPower - _local_18.contextualId);
-                                    _local_76 = PlayedCharacterManager.getInstance().infos.level;
-                                    _local_65 = PlayedCharacterManager.getInstance().levelDiff(_local_75);
+                                    _local_77 = (_local_20.alignmentInfos.characterPower - _local_20.contextualId);
+                                    _local_78 = PlayedCharacterManager.getInstance().infos.level;
+                                    _local_67 = PlayedCharacterManager.getInstance().levelDiff(_local_77);
                                 };
-                                _local_18 = new CharacterTooltipInformation((_local_18 as GameRolePlayCharacterInformations), _local_65);
-                                _local_21 = "CharacterCache";
+                                _local_20 = new CharacterTooltipInformation((_local_20 as GameRolePlayCharacterInformations), _local_67);
+                                _local_23 = "CharacterCache";
                                 break;
-                            case (_local_18 is GameRolePlayMerchantInformations):
-                                _local_21 = "MerchantCharacterCache";
+                            case (_local_20 is GameRolePlayMerchantInformations):
+                                _local_23 = "MerchantCharacterCache";
                                 break;
-                            case (_local_18 is GameRolePlayMutantInformations):
-                                if ((_local_18 as GameRolePlayMutantInformations).humanoidInfo.restrictions.cantAttack)
+                            case (_local_20 is GameRolePlayMutantInformations):
+                                if ((_local_20 as GameRolePlayMutantInformations).humanoidInfo.restrictions.cantAttack)
                                 {
-                                    _local_18 = new CharacterTooltipInformation(_local_18, 0);
+                                    _local_20 = new CharacterTooltipInformation(_local_20, 0);
                                 }
                                 else
                                 {
-                                    _local_18 = new MutantTooltipInformation((_local_18 as GameRolePlayMutantInformations));
+                                    _local_20 = new MutantTooltipInformation((_local_20 as GameRolePlayMutantInformations));
                                 };
                                 break;
-                            case (_local_18 is GameRolePlayTaxCollectorInformations):
+                            case (_local_20 is GameRolePlayTaxCollectorInformations):
                                 if (this.allowOnlyCharacterInteraction)
                                 {
                                     return (false);
                                 };
-                                _local_66 = (_local_18 as GameRolePlayTaxCollectorInformations);
-                                _local_67 = _local_66.identification.guildIdentity;
-                                _local_64 = (((_local_66.identification is TaxCollectorStaticExtendedInformations)) ? ((_local_66.identification as TaxCollectorStaticExtendedInformations).allianceIdentity) : null);
-                                _local_68 = GuildWrapper.create(_local_67.guildId, _local_67.guildName, _local_67.guildEmblem, 0, true);
-                                _local_69 = ((_local_64) ? (AllianceWrapper.create(_local_64.allianceId, _local_64.allianceTag, _local_64.allianceName, _local_64.allianceEmblem)) : null);
-                                _local_18 = new TaxCollectorTooltipInformation(TaxCollectorName.getTaxCollectorNameById((_local_18 as GameRolePlayTaxCollectorInformations).identification.lastNameId).name, TaxCollectorFirstname.getTaxCollectorFirstnameById((_local_18 as GameRolePlayTaxCollectorInformations).identification.firstNameId).firstname, _local_68, _local_69, (_local_18 as GameRolePlayTaxCollectorInformations).taxCollectorAttack);
+                                _local_68 = (_local_20 as GameRolePlayTaxCollectorInformations);
+                                _local_69 = _local_68.identification.guildIdentity;
+                                _local_66 = (((_local_68.identification is TaxCollectorStaticExtendedInformations)) ? ((_local_68.identification as TaxCollectorStaticExtendedInformations).allianceIdentity) : null);
+                                _local_70 = GuildWrapper.create(_local_69.guildId, _local_69.guildName, _local_69.guildEmblem, 0, true);
+                                _local_71 = ((_local_66) ? (AllianceWrapper.create(_local_66.allianceId, _local_66.allianceTag, _local_66.allianceName, _local_66.allianceEmblem)) : null);
+                                _local_20 = new TaxCollectorTooltipInformation(TaxCollectorName.getTaxCollectorNameById((_local_20 as GameRolePlayTaxCollectorInformations).identification.lastNameId).name, TaxCollectorFirstname.getTaxCollectorFirstnameById((_local_20 as GameRolePlayTaxCollectorInformations).identification.firstNameId).firstname, _local_70, _local_71, (_local_20 as GameRolePlayTaxCollectorInformations).taxCollectorAttack);
                                 break;
-                            case (_local_18 is GameRolePlayNpcInformations):
+                            case (_local_20 is GameRolePlayNpcInformations):
                                 if (this.allowOnlyCharacterInteraction)
                                 {
                                     return (false);
                                 };
-                                _local_70 = (_local_18 as GameRolePlayNpcInformations);
-                                _local_71 = Npc.getNpcById(_local_70.npcId);
-                                _local_18 = new TextTooltipInfo(_local_71.name, (XmlConfig.getInstance().getEntry("config.ui.skin") + "css/tooltip_npc.css"), "green", 0);
-                                _local_18.bgCornerRadius = 10;
-                                _local_21 = "NPCCacheName";
-                                if (_local_71.actions.length == 0)
+                                _local_72 = (_local_20 as GameRolePlayNpcInformations);
+                                _local_73 = Npc.getNpcById(_local_72.npcId);
+                                _local_20 = new TextTooltipInfo(_local_73.name, (XmlConfig.getInstance().getEntry("config.ui.skin") + "css/tooltip_npc.css"), "green", 0);
+                                _local_20.bgCornerRadius = 10;
+                                _local_23 = "NPCCacheName";
+                                if (_local_73.actions.length == 0)
                                 {
                                     break;
                                 };
                                 this.displayCursor(NPC_CURSOR);
                                 break;
-                            case (_local_18 is GameRolePlayGroupMonsterInformations):
+                            case (_local_20 is GameRolePlayGroupMonsterInformations):
                                 if (this.allowOnlyCharacterInteraction)
                                 {
                                     return (false);
@@ -711,142 +692,142 @@
                                 this.displayCursor(FIGHT_CURSOR, !(PlayedCharacterManager.getInstance().restrictions.cantAttackMonster));
                                 if (Kernel.getWorker().contains(MonstersInfoFrame))
                                 {
-                                    _local_15 = ("MonstersInfo_" + _local_18.contextualId);
-                                    _local_21 = (Kernel.getWorker().getFrame(MonstersInfoFrame) as MonstersInfoFrame).getCacheName(_local_18.contextualId);
+                                    _local_17 = ("MonstersInfo_" + _local_20.contextualId);
+                                    _local_23 = (Kernel.getWorker().getFrame(MonstersInfoFrame) as MonstersInfoFrame).getCacheName(_local_20.contextualId);
                                 }
                                 else
                                 {
-                                    _local_21 = "GroupMonsterCache";
+                                    _local_23 = "GroupMonsterCache";
                                 };
                                 break;
-                            case (_local_18 is GameRolePlayPrismInformations):
-                                _local_72 = (Kernel.getWorker().getFrame(AllianceFrame) as AllianceFrame);
-                                _local_18 = new PrismTooltipInformation(_local_72.getPrismSubAreaById(PlayedCharacterManager.getInstance().currentSubArea.id).alliance);
+                            case (_local_20 is GameRolePlayPrismInformations):
+                                _local_74 = (Kernel.getWorker().getFrame(AllianceFrame) as AllianceFrame);
+                                _local_20 = new PrismTooltipInformation(_local_74.getPrismSubAreaById(PlayedCharacterManager.getInstance().currentSubArea.id).alliance);
                                 break;
-                            case (_local_18 is GameRolePlayPortalInformations):
-                                _local_18 = new PortalTooltipInformation((_local_18 as GameRolePlayPortalInformations).portal.areaId);
+                            case (_local_20 is GameRolePlayPortalInformations):
+                                _local_20 = new PortalTooltipInformation((_local_20 as GameRolePlayPortalInformations).portal.areaId);
                                 break;
-                            case (_local_18 is GameContextPaddockItemInformations):
-                                _local_21 = "PaddockItemCache";
+                            case (_local_20 is GameContextPaddockItemInformations):
+                                _local_23 = "PaddockItemCache";
                                 break;
-                            case (_local_18 is GameRolePlayTreasureHintInformations):
+                            case (_local_20 is GameRolePlayTreasureHintInformations):
                                 if (this.allowOnlyCharacterInteraction)
                                 {
                                     return (false);
                                 };
-                                _local_73 = (_local_18 as GameRolePlayTreasureHintInformations);
-                                _local_74 = Npc.getNpcById(_local_73.npcId);
-                                _local_18 = new TextTooltipInfo(_local_74.name, (XmlConfig.getInstance().getEntry("config.ui.skin") + "css/tooltip_npc.css"), "orange", 0);
-                                _local_18.bgCornerRadius = 10;
-                                _local_21 = "TrHintCacheName";
+                                _local_75 = (_local_20 as GameRolePlayTreasureHintInformations);
+                                _local_76 = Npc.getNpcById(_local_75.npcId);
+                                _local_20 = new TextTooltipInfo(_local_76.name, (XmlConfig.getInstance().getEntry("config.ui.skin") + "css/tooltip_npc.css"), "orange", 0);
+                                _local_20.bgCornerRadius = 10;
+                                _local_23 = "TrHintCacheName";
                                 break;
                         };
                     };
-                    if (!(_local_18))
+                    if (!(_local_20))
                     {
-                        _log.warn((("Rolling over a unknown entity (" + _local_14.entity.id) + ")."));
+                        _log.warn((("Rolling over a unknown entity (" + _local_16.entity.id) + ")."));
                         return (false);
                     };
-                    if (this.roleplayContextFrame.entitiesFrame.hasIcon(_local_16.id))
+                    if (this.roleplayContextFrame.entitiesFrame.hasIcon(_local_18.id))
                     {
-                        _local_22 = 45;
+                        _local_24 = 45;
                     };
-                    if (((((_local_17) && (!(_local_17.rawAnimation)))) && (!(this._entityTooltipData[_local_17]))))
+                    if (((((_local_19) && (!(_local_19.rawAnimation)))) && (!(this._entityTooltipData[_local_19]))))
                     {
-                        this._entityTooltipData[_local_17] = {
-                            "data":_local_18,
-                            "name":_local_15,
-                            "tooltipMaker":_local_20,
-                            "tooltipOffset":_local_22,
-                            "cacheName":_local_21
+                        this._entityTooltipData[_local_19] = {
+                            "data":_local_20,
+                            "name":_local_17,
+                            "tooltipMaker":_local_22,
+                            "tooltipOffset":_local_24,
+                            "cacheName":_local_23
                         };
-                        _local_17.removeEventListener(TiphonEvent.RENDER_SUCCEED, this.onEntityAnimRendered);
-                        _local_17.addEventListener(TiphonEvent.RENDER_SUCCEED, this.onEntityAnimRendered);
+                        _local_19.removeEventListener(TiphonEvent.RENDER_SUCCEED, this.onEntityAnimRendered);
+                        _local_19.addEventListener(TiphonEvent.RENDER_SUCCEED, this.onEntityAnimRendered);
                     }
                     else
                     {
-                        TooltipManager.show(_local_18, _local_19, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), false, _local_15, LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, _local_22, true, _local_20, null, null, _local_21, false, StrataEnum.STRATA_WORLD, this.sysApi.getCurrentZoom());
+                        TooltipManager.show(_local_20, _local_21, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), false, _local_17, LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, _local_24, true, _local_22, null, null, _local_23, false, StrataEnum.STRATA_WORLD, this.sysApi.getCurrentZoom());
                     };
                     return (true);
                 case (msg is MouseRightClickMessage):
-                    _local_23 = (msg as MouseRightClickMessage);
-                    _local_24 = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
-                    _local_25 = (_local_23.target as IInteractive);
-                    if (_local_25)
+                    _local_25 = (msg as MouseRightClickMessage);
+                    _local_26 = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
+                    _local_27 = (_local_25.target as IInteractive);
+                    if (_local_27)
                     {
                         rcf = this.roleplayContextFrame;
-                        if (((!((_local_25 as AnimatedCharacter))) || (((_local_25 as AnimatedCharacter).followed == null))))
+                        if (((!((_local_27 as AnimatedCharacter))) || (((_local_27 as AnimatedCharacter).followed == null))))
                         {
-                            actorInfos = rcf.entitiesFrame.getEntityInfos(_local_25.id);
+                            actorInfos = rcf.entitiesFrame.getEntityInfos(_local_27.id);
                         }
                         else
                         {
-                            actorInfos = rcf.entitiesFrame.getEntityInfos((_local_25 as AnimatedCharacter).followed.id);
+                            actorInfos = rcf.entitiesFrame.getEntityInfos((_local_27 as AnimatedCharacter).followed.id);
                         };
                         if ((actorInfos is GameRolePlayNamedActorInformations))
                         {
-                            if (!((_local_25 is AnimatedCharacter)))
+                            if (!((_local_27 is AnimatedCharacter)))
                             {
-                                _log.error((("L'entity " + _local_25.id) + " est un GameRolePlayNamedActorInformations mais n'est pas un AnimatedCharacter"));
+                                _log.error((("L'entity " + _local_27.id) + " est un GameRolePlayNamedActorInformations mais n'est pas un AnimatedCharacter"));
                                 return (true);
                             };
-                            _local_25 = (_local_25 as AnimatedCharacter).getRootEntity();
-                            rightClickedinfos = this.roleplayContextFrame.entitiesFrame.getEntityInfos(_local_25.id);
-                            menu = MenusFactory.create(rightClickedinfos, "multiplayer", [_local_25]);
+                            _local_27 = (_local_27 as AnimatedCharacter).getRootEntity();
+                            rightClickedinfos = this.roleplayContextFrame.entitiesFrame.getEntityInfos(_local_27.id);
+                            menu = MenusFactory.create(rightClickedinfos, "multiplayer", [_local_27]);
                             if (menu)
                             {
-                                _local_24.createContextMenu(menu);
+                                _local_26.createContextMenu(menu);
                             };
                             return (true);
                         };
                         if ((actorInfos is GameRolePlayGroupMonsterInformations))
                         {
-                            menu = MenusFactory.create(actorInfos, "monsterGroup", [_local_25]);
+                            menu = MenusFactory.create(actorInfos, "monsterGroup", [_local_27]);
                             if (menu)
                             {
-                                _local_24.createContextMenu(menu);
+                                _local_26.createContextMenu(menu);
                             };
                             return (true);
                         };
                     };
                     return (false);
                 case (msg is EntityMouseOutMessage):
-                    _local_26 = (msg as EntityMouseOutMessage);
+                    _local_28 = (msg as EntityMouseOutMessage);
                     this._mouseOverEntityId = 0;
                     this.displayCursor(NO_CURSOR);
-                    TooltipManager.hide(("entity_" + _local_26.entity.id));
-                    _local_17 = (_local_26.entity as AnimatedCharacter);
-                    if (_local_17)
+                    TooltipManager.hide(("entity_" + _local_28.entity.id));
+                    _local_19 = (_local_28.entity as AnimatedCharacter);
+                    if (_local_19)
                     {
-                        _local_17 = _local_17.getRootEntity();
-                        _local_17.highLightCharacterAndFollower(false);
+                        _local_19 = _local_19.getRootEntity();
+                        _local_19.highLightCharacterAndFollower(false);
                         if (!(Kernel.getWorker().getFrame(MonstersInfoFrame)))
                         {
-                            TooltipManager.hide(("MonstersInfo_" + _local_17.id));
+                            TooltipManager.hide(("MonstersInfo_" + _local_19.id));
                         };
                         if (OptionManager.getOptionManager("tiphon").auraMode == OptionEnum.AURA_ON_ROLLOVER)
                         {
-                            _local_17.visibleAura = false;
+                            _local_19.visibleAura = false;
                         };
                     };
                     return (true);
                 case (msg is EntityClickMessage):
-                    _local_27 = (msg as EntityClickMessage);
-                    _local_28 = (_local_27.entity as IInteractive);
-                    if ((_local_28 is AnimatedCharacter))
+                    _local_29 = (msg as EntityClickMessage);
+                    _local_30 = (_local_29.entity as IInteractive);
+                    if ((_local_30 is AnimatedCharacter))
                     {
-                        _local_28 = (_local_28 as AnimatedCharacter).getRootEntity();
+                        _local_30 = (_local_30 as AnimatedCharacter).getRootEntity();
                     };
-                    _local_29 = this.roleplayContextFrame.entitiesFrame.getEntityInfos(_local_28.id);
-                    _local_30 = RoleplayManager.getInstance().displayContextualMenu(_local_29, _local_28);
-                    if (this.roleplayContextFrame.entitiesFrame.isFight(_local_28.id))
+                    _local_31 = this.roleplayContextFrame.entitiesFrame.getEntityInfos(_local_30.id);
+                    _local_32 = RoleplayManager.getInstance().displayContextualMenu(_local_31, _local_30);
+                    if (this.roleplayContextFrame.entitiesFrame.isFight(_local_30.id))
                     {
-                        fightId = this.roleplayContextFrame.entitiesFrame.getFightId(_local_28.id);
-                        fightTeamLeader = this.roleplayContextFrame.entitiesFrame.getFightLeaderId(_local_28.id);
-                        teamType = this.roleplayContextFrame.entitiesFrame.getFightTeamType(_local_28.id);
+                        fightId = this.roleplayContextFrame.entitiesFrame.getFightId(_local_30.id);
+                        fightTeamLeader = this.roleplayContextFrame.entitiesFrame.getFightLeaderId(_local_30.id);
+                        teamType = this.roleplayContextFrame.entitiesFrame.getFightTeamType(_local_30.id);
                         if (teamType == TeamTypeEnum.TEAM_TYPE_TAXCOLLECTOR)
                         {
-                            team = (this.roleplayContextFrame.entitiesFrame.getFightTeam(_local_28.id) as FightTeam);
+                            team = (this.roleplayContextFrame.entitiesFrame.getFightTeam(_local_30.id) as FightTeam);
                             for each (fighter in team.teamInfos.teamMembers)
                             {
                                 if ((fighter is FightTeamMemberTaxCollectorInformations))
@@ -877,102 +858,106 @@
                     }
                     else
                     {
-                        if (((!((_local_28.id == PlayedCharacterManager.getInstance().id))) && (!(_local_30))))
+                        if (((!((_local_30.id == PlayedCharacterManager.getInstance().id))) && (!(_local_32))))
                         {
                             this.roleplayMovementFrame.setFollowingInteraction(null);
-                            this.roleplayMovementFrame.askMoveTo(_local_28.position);
+                            if ((((_local_31 is GameRolePlayActorInformations)) && ((_local_31 is GameRolePlayGroupMonsterInformations))))
+                            {
+                                this.roleplayMovementFrame.setFollowingMonsterFight(_local_30);
+                            };
+                            this.roleplayMovementFrame.askMoveTo(_local_30.position);
                         };
                     };
                     return (true);
                 case (msg is InteractiveElementActivationMessage):
-                    if (((this.allowOnlyCharacterInteraction) || (ShortcutsFrame.ctrlKeyDown)))
+                    if (((this.allowOnlyCharacterInteraction) || (((!(AirScanner.isStreamingVersion())) && ((((OptionManager.getOptionManager("dofus")["enableForceWalk"] == true)) && (((ShortcutsFrame.ctrlKeyDown) || ((((SystemManager.getSingleton().os == OperatingSystem.MAC_OS)) && (ShortcutsFrame.altKeyDown)))))))))))
                     {
                         return (false);
                     };
-                    _local_31 = (msg as InteractiveElementActivationMessage);
-                    _local_32 = (Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame);
-                    if (!((_local_32) && (_local_32.usingInteractive)))
+                    _local_33 = (msg as InteractiveElementActivationMessage);
+                    _local_34 = (Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame);
+                    if (!((_local_34) && (_local_34.usingInteractive)))
                     {
-                        _local_90 = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
-                        if (((!(DataMapProvider.getInstance().farmCell(_local_90.position.x, _local_90.position.y))) && ((_local_31.interactiveElement.elementTypeId == 120))))
+                        _local_92 = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
+                        if (((!(DataMapProvider.getInstance().farmCell(_local_92.position.x, _local_92.position.y))) && ((_local_33.interactiveElement.elementTypeId == 120))))
                         {
-                            _local_92 = 0;
-                            while (_local_92 < 8)
+                            _local_94 = 0;
+                            while (_local_94 < 8)
                             {
-                                mp = _local_31.position.getNearestCellInDirection(_local_92);
+                                mp = _local_33.position.getNearestCellInDirection(_local_94);
                                 if (((mp) && (DataMapProvider.getInstance().farmCell(mp.x, mp.y))))
                                 {
-                                    if (!(_local_91))
+                                    if (!(_local_93))
                                     {
-                                        _local_91 = [];
+                                        _local_93 = [];
                                     };
-                                    _local_91.push(mp.cellId);
+                                    _local_93.push(mp.cellId);
                                 };
-                                _local_92++;
+                                _local_94++;
                             };
                         };
-                        _local_93 = _local_31.position.getNearestFreeCellInDirection(_local_31.position.advancedOrientationTo(_local_90.position), DataMapProvider.getInstance(), true, true, false, _local_91);
-                        if (!(_local_93))
+                        _local_95 = _local_33.position.getNearestFreeCellInDirection(_local_33.position.advancedOrientationTo(_local_92.position), DataMapProvider.getInstance(), true, true, false, _local_93);
+                        if (!(_local_95))
                         {
-                            _local_93 = _local_31.position;
+                            _local_95 = _local_33.position;
                         };
                         this.roleplayMovementFrame.setFollowingInteraction({
-                            "ie":_local_31.interactiveElement,
-                            "skillInstanceId":_local_31.skillInstanceId
+                            "ie":_local_33.interactiveElement,
+                            "skillInstanceId":_local_33.skillInstanceId
                         });
-                        this.roleplayMovementFrame.askMoveTo(_local_93);
+                        this.roleplayMovementFrame.askMoveTo(_local_95);
                     };
                     return (true);
                 case (msg is InteractiveElementMouseOverMessage):
-                    if (((this.allowOnlyCharacterInteraction) || (ShortcutsFrame.ctrlKeyDown)))
+                    if (((this.allowOnlyCharacterInteraction) || (((!(AirScanner.isStreamingVersion())) && ((((OptionManager.getOptionManager("dofus")["enableForceWalk"] == true)) && (((ShortcutsFrame.ctrlKeyDown) || ((((SystemManager.getSingleton().os == OperatingSystem.MAC_OS)) && (ShortcutsFrame.altKeyDown)))))))))))
                     {
                         return (false);
                     };
-                    _local_33 = (msg as InteractiveElementMouseOverMessage);
-                    _local_37 = _local_33.interactiveElement;
-                    for each (_local_38 in _local_37.enabledSkills)
+                    _local_35 = (msg as InteractiveElementMouseOverMessage);
+                    _local_39 = _local_35.interactiveElement;
+                    for each (_local_40 in _local_39.enabledSkills)
                     {
-                        if (_local_38.skillId == 175)
+                        if (_local_40.skillId == 175)
                         {
-                            _local_34 = this.roleplayContextFrame.currentPaddock;
+                            _local_36 = this.roleplayContextFrame.currentPaddock;
                             break;
                         };
                     };
-                    _local_39 = Interactive.getInteractiveById(_local_37.elementTypeId);
-                    _local_40 = _local_33.interactiveElement.elementId;
-                    _local_41 = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame);
-                    _local_42 = _local_41.housesInformations[_local_40];
-                    _local_43 = _local_33.sprite.getRect(StageShareManager.stage);
-                    if (_local_42)
+                    _local_41 = Interactive.getInteractiveById(_local_39.elementTypeId);
+                    _local_42 = _local_35.interactiveElement.elementId;
+                    _local_43 = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame);
+                    _local_44 = _local_43.housesInformations[_local_42];
+                    _local_45 = _local_35.sprite.getRect(StageShareManager.stage);
+                    if (_local_44)
                     {
-                        _local_34 = _local_42;
+                        _local_36 = _local_44;
                     }
                     else
                     {
-                        if ((((_local_34 == null)) && (_local_39)))
+                        if ((((_local_36 == null)) && (_local_41)))
                         {
                             elem = new Object();
-                            elem.interactive = _local_39.name;
+                            elem.interactive = _local_41.name;
                             enabledSkills = "";
-                            for each (_local_38 in _local_37.enabledSkills)
+                            for each (_local_40 in _local_39.enabledSkills)
                             {
-                                enabledSkills = (enabledSkills + (Skill.getSkillById(_local_38.skillId).name + "\n"));
+                                enabledSkills = (enabledSkills + (Skill.getSkillById(_local_40.skillId).name + "\n"));
                             };
                             elem.enabledSkills = enabledSkills;
                             disabledSkills = "";
-                            for each (_local_38 in _local_37.disabledSkills)
+                            for each (_local_40 in _local_39.disabledSkills)
                             {
-                                disabledSkills = (disabledSkills + (Skill.getSkillById(_local_38.skillId).name + "\n"));
+                                disabledSkills = (disabledSkills + (Skill.getSkillById(_local_40.skillId).name + "\n"));
                             };
                             elem.disabledSkills = disabledSkills;
-                            elem.isCollectable = (_local_39.actionId == COLLECTABLE_INTERACTIVE_ACTION_ID);
+                            elem.isCollectable = (_local_41.actionId == COLLECTABLE_INTERACTIVE_ACTION_ID);
                             if (elem.isCollectable)
                             {
                                 showBonus = true;
-                                iewab = (_local_37 as InteractiveElementWithAgeBonus);
-                                if (_local_37.enabledSkills.length > 0)
+                                iewab = (_local_39 as InteractiveElementWithAgeBonus);
+                                if (_local_39.enabledSkills.length > 0)
                                 {
-                                    collectSkill = Skill.getSkillById(_local_37.enabledSkills[0].skillId);
+                                    collectSkill = Skill.getSkillById(_local_39.enabledSkills[0].skillId);
                                     if (collectSkill.parentJobId == 1)
                                     {
                                         showBonus = false;
@@ -991,14 +976,14 @@
                                     elem.ageBonus = ((iewab) ? iewab.ageBonus : 0);
                                 };
                             };
-                            _local_34 = elem;
-                            _local_35 = "interactiveElement";
-                            _local_36 = "InteractiveElementCache";
+                            _local_36 = elem;
+                            _local_37 = "interactiveElement";
+                            _local_38 = "InteractiveElementCache";
                         };
                     };
-                    if (_local_34)
+                    if (_local_36)
                     {
-                        TooltipManager.show(_local_34, new Rectangle(_local_43.right, int(((_local_43.y + _local_43.height) - AtouinConstants.CELL_HEIGHT)), 0, 0), UiModuleManager.getInstance().getModule("Ankama_Tooltips"), false, TooltipManager.TOOLTIP_STANDAR_NAME, LocationEnum.POINT_BOTTOMLEFT, LocationEnum.POINT_TOP, 0, true, _local_35, null, null, _local_36);
+                        TooltipManager.show(_local_36, new Rectangle(_local_45.right, int(((_local_45.y + _local_45.height) - AtouinConstants.CELL_HEIGHT)), 0, 0), UiModuleManager.getInstance().getModule("Ankama_Tooltips"), false, TooltipManager.TOOLTIP_STANDAR_NAME, LocationEnum.POINT_BOTTOMLEFT, LocationEnum.POINT_TOP, 0, true, _local_37, null, null, _local_38);
                     };
                     return (true);
                 case (msg is InteractiveElementMouseOutMessage):
@@ -1006,7 +991,7 @@
                     {
                         return (false);
                     };
-                    _local_44 = (msg as InteractiveElementMouseOutMessage);
+                    _local_46 = (msg as InteractiveElementMouseOutMessage);
                     TooltipManager.hide();
                     return (true);
                 case (msg is ShowAllNamesAction):
@@ -1020,17 +1005,17 @@
                         Kernel.getWorker().addFrame(this._infoEntitiesFrame);
                         KernelEventsManager.getInstance().processCallback(HookList.ShowPlayersNames, true);
                     };
-                    break;
+                    return (true);
                 case (msg is ShowMonstersInfoAction):
-                    _local_45 = (msg as ShowMonstersInfoAction);
-                    _monstersInfoFrame.triggeredByShortcut = _local_45.fromShortcut;
+                    _local_47 = (msg as ShowMonstersInfoAction);
+                    _monstersInfoFrame.triggeredByShortcut = _local_47.fromShortcut;
                     if (Kernel.getWorker().contains(MonstersInfoFrame))
                     {
                         Kernel.getWorker().removeFrame(_monstersInfoFrame);
                     }
                     else
                     {
-                        if (((((AirScanner.hasAir()) && (StageShareManager.stage.nativeWindow.active))) && (!(((!(_monstersInfoFrame.triggeredByShortcut)) && (!(this._mouseDown)))))))
+                        if (((StageShareManager.isActive) && (!(((!(_monstersInfoFrame.triggeredByShortcut)) && (!(this._mouseDown)))))))
                         {
                             Kernel.getWorker().addFrame(_monstersInfoFrame);
                         };
@@ -1041,9 +1026,9 @@
                     break;
                 case (msg is MouseUpMessage):
                     this._mouseDown = false;
-                    _local_46 = (msg as MouseUpMessage);
-                    _local_47 = (Kernel.getWorker().getFrame(ShortcutsFrame) as ShortcutsFrame);
-                    if ((((_local_47.heldShortcuts.indexOf("showMonstersInfo") == -1)) && (Kernel.getWorker().contains(MonstersInfoFrame))))
+                    _local_48 = (msg as MouseUpMessage);
+                    _local_49 = (Kernel.getWorker().getFrame(ShortcutsFrame) as ShortcutsFrame);
+                    if ((((_local_49.heldShortcuts.indexOf("showMonstersInfo") == -1)) && (Kernel.getWorker().contains(MonstersInfoFrame))))
                     {
                         Kernel.getWorker().removeFrame(_monstersInfoFrame);
                     };
@@ -1054,10 +1039,7 @@
 
         public function pulled():Boolean
         {
-            if (AirScanner.hasAir())
-            {
-                StageShareManager.stage.nativeWindow.removeEventListener(Event.DEACTIVATE, this.onWindowDeactivate);
-            };
+            StageShareManager.stage.removeEventListener(Event.DEACTIVATE, this.onWindowDeactivate);
             Mouse.show();
             LinkedCursorSpriteManager.getInstance().removeItem("changeMapCursor");
             LinkedCursorSpriteManager.getInstance().removeItem("interactiveCursor");
@@ -1125,64 +1107,6 @@
             {
                 Kernel.getWorker().removeFrame(_monstersInfoFrame);
             };
-        }
-
-        private function openFeedbackPopup(e:TimerEvent=null):void
-        {
-            var popupTxt:String;
-            var commonMod:Object;
-            if (Kernel.getWorker().contains(RoleplayWorldFrame))
-            {
-                _feedbackPopupOnNextPush = false;
-                _streamingFeebackTimer.stop();
-                if (XmlConfig.getInstance().getEntry("config.lang.current") == LanguageEnum.LANG_FR)
-                {
-                    popupTxt = "Un formulaire est disponible afin de receuillir vos retours sur la version Streaming.\nSouhaitez-vous le remplir maintenant ?";
-                }
-                else
-                {
-                    popupTxt = "A form is available to give us your feedback on the Streaming version.\nWould you like to open it now?";
-                };
-                commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-                commonMod.openPopup(I18n.getUiText("ui.popup.information"), popupTxt, [I18n.getUiText("ui.common.yes"), I18n.getUiText("ui.common.no")], [this.openStreamingFeebackForm, this.dontOpenStreamingFeedbackForm], null, this.dontOpenStreamingFeedbackForm, null, false, true);
-            }
-            else
-            {
-                _feedbackPopupOnNextPush = true;
-            };
-        }
-
-        private function openStreamingFeebackForm():void
-        {
-            var url:String;
-            _streamingFeebackTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, this.openFeedbackPopup);
-            _streamingFeebackTimer = null;
-            if (XmlConfig.getInstance().getEntry("config.lang.current") == LanguageEnum.LANG_FR)
-            {
-                url = "https://fr.surveymonkey.com/s/DofusWeb2";
-            }
-            else
-            {
-                url = "https://fr.surveymonkey.com/s/DofusWebEN";
-            };
-            StoreDataManager.getInstance().setData(_dataStoreType, "hasClickedFeedbackLink", true);
-            if (SystemManager.getSingleton().browser == WebBrowserEnum.CHROME)
-            {
-                ExternalInterface.call("window.open", url, "_blank");
-            }
-            else
-            {
-                navigateToURL(new URLRequest(url), "_blank");
-            };
-        }
-
-        private function dontOpenStreamingFeedbackForm():void
-        {
-            _streamingFeedbackDelay = (_streamingFeedbackDelay + 3600000);
-            _streamingFeebackTimer.delay = _streamingFeedbackDelay;
-            _streamingFeebackTimer.reset();
-            _streamingFeebackTimer.start();
-            StoreDataManager.getInstance().setData(_dataStoreType, "hasRefusedToOpenFeedbackLink", true);
         }
 
 

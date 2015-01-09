@@ -13,14 +13,14 @@
     import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
     import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
     import com.ankamagames.jerakine.types.enums.Priority;
-    import com.ankamagames.dofus.logic.game.approach.managers.PartManagerV2;
+    import com.ankamagames.dofus.logic.connection.managers.GuestModeManager;
     import com.ankamagames.jerakine.utils.system.AirScanner;
+    import com.ankamagames.dofus.logic.game.approach.managers.PartManagerV2;
     import com.ankamagames.jerakine.managers.OptionManager;
     import com.ankamagames.jerakine.data.XmlConfig;
     import com.ankamagames.jerakine.data.I18n;
     import com.ankamagames.berilia.managers.KernelEventsManager;
     import com.ankamagames.dofus.misc.lists.HookList;
-    import com.ankamagames.dofus.logic.connection.managers.GuestModeManager;
     import com.ankamagames.dofus.logic.connection.managers.SpecialBetaAuthentification;
     import flash.events.Event;
     import com.ankamagames.jerakine.types.DataStoreType;
@@ -68,6 +68,8 @@
     import com.ankamagames.jerakine.messages.Message;
     import com.ankamagames.berilia.Berilia;
     import com.ankamagames.dofus.logic.connection.actions.LoginValidationWithTicketAction;
+    import com.ankamagames.jerakine.json.JSONDecoder;
+    import com.ankamagames.dofus.internalDatacenter.connection.SubscriberGift;
 
     public class AuthentificationFrame implements Frame 
     {
@@ -79,6 +81,7 @@
         private var _contextLoader:LoaderContext;
         private var _dispatchModuleHook:Boolean;
         private var _connexionSequence:Array;
+        private var _autoConnect:Boolean = false;
         private var commonMod:Object;
         private var _lastLoginHash:String;
         private var _lva:LoginValidationAction;
@@ -107,10 +110,14 @@
             var newLengthTou:String;
             var files:Array;
             this.processInvokeArgs();
+            if (((((AirScanner.isStreamingVersion()) && (!(GuestModeManager.getInstance().forceGuestMode)))) && (!(this._autoConnect))))
+            {
+                Dofus.getInstance().strLoaderComplete();
+            };
             if (this._dispatchModuleHook)
             {
                 PartManagerV2.getInstance().init();
-                if (!(AirScanner.isStreamingVersion()))
+                if (AirScanner.isStreamingVersion())
                 {
                     lengthTou = OptionManager.getOptionManager("dofus")["legalAgreementTou"];
                     newLengthTou = ((XmlConfig.getInstance().getEntry("config.lang.current") + "#") + (I18n.getUiText("ui.legal.tou1") + I18n.getUiText("ui.legal.tou2")).length);
@@ -143,58 +150,53 @@
             {
                 while ((this._streamingBetaAccess = true), true)
                 {
-                    this.process(this._lva);
-                    //unresolved jump
+                    goto _label_1;
                 };
+                
+            _label_1: 
+                this.process(this._lva);
             }
             else
             {
                 if (UiModuleManager.getInstance().isDevMode)
                 {
                     goto _label_8;
-                    
-                _label_1: 
-                    return;
-                    
-                _label_2: 
-                    KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed, 0);
-                    goto _label_9;
-                    goto _label_7;
-                    
-                _label_3: 
-                    _local_2 = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-                    goto _label_11;
-                    
-                _label_4: 
-                    return;
-                    
-                _label_5: 
-                    goto _label_2;
-                    var _local_3 = _local_3;
-                    
-                _label_6: 
-                    this.process(this._lva);
-                    goto _label_4;
                 };
                 
-            _label_7: 
+            _label_2: 
                 this._streamingBetaAccess = false;
-                goto _label_5;
+                //unresolved jump
+                
+            _label_3: 
+                return;
+                goto _label_2;
+                
+            _label_4: 
+                this.process(this._lva);
+                goto _label_3;
+                do 
+                {
+                    //unresolved jump
+                    
+                _label_5: 
+                    _local_2.openPopup(I18n.getUiText("ui.popup.information"), "You are trying to access to a private beta but your account is not allowed.", [I18n.getUiText("ui.common.ok")]);
+                    while (return, return, goto _label_6, (_local_2 = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass), true)
+                    {
+                        goto _label_5;
+                    };
+                    var _local_4 = _local_4;
+                    
+                _label_6: 
+                    KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed, 0);
+                } while (true);
+                var _local_0 = this;
+                
+            _label_7: 
+                goto _label_4;
                 
             _label_8: 
                 UiModuleManager.getInstance().isDevMode = false;
-                goto _label_10;
-                
-            _label_9: 
-                goto _label_3;
-                
-            _label_10: 
-                goto _label_6;
-                
-            _label_11: 
-                _local_2.openPopup(I18n.getUiText("ui.popup.information"), "You are trying to access to a private beta but your account is not allowed.", [I18n.getUiText("ui.common.ok")]);
-                goto _label_1;
-                return;
+                goto _label_7;
             };
             return;
         }
@@ -264,7 +266,7 @@
                         this._streamingBetaAccess = false;
                         UiModuleManager.getInstance().isDevMode = XmlConfig.getInstance().getEntry("config.dev.mode");
                     };
-                    if ((((BuildInfos.BUILD_TYPE < BuildTypeEnum.TESTING)) && (((((AirScanner.isStreamingVersion()) && (!(this._streamingBetaAccess)))) || (((UiModuleManager.getInstance().isDevMode) && (!((this._lastLoginHash == MD5.hash(lva.username))))))))))
+                    if ((((BuildInfos.BUILD_TYPE < BuildTypeEnum.TESTING)) && (((UiModuleManager.getInstance().isDevMode) && (!((this._lastLoginHash == MD5.hash(lva.username))))))))
                     {
                         this._lastLoginHash = MD5.hash(lva.username);
                         this._lva = lva;
@@ -379,6 +381,10 @@
                     return (true);
                 case (msg is ServerConnectionFailedMessage):
                     scfMsg = ServerConnectionFailedMessage(msg);
+                    if (AirScanner.isStreamingVersion())
+                    {
+                        Dofus.getInstance().strLoaderComplete();
+                    };
                     if (scfMsg.failedConnection == ConnectionsHandler.getConnection().getSubConnection(scfMsg))
                     {
                         PlayerManager.getInstance().destroy();
@@ -489,6 +495,10 @@
                     return (true);
                 case (msg is IdentificationFailedForBadVersionMessage):
                     iffbvmsg = IdentificationFailedForBadVersionMessage(msg);
+                    if (AirScanner.isStreamingVersion())
+                    {
+                        Dofus.getInstance().strLoaderComplete();
+                    };
                     PlayerManager.getInstance().destroy();
                     ConnectionsHandler.closeConnection();
                     KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailedForBadVersion, iffbvmsg.reason, iffbvmsg.requiredVersion);
@@ -500,6 +510,10 @@
                     return (true);
                 case (msg is IdentificationFailedBannedMessage):
                     ifbmsg = IdentificationFailedBannedMessage(msg);
+                    if (AirScanner.isStreamingVersion())
+                    {
+                        Dofus.getInstance().strLoaderComplete();
+                    };
                     PlayerManager.getInstance().destroy();
                     ConnectionsHandler.closeConnection();
                     KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailedWithDuration, ifbmsg.reason, ifbmsg.banEndDate);
@@ -511,6 +525,10 @@
                     return (true);
                 case (msg is IdentificationFailedMessage):
                     ifmsg = IdentificationFailedMessage(msg);
+                    if (AirScanner.isStreamingVersion())
+                    {
+                        Dofus.getInstance().strLoaderComplete();
+                    };
                     PlayerManager.getInstance().destroy();
                     ConnectionsHandler.closeConnection();
                     if ((((ifmsg.reason == IdentificationFailureReasonEnum.WRONG_CREDENTIALS)) && (GuestModeManager.getInstance().isLoggingAsGuest)))
@@ -526,10 +544,18 @@
                     return (true);
                 case (msg is NicknameRegistrationMessage):
                     nrmsg = NicknameRegistrationMessage(msg);
+                    if (AirScanner.isStreamingVersion())
+                    {
+                        Dofus.getInstance().strLoaderComplete();
+                    };
                     KernelEventsManager.getInstance().processCallback(HookList.NicknameRegistration);
                     return (true);
                 case (msg is NicknameRefusedMessage):
                     nrfmsg = NicknameRefusedMessage(msg);
+                    if (AirScanner.isStreamingVersion())
+                    {
+                        Dofus.getInstance().strLoaderComplete();
+                    };
                     KernelEventsManager.getInstance().processCallback(HookList.NicknameRefused, nrfmsg.reason);
                     return (true);
                 case (msg is NicknameAcceptedMessage):
@@ -581,6 +607,10 @@
         public function pulled():Boolean
         {
             Berilia.getInstance().unloadUi("Login");
+            if (AirScanner.isStreamingVersion())
+            {
+                Dofus.getInstance().strLoaderComplete();
+            };
             this._loader.removeEventListener(ResourceErrorEvent.ERROR, this.onLoadError);
             this._loader.removeEventListener(ResourceLoadedEvent.LOADED, this.onLoad);
             return (true);
@@ -590,153 +620,129 @@
         {
             var value:String;
             var lvwta:LoginValidationWithTicketAction;
+            this._autoConnect = false;
             if (CommandLineArguments.getInstance().hasArgument("ticket"))
             {
-                value = CommandLineArguments.getInstance().getArgument("ticket");
-                if (_lastTicket == value)
+                while (true)
                 {
-                    return;
+                    value = CommandLineArguments.getInstance().getArgument("ticket");
+                    goto _label_1;
                 };
                 
             _label_1: 
-                _log.info("Use ticket from launch param's");
-                for (;;)
+                if (_lastTicket == value)
                 {
+                    return;
+                    
+                _label_2: 
+                    _log.info("Use ticket from launch param's");
+                    //unresolved jump
+                    
+                _label_3: 
+                    return;
+                    
+                _label_4: 
                     this.process(lvwta);
-                    continue;
+                    goto _label_3;
+                    
+                _label_5: 
+                    lvwta = LoginValidationWithTicketAction.create(value, true);
+                    goto _label_7;
+                }
+                else
+                {
+                    this._autoConnect = true;
                     goto _label_2;
+                    
+                _label_6: 
+                    goto _label_5;
+                    var _local_3 = _local_3;
                 };
-                var _local_3 = _local_3;
-                
-            _label_2: 
                 _lastTicket = value;
-                //unresolved jump
+                goto _label_6;
+                var _local_0 = this;
                 
-            _label_3: 
-                lvwta = LoginValidationWithTicketAction.create(value, true);
-                //unresolved jump
-                goto _label_1;
+            _label_7: 
+                goto _label_4;
             };
             return;
         }
 
         private function onLoad(e:ResourceLoadedEvent):void
         {
-            //unresolved jump
-            
-        _label_1: 
-            var i:int;
-            _loop_1:
-            for (;;goto _label_7)
+            for (;;goto _label_4, (var subGiftList:Array = new Array()), continue, (var _local_4 = _local_4))
             {
-                var text:String;
-                for (;;)
-                {
-                    goto _label_6;
-                    
-                _label_2: 
-                    var news:XML;
-                    continue;
-                    
-                _label_3: 
-                    var xmlString:String;
-                    goto _label_1;
-                    var _local_0 = this;
-                    var link:String;
-                    goto _label_5;
-                    
-                _label_4: 
-                    var subGiftList:Array = new Array();
-                    continue _loop_1;
-                };
-                var _local_4 = _local_4;
-                
-            _label_5: 
-                var id:uint;
+                var jdsonD:JSONDecoder;
+                goto _label_3;
                 goto _label_2;
-                var onLoad$0 = onLoad$0;
                 
-            _label_6: 
-                goto _label_4;
+            _label_1: 
+                e = e;
+                continue;
             };
             var _local_6 = _local_6;
+            
+        _label_2: 
+            //unresolved jump
+            
+        _label_3: 
+            var jsonArray:* = undefined;
+            var subGift:SubscriberGift;
+            goto _label_1;
+            var _local_0 = this;
             try
             {
                 
-            _label_7: 
-                var xml:XML = e.resource;
-                while ((xmlString = xml.toXMLString()), true)
+            _label_4: 
+                jdsonD = new JSONDecoder(e.resource, true);
+                while ((jsonArray = jdsonD.getValue()), true)
                 {
                     //unresolved jump
                 };
+                var _local_5 = _local_5;
             }
             catch(error:Error)
             {
-                while (_log.error((((("Cannot read xml " + e.uri) + "(") + error.message) + ")")), true)
+                while (_log.error((((("Cannot read Json " + e.uri) + "(") + error.message) + ")")), true)
                 {
                     return;
                 };
                 return;
             };
-            if (xmlString.substring(1, 17) == "subscribersGifts")
+            var i:int;
+            for each (var gift:* in jsonArray)
             {
-                i = 0;
-                for each (var gift:XML in xml..gift)
-                {
-                    //unresolved jump
-                };
-                KernelEventsManager.getInstance().processCallback(HookList.SubscribersList, subGiftList);
-            }
-            else
+                goto _label_7;
+                
+            _label_5: 
+                subGift = new SubscriberGift(gift.article_name, gift.article_price, gift.article_pricecrossed, gift.article_visual, gift["new"], gift.promo, gift.redirect, gift.title, gift.url);
+                subGiftList.push(subGift);
+                continue;
+                
+            _label_6: 
+                i = (i + 1);
+                //unresolved jump
+                
+            _label_7: 
+                goto _label_6;
+            };
+            while (KernelEventsManager.getInstance().processCallback(HookList.SubscribersList, subGiftList), true)
             {
-                if (xmlString.substring(1, 9) == "newsList")
-                {
-                    id = 0;
-                    for each (news in xml..news)
-                    {
-                        if (news.@id > id)
-                        {
-                            goto _label_10;
-                            
-                        _label_8: 
-                            continue;
-                            
-                        _label_9: 
-                            id = news.@id;
-                            goto _label_8;
-                            var _local_5 = _local_5;
-                            
-                        _label_10: 
-                            text = news.text;
-                            link = news.link;
-                            goto _label_9;
-                        };
-                    };
-                    while (KernelEventsManager.getInstance().processCallback(HookList.NewsLogin, text, link), true)
-                    {
-                        return;
-                    };
-                    _local_0 = this;
-                };
+                return;
             };
             return;
         }
 
         private function onLoadError(e:ResourceErrorEvent):void
         {
-            goto _label_3;
+            while (true)
+            {
+                _log.error((((("Cannot load xml " + e.uri) + "(") + e.errorMsg) + ")"));
+                goto _label_1;
+            };
+            var _local_3 = _local_3;
             
         _label_1: 
-            return;
-            
-        _label_2: 
-            _log.error((((("Cannot load xml " + e.uri) + "(") + e.errorMsg) + ")"));
-            goto _label_1;
-            var _local_0 = this;
-            
-        _label_3: 
-            goto _label_2;
-            var _local_2 = _local_2;
             return;
         }
 

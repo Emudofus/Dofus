@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightResultFighterListEntry extends FightResultListEntry implements INetworkType 
     {
@@ -33,24 +33,24 @@
             this.alive = false;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightResultFighterListEntry(output);
         }
 
-        public function serializeAs_FightResultFighterListEntry(output:IDataOutput):void
+        public function serializeAs_FightResultFighterListEntry(output:ICustomDataOutput):void
         {
             super.serializeAs_FightResultListEntry(output);
             output.writeInt(this.id);
             output.writeBoolean(this.alive);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightResultFighterListEntry(input);
         }
 
-        public function deserializeAs_FightResultFighterListEntry(input:IDataInput):void
+        public function deserializeAs_FightResultFighterListEntry(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.id = input.readInt();

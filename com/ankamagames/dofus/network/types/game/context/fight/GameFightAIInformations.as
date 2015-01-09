@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import __AS3__.vec.Vector;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GameFightAIInformations extends GameFightFighterInformations implements INetworkType 
     {
@@ -17,9 +18,9 @@
             return (151);
         }
 
-        public function initGameFightAIInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null):GameFightAIInformations
+        public function initGameFightAIInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, previousPositions:Vector.<uint>=null):GameFightAIInformations
         {
-            super.initGameFightFighterInformations(contextualId, look, disposition, teamId, wave, alive, stats);
+            super.initGameFightFighterInformations(contextualId, look, disposition, teamId, wave, alive, stats, previousPositions);
             return (this);
         }
 
@@ -28,22 +29,22 @@
             super.reset();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameFightAIInformations(output);
         }
 
-        public function serializeAs_GameFightAIInformations(output:IDataOutput):void
+        public function serializeAs_GameFightAIInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameFightFighterInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameFightAIInformations(input);
         }
 
-        public function deserializeAs_GameFightAIInformations(input:IDataInput):void
+        public function deserializeAs_GameFightAIInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
         }

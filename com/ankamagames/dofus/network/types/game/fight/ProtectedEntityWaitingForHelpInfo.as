@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class ProtectedEntityWaitingForHelpInfo implements INetworkType 
     {
@@ -34,12 +34,12 @@
             this.nbPositionForDefensors = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ProtectedEntityWaitingForHelpInfo(output);
         }
 
-        public function serializeAs_ProtectedEntityWaitingForHelpInfo(output:IDataOutput):void
+        public function serializeAs_ProtectedEntityWaitingForHelpInfo(output:ICustomDataOutput):void
         {
             output.writeInt(this.timeLeftBeforeFight);
             output.writeInt(this.waitTimeForPlacement);
@@ -50,12 +50,12 @@
             output.writeByte(this.nbPositionForDefensors);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ProtectedEntityWaitingForHelpInfo(input);
         }
 
-        public function deserializeAs_ProtectedEntityWaitingForHelpInfo(input:IDataInput):void
+        public function deserializeAs_ProtectedEntityWaitingForHelpInfo(input:ICustomDataInput):void
         {
             this.timeLeftBeforeFight = input.readInt();
             this.waitTimeForPlacement = input.readInt();

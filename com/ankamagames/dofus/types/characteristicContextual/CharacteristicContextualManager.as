@@ -9,10 +9,11 @@
     import com.ankamagames.jerakine.entities.interfaces.IEntity;
     import flash.text.TextFormat;
     import com.ankamagames.berilia.Berilia;
+    import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
+    import com.ankamagames.berilia.components.Texture;
     import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
     import com.ankamagames.jerakine.interfaces.IRectangle;
     import com.ankamagames.jerakine.utils.display.StageShareManager;
-    import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
     import flash.utils.getTimer;
     import flash.display.DisplayObject;
     import flash.events.Event;
@@ -30,6 +31,7 @@
         private var _tweeningCount:uint;
         private var _tweenByEntities:Dictionary;
         private var _type:uint = 1;
+        private var _statsIcons:Dictionary;
 
         public function CharacteristicContextualManager()
         {
@@ -41,6 +43,7 @@
             this._bEnterFrameNeeded = true;
             this._tweeningCount = 0;
             this._tweenByEntities = new Dictionary(true);
+            this._statsIcons = new Dictionary(true);
         }
 
         public static function getInstance():CharacteristicContextualManager
@@ -106,6 +109,38 @@
             return (((txtCxt) ? txtCxt : txtSCxt));
         }
 
+        public function addStatContextualWithIcon(pIcon:Texture, pText:String, pEntity:IEntity, pTextFormat:TextFormat, pType:uint, pScrollSpeed:Number=1, pScrollDuration:Number=2500):void
+        {
+            var enterFrameNeeded:Boolean = this._bEnterFrameNeeded;
+            var statTxt:CharacteristicContextual = this.addStatContextual(pText, pEntity, pTextFormat, pType, pScrollSpeed, pScrollDuration);
+            if (statTxt)
+            {
+                this._statsIcons[statTxt] = pIcon;
+                pIcon.height = (pIcon.width = statTxt.height);
+                pIcon.alpha = 0;
+                Berilia.getInstance().strataLow.addChild(pIcon);
+                if (enterFrameNeeded)
+                {
+                    EnterFrameDispatcher.addEventListener(this.onIconScroll, "CharacteristicContextManagerIcon");
+                };
+            };
+        }
+
+        private function isIconDisplayed(pIcon:Texture, pCurrentContext:CharacteristicContextual):Boolean
+        {
+            var statTxt:*;
+            var iconDisplayed:Boolean;
+            for (statTxt in this._statsIcons)
+            {
+                if ((((this._statsIcons[statTxt] == pIcon)) && (!((statTxt == pCurrentContext)))))
+                {
+                    iconDisplayed = true;
+                    break;
+                };
+            };
+            return (iconDisplayed);
+        }
+
         private function removeStatContextual(nIndex:Number):void
         {
             var entity:CharacteristicContextual;
@@ -116,6 +151,14 @@
                 Berilia.getInstance().strataLow.removeChild(entity);
                 _aEntitiesTweening[nIndex] = null;
                 delete _aEntitiesTweening[nIndex];
+                if (this._statsIcons[entity])
+                {
+                    if (!(this.isIconDisplayed(this._statsIcons[entity], entity)))
+                    {
+                        Berilia.getInstance().strataLow.removeChild(this._statsIcons[entity]);
+                    };
+                    delete this._statsIcons[entity];
+                };
             };
         }
 
@@ -209,6 +252,7 @@
                                     {
                                         this._bEnterFrameNeeded = true;
                                         EnterFrameDispatcher.removeEventListener(this.onScroll);
+                                        EnterFrameDispatcher.removeEventListener(this.onIconScroll);
                                     };
                                 }
                                 else
@@ -221,6 +265,29 @@
                 };
             };
             _aEntitiesTweening = _aEntitiesTweening.concat(addToNextTween);
+        }
+
+        private function onIconScroll(pEvent:Event):void
+        {
+            var icon:Texture;
+            var statTxt:CharacteristicContextual;
+            var index:String;
+            var tweenData:TweenData;
+            for (index in _aEntitiesTweening)
+            {
+                tweenData = _aEntitiesTweening[index];
+                if (!!(tweenData))
+                {
+                    statTxt = tweenData.context;
+                    icon = this._statsIcons[statTxt];
+                    if (icon)
+                    {
+                        icon.alpha = statTxt.alpha;
+                        icon.y = statTxt.y;
+                        icon.x = (statTxt.x - icon.width);
+                    };
+                };
+            };
         }
 
 

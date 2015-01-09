@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class LivingObjectChangeSkinRequestMessage extends NetworkMessage implements INetworkMessage 
@@ -45,30 +46,30 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_LivingObjectChangeSkinRequestMessage(output);
         }
 
-        public function serializeAs_LivingObjectChangeSkinRequestMessage(output:IDataOutput):void
+        public function serializeAs_LivingObjectChangeSkinRequestMessage(output:ICustomDataOutput):void
         {
             if (this.livingUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.livingUID) + ") on element livingUID.")));
             };
-            output.writeInt(this.livingUID);
+            output.writeVarInt(this.livingUID);
             if ((((this.livingPosition < 0)) || ((this.livingPosition > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.livingPosition) + ") on element livingPosition.")));
@@ -78,17 +79,17 @@
             {
                 throw (new Error((("Forbidden value (" + this.skinId) + ") on element skinId.")));
             };
-            output.writeInt(this.skinId);
+            output.writeVarInt(this.skinId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_LivingObjectChangeSkinRequestMessage(input);
         }
 
-        public function deserializeAs_LivingObjectChangeSkinRequestMessage(input:IDataInput):void
+        public function deserializeAs_LivingObjectChangeSkinRequestMessage(input:ICustomDataInput):void
         {
-            this.livingUID = input.readInt();
+            this.livingUID = input.readVarUhInt();
             if (this.livingUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.livingUID) + ") on element of LivingObjectChangeSkinRequestMessage.livingUID.")));
@@ -98,7 +99,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.livingPosition) + ") on element of LivingObjectChangeSkinRequestMessage.livingPosition.")));
             };
-            this.skinId = input.readInt();
+            this.skinId = input.readVarUhInt();
             if (this.skinId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.skinId) + ") on element of LivingObjectChangeSkinRequestMessage.skinId.")));

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.friend
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FriendInformations extends AbstractContactInformations implements INetworkType 
     {
@@ -36,12 +36,12 @@
             this.achievementPoints = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FriendInformations(output);
         }
 
-        public function serializeAs_FriendInformations(output:IDataOutput):void
+        public function serializeAs_FriendInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_AbstractContactInformations(output);
             output.writeByte(this.playerState);
@@ -49,16 +49,16 @@
             {
                 throw (new Error((("Forbidden value (" + this.lastConnection) + ") on element lastConnection.")));
             };
-            output.writeInt(this.lastConnection);
+            output.writeVarShort(this.lastConnection);
             output.writeInt(this.achievementPoints);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FriendInformations(input);
         }
 
-        public function deserializeAs_FriendInformations(input:IDataInput):void
+        public function deserializeAs_FriendInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.playerState = input.readByte();
@@ -66,7 +66,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.playerState) + ") on element of FriendInformations.playerState.")));
             };
-            this.lastConnection = input.readInt();
+            this.lastConnection = input.readVarUhShort();
             if (this.lastConnection < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lastConnection) + ") on element of FriendInformations.lastConnection.")));

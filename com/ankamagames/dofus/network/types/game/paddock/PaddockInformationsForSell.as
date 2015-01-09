@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.paddock
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PaddockInformationsForSell implements INetworkType 
     {
@@ -46,12 +46,12 @@
             this.price = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PaddockInformationsForSell(output);
         }
 
-        public function serializeAs_PaddockInformationsForSell(output:IDataOutput):void
+        public function serializeAs_PaddockInformationsForSell(output:ICustomDataOutput):void
         {
             output.writeUTF(this.guildOwner);
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))
@@ -68,22 +68,22 @@
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
             output.writeByte(this.nbMount);
             output.writeByte(this.nbObject);
             if (this.price < 0)
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element price.")));
             };
-            output.writeInt(this.price);
+            output.writeVarInt(this.price);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PaddockInformationsForSell(input);
         }
 
-        public function deserializeAs_PaddockInformationsForSell(input:IDataInput):void
+        public function deserializeAs_PaddockInformationsForSell(input:ICustomDataInput):void
         {
             this.guildOwner = input.readUTF();
             this.worldX = input.readShort();
@@ -96,14 +96,14 @@
             {
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element of PaddockInformationsForSell.worldY.")));
             };
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of PaddockInformationsForSell.subAreaId.")));
             };
             this.nbMount = input.readByte();
             this.nbObject = input.readByte();
-            this.price = input.readInt();
+            this.price = input.readVarUhInt();
             if (this.price < 0)
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element of PaddockInformationsForSell.price.")));

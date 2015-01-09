@@ -5,8 +5,8 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.companion.PartyCompanionBaseInformations;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class PartyInvitationMemberInformations extends CharacterBaseInformations implements INetworkType 
@@ -52,12 +52,12 @@
             this.companions = new Vector.<PartyCompanionBaseInformations>();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PartyInvitationMemberInformations(output);
         }
 
-        public function serializeAs_PartyInvitationMemberInformations(output:IDataOutput):void
+        public function serializeAs_PartyInvitationMemberInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_CharacterBaseInformations(output);
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))
@@ -75,7 +75,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
             output.writeShort(this.companions.length);
             var _i5:uint;
             while (_i5 < this.companions.length)
@@ -85,12 +85,12 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PartyInvitationMemberInformations(input);
         }
 
-        public function deserializeAs_PartyInvitationMemberInformations(input:IDataInput):void
+        public function deserializeAs_PartyInvitationMemberInformations(input:ICustomDataInput):void
         {
             var _item5:PartyCompanionBaseInformations;
             super.deserialize(input);
@@ -105,7 +105,7 @@
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element of PartyInvitationMemberInformations.worldY.")));
             };
             this.mapId = input.readInt();
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of PartyInvitationMemberInformations.subAreaId.")));

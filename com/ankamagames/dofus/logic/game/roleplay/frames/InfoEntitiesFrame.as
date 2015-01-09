@@ -427,9 +427,12 @@
             else
             {
                 _local_3 = this.getEntity(e.id);
-                _local_3.visible = true;
-                _local_3.target = this.getBounds(e.id);
-                this.updateDisplayedEntityPosition(_local_3);
+                if (_local_3)
+                {
+                    _local_3.visible = true;
+                    _local_3.target = this.getBounds(e.id);
+                    this.updateDisplayedEntityPosition(_local_3);
+                };
             };
         }
 

@@ -3,9 +3,10 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
+    import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GameFightMutantInformations extends GameFightFighterNamedInformations implements INetworkType 
     {
@@ -20,9 +21,9 @@
             return (50);
         }
 
-        public function initGameFightMutantInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, name:String="", status:PlayerStatus=null, powerLevel:uint=0):GameFightMutantInformations
+        public function initGameFightMutantInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, wave:uint=0, alive:Boolean=false, stats:GameFightMinimalStats=null, previousPositions:Vector.<uint>=null, name:String="", status:PlayerStatus=null, powerLevel:uint=0):GameFightMutantInformations
         {
-            super.initGameFightFighterNamedInformations(contextualId, look, disposition, teamId, wave, alive, stats, name, status);
+            super.initGameFightFighterNamedInformations(contextualId, look, disposition, teamId, wave, alive, stats, previousPositions, name, status);
             this.powerLevel = powerLevel;
             return (this);
         }
@@ -33,12 +34,12 @@
             this.powerLevel = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameFightMutantInformations(output);
         }
 
-        public function serializeAs_GameFightMutantInformations(output:IDataOutput):void
+        public function serializeAs_GameFightMutantInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameFightFighterNamedInformations(output);
             if (this.powerLevel < 0)
@@ -48,12 +49,12 @@
             output.writeByte(this.powerLevel);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameFightMutantInformations(input);
         }
 
-        public function deserializeAs_GameFightMutantInformations(input:IDataInput):void
+        public function deserializeAs_GameFightMutantInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.powerLevel = input.readByte();

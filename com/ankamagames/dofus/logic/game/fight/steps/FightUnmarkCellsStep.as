@@ -41,6 +41,9 @@
                 case GameActionMarkTypeEnum.TRAP:
                     evt = FightEventEnum.TRAP_DISAPPEARED;
                     break;
+                case GameActionMarkTypeEnum.PORTAL:
+                    evt = FightEventEnum.PORTAL_DISAPPEARED;
+                    break;
                 default:
                     _log.warn((("Unknown mark type (" + mi.markType) + ")."));
             };

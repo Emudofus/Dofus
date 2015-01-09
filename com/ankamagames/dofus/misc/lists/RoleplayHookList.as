@@ -30,6 +30,7 @@
         public static const NpcDialogCreationFailure:Hook = new Hook("NpcDialogCreationFailure", false);
         public static const NpcDialogQuestion:Hook = new Hook("NpcDialogQuestion", false);
         public static const PortalDialogQuestion:Hook = new Hook("PortalDialogQuestion", false);
+        public static const GiftsWaitingAllocation:Hook = new Hook("GiftsWaitingAllocation", false);
 
 
     }

@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class GameRolePlayPlayerFightFriendlyAnsweredMessage extends NetworkMessage implements INetworkMessage 
@@ -48,53 +49,53 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(output);
         }
 
-        public function serializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(output:IDataOutput):void
+        public function serializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(output:ICustomDataOutput):void
         {
             output.writeInt(this.fightId);
             if (this.sourceId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.sourceId) + ") on element sourceId.")));
             };
-            output.writeInt(this.sourceId);
+            output.writeVarInt(this.sourceId);
             if (this.targetId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.targetId) + ") on element targetId.")));
             };
-            output.writeInt(this.targetId);
+            output.writeVarInt(this.targetId);
             output.writeBoolean(this.accept);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(input);
         }
 
-        public function deserializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(input:IDataInput):void
+        public function deserializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(input:ICustomDataInput):void
         {
             this.fightId = input.readInt();
-            this.sourceId = input.readInt();
+            this.sourceId = input.readVarUhInt();
             if (this.sourceId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.sourceId) + ") on element of GameRolePlayPlayerFightFriendlyAnsweredMessage.sourceId.")));
             };
-            this.targetId = input.readInt();
+            this.targetId = input.readVarUhInt();
             if (this.targetId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.targetId) + ") on element of GameRolePlayPlayerFightFriendlyAnsweredMessage.targetId.")));

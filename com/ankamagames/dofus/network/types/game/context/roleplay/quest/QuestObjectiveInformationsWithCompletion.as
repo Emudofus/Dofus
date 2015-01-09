@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class QuestObjectiveInformationsWithCompletion extends QuestObjectiveInformations implements INetworkType 
     {
@@ -34,40 +34,40 @@
             this.maxCompletion = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_QuestObjectiveInformationsWithCompletion(output);
         }
 
-        public function serializeAs_QuestObjectiveInformationsWithCompletion(output:IDataOutput):void
+        public function serializeAs_QuestObjectiveInformationsWithCompletion(output:ICustomDataOutput):void
         {
             super.serializeAs_QuestObjectiveInformations(output);
             if (this.curCompletion < 0)
             {
                 throw (new Error((("Forbidden value (" + this.curCompletion) + ") on element curCompletion.")));
             };
-            output.writeShort(this.curCompletion);
+            output.writeVarShort(this.curCompletion);
             if (this.maxCompletion < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxCompletion) + ") on element maxCompletion.")));
             };
-            output.writeShort(this.maxCompletion);
+            output.writeVarShort(this.maxCompletion);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_QuestObjectiveInformationsWithCompletion(input);
         }
 
-        public function deserializeAs_QuestObjectiveInformationsWithCompletion(input:IDataInput):void
+        public function deserializeAs_QuestObjectiveInformationsWithCompletion(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.curCompletion = input.readShort();
+            this.curCompletion = input.readVarUhShort();
             if (this.curCompletion < 0)
             {
                 throw (new Error((("Forbidden value (" + this.curCompletion) + ") on element of QuestObjectiveInformationsWithCompletion.curCompletion.")));
             };
-            this.maxCompletion = input.readShort();
+            this.maxCompletion = input.readVarUhShort();
             if (this.maxCompletion < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxCompletion) + ") on element of QuestObjectiveInformationsWithCompletion.maxCompletion.")));

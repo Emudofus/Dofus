@@ -21,6 +21,7 @@
     import com.ankamagames.jerakine.utils.system.AirScanner;
     import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.dofus.logic.common.frames.MiscFrame;
+    import com.ankamagames.dofus.network.messages.game.approach.AuthenticationTicketMessage;
     import com.ankamagames.dofus.network.messages.game.approach.AuthenticationTicketAcceptedMessage;
     import com.ankamagames.dofus.network.messages.game.approach.AuthenticationTicketRefusedMessage;
     import com.ankamagames.jerakine.network.messages.ServerConnectionFailedMessage;
@@ -39,35 +40,29 @@
     import com.ankamagames.dofus.network.messages.game.character.creation.CharacterNameSuggestionRequestMessage;
     import com.ankamagames.dofus.network.messages.game.character.creation.CharacterNameSuggestionSuccessMessage;
     import com.ankamagames.dofus.network.messages.game.character.creation.CharacterNameSuggestionFailureMessage;
-    import com.ankamagames.dofus.logic.game.approach.actions.CharacterRelookSelectionAction;
+    import com.ankamagames.dofus.logic.game.approach.actions.CharacterRemodelSelectionAction;
+    import com.ankamagames.dofus.network.types.game.character.choice.RemodelingInformation;
     import com.ankamagames.dofus.network.messages.security.ClientKeyMessage;
     import com.ankamagames.dofus.network.messages.game.context.GameContextCreateRequestMessage;
     import com.ankamagames.dofus.uiApi.SoundApi;
     import com.ankamagames.jerakine.lua.LuaPlayer;
-    import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectedErrorMissingMapPackMessage;
-    import com.ankamagames.dofus.datacenter.world.SubArea;
-    import com.ankamagames.dofus.datacenter.misc.Pack;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectedErrorMessage;
     import com.ankamagames.dofus.network.messages.game.basic.BasicTimeMessage;
     import com.ankamagames.dofus.network.messages.game.startup.StartupActionsListMessage;
     import com.ankamagames.dofus.network.messages.authorized.ConsoleCommandsListMessage;
-    import com.ankamagames.dofus.network.messages.game.approach.AuthenticationTicketMessage;
-    import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListWithModificationsMessage;
-    import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRecolorInformation;
-    import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRelookInformation;
+    import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListWithRemodelingMessage;
+    import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRemodelInformations;
     import com.ankamagames.dofus.network.types.game.character.choice.CharacterHardcoreOrEpicInformations;
     import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
     import com.ankamagames.dofus.network.messages.game.startup.StartupActionsExecuteMessage;
     import com.ankamagames.dofus.logic.game.approach.actions.CharacterSelectionAction;
-    import com.ankamagames.dofus.network.messages.game.character.replay.CharacterReplayWithRecolorRequestMessage;
-    import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectionWithRecolorMessage;
-    import com.ankamagames.dofus.network.messages.game.character.replay.CharacterReplayWithRenameRequestMessage;
-    import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectionWithRenameMessage;
-    import com.ankamagames.dofus.network.messages.game.character.replay.CharacterReplayWithRelookRequestMessage;
-    import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectionWithRelookMessage;
+    import com.ankamagames.dofus.network.messages.game.character.choice.CharacterReplayWithRemodelRequestMessage;
+    import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectionWithRemodelMessage;
+    import com.ankamagames.dofus.internalDatacenter.connection.CreationCharacterWrapper;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharacterFirstSelectionMessage;
     import com.ankamagames.dofus.network.messages.game.character.replay.CharacterReplayRequestMessage;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectionMessage;
+    import com.ankamagames.dofus.network.messages.security.RawDataMessage;
     import com.ankamagames.dofus.network.types.game.startup.StartupActionAddObject;
     import com.ankamagames.dofus.network.types.game.data.items.ObjectItemInformationWithQuantity;
     import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
@@ -91,15 +86,15 @@
     import com.ankamagames.dofus.network.enums.CharacterDeletionErrorEnum;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectedForceMessage;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharacterSelectedForceReadyMessage;
-    import com.ankamagames.dofus.logic.game.approach.actions.CharacterRecolorSelectionAction;
-    import com.ankamagames.dofus.logic.game.approach.actions.CharacterRenameSelectionAction;
     import com.ankamagames.dofus.logic.game.approach.actions.CharacterDeselectionAction;
     import com.ankamagames.dofus.logic.game.approach.actions.CharacterReplayRequestAction;
+    import com.ankamagames.dofus.network.enums.CharacterRemodelingEnum;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
     import com.ankamagames.jerakine.types.DataStoreType;
     import com.ankamagames.dofus.Constants;
     import com.ankamagames.dofus.externalnotification.ExternalNotificationManager;
     import com.ankamagames.dofus.misc.stats.StatisticsManager;
+    import by.blooddy.crypto.Base64;
     import com.ankamagames.dofus.logic.game.common.frames.WorldFrame;
     import com.ankamagames.dofus.logic.game.common.frames.AlignmentFrame;
     import com.ankamagames.dofus.logic.game.common.frames.SynchronisationFrame;
@@ -139,7 +134,6 @@
     import com.ankamagames.berilia.types.messages.AllModulesLoadedMessage;
     import com.ankamagames.jerakine.messages.ConnectionResumedMessage;
     import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
-    import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignCancelAction;
     import com.ankamagames.dofus.types.data.ServerCommand;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListRequestMessage;
     import __AS3__.vec.*;
@@ -151,29 +145,28 @@
         private static var _changeLogLoader:Loader = new Loader();
 
         private var _charactersList:Vector.<BasicCharacterWrapper>;
-        private var _charactersToRecolorList:Array;
-        private var _charactersToRenameList:Array;
-        private var _charactersToRelookList:Array;
-        private var _giftList:Array;
+        private var _charactersToRemodelList:Array;
         private var _kernel:KernelEventsManager;
         private var _gmaf:LoadingModuleFrame;
         private var _waitingMessages:Vector.<Message>;
         private var _cssmsg:CharacterSelectedSuccessMessage;
         private var _requestedCharacterId:uint;
+        private var _requestedToRemodelCharacterId:uint;
         private var _lc:LoaderContext;
         private var commonMod:Object;
+        private var _giftList:Array;
+        private var _charaListMinusDeadPeople:Array;
         private var _reconnectMsgSend:Boolean = false;
 
         public function GameServerApproachFrame()
         {
             this._charactersList = new Vector.<BasicCharacterWrapper>();
-            this._charactersToRecolorList = new Array();
-            this._charactersToRenameList = new Array();
-            this._charactersToRelookList = new Array();
-            this._giftList = new Array();
+            this._charactersToRemodelList = new Array();
             this._kernel = KernelEventsManager.getInstance();
             this._lc = new LoaderContext(false, ApplicationDomain.currentDomain);
             this.commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+            this._giftList = new Array();
+            this._charaListMinusDeadPeople = new Array();
             super();
         }
 
@@ -193,6 +186,16 @@
             return (Priority.NORMAL);
         }
 
+        public function get giftList():Array
+        {
+            return (this._giftList);
+        }
+
+        public function get charaListMinusDeadPeople():Array
+        {
+            return (this._charaListMinusDeadPeople);
+        }
+
         public function get requestedCharaId():uint
         {
             return (this._requestedCharacterId);
@@ -205,7 +208,7 @@
 
         public function isCharacterWaitingForChange(id:uint):Boolean
         {
-            if (this._charactersToRecolorList[id])
+            if (this._charactersToRemodelList[id])
             {
                 return (true);
             };
@@ -222,8 +225,8 @@
 
         public function process(msg:Message):Boolean
         {
-            var perso:* = undefined;
-            var color:* = undefined;
+            var perso:BasicCharacterWrapper;
+            var color:int;
             var characterId:int;
             var characterColors:Array;
             var characterName:String;
@@ -231,6 +234,7 @@
             var recolors:Vector.<int>;
             var isReplay:Boolean;
             var parts:Vector.<uint>;
+            var atmsg:AuthenticationTicketMessage;
             var atamsg:AuthenticationTicketAcceptedMessage;
             var atrmsg:AuthenticationTicketRefusedMessage;
             var scfMsg:ServerConnectionFailedMessage;
@@ -255,30 +259,22 @@
             var cnsrmsg:CharacterNameSuggestionRequestMessage;
             var cnssmsg:CharacterNameSuggestionSuccessMessage;
             var cnsfmsg:CharacterNameSuggestionFailureMessage;
-            var i:int;
-            var crlsa:CharacterRelookSelectionAction;
+            var crsa:CharacterRemodelSelectionAction;
+            var remodel:RemodelingInformation;
+            var tempColorsArray:Vector.<int>;
             var bTutorial:Boolean;
             var cssmsg:CharacterSelectedSuccessMessage;
             var flashKeyMsg:ClientKeyMessage;
             var gccrmsg:GameContextCreateRequestMessage;
             var soundApi:SoundApi;
             var luaPlayer:LuaPlayer;
-            var csemmpmsg:CharacterSelectedErrorMissingMapPackMessage;
-            var subArea:SubArea;
-            var pack:Pack;
             var csemsg:CharacterSelectedErrorMessage;
             var btmsg:BasicTimeMessage;
             var date:Date;
             var salm:StartupActionsListMessage;
             var cclMsg:ConsoleCommandsListMessage;
-            var atmsg:AuthenticationTicketMessage;
-            var clwrmsg:CharactersListWithModificationsMessage;
-            var ctrci:CharacterToRecolorInformation;
-            var ctrni:uint;
-            var ctrli:CharacterToRelookInformation;
-            var ctrid:int;
-            var charColors:Array;
-            var charRelookColors:Array;
+            var clwrmsg:CharactersListWithRemodelingMessage;
+            var ctri:CharacterToRemodelInformations;
             var chi:CharacterHardcoreOrEpicInformations;
             var cbi:CharacterBaseInformations;
             var bonusXp:int;
@@ -292,31 +288,30 @@
             var bChi:CharacterHardcoreOrEpicInformations;
             var bCbi:CharacterBaseInformations;
             var c:* = undefined;
-            var persoc:Object;
-            var crwrrmsg:CharacterReplayWithRecolorRequestMessage;
-            var cswrmsg:CharacterSelectionWithRecolorMessage;
-            var person:Object;
-            var crwrnrmsg:CharacterReplayWithRenameRequestMessage;
-            var cswrnmsg:CharacterSelectionWithRenameMessage;
+            var colorIndex:* = undefined;
             var person2:Object;
-            var crwrlrmsg:CharacterReplayWithRelookRequestMessage;
-            var cswrlmsg:CharacterSelectionWithRelookMessage;
-            var charToColor:* = undefined;
-            var charToRename2:Object;
-            var charToRelook:Object;
+            var crwrrmsg:CharacterReplayWithRemodelRequestMessage;
+            var cswrmsg:CharacterSelectionWithRemodelMessage;
+            var charToRemodel:Object;
+            var indexedColors:Vector.<int>;
+            var char:CreationCharacterWrapper;
+            var modificationModules:Array;
+            var mandatoryModules:Array;
             var firstSelection:Boolean;
             var cfsmsg:CharacterFirstSelectionMessage;
             var crrmsg:CharacterReplayRequestMessage;
             var csmsg:CharacterSelectionMessage;
+            var rdm:RawDataMessage;
             var gift:StartupActionAddObject;
             var _items:Array;
             var item:ObjectItemInformationWithQuantity;
             var oj:Object;
             var iw:ItemWrapper;
-            var charaListMinusDeadPeople:Array;
             var gar:GiftAssignRequestAction;
             var sao:StartupActionsObjetAttributionMessage;
             var safm:StartupActionFinishedMessage;
+            var indexToDelete:int;
+            var giftAction:Object;
             var cmdIndex:uint;
             switch (true)
             {
@@ -354,32 +349,12 @@
                 case (msg is CharactersListMessage):
                     clmsg = (msg as CharactersListMessage);
                     unusableCharacters = new Vector.<uint>();
-                    if ((msg is CharactersListWithModificationsMessage))
+                    if ((msg is CharactersListWithRemodelingMessage))
                     {
-                        clwrmsg = (msg as CharactersListWithModificationsMessage);
-                        for each (ctrci in clwrmsg.charactersToRecolor)
+                        clwrmsg = (msg as CharactersListWithRemodelingMessage);
+                        for each (ctri in clwrmsg.charactersToRemodel)
                         {
-                            charColors = this.getCharacterColorsInformations(ctrci);
-                            this._charactersToRecolorList[ctrci.id] = {
-                                "id":ctrci.id,
-                                "colors":charColors
-                            };
-                        };
-                        for each (ctrni in clwrmsg.charactersToRename)
-                        {
-                            this._charactersToRenameList.push(ctrni);
-                        };
-                        for each (ctrli in clwrmsg.charactersToRelook)
-                        {
-                            charRelookColors = this.getCharacterColorsInformations(ctrli);
-                            this._charactersToRelookList[ctrli.id] = {
-                                "cosmeticId":ctrli.cosmeticId,
-                                "colors":charRelookColors
-                            };
-                        };
-                        for each (ctrid in clwrmsg.unusableCharacters)
-                        {
-                            unusableCharacters.push(ctrid);
+                            this._charactersToRemodelList[ctri.id] = ctri;
                         };
                     };
                     this._charactersList = new Vector.<BasicCharacterWrapper>();
@@ -474,7 +449,7 @@
                     }
                     else
                     {
-                        this._kernel.processCallback(HookList.CharacterCreationStart, ["create", true]);
+                        this._kernel.processCallback(HookList.CharacterCreationStart, [["create"], true]);
                         this._kernel.processCallback(HookList.CharactersListUpdated, this._charactersList);
                     };
                     return (true);
@@ -507,7 +482,7 @@
                     this._kernel.processCallback(HookList.TutorielAvailable, accmsg.tutorialAvailable);
                     this._kernel.processCallback(HookList.BreedsAvailable, accmsg.breedsAvailable, accmsg.breedsVisible);
                     PlayerManager.getInstance().adminStatus = accmsg.status;
-                    KernelEventsManager.getInstance().processCallback(HookList.CharacterCreationStart, ["create"]);
+                    KernelEventsManager.getInstance().processCallback(HookList.CharacterCreationStart, [["create"]]);
                     return (true);
                 case (msg is CharacterCreationAction):
                     cca = (msg as CharacterCreationAction);
@@ -580,116 +555,29 @@
                         ConnectionsHandler.getConnection().send(new CharacterSelectedForceReadyMessage());
                     };
                     return (true);
-                case (msg is CharacterRecolorSelectionAction):
-                    if ((((PlayerManager.getInstance().server.gameTypeId == 1)) || ((PlayerManager.getInstance().server.gameTypeId == 4))))
+                case (msg is CharacterRemodelSelectionAction):
+                    crsa = (msg as CharacterRemodelSelectionAction);
+                    remodel = new RemodelingInformation();
+                    remodel.sex = crsa.sex;
+                    remodel.breed = crsa.breed;
+                    remodel.cosmeticId = crsa.cosmeticId;
+                    remodel.name = crsa.name;
+                    tempColorsArray = new Vector.<int>();
+                    for (colorIndex in crsa.colors)
                     {
-                        for each (persoc in this._charactersList)
+                        color = crsa.colors[colorIndex];
+                        if (color >= 0)
                         {
-                            if (persoc.id == (msg as CharacterRecolorSelectionAction).characterId)
-                            {
-                                if (persoc.deathState == 1)
-                                {
-                                    isReplay = true;
-                                }
-                                else
-                                {
-                                    if (persoc.deathState == 0)
-                                    {
-                                        isReplay = false;
-                                    }
-                                    else
-                                    {
-                                        this.commonMod.openPopup(I18n.getUiText("ui.common.error"), I18n.getUiText("ui.common.cantSelectThisCharacterLimb"), [I18n.getUiText("ui.common.ok")]);
-                                    };
-                                };
-                            };
+                            color = (color & 0xFFFFFF);
+                            tempColorsArray.push((color | ((int(colorIndex) + 1) << 24)));
                         };
-                    }
-                    else
-                    {
-                        isReplay = false;
                     };
-                    characterId = (msg as CharacterRecolorSelectionAction).characterId;
-                    characterColors = (msg as CharacterRecolorSelectionAction).characterColors;
-                    recolors = new Vector.<int>();
-                    i = 0;
-                    i = 0;
-                    while ((recolors.length < ProtocolConstantsEnum.MAX_PLAYER_COLOR))
-                    {
-                        if (characterColors[i] != null)
-                        {
-                            recolors.push(characterColors[i]);
-                        }
-                        else
-                        {
-                            recolors.push(-1);
-                        };
-                        i = (i + 1);
-                    };
-                    if (isReplay)
-                    {
-                        crwrrmsg = new CharacterReplayWithRecolorRequestMessage();
-                        crwrrmsg.initCharacterReplayWithRecolorRequestMessage(characterId, recolors);
-                        ConnectionsHandler.getConnection().send(crwrrmsg);
-                    }
-                    else
-                    {
-                        cswrmsg = new CharacterSelectionWithRecolorMessage();
-                        cswrmsg.initCharacterSelectionWithRecolorMessage(characterId, recolors);
-                        ConnectionsHandler.getConnection().send(cswrmsg);
-                    };
-                    return (true);
-                case (msg is CharacterRenameSelectionAction):
-                    if ((((PlayerManager.getInstance().server.gameTypeId == 1)) || ((PlayerManager.getInstance().server.gameTypeId == 4))))
-                    {
-                        for each (person in this._charactersList)
-                        {
-                            if (person.id == (msg as CharacterRenameSelectionAction).characterId)
-                            {
-                                if (person.deathState == 1)
-                                {
-                                    isReplay = true;
-                                }
-                                else
-                                {
-                                    if (person.deathState == 0)
-                                    {
-                                        isReplay = false;
-                                    }
-                                    else
-                                    {
-                                        this.commonMod.openPopup(I18n.getUiText("ui.common.error"), I18n.getUiText("ui.common.cantSelectThisCharacterLimb"), [I18n.getUiText("ui.common.ok")]);
-                                    };
-                                };
-                            };
-                        };
-                    }
-                    else
-                    {
-                        isReplay = false;
-                    };
-                    characterId = (msg as CharacterRenameSelectionAction).characterId;
-                    characterName = (msg as CharacterRenameSelectionAction).characterName;
-                    if (isReplay)
-                    {
-                        crwrnrmsg = new CharacterReplayWithRenameRequestMessage();
-                        crwrnrmsg.initCharacterReplayWithRenameRequestMessage(characterId, characterName);
-                        ConnectionsHandler.getConnection().send(crwrnrmsg);
-                    }
-                    else
-                    {
-                        cswrnmsg = new CharacterSelectionWithRenameMessage();
-                        cswrnmsg.initCharacterSelectionWithRenameMessage(characterId, characterName);
-                        ConnectionsHandler.getConnection().send(cswrnmsg);
-                    };
-                    return (true);
-                case (msg is CharacterRelookSelectionAction):
-                    crlsa = (msg as CharacterRelookSelectionAction);
+                    remodel.colors = tempColorsArray;
                     if ((((PlayerManager.getInstance().server.gameTypeId == 1)) || ((PlayerManager.getInstance().server.gameTypeId == 4))))
                     {
                         for each (person2 in this._charactersList)
                         {
-                            if (person2.id == crlsa.characterId)
+                            if (person2.id == this._requestedToRemodelCharacterId)
                             {
                                 if (person2.deathState == 1)
                                 {
@@ -713,19 +601,17 @@
                     {
                         isReplay = false;
                     };
-                    characterId = crlsa.characterId;
-                    characterHead = crlsa.characterHead;
                     if (isReplay)
                     {
-                        crwrlrmsg = new CharacterReplayWithRelookRequestMessage();
-                        crwrlrmsg.initCharacterReplayWithRelookRequestMessage(characterId, characterHead);
-                        ConnectionsHandler.getConnection().send(crwrlrmsg);
+                        crwrrmsg = new CharacterReplayWithRemodelRequestMessage();
+                        crwrrmsg.initCharacterReplayWithRemodelRequestMessage(this._requestedToRemodelCharacterId, remodel);
+                        ConnectionsHandler.getConnection().send(crwrrmsg);
                     }
                     else
                     {
-                        cswrlmsg = new CharacterSelectionWithRelookMessage();
-                        cswrlmsg.initCharacterSelectionWithRelookMessage(characterId, characterHead);
-                        ConnectionsHandler.getConnection().send(cswrlmsg);
+                        cswrmsg = new CharacterSelectionWithRemodelMessage();
+                        cswrmsg.initCharacterSelectionWithRemodelMessage(this._requestedToRemodelCharacterId, remodel);
+                        ConnectionsHandler.getConnection().send(cswrmsg);
                     };
                     return (true);
                 case (msg is CharacterDeselectionAction):
@@ -754,67 +640,85 @@
                         };
                     };
                     this._requestedCharacterId = characterId;
-                    if (this._charactersToRecolorList[characterId])
+                    if (this._charactersToRemodelList[characterId])
                     {
+                        this._requestedToRemodelCharacterId = characterId;
+                        charToRemodel = this._charactersToRemodelList[characterId];
+                        indexedColors = this.getCharacterColorsInformations(charToRemodel);
+                        char = CreationCharacterWrapper.create(charToRemodel.name, charToRemodel.sex, charToRemodel.breed, charToRemodel.cosmeticId, indexedColors);
                         for each (perso in this._charactersList)
                         {
                             if (perso.id == characterId)
                             {
-                                charToColor = perso;
+                                char.entityLook = perso.entityLook;
                             };
                         };
-                        this._kernel.processCallback(HookList.CharacterCreationStart, new Array("recolor", charToColor, this._charactersToRecolorList[characterId].colors));
+                        modificationModules = new Array();
+                        if ((charToRemodel.possibleChangeMask & CharacterRemodelingEnum.CHARACTER_REMODELING_BREED) > 0)
+                        {
+                            modificationModules.push("rebreed");
+                        };
+                        if ((charToRemodel.possibleChangeMask & CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS) > 0)
+                        {
+                            modificationModules.push("recolor");
+                        };
+                        if ((charToRemodel.possibleChangeMask & CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC) > 0)
+                        {
+                            modificationModules.push("relook");
+                        };
+                        if ((charToRemodel.possibleChangeMask & CharacterRemodelingEnum.CHARACTER_REMODELING_NAME) > 0)
+                        {
+                            modificationModules.push("rename");
+                        };
+                        if ((charToRemodel.possibleChangeMask & CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER) > 0)
+                        {
+                            modificationModules.push("regender");
+                        };
+                        mandatoryModules = new Array();
+                        if ((charToRemodel.mandatoryChangeMask & CharacterRemodelingEnum.CHARACTER_REMODELING_BREED) > 0)
+                        {
+                            mandatoryModules.push("rebreed");
+                        };
+                        if ((charToRemodel.mandatoryChangeMask & CharacterRemodelingEnum.CHARACTER_REMODELING_COLORS) > 0)
+                        {
+                            mandatoryModules.push("recolor");
+                        };
+                        if ((charToRemodel.mandatoryChangeMask & CharacterRemodelingEnum.CHARACTER_REMODELING_COSMETIC) > 0)
+                        {
+                            mandatoryModules.push("relook");
+                        };
+                        if ((charToRemodel.mandatoryChangeMask & CharacterRemodelingEnum.CHARACTER_REMODELING_NAME) > 0)
+                        {
+                            mandatoryModules.push("rename");
+                        };
+                        if ((charToRemodel.mandatoryChangeMask & CharacterRemodelingEnum.CHARACTER_REMODELING_GENDER) > 0)
+                        {
+                            mandatoryModules.push("regender");
+                        };
+                        this._kernel.processCallback(HookList.CharacterCreationStart, new Array(modificationModules, mandatoryModules, char));
                     }
                     else
                     {
-                        if (this._charactersToRenameList.indexOf(characterId) != -1)
+                        firstSelection = bTutorial;
+                        if (bTutorial)
                         {
-                            for each (perso in this._charactersList)
-                            {
-                                if (perso.id == characterId)
-                                {
-                                    charToRename2 = perso;
-                                };
-                            };
-                            this._kernel.processCallback(HookList.CharacterCreationStart, new Array("rename", charToRename2));
+                            cfsmsg = new CharacterFirstSelectionMessage();
+                            cfsmsg.initCharacterFirstSelectionMessage(characterId, true);
+                            ConnectionsHandler.getConnection().send(cfsmsg);
                         }
                         else
                         {
-                            if (this._charactersToRelookList[characterId])
+                            if (isReplay)
                             {
-                                for each (perso in this._charactersList)
-                                {
-                                    if (perso.id == characterId)
-                                    {
-                                        charToRelook = perso;
-                                    };
-                                };
-                                this._kernel.processCallback(HookList.CharacterCreationStart, new Array("relook", charToRelook, this._charactersToRelookList[characterId].colors, this._charactersToRelookList[characterId].cosmeticId));
+                                crrmsg = new CharacterReplayRequestMessage();
+                                crrmsg.initCharacterReplayRequestMessage(characterId);
+                                ConnectionsHandler.getConnection().send(crrmsg);
                             }
                             else
                             {
-                                firstSelection = bTutorial;
-                                if (bTutorial)
-                                {
-                                    cfsmsg = new CharacterFirstSelectionMessage();
-                                    cfsmsg.initCharacterFirstSelectionMessage(characterId, true);
-                                    ConnectionsHandler.getConnection().send(cfsmsg);
-                                }
-                                else
-                                {
-                                    if (isReplay)
-                                    {
-                                        crrmsg = new CharacterReplayRequestMessage();
-                                        crrmsg.initCharacterReplayRequestMessage(characterId);
-                                        ConnectionsHandler.getConnection().send(crrmsg);
-                                    }
-                                    else
-                                    {
-                                        csmsg = new CharacterSelectionMessage();
-                                        csmsg.initCharacterSelectionMessage(characterId);
-                                        ConnectionsHandler.getConnection().send(csmsg);
-                                    };
-                                };
+                                csmsg = new CharacterSelectionMessage();
+                                csmsg.initCharacterSelectionMessage(characterId);
+                                ConnectionsHandler.getConnection().send(csmsg);
                             };
                         };
                     };
@@ -853,6 +757,9 @@
                     {
                         _changeLogLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onChangeLogError);
                         _changeLogLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onChangeLogLoaded);
+                        rdm = new RawDataMessage();
+                        rdm.initRawDataMessage(Base64.decode(I18n.getUiText("ui.link.changelog")));
+                        Kernel.getWorker().process(rdm);
                     }
                     catch(e:Error)
                     {
@@ -934,17 +841,6 @@
                     return (true);
                 case (msg is ConnectionResumedMessage):
                     return (true);
-                case (msg is CharacterSelectedErrorMissingMapPackMessage):
-                    csemmpmsg = (msg as CharacterSelectedErrorMissingMapPackMessage);
-                    subArea = SubArea.getSubAreaById(csemmpmsg.subAreaId);
-                    pack = Pack.getPackById(subArea.packId);
-                    if (pack.name == "subscribed")
-                    {
-                        PartManager.getInstance().checkAndDownload("all");
-                    };
-                    PartManager.getInstance().checkAndDownload(pack.name);
-                    KernelEventsManager.getInstance().processCallback(HookList.PackRestrictedSubArea, csemmpmsg.subAreaId);
-                    return (true);
                 case (msg is CharacterSelectedErrorMessage):
                     csemsg = (msg as CharacterSelectedErrorMessage);
                     this._kernel.processCallback(HookList.CharacterImpossibleSelection, this._requestedCharacterId);
@@ -960,6 +856,7 @@
                     return (true);
                 case (msg is StartupActionsListMessage):
                     salm = (msg as StartupActionsListMessage);
+                    this._giftList = new Array();
                     for each (gift in salm.actions)
                     {
                         _items = new Array();
@@ -978,28 +875,21 @@
                     };
                     if (this._giftList.length)
                     {
-                        charaListMinusDeadPeople = new Array();
+                        this._charaListMinusDeadPeople = new Array();
                         for each (perso in this._charactersList)
                         {
                             if (((!(perso.deathState)) || ((perso.deathState == 0))))
                             {
-                                charaListMinusDeadPeople.push(perso);
+                                this._charaListMinusDeadPeople.push(perso);
                             };
                         };
-                        if (charaListMinusDeadPeople.length > 0)
+                        if (!(Berilia.getInstance().getUi("characterSelection")))
                         {
-                            this._kernel.processCallback(HookList.GiftList, this._giftList, charaListMinusDeadPeople);
+                            this._kernel.processCallback(HookList.CharacterSelectionStart, this._charactersList);
                         }
                         else
                         {
-                            if (!(Berilia.getInstance().getUi("characterSelection")))
-                            {
-                                this._kernel.processCallback(HookList.CharacterSelectionStart, this._charactersList);
-                            }
-                            else
-                            {
-                                this._kernel.processCallback(HookList.CharactersListUpdated, this._charactersList);
-                            };
+                            this._kernel.processCallback(HookList.CharactersListUpdated, this._charactersList);
                         };
                     }
                     else
@@ -1014,21 +904,21 @@
                     sao.initStartupActionsObjetAttributionMessage(gar.giftId, gar.characterId);
                     ConnectionsHandler.getConnection().send(sao);
                     return (true);
-                case (msg is GiftAssignCancelAction):
-                    if (!(Berilia.getInstance().getUi("characterSelection")))
-                    {
-                        this._kernel.processCallback(HookList.CharacterSelectionStart, this._charactersList);
-                        return (true);
-                    };
                 case (msg is StartupActionFinishedMessage):
                     safm = (msg as StartupActionFinishedMessage);
-                    KernelEventsManager.getInstance().processCallback(HookList.GiftAssigned, safm.actionId);
-                    if (safm.actionId == this._giftList[0].uid)
+                    indexToDelete = -1;
+                    for each (giftAction in this._giftList)
                     {
-                        if (!(Berilia.getInstance().getUi("characterSelection")))
+                        if (giftAction.uid == safm.actionId)
                         {
-                            this._kernel.processCallback(HookList.CharacterSelectionStart, this._charactersList);
+                            indexToDelete = this._giftList.indexOf(giftAction);
+                            break;
                         };
+                    };
+                    if (indexToDelete > -1)
+                    {
+                        this._giftList.splice(indexToDelete, 1);
+                        KernelEventsManager.getInstance().processCallback(HookList.GiftAssigned, safm.actionId);
                     };
                     return (true);
                 case (msg is ConsoleCommandsListMessage):
@@ -1049,15 +939,21 @@
             return (true);
         }
 
-        private function getCharacterColorsInformations(ctrci:*):Array
+        private function getCharacterColorsInformations(ctrci:*):Vector.<int>
         {
             var uIndexedColor:Number;
             var uIndex:int;
             var uColor:int;
-            var charColors:Array = new Array(-1, -1, -1, -1, -1);
             if (((!(ctrci)) || (!(ctrci.colors))))
             {
                 return (null);
+            };
+            var charColors:Vector.<int> = new Vector.<int>();
+            var ic:int;
+            while (ic < ProtocolConstantsEnum.MAX_PLAYER_COLOR)
+            {
+                charColors.push(-1);
+                ic++;
             };
             var num:int = ctrci.colors.length;
             var i:int;

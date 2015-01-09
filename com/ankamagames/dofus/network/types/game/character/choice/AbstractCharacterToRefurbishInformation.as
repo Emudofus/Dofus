@@ -3,8 +3,8 @@
     import com.ankamagames.dofus.network.types.game.character.AbstractCharacterInformation;
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -42,12 +42,12 @@
             this.cosmeticId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AbstractCharacterToRefurbishInformation(output);
         }
 
-        public function serializeAs_AbstractCharacterToRefurbishInformation(output:IDataOutput):void
+        public function serializeAs_AbstractCharacterToRefurbishInformation(output:ICustomDataOutput):void
         {
             super.serializeAs_AbstractCharacterInformation(output);
             output.writeShort(this.colors.length);
@@ -61,15 +61,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.cosmeticId) + ") on element cosmeticId.")));
             };
-            output.writeInt(this.cosmeticId);
+            output.writeVarInt(this.cosmeticId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AbstractCharacterToRefurbishInformation(input);
         }
 
-        public function deserializeAs_AbstractCharacterToRefurbishInformation(input:IDataInput):void
+        public function deserializeAs_AbstractCharacterToRefurbishInformation(input:ICustomDataInput):void
         {
             var _val1:int;
             super.deserialize(input);
@@ -81,7 +81,7 @@
                 this.colors.push(_val1);
                 _i1++;
             };
-            this.cosmeticId = input.readInt();
+            this.cosmeticId = input.readVarUhInt();
             if (this.cosmeticId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.cosmeticId) + ") on element of AbstractCharacterToRefurbishInformation.cosmeticId.")));

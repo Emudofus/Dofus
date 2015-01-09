@@ -4,7 +4,6 @@
     import flash.utils.ByteArray;
     import flash.filesystem.FileStream;
     import flash.filesystem.File;
-    import com.ankamagames.jerakine.utils.misc.StringUtils;
     import flash.events.FileListEvent;
     import flash.events.Event;
     import flash.events.IOErrorEvent;
@@ -51,7 +50,6 @@
                 relativeFilePath = relativeFilePath.substring(0, relativeFilePath.indexOf("?"));
             };
             relativeFilePath = decodeURI(relativeFilePath);
-            relativeFilePath = StringUtils.convertLatinToUtf(relativeFilePath);
             if (((!((relativeFilePath.indexOf("../") == -1))) || (!((relativeFilePath.indexOf("..\\") == -1)))))
             {
                 this.throw403();

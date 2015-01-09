@@ -8,9 +8,14 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.internalDatacenter.guild.AllianceWrapper;
     import com.ankamagames.dofus.internalDatacenter.guild.GuildWrapper;
+    import flash.utils.ByteArray;
+    import com.ankamagames.jerakine.utils.crypto.Signature;
     import com.ankamagames.dofus.logic.common.managers.PlayerManager;
     import com.ankamagames.dofus.BuildInfos;
     import com.ankamagames.dofus.network.enums.BuildTypeEnum;
+    import com.ankamagames.jerakine.data.XmlConfig;
+    import com.ankamagames.jerakine.utils.crypto.Base64;
+    import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
     import com.ankamagames.dofus.network.messages.game.guild.GuildVersatileInfoListMessage;
     import com.ankamagames.dofus.network.messages.game.guild.GuildListMessage;
@@ -51,9 +56,51 @@
 
         public function SocialDataFrame()
         {
+            var output:ByteArray;
+            var signedData:ByteArray;
+            var signature:Signature;
+            var signatureIsValid:Boolean;
+            this._guildList = new Vector.<GuildWrapper>();
+            super();
             AllianceWrapper.clearCache();
             var serverId:int = PlayerManager.getInstance().server.id;
-            var base_url:String = (((BuildInfos.BUILD_TYPE >= BuildTypeEnum.TESTING)) ? (LOCAL_URL) : ONLINE_URL);
+            var base_url:String = (((BuildInfos.BUILD_TYPE >= BuildTypeEnum.TESTING)) ? LOCAL_URL : ONLINE_URL);
+            var configGameExport:String = XmlConfig.getInstance().getEntry("config.gameExport");
+            if (configGameExport)
+            {
+                if (BuildInfos.BUILD_TYPE <= BuildTypeEnum.TESTING)
+                {
+                    if (XmlConfig.getInstance().getEntry("config.gameExport.signature"))
+                    {
+                        output = new ByteArray();
+                        try
+                        {
+                            signedData = Base64.decodeToByteArray(XmlConfig.getInstance().getEntry("config.gameExport.signature"));
+                            signedData.position = signedData.length;
+                            signedData.writeUTFBytes(configGameExport);
+                            signedData.position = 0;
+                            signature = new Signature(SignedFileAdapter.defaultSignatureKey);
+                            signatureIsValid = signature.verify(signedData, output);
+                        }
+                        catch(error:Error)
+                        {
+                            _log.error("gameExport signature has not been properly encoded in Base64.");
+                        };
+                        if (signatureIsValid)
+                        {
+                            base_url = configGameExport;
+                        };
+                    }
+                    else
+                    {
+                        _log.error("gameExport needs to be signed!");
+                    };
+                }
+                else
+                {
+                    base_url = configGameExport;
+                };
+            };
             this._urlAllianceList = new Uri((((base_url + "AllianceListMessage.") + serverId) + ".data"));
             this._urlAllianceVersatileList = new Uri((((base_url + "AllianceVersatileInfoListMessage.") + serverId) + ".data"));
             this._urlGuildList = new Uri((((base_url + "GuildListMessage.") + serverId) + ".data"));

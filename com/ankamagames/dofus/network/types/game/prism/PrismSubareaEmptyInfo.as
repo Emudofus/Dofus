@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.prism
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PrismSubareaEmptyInfo implements INetworkType 
     {
@@ -31,38 +31,38 @@
             this.allianceId = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PrismSubareaEmptyInfo(output);
         }
 
-        public function serializeAs_PrismSubareaEmptyInfo(output:IDataOutput):void
+        public function serializeAs_PrismSubareaEmptyInfo(output:ICustomDataOutput):void
         {
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
             if (this.allianceId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.allianceId) + ") on element allianceId.")));
             };
-            output.writeInt(this.allianceId);
+            output.writeVarInt(this.allianceId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PrismSubareaEmptyInfo(input);
         }
 
-        public function deserializeAs_PrismSubareaEmptyInfo(input:IDataInput):void
+        public function deserializeAs_PrismSubareaEmptyInfo(input:ICustomDataInput):void
         {
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of PrismSubareaEmptyInfo.subAreaId.")));
             };
-            this.allianceId = input.readInt();
+            this.allianceId = input.readVarUhInt();
             if (this.allianceId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.allianceId) + ") on element of PrismSubareaEmptyInfo.allianceId.")));

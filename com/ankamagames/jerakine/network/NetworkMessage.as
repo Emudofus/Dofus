@@ -1,10 +1,10 @@
 ﻿package com.ankamagames.jerakine.network
 {
     import com.ankamagames.jerakine.scrambling.ScramblableElement;
-    import flash.utils.IDataOutput;
     import flash.utils.ByteArray;
     import com.ankamagames.jerakine.utils.errors.AbstractMethodCallError;
     import flash.utils.IDataInput;
+    import flash.utils.IDataOutput;
     import flash.utils.getQualifiedClassName;
 
     public class NetworkMessage extends ScramblableElement implements INetworkMessage 
@@ -24,7 +24,7 @@
             super();
         }
 
-        public static function writePacket(output:IDataOutput, id:int, data:ByteArray):void
+        public static function writePacket(output:ICustomDataOutput, id:int, data:ByteArray):void
         {
             var _local_5:uint;
             var _local_6:uint;
@@ -88,12 +88,12 @@
             throw (new AbstractMethodCallError());
         }
 
-        public function pack(output:IDataOutput):void
+        public function pack(output:ICustomDataOutput):void
         {
             throw (new AbstractMethodCallError());
         }
 
-        public function unpack(input:IDataInput, length:uint):void
+        public function unpack(input:ICustomDataInput, length:uint):void
         {
             throw (new AbstractMethodCallError());
         }

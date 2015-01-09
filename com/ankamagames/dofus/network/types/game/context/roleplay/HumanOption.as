@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class HumanOption implements INetworkType 
@@ -25,19 +25,19 @@
         {
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
         }
 
-        public function serializeAs_HumanOption(output:IDataOutput):void
+        public function serializeAs_HumanOption(output:ICustomDataOutput):void
         {
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
         }
 
-        public function deserializeAs_HumanOption(input:IDataInput):void
+        public function deserializeAs_HumanOption(input:ICustomDataInput):void
         {
         }
 

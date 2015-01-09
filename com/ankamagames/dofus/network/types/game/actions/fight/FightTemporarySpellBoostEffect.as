@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.actions.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class FightTemporarySpellBoostEffect extends FightTemporaryBoostEffect implements INetworkType 
@@ -31,30 +31,30 @@
             this.boostedSpellId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightTemporarySpellBoostEffect(output);
         }
 
-        public function serializeAs_FightTemporarySpellBoostEffect(output:IDataOutput):void
+        public function serializeAs_FightTemporarySpellBoostEffect(output:ICustomDataOutput):void
         {
             super.serializeAs_FightTemporaryBoostEffect(output);
             if (this.boostedSpellId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.boostedSpellId) + ") on element boostedSpellId.")));
             };
-            output.writeShort(this.boostedSpellId);
+            output.writeVarShort(this.boostedSpellId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightTemporarySpellBoostEffect(input);
         }
 
-        public function deserializeAs_FightTemporarySpellBoostEffect(input:IDataInput):void
+        public function deserializeAs_FightTemporarySpellBoostEffect(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.boostedSpellId = input.readShort();
+            this.boostedSpellId = input.readVarUhShort();
             if (this.boostedSpellId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.boostedSpellId) + ") on element of FightTemporarySpellBoostEffect.boostedSpellId.")));

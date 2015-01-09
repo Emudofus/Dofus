@@ -774,7 +774,7 @@
 
         private function compareIngredients(way:int=1):Function
         {
-            return (function (a:Recipe, b:Recipe):Number
+            return (function (a:*, b:*):Number
             {
                 var aL:* = a.ingredientIds.length;
                 var bL:* = b.ingredientIds.length;
@@ -792,7 +792,7 @@
 
         private function compareLevel(way:int=1):Function
         {
-            return (function (a:Recipe, b:Recipe):Number
+            return (function (a:*, b:*):Number
             {
                 if (a.resultLevel < b.resultLevel)
                 {
@@ -808,7 +808,7 @@
 
         private function comparePrice(way:int=1):Function
         {
-            return (function (a:Recipe, b:Recipe):Number
+            return (function (a:*, b:*):Number
             {
                 var aL:* = averagePricesFrame.pricesData.items[("item" + a.resultId)];
                 var bL:* = averagePricesFrame.pricesData.items[("item" + b.resultId)];

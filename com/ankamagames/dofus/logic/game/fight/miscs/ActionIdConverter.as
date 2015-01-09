@@ -401,8 +401,11 @@
         public static const ACTION_FIGHT_UNSET_STATE:int = 951;
         public static const ACTION_CREATED_SINCE:int = 963;
         public static const ACTION_SHOW_PLAYERNAME:int = 964;
+        public static const ACTION_SUMMON_BOMB:int = 1008;
+        public static const ACTION_SUMMON_SLAVE:int = 1011;
         public static const ACTION_BOOST_GLOBAL_RESISTS_BONUS:int = 1076;
         public static const ACTION_BOOST_GLOBAL_RESISTS_MALUS:int = 1077;
+        public static const ACTION_FIGHT_DISABLE_PORTAL:int = 1183;
         private static var _actionInfos:Array;
         private static var _initialized:Boolean = false;
 
@@ -508,6 +511,7 @@
                 _actionInfos[ACTION_BOOST_GLOBAL_RESISTS_BONUS] = ["globalResistPercentBonus", true];
                 _actionInfos[ACTION_BOOST_GLOBAL_RESISTS_MALUS] = ["globalResistPercentMalus", true];
                 _actionInfos[ACTION_BOOST_PUSH_DMG] = ["pushDamageBonus", true];
+                _actionInfos[ACTION_CHARACTER_MAKE_INVISIBLE] = ["invisibilityState", true];
                 _initialized = true;
             };
         }

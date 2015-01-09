@@ -5,8 +5,9 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -58,24 +59,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeBidHouseInListAddedMessage(output);
         }
 
-        public function serializeAs_ExchangeBidHouseInListAddedMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeBidHouseInListAddedMessage(output:ICustomDataOutput):void
         {
             output.writeInt(this.itemUID);
             output.writeInt(this.objGenericId);
@@ -95,17 +96,17 @@
                 {
                     throw (new Error((("Forbidden value (" + this.prices[_i4]) + ") on element 4 (starting at 1) of prices.")));
                 };
-                output.writeInt(this.prices[_i4]);
+                output.writeVarInt(this.prices[_i4]);
                 _i4++;
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeBidHouseInListAddedMessage(input);
         }
 
-        public function deserializeAs_ExchangeBidHouseInListAddedMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeBidHouseInListAddedMessage(input:ICustomDataInput):void
         {
             var _id3:uint;
             var _item3:ObjectEffect;
@@ -126,7 +127,7 @@
             var _i4:uint;
             while (_i4 < _pricesLen)
             {
-                _val4 = input.readInt();
+                _val4 = input.readVarUhInt();
                 if (_val4 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val4) + ") on elements of prices.")));

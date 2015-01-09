@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.look
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class SubEntity implements INetworkType 
     {
@@ -39,12 +39,12 @@
             this.subEntityLook = new EntityLook();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_SubEntity(output);
         }
 
-        public function serializeAs_SubEntity(output:IDataOutput):void
+        public function serializeAs_SubEntity(output:ICustomDataOutput):void
         {
             output.writeByte(this.bindingPointCategory);
             if (this.bindingPointIndex < 0)
@@ -55,12 +55,12 @@
             this.subEntityLook.serializeAs_EntityLook(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_SubEntity(input);
         }
 
-        public function deserializeAs_SubEntity(input:IDataInput):void
+        public function deserializeAs_SubEntity(input:ICustomDataInput):void
         {
             this.bindingPointCategory = input.readByte();
             if (this.bindingPointCategory < 0)

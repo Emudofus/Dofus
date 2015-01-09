@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.context.MapCoordinatesExtended;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class AtlasPointsInformations implements INetworkType 
@@ -39,12 +39,12 @@
             this.coords = new Vector.<MapCoordinatesExtended>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AtlasPointsInformations(output);
         }
 
-        public function serializeAs_AtlasPointsInformations(output:IDataOutput):void
+        public function serializeAs_AtlasPointsInformations(output:ICustomDataOutput):void
         {
             output.writeByte(this.type);
             output.writeShort(this.coords.length);
@@ -56,12 +56,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AtlasPointsInformations(input);
         }
 
-        public function deserializeAs_AtlasPointsInformations(input:IDataInput):void
+        public function deserializeAs_AtlasPointsInformations(input:ICustomDataInput):void
         {
             var _item2:MapCoordinatesExtended;
             this.type = input.readByte();

@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GameRolePlayTreasureHintInformations extends GameRolePlayActorInformations implements INetworkType 
     {
@@ -32,30 +32,30 @@
             this.npcId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayTreasureHintInformations(output);
         }
 
-        public function serializeAs_GameRolePlayTreasureHintInformations(output:IDataOutput):void
+        public function serializeAs_GameRolePlayTreasureHintInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameRolePlayActorInformations(output);
             if (this.npcId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.npcId) + ") on element npcId.")));
             };
-            output.writeShort(this.npcId);
+            output.writeVarShort(this.npcId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayTreasureHintInformations(input);
         }
 
-        public function deserializeAs_GameRolePlayTreasureHintInformations(input:IDataInput):void
+        public function deserializeAs_GameRolePlayTreasureHintInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.npcId = input.readShort();
+            this.npcId = input.readVarUhShort();
             if (this.npcId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.npcId) + ") on element of GameRolePlayTreasureHintInformations.npcId.")));

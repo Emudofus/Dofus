@@ -33,10 +33,10 @@
             return ((("[" + allianceTag) + "]"));
         }
 
-        public static function rollOver(pX:int, pY:int, allianceId:uint):void
+        public static function rollOver(pX:int, pY:int, allianceId:uint, allianceTag:String):void
         {
             var target:Rectangle = new Rectangle(pX, pY, 10, 10);
-            var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.recipe"));
+            var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.shortcuts.openSocialAlliance"));
             TooltipManager.show(info, target, UiModuleManager.getInstance().getModule("Ankama_GameUiCore"), false, "HyperLink", 6, 2, 3, true, null, null, null, null, false, StrataEnum.STRATA_TOOLTIP, 1);
         }
 

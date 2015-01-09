@@ -27,7 +27,7 @@
             {
                 return (0);
             };
-            return ((((pCharac.alignGiftBonus + pCharac.base) + pCharac.contextModif) + pCharac.objectsAndMountBonus));
+            return (((((pCharac.alignGiftBonus + pCharac.base) + pCharac.additionnal) + pCharac.contextModif) + pCharac.objectsAndMountBonus));
         }
 
 

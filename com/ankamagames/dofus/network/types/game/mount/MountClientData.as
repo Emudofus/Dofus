@@ -3,9 +3,9 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectInteger;
-    import flash.utils.IDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
     import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class MountClientData implements INetworkType 
@@ -132,12 +132,12 @@
             this.effectList = new Vector.<ObjectEffectInteger>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_MountClientData(output);
         }
 
-        public function serializeAs_MountClientData(output:IDataOutput):void
+        public function serializeAs_MountClientData(output:ICustomDataOutput):void
         {
             var _box0:uint;
             _box0 = BooleanByteWrapper.setFlag(_box0, 0, this.sex);
@@ -154,7 +154,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.model) + ") on element model.")));
             };
-            output.writeInt(this.model);
+            output.writeVarInt(this.model);
             output.writeShort(this.ancestor.length);
             var _i3:uint;
             while (_i3 < this.ancestor.length)
@@ -183,16 +183,16 @@
                 throw (new Error((("Forbidden value (" + this.ownerId) + ") on element ownerId.")));
             };
             output.writeInt(this.ownerId);
-            if ((((this.experience < -9007199254740992)) || ((this.experience > 9007199254740992))))
+            if ((((this.experience < 0)) || ((this.experience > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experience) + ") on element experience.")));
             };
-            output.writeDouble(this.experience);
-            if ((((this.experienceForLevel < -9007199254740992)) || ((this.experienceForLevel > 9007199254740992))))
+            output.writeVarLong(this.experience);
+            if ((((this.experienceForLevel < 0)) || ((this.experienceForLevel > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experienceForLevel) + ") on element experienceForLevel.")));
             };
-            output.writeDouble(this.experienceForLevel);
+            output.writeVarLong(this.experienceForLevel);
             if ((((this.experienceForNextLevel < -9007199254740992)) || ((this.experienceForNextLevel > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experienceForNextLevel) + ") on element experienceForNextLevel.")));
@@ -207,54 +207,54 @@
             {
                 throw (new Error((("Forbidden value (" + this.maxPods) + ") on element maxPods.")));
             };
-            output.writeInt(this.maxPods);
+            output.writeVarInt(this.maxPods);
             if (this.stamina < 0)
             {
                 throw (new Error((("Forbidden value (" + this.stamina) + ") on element stamina.")));
             };
-            output.writeInt(this.stamina);
+            output.writeVarInt(this.stamina);
             if (this.staminaMax < 0)
             {
                 throw (new Error((("Forbidden value (" + this.staminaMax) + ") on element staminaMax.")));
             };
-            output.writeInt(this.staminaMax);
+            output.writeVarInt(this.staminaMax);
             if (this.maturity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maturity) + ") on element maturity.")));
             };
-            output.writeInt(this.maturity);
+            output.writeVarInt(this.maturity);
             if (this.maturityForAdult < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maturityForAdult) + ") on element maturityForAdult.")));
             };
-            output.writeInt(this.maturityForAdult);
+            output.writeVarInt(this.maturityForAdult);
             if (this.energy < 0)
             {
                 throw (new Error((("Forbidden value (" + this.energy) + ") on element energy.")));
             };
-            output.writeInt(this.energy);
+            output.writeVarInt(this.energy);
             if (this.energyMax < 0)
             {
                 throw (new Error((("Forbidden value (" + this.energyMax) + ") on element energyMax.")));
             };
-            output.writeInt(this.energyMax);
+            output.writeVarInt(this.energyMax);
             output.writeInt(this.serenity);
             output.writeInt(this.aggressivityMax);
             if (this.serenityMax < 0)
             {
                 throw (new Error((("Forbidden value (" + this.serenityMax) + ") on element serenityMax.")));
             };
-            output.writeInt(this.serenityMax);
+            output.writeVarInt(this.serenityMax);
             if (this.love < 0)
             {
                 throw (new Error((("Forbidden value (" + this.love) + ") on element love.")));
             };
-            output.writeInt(this.love);
+            output.writeVarInt(this.love);
             if (this.loveMax < 0)
             {
                 throw (new Error((("Forbidden value (" + this.loveMax) + ") on element loveMax.")));
             };
-            output.writeInt(this.loveMax);
+            output.writeVarInt(this.loveMax);
             output.writeInt(this.fecondationTime);
             if (this.boostLimiter < 0)
             {
@@ -271,7 +271,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.reproductionCountMax) + ") on element reproductionCountMax.")));
             };
-            output.writeInt(this.reproductionCountMax);
+            output.writeVarInt(this.reproductionCountMax);
             output.writeShort(this.effectList.length);
             var _i32:uint;
             while (_i32 < this.effectList.length)
@@ -281,12 +281,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_MountClientData(input);
         }
 
-        public function deserializeAs_MountClientData(input:IDataInput):void
+        public function deserializeAs_MountClientData(input:ICustomDataInput):void
         {
             var _val3:uint;
             var _val4:uint;
@@ -301,7 +301,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.id) + ") on element of MountClientData.id.")));
             };
-            this.model = input.readInt();
+            this.model = input.readVarUhInt();
             if (this.model < 0)
             {
                 throw (new Error((("Forbidden value (" + this.model) + ") on element of MountClientData.model.")));
@@ -336,13 +336,13 @@
             {
                 throw (new Error((("Forbidden value (" + this.ownerId) + ") on element of MountClientData.ownerId.")));
             };
-            this.experience = input.readDouble();
-            if ((((this.experience < -9007199254740992)) || ((this.experience > 9007199254740992))))
+            this.experience = input.readVarUhLong();
+            if ((((this.experience < 0)) || ((this.experience > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experience) + ") on element of MountClientData.experience.")));
             };
-            this.experienceForLevel = input.readDouble();
-            if ((((this.experienceForLevel < -9007199254740992)) || ((this.experienceForLevel > 9007199254740992))))
+            this.experienceForLevel = input.readVarUhLong();
+            if ((((this.experienceForLevel < 0)) || ((this.experienceForLevel > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experienceForLevel) + ") on element of MountClientData.experienceForLevel.")));
             };
@@ -356,54 +356,54 @@
             {
                 throw (new Error((("Forbidden value (" + this.level) + ") on element of MountClientData.level.")));
             };
-            this.maxPods = input.readInt();
+            this.maxPods = input.readVarUhInt();
             if (this.maxPods < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxPods) + ") on element of MountClientData.maxPods.")));
             };
-            this.stamina = input.readInt();
+            this.stamina = input.readVarUhInt();
             if (this.stamina < 0)
             {
                 throw (new Error((("Forbidden value (" + this.stamina) + ") on element of MountClientData.stamina.")));
             };
-            this.staminaMax = input.readInt();
+            this.staminaMax = input.readVarUhInt();
             if (this.staminaMax < 0)
             {
                 throw (new Error((("Forbidden value (" + this.staminaMax) + ") on element of MountClientData.staminaMax.")));
             };
-            this.maturity = input.readInt();
+            this.maturity = input.readVarUhInt();
             if (this.maturity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maturity) + ") on element of MountClientData.maturity.")));
             };
-            this.maturityForAdult = input.readInt();
+            this.maturityForAdult = input.readVarUhInt();
             if (this.maturityForAdult < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maturityForAdult) + ") on element of MountClientData.maturityForAdult.")));
             };
-            this.energy = input.readInt();
+            this.energy = input.readVarUhInt();
             if (this.energy < 0)
             {
                 throw (new Error((("Forbidden value (" + this.energy) + ") on element of MountClientData.energy.")));
             };
-            this.energyMax = input.readInt();
+            this.energyMax = input.readVarUhInt();
             if (this.energyMax < 0)
             {
                 throw (new Error((("Forbidden value (" + this.energyMax) + ") on element of MountClientData.energyMax.")));
             };
             this.serenity = input.readInt();
             this.aggressivityMax = input.readInt();
-            this.serenityMax = input.readInt();
+            this.serenityMax = input.readVarUhInt();
             if (this.serenityMax < 0)
             {
                 throw (new Error((("Forbidden value (" + this.serenityMax) + ") on element of MountClientData.serenityMax.")));
             };
-            this.love = input.readInt();
+            this.love = input.readVarUhInt();
             if (this.love < 0)
             {
                 throw (new Error((("Forbidden value (" + this.love) + ") on element of MountClientData.love.")));
             };
-            this.loveMax = input.readInt();
+            this.loveMax = input.readVarUhInt();
             if (this.loveMax < 0)
             {
                 throw (new Error((("Forbidden value (" + this.loveMax) + ") on element of MountClientData.loveMax.")));
@@ -420,7 +420,7 @@
                 throw (new Error((("Forbidden value (" + this.boostMax) + ") on element of MountClientData.boostMax.")));
             };
             this.reproductionCount = input.readInt();
-            this.reproductionCountMax = input.readInt();
+            this.reproductionCountMax = input.readVarUhInt();
             if (this.reproductionCountMax < 0)
             {
                 throw (new Error((("Forbidden value (" + this.reproductionCountMax) + ") on element of MountClientData.reproductionCountMax.")));

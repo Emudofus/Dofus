@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
 
     [Trusted]
@@ -46,35 +47,35 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PlayerStatusUpdateRequestMessage(output);
         }
 
-        public function serializeAs_PlayerStatusUpdateRequestMessage(output:IDataOutput):void
+        public function serializeAs_PlayerStatusUpdateRequestMessage(output:ICustomDataOutput):void
         {
             output.writeShort(this.status.getTypeId());
             this.status.serialize(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PlayerStatusUpdateRequestMessage(input);
         }
 
-        public function deserializeAs_PlayerStatusUpdateRequestMessage(input:IDataInput):void
+        public function deserializeAs_PlayerStatusUpdateRequestMessage(input:ICustomDataInput):void
         {
             var _id1:uint = input.readUnsignedShort();
             this.status = ProtocolTypeManager.getInstance(PlayerStatus, _id1);

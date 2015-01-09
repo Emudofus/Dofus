@@ -168,7 +168,10 @@
                         }
                         else
                         {
-                            this.searchStringInCB(Input(_mainContainer).text);
+                            if (((((((!((_local_2 == Keyboard.DOWN))) && (!((_local_2 == Keyboard.UP))))) && (!((_local_2 == Keyboard.RIGHT))))) && (!((_local_2 == Keyboard.LEFT)))))
+                            {
+                                this.searchStringInCB(Input(_mainContainer).text);
+                            };
                         };
                     };
                     break;

@@ -5,6 +5,7 @@
     import flash.utils.getQualifiedClassName;
     import com.ankamagames.dofus.logic.game.fight.miscs.ActionIdConverter;
     import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostStateEffect;
+    import com.ankamagames.dofus.datacenter.spells.SpellState;
     import com.ankamagames.dofus.logic.game.fight.managers.FightersStateManager;
     import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
     import com.ankamagames.dofus.logic.game.fight.frames.FightBattleFrame;
@@ -39,6 +40,11 @@
             return (this._statName);
         }
 
+        public function get isSilent():Boolean
+        {
+            return (SpellState.getSpellStateById(this.stateId).isSilent);
+        }
+
         override public function onApplyed():void
         {
             FightersStateManager.getInstance().addStateOnTarget(this.stateId, targetId);
@@ -54,7 +60,7 @@
                 FightersStateManager.getInstance().removeStateOnTarget(this.stateId, targetId);
                 SpellWrapper.refreshAllPlayerSpellHolder(targetId);
                 fbf = (Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame);
-                if (((((fbf) && (!(fbf.executingSequence)))) && ((fbf.deadFightersList.indexOf(targetId) == -1))))
+                if (((((((fbf) && (!(fbf.executingSequence)))) && ((fbf.deadFightersList.indexOf(targetId) == -1)))) && (!(this.isSilent))))
                 {
                     if (actionId == 952)
                     {

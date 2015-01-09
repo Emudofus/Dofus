@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import com.ankamagames.dofus.network.types.game.guild.GuildEmblem;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class AllianceCreationValidMessage extends NetworkMessage implements INetworkMessage 
@@ -51,36 +52,36 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AllianceCreationValidMessage(output);
         }
 
-        public function serializeAs_AllianceCreationValidMessage(output:IDataOutput):void
+        public function serializeAs_AllianceCreationValidMessage(output:ICustomDataOutput):void
         {
             output.writeUTF(this.allianceName);
             output.writeUTF(this.allianceTag);
             this.allianceEmblem.serializeAs_GuildEmblem(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AllianceCreationValidMessage(input);
         }
 
-        public function deserializeAs_AllianceCreationValidMessage(input:IDataInput):void
+        public function deserializeAs_AllianceCreationValidMessage(input:ICustomDataInput):void
         {
             this.allianceName = input.readUTF();
             this.allianceTag = input.readUTF();

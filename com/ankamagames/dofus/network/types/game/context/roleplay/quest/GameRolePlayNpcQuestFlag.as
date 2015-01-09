@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class GameRolePlayNpcQuestFlag implements INetworkType 
@@ -39,12 +39,12 @@
             this.questsToStartId = new Vector.<uint>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayNpcQuestFlag(output);
         }
 
-        public function serializeAs_GameRolePlayNpcQuestFlag(output:IDataOutput):void
+        public function serializeAs_GameRolePlayNpcQuestFlag(output:ICustomDataOutput):void
         {
             output.writeShort(this.questsToValidId.length);
             var _i1:uint;
@@ -54,7 +54,7 @@
                 {
                     throw (new Error((("Forbidden value (" + this.questsToValidId[_i1]) + ") on element 1 (starting at 1) of questsToValidId.")));
                 };
-                output.writeShort(this.questsToValidId[_i1]);
+                output.writeVarShort(this.questsToValidId[_i1]);
                 _i1++;
             };
             output.writeShort(this.questsToStartId.length);
@@ -65,17 +65,17 @@
                 {
                     throw (new Error((("Forbidden value (" + this.questsToStartId[_i2]) + ") on element 2 (starting at 1) of questsToStartId.")));
                 };
-                output.writeShort(this.questsToStartId[_i2]);
+                output.writeVarShort(this.questsToStartId[_i2]);
                 _i2++;
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayNpcQuestFlag(input);
         }
 
-        public function deserializeAs_GameRolePlayNpcQuestFlag(input:IDataInput):void
+        public function deserializeAs_GameRolePlayNpcQuestFlag(input:ICustomDataInput):void
         {
             var _val1:uint;
             var _val2:uint;
@@ -83,7 +83,7 @@
             var _i1:uint;
             while (_i1 < _questsToValidIdLen)
             {
-                _val1 = input.readShort();
+                _val1 = input.readVarUhShort();
                 if (_val1 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val1) + ") on elements of questsToValidId.")));
@@ -95,7 +95,7 @@
             var _i2:uint;
             while (_i2 < _questsToStartIdLen)
             {
-                _val2 = input.readShort();
+                _val2 = input.readVarUhShort();
                 if (_val2 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val2) + ") on elements of questsToStartId.")));

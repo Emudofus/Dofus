@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
 
     [Trusted]
@@ -46,35 +47,35 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameFightRefreshFighterMessage(output);
         }
 
-        public function serializeAs_GameFightRefreshFighterMessage(output:IDataOutput):void
+        public function serializeAs_GameFightRefreshFighterMessage(output:ICustomDataOutput):void
         {
             output.writeShort(this.informations.getTypeId());
             this.informations.serialize(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameFightRefreshFighterMessage(input);
         }
 
-        public function deserializeAs_GameFightRefreshFighterMessage(input:IDataInput):void
+        public function deserializeAs_GameFightRefreshFighterMessage(input:ICustomDataInput):void
         {
             var _id1:uint = input.readUnsignedShort();
             this.informations = ProtocolTypeManager.getInstance(GameContextActorInformations, _id1);

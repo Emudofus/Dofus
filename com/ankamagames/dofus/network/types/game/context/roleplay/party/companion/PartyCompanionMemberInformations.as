@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PartyCompanionMemberInformations extends PartyCompanionBaseInformations implements INetworkType 
     {
@@ -43,34 +43,34 @@
             this.regenRate = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PartyCompanionMemberInformations(output);
         }
 
-        public function serializeAs_PartyCompanionMemberInformations(output:IDataOutput):void
+        public function serializeAs_PartyCompanionMemberInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_PartyCompanionBaseInformations(output);
             if (this.initiative < 0)
             {
                 throw (new Error((("Forbidden value (" + this.initiative) + ") on element initiative.")));
             };
-            output.writeShort(this.initiative);
+            output.writeVarShort(this.initiative);
             if (this.lifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lifePoints) + ") on element lifePoints.")));
             };
-            output.writeInt(this.lifePoints);
+            output.writeVarInt(this.lifePoints);
             if (this.maxLifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxLifePoints) + ") on element maxLifePoints.")));
             };
-            output.writeInt(this.maxLifePoints);
+            output.writeVarInt(this.maxLifePoints);
             if (this.prospecting < 0)
             {
                 throw (new Error((("Forbidden value (" + this.prospecting) + ") on element prospecting.")));
             };
-            output.writeShort(this.prospecting);
+            output.writeVarShort(this.prospecting);
             if ((((this.regenRate < 0)) || ((this.regenRate > 0xFF))))
             {
                 throw (new Error((("Forbidden value (" + this.regenRate) + ") on element regenRate.")));
@@ -78,30 +78,30 @@
             output.writeByte(this.regenRate);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PartyCompanionMemberInformations(input);
         }
 
-        public function deserializeAs_PartyCompanionMemberInformations(input:IDataInput):void
+        public function deserializeAs_PartyCompanionMemberInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.initiative = input.readShort();
+            this.initiative = input.readVarUhShort();
             if (this.initiative < 0)
             {
                 throw (new Error((("Forbidden value (" + this.initiative) + ") on element of PartyCompanionMemberInformations.initiative.")));
             };
-            this.lifePoints = input.readInt();
+            this.lifePoints = input.readVarUhInt();
             if (this.lifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lifePoints) + ") on element of PartyCompanionMemberInformations.lifePoints.")));
             };
-            this.maxLifePoints = input.readInt();
+            this.maxLifePoints = input.readVarUhInt();
             if (this.maxLifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxLifePoints) + ") on element of PartyCompanionMemberInformations.maxLifePoints.")));
             };
-            this.prospecting = input.readShort();
+            this.prospecting = input.readVarUhShort();
             if (this.prospecting < 0)
             {
                 throw (new Error((("Forbidden value (" + this.prospecting) + ") on element of PartyCompanionMemberInformations.prospecting.")));

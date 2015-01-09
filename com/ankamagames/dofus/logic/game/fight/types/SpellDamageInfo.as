@@ -6,6 +6,7 @@
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+    import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterSpellModification;
     import com.ankamagames.dofus.types.entities.AnimatedCharacter;
     import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
     import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
@@ -15,6 +16,7 @@
     import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
     import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+    import com.ankamagames.dofus.logic.game.fight.managers.FightersStateManager;
     import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
     import com.ankamagames.jerakine.types.zones.IZone;
     import com.ankamagames.jerakine.types.positions.MapPoint;
@@ -25,7 +27,7 @@
     import com.ankamagames.dofus.datacenter.effects.Effect;
     import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceInteger;
     import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceMinMax;
-    import com.ankamagames.dofus.logic.game.fight.managers.FightersStateManager;
+    import com.ankamagames.dofus.network.enums.CharacterSpellModificationTypeEnum;
     import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
     import __AS3__.vec.*;
 
@@ -52,6 +54,10 @@
         public var casterLifePointsAfterNormalMaxDamage:uint;
         public var casterLifePointsAfterCriticalMinDamage:uint;
         public var casterLifePointsAfterCriticalMaxDamage:uint;
+        public var targetLifePointsAfterNormalMinDamage:uint;
+        public var targetLifePointsAfterNormalMaxDamage:uint;
+        public var targetLifePointsAfterCriticalMinDamage:uint;
+        public var targetLifePointsAfterCriticalMaxDamage:uint;
         public var casterStrengthBonus:int;
         public var casterChanceBonus:int;
         public var casterAgilityBonus:int;
@@ -81,6 +87,7 @@
         public var casterFireDamageBonus:int;
         public var casterDamageBoostPercent:int;
         public var casterDamageDeboostPercent:int;
+        public var casterStates:Array;
         public var spellEffects:Vector.<EffectInstance>;
         public var spellCriticalEffects:Vector.<EffectInstance>;
         public var spellCenterCell:int;
@@ -101,6 +108,7 @@
         public var spellHasCriticalDamage:Boolean;
         public var spellHasCriticalHeal:Boolean;
         public var spellHasRandomEffects:Boolean;
+        public var spellDamageModification:CharacterSpellModification;
         public var targetLevel:int;
         public var targetIsInvulnerable:Boolean;
         public var targetIsUnhealable:Boolean;
@@ -131,6 +139,7 @@
         public var splashDamages:Vector.<SplashDamage>;
         public var sharedDamage:SpellDamage;
         public var damageSharingTargets:Vector.<int>;
+        public var portalsSpellEfficiencyBonus:Number;
 
 
         public static function fromCurrentPlayer(pSpell:Object, pTargetId:int, pSpellImpactCell:int):SpellDamageInfo
@@ -174,13 +183,15 @@
             sdi._originalTargetsIds = new Vector.<int>(0);
             sdi.targetId = pTargetId;
             sdi.casterId = CurrentPlayedFighterManager.getInstance().currentFighterId;
+            sdi.casterStates = FightersStateManager.getInstance().getStates(sdi.casterId);
             sdi.casterLevel = fightContextFrame.getFighterLevel(sdi.casterId);
             sdi.spellEffects = pSpell.effects;
             sdi.spellCriticalEffects = pSpell.criticalEffect;
             sdi.isWeapon = !((pSpell is SpellWrapper));
+            var casterInfos:GameFightFighterInformations = (fightContextFrame.entitiesFrame.getEntityInfos(sdi.casterId) as GameFightFighterInformations);
             var spellZone:IZone = SpellZoneManager.getInstance().getSpellZone(pSpell);
-            spellZone.direction = MapPoint.fromCellId((fightContextFrame.entitiesFrame.getEntityInfos(sdi.casterId) as GameFightFighterInformations).disposition.cellId).advancedOrientationTo(MapPoint.fromCellId(FightContextFrame.currentCell));
-            var spellZoneCells:Vector.<uint> = spellZone.getCells(FightContextFrame.currentCell);
+            spellZone.direction = MapPoint.fromCellId(casterInfos.disposition.cellId).advancedOrientationTo(MapPoint.fromCellId(FightContextFrame.currentCell), false);
+            var spellZoneCells:Vector.<uint> = spellZone.getCells(pSpellImpactCell);
             for each (cellId in spellZoneCells)
             {
                 targetEntities = EntitiesManager.getInstance().getEntitiesOnCell(cellId, AnimatedCharacter);
@@ -193,26 +204,28 @@
                 };
             };
             charStats = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
-            sdi.casterStrength = (((charStats.strength.base + charStats.strength.objectsAndMountBonus) + charStats.strength.alignGiftBonus) + charStats.strength.contextModif);
-            sdi.casterChance = (((charStats.chance.base + charStats.chance.objectsAndMountBonus) + charStats.chance.alignGiftBonus) + charStats.chance.contextModif);
-            sdi.casterAgility = (((charStats.agility.base + charStats.agility.objectsAndMountBonus) + charStats.agility.alignGiftBonus) + charStats.agility.contextModif);
-            sdi.casterIntelligence = (((charStats.intelligence.base + charStats.intelligence.objectsAndMountBonus) + charStats.intelligence.alignGiftBonus) + charStats.intelligence.contextModif);
-            sdi.casterCriticalHit = (((charStats.criticalHit.base + charStats.criticalHit.objectsAndMountBonus) + charStats.criticalHit.alignGiftBonus) + charStats.criticalHit.contextModif);
+            sdi.casterStrength = ((((charStats.strength.base + charStats.strength.additionnal) + charStats.strength.objectsAndMountBonus) + charStats.strength.alignGiftBonus) + charStats.strength.contextModif);
+            sdi.casterChance = ((((charStats.chance.base + charStats.chance.additionnal) + charStats.chance.objectsAndMountBonus) + charStats.chance.alignGiftBonus) + charStats.chance.contextModif);
+            sdi.casterAgility = ((((charStats.agility.base + charStats.agility.additionnal) + charStats.agility.objectsAndMountBonus) + charStats.agility.alignGiftBonus) + charStats.agility.contextModif);
+            sdi.casterIntelligence = ((((charStats.intelligence.base + charStats.intelligence.additionnal) + charStats.intelligence.objectsAndMountBonus) + charStats.intelligence.alignGiftBonus) + charStats.intelligence.contextModif);
+            sdi.casterCriticalHit = ((((charStats.criticalHit.base + charStats.criticalHit.additionnal) + charStats.criticalHit.objectsAndMountBonus) + charStats.criticalHit.alignGiftBonus) + charStats.criticalHit.contextModif);
             sdi.casterCriticalHitWeapon = charStats.criticalHitWeapon;
-            sdi.casterHealBonus = (((charStats.healBonus.base + charStats.healBonus.objectsAndMountBonus) + charStats.healBonus.alignGiftBonus) + charStats.healBonus.contextModif);
-            sdi.casterAllDamagesBonus = (((charStats.allDamagesBonus.base + charStats.allDamagesBonus.objectsAndMountBonus) + charStats.allDamagesBonus.alignGiftBonus) + charStats.allDamagesBonus.contextModif);
-            sdi.casterDamagesBonus = (((charStats.damagesBonusPercent.base + charStats.damagesBonusPercent.objectsAndMountBonus) + charStats.damagesBonusPercent.alignGiftBonus) + charStats.damagesBonusPercent.contextModif);
-            sdi.casterTrapBonus = (((charStats.trapBonus.base + charStats.trapBonus.objectsAndMountBonus) + charStats.trapBonus.alignGiftBonus) + charStats.trapBonus.contextModif);
-            sdi.casterTrapBonusPercent = (((charStats.trapBonusPercent.base + charStats.trapBonusPercent.objectsAndMountBonus) + charStats.trapBonusPercent.alignGiftBonus) + charStats.trapBonusPercent.contextModif);
-            sdi.casterGlyphBonusPercent = (((charStats.glyphBonusPercent.base + charStats.glyphBonusPercent.objectsAndMountBonus) + charStats.glyphBonusPercent.alignGiftBonus) + charStats.glyphBonusPercent.contextModif);
-            sdi.casterPermanentDamagePercent = (((charStats.permanentDamagePercent.base + charStats.permanentDamagePercent.objectsAndMountBonus) + charStats.permanentDamagePercent.alignGiftBonus) + charStats.permanentDamagePercent.contextModif);
-            sdi.casterPushDamageBonus = (((charStats.pushDamageBonus.base + charStats.pushDamageBonus.objectsAndMountBonus) + charStats.pushDamageBonus.alignGiftBonus) + charStats.pushDamageBonus.contextModif);
-            sdi.casterCriticalDamageBonus = (((charStats.criticalDamageBonus.base + charStats.criticalDamageBonus.objectsAndMountBonus) + charStats.criticalDamageBonus.alignGiftBonus) + charStats.criticalDamageBonus.contextModif);
-            sdi.casterNeutralDamageBonus = (((charStats.neutralDamageBonus.base + charStats.neutralDamageBonus.objectsAndMountBonus) + charStats.neutralDamageBonus.alignGiftBonus) + charStats.neutralDamageBonus.contextModif);
-            sdi.casterEarthDamageBonus = (((charStats.earthDamageBonus.base + charStats.earthDamageBonus.objectsAndMountBonus) + charStats.earthDamageBonus.alignGiftBonus) + charStats.earthDamageBonus.contextModif);
-            sdi.casterWaterDamageBonus = (((charStats.waterDamageBonus.base + charStats.waterDamageBonus.objectsAndMountBonus) + charStats.waterDamageBonus.alignGiftBonus) + charStats.waterDamageBonus.contextModif);
-            sdi.casterAirDamageBonus = (((charStats.airDamageBonus.base + charStats.airDamageBonus.objectsAndMountBonus) + charStats.airDamageBonus.alignGiftBonus) + charStats.airDamageBonus.contextModif);
-            sdi.casterFireDamageBonus = (((charStats.fireDamageBonus.base + charStats.fireDamageBonus.objectsAndMountBonus) + charStats.fireDamageBonus.alignGiftBonus) + charStats.fireDamageBonus.contextModif);
+            sdi.casterHealBonus = ((((charStats.healBonus.base + charStats.healBonus.additionnal) + charStats.healBonus.objectsAndMountBonus) + charStats.healBonus.alignGiftBonus) + charStats.healBonus.contextModif);
+            sdi.casterAllDamagesBonus = ((((charStats.allDamagesBonus.base + charStats.allDamagesBonus.additionnal) + charStats.allDamagesBonus.objectsAndMountBonus) + charStats.allDamagesBonus.alignGiftBonus) + charStats.allDamagesBonus.contextModif);
+            sdi.casterDamagesBonus = ((((charStats.damagesBonusPercent.base + charStats.damagesBonusPercent.additionnal) + charStats.damagesBonusPercent.objectsAndMountBonus) + charStats.damagesBonusPercent.alignGiftBonus) + charStats.damagesBonusPercent.contextModif);
+            sdi.casterTrapBonus = ((((charStats.trapBonus.base + charStats.trapBonus.additionnal) + charStats.trapBonus.objectsAndMountBonus) + charStats.trapBonus.alignGiftBonus) + charStats.trapBonus.contextModif);
+            sdi.casterTrapBonusPercent = ((((charStats.trapBonusPercent.base + charStats.trapBonusPercent.additionnal) + charStats.trapBonusPercent.objectsAndMountBonus) + charStats.trapBonusPercent.alignGiftBonus) + charStats.trapBonusPercent.contextModif);
+            sdi.casterGlyphBonusPercent = ((((charStats.glyphBonusPercent.base + charStats.glyphBonusPercent.additionnal) + charStats.glyphBonusPercent.objectsAndMountBonus) + charStats.glyphBonusPercent.alignGiftBonus) + charStats.glyphBonusPercent.contextModif);
+            sdi.casterPermanentDamagePercent = ((((charStats.permanentDamagePercent.base + charStats.permanentDamagePercent.additionnal) + charStats.permanentDamagePercent.objectsAndMountBonus) + charStats.permanentDamagePercent.alignGiftBonus) + charStats.permanentDamagePercent.contextModif);
+            sdi.casterPushDamageBonus = ((((charStats.pushDamageBonus.base + charStats.pushDamageBonus.additionnal) + charStats.pushDamageBonus.objectsAndMountBonus) + charStats.pushDamageBonus.alignGiftBonus) + charStats.pushDamageBonus.contextModif);
+            sdi.casterCriticalPushDamageBonus = (((charStats.pushDamageBonus.base + charStats.pushDamageBonus.additionnal) + charStats.pushDamageBonus.objectsAndMountBonus) + charStats.pushDamageBonus.alignGiftBonus);
+            sdi.casterCriticalDamageBonus = ((((charStats.criticalDamageBonus.base + charStats.criticalDamageBonus.additionnal) + charStats.criticalDamageBonus.objectsAndMountBonus) + charStats.criticalDamageBonus.alignGiftBonus) + charStats.criticalDamageBonus.contextModif);
+            sdi.casterNeutralDamageBonus = ((((charStats.neutralDamageBonus.base + charStats.neutralDamageBonus.additionnal) + charStats.neutralDamageBonus.objectsAndMountBonus) + charStats.neutralDamageBonus.alignGiftBonus) + charStats.neutralDamageBonus.contextModif);
+            sdi.casterEarthDamageBonus = ((((charStats.earthDamageBonus.base + charStats.earthDamageBonus.additionnal) + charStats.earthDamageBonus.objectsAndMountBonus) + charStats.earthDamageBonus.alignGiftBonus) + charStats.earthDamageBonus.contextModif);
+            sdi.casterWaterDamageBonus = ((((charStats.waterDamageBonus.base + charStats.waterDamageBonus.additionnal) + charStats.waterDamageBonus.objectsAndMountBonus) + charStats.waterDamageBonus.alignGiftBonus) + charStats.waterDamageBonus.contextModif);
+            sdi.casterAirDamageBonus = ((((charStats.airDamageBonus.base + charStats.airDamageBonus.additionnal) + charStats.airDamageBonus.objectsAndMountBonus) + charStats.airDamageBonus.alignGiftBonus) + charStats.airDamageBonus.contextModif);
+            sdi.casterFireDamageBonus = ((((charStats.fireDamageBonus.base + charStats.fireDamageBonus.additionnal) + charStats.fireDamageBonus.objectsAndMountBonus) + charStats.fireDamageBonus.alignGiftBonus) + charStats.fireDamageBonus.contextModif);
+            sdi.portalsSpellEfficiencyBonus = DamageUtil.getPortalsSpellEfficiencyBonus(FightContextFrame.currentCell, casterInfos.teamId);
             sdi.neutralDamage = DamageUtil.getSpellElementDamage(pSpell, DamageUtil.NEUTRAL_ELEMENT, sdi.casterId, pTargetId);
             sdi.earthDamage = DamageUtil.getSpellElementDamage(pSpell, DamageUtil.EARTH_ELEMENT, sdi.casterId, pTargetId);
             sdi.fireDamage = DamageUtil.getSpellElementDamage(pSpell, DamageUtil.FIRE_ELEMENT, sdi.casterId, pTargetId);
@@ -563,6 +576,7 @@
                     sdi.targetErosionPercentBonus = (sdi.targetErosionPercentBonus + buff.param1);
                 };
             };
+            sdi.spellDamageModification = CurrentPlayedFighterManager.getInstance().getSpellModifications(pSpell.id, CharacterSpellModificationTypeEnum.DAMAGE);
             return (sdi);
         }
 

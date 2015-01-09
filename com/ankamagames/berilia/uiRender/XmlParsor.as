@@ -257,7 +257,7 @@
                         ui.shortcutsEvents = this.parseShortcutsEvent(xnNode);
                         break;
                     default:
-                        this._log.warn(((((("[" + this._sUrl) + "] ") + xnNode.nodeName) + " is not allow or unknow. ") + this.suggest(xnNode.nodeName, [XmlTagsEnum.TAG_CONTAINER, XmlTagsEnum.TAG_STATECONTAINER, XmlTagsEnum.TAG_BUTTON, XmlTagsEnum.TAG_SHORTCUTS])));
+                        this._log.warn(((((("[" + this._sUrl) + "] ") + xnNode.nodeName) + " is not allowed or unknown. ") + this.suggest(xnNode.nodeName, [XmlTagsEnum.TAG_CONTAINER, XmlTagsEnum.TAG_STATECONTAINER, XmlTagsEnum.TAG_BUTTON, XmlTagsEnum.TAG_SHORTCUTS])));
                 };
                 i = (i + 1);
             };
@@ -425,7 +425,7 @@
                         be.strata = this.getStrataNum(parentNode.attributes[j]);
                         break;
                     default:
-                        this._log.warn((((((("[" + this._sUrl) + "] Unknow attribute '") + j) + "' in ") + XmlTagsEnum.TAG_CONTAINER) + " tag"));
+                        this._log.warn((((((("[" + this._sUrl) + "] Unknown attribute '") + j) + "' in ") + XmlTagsEnum.TAG_CONTAINER) + " tag"));
                 };
             };
             i = 0;
@@ -706,7 +706,7 @@
                         }
                         else
                         {
-                            this._log.warn(((('Unknow reference to "' + target) + '" in ') + XmlTagsEnum.TAG_SETPROPERTY));
+                            this._log.warn(((('Unknown reference to "' + target) + '" in ') + XmlTagsEnum.TAG_SETPROPERTY));
                         };
                     }
                     else
@@ -770,7 +770,7 @@
                     {
                         _local_10.push(_local_11);
                     };
-                    this._log.warn(((((((("[" + this._sUrl) + "]") + sProperty) + " is unknow for ") + be.className) + " component") + this.suggest(sProperty, _local_10)));
+                    this._log.warn(((((((("[" + this._sUrl) + "]") + sProperty) + " is unknown for ") + be.className) + " component") + this.suggest(sProperty, _local_10)));
                 };
             };
             for (key in aNewProperties)
@@ -1076,7 +1076,7 @@
                         break;
                     default:
                         _local_8 = [EventEnums.EVENT_ONPRESS, EventEnums.EVENT_ONRELEASE, EventEnums.EVENT_ONROLLOUT, EventEnums.EVENT_ONROLLOVER, EventEnums.EVENT_ONRIGHTCLICK, EventEnums.EVENT_ONRELEASEOUTSIDE, EventEnums.EVENT_ONDOUBLECLICK, EventEnums.EVENT_ONCOLORCHANGE, EventEnums.EVENT_ONENTITYREADY, EventEnums.EVENT_ONSELECTITEM, EventEnums.EVENT_ONSELECTEMPTYITEM, EventEnums.EVENT_ONITEMROLLOVER, EventEnums.EVENT_ONITEMROLLOUT, EventEnums.EVENT_ONDROP, EventEnums.EVENT_ONWHEEL, EventEnums.EVENT_ONMOUSEUP, EventEnums.EVENT_ONMAPELEMENTROLLOUT, EventEnums.EVENT_ONMAPELEMENTROLLOVER, EventEnums.EVENT_ONMAPELEMENTRIGHTCLICK, EventEnums.EVENT_ONCREATETAB, EventEnums.EVENT_ONDELETETAB, EventEnums.EVENT_MIDDLECLICK];
-                        this._log.warn(((((("[" + this._sUrl) + "] ") + xnCurrentNode.nodeName) + " is an unknow event name") + this.suggest(xnCurrentNode.nodeName, _local_8)));
+                        this._log.warn(((((("[" + this._sUrl) + "] ") + xnCurrentNode.nodeName) + " is an unknown event name") + this.suggest(xnCurrentNode.nodeName, _local_8)));
                 };
                 if (!!(sEventClass.length))
                 {
@@ -1111,7 +1111,7 @@
                 return (StrataEnum.STRATA_TOOLTIP);
             };
             _local_2 = [StrataEnum.STRATA_NAME_LOW, StrataEnum.STRATA_NAME_MEDIUM, StrataEnum.STRATA_NAME_HIGH, StrataEnum.STRATA_NAME_TOP, StrataEnum.STRATA_NAME_TOOLTIP];
-            this._log.warn(((((("[" + this._sUrl) + "] ") + sName) + " is an unknow strata name") + this.suggest(sName, _local_2)));
+            this._log.warn(((((("[" + this._sUrl) + "] ") + sName) + " is an unknown strata name") + this.suggest(sName, _local_2)));
             return (StrataEnum.STRATA_MEDIUM);
         }
 

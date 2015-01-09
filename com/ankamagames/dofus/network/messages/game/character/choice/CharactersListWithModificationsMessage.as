@@ -6,8 +6,9 @@
     import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRelookInformation;
     import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -62,24 +63,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharactersListWithModificationsMessage(output);
         }
 
-        public function serializeAs_CharactersListWithModificationsMessage(output:IDataOutput):void
+        public function serializeAs_CharactersListWithModificationsMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_CharactersListMessage(output);
             output.writeShort(this.charactersToRecolor.length);
@@ -112,12 +113,12 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharactersListWithModificationsMessage(input);
         }
 
-        public function deserializeAs_CharactersListWithModificationsMessage(input:IDataInput):void
+        public function deserializeAs_CharactersListWithModificationsMessage(input:ICustomDataInput):void
         {
             var _item1:CharacterToRecolorInformation;
             var _val2:int;

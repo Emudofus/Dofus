@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.shortcut
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class ShortcutEmote extends Shortcut implements INetworkType 
     {
@@ -30,12 +30,12 @@
             this.emoteId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ShortcutEmote(output);
         }
 
-        public function serializeAs_ShortcutEmote(output:IDataOutput):void
+        public function serializeAs_ShortcutEmote(output:ICustomDataOutput):void
         {
             super.serializeAs_Shortcut(output);
             if ((((this.emoteId < 0)) || ((this.emoteId > 0xFF))))
@@ -45,12 +45,12 @@
             output.writeByte(this.emoteId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ShortcutEmote(input);
         }
 
-        public function deserializeAs_ShortcutEmote(input:IDataInput):void
+        public function deserializeAs_ShortcutEmote(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.emoteId = input.readUnsignedByte();

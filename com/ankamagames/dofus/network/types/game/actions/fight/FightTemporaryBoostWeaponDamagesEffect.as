@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.actions.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class FightTemporaryBoostWeaponDamagesEffect extends FightTemporaryBoostEffect implements INetworkType 
@@ -31,23 +31,23 @@
             this.weaponTypeId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightTemporaryBoostWeaponDamagesEffect(output);
         }
 
-        public function serializeAs_FightTemporaryBoostWeaponDamagesEffect(output:IDataOutput):void
+        public function serializeAs_FightTemporaryBoostWeaponDamagesEffect(output:ICustomDataOutput):void
         {
             super.serializeAs_FightTemporaryBoostEffect(output);
             output.writeShort(this.weaponTypeId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightTemporaryBoostWeaponDamagesEffect(input);
         }
 
-        public function deserializeAs_FightTemporaryBoostWeaponDamagesEffect(input:IDataInput):void
+        public function deserializeAs_FightTemporaryBoostWeaponDamagesEffect(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.weaponTypeId = input.readShort();

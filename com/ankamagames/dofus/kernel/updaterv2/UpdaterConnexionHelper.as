@@ -13,7 +13,7 @@
     import com.ankamagames.dofus.misc.utils.StatisticReportingManager;
     import com.ankamagames.dofus.BuildInfos;
     import flash.events.IOErrorEvent;
-    import com.ankamagames.jerakine.json.JSONDecoder;
+    import com.ankamagames.jerakine.json.JSON;
     import com.ankamagames.dofus.kernel.updaterv2.messages.UpdaterMessageFactory;
     import flash.errors.IOError;
     import flash.events.ProgressEvent;
@@ -180,7 +180,7 @@
                 {
                     try
                     {
-                        contentJSON = new JSONDecoder(messages[i], false).getValue();
+                        contentJSON = JSON.decode(messages[i]);
                         message = UpdaterMessageFactory.getUpdaterMessage(contentJSON);
                         if (this._handlers.length == 0)
                         {
@@ -207,6 +207,7 @@
         private function splitPacket(raw:String):Vector.<String>
         {
             var c:String;
+            _log.debug(("splitPacket - " + raw));
             var depth:int;
             var message:String = "";
             var messages:Vector.<String> = new Vector.<String>();
@@ -236,6 +237,7 @@
                 };
                 i++;
             };
+            _log.debug(((("> splitPacket - " + messages.length) + ", ") + messages.join("\n")));
             return (messages);
         }
 

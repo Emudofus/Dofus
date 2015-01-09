@@ -11,8 +11,7 @@
     import com.ankamagames.jerakine.types.enums.DataStoreEnum;
     import com.ankamagames.jerakine.utils.errors.SingletonError;
     import com.ankamagames.jerakine.managers.StoreDataManager;
-    import com.ankamagames.dofus.BuildInfos;
-    import com.ankamagames.dofus.network.enums.BuildTypeEnum;
+    import com.ankamagames.dofus.misc.utils.RpcServiceCenter;
     import flash.events.Event;
     import com.ankamagames.dofus.types.events.RpcEvent;
     import com.ankamagames.jerakine.managers.LangManager;
@@ -90,14 +89,7 @@
 
         private function getEventFromApi():void
         {
-            if (BuildInfos.BUILD_TYPE >= BuildTypeEnum.INTERNAL)
-            {
-                this._rpcService = new RpcServiceManager("http://api.ankama.lan/krosmoz/event.json", "json");
-            }
-            else
-            {
-                this._rpcService = new RpcServiceManager("http://api.ankama.com/krosmoz/event.json", "json");
-            };
+            this._rpcService = new RpcServiceManager((RpcServiceCenter.getInstance().apiDomain + "/krosmoz/event.json"), "json");
             this._rpcService.addEventListener(Event.COMPLETE, this.onData);
             this._rpcService.addEventListener(RpcEvent.EVENT_ERROR, this.onError);
             this._rpcService.callMethod("GetEvent", [LangManager.getInstance().getEntry("config.lang.current")]);

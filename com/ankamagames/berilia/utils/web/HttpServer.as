@@ -8,7 +8,6 @@
     import flash.utils.getDefinitionByName;
     import flash.events.Event;
     import flash.filesystem.File;
-    import com.ankamagames.jerakine.utils.misc.StringUtils;
 
     public class HttpServer extends EventDispatcher 
     {
@@ -77,7 +76,6 @@
 
         public function getUrlTo(target:String):String
         {
-            target = StringUtils.convertLatinToUtf(target);
             return (((("http://localhost:" + this._usedPort) + "/") + target));
         }
 

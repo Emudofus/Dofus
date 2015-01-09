@@ -2,8 +2,9 @@
 {
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ExchangeStartedWithPodsMessage extends ExchangeStartedMessage implements INetworkMessage 
@@ -55,24 +56,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeStartedWithPodsMessage(output);
         }
 
-        public function serializeAs_ExchangeStartedWithPodsMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeStartedWithPodsMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_ExchangeStartedMessage(output);
             output.writeInt(this.firstCharacterId);
@@ -80,51 +81,51 @@
             {
                 throw (new Error((("Forbidden value (" + this.firstCharacterCurrentWeight) + ") on element firstCharacterCurrentWeight.")));
             };
-            output.writeInt(this.firstCharacterCurrentWeight);
+            output.writeVarInt(this.firstCharacterCurrentWeight);
             if (this.firstCharacterMaxWeight < 0)
             {
                 throw (new Error((("Forbidden value (" + this.firstCharacterMaxWeight) + ") on element firstCharacterMaxWeight.")));
             };
-            output.writeInt(this.firstCharacterMaxWeight);
+            output.writeVarInt(this.firstCharacterMaxWeight);
             output.writeInt(this.secondCharacterId);
             if (this.secondCharacterCurrentWeight < 0)
             {
                 throw (new Error((("Forbidden value (" + this.secondCharacterCurrentWeight) + ") on element secondCharacterCurrentWeight.")));
             };
-            output.writeInt(this.secondCharacterCurrentWeight);
+            output.writeVarInt(this.secondCharacterCurrentWeight);
             if (this.secondCharacterMaxWeight < 0)
             {
                 throw (new Error((("Forbidden value (" + this.secondCharacterMaxWeight) + ") on element secondCharacterMaxWeight.")));
             };
-            output.writeInt(this.secondCharacterMaxWeight);
+            output.writeVarInt(this.secondCharacterMaxWeight);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeStartedWithPodsMessage(input);
         }
 
-        public function deserializeAs_ExchangeStartedWithPodsMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeStartedWithPodsMessage(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.firstCharacterId = input.readInt();
-            this.firstCharacterCurrentWeight = input.readInt();
+            this.firstCharacterCurrentWeight = input.readVarUhInt();
             if (this.firstCharacterCurrentWeight < 0)
             {
                 throw (new Error((("Forbidden value (" + this.firstCharacterCurrentWeight) + ") on element of ExchangeStartedWithPodsMessage.firstCharacterCurrentWeight.")));
             };
-            this.firstCharacterMaxWeight = input.readInt();
+            this.firstCharacterMaxWeight = input.readVarUhInt();
             if (this.firstCharacterMaxWeight < 0)
             {
                 throw (new Error((("Forbidden value (" + this.firstCharacterMaxWeight) + ") on element of ExchangeStartedWithPodsMessage.firstCharacterMaxWeight.")));
             };
             this.secondCharacterId = input.readInt();
-            this.secondCharacterCurrentWeight = input.readInt();
+            this.secondCharacterCurrentWeight = input.readVarUhInt();
             if (this.secondCharacterCurrentWeight < 0)
             {
                 throw (new Error((("Forbidden value (" + this.secondCharacterCurrentWeight) + ") on element of ExchangeStartedWithPodsMessage.secondCharacterCurrentWeight.")));
             };
-            this.secondCharacterMaxWeight = input.readInt();
+            this.secondCharacterMaxWeight = input.readVarUhInt();
             if (this.secondCharacterMaxWeight < 0)
             {
                 throw (new Error((("Forbidden value (" + this.secondCharacterMaxWeight) + ") on element of ExchangeStartedWithPodsMessage.secondCharacterMaxWeight.")));

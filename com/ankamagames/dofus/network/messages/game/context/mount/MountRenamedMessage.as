@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class MountRenamedMessage extends NetworkMessage implements INetworkMessage 
@@ -42,24 +43,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_MountRenamedMessage(output);
         }
 
-        public function serializeAs_MountRenamedMessage(output:IDataOutput):void
+        public function serializeAs_MountRenamedMessage(output:ICustomDataOutput):void
         {
             if ((((this.mountId < -9007199254740992)) || ((this.mountId > 9007199254740992))))
             {
@@ -69,12 +70,12 @@
             output.writeUTF(this.name);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_MountRenamedMessage(input);
         }
 
-        public function deserializeAs_MountRenamedMessage(input:IDataInput):void
+        public function deserializeAs_MountRenamedMessage(input:ICustomDataInput):void
         {
             this.mountId = input.readDouble();
             if ((((this.mountId < -9007199254740992)) || ((this.mountId > 9007199254740992))))

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightResultListEntry implements INetworkType 
     {
@@ -39,36 +39,36 @@
             this.rewards = new FightLoot();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightResultListEntry(output);
         }
 
-        public function serializeAs_FightResultListEntry(output:IDataOutput):void
+        public function serializeAs_FightResultListEntry(output:ICustomDataOutput):void
         {
-            output.writeShort(this.outcome);
-            if ((((this.wave < 0)) || ((this.wave > 0xFFFFFFFF))))
+            output.writeVarShort(this.outcome);
+            if (this.wave < 0)
             {
                 throw (new Error((("Forbidden value (" + this.wave) + ") on element wave.")));
             };
-            output.writeUnsignedInt(this.wave);
+            output.writeByte(this.wave);
             this.rewards.serializeAs_FightLoot(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightResultListEntry(input);
         }
 
-        public function deserializeAs_FightResultListEntry(input:IDataInput):void
+        public function deserializeAs_FightResultListEntry(input:ICustomDataInput):void
         {
-            this.outcome = input.readShort();
+            this.outcome = input.readVarUhShort();
             if (this.outcome < 0)
             {
                 throw (new Error((("Forbidden value (" + this.outcome) + ") on element of FightResultListEntry.outcome.")));
             };
-            this.wave = input.readUnsignedInt();
-            if ((((this.wave < 0)) || ((this.wave > 0xFFFFFFFF))))
+            this.wave = input.readByte();
+            if (this.wave < 0)
             {
                 throw (new Error((("Forbidden value (" + this.wave) + ") on element of FightResultListEntry.wave.")));
             };

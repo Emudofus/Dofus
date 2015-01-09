@@ -4,6 +4,7 @@
     import com.ankamagames.jerakine.logger.Log;
     import flash.utils.getQualifiedClassName;
     import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+    import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
     import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
@@ -11,12 +12,12 @@
     import com.ankamagames.dofus.types.entities.AnimatedCharacter;
     import com.ankamagames.tiphon.display.TiphonSprite;
     import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
+    import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
     import com.ankamagames.dofus.datacenter.spells.SpellBomb;
     import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.datacenter.spells.SpellLevel;
     import com.ankamagames.dofus.datacenter.effects.Effect;
-    import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
     import com.ankamagames.dofus.logic.game.fight.types.SpellDamageInfo;
     import com.ankamagames.jerakine.types.positions.MapPoint;
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
@@ -27,6 +28,7 @@
     import com.ankamagames.dofus.network.types.game.context.fight.GameFightCompanionInformations;
     import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
     import com.ankamagames.jerakine.types.zones.IZone;
+    import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
     import com.ankamagames.dofus.logic.game.fight.types.EffectDamage;
     import com.ankamagames.dofus.logic.game.fight.types.SpellDamage;
     import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceInteger;
@@ -36,10 +38,13 @@
     import com.ankamagames.dofus.logic.game.fight.types.PushedEntity;
     import com.ankamagames.dofus.logic.game.fight.types.SplashDamage;
     import com.ankamagames.atouin.managers.EntitiesManager;
+    import com.ankamagames.dofus.logic.game.fight.types.StatBuff;
     import com.ankamagames.dofus.logic.game.fight.types.EffectModification;
+    import com.ankamagames.dofus.logic.game.fight.types.MarkInstance;
+    import com.ankamagames.dofus.logic.game.fight.managers.MarkedCellsManager;
+    import com.ankamagames.dofus.network.enums.GameActionMarkTypeEnum;
     import com.ankamagames.dofus.logic.game.fight.types.TriggeredSpell;
     import com.ankamagames.jerakine.entities.interfaces.IEntity;
-    import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
     import flash.utils.Dictionary;
     import __AS3__.vec.*;
 
@@ -68,6 +73,7 @@
         public static const SPLASH_EFFECTS_IDS:Array = [1123, 1124, 1125, 1126, 1127, 1128];
         public static const MP_BASED_DAMAGE_EFFECTS_IDS:Array = [1012, 1013, 1014, 1015, 1016];
         public static const HP_BASED_DAMAGE_EFFECTS_IDS:Array = [672, 85, 86, 87, 88, 89];
+        public static const TARGET_HP_BASED_DAMAGE_EFFECTS_IDS:Array = [1067, 1068, 1069, 1070, 1071];
         public static const TRIGGERED_EFFECTS_IDS:Array = [138, 1040];
         public static const NO_BOOST_EFFECTS_IDS:Array = [144, 82];
 
@@ -76,6 +82,8 @@
         {
             var affected:Boolean;
             var effi:EffectInstance;
+            var targetBuffs:Array;
+            var buff:BasicBuff;
             var fef:FightEntitiesFrame = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame);
             if (((!(pSpell)) || (!(fef))))
             {
@@ -119,6 +127,35 @@
                     {
                         affected = true;
                         break;
+                    };
+                };
+            };
+            if (!(affected))
+            {
+                targetBuffs = BuffManager.getInstance().getAllBuff(pTargetId);
+                if (targetBuffs)
+                {
+                    for each (buff in targetBuffs)
+                    {
+                        if (buff.effects.category == DAMAGE_EFFECT_CATEGORY)
+                        {
+                            for each (effi in pSpell.effects)
+                            {
+                                if (verifyEffectTrigger(pCasterId, pTargetId, pSpell.effects, effi, (pSpell is SpellWrapper), buff.effects.triggers, pSpellImpactCell))
+                                {
+                                    affected = true;
+                                    break;
+                                };
+                            };
+                            for each (effi in pSpell.criticalEffect)
+                            {
+                                if (verifyEffectTrigger(pCasterId, pTargetId, pSpell.criticalEffect, effi, (pSpell is SpellWrapper), buff.effects.triggers, pSpellImpactCell))
+                                {
+                                    affected = true;
+                                    break;
+                                };
+                            };
+                        };
                     };
                 };
             };
@@ -276,6 +313,12 @@
                     case "MDM":
                         break;
                     case "MDP":
+                        break;
+                    case "A":
+                        verify = (pEffect.effectId == 101);
+                        break;
+                    case "m":
+                        verify = (pEffect.effectId == 127);
                         break;
                 };
                 if (verify)
@@ -459,7 +502,7 @@
             };
             var targetInfos:GameFightFighterInformations = (fef.getEntityInfos(pTargetId) as GameFightFighterInformations);
             var effectZone:IZone = SpellZoneManager.getInstance().getZone(pEffect.zoneShape, uint(pEffect.zoneSize), uint(pEffect.zoneMinSize));
-            effectZone.direction = MapPoint(MapPoint.fromCellId(pCasterCell)).advancedOrientationTo(MapPoint.fromCellId(pSpellImpactCell), false);
+            effectZone.direction = MapPoint(MapPoint.fromCellId(pCasterCell)).advancedOrientationTo(MapPoint.fromCellId(FightContextFrame.currentCell), false);
             var effectZoneCells:Vector.<uint> = effectZone.getCells(pSpellImpactCell);
             return (((effectZoneCells) ? !((effectZoneCells.indexOf(targetInfos.disposition.cellId) == -1)) : false));
         }
@@ -616,12 +659,15 @@
             var finalFireDmg:EffectDamage;
             var erosion:EffectDamage;
             var splashEffectDamages:Vector.<EffectDamage>;
+            var targetHpBasedBuffDamages:Vector.<SpellDamage>;
             var dmgMultiplier:Number;
             var sharedDamageEffect:EffectDamage;
             var pushDamages:EffectDamage;
             var pushedEntity:PushedEntity;
             var pushIndex:uint;
             var hasPushedDamage:Boolean;
+            var pushDmg:int;
+            var criticalPushDmg:int;
             var splashEffectDmg:EffectDamage;
             var splashDmg:SplashDamage;
             var splashCasterCell:uint;
@@ -632,6 +678,9 @@
             var effid:EffectInstanceDice;
             var finalBuffDmg:EffectDamage;
             var currentCasterLifePoints:int;
+            var currentTargetLifePoints:int;
+            var targetHpBasedBuffDamage:SpellDamage;
+            var finalTargetHpBasedBuffDmg:EffectDamage;
             var minShieldDiff:int;
             var maxShieldDiff:int;
             var minCriticalShieldDiff:int;
@@ -651,6 +700,7 @@
             var shapeEfficiencyPercent:int = ((!((pSpellDamageInfo.spellShapeEfficiencyPercent == null))) ? (int(pSpellDamageInfo.spellShapeEfficiencyPercent)) : EFFECTSHAPE_DEFAULT_EFFICIENCY);
             var shapeMaxEfficiency:int = ((!((pSpellDamageInfo.spellShapeMaxEfficiency == null))) ? (int(pSpellDamageInfo.spellShapeMaxEfficiency)) : EFFECTSHAPE_DEFAULT_MAX_EFFICIENCY_APPLY);
             var efficiencyMultiplier:Number = getShapeEfficiency(pSpellDamageInfo.spellShape, pSpellDamageInfo.spellCenterCell, pSpellDamageInfo.targetCell, shapeSize, shapeMinSize, shapeEfficiencyPercent, shapeMaxEfficiency);
+            efficiencyMultiplier = (efficiencyMultiplier * pSpellDamageInfo.portalsSpellEfficiencyBonus);
             finalNeutralDmg = computeDamage(pSpellDamageInfo.neutralDamage, pSpellDamageInfo, efficiencyMultiplier, false, !(pWithTargetResists), !(pWithTargetResists));
             finalEarthDmg = computeDamage(pSpellDamageInfo.earthDamage, pSpellDamageInfo, efficiencyMultiplier, false, !(pWithTargetResists), !(pWithTargetResists));
             finalWaterDmg = computeDamage(pSpellDamageInfo.waterDamage, pSpellDamageInfo, efficiencyMultiplier, false, !(pWithTargetResists), !(pWithTargetResists));
@@ -661,10 +711,11 @@
             var totalMaxErosionDamage:int = ((((finalNeutralDmg.maxErosionDamage + finalEarthDmg.maxErosionDamage) + finalWaterDmg.maxErosionDamage) + finalAirDmg.maxErosionDamage) + finalFireDmg.maxErosionDamage);
             var totalMinCriticaErosionDamage:int = ((((finalNeutralDmg.minCriticalErosionDamage + finalEarthDmg.minCriticalErosionDamage) + finalWaterDmg.minCriticalErosionDamage) + finalAirDmg.minCriticalErosionDamage) + finalFireDmg.minCriticalErosionDamage);
             var totalMaxCriticaErosionlDamage:int = ((((finalNeutralDmg.maxCriticalErosionDamage + finalEarthDmg.maxCriticalErosionDamage) + finalWaterDmg.maxCriticalErosionDamage) + finalAirDmg.maxCriticalErosionDamage) + finalFireDmg.maxCriticalErosionDamage);
-            var totalMinLifePointsAdded:int = ((Math.floor(((pSpellDamageInfo.healDamage.minLifePointsAdded * (100 + pSpellDamageInfo.casterIntelligence)) / 100)) + (((pSpellDamageInfo.healDamage.minLifePointsAdded > 0)) ? pSpellDamageInfo.casterHealBonus : 0)) * efficiencyMultiplier);
-            var totalMaxLifePointsAdded:int = ((Math.floor(((pSpellDamageInfo.healDamage.maxLifePointsAdded * (100 + pSpellDamageInfo.casterIntelligence)) / 100)) + (((pSpellDamageInfo.healDamage.maxLifePointsAdded > 0)) ? pSpellDamageInfo.casterHealBonus : 0)) * efficiencyMultiplier);
-            var totalMinCriticalLifePointsAdded:int = ((Math.floor(((pSpellDamageInfo.healDamage.minCriticalLifePointsAdded * (100 + pSpellDamageInfo.casterIntelligence)) / 100)) + (((pSpellDamageInfo.healDamage.minCriticalLifePointsAdded > 0)) ? pSpellDamageInfo.casterHealBonus : 0)) * efficiencyMultiplier);
-            var totalMaxCriticalLifePointsAdded:int = ((Math.floor(((pSpellDamageInfo.healDamage.maxCriticalLifePointsAdded * (100 + pSpellDamageInfo.casterIntelligence)) / 100)) + (((pSpellDamageInfo.healDamage.maxCriticalLifePointsAdded > 0)) ? pSpellDamageInfo.casterHealBonus : 0)) * efficiencyMultiplier);
+            var casterIntelligence:int = (((pSpellDamageInfo.casterIntelligence <= 0)) ? 1 : pSpellDamageInfo.casterIntelligence);
+            var totalMinLifePointsAdded:int = ((Math.floor(((pSpellDamageInfo.healDamage.minLifePointsAdded * (100 + casterIntelligence)) / 100)) + (((pSpellDamageInfo.healDamage.minLifePointsAdded > 0)) ? pSpellDamageInfo.casterHealBonus : 0)) * efficiencyMultiplier);
+            var totalMaxLifePointsAdded:int = ((Math.floor(((pSpellDamageInfo.healDamage.maxLifePointsAdded * (100 + casterIntelligence)) / 100)) + (((pSpellDamageInfo.healDamage.maxLifePointsAdded > 0)) ? pSpellDamageInfo.casterHealBonus : 0)) * efficiencyMultiplier);
+            var totalMinCriticalLifePointsAdded:int = ((Math.floor(((pSpellDamageInfo.healDamage.minCriticalLifePointsAdded * (100 + casterIntelligence)) / 100)) + (((pSpellDamageInfo.healDamage.minCriticalLifePointsAdded > 0)) ? pSpellDamageInfo.casterHealBonus : 0)) * efficiencyMultiplier);
+            var totalMaxCriticalLifePointsAdded:int = ((Math.floor(((pSpellDamageInfo.healDamage.maxCriticalLifePointsAdded * (100 + casterIntelligence)) / 100)) + (((pSpellDamageInfo.healDamage.maxCriticalLifePointsAdded > 0)) ? pSpellDamageInfo.casterHealBonus : 0)) * efficiencyMultiplier);
             totalMinLifePointsAdded = (totalMinLifePointsAdded + pSpellDamageInfo.healDamage.lifePointsAddedBasedOnLifePercent);
             totalMaxLifePointsAdded = (totalMaxLifePointsAdded + pSpellDamageInfo.healDamage.lifePointsAddedBasedOnLifePercent);
             totalMinCriticalLifePointsAdded = (totalMinCriticalLifePointsAdded + pSpellDamageInfo.healDamage.criticalLifePointsAddedBasedOnLifePercent);
@@ -698,8 +749,10 @@
                         pushedEntity.damage = 0;
                         for each (pushIndex in pushedEntity.pushedIndexes)
                         {
-                            pushedEntity.damage = (pushedEntity.damage + (((((pSpellDamageInfo.casterLevel / 2) + (pSpellDamageInfo.casterPushDamageBonus - pSpellDamageInfo.targetPushDamageFixedResist)) + 32) * pushedEntity.force) / (4 * Math.pow(2, pushIndex))));
-                            pushedEntity.criticalDamage = (pushedEntity.criticalDamage + (((((pSpellDamageInfo.casterLevel / 2) + (pSpellDamageInfo.casterCriticalPushDamageBonus - pSpellDamageInfo.targetPushDamageFixedResist)) + 32) * pushedEntity.force) / (4 * Math.pow(2, pushIndex))));
+                            pushDmg = (((((pSpellDamageInfo.casterLevel / 2) + (pSpellDamageInfo.casterPushDamageBonus - pSpellDamageInfo.targetPushDamageFixedResist)) + 32) * pushedEntity.force) / (4 * Math.pow(2, pushIndex)));
+                            pushedEntity.damage = (pushedEntity.damage + (((pushDmg > 0)) ? pushDmg : 0));
+                            criticalPushDmg = (((((pSpellDamageInfo.casterLevel / 2) + (pSpellDamageInfo.casterCriticalPushDamageBonus - pSpellDamageInfo.targetPushDamageFixedResist)) + 32) * pushedEntity.force) / (4 * Math.pow(2, pushIndex)));
+                            pushedEntity.criticalDamage = (pushedEntity.criticalDamage + (((criticalPushDmg > 0)) ? criticalPushDmg : 0));
                         };
                         hasPushedDamage = true;
                         break;
@@ -751,7 +804,7 @@
             {
                 for each (buff in pSpellDamageInfo.targetBuffs)
                 {
-                    if (((((!(buff.hasOwnProperty("delay"))) || ((buff["delay"] == 0)))) && (verifyBuffTriggers(pSpellDamageInfo, buff))))
+                    if (((((((!(buff.hasOwnProperty("delay"))) || ((buff["delay"] == 0)))) && (((!((buff is StatBuff))) || (!((buff as StatBuff).statName)))))) && (verifyBuffTriggers(pSpellDamageInfo, buff))))
                     {
                         switch (buff.actionId)
                         {
@@ -768,16 +821,45 @@
                                 pSpellDamageInfo.spellHasCriticalHeal = pSpellDamageInfo.spellHasCriticalDamage;
                                 break;
                         };
-                        if (buff.effects.category == DAMAGE_EFFECT_CATEGORY)
+                        if (((((!((buff.targetId == pSpellDamageInfo.casterId))) && ((buff.effects.category == DAMAGE_EFFECT_CATEGORY)))) && ((HEALING_EFFECTS_IDS.indexOf(buff.effects.effectId) == -1))))
                         {
                             buffSpellDamage = new SpellDamage();
-                            effid = (buff.effects as EffectInstanceDice);
                             buffEffectDamage = new EffectDamage(buff.effects.effectId, Effect.getEffectById(buff.effects.effectId).elementId, -1);
-                            buffEffectDamage.minDamage = (buffEffectDamage.minCriticalDamage = (effid.value + effid.diceNum));
-                            buffEffectDamage.maxDamage = (buffEffectDamage.maxCriticalDamage = (effid.value + effid.diceSide));
+                            if ((buff.effects is EffectInstanceDice))
+                            {
+                                effid = (buff.effects as EffectInstanceDice);
+                                buffEffectDamage.minDamage = (buffEffectDamage.minCriticalDamage = (effid.value + effid.diceNum));
+                                buffEffectDamage.maxDamage = (buffEffectDamage.maxCriticalDamage = (effid.value + effid.diceSide));
+                            }
+                            else
+                            {
+                                if ((buff.effects is EffectInstanceMinMax))
+                                {
+                                    buffEffectDamage.minDamage = (buffEffectDamage.minCriticalDamage = (buff.effects as EffectInstanceMinMax).min);
+                                    buffEffectDamage.maxDamage = (buffEffectDamage.maxCriticalDamage = (buff.effects as EffectInstanceMinMax).max);
+                                }
+                                else
+                                {
+                                    if ((buff.effects is EffectInstanceInteger))
+                                    {
+                                        buffEffectDamage.minDamage = (buffEffectDamage.minCriticalDamage = (buffEffectDamage.maxDamage = (buffEffectDamage.maxCriticalDamage = (buff.effects as EffectInstanceInteger).value)));
+                                    };
+                                };
+                            };
                             buffSpellDamage.addEffectDamage(buffEffectDamage);
-                            buffDamage = computeDamage(buffSpellDamage, pSpellDamageInfo, 1);
-                            finalDamage.addEffectDamage(buffDamage);
+                            if (TARGET_HP_BASED_DAMAGE_EFFECTS_IDS.indexOf(buff.actionId) == -1)
+                            {
+                                buffDamage = computeDamage(buffSpellDamage, pSpellDamageInfo, 1);
+                                finalDamage.addEffectDamage(buffDamage);
+                            }
+                            else
+                            {
+                                if (!(targetHpBasedBuffDamages))
+                                {
+                                    targetHpBasedBuffDamages = new Vector.<SpellDamage>(0);
+                                };
+                                targetHpBasedBuffDamages.push(buffSpellDamage);
+                            };
                         };
                     };
                 };
@@ -814,6 +896,20 @@
                 if (finalBuffDmg)
                 {
                     finalDamage.addEffectDamage(finalBuffDmg);
+                };
+                if (targetHpBasedBuffDamages)
+                {
+                    finalDamage.updateDamage();
+                    currentTargetLifePoints = ((Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame).getEntityInfos(pSpellDamageInfo.targetId) as GameFightFighterInformations).stats.lifePoints;
+                    pSpellDamageInfo.targetLifePointsAfterNormalMinDamage = ((((currentTargetLifePoints - finalDamage.minDamage) < 0)) ? 0 : (currentTargetLifePoints - finalDamage.minDamage));
+                    pSpellDamageInfo.targetLifePointsAfterNormalMaxDamage = ((((currentTargetLifePoints - finalDamage.maxDamage) < 0)) ? 0 : (currentTargetLifePoints - finalDamage.maxDamage));
+                    pSpellDamageInfo.targetLifePointsAfterCriticalMinDamage = ((((currentTargetLifePoints - finalDamage.minCriticalDamage) < 0)) ? 0 : (currentTargetLifePoints - finalDamage.minCriticalDamage));
+                    pSpellDamageInfo.targetLifePointsAfterCriticalMaxDamage = ((((currentTargetLifePoints - finalDamage.maxCriticalDamage) < 0)) ? 0 : (currentTargetLifePoints - finalDamage.maxCriticalDamage));
+                    for each (targetHpBasedBuffDamage in targetHpBasedBuffDamages)
+                    {
+                        finalTargetHpBasedBuffDmg = computeDamage(targetHpBasedBuffDamage, pSpellDamageInfo, efficiencyMultiplier, false, !(pWithTargetResists), !(pWithTargetResists));
+                        finalDamage.addEffectDamage(finalTargetHpBasedBuffDmg);
+                    };
                 };
             };
             finalDamage.hasCriticalDamage = pSpellDamageInfo.spellHasCriticalDamage;
@@ -870,6 +966,10 @@
                     finalDamage.hasCriticalShieldPointsRemoved = true;
                 };
             };
+            if (((pSpellDamageInfo.casterStates) && (!((pSpellDamageInfo.casterStates.indexOf(218) == -1)))))
+            {
+                finalDamage.minDamage = (finalDamage.maxDamage = (finalDamage.minCriticalDamage = (finalDamage.maxCriticalDamage = 0)));
+            };
             finalDamage.hasCriticalLifePointsAdded = pSpellDamageInfo.spellHasCriticalHeal;
             finalDamage.invulnerableState = pSpellDamageInfo.targetIsInvulnerable;
             finalDamage.unhealableState = pSpellDamageInfo.targetIsUnhealable;
@@ -898,8 +998,10 @@
             var maxBaseDmg:int;
             var maxCriticalBaseDmg:int;
             var i:int;
-            var _local_41:int;
-            var _local_42:int;
+            var elementStat:int;
+            var spellModifBonus:int;
+            var _local_47:int;
+            var _local_48:int;
             var fightEntitiesFrame:FightEntitiesFrame = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame);
             if (!(fightEntitiesFrame))
             {
@@ -915,6 +1017,10 @@
             var lifePointsMax:uint = (((pSpellDamageInfo.casterLifePointsAfterNormalMaxDamage > 0)) ? pSpellDamageInfo.casterLifePointsAfterNormalMaxDamage : casterInfos.stats.lifePoints);
             var criticalLifePointsMin:uint = (((pSpellDamageInfo.casterLifePointsAfterCriticalMinDamage > 0)) ? pSpellDamageInfo.casterLifePointsAfterCriticalMinDamage : casterInfos.stats.lifePoints);
             var criticalLifePointsMax:uint = (((pSpellDamageInfo.casterLifePointsAfterCriticalMaxDamage > 0)) ? pSpellDamageInfo.casterLifePointsAfterCriticalMaxDamage : casterInfos.stats.lifePoints);
+            var targetLifePointsMin:uint = (((pSpellDamageInfo.targetLifePointsAfterNormalMinDamage > 0)) ? pSpellDamageInfo.targetLifePointsAfterNormalMinDamage : pSpellDamageInfo.targetInfos.stats.lifePoints);
+            var targetLifePointsMax:uint = (((pSpellDamageInfo.targetLifePointsAfterNormalMaxDamage > 0)) ? pSpellDamageInfo.targetLifePointsAfterNormalMaxDamage : pSpellDamageInfo.targetInfos.stats.lifePoints);
+            var targetCriticalLifePointsMin:uint = (((pSpellDamageInfo.targetLifePointsAfterCriticalMinDamage > 0)) ? pSpellDamageInfo.targetLifePointsAfterCriticalMinDamage : pSpellDamageInfo.targetInfos.stats.lifePoints);
+            var targetCriticalLifePointsMax:uint = (((pSpellDamageInfo.targetLifePointsAfterCriticalMaxDamage > 0)) ? pSpellDamageInfo.targetLifePointsAfterCriticalMaxDamage : pSpellDamageInfo.targetInfos.stats.lifePoints);
             var isSharedDamage:Boolean = (pRawDamage == pSpellDamageInfo.sharedDamage);
             var damageSharingMultiplicator:Number = 1;
             if (isSharedDamage)
@@ -955,7 +1061,8 @@
                         case NEUTRAL_ELEMENT:
                             if (!(pIgnoreCasterStats))
                             {
-                                stat = (((pSpellDamageInfo.casterStrength + pSpellDamageInfo.casterDamagesBonus) + triggeredDamagesBonus) + ((pSpellDamageInfo.isWeapon) ? pSpellDamageInfo.casterWeaponDamagesBonus : pSpellDamageInfo.casterSpellDamagesBonus));
+                                elementStat = (((pSpellDamageInfo.casterStrength > 0)) ? pSpellDamageInfo.casterStrength : 0);
+                                stat = (((elementStat + pSpellDamageInfo.casterDamagesBonus) + triggeredDamagesBonus) + ((pSpellDamageInfo.isWeapon) ? pSpellDamageInfo.casterWeaponDamagesBonus : pSpellDamageInfo.casterSpellDamagesBonus));
                                 statBonus = pSpellDamageInfo.casterStrengthBonus;
                                 criticalStatBonus = pSpellDamageInfo.casterCriticalStrengthBonus;
                             };
@@ -969,7 +1076,8 @@
                         case EARTH_ELEMENT:
                             if (!(pIgnoreCasterStats))
                             {
-                                stat = (((pSpellDamageInfo.casterStrength + pSpellDamageInfo.casterDamagesBonus) + triggeredDamagesBonus) + ((pSpellDamageInfo.isWeapon) ? pSpellDamageInfo.casterWeaponDamagesBonus : pSpellDamageInfo.casterSpellDamagesBonus));
+                                elementStat = (((pSpellDamageInfo.casterStrength > 0)) ? pSpellDamageInfo.casterStrength : 0);
+                                stat = (((elementStat + pSpellDamageInfo.casterDamagesBonus) + triggeredDamagesBonus) + ((pSpellDamageInfo.isWeapon) ? pSpellDamageInfo.casterWeaponDamagesBonus : pSpellDamageInfo.casterSpellDamagesBonus));
                                 statBonus = pSpellDamageInfo.casterStrengthBonus;
                                 criticalStatBonus = pSpellDamageInfo.casterCriticalStrengthBonus;
                             };
@@ -983,7 +1091,8 @@
                         case FIRE_ELEMENT:
                             if (!(pIgnoreCasterStats))
                             {
-                                stat = (((pSpellDamageInfo.casterIntelligence + pSpellDamageInfo.casterDamagesBonus) + triggeredDamagesBonus) + ((pSpellDamageInfo.isWeapon) ? pSpellDamageInfo.casterWeaponDamagesBonus : pSpellDamageInfo.casterSpellDamagesBonus));
+                                elementStat = (((pSpellDamageInfo.casterIntelligence > 0)) ? pSpellDamageInfo.casterIntelligence : 0);
+                                stat = (((elementStat + pSpellDamageInfo.casterDamagesBonus) + triggeredDamagesBonus) + ((pSpellDamageInfo.isWeapon) ? pSpellDamageInfo.casterWeaponDamagesBonus : pSpellDamageInfo.casterSpellDamagesBonus));
                                 statBonus = pSpellDamageInfo.casterIntelligenceBonus;
                                 criticalStatBonus = pSpellDamageInfo.casterCriticalIntelligenceBonus;
                             };
@@ -997,7 +1106,8 @@
                         case WATER_ELEMENT:
                             if (!(pIgnoreCasterStats))
                             {
-                                stat = (((pSpellDamageInfo.casterChance + pSpellDamageInfo.casterDamagesBonus) + triggeredDamagesBonus) + ((pSpellDamageInfo.isWeapon) ? pSpellDamageInfo.casterWeaponDamagesBonus : pSpellDamageInfo.casterSpellDamagesBonus));
+                                elementStat = (((pSpellDamageInfo.casterChance > 0)) ? pSpellDamageInfo.casterChance : 0);
+                                stat = (((elementStat + pSpellDamageInfo.casterDamagesBonus) + triggeredDamagesBonus) + ((pSpellDamageInfo.isWeapon) ? pSpellDamageInfo.casterWeaponDamagesBonus : pSpellDamageInfo.casterSpellDamagesBonus));
                                 statBonus = pSpellDamageInfo.casterChanceBonus;
                                 criticalStatBonus = pSpellDamageInfo.casterCriticalChanceBonus;
                             };
@@ -1011,7 +1121,8 @@
                         case AIR_ELEMENT:
                             if (!(pIgnoreCasterStats))
                             {
-                                stat = (((pSpellDamageInfo.casterAgility + pSpellDamageInfo.casterDamagesBonus) + triggeredDamagesBonus) + ((pSpellDamageInfo.isWeapon) ? pSpellDamageInfo.casterWeaponDamagesBonus : pSpellDamageInfo.casterSpellDamagesBonus));
+                                elementStat = (((pSpellDamageInfo.casterAgility > 0)) ? pSpellDamageInfo.casterAgility : 0);
+                                stat = (((elementStat + pSpellDamageInfo.casterDamagesBonus) + triggeredDamagesBonus) + ((pSpellDamageInfo.isWeapon) ? pSpellDamageInfo.casterWeaponDamagesBonus : pSpellDamageInfo.casterSpellDamagesBonus));
                                 statBonus = pSpellDamageInfo.casterAgilityBonus;
                                 criticalStatBonus = pSpellDamageInfo.casterCriticalAgilityBonus;
                             };
@@ -1030,7 +1141,7 @@
                 };
                 resistPercent = (100 - resistPercent);
                 efficiencyPercent = (((isNaN(ed.efficiencyMultiplier)) ? pEfficiencyMultiplier : ed.efficiencyMultiplier) * 100);
-                if (HP_BASED_DAMAGE_EFFECTS_IDS.indexOf(ed.effectId) == -1)
+                if ((((HP_BASED_DAMAGE_EFFECTS_IDS.indexOf(ed.effectId) == -1)) && ((TARGET_HP_BASED_DAMAGE_EFFECTS_IDS.indexOf(ed.effectId) == -1))))
                 {
                     if (pIgnoreCasterStats)
                     {
@@ -1042,21 +1153,22 @@
                     {
                         targetCriticalDamageFixedResist = 0;
                     };
-                    minBaseDmg = getDamage(ed.minDamage, pIgnoreCasterStats, stat, statBonus, elementBonus, allDamagesBonus, elementReduction, resistPercent, efficiencyPercent, damageSharingMultiplicator);
-                    minCriticalBaseDmg = getDamage(((!((pSpellDamageInfo.spellWeaponCriticalBonus == 0))) ? (((ed.minDamage > 0)) ? (ed.minDamage + pSpellDamageInfo.spellWeaponCriticalBonus) : 0) : ed.minCriticalDamage), pIgnoreCasterStats, stat, criticalStatBonus, (elementBonus + casterCriticalDamageBonus), allDamagesBonus, (elementReduction + targetCriticalDamageFixedResist), resistPercent, efficiencyPercent, damageSharingMultiplicator);
-                    maxBaseDmg = getDamage(ed.maxDamage, pIgnoreCasterStats, stat, statBonus, elementBonus, allDamagesBonus, elementReduction, resistPercent, efficiencyPercent, damageSharingMultiplicator);
-                    maxCriticalBaseDmg = getDamage(((!((pSpellDamageInfo.spellWeaponCriticalBonus == 0))) ? (((ed.maxDamage > 0)) ? (ed.maxDamage + pSpellDamageInfo.spellWeaponCriticalBonus) : 0) : ed.maxCriticalDamage), pIgnoreCasterStats, stat, criticalStatBonus, (elementBonus + casterCriticalDamageBonus), allDamagesBonus, (elementReduction + targetCriticalDamageFixedResist), resistPercent, efficiencyPercent, damageSharingMultiplicator);
+                    spellModifBonus = ((pSpellDamageInfo.spellDamageModification) ? pSpellDamageInfo.spellDamageModification.value.objectsAndMountBonus : 0);
+                    minBaseDmg = getDamage(ed.minDamage, pIgnoreCasterStats, stat, statBonus, elementBonus, allDamagesBonus, spellModifBonus, elementReduction, resistPercent, efficiencyPercent, damageSharingMultiplicator);
+                    minCriticalBaseDmg = getDamage(((!((pSpellDamageInfo.spellWeaponCriticalBonus == 0))) ? (((ed.minDamage > 0)) ? (ed.minDamage + pSpellDamageInfo.spellWeaponCriticalBonus) : 0) : ed.minCriticalDamage), pIgnoreCasterStats, stat, criticalStatBonus, (elementBonus + casterCriticalDamageBonus), allDamagesBonus, spellModifBonus, (elementReduction + targetCriticalDamageFixedResist), resistPercent, efficiencyPercent, damageSharingMultiplicator);
+                    maxBaseDmg = getDamage(ed.maxDamage, pIgnoreCasterStats, stat, statBonus, elementBonus, allDamagesBonus, spellModifBonus, elementReduction, resistPercent, efficiencyPercent, damageSharingMultiplicator);
+                    maxCriticalBaseDmg = getDamage(((!((pSpellDamageInfo.spellWeaponCriticalBonus == 0))) ? (((ed.maxDamage > 0)) ? (ed.maxDamage + pSpellDamageInfo.spellWeaponCriticalBonus) : 0) : ed.maxCriticalDamage), pIgnoreCasterStats, stat, criticalStatBonus, (elementBonus + casterCriticalDamageBonus), allDamagesBonus, spellModifBonus, (elementReduction + targetCriticalDamageFixedResist), resistPercent, efficiencyPercent, damageSharingMultiplicator);
                 }
                 else
                 {
                     switch (ed.effectId)
                     {
                         case 672:
-                            _local_41 = (((((ed.maxDamage * casterInfos.stats.baseMaxLifePoints) * getMidLifeDamageMultiplier(Math.min(100, Math.max(0, ((100 * casterInfos.stats.lifePoints) / casterInfos.stats.maxLifePoints))))) / 100) * efficiencyPercent) / 100);
-                            maxBaseDmg = (((_local_41 - elementReduction) * resistPercent) / 100);
+                            _local_47 = (((((ed.maxDamage * casterInfos.stats.baseMaxLifePoints) * getMidLifeDamageMultiplier(Math.min(100, Math.max(0, ((100 * casterInfos.stats.lifePoints) / casterInfos.stats.maxLifePoints))))) / 100) * efficiencyPercent) / 100);
+                            maxBaseDmg = (((_local_47 - elementReduction) * resistPercent) / 100);
                             minBaseDmg = maxBaseDmg;
-                            _local_42 = (((((ed.maxCriticalDamage * casterInfos.stats.baseMaxLifePoints) * getMidLifeDamageMultiplier(Math.min(100, Math.max(0, ((100 * casterInfos.stats.lifePoints) / casterInfos.stats.maxLifePoints))))) / 100) * efficiencyPercent) / 100);
-                            maxCriticalBaseDmg = (((_local_42 - elementReduction) * resistPercent) / 100);
+                            _local_48 = (((((ed.maxCriticalDamage * casterInfos.stats.baseMaxLifePoints) * getMidLifeDamageMultiplier(Math.min(100, Math.max(0, ((100 * casterInfos.stats.lifePoints) / casterInfos.stats.maxLifePoints))))) / 100) * efficiencyPercent) / 100);
+                            maxCriticalBaseDmg = (((_local_48 - elementReduction) * resistPercent) / 100);
                             minCriticalBaseDmg = maxCriticalBaseDmg;
                             break;
                         case 85:
@@ -1064,18 +1176,36 @@
                         case 87:
                         case 88:
                         case 89:
-                            _local_41 = ((((ed.minDamage * lifePointsMin) / 100) * efficiencyPercent) / 100);
-                            minBaseDmg = (((_local_41 - elementReduction) * resistPercent) / 100);
-                            _local_41 = ((((ed.maxDamage * lifePointsMax) / 100) * efficiencyPercent) / 100);
-                            maxBaseDmg = (((_local_41 - elementReduction) * resistPercent) / 100);
-                            _local_42 = ((((ed.minCriticalDamage * criticalLifePointsMin) / 100) * efficiencyPercent) / 100);
-                            minCriticalBaseDmg = (((_local_42 - elementReduction) * resistPercent) / 100);
-                            _local_42 = ((((ed.maxCriticalDamage * criticalLifePointsMax) / 100) * efficiencyPercent) / 100);
-                            maxCriticalBaseDmg = (((_local_42 - elementReduction) * resistPercent) / 100);
+                            _local_47 = ((((ed.minDamage * lifePointsMin) / 100) * efficiencyPercent) / 100);
+                            minBaseDmg = (((_local_47 - elementReduction) * resistPercent) / 100);
+                            _local_47 = ((((ed.maxDamage * lifePointsMax) / 100) * efficiencyPercent) / 100);
+                            maxBaseDmg = (((_local_47 - elementReduction) * resistPercent) / 100);
+                            _local_48 = ((((ed.minCriticalDamage * criticalLifePointsMin) / 100) * efficiencyPercent) / 100);
+                            minCriticalBaseDmg = (((_local_48 - elementReduction) * resistPercent) / 100);
+                            _local_48 = ((((ed.maxCriticalDamage * criticalLifePointsMax) / 100) * efficiencyPercent) / 100);
+                            maxCriticalBaseDmg = (((_local_48 - elementReduction) * resistPercent) / 100);
                             lifePointsMin = (lifePointsMin - minBaseDmg);
                             lifePointsMax = (lifePointsMax - maxBaseDmg);
                             criticalLifePointsMin = (criticalLifePointsMin - minCriticalBaseDmg);
                             criticalLifePointsMax = (criticalLifePointsMax - maxCriticalBaseDmg);
+                            break;
+                        case 1067:
+                        case 1068:
+                        case 1069:
+                        case 1070:
+                        case 1071:
+                            _local_47 = ((((ed.minDamage * targetLifePointsMin) / 100) * efficiencyPercent) / 100);
+                            minBaseDmg = (((_local_47 - elementReduction) * resistPercent) / 100);
+                            _local_47 = ((((ed.maxDamage * targetLifePointsMax) / 100) * efficiencyPercent) / 100);
+                            maxBaseDmg = (((_local_47 - elementReduction) * resistPercent) / 100);
+                            _local_48 = ((((ed.minCriticalDamage * targetCriticalLifePointsMin) / 100) * efficiencyPercent) / 100);
+                            minCriticalBaseDmg = (((_local_48 - elementReduction) * resistPercent) / 100);
+                            _local_48 = ((((ed.maxCriticalDamage * targetCriticalLifePointsMax) / 100) * efficiencyPercent) / 100);
+                            maxCriticalBaseDmg = (((_local_48 - elementReduction) * resistPercent) / 100);
+                            targetLifePointsMin = (targetLifePointsMin - minBaseDmg);
+                            targetLifePointsMax = (targetLifePointsMax - maxBaseDmg);
+                            targetCriticalLifePointsMin = (targetCriticalLifePointsMin - minCriticalBaseDmg);
+                            targetCriticalLifePointsMax = (targetCriticalLifePointsMax - maxCriticalBaseDmg);
                             break;
                     };
                 };
@@ -1130,14 +1260,15 @@
             return (finalDamage);
         }
 
-        private static function getDamage(pBaseDmg:int, pIgnoreStats:Boolean, pStat:int, pStatBonus:int, pDamageBonus:int, pAllDamagesBonus:int, pDamageReduction:int, pResistPercent:int, pEfficiencyPercent:int, pDamageSharingMultiplicator:Number=1):int
+        private static function getDamage(pBaseDmg:int, pIgnoreStats:Boolean, pStat:int, pStatBonus:int, pDamageBonus:int, pAllDamagesBonus:int, pSpellModifBonus:int, pDamageReduction:int, pResistPercent:int, pEfficiencyPercent:int, pDamageSharingMultiplicator:Number=1):int
         {
             if (((!(pIgnoreStats)) && (((pStat + pStatBonus) <= 0))))
             {
                 pStat = 1;
                 pStatBonus = 0;
             };
-            var dmgWithEfficiency:int = (((pBaseDmg > 0)) ? ((((Math.floor(((pBaseDmg * ((100 + pStat) + pStatBonus)) / 100)) + pDamageBonus) + pAllDamagesBonus) * pEfficiencyPercent) / 100) : 0);
+            var dmg:int = (((pBaseDmg > 0)) ? ((Math.floor(((pBaseDmg * ((100 + pStat) + pStatBonus)) / 100)) + pDamageBonus) + pAllDamagesBonus) : 0);
+            var dmgWithEfficiency:int = (((dmg > 0)) ? (((dmg + pSpellModifBonus) * pEfficiencyPercent) / 100) : 0);
             var dmgWithDamageReduction:int = (((dmgWithEfficiency > 0)) ? (dmgWithEfficiency - pDamageReduction) : 0);
             dmgWithDamageReduction = (((dmgWithDamageReduction < 0)) ? 0 : dmgWithDamageReduction);
             return ((((dmgWithDamageReduction * pResistPercent) / 100) * pDamageSharingMultiplicator));
@@ -1220,6 +1351,38 @@
             return (Math.max(0, (DAMAGE_NOT_BOOSTED - ((0.01 * Math.min(pDistance, pShapeMaxEfficiency)) * pShapeEfficiencyPercent))));
         }
 
+        public static function getPortalsSpellEfficiencyBonus(pSpellImpactCell:int, pTeamId:uint):Number
+        {
+            var portal:MarkInstance;
+            var previousPortal:MarkInstance;
+            var usingPortals:Boolean;
+            var bonus:int;
+            var dist:int;
+            var bonusCoeff:Number = 1;
+            var portals:Vector.<MarkInstance> = MarkedCellsManager.getInstance().getMarks(GameActionMarkTypeEnum.PORTAL, pTeamId);
+            if (portals.length > 1)
+            {
+                for each (portal in portals)
+                {
+                    if (portal.cells[0] == pSpellImpactCell)
+                    {
+                        usingPortals = true;
+                    };
+                    bonus = Math.max(bonus, int(portal.associatedSpellLevel.effects[0].parameter2));
+                    if (previousPortal)
+                    {
+                        dist = (dist + MapPoint.fromCellId(portal.cells[0]).distanceToCell(MapPoint.fromCellId(previousPortal.cells[0])));
+                    };
+                    previousPortal = portal;
+                };
+                if (usingPortals)
+                {
+                    bonusCoeff = (1 + ((bonus + (portals.length * dist)) / 100));
+                };
+            };
+            return (bonusCoeff);
+        }
+
         public static function getSplashDamages(pTriggeredSpells:Vector.<TriggeredSpell>, pSourceSpellInfo:SpellDamageInfo):Vector.<SplashDamage>
         {
             var splashDamages:Vector.<SplashDamage>;
@@ -1265,7 +1428,7 @@
                         };
                         if (splashTargetsIds)
                         {
-                            splashDamages.push(new SplashDamage(sw.id, sw.playerId, splashTargetsIds, DamageUtil.getSpellDamage(pSourceSpellInfo, false, false), (effi as EffectInstanceDice).diceNum, Effect.getEffectById(effi.effectId).elementId, effi.rawZone.charCodeAt(0), effi.zoneSize, effi.zoneMinSize, effi.zoneEfficiencyPercent, effi.zoneMaxEfficiency, ts.hasCritical));
+                            splashDamages.push(new SplashDamage(sw.id, sw.playerId, splashTargetsIds, DamageUtil.getSpellDamage(pSourceSpellInfo, false, false), (effi as EffectInstanceDice).diceNum, Effect.getEffectById(effi.effectId).elementId, effi.random, effi.rawZone.charCodeAt(0), effi.zoneSize, effi.zoneMinSize, effi.zoneEfficiencyPercent, effi.zoneMaxEfficiency, ts.hasCritical));
                         };
                     };
                 };

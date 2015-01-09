@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.interactive.skill.SkillActionDescription;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -40,12 +40,12 @@
             this.skills = new Vector.<SkillActionDescription>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_JobDescription(output);
         }
 
-        public function serializeAs_JobDescription(output:IDataOutput):void
+        public function serializeAs_JobDescription(output:ICustomDataOutput):void
         {
             if (this.jobId < 0)
             {
@@ -62,12 +62,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_JobDescription(input);
         }
 
-        public function deserializeAs_JobDescription(input:IDataInput):void
+        public function deserializeAs_JobDescription(input:ICustomDataInput):void
         {
             var _id2:uint;
             var _item2:SkillActionDescription;

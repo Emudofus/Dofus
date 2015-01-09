@@ -8,17 +8,10 @@
     import flash.utils.getQualifiedClassName;
     import flash.text.TextField;
     import com.ankamagames.dofus.types.DofusOptions;
-    import flash.display.NativeWindow;
-    import com.ankamagames.jerakine.types.CustomSharedObject;
     import com.ankamagames.berilia.components.MapViewer;
     import com.ankamagames.dofus.misc.utils.EmbedAssets;
     import flash.display.Stage;
     import com.ankamagames.jerakine.utils.system.AirScanner;
-    import com.ankamagames.jerakine.utils.display.StageShareManager;
-    import flash.system.Capabilities;
-    import flash.display.StageDisplayState;
-    import flash.display.NativeWindowDisplayState;
-    import flash.display.Screen;
     import flash.system.Security;
     import com.ankamagames.dofus.misc.utils.errormanager.DofusErrorHandler;
     import com.ankamagames.jerakine.managers.ErrorManager;
@@ -43,7 +36,15 @@
     import com.ankamagames.dofus.network.enums.BuildTypeEnum;
     import com.ankamagames.jerakine.types.Uri;
     import flash.system.ApplicationDomain;
+    import com.ankamagames.jerakine.types.CustomSharedObject;
+    import flash.display.NativeWindowDisplayState;
     import com.ankamagames.jerakine.managers.OptionManager;
+    import com.ankamagames.jerakine.utils.display.StageShareManager;
+    import flash.display.NativeWindow;
+    import com.ankamagames.jerakine.utils.system.SystemManager;
+    import flash.display.StageDisplayState;
+    import com.ankamagames.jerakine.enum.OperatingSystem;
+    import flash.display.Screen;
     import flash.display.DisplayObjectContainer;
     import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
     import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;
@@ -62,6 +63,7 @@
     import com.ankamagames.dofus.misc.interClient.InterClientManager;
     import com.ankamagames.jerakine.managers.StoreDataManager;
     import com.ankamagames.jerakine.utils.files.FileUtils;
+    import flash.external.ExternalInterface;
     import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.jerakine.messages.Worker;
     import com.ankamagames.jerakine.managers.LangManager;
@@ -115,13 +117,6 @@
 
         public function Dofus()
         {
-            var r:Number;
-            var mainWindow:NativeWindow;
-            var chromeWidth:Number;
-            var chromeHeight:Number;
-            var clientDimentionSo:CustomSharedObject;
-            var osId:String;
-            var sizeInitialised:Boolean;
             super();
             var i:uint;
             while (i < numChildren)
@@ -141,81 +136,21 @@
                 AirScanner.init(false);
             };
             _self = this;
-            if (AirScanner.hasAir())
-            {
-                r = (stage.stageWidth / stage.stageHeight);
-                mainWindow = stage.nativeWindow;
-                chromeWidth = (mainWindow.width - stage.stageWidth);
-                chromeHeight = (mainWindow.height - stage.stageHeight);
-                StageShareManager.chrome.x = chromeWidth;
-                StageShareManager.chrome.y = chromeHeight;
-                clientDimentionSo = CustomSharedObject.getLocal("clientData");
-                osId = Capabilities.os.substr(0, 3);
-                sizeInitialised = false;
-                if (((!((clientDimentionSo.data == null))) && ((((clientDimentionSo.data.width > 0)) && ((clientDimentionSo.data.height > 0))))))
-                {
-                    if ((((((clientDimentionSo.data.displayState == NativeWindowDisplayState.MAXIMIZED)) && ((osId == "Win")))) && (!((stage.displayState == StageDisplayState["FULL_SCREEN_INTERACTIVE"])))))
-                    {
-                        stage.nativeWindow.maximize();
-                        this._displayState = NativeWindowDisplayState.MAXIMIZED;
-                    };
-                    if ((((clientDimentionSo.data.width > 0)) && ((clientDimentionSo.data.height > 0))))
-                    {
-                        mainWindow.width = clientDimentionSo.data.width;
-                        mainWindow.height = clientDimentionSo.data.height;
-                        this._stageWidth = mainWindow.width;
-                        this._stageHeight = mainWindow.height;
-                        sizeInitialised = true;
-                    };
-                };
-                if (!(sizeInitialised))
-                {
-                    if (Screen.mainScreen.bounds.width < Screen.mainScreen.bounds.height)
-                    {
-                        if (osId == "Win")
-                        {
-                            mainWindow.width = ((Screen.mainScreen.bounds.width * 0.8) + chromeWidth);
-                            mainWindow.height = (((mainWindow.width - chromeWidth) / r) + chromeHeight);
-                        }
-                        else
-                        {
-                            stage.stageWidth = (Screen.mainScreen.bounds.width * 0.8);
-                            stage.stageHeight = (stage.stageWidth / r);
-                        };
-                    }
-                    else
-                    {
-                        if (osId == "Win")
-                        {
-                            mainWindow.height = ((Screen.mainScreen.bounds.height * 0.8) + chromeHeight);
-                            mainWindow.width = ((r * (mainWindow.height - chromeHeight)) + chromeWidth);
-                        }
-                        else
-                        {
-                            stage.stageHeight = (Screen.mainScreen.bounds.height * 0.8);
-                            stage.stageWidth = (r * stage.stageHeight);
-                        };
-                    };
-                };
-                clientDimentionSo.close();
-                stage["nativeWindow"].x = ((Screen.mainScreen.bounds.width - stage.stageWidth) / 2);
-                stage["nativeWindow"].y = ((Screen.mainScreen.bounds.height - stage.stageHeight) / 2);
-                stage["nativeWindow"].visible = true;
-            }
-            else
+            var hasAir:Boolean = AirScanner.hasAir();
+            if (!(hasAir))
             {
                 stage.showDefaultContextMenu = false;
                 Security.allowDomain("*");
+                new DofusErrorHandler();
             };
-            new DofusErrorHandler();
-            if (AirScanner.hasAir())
+            if (hasAir)
             {
                 this._blockLoading = !((name == "root1"));
             };
             ErrorManager.registerLoaderInfo(loaderInfo);
             mouseEnabled = false;
             tabChildren = false;
-            if (AirScanner.hasAir())
+            if (hasAir)
             {
                 try
                 {
@@ -226,7 +161,7 @@
                     trace(("Erreur sur la gestion du multicompte :\n" + e.getStackTrace()));
                 };
             };
-            if (AirScanner.hasAir())
+            if (hasAir)
             {
                 NativeApplication.nativeApplication.addEventListener(Event.EXITING, this.onExiting);
                 NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, this.onCall);
@@ -273,6 +208,8 @@
             if (!(this._initialized))
             {
                 CommandLineArguments.getInstance().setArguments(e.arguments);
+                new DofusErrorHandler();
+                this.initWindow();
                 try
                 {
                     file = new File(((File.applicationDirectory.nativePath + File.separator) + "uplauncherComponents.xml"));
@@ -398,6 +335,76 @@
                 OptionManager.getOptionManager("dofus").fullScreen = e.fullScreen;
             };
             StageShareManager.justExitFullScreen = !(e.fullScreen);
+        }
+
+        private function initWindow():void
+        {
+            var r:Number = (stage.stageWidth / stage.stageHeight);
+            var mainWindow:NativeWindow = stage.nativeWindow;
+            var chromeWidth:Number = (mainWindow.width - stage.stageWidth);
+            var chromeHeight:Number = (mainWindow.height - stage.stageHeight);
+            StageShareManager.chrome.x = chromeWidth;
+            StageShareManager.chrome.y = chromeHeight;
+            var clientDimentionSo:CustomSharedObject = CustomSharedObject.getLocal("clientData");
+            var os:String = SystemManager.getSingleton().os;
+            var sizeInitialised:Boolean;
+            if (((!((clientDimentionSo.data == null))) && ((((clientDimentionSo.data.width > 0)) && ((clientDimentionSo.data.height > 0))))))
+            {
+                if ((((((clientDimentionSo.data.displayState == NativeWindowDisplayState.MAXIMIZED)) && ((os == OperatingSystem.WINDOWS)))) && (!((stage.displayState == StageDisplayState["FULL_SCREEN_INTERACTIVE"])))))
+                {
+                    stage.nativeWindow.maximize();
+                    this._displayState = NativeWindowDisplayState.MAXIMIZED;
+                };
+                if ((((clientDimentionSo.data.width > 0)) && ((clientDimentionSo.data.height > 0))))
+                {
+                    mainWindow.width = clientDimentionSo.data.width;
+                    if (os == OperatingSystem.LINUX)
+                    {
+                        mainWindow.height = (clientDimentionSo.data.height - 28);
+                    }
+                    else
+                    {
+                        mainWindow.height = clientDimentionSo.data.height;
+                    };
+                    this._stageWidth = mainWindow.width;
+                    this._stageHeight = mainWindow.height;
+                    sizeInitialised = true;
+                };
+            };
+            if (!(sizeInitialised))
+            {
+                if (Screen.mainScreen.visibleBounds.width > Screen.mainScreen.visibleBounds.height)
+                {
+                    if (os == OperatingSystem.WINDOWS)
+                    {
+                        mainWindow.height = ((Screen.mainScreen.visibleBounds.height * 0.8) + chromeHeight);
+                        mainWindow.width = ((r * (mainWindow.height - chromeHeight)) + chromeWidth);
+                    }
+                    else
+                    {
+                        mainWindow.height = (Screen.mainScreen.visibleBounds.height * 0.8);
+                        mainWindow.width = (r * (mainWindow.height - chromeHeight));
+                    };
+                }
+                else
+                {
+                    if (os == OperatingSystem.WINDOWS)
+                    {
+                        mainWindow.width = ((Screen.mainScreen.visibleBounds.width * 0.8) + chromeWidth);
+                        mainWindow.height = (((mainWindow.width - chromeWidth) / r) + chromeHeight);
+                    }
+                    else
+                    {
+                        mainWindow.width = (Screen.mainScreen.visibleBounds.width * 0.8);
+                        mainWindow.height = (mainWindow.width / r);
+                    };
+                };
+                this._stageHeight = stage.nativeWindow.height;
+                this._stageWidth = stage.nativeWindow.width;
+            };
+            mainWindow.x = (((Screen.mainScreen.visibleBounds.width - mainWindow.width) / 2) + Screen.mainScreen.visibleBounds.x);
+            mainWindow.y = (((Screen.mainScreen.visibleBounds.height - mainWindow.height) / 2) + Screen.mainScreen.visibleBounds.y);
+            mainWindow.visible = true;
         }
 
         public function getUiContainer():DisplayObjectContainer
@@ -591,9 +598,18 @@
             };
             if (reboot)
             {
-                AppIdModifier.getInstance().invalideCache();
-                trace("REBOOT");
-                this.reboot();
+                if (AirScanner.hasAir())
+                {
+                    AppIdModifier.getInstance().invalideCache();
+                    this.reboot();
+                }
+                else
+                {
+                    if (ExternalInterface.available)
+                    {
+                        ExternalInterface.call("eval", "window.location.reload()");
+                    };
+                };
             };
         }
 

@@ -278,6 +278,7 @@
             };
             _rollOverTimer.stop();
             var param:Array = _rollOverData.split(",");
+            param[1] = StageShareManager.stage.mouseX;
             var callback:Function = PROTOCOL_ROLL_OVER[param.shift()];
             if (callback != null)
             {

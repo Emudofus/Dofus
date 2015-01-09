@@ -6,8 +6,9 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.character.CharacterMinimalInformations;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -61,24 +62,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GuildFactsMessage(output);
         }
 
-        public function serializeAs_GuildFactsMessage(output:IDataOutput):void
+        public function serializeAs_GuildFactsMessage(output:ICustomDataOutput):void
         {
             output.writeShort(this.infos.getTypeId());
             this.infos.serialize(output);
@@ -91,7 +92,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.nbTaxCollectors) + ") on element nbTaxCollectors.")));
             };
-            output.writeShort(this.nbTaxCollectors);
+            output.writeVarShort(this.nbTaxCollectors);
             output.writeBoolean(this.enabled);
             output.writeShort(this.members.length);
             var _i5:uint;
@@ -102,12 +103,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GuildFactsMessage(input);
         }
 
-        public function deserializeAs_GuildFactsMessage(input:IDataInput):void
+        public function deserializeAs_GuildFactsMessage(input:ICustomDataInput):void
         {
             var _item5:CharacterMinimalInformations;
             var _id1:uint = input.readUnsignedShort();
@@ -118,7 +119,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.creationDate) + ") on element of GuildFactsMessage.creationDate.")));
             };
-            this.nbTaxCollectors = input.readShort();
+            this.nbTaxCollectors = input.readVarUhShort();
             if (this.nbTaxCollectors < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbTaxCollectors) + ") on element of GuildFactsMessage.nbTaxCollectors.")));

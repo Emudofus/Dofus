@@ -17,7 +17,6 @@
     import com.ankamagames.jerakine.types.Uri;
     import flash.filesystem.FileStream;
     import com.ankamagames.jerakine.managers.LangManager;
-    import com.ankamagames.jerakine.utils.misc.StringUtils;
     import com.ankamagames.jerakine.utils.system.SystemManager;
     import com.ankamagames.jerakine.enum.OperatingSystem;
     import flash.filesystem.FileMode;
@@ -114,7 +113,7 @@
                             {
                                 len = "app:/".length;
                                 substr = dtFile.url.substring(len, dtFile.url.length);
-                                uri = new Uri(StringUtils.convertLatinToUtf(substr));
+                                uri = new Uri(substr);
                             }
                             else
                             {
@@ -123,7 +122,7 @@
                             uri.tag = dtFile;
                             if (SystemManager.getSingleton().os == OperatingSystem.MAC_OS)
                             {
-                                _log.debug("Using FileStream to load .df files on MAC OS X!");
+                                _log.debug((("Using FileStream to load " + dtFile.nativePath) + " on MAC OS X!"));
                                 fs = new FileStream();
                                 fs.open(dtFile, FileMode.READ);
                                 data = XML(fs.readUTFBytes(fs.bytesAvailable));

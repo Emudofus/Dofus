@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightResultMutantListEntry extends FightResultFighterListEntry implements INetworkType 
     {
@@ -30,31 +30,31 @@
             this.level = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightResultMutantListEntry(output);
         }
 
-        public function serializeAs_FightResultMutantListEntry(output:IDataOutput):void
+        public function serializeAs_FightResultMutantListEntry(output:ICustomDataOutput):void
         {
             super.serializeAs_FightResultFighterListEntry(output);
-            if ((((this.level < 0)) || ((this.level > 0xFFFF))))
+            if (this.level < 0)
             {
                 throw (new Error((("Forbidden value (" + this.level) + ") on element level.")));
             };
-            output.writeShort(this.level);
+            output.writeVarShort(this.level);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightResultMutantListEntry(input);
         }
 
-        public function deserializeAs_FightResultMutantListEntry(input:IDataInput):void
+        public function deserializeAs_FightResultMutantListEntry(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.level = input.readUnsignedShort();
-            if ((((this.level < 0)) || ((this.level > 0xFFFF))))
+            this.level = input.readVarUhShort();
+            if (this.level < 0)
             {
                 throw (new Error((("Forbidden value (" + this.level) + ") on element of FightResultMutantListEntry.level.")));
             };

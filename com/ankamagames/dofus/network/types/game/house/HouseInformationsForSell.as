@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class HouseInformationsForSell implements INetworkType 
@@ -65,18 +65,18 @@
             this.price = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_HouseInformationsForSell(output);
         }
 
-        public function serializeAs_HouseInformationsForSell(output:IDataOutput):void
+        public function serializeAs_HouseInformationsForSell(output:ICustomDataOutput):void
         {
             if (this.modelId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element modelId.")));
             };
-            output.writeInt(this.modelId);
+            output.writeVarInt(this.modelId);
             output.writeUTF(this.ownerName);
             output.writeBoolean(this.ownerConnected);
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))
@@ -93,7 +93,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
             output.writeByte(this.nbRoom);
             output.writeByte(this.nbChest);
             output.writeShort(this.skillListIds.length);
@@ -108,18 +108,18 @@
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element price.")));
             };
-            output.writeInt(this.price);
+            output.writeVarInt(this.price);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_HouseInformationsForSell(input);
         }
 
-        public function deserializeAs_HouseInformationsForSell(input:IDataInput):void
+        public function deserializeAs_HouseInformationsForSell(input:ICustomDataInput):void
         {
             var _val9:int;
-            this.modelId = input.readInt();
+            this.modelId = input.readVarUhInt();
             if (this.modelId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element of HouseInformationsForSell.modelId.")));
@@ -136,7 +136,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element of HouseInformationsForSell.worldY.")));
             };
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of HouseInformationsForSell.subAreaId.")));
@@ -152,7 +152,7 @@
                 _i9++;
             };
             this.isLocked = input.readBoolean();
-            this.price = input.readInt();
+            this.price = input.readVarUhInt();
             if (this.price < 0)
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element of HouseInformationsForSell.price.")));

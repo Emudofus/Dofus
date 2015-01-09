@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.connection
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class GameServerInformations implements INetworkType 
@@ -44,12 +44,12 @@
             this.date = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameServerInformations(output);
         }
 
-        public function serializeAs_GameServerInformations(output:IDataOutput):void
+        public function serializeAs_GameServerInformations(output:ICustomDataOutput):void
         {
             if ((((this.id < 0)) || ((this.id > 0xFFFF))))
             {
@@ -71,12 +71,12 @@
             output.writeDouble(this.date);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameServerInformations(input);
         }
 
-        public function deserializeAs_GameServerInformations(input:IDataInput):void
+        public function deserializeAs_GameServerInformations(input:ICustomDataInput):void
         {
             this.id = input.readUnsignedShort();
             if ((((this.id < 0)) || ((this.id > 0xFFFF))))

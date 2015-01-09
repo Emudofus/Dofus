@@ -41,6 +41,7 @@
         public static const FIGHT_JOIN:int = 34;
         public static const GUILD_INVITATION:int = 35;
         public static const PRISM_ATTACK:int = 36;
+        public static const CRAFT_REQUEST:int = 37;
 
 
     }

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.interactive.skill
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class SkillActionDescriptionCollect extends SkillActionDescriptionTimed implements INetworkType 
@@ -34,40 +34,40 @@
             this.max = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_SkillActionDescriptionCollect(output);
         }
 
-        public function serializeAs_SkillActionDescriptionCollect(output:IDataOutput):void
+        public function serializeAs_SkillActionDescriptionCollect(output:ICustomDataOutput):void
         {
             super.serializeAs_SkillActionDescriptionTimed(output);
             if (this.min < 0)
             {
                 throw (new Error((("Forbidden value (" + this.min) + ") on element min.")));
             };
-            output.writeShort(this.min);
+            output.writeVarShort(this.min);
             if (this.max < 0)
             {
                 throw (new Error((("Forbidden value (" + this.max) + ") on element max.")));
             };
-            output.writeShort(this.max);
+            output.writeVarShort(this.max);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_SkillActionDescriptionCollect(input);
         }
 
-        public function deserializeAs_SkillActionDescriptionCollect(input:IDataInput):void
+        public function deserializeAs_SkillActionDescriptionCollect(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.min = input.readShort();
+            this.min = input.readVarUhShort();
             if (this.min < 0)
             {
                 throw (new Error((("Forbidden value (" + this.min) + ") on element of SkillActionDescriptionCollect.min.")));
             };
-            this.max = input.readShort();
+            this.max = input.readVarUhShort();
             if (this.max < 0)
             {
                 throw (new Error((("Forbidden value (" + this.max) + ") on element of SkillActionDescriptionCollect.max.")));

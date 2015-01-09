@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class AbstractPartyMessage extends NetworkMessage implements INetworkMessage 
@@ -39,40 +40,40 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AbstractPartyMessage(output);
         }
 
-        public function serializeAs_AbstractPartyMessage(output:IDataOutput):void
+        public function serializeAs_AbstractPartyMessage(output:ICustomDataOutput):void
         {
             if (this.partyId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.partyId) + ") on element partyId.")));
             };
-            output.writeInt(this.partyId);
+            output.writeVarInt(this.partyId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AbstractPartyMessage(input);
         }
 
-        public function deserializeAs_AbstractPartyMessage(input:IDataInput):void
+        public function deserializeAs_AbstractPartyMessage(input:ICustomDataInput):void
         {
-            this.partyId = input.readInt();
+            this.partyId = input.readVarUhInt();
             if (this.partyId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.partyId) + ") on element of AbstractPartyMessage.partyId.")));

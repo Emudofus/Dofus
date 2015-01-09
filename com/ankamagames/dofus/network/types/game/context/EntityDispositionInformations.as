@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class EntityDispositionInformations implements INetworkType 
     {
@@ -31,12 +31,12 @@
             this.direction = 1;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_EntityDispositionInformations(output);
         }
 
-        public function serializeAs_EntityDispositionInformations(output:IDataOutput):void
+        public function serializeAs_EntityDispositionInformations(output:ICustomDataOutput):void
         {
             if ((((this.cellId < -1)) || ((this.cellId > 559))))
             {
@@ -46,12 +46,12 @@
             output.writeByte(this.direction);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_EntityDispositionInformations(input);
         }
 
-        public function deserializeAs_EntityDispositionInformations(input:IDataInput):void
+        public function deserializeAs_EntityDispositionInformations(input:ICustomDataInput):void
         {
             this.cellId = input.readShort();
             if ((((this.cellId < -1)) || ((this.cellId > 559))))

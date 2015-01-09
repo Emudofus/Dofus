@@ -5,10 +5,10 @@
     import com.ankamagames.berilia.types.graphic.TimeoutHTMLLoader;
     import flash.utils.Timer;
     import flash.utils.Dictionary;
+    import flash.display.NativeWindow;
     import com.ankamagames.jerakine.utils.system.AirScanner;
     import flash.events.TimerEvent;
     import com.ankamagames.jerakine.utils.display.StageShareManager;
-    import flash.display.NativeWindow;
     import flash.events.Event;
     import com.ankamagames.jerakine.types.Uri;
     import flash.display.DisplayObject;
@@ -52,23 +52,28 @@
 
         public function WebBrowser()
         {
+            var _local_1:NativeWindow;
             this._resizeTimer = new Timer(200);
             this._linkList = [];
             this._inputList = [];
             this._manualExternalLink = new Dictionary();
             super();
+            this._vScrollBar = new ScrollBar();
             if (!(AirScanner.hasAir()))
             {
-                throw (new Error("Can't create a WebBrowser object without AIR support"));
+                _log.error("Can't create a WebBrowser object without AIR support");
+                this._vScrollBar.visible = false;
+            }
+            else
+            {
+                this._resizeTimer.addEventListener(TimerEvent.TIMER, this.onResizeEnd);
+                _local_1 = StageShareManager.stage.nativeWindow;
+                _local_1.addEventListener(Event.RESIZE, this.onResize);
+                this._vScrollBar.min = 1;
+                this._vScrollBar.max = 1;
+                this._vScrollBar.width = 16;
+                this._vScrollBar.addEventListener(Event.CHANGE, this.onScroll);
             };
-            this._resizeTimer.addEventListener(TimerEvent.TIMER, this.onResizeEnd);
-            var mainWindow:NativeWindow = StageShareManager.stage.nativeWindow;
-            mainWindow.addEventListener(Event.RESIZE, this.onResize);
-            this._vScrollBar = new ScrollBar();
-            this._vScrollBar.min = 1;
-            this._vScrollBar.max = 1;
-            this._vScrollBar.width = 16;
-            this._vScrollBar.addEventListener(Event.CHANGE, this.onScroll);
         }
 
         public function get cacheLife():Number
@@ -177,6 +182,11 @@
 
         public function finalize():void
         {
+            if (!(AirScanner.hasAir()))
+            {
+                this._finalized = true;
+                return;
+            };
             addChild(this._vScrollBar);
             this._vScrollBar.finalize();
             if (!(this._htmlLoader))
@@ -263,12 +273,15 @@
         override public function remove():void
         {
             this.removeHtmlEvent();
-            this._htmlLoader.removeEventListener(Event["HTML_RENDER"], this.onDomReady);
-            this._htmlLoader.removeEventListener(Event["HTML_BOUNDS_CHANGE"], this.onBoundsChange);
             StageShareManager.stage.removeEventListener(Event.RESIZE, this.onResize);
-            if (contains(this._htmlLoader))
+            if (this._htmlLoader)
             {
-                removeChild(this._htmlLoader);
+                this._htmlLoader.removeEventListener(Event["HTML_RENDER"], this.onDomReady);
+                this._htmlLoader.removeEventListener(Event["HTML_BOUNDS_CHANGE"], this.onBoundsChange);
+                if (contains(this._htmlLoader))
+                {
+                    removeChild(this._htmlLoader);
+                };
             };
             if (this._timeoutId)
             {

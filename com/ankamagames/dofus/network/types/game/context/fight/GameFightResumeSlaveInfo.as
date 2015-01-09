@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -45,12 +45,12 @@
             this.bombCount = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameFightResumeSlaveInfo(output);
         }
 
-        public function serializeAs_GameFightResumeSlaveInfo(output:IDataOutput):void
+        public function serializeAs_GameFightResumeSlaveInfo(output:ICustomDataOutput):void
         {
             output.writeInt(this.slaveId);
             output.writeShort(this.spellCooldowns.length);
@@ -72,12 +72,12 @@
             output.writeByte(this.bombCount);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameFightResumeSlaveInfo(input);
         }
 
-        public function deserializeAs_GameFightResumeSlaveInfo(input:IDataInput):void
+        public function deserializeAs_GameFightResumeSlaveInfo(input:ICustomDataInput):void
         {
             var _item2:GameFightSpellCooldown;
             this.slaveId = input.readInt();

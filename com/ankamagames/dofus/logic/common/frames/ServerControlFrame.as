@@ -1,11 +1,12 @@
 ﻿package com.ankamagames.dofus.logic.common.frames
 {
     import com.ankamagames.jerakine.messages.Frame;
+    import com.ankamagames.jerakine.utils.crypto.SignatureKey;
+    import flash.utils.ByteArray;
     import com.ankamagames.jerakine.logger.Logger;
     import com.ankamagames.jerakine.logger.Log;
     import flash.utils.getQualifiedClassName;
     import com.ankamagames.dofus.network.messages.security.RawDataMessage;
-    import flash.utils.ByteArray;
     import com.ankamagames.jerakine.utils.crypto.Signature;
     import com.ankamagames.dofus.network.messages.game.script.URLOpenMessage;
     import com.ankamagames.dofus.datacenter.misc.Url;
@@ -16,7 +17,6 @@
     import com.ankamagames.dofus.datacenter.misc.OptionalFeature;
     import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.dofus.logic.connection.frames.AuthentificationFrame;
-    import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;
     import by.blooddy.crypto.MD5;
     import flash.system.ApplicationDomain;
     import com.ankamagames.jerakine.utils.system.AirScanner;
@@ -31,6 +31,8 @@
     public class ServerControlFrame implements Frame 
     {
 
+        private static const PUBLIC_KEY:Class = ServerControlFrame_PUBLIC_KEY;
+        private static const SIGNATURE_KEY:SignatureKey = SignatureKey.fromByte((new PUBLIC_KEY() as ByteArray));
         protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ServerControlFrame));
 
 
@@ -67,7 +69,7 @@
                         return (false);
                     };
                     _local_3 = new ByteArray();
-                    _local_4 = new Signature(SignedFileAdapter.defaultSignatureKey);
+                    _local_4 = new Signature(SIGNATURE_KEY);
                     _log.info(((("Bytecode len: " + _local_2.content.length) + ", hash: ") + MD5.hashBytes(_local_2.content)));
                     _local_2.content.position = 0;
                     if (_local_4.verify(_local_2.content, _local_3))

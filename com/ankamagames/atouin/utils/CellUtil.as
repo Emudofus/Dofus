@@ -3,6 +3,7 @@
     import com.ankamagames.atouin.managers.InteractiveCellManager;
     import flash.display.Sprite;
     import com.ankamagames.jerakine.types.positions.MapPoint;
+    import flash.geom.Point;
 
     public class CellUtil 
     {
@@ -18,6 +19,13 @@
         {
             var cellSprite:Sprite = InteractiveCellManager.getInstance().getCell(p.cellId);
             return ((cellSprite.y + (cellSprite.height / 2)));
+        }
+
+        public static function getPixelsPointFromMapPoint(p:MapPoint, pivotInCenter:Boolean=true):Point
+        {
+            var cellSprite:Sprite = InteractiveCellManager.getInstance().getCell(p.cellId);
+            var point:Point = new Point(((pivotInCenter) ? (cellSprite.x + (cellSprite.width / 2)) : (cellSprite.x)), ((pivotInCenter) ? (cellSprite.y + (cellSprite.height / 2)) : cellSprite.y));
+            return (point);
         }
 
         public static function isLeftCol(cellId:int):Boolean

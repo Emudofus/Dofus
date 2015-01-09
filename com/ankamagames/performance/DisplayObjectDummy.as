@@ -1,21 +1,17 @@
 ﻿package com.ankamagames.performance
 {
     import flash.display.Sprite;
-    import flash.filters.BlurFilter;
     import flash.events.Event;
     import com.ankamagames.performance.tests.TestDisplayPerformance;
 
     public class DisplayObjectDummy extends Sprite 
     {
 
-        private static const BLUR_FILTER:BlurFilter = new BlurFilter();
-
         public function DisplayObjectDummy(color:uint)
         {
             graphics.beginFill(color);
             graphics.drawRect(0, 0, 24, 24);
             graphics.endFill();
-            filters = [BLUR_FILTER];
             addEventListener(Event.ENTER_FRAME, this.onFrame);
         }
 
@@ -28,6 +24,7 @@
             rotation = (TestDisplayPerformance.random.nextDouble() * 360);
             x = (x + (TestDisplayPerformance.random.nextDoubleR(-1, 1) * 20));
             y = (y + (TestDisplayPerformance.random.nextDoubleR(-1, 1) * 20));
+            scaleX = (scaleY = TestDisplayPerformance.random.nextDoubleR(-2, 2));
             if ((((x > stage.stageWidth)) || ((x < 0))))
             {
                 x = (stage.stageWidth / 2);

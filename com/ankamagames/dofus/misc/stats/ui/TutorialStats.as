@@ -204,7 +204,7 @@
                     return;
                 case InventoryHookList.EquipmentObjectMove.name:
                     _local_4 = pArgs[0];
-                    if ((((_local_4.objectGID == 10785)) && (StatsAction.exists(StatisticTypeEnum.STEP0860_EQUIP_RING))))
+                    if (((((_local_4) && ((_local_4.objectGID == 10785)))) && (StatsAction.exists(StatisticTypeEnum.STEP0860_EQUIP_RING))))
                     {
                         StatsAction.get(StatisticTypeEnum.STEP0860_EQUIP_RING).send();
                         StatsAction.get(StatisticTypeEnum.STEP0860_EXIT_BAG).start();

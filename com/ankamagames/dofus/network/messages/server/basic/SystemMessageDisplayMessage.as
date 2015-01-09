@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import __AS3__.vec.Vector;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -52,31 +53,31 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_SystemMessageDisplayMessage(output);
         }
 
-        public function serializeAs_SystemMessageDisplayMessage(output:IDataOutput):void
+        public function serializeAs_SystemMessageDisplayMessage(output:ICustomDataOutput):void
         {
             output.writeBoolean(this.hangUp);
             if (this.msgId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.msgId) + ") on element msgId.")));
             };
-            output.writeShort(this.msgId);
+            output.writeVarShort(this.msgId);
             output.writeShort(this.parameters.length);
             var _i3:uint;
             while (_i3 < this.parameters.length)
@@ -86,16 +87,16 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_SystemMessageDisplayMessage(input);
         }
 
-        public function deserializeAs_SystemMessageDisplayMessage(input:IDataInput):void
+        public function deserializeAs_SystemMessageDisplayMessage(input:ICustomDataInput):void
         {
             var _val3:String;
             this.hangUp = input.readBoolean();
-            this.msgId = input.readShort();
+            this.msgId = input.readVarUhShort();
             if (this.msgId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.msgId) + ") on element of SystemMessageDisplayMessage.msgId.")));

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightTeamMemberInformations implements INetworkType 
     {
@@ -28,22 +28,22 @@
             this.id = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightTeamMemberInformations(output);
         }
 
-        public function serializeAs_FightTeamMemberInformations(output:IDataOutput):void
+        public function serializeAs_FightTeamMemberInformations(output:ICustomDataOutput):void
         {
             output.writeInt(this.id);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightTeamMemberInformations(input);
         }
 
-        public function deserializeAs_FightTeamMemberInformations(input:IDataInput):void
+        public function deserializeAs_FightTeamMemberInformations(input:ICustomDataInput):void
         {
             this.id = input.readInt();
         }

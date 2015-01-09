@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class AchievementDetailedListRequestMessage extends NetworkMessage implements INetworkMessage 
@@ -39,40 +40,40 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AchievementDetailedListRequestMessage(output);
         }
 
-        public function serializeAs_AchievementDetailedListRequestMessage(output:IDataOutput):void
+        public function serializeAs_AchievementDetailedListRequestMessage(output:ICustomDataOutput):void
         {
             if (this.categoryId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.categoryId) + ") on element categoryId.")));
             };
-            output.writeShort(this.categoryId);
+            output.writeVarShort(this.categoryId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AchievementDetailedListRequestMessage(input);
         }
 
-        public function deserializeAs_AchievementDetailedListRequestMessage(input:IDataInput):void
+        public function deserializeAs_AchievementDetailedListRequestMessage(input:ICustomDataInput):void
         {
-            this.categoryId = input.readShort();
+            this.categoryId = input.readVarUhShort();
             if (this.categoryId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.categoryId) + ") on element of AchievementDetailedListRequestMessage.categoryId.")));

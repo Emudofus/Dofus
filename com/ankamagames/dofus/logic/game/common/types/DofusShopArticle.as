@@ -84,11 +84,11 @@
             this._gids = [];
             for each (ref in this._references)
             {
-                if (((ref) && (ref.content)))
+                if (((((ref) && ((typeof(ref) == "object")))) && (ref.hasOwnProperty("content"))))
                 {
                     for each (content in ref.content)
                     {
-                        if (((content) && (content.id)))
+                        if (((((content) && ((typeof(content) == "object")))) && (content.hasOwnProperty("id"))))
                         {
                             this._gids.push(parseInt(content.id));
                         };

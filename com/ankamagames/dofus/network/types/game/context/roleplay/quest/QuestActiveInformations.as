@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay.quest
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class QuestActiveInformations implements INetworkType 
     {
@@ -28,28 +28,28 @@
             this.questId = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_QuestActiveInformations(output);
         }
 
-        public function serializeAs_QuestActiveInformations(output:IDataOutput):void
+        public function serializeAs_QuestActiveInformations(output:ICustomDataOutput):void
         {
             if (this.questId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.questId) + ") on element questId.")));
             };
-            output.writeShort(this.questId);
+            output.writeVarShort(this.questId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_QuestActiveInformations(input);
         }
 
-        public function deserializeAs_QuestActiveInformations(input:IDataInput):void
+        public function deserializeAs_QuestActiveInformations(input:ICustomDataInput):void
         {
-            this.questId = input.readShort();
+            this.questId = input.readVarUhShort();
             if (this.questId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.questId) + ") on element of QuestActiveInformations.questId.")));

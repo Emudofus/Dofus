@@ -519,7 +519,7 @@
                         criticalHit = characteristics.criticalHit;
                         agility = characteristics.agility;
                         totalCriticalHit = (((criticalHit.alignGiftBonus + criticalHit.base) + criticalHit.contextModif) + criticalHit.objectsAndMountBonus);
-                        totalAgility = (((agility.alignGiftBonus + agility.base) + agility.contextModif) + agility.objectsAndMountBonus);
+                        totalAgility = ((((agility.alignGiftBonus + agility.base) + agility.additionnal) + agility.contextModif) + agility.objectsAndMountBonus);
                         if (totalAgility < 0)
                         {
                             totalAgility = 0;
@@ -661,7 +661,7 @@
                     _local_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.CAST_LINE);
                     if (_local_3)
                     {
-                        return (((this._spellLevel["castInLine"]) && (((((_local_3.value.contextModif + _local_3.value.objectsAndMountBonus) + _local_3.value.base) + _local_3.value.alignGiftBonus) == 0))));
+                        return (((this._spellLevel["castInLine"]) && ((((((_local_3.value.contextModif + _local_3.value.objectsAndMountBonus) + _local_3.value.base) + _local_3.value.additionnal) + _local_3.value.alignGiftBonus) == 0))));
                     };
                     return (this._spellLevel["castInLine"]);
                 case "castInDiagonal":
@@ -670,28 +670,28 @@
                     _local_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.LOS);
                     if (_local_3)
                     {
-                        return (((this._spellLevel["castTestLos"]) && (((((_local_3.value.contextModif + _local_3.value.objectsAndMountBonus) + _local_3.value.base) + _local_3.value.alignGiftBonus) == 0))));
+                        return (((this._spellLevel["castTestLos"]) && ((((((_local_3.value.contextModif + _local_3.value.objectsAndMountBonus) + _local_3.value.base) + _local_3.value.additionnal) + _local_3.value.alignGiftBonus) == 0))));
                     };
                     return (this._spellLevel["castTestLos"]);
                 case "rangeCanBeBoosted":
                     _local_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.RANGEABLE);
                     if (_local_3)
                     {
-                        return (((this._spellLevel["rangeCanBeBoosted"]) || (((((_local_3.value.contextModif + _local_3.value.objectsAndMountBonus) + _local_3.value.base) + _local_3.value.alignGiftBonus) > 0))));
+                        return (((this._spellLevel["rangeCanBeBoosted"]) || ((((((_local_3.value.contextModif + _local_3.value.objectsAndMountBonus) + _local_3.value.base) + _local_3.value.additionnal) + _local_3.value.alignGiftBonus) > 0))));
                     };
                     return (this._spellLevel["rangeCanBeBoosted"]);
                 case "apCost":
                     _local_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.AP_COST);
                     if (_local_3)
                     {
-                        return ((this._spellLevel["apCost"] - (((_local_3.value.contextModif + _local_3.value.objectsAndMountBonus) + _local_3.value.base) + _local_3.value.alignGiftBonus)));
+                        return ((this._spellLevel["apCost"] - ((((_local_3.value.contextModif + _local_3.value.objectsAndMountBonus) + _local_3.value.base) + _local_3.value.additionnal) + _local_3.value.alignGiftBonus)));
                     };
                     return (this._spellLevel["apCost"]);
                 case "minCastInterval":
                     _local_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.CAST_INTERVAL);
                     if (_local_3)
                     {
-                        return ((this._spellLevel["minCastInterval"] - (((_local_3.value.contextModif + _local_3.value.objectsAndMountBonus) + _local_3.value.base) + _local_3.value.alignGiftBonus)));
+                        return ((this._spellLevel["minCastInterval"] - ((((_local_3.value.contextModif + _local_3.value.objectsAndMountBonus) + _local_3.value.base) + _local_3.value.additionnal) + _local_3.value.alignGiftBonus)));
                     };
                     return (this._spellLevel["minCastInterval"]);
                 case "isSpellWeapon":
@@ -770,7 +770,7 @@
             var spellModif:CharacterSpellModification = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.CRITICAL_HIT_BONUS);
             if (spellModif)
             {
-                modifValue = (((spellModif.value.contextModif + spellModif.value.objectsAndMountBonus) + spellModif.value.alignGiftBonus) + spellModif.value.base);
+                modifValue = ((((spellModif.value.contextModif + spellModif.value.objectsAndMountBonus) + spellModif.value.alignGiftBonus) + spellModif.value.base) + spellModif.value.additionnal);
                 return ((((this._spellLevel["criticalHitProbability"] > 0)) ? (Math.max((this._spellLevel["criticalHitProbability"] - modifValue), 2)) : 0));
             };
             return (this._spellLevel["criticalHitProbability"]);

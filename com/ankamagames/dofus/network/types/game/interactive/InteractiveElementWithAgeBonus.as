@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class InteractiveElementWithAgeBonus extends InteractiveElement implements INetworkType 
@@ -32,12 +32,12 @@
             this.ageBonus = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_InteractiveElementWithAgeBonus(output);
         }
 
-        public function serializeAs_InteractiveElementWithAgeBonus(output:IDataOutput):void
+        public function serializeAs_InteractiveElementWithAgeBonus(output:ICustomDataOutput):void
         {
             super.serializeAs_InteractiveElement(output);
             if ((((this.ageBonus < -1)) || ((this.ageBonus > 1000))))
@@ -47,12 +47,12 @@
             output.writeShort(this.ageBonus);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_InteractiveElementWithAgeBonus(input);
         }
 
-        public function deserializeAs_InteractiveElementWithAgeBonus(input:IDataInput):void
+        public function deserializeAs_InteractiveElementWithAgeBonus(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.ageBonus = input.readShort();

@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.character.restriction.ActorRestrictionsInformations;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -43,12 +43,12 @@
             this.options = new Vector.<HumanOption>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_HumanInformations(output);
         }
 
-        public function serializeAs_HumanInformations(output:IDataOutput):void
+        public function serializeAs_HumanInformations(output:ICustomDataOutput):void
         {
             this.restrictions.serializeAs_ActorRestrictionsInformations(output);
             output.writeBoolean(this.sex);
@@ -62,12 +62,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_HumanInformations(input);
         }
 
-        public function deserializeAs_HumanInformations(input:IDataInput):void
+        public function deserializeAs_HumanInformations(input:ICustomDataInput):void
         {
             var _id3:uint;
             var _item3:HumanOption;

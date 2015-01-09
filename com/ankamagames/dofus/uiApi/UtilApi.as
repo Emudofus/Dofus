@@ -17,6 +17,7 @@
     import com.ankamagames.dofus.logic.game.common.managers.EntitiesLooksManager;
     import com.ankamagames.tiphon.types.look.TiphonEntityLook;
     import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
+    import com.ankamagames.berilia.managers.SecureCenter;
     import __AS3__.vec.*;
 
     [InstanciedApi]
@@ -324,6 +325,17 @@
         public function getCreatureLook(pEntityId:int):TiphonEntityLook
         {
             return (EntitiesLooksManager.getInstance().getCreatureLook(pEntityId));
+        }
+
+        [Untrusted]
+        public function getSecureObjectIndex(pTab:*, pSecureObj:*):int
+        {
+            var unsecureObj:* = SecureCenter.unsecure(pSecureObj);
+            if ((((pTab is Array)) || ((pTab is Vector.<*>))))
+            {
+                return (pTab.indexOf(unsecureObj));
+            };
+            return (-1);
         }
 
 

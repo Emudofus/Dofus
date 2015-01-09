@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class BasicDateMessage extends NetworkMessage implements INetworkMessage 
@@ -45,24 +46,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_BasicDateMessage(output);
         }
 
-        public function serializeAs_BasicDateMessage(output:IDataOutput):void
+        public function serializeAs_BasicDateMessage(output:ICustomDataOutput):void
         {
             if (this.day < 0)
             {
@@ -81,12 +82,12 @@
             output.writeShort(this.year);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_BasicDateMessage(input);
         }
 
-        public function deserializeAs_BasicDateMessage(input:IDataInput):void
+        public function deserializeAs_BasicDateMessage(input:ICustomDataInput):void
         {
             this.day = input.readByte();
             if (this.day < 0)

@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class GuildSpellUpgradeRequestMessage extends NetworkMessage implements INetworkMessage 
@@ -39,24 +40,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GuildSpellUpgradeRequestMessage(output);
         }
 
-        public function serializeAs_GuildSpellUpgradeRequestMessage(output:IDataOutput):void
+        public function serializeAs_GuildSpellUpgradeRequestMessage(output:ICustomDataOutput):void
         {
             if (this.spellId < 0)
             {
@@ -65,12 +66,12 @@
             output.writeInt(this.spellId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GuildSpellUpgradeRequestMessage(input);
         }
 
-        public function deserializeAs_GuildSpellUpgradeRequestMessage(input:IDataInput):void
+        public function deserializeAs_GuildSpellUpgradeRequestMessage(input:ICustomDataInput):void
         {
             this.spellId = input.readInt();
             if (this.spellId < 0)

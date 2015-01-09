@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -44,12 +44,12 @@
             this.enemyCharactersInformations = new Vector.<CharacterMinimalPlusLookInformations>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TaxCollectorFightersInformation(output);
         }
 
-        public function serializeAs_TaxCollectorFightersInformation(output:IDataOutput):void
+        public function serializeAs_TaxCollectorFightersInformation(output:ICustomDataOutput):void
         {
             output.writeInt(this.collectorId);
             output.writeShort(this.allyCharactersInformations.length);
@@ -70,12 +70,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TaxCollectorFightersInformation(input);
         }
 
-        public function deserializeAs_TaxCollectorFightersInformation(input:IDataInput):void
+        public function deserializeAs_TaxCollectorFightersInformation(input:ICustomDataInput):void
         {
             var _id2:uint;
             var _item2:CharacterMinimalPlusLookInformations;

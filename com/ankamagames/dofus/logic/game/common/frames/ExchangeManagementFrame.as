@@ -404,7 +404,7 @@
                     PlayedCharacterManager.getInstance().isInExchange = true;
                     Kernel.getWorker().process(ChangeWorldInteractionAction.create(false, true));
                     _local_32 = this.roleplayContextFrame.entitiesFrame.getEntityInfos(_local_31.npcSellerId);
-                    _local_33 = EntityLookAdapter.fromNetwork(_local_32.look);
+                    _local_33 = EntityLookAdapter.getRiderLook(_local_32.look);
                     _local_34 = new Array();
                     for each (oitsins in _local_31.objectsInfos)
                     {

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PortalInformation implements INetworkType 
     {
@@ -31,29 +31,29 @@
             this.areaId = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PortalInformation(output);
         }
 
-        public function serializeAs_PortalInformation(output:IDataOutput):void
+        public function serializeAs_PortalInformation(output:ICustomDataOutput):void
         {
             if (this.portalId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.portalId) + ") on element portalId.")));
             };
-            output.writeShort(this.portalId);
+            output.writeVarShort(this.portalId);
             output.writeShort(this.areaId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PortalInformation(input);
         }
 
-        public function deserializeAs_PortalInformation(input:IDataInput):void
+        public function deserializeAs_PortalInformation(input:ICustomDataInput):void
         {
-            this.portalId = input.readShort();
+            this.portalId = input.readVarUhShort();
             if (this.portalId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.portalId) + ") on element of PortalInformation.portalId.")));

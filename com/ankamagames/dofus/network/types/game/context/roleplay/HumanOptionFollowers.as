@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.look.IndexedEntityLook;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -37,12 +37,12 @@
             this.followingCharactersLook = new Vector.<IndexedEntityLook>();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_HumanOptionFollowers(output);
         }
 
-        public function serializeAs_HumanOptionFollowers(output:IDataOutput):void
+        public function serializeAs_HumanOptionFollowers(output:ICustomDataOutput):void
         {
             super.serializeAs_HumanOption(output);
             output.writeShort(this.followingCharactersLook.length);
@@ -54,12 +54,12 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_HumanOptionFollowers(input);
         }
 
-        public function deserializeAs_HumanOptionFollowers(input:IDataInput):void
+        public function deserializeAs_HumanOptionFollowers(input:ICustomDataInput):void
         {
             var _item1:IndexedEntityLook;
             super.deserialize(input);

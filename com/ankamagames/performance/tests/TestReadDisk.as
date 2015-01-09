@@ -34,6 +34,10 @@
             Benchmark.onTestCompleted(this);
         }
 
+        public function cancel():void
+        {
+        }
+
         public function getResults():String
         {
             var averageTime:Number;

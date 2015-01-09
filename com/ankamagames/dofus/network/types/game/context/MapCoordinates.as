@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class MapCoordinates implements INetworkType 
     {
@@ -31,12 +31,12 @@
             this.worldY = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_MapCoordinates(output);
         }
 
-        public function serializeAs_MapCoordinates(output:IDataOutput):void
+        public function serializeAs_MapCoordinates(output:ICustomDataOutput):void
         {
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))
             {
@@ -50,12 +50,12 @@
             output.writeShort(this.worldY);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_MapCoordinates(input);
         }
 
-        public function deserializeAs_MapCoordinates(input:IDataInput):void
+        public function deserializeAs_MapCoordinates(input:ICustomDataInput):void
         {
             this.worldX = input.readShort();
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))

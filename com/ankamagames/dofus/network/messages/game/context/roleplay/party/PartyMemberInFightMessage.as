@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import com.ankamagames.dofus.network.types.game.context.MapCoordinatesExtended;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class PartyMemberInFightMessage extends AbstractPartyMessage implements INetworkMessage 
@@ -14,7 +15,7 @@
 
         private var _isInitialized:Boolean = false;
         public var reason:uint = 0;
-        public var memberId:int = 0;
+        public var memberId:uint = 0;
         public var memberAccountId:uint = 0;
         public var memberName:String = "";
         public var fightId:int = 0;
@@ -37,7 +38,7 @@
             return (6342);
         }
 
-        public function initPartyMemberInFightMessage(partyId:uint=0, reason:uint=0, memberId:int=0, memberAccountId:uint=0, memberName:String="", fightId:int=0, fightMap:MapCoordinatesExtended=null, secondsBeforeFightStart:int=0):PartyMemberInFightMessage
+        public function initPartyMemberInFightMessage(partyId:uint=0, reason:uint=0, memberId:uint=0, memberAccountId:uint=0, memberName:String="", fightId:int=0, fightMap:MapCoordinatesExtended=null, secondsBeforeFightStart:int=0):PartyMemberInFightMessage
         {
             super.initAbstractPartyMessage(partyId);
             this.reason = reason;
@@ -63,28 +64,32 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PartyMemberInFightMessage(output);
         }
 
-        public function serializeAs_PartyMemberInFightMessage(output:IDataOutput):void
+        public function serializeAs_PartyMemberInFightMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_AbstractPartyMessage(output);
             output.writeByte(this.reason);
-            output.writeInt(this.memberId);
+            if (this.memberId < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.memberId) + ") on element memberId.")));
+            };
+            output.writeVarInt(this.memberId);
             if (this.memberAccountId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.memberAccountId) + ") on element memberAccountId.")));
@@ -93,15 +98,15 @@
             output.writeUTF(this.memberName);
             output.writeInt(this.fightId);
             this.fightMap.serializeAs_MapCoordinatesExtended(output);
-            output.writeInt(this.secondsBeforeFightStart);
+            output.writeVarShort(this.secondsBeforeFightStart);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PartyMemberInFightMessage(input);
         }
 
-        public function deserializeAs_PartyMemberInFightMessage(input:IDataInput):void
+        public function deserializeAs_PartyMemberInFightMessage(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.reason = input.readByte();
@@ -109,7 +114,11 @@
             {
                 throw (new Error((("Forbidden value (" + this.reason) + ") on element of PartyMemberInFightMessage.reason.")));
             };
-            this.memberId = input.readInt();
+            this.memberId = input.readVarUhInt();
+            if (this.memberId < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.memberId) + ") on element of PartyMemberInFightMessage.memberId.")));
+            };
             this.memberAccountId = input.readInt();
             if (this.memberAccountId < 0)
             {
@@ -119,7 +128,7 @@
             this.fightId = input.readInt();
             this.fightMap = new MapCoordinatesExtended();
             this.fightMap.deserialize(input);
-            this.secondsBeforeFightStart = input.readInt();
+            this.secondsBeforeFightStart = input.readVarShort();
         }
 
 

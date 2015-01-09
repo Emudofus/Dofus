@@ -39,7 +39,7 @@
         public static const MAX_JOB_LEVEL:int = 100;
         public static const MAX_HONOR:int = 20000;
         public static const MAX_SHORTCUT:int = 99;
-        public static const MAX_ARENA_RANK:uint = 2300;
+        public static const MAX_ARENA_RANK:int = 2300;
         public static const CHAR_MIN_LEVEL_ARENA:int = 50;
         public static const CHAR_MIN_LEVEL_RIDE:int = 60;
         public static const MAX_DUNGEON_REGISTER:int = 10;
@@ -49,9 +49,12 @@
         public static const MAX_LOCKABLE_CODE_LEN:int = 8;
         public static const MAX_PRESET_ITEM_COUNT:int = 24;
         public static const MIN_OBJ_COUNT_BY_XFERT:int = 1;
-        public static const MAX_OBJ_COUNT_BY_XFERT:int = 1000;
+        public static const MAX_OBJ_COUNT_BY_XFERT:int = 800;
+        public static const MAX_WAVE:int = 100;
         public static const MAX_OBJECT_EFFECT_STRING_LEN:int = 30;
         public static const MAX_PLAYER_OR_ACCOUNT_NAME_LEN:int = 31;
+        public static const MAX_MEMBERS_PER_GUILD:int = 240;
+        public static const MAX_ADDITIONNAL_PER_CARAC:int = 100;
 
 
     }

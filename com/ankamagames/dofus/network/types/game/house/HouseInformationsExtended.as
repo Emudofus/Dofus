@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GuildInformations;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class HouseInformationsExtended extends HouseInformations implements INetworkType 
     {
@@ -37,23 +37,23 @@
             this.guildInfo = new GuildInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_HouseInformationsExtended(output);
         }
 
-        public function serializeAs_HouseInformationsExtended(output:IDataOutput):void
+        public function serializeAs_HouseInformationsExtended(output:ICustomDataOutput):void
         {
             super.serializeAs_HouseInformations(output);
             this.guildInfo.serializeAs_GuildInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_HouseInformationsExtended(input);
         }
 
-        public function deserializeAs_HouseInformationsExtended(input:IDataInput):void
+        public function deserializeAs_HouseInformationsExtended(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.guildInfo = new GuildInformations();

@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class TitleLostMessage extends NetworkMessage implements INetworkMessage 
@@ -39,40 +40,40 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TitleLostMessage(output);
         }
 
-        public function serializeAs_TitleLostMessage(output:IDataOutput):void
+        public function serializeAs_TitleLostMessage(output:ICustomDataOutput):void
         {
             if (this.titleId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.titleId) + ") on element titleId.")));
             };
-            output.writeShort(this.titleId);
+            output.writeVarShort(this.titleId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TitleLostMessage(input);
         }
 
-        public function deserializeAs_TitleLostMessage(input:IDataInput):void
+        public function deserializeAs_TitleLostMessage(input:ICustomDataInput):void
         {
-            this.titleId = input.readShort();
+            this.titleId = input.readVarUhShort();
             if (this.titleId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.titleId) + ") on element of TitleLostMessage.titleId.")));

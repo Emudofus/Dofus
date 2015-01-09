@@ -15,6 +15,7 @@
     import com.ankamagames.dofus.logic.game.approach.frames.GameServerApproachFrame;
     import com.ankamagames.dofus.logic.connection.frames.ServerSelectionFrame;
     import com.ankamagames.jerakine.messages.Worker;
+    import com.ankamagames.dofus.logic.connection.managers.AuthentificationManager;
     import com.ankamagames.berilia.types.data.Hook;
     import com.ankamagames.berilia.utils.errors.BeriliaError;
     import com.ankamagames.berilia.utils.errors.UntrustedApiCallError;
@@ -56,6 +57,7 @@
     import com.ankamagames.jerakine.interfaces.IDataCenter;
     import com.ankamagames.jerakine.managers.OptionManager;
     import com.ankamagames.atouin.Atouin;
+    import com.ankamagames.dofus.logic.common.frames.MiscFrame;
     import com.ankamagames.dofus.types.data.ServerCommand;
     import com.ankamagames.jerakine.console.ConsolesManager;
     import com.ankamagames.jerakine.utils.misc.Chrono;
@@ -73,6 +75,7 @@
     import com.ankamagames.berilia.components.WebBrowser;
     import flash.net.URLRequestMethod;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+    import flash.external.ExternalInterface;
     import com.ankamagames.jerakine.utils.crypto.AdvancedMd5;
     import flash.utils.ByteArray;
     import flash.net.URLVariables;
@@ -88,6 +91,7 @@
     import com.ankamagames.dofus.kernel.updater.UpdaterConnexionHandler;
     import com.ankamagames.dofus.logic.common.managers.AccountManager;
     import com.ankamagames.dofus.logic.game.common.frames.ChatFrame;
+    import com.ankamagames.dofus.logic.connection.managers.GuestModeManager;
     import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
     import com.ankamagames.jerakine.types.DynamicSecureObject;
     import com.ankamagames.dofus.misc.utils.StatisticReportingManager;
@@ -96,8 +100,6 @@
     import com.ankamagames.jerakine.utils.system.CommandLineArguments;
     import com.ankamagames.dofus.modules.utils.ModuleInstallerFrame;
     import com.ankamagames.jerakine.handlers.HumanInputHandler;
-    import com.ankamagames.dofus.logic.connection.managers.GuestModeManager;
-    import com.ankamagames.dofus.logic.connection.managers.AuthentificationManager;
     import com.ankamagames.dofus.misc.utils.frames.LuaScriptRecorderFrame;
 
     [InstanciedApi]
@@ -174,6 +176,12 @@
             var serverSelectionFramePresent:Boolean = Kernel.getWorker().contains(ServerSelectionFrame);
             var worker:Worker = Kernel.getWorker();
             return (!(((((((authentificationFramePresent) || (initializationFramePresent))) || (gameServerApproachFramePresent))) || (serverSelectionFramePresent))));
+        }
+
+        [Trusted]
+        public function isLoggingWithTicket():Boolean
+        {
+            return (AuthentificationManager.getInstance().isLoggingWithTicket);
         }
 
         [Untrusted]
@@ -600,6 +608,13 @@
             return (Atouin.getInstance().worldIsVisible);
         }
 
+        [Untrusted]
+        public function getServerStatus():uint
+        {
+            var miscframe:MiscFrame = (Kernel.getWorker().getFrame(MiscFrame) as MiscFrame);
+            return (miscframe.getServerStatus());
+        }
+
         [Deprecated(help="debugApi")]
         [Trusted]
         public function getConsoleAutoCompletion(cmd:String, server:Boolean):String
@@ -857,6 +872,58 @@
         }
 
         [Trusted]
+        public function openWebModalOgrinePortal(jsCallback:Function=null):void
+        {
+            var url:String;
+            var jsHack:String;
+            if ((((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE)) || ((BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA))))
+            {
+                url = I18n.getUiText("ui.link.ogrinePortal");
+            }
+            else
+            {
+                url = I18n.getUiText("ui.link.ogrinePortalLocal");
+            };
+            var params:Object = new Object();
+            params.username = AuthentificationManager.getInstance().username;
+            params.passkey = AuthentificationManager.getInstance().ankamaPortalKey;
+            params.server = PlayerManager.getInstance().server.id;
+            params.serverName = PlayerManager.getInstance().server.name;
+            params.language = XmlConfig.getInstance().getEntry("config.lang.current");
+            params.character = PlayedCharacterManager.getInstance().id;
+            params.theme = OptionManager.getOptionManager("dofus").switchUiSkin;
+            if (ExternalInterface.available)
+            {
+                if (jsCallback != null)
+                {
+                    ExternalInterface.addCallback("goToShopArticle", jsCallback);
+                };
+                ExternalInterface.call("openModal", url, params);
+                jsHack = String(<![CDATA[
+					var streamingModalDiv = document.getElementsByClassName("ak-playstreaming-modal")[0];
+					streamingModalDiv.style.padding = "0px";
+					
+					var popupDiv = streamingModalDiv.parentNode;
+					popupDiv.style.background = "none";
+					popupDiv.style.top = "250px";
+					popupDiv.style.left = document.getElementById("streaming_swf").getBoundingClientRect().left + 86 + "px";
+					popupDiv.style.width = "680px";
+					if (popupDiv.children && popupDiv.children.length > 1) {
+						popupDiv.removeChild(popupDiv.children[0]);
+					}
+					
+					var popupIFrame = document.getElementById("ak-openmodal").getElementsByTagName("iframe")[0];
+					popupIFrame.setAttribute("height", "470");
+					popupIFrame.setAttribute("frameborder", "0");
+					
+					document.getElementsByClassName("ui-widget-overlay ui-front")[0].style.visibility = "hidden";
+				]]>
+                );
+                ExternalInterface.call("eval", jsHack);
+            };
+        }
+
+        [Trusted]
         public function goToAnkaBoxPortal(target:WebBrowser):void
         {
             var ur:URLRequest;
@@ -872,7 +939,14 @@
             ur.data.idbar = 0;
             ur.data.game = 1;
             ur.method = URLRequestMethod.POST;
-            (ComponentInternalAccessor.access(target, "load")(ur));
+            if (target)
+            {
+                (ComponentInternalAccessor.access(target, "load")(ur));
+            }
+            else
+            {
+                navigateToURL(ur);
+            };
         }
 
         [Trusted]
@@ -891,7 +965,14 @@
             ur.data.idbar = 0;
             ur.data.game = 1;
             ur.method = URLRequestMethod.POST;
-            (ComponentInternalAccessor.access(target, "load")(ur));
+            if (target)
+            {
+                (ComponentInternalAccessor.access(target, "load")(ur));
+            }
+            else
+            {
+                navigateToURL(ur);
+            };
         }
 
         [Trusted]
@@ -911,7 +992,14 @@
             ur.data.idbar = 0;
             ur.data.game = 1;
             ur.method = URLRequestMethod.POST;
-            (ComponentInternalAccessor.access(target, "load")(ur));
+            if (target)
+            {
+                (ComponentInternalAccessor.access(target, "load")(ur));
+            }
+            else
+            {
+                navigateToURL(ur);
+            };
         }
 
         [Trusted]
@@ -1161,6 +1249,10 @@
         public function getIsAnkaBoxEnabled():Boolean
         {
             var chat:ChatFrame = (Kernel.getWorker().getFrame(ChatFrame) as ChatFrame);
+            if (GuestModeManager.getInstance().isLoggingAsGuest)
+            {
+                return (false);
+            };
             if (chat)
             {
                 return (chat.ankaboxEnabled);
@@ -1275,6 +1367,32 @@
         public function isGuest():Boolean
         {
             return (GuestModeManager.getInstance().isLoggingAsGuest);
+        }
+
+        [Trusted]
+        public function isInForcedGuestMode():Boolean
+        {
+            return (GuestModeManager.getInstance().forceGuestMode);
+        }
+
+        [Trusted]
+        public function convertGuestAccount():void
+        {
+            GuestModeManager.getInstance().convertGuestAccount();
+        }
+
+        [Trusted]
+        public function getGiftList():Array
+        {
+            var gsapf:GameServerApproachFrame = (Kernel.getWorker().getFrame(GameServerApproachFrame) as GameServerApproachFrame);
+            return (gsapf.giftList);
+        }
+
+        [Trusted]
+        public function getCharaListMinusDeadPeople():Array
+        {
+            var gsapf:GameServerApproachFrame = (Kernel.getWorker().getFrame(GameServerApproachFrame) as GameServerApproachFrame);
+            return (gsapf.charaListMinusDeadPeople);
         }
 
         private function getAnkamaPortalUrlParams():URLVariables

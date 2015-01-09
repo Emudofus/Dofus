@@ -146,6 +146,7 @@
         public static const PartyNameUpdate:Hook = new Hook("PartyNameUpdate", false);
         public static const LifePointsRegenBegin:Hook = new Hook("LifePointsRegenBegin", false);
         public static const PlayedCharacterLookChange:Hook = new Hook("PlayedCharacterLookChange", false);
+        public static const FighterLookChange:Hook = new Hook("FighterLookChange", false);
         public static const MapRunningFightList:Hook = new Hook("MapRunningFightList", false);
         public static const MapRunningFightDetails:Hook = new Hook("MapRunningFightDetails", false);
         public static const GameRolePlayRemoveFight:Hook = new Hook("GameRolePlayRemoveFight", false);
@@ -207,6 +208,11 @@
         public static const ModuleInstallationProgress:Hook = new Hook("ModuleInstallationProgress", false);
         public static const InstalledModuleList:Hook = new Hook("InstalledModuleList", false);
         public static const ApisHooksActionsList:Hook = new Hook("ApisHooksActionsList", false);
+        public static const UpdaterConnectionFailed:Hook = new Hook("UpdaterConnectionFailed", false);
+        public static const OpenOfflineSales:Hook = new Hook("OpenOfflineSales", false);
+        public static const ServerStatusUpdate:Hook = new Hook("ServerStatusUpdate", false);
+        public static const CloseContextMenu:Hook = new Hook("CloseContextMenu", false);
+        public static const ShowCollectedTaxCollector:Hook = new Hook("ShowCollectedTaxCollector", false);
 
         private var _import_CustomUiHookList:CustomUiHookList = null;
 

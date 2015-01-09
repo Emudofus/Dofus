@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -41,19 +41,19 @@
             this.objectives = new Vector.<QuestObjectiveInformations>();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_QuestActiveDetailedInformations(output);
         }
 
-        public function serializeAs_QuestActiveDetailedInformations(output:IDataOutput):void
+        public function serializeAs_QuestActiveDetailedInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_QuestActiveInformations(output);
             if (this.stepId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.stepId) + ") on element stepId.")));
             };
-            output.writeShort(this.stepId);
+            output.writeVarShort(this.stepId);
             output.writeShort(this.objectives.length);
             var _i2:uint;
             while (_i2 < this.objectives.length)
@@ -64,17 +64,17 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_QuestActiveDetailedInformations(input);
         }
 
-        public function deserializeAs_QuestActiveDetailedInformations(input:IDataInput):void
+        public function deserializeAs_QuestActiveDetailedInformations(input:ICustomDataInput):void
         {
             var _id2:uint;
             var _item2:QuestObjectiveInformations;
             super.deserialize(input);
-            this.stepId = input.readShort();
+            this.stepId = input.readVarUhShort();
             if (this.stepId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.stepId) + ") on element of QuestActiveDetailedInformations.stepId.")));

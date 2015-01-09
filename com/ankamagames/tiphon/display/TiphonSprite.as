@@ -10,6 +10,7 @@
     import com.ankamagames.jerakine.logger.Log;
     import flash.utils.getQualifiedClassName;
     import flash.geom.Point;
+    import com.ankamagames.tiphon.types.ISubEntityHandler;
     import com.ankamagames.tiphon.types.Skin;
     import com.ankamagames.tiphon.types.look.TiphonEntityLook;
     import __AS3__.vec.Vector;
@@ -68,6 +69,7 @@
         private static const _log:Logger = Log.getLogger(getQualifiedClassName(TiphonSprite));
         private static var _cache:Dictionary = new Dictionary();
         private static var _point:Point = new Point(0, 0);
+        public static var subEntityHandler:ISubEntityHandler;
 
         protected var _useCacheIfPossible:Boolean = false;
         private var _init:Boolean = false;
@@ -122,7 +124,7 @@
             var i:int;
             var skin:uint;
             var category:int;
-            var subIndex:uint;
+            var subIndex:*;
             var subEntity:TiphonSprite;
             this._backgroundTemp = new Array();
             this._deactivatedSubEntityCategory = new Array();
@@ -164,14 +166,18 @@
             for (cat in subEntitiesLook)
             {
                 category = int(cat);
-                num = subEntitiesLook[category].length;
-                subIndex = 0;
-                while (subIndex < num)
+                for (subIndex in subEntitiesLook[category])
                 {
+                    if (subEntityHandler != null)
+                    {
+                        if (!(subEntityHandler.onSubEntityAdded(this, this._look.getSubEntity(category, subIndex), category, subIndex)))
+                        {
+                            continue;
+                        };
+                    };
                     subEntity = new TiphonSprite(this._look.getSubEntity(category, subIndex));
                     subEntity.addEventListener(TiphonEvent.RENDER_SUCCEED, this.onSubEntityRendered, false, 0, true);
                     this.addSubEntity(subEntity, category, subIndex);
-                    subIndex++;
                 };
             };
             this._look.addObserver(this);
@@ -425,7 +431,7 @@
         {
             if (this._currentAnimation)
             {
-                this.setAnimationAndDirection(this._currentAnimation, newDirection);
+                this.setAnimationAndDirection(this._rawAnimation, newDirection);
             }
             else
             {
@@ -1194,6 +1200,13 @@
                     for (subEntityIndex in subEntities[subEntitiesCategory])
                     {
                         subEntityLook = subEntities[subEntitiesCategory][subEntityIndex];
+                        if (subEntityHandler != null)
+                        {
+                            if (!(subEntityHandler.onSubEntityAdded(this, subEntityLook, parseInt(subEntitiesCategory), parseInt(subEntityIndex))))
+                            {
+                                continue;
+                            };
+                        };
                         subEntity = new TiphonSprite(subEntityLook);
                         subEntity.setAnimationAndDirection("AnimStatique", this._currentDirection);
                         if (!(subEntity.rendered))
@@ -1329,7 +1342,7 @@
                 };
                 return;
             };
-            if ((((this._lastAnimation == "AnimPickup")) && ((this._currentAnimation == "AnimStatiqueCarrying"))))
+            if ((((((this._lastAnimation == "AnimPickup")) || ((this._lastAnimation == "AnimStatiqueCarrying")))) && ((this._currentAnimation == "AnimStatiqueCarrying"))))
             {
                 this._isCarrying = true;
             };

@@ -6,6 +6,7 @@
     import flash.filesystem.File;
     import flash.events.Event;
     import com.ankamagames.jerakine.network.INetworkMessage;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
     import com.ankamagames.jerakine.messages.Message;
     import flash.filesystem.FileStream;
     import flash.filesystem.FileMode;
@@ -52,7 +53,7 @@
         {
             if ((msg is INetworkMessage))
             {
-                INetworkMessage(msg).pack(this._buffer);
+                INetworkMessage(msg).pack(new CustomDataWrapper(this._buffer));
                 this._msgCount++;
             };
             return (false);

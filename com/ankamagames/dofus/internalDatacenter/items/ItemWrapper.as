@@ -54,6 +54,7 @@
         private static const OBJECT_GID_SOULSTONE_MINIBOSS:uint = 10418;
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
         private static var _cache:Array = new Array();
+        private static var _cacheGId:Array = new Array();
         private static var _errorIconUri:Uri;
         private static var _fullSizeErrorIconUri:Uri;
         private static var _uriLoaderContext:LoaderContext;
@@ -100,7 +101,8 @@
         {
             var item:ItemWrapper;
             var refItem:Item = Item.getItemById(objectGID);
-            if (((!(_cache[objectUID])) || (!(useCache))))
+            var cachedItem:ItemWrapper = (((objectUID > 0)) ? _cache[objectUID] : _cacheGId[objectGID]);
+            if (((!(cachedItem)) || (!(useCache))))
             {
                 if (refItem.isWeapon)
                 {
@@ -113,12 +115,19 @@
                 item.objectUID = objectUID;
                 if (useCache)
                 {
-                    _cache[objectUID] = item;
+                    if (objectUID > 0)
+                    {
+                        _cache[objectUID] = item;
+                    }
+                    else
+                    {
+                        _cacheGId[objectGID] = item;
+                    };
                 };
             }
             else
             {
-                item = _cache[objectUID];
+                item = cachedItem;
             };
             MEMORY_LOG[item] = 1;
             item.effectsList = newEffects;
@@ -145,6 +154,7 @@
         public static function clearCache():void
         {
             _cache = new Array();
+            _cacheGId = new Array();
         }
 
         public static function getItemFromUId(objectUID:uint):ItemWrapper
@@ -264,7 +274,7 @@
             {
                 return (false);
             };
-            if (type.mimickable)
+            if (((type) && (type.mimickable)))
             {
                 for each (effect in this.effectsList)
                 {

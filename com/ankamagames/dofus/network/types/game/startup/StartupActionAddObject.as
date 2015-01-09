@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.ObjectItemInformationWithQuantity;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -52,12 +52,12 @@
             this.items = new Vector.<ObjectItemInformationWithQuantity>();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_StartupActionAddObject(output);
         }
 
-        public function serializeAs_StartupActionAddObject(output:IDataOutput):void
+        public function serializeAs_StartupActionAddObject(output:ICustomDataOutput):void
         {
             if (this.uid < 0)
             {
@@ -77,12 +77,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_StartupActionAddObject(input);
         }
 
-        public function deserializeAs_StartupActionAddObject(input:IDataInput):void
+        public function deserializeAs_StartupActionAddObject(input:ICustomDataInput):void
         {
             var _item6:ObjectItemInformationWithQuantity;
             this.uid = input.readInt();

@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.mount
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ItemDurability implements INetworkType 
@@ -32,23 +32,23 @@
             this.durabilityMax = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ItemDurability(output);
         }
 
-        public function serializeAs_ItemDurability(output:IDataOutput):void
+        public function serializeAs_ItemDurability(output:ICustomDataOutput):void
         {
             output.writeShort(this.durability);
             output.writeShort(this.durabilityMax);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ItemDurability(input);
         }
 
-        public function deserializeAs_ItemDurability(input:IDataInput):void
+        public function deserializeAs_ItemDurability(input:ICustomDataInput):void
         {
             this.durability = input.readShort();
             this.durabilityMax = input.readShort();

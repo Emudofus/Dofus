@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.approach
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ServerSessionConstantInteger extends ServerSessionConstant implements INetworkType 
@@ -31,23 +31,23 @@
             this.value = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ServerSessionConstantInteger(output);
         }
 
-        public function serializeAs_ServerSessionConstantInteger(output:IDataOutput):void
+        public function serializeAs_ServerSessionConstantInteger(output:ICustomDataOutput):void
         {
             super.serializeAs_ServerSessionConstant(output);
             output.writeInt(this.value);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ServerSessionConstantInteger(input);
         }
 
-        public function deserializeAs_ServerSessionConstantInteger(input:IDataInput):void
+        public function deserializeAs_ServerSessionConstantInteger(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.value = input.readInt();

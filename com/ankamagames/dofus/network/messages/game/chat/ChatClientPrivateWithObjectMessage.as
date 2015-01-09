@@ -4,8 +4,9 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -48,10 +49,10 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             if (HASH_FUNCTION != null)
             {
                 HASH_FUNCTION(data);
@@ -59,17 +60,17 @@
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ChatClientPrivateWithObjectMessage(output);
         }
 
-        public function serializeAs_ChatClientPrivateWithObjectMessage(output:IDataOutput):void
+        public function serializeAs_ChatClientPrivateWithObjectMessage(output:ICustomDataOutput):void
         {
             super.serializeAs_ChatClientPrivateMessage(output);
             output.writeShort(this.objects.length);
@@ -81,12 +82,12 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ChatClientPrivateWithObjectMessage(input);
         }
 
-        public function deserializeAs_ChatClientPrivateWithObjectMessage(input:IDataInput):void
+        public function deserializeAs_ChatClientPrivateWithObjectMessage(input:ICustomDataInput):void
         {
             var _item1:ObjectItem;
             super.deserialize(input);

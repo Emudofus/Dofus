@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -64,24 +64,24 @@
             this.look = new EntityLook();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TaxCollectorInformations(output);
         }
 
-        public function serializeAs_TaxCollectorInformations(output:IDataOutput):void
+        public function serializeAs_TaxCollectorInformations(output:ICustomDataOutput):void
         {
             output.writeInt(this.uniqueId);
             if (this.firtNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.firtNameId) + ") on element firtNameId.")));
             };
-            output.writeShort(this.firtNameId);
+            output.writeVarShort(this.firtNameId);
             if (this.lastNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lastNameId) + ") on element lastNameId.")));
             };
-            output.writeShort(this.lastNameId);
+            output.writeVarShort(this.lastNameId);
             this.additionalInfos.serializeAs_AdditionalTaxCollectorInformations(output);
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))
             {
@@ -97,7 +97,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
             output.writeByte(this.state);
             this.look.serializeAs_EntityLook(output);
             output.writeShort(this.complements.length);
@@ -110,22 +110,22 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TaxCollectorInformations(input);
         }
 
-        public function deserializeAs_TaxCollectorInformations(input:IDataInput):void
+        public function deserializeAs_TaxCollectorInformations(input:ICustomDataInput):void
         {
             var _id10:uint;
             var _item10:TaxCollectorComplementaryInformations;
             this.uniqueId = input.readInt();
-            this.firtNameId = input.readShort();
+            this.firtNameId = input.readVarUhShort();
             if (this.firtNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.firtNameId) + ") on element of TaxCollectorInformations.firtNameId.")));
             };
-            this.lastNameId = input.readShort();
+            this.lastNameId = input.readVarUhShort();
             if (this.lastNameId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lastNameId) + ") on element of TaxCollectorInformations.lastNameId.")));
@@ -142,7 +142,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element of TaxCollectorInformations.worldY.")));
             };
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of TaxCollectorInformations.subAreaId.")));

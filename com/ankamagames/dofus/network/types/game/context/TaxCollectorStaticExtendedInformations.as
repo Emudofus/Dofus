@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.context.roleplay.AllianceInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GuildInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class TaxCollectorStaticExtendedInformations extends TaxCollectorStaticInformations implements INetworkType 
     {
@@ -37,23 +37,23 @@
             this.allianceIdentity = new AllianceInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TaxCollectorStaticExtendedInformations(output);
         }
 
-        public function serializeAs_TaxCollectorStaticExtendedInformations(output:IDataOutput):void
+        public function serializeAs_TaxCollectorStaticExtendedInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_TaxCollectorStaticInformations(output);
             this.allianceIdentity.serializeAs_AllianceInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TaxCollectorStaticExtendedInformations(input);
         }
 
-        public function deserializeAs_TaxCollectorStaticExtendedInformations(input:IDataInput):void
+        public function deserializeAs_TaxCollectorStaticExtendedInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.allianceIdentity = new AllianceInformations();

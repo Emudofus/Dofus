@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.data.items
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class ObjectItemQuantity extends Item implements INetworkType 
     {
@@ -31,40 +31,40 @@
             this.quantity = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectItemQuantity(output);
         }
 
-        public function serializeAs_ObjectItemQuantity(output:IDataOutput):void
+        public function serializeAs_ObjectItemQuantity(output:ICustomDataOutput):void
         {
             super.serializeAs_Item(output);
             if (this.objectUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectUID) + ") on element objectUID.")));
             };
-            output.writeInt(this.objectUID);
+            output.writeVarInt(this.objectUID);
             if (this.quantity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.quantity) + ") on element quantity.")));
             };
-            output.writeInt(this.quantity);
+            output.writeVarInt(this.quantity);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectItemQuantity(input);
         }
 
-        public function deserializeAs_ObjectItemQuantity(input:IDataInput):void
+        public function deserializeAs_ObjectItemQuantity(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.objectUID = input.readInt();
+            this.objectUID = input.readVarUhInt();
             if (this.objectUID < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectUID) + ") on element of ObjectItemQuantity.objectUID.")));
             };
-            this.quantity = input.readInt();
+            this.quantity = input.readVarUhInt();
             if (this.quantity < 0)
             {
                 throw (new Error((("Forbidden value (" + this.quantity) + ") on element of ObjectItemQuantity.quantity.")));

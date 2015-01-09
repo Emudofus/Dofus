@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.character.alignment
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class ActorAlignmentInformations implements INetworkType 
     {
@@ -37,12 +37,12 @@
             this.characterPower = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ActorAlignmentInformations(output);
         }
 
-        public function serializeAs_ActorAlignmentInformations(output:IDataOutput):void
+        public function serializeAs_ActorAlignmentInformations(output:ICustomDataOutput):void
         {
             output.writeByte(this.alignmentSide);
             if (this.alignmentValue < 0)
@@ -59,15 +59,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.characterPower) + ") on element characterPower.")));
             };
-            output.writeInt(this.characterPower);
+            output.writeVarInt(this.characterPower);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ActorAlignmentInformations(input);
         }
 
-        public function deserializeAs_ActorAlignmentInformations(input:IDataInput):void
+        public function deserializeAs_ActorAlignmentInformations(input:ICustomDataInput):void
         {
             this.alignmentSide = input.readByte();
             this.alignmentValue = input.readByte();
@@ -80,7 +80,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.alignmentGrade) + ") on element of ActorAlignmentInformations.alignmentGrade.")));
             };
-            this.characterPower = input.readInt();
+            this.characterPower = input.readVarUhInt();
             if (this.characterPower < 0)
             {
                 throw (new Error((("Forbidden value (" + this.characterPower) + ") on element of ActorAlignmentInformations.characterPower.")));

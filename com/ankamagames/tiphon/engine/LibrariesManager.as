@@ -213,6 +213,11 @@
         {
             var swl:Swl;
             var lib:GraphicLibrary = this._aResources[resName];
+            if (!(lib))
+            {
+                _log.info((((("La librairie ne semble pas exister. (ressource: " + resName) + ", anim:") + animClass) + ")"));
+                return (null);
+            };
             if (((lib.isSingleFile) && (!(waitForIt))))
             {
                 swl = lib.getSwl(null);

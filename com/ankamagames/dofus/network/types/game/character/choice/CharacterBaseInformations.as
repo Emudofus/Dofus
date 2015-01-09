@@ -3,8 +3,8 @@
     import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class CharacterBaseInformations extends CharacterMinimalPlusLookInformations implements INetworkType 
     {
@@ -35,24 +35,24 @@
             this.sex = false;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharacterBaseInformations(output);
         }
 
-        public function serializeAs_CharacterBaseInformations(output:IDataOutput):void
+        public function serializeAs_CharacterBaseInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_CharacterMinimalPlusLookInformations(output);
             output.writeByte(this.breed);
             output.writeBoolean(this.sex);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharacterBaseInformations(input);
         }
 
-        public function deserializeAs_CharacterBaseInformations(input:IDataInput):void
+        public function deserializeAs_CharacterBaseInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.breed = input.readByte();

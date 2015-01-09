@@ -191,13 +191,14 @@
 
         public function modifyItemQuantity(itemUID:int, quantity:int):void
         {
+            var iw:ItemWrapper;
             var itemSet:ItemSet = this._itemsDict[itemUID];
             if (!(itemSet))
             {
                 _log.error("On essaye de modifier la quantité d'un objet qui n'existe pas");
                 return;
             };
-            var iw:ItemWrapper = itemSet.item.clone();
+            iw = itemSet.item.clone();
             iw.quantity = quantity;
             this.modifyItem(iw);
         }

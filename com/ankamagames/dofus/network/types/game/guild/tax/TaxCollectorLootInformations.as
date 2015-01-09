@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.guild.tax
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class TaxCollectorLootInformations extends TaxCollectorComplementaryInformations implements INetworkType 
     {
@@ -37,60 +37,60 @@
             this.itemsValue = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TaxCollectorLootInformations(output);
         }
 
-        public function serializeAs_TaxCollectorLootInformations(output:IDataOutput):void
+        public function serializeAs_TaxCollectorLootInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_TaxCollectorComplementaryInformations(output);
             if (this.kamas < 0)
             {
                 throw (new Error((("Forbidden value (" + this.kamas) + ") on element kamas.")));
             };
-            output.writeInt(this.kamas);
+            output.writeVarInt(this.kamas);
             if ((((this.experience < 0)) || ((this.experience > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experience) + ") on element experience.")));
             };
-            output.writeDouble(this.experience);
+            output.writeVarLong(this.experience);
             if (this.pods < 0)
             {
                 throw (new Error((("Forbidden value (" + this.pods) + ") on element pods.")));
             };
-            output.writeInt(this.pods);
+            output.writeVarInt(this.pods);
             if (this.itemsValue < 0)
             {
                 throw (new Error((("Forbidden value (" + this.itemsValue) + ") on element itemsValue.")));
             };
-            output.writeInt(this.itemsValue);
+            output.writeVarInt(this.itemsValue);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TaxCollectorLootInformations(input);
         }
 
-        public function deserializeAs_TaxCollectorLootInformations(input:IDataInput):void
+        public function deserializeAs_TaxCollectorLootInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.kamas = input.readInt();
+            this.kamas = input.readVarUhInt();
             if (this.kamas < 0)
             {
                 throw (new Error((("Forbidden value (" + this.kamas) + ") on element of TaxCollectorLootInformations.kamas.")));
             };
-            this.experience = input.readDouble();
+            this.experience = input.readVarUhLong();
             if ((((this.experience < 0)) || ((this.experience > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experience) + ") on element of TaxCollectorLootInformations.experience.")));
             };
-            this.pods = input.readInt();
+            this.pods = input.readVarUhInt();
             if (this.pods < 0)
             {
                 throw (new Error((("Forbidden value (" + this.pods) + ") on element of TaxCollectorLootInformations.pods.")));
             };
-            this.itemsValue = input.readInt();
+            this.itemsValue = input.readVarUhInt();
             if (this.itemsValue < 0)
             {
                 throw (new Error((("Forbidden value (" + this.itemsValue) + ") on element of TaxCollectorLootInformations.itemsValue.")));

@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class PurchasableDialogMessage extends NetworkMessage implements INetworkMessage 
@@ -45,52 +46,52 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PurchasableDialogMessage(output);
         }
 
-        public function serializeAs_PurchasableDialogMessage(output:IDataOutput):void
+        public function serializeAs_PurchasableDialogMessage(output:ICustomDataOutput):void
         {
             output.writeBoolean(this.buyOrSell);
             if (this.purchasableId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.purchasableId) + ") on element purchasableId.")));
             };
-            output.writeInt(this.purchasableId);
+            output.writeVarInt(this.purchasableId);
             if (this.price < 0)
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element price.")));
             };
-            output.writeInt(this.price);
+            output.writeVarInt(this.price);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PurchasableDialogMessage(input);
         }
 
-        public function deserializeAs_PurchasableDialogMessage(input:IDataInput):void
+        public function deserializeAs_PurchasableDialogMessage(input:ICustomDataInput):void
         {
             this.buyOrSell = input.readBoolean();
-            this.purchasableId = input.readInt();
+            this.purchasableId = input.readVarUhInt();
             if (this.purchasableId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.purchasableId) + ") on element of PurchasableDialogMessage.purchasableId.")));
             };
-            this.price = input.readInt();
+            this.price = input.readVarUhInt();
             if (this.price < 0)
             {
                 throw (new Error((("Forbidden value (" + this.price) + ") on element of PurchasableDialogMessage.price.")));

@@ -2,7 +2,6 @@
 {
     import com.ankamagames.dofus.misc.utils.DofusApiAction;
     import com.ankamagames.dofus.logic.common.actions.OpenPopupAction;
-    import com.ankamagames.dofus.logic.game.common.actions.roleplay.BasicSwitchModeAction;
     import com.ankamagames.dofus.logic.game.common.actions.chat.ChatCommandAction;
     import com.ankamagames.dofus.logic.game.common.actions.chat.ChatLoadedAction;
     import com.ankamagames.dofus.logic.game.common.actions.chat.ClearChatAction;
@@ -27,9 +26,7 @@
     import com.ankamagames.dofus.logic.game.approach.actions.CharacterReplayRequestAction;
     import com.ankamagames.dofus.logic.game.approach.actions.CharacterDeselectionAction;
     import com.ankamagames.dofus.logic.game.approach.actions.CharacterSelectionAction;
-    import com.ankamagames.dofus.logic.game.approach.actions.CharacterRecolorSelectionAction;
-    import com.ankamagames.dofus.logic.game.approach.actions.CharacterRenameSelectionAction;
-    import com.ankamagames.dofus.logic.game.approach.actions.CharacterRelookSelectionAction;
+    import com.ankamagames.dofus.logic.game.approach.actions.CharacterRemodelSelectionAction;
     import com.ankamagames.dofus.logic.game.common.actions.GameContextQuitAction;
     import com.ankamagames.dofus.logic.game.common.actions.OpenCurrentFightAction;
     import com.ankamagames.dofus.logic.game.common.actions.OpenMainMenuAction;
@@ -150,6 +147,7 @@
     import com.ankamagames.dofus.logic.game.common.actions.prism.PrismSetSabotagedRequestAction;
     import com.ankamagames.dofus.logic.game.roleplay.actions.ObjectUseOnCellAction;
     import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignRequestAction;
+    import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignAllRequestAction;
     import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignCancelAction;
     import com.ankamagames.dofus.logic.game.common.actions.NotificationUpdateFlagAction;
     import com.ankamagames.dofus.logic.game.common.actions.NotificationResetAction;
@@ -178,6 +176,7 @@
     import com.ankamagames.dofus.logic.game.common.actions.tinsel.OrnamentSelectRequestAction;
     import com.ankamagames.dofus.logic.game.roleplay.actions.ShowMonstersInfoAction;
     import com.ankamagames.dofus.logic.game.common.actions.ContactLookRequestByIdAction;
+    import com.ankamagames.dofus.logic.game.fight.actions.ShowMountsInFightAction;
     import com.ankamagames.dofus.modules.utils.actions.ModuleListRequestAction;
     import com.ankamagames.dofus.modules.utils.actions.ModuleInstallRequestAction;
     import com.ankamagames.dofus.modules.utils.actions.ModuleDeleteRequestAction;
@@ -190,7 +189,6 @@
     {
 
         public static const OpenPopup:DofusApiAction = new DofusApiAction("OpenPopup", OpenPopupAction);
-        public static const BasicSwitchMode:DofusApiAction = new DofusApiAction("BasicSwitchMode", BasicSwitchModeAction);
         public static const ChatCommand:DofusApiAction = new DofusApiAction("ChatCommand", ChatCommandAction);
         public static const ChatLoaded:DofusApiAction = new DofusApiAction("ChatLoaded", ChatLoadedAction);
         public static const ClearChat:DofusApiAction = new DofusApiAction("ClearChat", ClearChatAction);
@@ -215,9 +213,7 @@
         public static const CharacterReplayRequest:DofusApiAction = new DofusApiAction("CharacterReplayRequest", CharacterReplayRequestAction);
         public static const CharacterDeselection:DofusApiAction = new DofusApiAction("CharacterDeselection", CharacterDeselectionAction);
         public static const CharacterSelection:DofusApiAction = new DofusApiAction("CharacterSelection", CharacterSelectionAction);
-        public static const CharacterRecolorSelection:DofusApiAction = new DofusApiAction("CharacterRecolorSelection", CharacterRecolorSelectionAction);
-        public static const CharacterRenameSelection:DofusApiAction = new DofusApiAction("CharacterRenameSelection", CharacterRenameSelectionAction);
-        public static const CharacterRelookSelection:DofusApiAction = new DofusApiAction("CharacterRelookSelection", CharacterRelookSelectionAction);
+        public static const CharacterRemodelSelection:DofusApiAction = new DofusApiAction("CharacterRemodelSelection", CharacterRemodelSelectionAction);
         public static const GameContextQuit:DofusApiAction = new DofusApiAction("GameContextQuit", GameContextQuitAction);
         public static const OpenCurrentFight:DofusApiAction = new DofusApiAction("OpenCurrentFight", OpenCurrentFightAction);
         public static const OpenMainMenu:DofusApiAction = new DofusApiAction("OpenMainMenu", OpenMainMenuAction);
@@ -338,6 +334,7 @@
         public static const PrismSetSabotagedRequest:DofusApiAction = new DofusApiAction("PrismSetSabotagedRequest", PrismSetSabotagedRequestAction);
         public static const ObjectUseOnCell:DofusApiAction = new DofusApiAction("ObjectUseOnCell", ObjectUseOnCellAction);
         public static const GiftAssignRequest:DofusApiAction = new DofusApiAction("GiftAssignRequest", GiftAssignRequestAction);
+        public static const GiftAssignAllRequest:DofusApiAction = new DofusApiAction("GiftAssignAllRequest", GiftAssignAllRequestAction);
         public static const GiftAssignCancel:DofusApiAction = new DofusApiAction("GiftAssignCancel", GiftAssignCancelAction);
         public static const NotificationUpdateFlag:DofusApiAction = new DofusApiAction("NotificationUpdateFlag", NotificationUpdateFlagAction);
         public static const NotificationReset:DofusApiAction = new DofusApiAction("NotificationReset", NotificationResetAction);
@@ -366,6 +363,7 @@
         public static const OrnamentSelectRequest:DofusApiAction = new DofusApiAction("OrnamentSelectRequest", OrnamentSelectRequestAction);
         public static const ShowMonstersInfo:DofusApiAction = new DofusApiAction("ShowMonstersInfo", ShowMonstersInfoAction);
         public static const ContactLookRequestById:DofusApiAction = new DofusApiAction("ContactLookRequestById", ContactLookRequestByIdAction);
+        public static const ShowMountsInFight:DofusApiAction = new DofusApiAction("ShowMountsInFight", ShowMountsInFightAction);
         public static const ModuleListRequest:DofusApiAction = new DofusApiAction("ModuleListRequest", ModuleListRequestAction);
         public static const ModuleInstallRequest:DofusApiAction = new DofusApiAction("ModuleInstallRequest", ModuleInstallRequestAction);
         public static const ModuleDeleteRequest:DofusApiAction = new DofusApiAction("ModuleDeleteRequest", ModuleDeleteRequestAction);

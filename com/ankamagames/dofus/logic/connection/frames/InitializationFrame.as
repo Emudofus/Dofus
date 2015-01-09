@@ -6,11 +6,9 @@
     import flash.utils.getQualifiedClassName;
     import com.ankamagames.dofus.misc.utils.LoadingScreen;
     import com.ankamagames.jerakine.types.enums.Priority;
-    import com.ankamagames.dofus.BuildInfos;
-    import com.ankamagames.dofus.network.enums.BuildTypeEnum;
-    import com.ankamagames.berilia.managers.KernelEventsManager;
     import com.ankamagames.jerakine.managers.LangManager;
     import com.ankamagames.tiphon.engine.SubstituteAnimationManager;
+    import com.ankamagames.dofus.logic.connection.messages.UpdaterConnectionStatusMessage;
     import com.ankamagames.jerakine.messages.LangFileLoadedMessage;
     import com.ankamagames.jerakine.messages.LangAllFilesLoadedMessage;
     import com.ankamagames.berilia.types.messages.ModuleRessourceLoadFailedMessage;
@@ -45,6 +43,7 @@
     import com.ankamagames.jerakine.utils.display.StageShareManager;
     import com.ankamagames.berilia.managers.EmbedFontManager;
     import com.ankamagames.jerakine.managers.FontManager;
+    import com.ankamagames.berilia.managers.KernelEventsManager;
     import com.ankamagames.dofus.misc.lists.HookList;
     import com.ankamagames.dofus.kernel.sound.SoundManager;
     import com.ankamagames.dofus.kernel.sound.manager.ClassicSoundManager;
@@ -182,6 +181,8 @@
     import com.ankamagames.dofus.logic.common.managers.HyperlinkShowOrnamentManager;
     import com.ankamagames.dofus.logic.common.managers.HyperlinkShowMonsterChatManager;
     import com.ankamagames.dofus.logic.common.managers.HyperlinkShowSubArea;
+    import com.ankamagames.dofus.logic.common.managers.HyperlinkShowOfflineSales;
+    import com.ankamagames.dofus.logic.common.managers.HyperlinkTaxCollectorPosition;
     import com.ankamagames.dofus.datacenter.appearance.SkinMapping;
     import com.ankamagames.performance.Benchmark;
     import flash.utils.describeType;
@@ -192,6 +193,8 @@
     import com.ankamagames.dofus.datacenter.misc.CensoredContent;
     import com.ankamagames.tiphon.types.Skin;
     import com.ankamagames.dofus.logic.common.frames.QueueFrame;
+    import com.ankamagames.dofus.BuildInfos;
+    import com.ankamagames.dofus.network.enums.BuildTypeEnum;
     import com.ankamagames.berilia.components.Input;
     import com.ankamagames.jerakine.utils.files.FileUtils;
     import __AS3__.vec.*;
@@ -210,6 +213,7 @@
         private var _modPercents:Array;
         private var _isSubLangConfig:Boolean;
         private var _isSubCustomConfig:Boolean;
+        private var _updaterConnectionSuccess:Boolean;
 
         public function InitializationFrame()
         {
@@ -225,10 +229,6 @@
         public function pushed():Boolean
         {
             var foo:Boolean;
-            if (BuildInfos.BUILD_TYPE == BuildTypeEnum.DEBUG)
-            {
-                KernelEventsManager.getInstance().disableAsyncError();
-            };
             this.initPerformancesWatcher();
             this.initStaticConstants();
             this.initModulesBindings();
@@ -258,6 +258,7 @@
 
         public function process(msg:Message):Boolean
         {
+            var ucsmsg:UpdaterConnectionStatusMessage;
             var langMsg:LangFileLoadedMessage;
             var langAllMsg:LangAllFilesLoadedMessage;
             var ankamaModule:Boolean;
@@ -278,6 +279,10 @@
             var currentCommunity:String;
             switch (true)
             {
+                case (msg is UpdaterConnectionStatusMessage):
+                    ucsmsg = (msg as UpdaterConnectionStatusMessage);
+                    this._updaterConnectionSuccess = ucsmsg.success;
+                    return (true);
                 case (msg is LangFileLoadedMessage):
                     langMsg = LangFileLoadedMessage(msg);
                     if (!(langMsg.success))
@@ -395,7 +400,8 @@
                                 {
                                     throw (e);
                                 };
-                                if (!(--this._subConfigCount))
+                                this._subConfigCount--;
+                                if (!(this._subConfigCount))
                                 {
                                     this.setModulePercent("config", 100);
                                     this._aModuleInit["config"] = true;
@@ -407,7 +413,7 @@
                             {
                                 this._aLoadedFiles.push(langAllMsg.file);
                             };
-                            this._aModuleInit["langFiles"] = (this._aLoadedFiles.length == this._aFiles.length);
+                            this._aModuleInit["langFiles"] = (((this._aLoadedFiles.length == this._aFiles.length)) && (XmlConfig.getInstance().getEntry("config.data.path.i18n.list")));
                             if (this._aModuleInit["langFiles"])
                             {
                                 this.setModulePercent("langFiles", 100);
@@ -649,7 +655,8 @@
             MenusFactory.registerAssoc(GameFightCompanionInformations, "companion");
             MenusFactory.registerAssoc(PartyCompanionWrapper, "companion");
             HyperlinkFactory.registerProtocol("ui", HyperlinkDisplayArrowManager.showArrow);
-            HyperlinkFactory.registerProtocol("spell", HyperlinkSpellManager.showSpell, HyperlinkSpellManager.getSpellName);
+            HyperlinkFactory.registerProtocol("spell", HyperlinkSpellManager.showSpell, HyperlinkSpellManager.getSpellLevelName);
+            HyperlinkFactory.registerProtocol("spellNoLvl", HyperlinkSpellManager.showSpell, HyperlinkSpellManager.getSpellName);
             HyperlinkFactory.registerProtocol("cell", HyperlinkShowCellManager.showCell);
             HyperlinkFactory.registerProtocol("entity", HyperlinkShowEntityManager.showEntity, null, null, true, HyperlinkShowEntityManager.rollOver);
             HyperlinkFactory.registerProtocol("recipe", HyperlinkShowRecipeManager.showRecipe, HyperlinkShowRecipeManager.getRecipeName, null, true, HyperlinkShowRecipeManager.rollOver);
@@ -674,6 +681,8 @@
             HyperlinkFactory.registerProtocol("chatornament", HyperlinkShowOrnamentManager.showOrnament, null, null, true, HyperlinkShowOrnamentManager.rollOver);
             HyperlinkFactory.registerProtocol("chatmonster", HyperlinkShowMonsterChatManager.showMonster, HyperlinkShowMonsterChatManager.getMonsterName, null, true, HyperlinkShowMonsterChatManager.rollOver);
             HyperlinkFactory.registerProtocol("subArea", HyperlinkShowSubArea.showSubArea, HyperlinkShowSubArea.getSubAreaName);
+            HyperlinkFactory.registerProtocol("offlineSales", HyperlinkShowOfflineSales.showOfflineSales, null, null, false);
+            HyperlinkFactory.registerProtocol("taxcollectorPosition", HyperlinkTaxCollectorPosition.showPosition, null, null, false, HyperlinkTaxCollectorPosition.rollOver);
         }
 
         private function displayLoadingScreen():void
@@ -756,6 +765,10 @@
                 Kernel.getWorker().addFrame(new AuthentificationFrame());
                 Kernel.getWorker().addFrame(new QueueFrame());
                 Kernel.getWorker().addFrame(new GameStartingFrame());
+                if (((((!(AirScanner.isStreamingVersion())) && (!(this._updaterConnectionSuccess)))) && (!((BuildInfos.BUILD_TYPE == BuildTypeEnum.DEBUG)))))
+                {
+                    KernelEventsManager.getInstance().processCallback(HookList.UpdaterConnectionFailed);
+                };
             };
         }
 

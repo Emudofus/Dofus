@@ -46,7 +46,7 @@
         private var _worldContainer:DisplayObjectContainer;
         private var _overlayContainer:Sprite;
         private var _spMapContainer:Sprite;
-        private var _spGfxontainer:Sprite;
+        private var _spGfxContainer:Sprite;
         private var _spChgMapContainer:Sprite;
         private var _worldMask:Sprite;
         private var _currentZoom:Number = 1;
@@ -121,7 +121,7 @@
 
         public function get gfxContainer():DisplayObjectContainer
         {
-            return (this._spGfxontainer);
+            return (this._spGfxContainer);
         }
 
         public function get overlayContainer():DisplayObjectContainer
@@ -188,7 +188,7 @@
             this._overlayContainer = new Sprite();
             this._spMapContainer = new Sprite();
             this._spChgMapContainer = new Sprite();
-            this._spGfxontainer = new Sprite();
+            this._spGfxContainer = new Sprite();
             this._worldContainer.mouseEnabled = false;
             this._spMapContainer.addEventListener(MouseEvent.ROLL_OUT, this.onRollOutMapContainer);
             this._spMapContainer.addEventListener(MouseEvent.ROLL_OVER, this.onRollOverMapContainer);
@@ -196,14 +196,14 @@
             this._spMapContainer.mouseEnabled = false;
             this._spChgMapContainer.tabChildren = false;
             this._spChgMapContainer.mouseEnabled = false;
-            this._spGfxontainer.tabChildren = false;
-            this._spGfxontainer.mouseEnabled = false;
-            this._spGfxontainer.mouseChildren = false;
+            this._spGfxContainer.tabChildren = false;
+            this._spGfxContainer.mouseEnabled = false;
+            this._spGfxContainer.mouseChildren = false;
             this._overlayContainer.tabChildren = false;
             this._overlayContainer.mouseEnabled = false;
             this._worldContainer.addChild(this._spMapContainer);
             this._worldContainer.addChild(this._spChgMapContainer);
-            this._worldContainer.addChild(this._spGfxontainer);
+            this._worldContainer.addChild(this._spGfxContainer);
             this._worldContainer.addChild(this._overlayContainer);
             FrustumManager.getInstance().init(this._spChgMapContainer);
             this._worldMask = new Sprite();
@@ -242,7 +242,7 @@
         {
             this._spMapContainer.visible = b;
             this._spChgMapContainer.visible = b;
-            this._spGfxontainer.visible = b;
+            this._spGfxContainer.visible = b;
             this._overlayContainer.visible = b;
         }
 
@@ -312,9 +312,9 @@
             {
                 this._worldContainer.removeChild(this._spChgMapContainer);
             };
-            if (this._spGfxontainer.parent)
+            if (this._spGfxContainer.parent)
             {
-                this._worldContainer.removeChild(this._spGfxontainer);
+                this._worldContainer.removeChild(this._spGfxContainer);
             };
             if (this._overlayContainer.parent)
             {

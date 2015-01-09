@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ExchangeReplyTaxVendorMessage extends NetworkMessage implements INetworkMessage 
@@ -42,50 +43,50 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeReplyTaxVendorMessage(output);
         }
 
-        public function serializeAs_ExchangeReplyTaxVendorMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeReplyTaxVendorMessage(output:ICustomDataOutput):void
         {
             if (this.objectValue < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectValue) + ") on element objectValue.")));
             };
-            output.writeInt(this.objectValue);
+            output.writeVarInt(this.objectValue);
             if (this.totalTaxValue < 0)
             {
                 throw (new Error((("Forbidden value (" + this.totalTaxValue) + ") on element totalTaxValue.")));
             };
-            output.writeInt(this.totalTaxValue);
+            output.writeVarInt(this.totalTaxValue);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeReplyTaxVendorMessage(input);
         }
 
-        public function deserializeAs_ExchangeReplyTaxVendorMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeReplyTaxVendorMessage(input:ICustomDataInput):void
         {
-            this.objectValue = input.readInt();
+            this.objectValue = input.readVarUhInt();
             if (this.objectValue < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectValue) + ") on element of ExchangeReplyTaxVendorMessage.objectValue.")));
             };
-            this.totalTaxValue = input.readInt();
+            this.totalTaxValue = input.readVarUhInt();
             if (this.totalTaxValue < 0)
             {
                 throw (new Error((("Forbidden value (" + this.totalTaxValue) + ") on element of ExchangeReplyTaxVendorMessage.totalTaxValue.")));

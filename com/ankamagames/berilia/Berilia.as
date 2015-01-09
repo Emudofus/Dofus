@@ -310,8 +310,8 @@
             };
             for each (m in UiModuleManager.getInstance().getModules())
             {
-                KernelEventsManager.getInstance().removeEvent(("__module_" + m.id));
-                BindsManager.getInstance().removeEvent(("__module_" + m.id));
+                KernelEventsManager.getInstance().removeAllEventListeners(("__module_" + m.id));
+                BindsManager.getInstance().removeAllEventListeners(("__module_" + m.id));
             };
             UiGroupManager.getInstance().destroy();
             FpsManager.getInstance().stopTracking("ui");
@@ -575,12 +575,8 @@
                 ui.getElements()[i] = null;
                 delete ui.getElements()[i];
             };
-            if (sName == "serverListSelection")
-            {
-                trace("");
-            };
-            KernelEventsManager.getInstance().removeEvent(sName);
-            BindsManager.getInstance().removeEvent(sName);
+            KernelEventsManager.getInstance().removeAllEventListeners(sName);
+            BindsManager.getInstance().removeAllEventListeners(sName);
             UiRenderManager.getInstance().cancelRender(ui.uiData);
             SecureCenter.destroy(ui);
             ui.destroyUi(SecureCenter.ACCESS_KEY);
@@ -648,8 +644,8 @@
                     delete this._aUiList[sName].getElements()[i];
                 };
             };
-            KernelEventsManager.getInstance().removeEvent(sName);
-            BindsManager.getInstance().removeEvent(sName);
+            KernelEventsManager.getInstance().removeAllEventListeners(sName);
+            BindsManager.getInstance().removeAllEventListeners(sName);
             for (j in UIEventManager.getInstance().instances)
             {
                 if (((((((((((!((j == null))) || (!((j == "null"))))) && (UIEventManager.getInstance().instances[j]))) && (UIEventManager.getInstance().instances[j].instance))) && (UIEventManager.getInstance().instances[j].instance.topParent))) && ((UIEventManager.getInstance().instances[j].instance.topParent.name == sName))))

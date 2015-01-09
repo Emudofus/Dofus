@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightAllianceTeamInformations extends FightTeamInformations implements INetworkType 
     {
@@ -31,23 +31,23 @@
             this.relation = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightAllianceTeamInformations(output);
         }
 
-        public function serializeAs_FightAllianceTeamInformations(output:IDataOutput):void
+        public function serializeAs_FightAllianceTeamInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_FightTeamInformations(output);
             output.writeByte(this.relation);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightAllianceTeamInformations(input);
         }
 
-        public function deserializeAs_FightAllianceTeamInformations(input:IDataInput):void
+        public function deserializeAs_FightAllianceTeamInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.relation = input.readByte();

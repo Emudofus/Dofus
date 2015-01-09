@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.guild.GuildEmblem;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GuildInAllianceInformations extends GuildInformations implements INetworkType 
     {
@@ -37,42 +37,42 @@
             this.enabled = false;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GuildInAllianceInformations(output);
         }
 
-        public function serializeAs_GuildInAllianceInformations(output:IDataOutput):void
+        public function serializeAs_GuildInAllianceInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GuildInformations(output);
-            if ((((this.guildLevel < 0)) || ((this.guildLevel > 0xFFFF))))
+            if ((((this.guildLevel < 1)) || ((this.guildLevel > 200))))
             {
                 throw (new Error((("Forbidden value (" + this.guildLevel) + ") on element guildLevel.")));
             };
-            output.writeShort(this.guildLevel);
-            if ((((this.nbMembers < 0)) || ((this.nbMembers > 0xFFFF))))
+            output.writeByte(this.guildLevel);
+            if ((((this.nbMembers < 1)) || ((this.nbMembers > 240))))
             {
                 throw (new Error((("Forbidden value (" + this.nbMembers) + ") on element nbMembers.")));
             };
-            output.writeShort(this.nbMembers);
+            output.writeByte(this.nbMembers);
             output.writeBoolean(this.enabled);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GuildInAllianceInformations(input);
         }
 
-        public function deserializeAs_GuildInAllianceInformations(input:IDataInput):void
+        public function deserializeAs_GuildInAllianceInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
-            this.guildLevel = input.readUnsignedShort();
-            if ((((this.guildLevel < 0)) || ((this.guildLevel > 0xFFFF))))
+            this.guildLevel = input.readUnsignedByte();
+            if ((((this.guildLevel < 1)) || ((this.guildLevel > 200))))
             {
                 throw (new Error((("Forbidden value (" + this.guildLevel) + ") on element of GuildInAllianceInformations.guildLevel.")));
             };
-            this.nbMembers = input.readUnsignedShort();
-            if ((((this.nbMembers < 0)) || ((this.nbMembers > 0xFFFF))))
+            this.nbMembers = input.readUnsignedByte();
+            if ((((this.nbMembers < 1)) || ((this.nbMembers > 240))))
             {
                 throw (new Error((("Forbidden value (" + this.nbMembers) + ") on element of GuildInAllianceInformations.nbMembers.")));
             };

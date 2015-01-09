@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import __AS3__.vec.Vector;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -46,24 +47,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_AccessoryPreviewRequestMessage(output);
         }
 
-        public function serializeAs_AccessoryPreviewRequestMessage(output:IDataOutput):void
+        public function serializeAs_AccessoryPreviewRequestMessage(output:ICustomDataOutput):void
         {
             output.writeShort(this.genericId.length);
             var _i1:uint;
@@ -73,24 +74,24 @@
                 {
                     throw (new Error((("Forbidden value (" + this.genericId[_i1]) + ") on element 1 (starting at 1) of genericId.")));
                 };
-                output.writeInt(this.genericId[_i1]);
+                output.writeVarShort(this.genericId[_i1]);
                 _i1++;
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_AccessoryPreviewRequestMessage(input);
         }
 
-        public function deserializeAs_AccessoryPreviewRequestMessage(input:IDataInput):void
+        public function deserializeAs_AccessoryPreviewRequestMessage(input:ICustomDataInput):void
         {
             var _val1:uint;
             var _genericIdLen:uint = input.readUnsignedShort();
             var _i1:uint;
             while (_i1 < _genericIdLen)
             {
-                _val1 = input.readInt();
+                _val1 = input.readVarUhShort();
                 if (_val1 < 0)
                 {
                     throw (new Error((("Forbidden value (" + _val1) + ") on elements of genericId.")));

@@ -4,8 +4,8 @@
     import com.ankamagames.dofus.network.types.game.character.alignment.ActorAlignmentInformations;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
     import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class GameRolePlayCharacterInformations extends GameRolePlayHumanoidInformations implements INetworkType 
     {
@@ -38,23 +38,23 @@
             this.alignmentInfos = new ActorAlignmentInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GameRolePlayCharacterInformations(output);
         }
 
-        public function serializeAs_GameRolePlayCharacterInformations(output:IDataOutput):void
+        public function serializeAs_GameRolePlayCharacterInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GameRolePlayHumanoidInformations(output);
             this.alignmentInfos.serializeAs_ActorAlignmentInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GameRolePlayCharacterInformations(input);
         }
 
-        public function deserializeAs_GameRolePlayCharacterInformations(input:IDataInput):void
+        public function deserializeAs_GameRolePlayCharacterInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.alignmentInfos = new ActorAlignmentInformations();

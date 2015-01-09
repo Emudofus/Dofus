@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay.job
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class JobCrafterDirectorySettings implements INetworkType 
     {
@@ -34,12 +34,12 @@
             this.userDefinedParams = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_JobCrafterDirectorySettings(output);
         }
 
-        public function serializeAs_JobCrafterDirectorySettings(output:IDataOutput):void
+        public function serializeAs_JobCrafterDirectorySettings(output:ICustomDataOutput):void
         {
             if (this.jobId < 0)
             {
@@ -58,12 +58,12 @@
             output.writeByte(this.userDefinedParams);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_JobCrafterDirectorySettings(input);
         }
 
-        public function deserializeAs_JobCrafterDirectorySettings(input:IDataInput):void
+        public function deserializeAs_JobCrafterDirectorySettings(input:ICustomDataInput):void
         {
             this.jobId = input.readByte();
             if (this.jobId < 0)

@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class PartyCompanionBaseInformations implements INetworkType 
     {
@@ -40,12 +40,12 @@
             this.entityLook = new EntityLook();
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_PartyCompanionBaseInformations(output);
         }
 
-        public function serializeAs_PartyCompanionBaseInformations(output:IDataOutput):void
+        public function serializeAs_PartyCompanionBaseInformations(output:ICustomDataOutput):void
         {
             if (this.indexId < 0)
             {
@@ -56,23 +56,23 @@
             {
                 throw (new Error((("Forbidden value (" + this.companionGenericId) + ") on element companionGenericId.")));
             };
-            output.writeShort(this.companionGenericId);
+            output.writeByte(this.companionGenericId);
             this.entityLook.serializeAs_EntityLook(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_PartyCompanionBaseInformations(input);
         }
 
-        public function deserializeAs_PartyCompanionBaseInformations(input:IDataInput):void
+        public function deserializeAs_PartyCompanionBaseInformations(input:ICustomDataInput):void
         {
             this.indexId = input.readByte();
             if (this.indexId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.indexId) + ") on element of PartyCompanionBaseInformations.indexId.")));
             };
-            this.companionGenericId = input.readShort();
+            this.companionGenericId = input.readByte();
             if (this.companionGenericId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.companionGenericId) + ") on element of PartyCompanionBaseInformations.companionGenericId.")));

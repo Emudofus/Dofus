@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.context.roleplay.BasicGuildInformations;
     import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class CharacterMinimalGuildInformations extends CharacterMinimalPlusLookInformations implements INetworkType 
     {
@@ -37,23 +37,23 @@
             this.guild = new BasicGuildInformations();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharacterMinimalGuildInformations(output);
         }
 
-        public function serializeAs_CharacterMinimalGuildInformations(output:IDataOutput):void
+        public function serializeAs_CharacterMinimalGuildInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_CharacterMinimalPlusLookInformations(output);
             this.guild.serializeAs_BasicGuildInformations(output);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharacterMinimalGuildInformations(input);
         }
 
-        public function deserializeAs_CharacterMinimalGuildInformations(input:IDataInput):void
+        public function deserializeAs_CharacterMinimalGuildInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.guild = new BasicGuildInformations();

@@ -3,8 +3,8 @@
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.character.alignment.ActorExtendedAlignmentInformations;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class CharacterCharacteristicsInformations implements INetworkType 
@@ -17,6 +17,7 @@
         public var experienceNextLevelFloor:Number = 0;
         public var kamas:uint = 0;
         public var statsPoints:uint = 0;
+        public var additionnalPoints:uint = 0;
         public var spellsPoints:uint = 0;
         public var alignmentInfos:ActorExtendedAlignmentInformations;
         public var lifePoints:uint = 0;
@@ -157,13 +158,14 @@
             return (8);
         }
 
-        public function initCharacterCharacteristicsInformations(experience:Number=0, experienceLevelFloor:Number=0, experienceNextLevelFloor:Number=0, kamas:uint=0, statsPoints:uint=0, spellsPoints:uint=0, alignmentInfos:ActorExtendedAlignmentInformations=null, lifePoints:uint=0, maxLifePoints:uint=0, energyPoints:uint=0, maxEnergyPoints:uint=0, actionPointsCurrent:int=0, movementPointsCurrent:int=0, initiative:CharacterBaseCharacteristic=null, prospecting:CharacterBaseCharacteristic=null, actionPoints:CharacterBaseCharacteristic=null, movementPoints:CharacterBaseCharacteristic=null, strength:CharacterBaseCharacteristic=null, vitality:CharacterBaseCharacteristic=null, wisdom:CharacterBaseCharacteristic=null, chance:CharacterBaseCharacteristic=null, agility:CharacterBaseCharacteristic=null, intelligence:CharacterBaseCharacteristic=null, range:CharacterBaseCharacteristic=null, summonableCreaturesBoost:CharacterBaseCharacteristic=null, reflect:CharacterBaseCharacteristic=null, criticalHit:CharacterBaseCharacteristic=null, criticalHitWeapon:uint=0, criticalMiss:CharacterBaseCharacteristic=null, healBonus:CharacterBaseCharacteristic=null, allDamagesBonus:CharacterBaseCharacteristic=null, weaponDamagesBonusPercent:CharacterBaseCharacteristic=null, damagesBonusPercent:CharacterBaseCharacteristic=null, trapBonus:CharacterBaseCharacteristic=null, trapBonusPercent:CharacterBaseCharacteristic=null, glyphBonusPercent:CharacterBaseCharacteristic=null, permanentDamagePercent:CharacterBaseCharacteristic=null, tackleBlock:CharacterBaseCharacteristic=null, tackleEvade:CharacterBaseCharacteristic=null, PAAttack:CharacterBaseCharacteristic=null, PMAttack:CharacterBaseCharacteristic=null, pushDamageBonus:CharacterBaseCharacteristic=null, criticalDamageBonus:CharacterBaseCharacteristic=null, neutralDamageBonus:CharacterBaseCharacteristic=null, earthDamageBonus:CharacterBaseCharacteristic=null, waterDamageBonus:CharacterBaseCharacteristic=null, airDamageBonus:CharacterBaseCharacteristic=null, fireDamageBonus:CharacterBaseCharacteristic=null, dodgePALostProbability:CharacterBaseCharacteristic=null, dodgePMLostProbability:CharacterBaseCharacteristic=null, neutralElementResistPercent:CharacterBaseCharacteristic=null, earthElementResistPercent:CharacterBaseCharacteristic=null, waterElementResistPercent:CharacterBaseCharacteristic=null, airElementResistPercent:CharacterBaseCharacteristic=null, fireElementResistPercent:CharacterBaseCharacteristic=null, neutralElementReduction:CharacterBaseCharacteristic=null, earthElementReduction:CharacterBaseCharacteristic=null, waterElementReduction:CharacterBaseCharacteristic=null, airElementReduction:CharacterBaseCharacteristic=null, fireElementReduction:CharacterBaseCharacteristic=null, pushDamageReduction:CharacterBaseCharacteristic=null, criticalDamageReduction:CharacterBaseCharacteristic=null, pvpNeutralElementResistPercent:CharacterBaseCharacteristic=null, pvpEarthElementResistPercent:CharacterBaseCharacteristic=null, pvpWaterElementResistPercent:CharacterBaseCharacteristic=null, pvpAirElementResistPercent:CharacterBaseCharacteristic=null, pvpFireElementResistPercent:CharacterBaseCharacteristic=null, pvpNeutralElementReduction:CharacterBaseCharacteristic=null, pvpEarthElementReduction:CharacterBaseCharacteristic=null, pvpWaterElementReduction:CharacterBaseCharacteristic=null, pvpAirElementReduction:CharacterBaseCharacteristic=null, pvpFireElementReduction:CharacterBaseCharacteristic=null, spellModifications:Vector.<CharacterSpellModification>=null, probationTime:uint=0):CharacterCharacteristicsInformations
+        public function initCharacterCharacteristicsInformations(experience:Number=0, experienceLevelFloor:Number=0, experienceNextLevelFloor:Number=0, kamas:uint=0, statsPoints:uint=0, additionnalPoints:uint=0, spellsPoints:uint=0, alignmentInfos:ActorExtendedAlignmentInformations=null, lifePoints:uint=0, maxLifePoints:uint=0, energyPoints:uint=0, maxEnergyPoints:uint=0, actionPointsCurrent:int=0, movementPointsCurrent:int=0, initiative:CharacterBaseCharacteristic=null, prospecting:CharacterBaseCharacteristic=null, actionPoints:CharacterBaseCharacteristic=null, movementPoints:CharacterBaseCharacteristic=null, strength:CharacterBaseCharacteristic=null, vitality:CharacterBaseCharacteristic=null, wisdom:CharacterBaseCharacteristic=null, chance:CharacterBaseCharacteristic=null, agility:CharacterBaseCharacteristic=null, intelligence:CharacterBaseCharacteristic=null, range:CharacterBaseCharacteristic=null, summonableCreaturesBoost:CharacterBaseCharacteristic=null, reflect:CharacterBaseCharacteristic=null, criticalHit:CharacterBaseCharacteristic=null, criticalHitWeapon:uint=0, criticalMiss:CharacterBaseCharacteristic=null, healBonus:CharacterBaseCharacteristic=null, allDamagesBonus:CharacterBaseCharacteristic=null, weaponDamagesBonusPercent:CharacterBaseCharacteristic=null, damagesBonusPercent:CharacterBaseCharacteristic=null, trapBonus:CharacterBaseCharacteristic=null, trapBonusPercent:CharacterBaseCharacteristic=null, glyphBonusPercent:CharacterBaseCharacteristic=null, permanentDamagePercent:CharacterBaseCharacteristic=null, tackleBlock:CharacterBaseCharacteristic=null, tackleEvade:CharacterBaseCharacteristic=null, PAAttack:CharacterBaseCharacteristic=null, PMAttack:CharacterBaseCharacteristic=null, pushDamageBonus:CharacterBaseCharacteristic=null, criticalDamageBonus:CharacterBaseCharacteristic=null, neutralDamageBonus:CharacterBaseCharacteristic=null, earthDamageBonus:CharacterBaseCharacteristic=null, waterDamageBonus:CharacterBaseCharacteristic=null, airDamageBonus:CharacterBaseCharacteristic=null, fireDamageBonus:CharacterBaseCharacteristic=null, dodgePALostProbability:CharacterBaseCharacteristic=null, dodgePMLostProbability:CharacterBaseCharacteristic=null, neutralElementResistPercent:CharacterBaseCharacteristic=null, earthElementResistPercent:CharacterBaseCharacteristic=null, waterElementResistPercent:CharacterBaseCharacteristic=null, airElementResistPercent:CharacterBaseCharacteristic=null, fireElementResistPercent:CharacterBaseCharacteristic=null, neutralElementReduction:CharacterBaseCharacteristic=null, earthElementReduction:CharacterBaseCharacteristic=null, waterElementReduction:CharacterBaseCharacteristic=null, airElementReduction:CharacterBaseCharacteristic=null, fireElementReduction:CharacterBaseCharacteristic=null, pushDamageReduction:CharacterBaseCharacteristic=null, criticalDamageReduction:CharacterBaseCharacteristic=null, pvpNeutralElementResistPercent:CharacterBaseCharacteristic=null, pvpEarthElementResistPercent:CharacterBaseCharacteristic=null, pvpWaterElementResistPercent:CharacterBaseCharacteristic=null, pvpAirElementResistPercent:CharacterBaseCharacteristic=null, pvpFireElementResistPercent:CharacterBaseCharacteristic=null, pvpNeutralElementReduction:CharacterBaseCharacteristic=null, pvpEarthElementReduction:CharacterBaseCharacteristic=null, pvpWaterElementReduction:CharacterBaseCharacteristic=null, pvpAirElementReduction:CharacterBaseCharacteristic=null, pvpFireElementReduction:CharacterBaseCharacteristic=null, spellModifications:Vector.<CharacterSpellModification>=null, probationTime:uint=0):CharacterCharacteristicsInformations
         {
             this.experience = experience;
             this.experienceLevelFloor = experienceLevelFloor;
             this.experienceNextLevelFloor = experienceNextLevelFloor;
             this.kamas = kamas;
             this.statsPoints = statsPoints;
+            this.additionnalPoints = additionnalPoints;
             this.spellsPoints = spellsPoints;
             this.alignmentInfos = alignmentInfos;
             this.lifePoints = lifePoints;
@@ -243,6 +245,7 @@
             this.experienceNextLevelFloor = 0;
             this.kamas = 0;
             this.statsPoints = 0;
+            this.additionnalPoints = 0;
             this.spellsPoints = 0;
             this.alignmentInfos = new ActorExtendedAlignmentInformations();
             this.maxLifePoints = 0;
@@ -255,28 +258,28 @@
             this.probationTime = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_CharacterCharacteristicsInformations(output);
         }
 
-        public function serializeAs_CharacterCharacteristicsInformations(output:IDataOutput):void
+        public function serializeAs_CharacterCharacteristicsInformations(output:ICustomDataOutput):void
         {
             if ((((this.experience < 0)) || ((this.experience > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experience) + ") on element experience.")));
             };
-            output.writeDouble(this.experience);
+            output.writeVarLong(this.experience);
             if ((((this.experienceLevelFloor < 0)) || ((this.experienceLevelFloor > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experienceLevelFloor) + ") on element experienceLevelFloor.")));
             };
-            output.writeDouble(this.experienceLevelFloor);
+            output.writeVarLong(this.experienceLevelFloor);
             if ((((this.experienceNextLevelFloor < 0)) || ((this.experienceNextLevelFloor > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experienceNextLevelFloor) + ") on element experienceNextLevelFloor.")));
             };
-            output.writeDouble(this.experienceNextLevelFloor);
+            output.writeVarLong(this.experienceNextLevelFloor);
             if (this.kamas < 0)
             {
                 throw (new Error((("Forbidden value (" + this.kamas) + ") on element kamas.")));
@@ -286,35 +289,40 @@
             {
                 throw (new Error((("Forbidden value (" + this.statsPoints) + ") on element statsPoints.")));
             };
-            output.writeInt(this.statsPoints);
+            output.writeVarShort(this.statsPoints);
+            if (this.additionnalPoints < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.additionnalPoints) + ") on element additionnalPoints.")));
+            };
+            output.writeVarShort(this.additionnalPoints);
             if (this.spellsPoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.spellsPoints) + ") on element spellsPoints.")));
             };
-            output.writeInt(this.spellsPoints);
+            output.writeVarShort(this.spellsPoints);
             this.alignmentInfos.serializeAs_ActorExtendedAlignmentInformations(output);
             if (this.lifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lifePoints) + ") on element lifePoints.")));
             };
-            output.writeInt(this.lifePoints);
+            output.writeVarInt(this.lifePoints);
             if (this.maxLifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxLifePoints) + ") on element maxLifePoints.")));
             };
-            output.writeInt(this.maxLifePoints);
+            output.writeVarInt(this.maxLifePoints);
             if (this.energyPoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.energyPoints) + ") on element energyPoints.")));
             };
-            output.writeShort(this.energyPoints);
+            output.writeVarShort(this.energyPoints);
             if (this.maxEnergyPoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxEnergyPoints) + ") on element maxEnergyPoints.")));
             };
-            output.writeShort(this.maxEnergyPoints);
-            output.writeShort(this.actionPointsCurrent);
-            output.writeShort(this.movementPointsCurrent);
+            output.writeVarShort(this.maxEnergyPoints);
+            output.writeVarShort(this.actionPointsCurrent);
+            output.writeVarShort(this.movementPointsCurrent);
             this.initiative.serializeAs_CharacterBaseCharacteristic(output);
             this.prospecting.serializeAs_CharacterBaseCharacteristic(output);
             this.actionPoints.serializeAs_CharacterBaseCharacteristic(output);
@@ -333,7 +341,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.criticalHitWeapon) + ") on element criticalHitWeapon.")));
             };
-            output.writeShort(this.criticalHitWeapon);
+            output.writeVarShort(this.criticalHitWeapon);
             this.criticalMiss.serializeAs_CharacterBaseCharacteristic(output);
             this.healBonus.serializeAs_CharacterBaseCharacteristic(output);
             this.allDamagesBonus.serializeAs_CharacterBaseCharacteristic(output);
@@ -379,11 +387,11 @@
             this.pvpAirElementReduction.serializeAs_CharacterBaseCharacteristic(output);
             this.pvpFireElementReduction.serializeAs_CharacterBaseCharacteristic(output);
             output.writeShort(this.spellModifications.length);
-            var _i73:uint;
-            while (_i73 < this.spellModifications.length)
+            var _i74:uint;
+            while (_i74 < this.spellModifications.length)
             {
-                (this.spellModifications[_i73] as CharacterSpellModification).serializeAs_CharacterSpellModification(output);
-                _i73++;
+                (this.spellModifications[_i74] as CharacterSpellModification).serializeAs_CharacterSpellModification(output);
+                _i74++;
             };
             if (this.probationTime < 0)
             {
@@ -392,25 +400,25 @@
             output.writeInt(this.probationTime);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_CharacterCharacteristicsInformations(input);
         }
 
-        public function deserializeAs_CharacterCharacteristicsInformations(input:IDataInput):void
+        public function deserializeAs_CharacterCharacteristicsInformations(input:ICustomDataInput):void
         {
-            var _item73:CharacterSpellModification;
-            this.experience = input.readDouble();
+            var _item74:CharacterSpellModification;
+            this.experience = input.readVarUhLong();
             if ((((this.experience < 0)) || ((this.experience > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experience) + ") on element of CharacterCharacteristicsInformations.experience.")));
             };
-            this.experienceLevelFloor = input.readDouble();
+            this.experienceLevelFloor = input.readVarUhLong();
             if ((((this.experienceLevelFloor < 0)) || ((this.experienceLevelFloor > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experienceLevelFloor) + ") on element of CharacterCharacteristicsInformations.experienceLevelFloor.")));
             };
-            this.experienceNextLevelFloor = input.readDouble();
+            this.experienceNextLevelFloor = input.readVarUhLong();
             if ((((this.experienceNextLevelFloor < 0)) || ((this.experienceNextLevelFloor > 9007199254740992))))
             {
                 throw (new Error((("Forbidden value (" + this.experienceNextLevelFloor) + ") on element of CharacterCharacteristicsInformations.experienceNextLevelFloor.")));
@@ -420,40 +428,45 @@
             {
                 throw (new Error((("Forbidden value (" + this.kamas) + ") on element of CharacterCharacteristicsInformations.kamas.")));
             };
-            this.statsPoints = input.readInt();
+            this.statsPoints = input.readVarUhShort();
             if (this.statsPoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.statsPoints) + ") on element of CharacterCharacteristicsInformations.statsPoints.")));
             };
-            this.spellsPoints = input.readInt();
+            this.additionnalPoints = input.readVarUhShort();
+            if (this.additionnalPoints < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.additionnalPoints) + ") on element of CharacterCharacteristicsInformations.additionnalPoints.")));
+            };
+            this.spellsPoints = input.readVarUhShort();
             if (this.spellsPoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.spellsPoints) + ") on element of CharacterCharacteristicsInformations.spellsPoints.")));
             };
             this.alignmentInfos = new ActorExtendedAlignmentInformations();
             this.alignmentInfos.deserialize(input);
-            this.lifePoints = input.readInt();
+            this.lifePoints = input.readVarUhInt();
             if (this.lifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.lifePoints) + ") on element of CharacterCharacteristicsInformations.lifePoints.")));
             };
-            this.maxLifePoints = input.readInt();
+            this.maxLifePoints = input.readVarUhInt();
             if (this.maxLifePoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxLifePoints) + ") on element of CharacterCharacteristicsInformations.maxLifePoints.")));
             };
-            this.energyPoints = input.readShort();
+            this.energyPoints = input.readVarUhShort();
             if (this.energyPoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.energyPoints) + ") on element of CharacterCharacteristicsInformations.energyPoints.")));
             };
-            this.maxEnergyPoints = input.readShort();
+            this.maxEnergyPoints = input.readVarUhShort();
             if (this.maxEnergyPoints < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxEnergyPoints) + ") on element of CharacterCharacteristicsInformations.maxEnergyPoints.")));
             };
-            this.actionPointsCurrent = input.readShort();
-            this.movementPointsCurrent = input.readShort();
+            this.actionPointsCurrent = input.readVarShort();
+            this.movementPointsCurrent = input.readVarShort();
             this.initiative = new CharacterBaseCharacteristic();
             this.initiative.deserialize(input);
             this.prospecting = new CharacterBaseCharacteristic();
@@ -482,7 +495,7 @@
             this.reflect.deserialize(input);
             this.criticalHit = new CharacterBaseCharacteristic();
             this.criticalHit.deserialize(input);
-            this.criticalHitWeapon = input.readShort();
+            this.criticalHitWeapon = input.readVarUhShort();
             if (this.criticalHitWeapon < 0)
             {
                 throw (new Error((("Forbidden value (" + this.criticalHitWeapon) + ") on element of CharacterCharacteristicsInformations.criticalHitWeapon.")));
@@ -576,13 +589,13 @@
             this.pvpFireElementReduction = new CharacterBaseCharacteristic();
             this.pvpFireElementReduction.deserialize(input);
             var _spellModificationsLen:uint = input.readUnsignedShort();
-            var _i73:uint;
-            while (_i73 < _spellModificationsLen)
+            var _i74:uint;
+            while (_i74 < _spellModificationsLen)
             {
-                _item73 = new CharacterSpellModification();
-                _item73.deserialize(input);
-                this.spellModifications.push(_item73);
-                _i73++;
+                _item74 = new CharacterSpellModification();
+                _item74.deserialize(input);
+                this.spellModifications.push(_item74);
+                _i74++;
             };
             this.probationTime = input.readInt();
             if (this.probationTime < 0)

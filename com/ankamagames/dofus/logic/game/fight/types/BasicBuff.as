@@ -264,7 +264,7 @@
         {
             var sb1:StateBuff;
             var sb2:StateBuff;
-            if (((((((((((((((((!((this.targetId == other.targetId))) || (!((this.effects.effectId == other.actionId))))) || (!((this.duration == other.duration))))) || (((((this.effects.hasOwnProperty("delay")) && (other.effects.hasOwnProperty("delay")))) && (!((this.effects.delay == other.effects.delay))))))) || (((((((this.castingSpell.spellRank) && (other.castingSpell.spellRank))) && (!(osefSpell)))) && (!((this.castingSpell.spellRank.id == other.castingSpell.spellRank.id))))))) || (((!(osefSpell)) && (!((this.castingSpell.spell.id == other.castingSpell.spell.id))))))) || (!((getQualifiedClassName(this) == getQualifiedClassName(other)))))) || (!((this.source == other.source))))) || (this.trigger)))
+            if (((((((((((((((((((!((this.targetId == other.targetId))) || (!((this.aliveSource == other.aliveSource))))) || (!((this.effects.effectId == other.actionId))))) || (!((this.duration == other.duration))))) || (((((this.effects.hasOwnProperty("delay")) && (other.effects.hasOwnProperty("delay")))) && (!((this.effects.delay == other.effects.delay))))))) || (((((((this.castingSpell.spellRank) && (other.castingSpell.spellRank))) && (!(osefSpell)))) && (!((this.castingSpell.spellRank.id == other.castingSpell.spellRank.id))))))) || (((!(osefSpell)) && (!((this.castingSpell.spell.id == other.castingSpell.spell.id))))))) || (!((getQualifiedClassName(this) == getQualifiedClassName(other)))))) || (!((this.source == other.source))))) || (this.trigger)))
             {
                 return (false);
             };

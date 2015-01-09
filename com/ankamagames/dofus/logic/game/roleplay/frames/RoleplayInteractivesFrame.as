@@ -12,6 +12,7 @@
     import com.ankamagames.jerakine.types.enums.Priority;
     import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.dofus.network.messages.game.interactive.InteractiveMapUpdateMessage;
+    import flash.display.DisplayObject;
     import com.ankamagames.dofus.network.messages.game.interactive.InteractiveElementUpdatedMessage;
     import com.ankamagames.dofus.network.messages.game.interactive.InteractiveUsedMessage;
     import com.ankamagames.jerakine.types.positions.MapPoint;
@@ -23,11 +24,12 @@
     import com.ankamagames.dofus.network.messages.game.interactive.InteractiveUseEndedMessage;
     import com.ankamagames.dofus.logic.game.roleplay.messages.InteractiveElementMouseOverMessage;
     import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
-    import com.ankamagames.tiphon.display.TiphonSprite;
     import flash.utils.Timer;
+    import com.ankamagames.tiphon.display.TiphonSprite;
     import com.ankamagames.jerakine.sequencer.SerialSequencer;
     import com.ankamagames.dofus.network.types.game.interactive.StatedElement;
     import com.ankamagames.dofus.network.types.game.interactive.MapObstacle;
+    import com.ankamagames.jerakine.utils.display.StageShareManager;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
     import com.ankamagames.atouin.Atouin;
     import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
@@ -46,6 +48,10 @@
     import com.ankamagames.atouin.managers.InteractiveCellManager;
     import com.ankamagames.dofus.network.enums.MapObstacleStateEnum;
     import com.ankamagames.berilia.frames.ShortcutsFrame;
+    import com.ankamagames.jerakine.utils.system.SystemManager;
+    import com.ankamagames.jerakine.enum.OperatingSystem;
+    import com.ankamagames.jerakine.managers.OptionManager;
+    import com.ankamagames.jerakine.utils.system.AirScanner;
     import com.ankamagames.dofus.logic.game.roleplay.messages.InteractiveElementMouseOutMessage;
     import com.ankamagames.jerakine.messages.Message;
     import flash.utils.clearTimeout;
@@ -56,7 +62,6 @@
     import com.ankamagames.dofus.datacenter.interactives.Interactive;
     import flash.display.DisplayObjectContainer;
     import com.ankamagames.tiphon.events.TiphonEvent;
-    import flash.display.DisplayObject;
     import com.ankamagames.berilia.types.data.LinkedCursorData;
     import com.ankamagames.jerakine.managers.FiltersManager;
     import com.ankamagames.atouin.managers.MapDisplayManager;
@@ -81,7 +86,6 @@
     import com.ankamagames.dofus.network.enums.CompassTypeEnum;
     import com.ankamagames.dofus.logic.game.roleplay.messages.InteractiveElementActivationMessage;
     import com.ankamagames.dofus.logic.common.actions.ChangeWorldInteractionAction;
-    import com.ankamagames.jerakine.utils.display.StageShareManager;
     import __AS3__.vec.*;
 
     public class RoleplayInteractivesFrame implements Frame 
@@ -267,6 +271,10 @@
         public function process(msg:Message):Boolean
         {
             var imumsg:InteractiveMapUpdateMessage;
+            var mousePos:Point;
+            var objectsUnder:Array;
+            var o:DisplayObject;
+            var ieObj:* = undefined;
             var ieumsg:InteractiveElementUpdatedMessage;
             var iumsg:InteractiveUsedMessage;
             var worldPos:MapPoint;
@@ -281,9 +289,9 @@
             var ie:InteractiveElement;
             var useAnimation:String;
             var useDirection:uint;
+            var t:Timer;
             var tiphonSprite:TiphonSprite;
             var currentSpriteAnimation:String;
-            var t:Timer;
             var fct:Function;
             var seq:SerialSequencer;
             var sprite:TiphonSprite;
@@ -306,6 +314,19 @@
                             if (ie.disabledSkills.length)
                             {
                                 this.registerInteractive(ie, ie.disabledSkills[0].skillId);
+                            };
+                        };
+                    };
+                    mousePos = new Point(StageShareManager.stage.mouseX, StageShareManager.stage.mouseY);
+                    objectsUnder = StageShareManager.stage.getObjectsUnderPoint(mousePos);
+                    for each (o in objectsUnder)
+                    {
+                        for (ieObj in this._ie)
+                        {
+                            if (ieObj.contains(o))
+                            {
+                                Kernel.getWorker().process(new InteractiveElementMouseOverMessage(this._ie[ieObj].element, ieObj));
+                                return (true);
                             };
                         };
                     };
@@ -346,14 +367,19 @@
                         useDirection = this.getUseDirection((user as TiphonSprite), useAnimation, worldPos);
                         if (iumsg.duration > 0)
                         {
-                            tiphonSprite = (user as TiphonSprite);
-                            tiphonSprite.setAnimationAndDirection(useAnimation, useDirection);
-                            currentSpriteAnimation = tiphonSprite.getAnimation();
                             if (!(this._interactiveActionTimers[user]))
                             {
                                 this._interactiveActionTimers[user] = new Timer(1, 1);
                             };
                             t = this._interactiveActionTimers[user];
+                            if (t.running)
+                            {
+                                t.stop();
+                                t.dispatchEvent(new TimerEvent(TimerEvent.TIMER));
+                            };
+                            tiphonSprite = (user as TiphonSprite);
+                            tiphonSprite.setAnimationAndDirection(useAnimation, useDirection);
+                            currentSpriteAnimation = tiphonSprite.getAnimation();
                             t.delay = (iumsg.duration * 100);
                             fct = function ():void
                             {
@@ -431,7 +457,7 @@
                     delete this._entities[iuemsg.elemId];
                     return (true);
                 case (msg is InteractiveElementMouseOverMessage):
-                    if (ShortcutsFrame.ctrlKeyDown)
+                    if (((((!(AirScanner.isStreamingVersion())) && ((OptionManager.getOptionManager("dofus")["enableForceWalk"] == true)))) && (((ShortcutsFrame.ctrlKeyDown) || ((((SystemManager.getSingleton().os == OperatingSystem.MAC_OS)) && (ShortcutsFrame.altKeyDown)))))))
                     {
                         return (false);
                     };
@@ -840,7 +866,7 @@
             {
                 interactive = Interactive.getInteractiveById(ie.element.elementTypeId);
             };
-            if (ShortcutsFrame.ctrlKeyDown)
+            if (((((!(AirScanner.isStreamingVersion())) && ((OptionManager.getOptionManager("dofus")["enableForceWalk"] == true)))) && (((ShortcutsFrame.ctrlKeyDown) || ((((SystemManager.getSingleton().os == OperatingSystem.MAC_OS)) && (ShortcutsFrame.altKeyDown)))))))
             {
                 this.out(me);
                 InteractiveCellManager.getInstance().getCell(ie.position.cellId).dispatchEvent(new MouseEvent(MouseEvent.CLICK));

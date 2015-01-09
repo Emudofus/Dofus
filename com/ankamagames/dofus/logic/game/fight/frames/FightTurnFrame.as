@@ -296,6 +296,10 @@
             var cursorSprite:Sprite;
             var textFormat:TextFormat;
             var effect:GlowFilter;
+            if (Kernel.getWorker().contains(FightSpellCastFrame))
+            {
+                return;
+            };
             if (this._isRequestingMovement)
             {
                 return;

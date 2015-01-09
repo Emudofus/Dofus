@@ -3,6 +3,7 @@
     import com.ankamagames.jerakine.types.positions.MapPoint;
     import com.ankamagames.dofus.datacenter.spells.Spell;
     import com.ankamagames.dofus.datacenter.spells.SpellLevel;
+    import __AS3__.vec.Vector;
 
     public class CastingSpell 
     {
@@ -20,6 +21,8 @@
         public var weaponId:int = -1;
         public var isCriticalHit:Boolean;
         public var isCriticalFail:Boolean;
+        public var portalIds:Vector.<int>;
+        public var portalMapPoints:Vector.<MapPoint>;
 
         public function CastingSpell(updateCastingId:Boolean=true)
         {

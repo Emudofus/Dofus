@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.interactive.skill
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class SkillActionDescription implements INetworkType 
     {
@@ -28,28 +28,28 @@
             this.skillId = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_SkillActionDescription(output);
         }
 
-        public function serializeAs_SkillActionDescription(output:IDataOutput):void
+        public function serializeAs_SkillActionDescription(output:ICustomDataOutput):void
         {
             if (this.skillId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.skillId) + ") on element skillId.")));
             };
-            output.writeShort(this.skillId);
+            output.writeVarShort(this.skillId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_SkillActionDescription(input);
         }
 
-        public function deserializeAs_SkillActionDescription(input:IDataInput):void
+        public function deserializeAs_SkillActionDescription(input:ICustomDataInput):void
         {
-            this.skillId = input.readShort();
+            this.skillId = input.readVarUhShort();
             if (this.skillId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.skillId) + ") on element of SkillActionDescription.skillId.")));

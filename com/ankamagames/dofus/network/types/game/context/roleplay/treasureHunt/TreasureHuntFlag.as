@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class TreasureHuntFlag implements INetworkType 
     {
@@ -31,23 +31,23 @@
             this.state = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_TreasureHuntFlag(output);
         }
 
-        public function serializeAs_TreasureHuntFlag(output:IDataOutput):void
+        public function serializeAs_TreasureHuntFlag(output:ICustomDataOutput):void
         {
             output.writeInt(this.mapId);
             output.writeByte(this.state);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_TreasureHuntFlag(input);
         }
 
-        public function deserializeAs_TreasureHuntFlag(input:IDataInput):void
+        public function deserializeAs_TreasureHuntFlag(input:ICustomDataInput):void
         {
             this.mapId = input.readInt();
             this.state = input.readByte();

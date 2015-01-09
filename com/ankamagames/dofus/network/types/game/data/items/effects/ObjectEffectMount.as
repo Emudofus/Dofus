@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.data.items.effects
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ObjectEffectMount extends ObjectEffect implements INetworkType 
@@ -37,12 +37,12 @@
             this.modelId = 0;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ObjectEffectMount(output);
         }
 
-        public function serializeAs_ObjectEffectMount(output:IDataOutput):void
+        public function serializeAs_ObjectEffectMount(output:ICustomDataOutput):void
         {
             super.serializeAs_ObjectEffect(output);
             if (this.mountId < 0)
@@ -59,15 +59,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element modelId.")));
             };
-            output.writeShort(this.modelId);
+            output.writeVarShort(this.modelId);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ObjectEffectMount(input);
         }
 
-        public function deserializeAs_ObjectEffectMount(input:IDataInput):void
+        public function deserializeAs_ObjectEffectMount(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.mountId = input.readInt();
@@ -80,7 +80,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.date) + ") on element of ObjectEffectMount.date.")));
             };
-            this.modelId = input.readShort();
+            this.modelId = input.readVarUhShort();
             if (this.modelId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.modelId) + ") on element of ObjectEffectMount.modelId.")));

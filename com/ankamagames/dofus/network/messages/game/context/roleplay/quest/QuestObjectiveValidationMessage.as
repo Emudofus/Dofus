@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class QuestObjectiveValidationMessage extends NetworkMessage implements INetworkMessage 
@@ -42,50 +43,50 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_QuestObjectiveValidationMessage(output);
         }
 
-        public function serializeAs_QuestObjectiveValidationMessage(output:IDataOutput):void
+        public function serializeAs_QuestObjectiveValidationMessage(output:ICustomDataOutput):void
         {
             if (this.questId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.questId) + ") on element questId.")));
             };
-            output.writeShort(this.questId);
+            output.writeVarShort(this.questId);
             if (this.objectiveId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectiveId) + ") on element objectiveId.")));
             };
-            output.writeShort(this.objectiveId);
+            output.writeVarShort(this.objectiveId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_QuestObjectiveValidationMessage(input);
         }
 
-        public function deserializeAs_QuestObjectiveValidationMessage(input:IDataInput):void
+        public function deserializeAs_QuestObjectiveValidationMessage(input:ICustomDataInput):void
         {
-            this.questId = input.readShort();
+            this.questId = input.readVarUhShort();
             if (this.questId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.questId) + ") on element of QuestObjectiveValidationMessage.questId.")));
             };
-            this.objectiveId = input.readShort();
+            this.objectiveId = input.readVarUhShort();
             if (this.objectiveId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.objectiveId) + ") on element of QuestObjectiveValidationMessage.objectiveId.")));

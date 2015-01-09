@@ -1,17 +1,17 @@
 ﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.jerakine.console.ConsoleInstructionHandler;
-    import com.ankamagames.jerakine.types.positions.MapPoint;
     import com.ankamagames.atouin.types.Selection;
+    import com.ankamagames.jerakine.types.positions.MapPoint;
     import com.ankamagames.jerakine.types.zones.Lozenge;
     import __AS3__.vec.Vector;
     import com.ankamagames.atouin.utils.DataMapProvider;
     import com.ankamagames.jerakine.map.IDataMapProvider;
+    import com.ankamagames.atouin.managers.SelectionManager;
     import com.ankamagames.atouin.renderers.ZoneDARenderer;
     import com.ankamagames.jerakine.types.Color;
     import com.ankamagames.jerakine.types.zones.Custom;
     import com.ankamagames.jerakine.map.LosDetector;
-    import com.ankamagames.atouin.managers.SelectionManager;
     import com.ankamagames.jerakine.pathfinding.Pathfinding;
     import com.ankamagames.jerakine.utils.display.Dofus1Line;
     import com.ankamagames.jerakine.utils.display.Dofus2Line;
@@ -24,6 +24,7 @@
 
         public function handle(console:ConsoleHandler, cmd:String, args:Array):void
         {
+            var s:Selection;
             var cell:uint;
             var cellPoint:MapPoint;
             var range:uint;
@@ -33,9 +34,9 @@
             var start:uint;
             var end:uint;
             var endPoint:MapPoint;
-            var _local_14:MapPoint;
-            var _local_15:Vector.<uint>;
-            var _local_16:Selection;
+            var _local_15:MapPoint;
+            var _local_16:Vector.<uint>;
+            var _local_17:Selection;
             var fromCell:uint;
             var fromPoint:MapPoint;
             var toCell:uint;
@@ -48,7 +49,16 @@
                 case "debuglos":
                     if (args.length != 2)
                     {
-                        console.output("Arguments needed : cell and range");
+                        s = SelectionManager.getInstance().getSelection("CellsFreeForLOS");
+                        if (s)
+                        {
+                            s.remove();
+                            console.output("Selection cleared");
+                        }
+                        else
+                        {
+                            console.output("Arguments needed : cell and range");
+                        };
                     }
                     else
                     {
@@ -68,10 +78,20 @@
                         };
                     };
                     return;
+                case "calculatepath":
                 case "tracepath":
                     if (args.length != 2)
                     {
-                        console.output("Arguments needed : start and end of the path");
+                        s = SelectionManager.getInstance().getSelection("CellsForPath");
+                        if (s)
+                        {
+                            s.remove();
+                            console.output("Selection cleared");
+                        }
+                        else
+                        {
+                            console.output("Arguments needed : start and end of the path");
+                        };
                     }
                     else
                     {
@@ -86,13 +106,18 @@
                             }
                             else
                             {
-                                _local_14 = MapPoint.fromCellId(start);
-                                _local_15 = Pathfinding.findPath(map, _local_14, endPoint).getCells();
-                                _local_16 = new Selection();
-                                _local_16.renderer = new ZoneDARenderer();
-                                _local_16.color = new Color(0x6600);
-                                _local_16.zone = new Custom(_local_15);
-                                SelectionManager.getInstance().addSelection(_local_16, "CellsForPath");
+                                _local_15 = MapPoint.fromCellId(start);
+                                _local_16 = Pathfinding.findPath(map, _local_15, endPoint).getCells();
+                                if (cmd == "calculatepath")
+                                {
+                                    console.output(("Path: " + _local_16.join(",")));
+                                    return;
+                                };
+                                _local_17 = new Selection();
+                                _local_17.renderer = new ZoneDARenderer();
+                                _local_17.color = new Color(0x6600);
+                                _local_17.zone = new Custom(_local_16);
+                                SelectionManager.getInstance().addSelection(_local_17, "CellsForPath");
                                 SelectionManager.getInstance().update("CellsForPath");
                             };
                         };
@@ -101,7 +126,16 @@
                 case "debugcellsinline":
                     if (args.length != 2)
                     {
-                        console.output("Arguments needed : cell and cell");
+                        s = SelectionManager.getInstance().getSelection("CellsFreeForLOS");
+                        if (s)
+                        {
+                            s.remove();
+                            console.output("Selection cleared");
+                        }
+                        else
+                        {
+                            console.output("Arguments needed : cell and cell");
+                        };
                     }
                     else
                     {
@@ -136,11 +170,13 @@
             switch (cmd)
             {
                 case "debuglos":
-                    return ("Display all cells which have LOS with the given cell.");
+                    return ("Display all cells which have LOS with the given cell. No argument will clear the selection if any.");
+                case "calculatepath":
+                    return ("List all cells of the path between two cellIds.");
                 case "tracepath":
-                    return ("Display all cells of the path between the start and the end.");
+                    return ("Display all cells of the path between two cellIds. No argument will clear the selection if any.");
                 case "debugcellsinline":
-                    return ("Display all cells of line between the start and the end.");
+                    return ("Display all cells of line between two cellIds. No argument will clear the selection if any.");
             };
             return ("Unknown command");
         }

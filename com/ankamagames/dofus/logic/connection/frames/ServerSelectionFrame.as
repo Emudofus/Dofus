@@ -25,6 +25,7 @@
     import com.ankamagames.berilia.Berilia;
     import com.ankamagames.berilia.managers.KernelEventsManager;
     import com.ankamagames.dofus.misc.lists.HookList;
+    import com.ankamagames.dofus.logic.connection.managers.GuestModeManager;
     import com.ankamagames.dofus.network.enums.ServerStatusEnum;
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
     import com.ankamagames.dofus.kernel.net.DisconnectionReasonEnum;
@@ -125,6 +126,7 @@
                     return (true);
                 case (msg is ServerSelectionAction):
                     _local_4 = (msg as ServerSelectionAction);
+                    GuestModeManager.getInstance().forceGuestMode = false;
                     for each (server in this._serversList)
                     {
                         if (server.id == _local_4.serverId)

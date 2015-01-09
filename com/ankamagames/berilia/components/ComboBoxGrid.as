@@ -1,6 +1,7 @@
 ﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.jerakine.handlers.messages.mouse.MouseMessage;
+    import com.ankamagames.berilia.types.data.GridItem;
     import com.ankamagames.jerakine.utils.display.FrameIdManager;
     import com.ankamagames.jerakine.handlers.messages.mouse.MouseDoubleClickMessage;
     import com.ankamagames.jerakine.handlers.messages.mouse.MouseClickMessage;
@@ -19,7 +20,7 @@
         override public function process(msg:Message):Boolean
         {
             var _local_2:MouseMessage;
-            var _local_3:*;
+            var _local_3:GridItem;
             switch (true)
             {
                 case (msg is MouseDoubleClickMessage):

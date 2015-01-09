@@ -7,8 +7,9 @@
     import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
     import com.ankamagames.dofus.network.types.game.shortcut.Shortcut;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import com.ankamagames.dofus.network.ProtocolTypeManager;
     import __AS3__.vec.*;
 
@@ -63,24 +64,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_SlaveSwitchContextMessage(output);
         }
 
-        public function serializeAs_SlaveSwitchContextMessage(output:IDataOutput):void
+        public function serializeAs_SlaveSwitchContextMessage(output:ICustomDataOutput):void
         {
             output.writeInt(this.masterId);
             output.writeInt(this.slaveId);
@@ -102,12 +103,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_SlaveSwitchContextMessage(input);
         }
 
-        public function deserializeAs_SlaveSwitchContextMessage(input:IDataInput):void
+        public function deserializeAs_SlaveSwitchContextMessage(input:ICustomDataInput):void
         {
             var _item3:SpellItem;
             var _id5:uint;

@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import __AS3__.vec.Vector;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     public class GroupMonsterStaticInformationsWithAlternatives extends GroupMonsterStaticInformations implements INetworkType 
@@ -37,12 +37,12 @@
             this.alternatives = new Vector.<AlternativeMonstersInGroupLightInformations>();
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GroupMonsterStaticInformationsWithAlternatives(output);
         }
 
-        public function serializeAs_GroupMonsterStaticInformationsWithAlternatives(output:IDataOutput):void
+        public function serializeAs_GroupMonsterStaticInformationsWithAlternatives(output:ICustomDataOutput):void
         {
             super.serializeAs_GroupMonsterStaticInformations(output);
             output.writeShort(this.alternatives.length);
@@ -54,12 +54,12 @@
             };
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GroupMonsterStaticInformationsWithAlternatives(input);
         }
 
-        public function deserializeAs_GroupMonsterStaticInformationsWithAlternatives(input:IDataInput):void
+        public function deserializeAs_GroupMonsterStaticInformationsWithAlternatives(input:ICustomDataInput):void
         {
             var _item1:AlternativeMonstersInGroupLightInformations;
             super.deserialize(input);

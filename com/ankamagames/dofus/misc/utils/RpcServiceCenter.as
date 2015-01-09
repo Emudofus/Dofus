@@ -4,16 +4,23 @@
     import com.ankamagames.jerakine.logger.Log;
     import flash.utils.getQualifiedClassName;
     import __AS3__.vec.Vector;
+    import flash.external.ExternalInterface;
+    import com.ankamagames.jerakine.utils.system.AirScanner;
+    import com.ankamagames.dofus.BuildInfos;
+    import com.ankamagames.dofus.network.enums.BuildTypeEnum;
     import __AS3__.vec.*;
 
     public class RpcServiceCenter 
     {
 
         protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RpcServiceCenter));
+        private static const WEB_API_BASE_URL:String = "http://api.ankama.";
+        private static const AUTHORIZED_DOMAIN_EXTENSION:Array = ["com", "lan", "tst"];
         private static var _self:RpcServiceCenter;
         private static var _rpcServices:Vector.<RpcServiceManager>;
 
         private var _mainRpcServiceManager:RpcServiceManager;
+        private var _currentApiDomain:String;
 
 
         public static function getInstance():RpcServiceCenter
@@ -49,6 +56,49 @@
                 rpcs = this._mainRpcServiceManager;
             };
             rpcs.callMethod(methodName, methodParams, callback, retryOnTimedout);
+        }
+
+        public function get apiDomain():String
+        {
+            var domainExtension:String;
+            var url:String;
+            var serverName:String;
+            var tmpArr:Array;
+            if (!(this._currentApiDomain))
+            {
+                domainExtension = "";
+                if (ExternalInterface.available)
+                {
+                    url = (ExternalInterface.call("eval", "document.URL") as String);
+                    serverName = url.split("/")[2];
+                    tmpArr = serverName.split(".");
+                    if (tmpArr.length > 1)
+                    {
+                        domainExtension = tmpArr.pop();
+                    };
+                };
+                if (((AirScanner.isStreamingVersion()) && (!((AUTHORIZED_DOMAIN_EXTENSION.indexOf(domainExtension) == -1)))))
+                {
+                    this._currentApiDomain = (WEB_API_BASE_URL + domainExtension);
+                }
+                else
+                {
+                    if (BuildInfos.BUILD_TYPE <= BuildTypeEnum.ALPHA)
+                    {
+                        this._currentApiDomain = (WEB_API_BASE_URL + "com");
+                    }
+                    else
+                    {
+                        this._currentApiDomain = (WEB_API_BASE_URL + "lan");
+                    };
+                };
+            };
+            return (this._currentApiDomain);
+        }
+
+        public function get secureApiDomain():String
+        {
+            return (this.apiDomain.replace("http:", "https:"));
         }
 
         private function getRpcService(serviceUrl:String, formatType:String, formatVersion:String):RpcServiceManager

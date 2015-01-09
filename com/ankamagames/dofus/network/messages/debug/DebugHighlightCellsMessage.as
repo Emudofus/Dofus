@@ -4,8 +4,9 @@
     import com.ankamagames.jerakine.network.INetworkMessage;
     import __AS3__.vec.Vector;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -49,24 +50,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_DebugHighlightCellsMessage(output);
         }
 
-        public function serializeAs_DebugHighlightCellsMessage(output:IDataOutput):void
+        public function serializeAs_DebugHighlightCellsMessage(output:ICustomDataOutput):void
         {
             output.writeInt(this.color);
             output.writeShort(this.cells.length);
@@ -77,17 +78,17 @@
                 {
                     throw (new Error((("Forbidden value (" + this.cells[_i2]) + ") on element 2 (starting at 1) of cells.")));
                 };
-                output.writeShort(this.cells[_i2]);
+                output.writeVarShort(this.cells[_i2]);
                 _i2++;
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_DebugHighlightCellsMessage(input);
         }
 
-        public function deserializeAs_DebugHighlightCellsMessage(input:IDataInput):void
+        public function deserializeAs_DebugHighlightCellsMessage(input:ICustomDataInput):void
         {
             var _val2:uint;
             this.color = input.readInt();
@@ -95,7 +96,7 @@
             var _i2:uint;
             while (_i2 < _cellsLen)
             {
-                _val2 = input.readShort();
+                _val2 = input.readVarUhShort();
                 if ((((_val2 < 0)) || ((_val2 > 559))))
                 {
                     throw (new Error((("Forbidden value (" + _val2) + ") on elements of cells.")));

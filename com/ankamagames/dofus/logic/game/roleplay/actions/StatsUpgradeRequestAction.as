@@ -5,13 +5,15 @@
     public class StatsUpgradeRequestAction implements Action 
     {
 
+        public var useAdditionnal:Boolean;
         public var statId:uint;
         public var boostPoint:uint;
 
 
-        public static function create(statId:uint, boostPoint:uint):StatsUpgradeRequestAction
+        public static function create(useAdditionnal:Boolean, statId:uint, boostPoint:uint):StatsUpgradeRequestAction
         {
             var a:StatsUpgradeRequestAction = new (StatsUpgradeRequestAction)();
+            a.useAdditionnal = useAdditionnal;
             a.statId = statId;
             a.boostPoint = boostPoint;
             return (a);

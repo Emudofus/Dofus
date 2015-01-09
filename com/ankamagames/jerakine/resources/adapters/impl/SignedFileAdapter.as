@@ -126,32 +126,13 @@
 
         private function onContentLoad(uri:Uri, resourceType:uint, resource:*):void
         {
-            goto _label_2;
-            while (dispatchSuccess(ResourceType.getName(resourceType), resource), true)
-            {
-                return;
-                
-            _label_1: 
-                this._resource = resource;
-                continue;
-            };
-            
-        _label_2: 
-            goto _label_1;
-            var _local_0 = this;
-            return;
+            this._resource = resource;
+            dispatchSuccess(ResourceType.getName(resourceType), resource);
         }
 
         private function onContentLoadFailed(uri:Uri, errorMsg:String, errorCode:uint):void
         {
-            while (true)
-            {
-                while (dispatchFailure(errorMsg, errorCode), true)
-                {
-                    return;
-                };
-            };
-            return;
+            dispatchFailure(errorMsg, errorCode);
         }
 
 

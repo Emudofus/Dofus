@@ -16,7 +16,7 @@
         private var _spellShapeMaxEfficiency:Object;
         private var _hasCritical:Boolean;
 
-        public function SplashDamage(pSpellId:int, pCasterId:int, pTargets:Vector.<int>, pSourceSpellDamage:SpellDamage, pSplashPercent:int, pSplashElement:int, pSpellShape:uint, pSpellShapeSize:Object, pSpellShapeMinSize:Object, pSpellShapeEfficiencyPercent:Object, pSpellShapeMaxEfficiency:Object, pHasCritical:Boolean)
+        public function SplashDamage(pSpellId:int, pCasterId:int, pTargets:Vector.<int>, pSourceSpellDamage:SpellDamage, pSplashPercent:int, pSplashElement:int, pSplashRandom:int, pSpellShape:uint, pSpellShapeSize:Object, pSpellShapeMinSize:Object, pSpellShapeEfficiencyPercent:Object, pSpellShapeMaxEfficiency:Object, pHasCritical:Boolean)
         {
             var ed:EffectDamage;
             super();
@@ -33,6 +33,7 @@
             for each (ed in this._damage.effectDamages)
             {
                 ed.applyDamageMultiplier((pSplashPercent / 100));
+                ed.random = pSplashRandom;
                 if (((!((pSplashElement == -1))) && (!((ed.element == -1)))))
                 {
                     ed.element = pSplashElement;

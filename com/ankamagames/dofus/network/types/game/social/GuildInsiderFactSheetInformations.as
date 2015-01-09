@@ -2,8 +2,8 @@
 {
     import com.ankamagames.jerakine.network.INetworkType;
     import com.ankamagames.dofus.network.types.game.guild.GuildEmblem;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class GuildInsiderFactSheetInformations extends GuildFactSheetInformations implements INetworkType 
@@ -44,12 +44,12 @@
             this.enabled = false;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_GuildInsiderFactSheetInformations(output);
         }
 
-        public function serializeAs_GuildInsiderFactSheetInformations(output:IDataOutput):void
+        public function serializeAs_GuildInsiderFactSheetInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_GuildFactSheetInformations(output);
             output.writeUTF(this.leaderName);
@@ -57,7 +57,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.nbConnectedMembers) + ") on element nbConnectedMembers.")));
             };
-            output.writeShort(this.nbConnectedMembers);
+            output.writeVarShort(this.nbConnectedMembers);
             if (this.nbTaxCollectors < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbTaxCollectors) + ") on element nbTaxCollectors.")));
@@ -71,16 +71,16 @@
             output.writeBoolean(this.enabled);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_GuildInsiderFactSheetInformations(input);
         }
 
-        public function deserializeAs_GuildInsiderFactSheetInformations(input:IDataInput):void
+        public function deserializeAs_GuildInsiderFactSheetInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             this.leaderName = input.readUTF();
-            this.nbConnectedMembers = input.readShort();
+            this.nbConnectedMembers = input.readVarUhShort();
             if (this.nbConnectedMembers < 0)
             {
                 throw (new Error((("Forbidden value (" + this.nbConnectedMembers) + ") on element of GuildInsiderFactSheetInformations.nbConnectedMembers.")));

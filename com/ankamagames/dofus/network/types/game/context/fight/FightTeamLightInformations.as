@@ -1,9 +1,9 @@
 ﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
     import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     public class FightTeamLightInformations extends AbstractFightTeamInformations implements INetworkType 
     {
@@ -49,12 +49,12 @@
             this.hasMyTaxCollector = false;
         }
 
-        override public function serialize(output:IDataOutput):void
+        override public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_FightTeamLightInformations(output);
         }
 
-        public function serializeAs_FightTeamLightInformations(output:IDataOutput):void
+        public function serializeAs_FightTeamLightInformations(output:ICustomDataOutput):void
         {
             super.serializeAs_AbstractFightTeamInformations(output);
             var _box0:uint;
@@ -73,15 +73,15 @@
             {
                 throw (new Error((("Forbidden value (" + this.meanLevel) + ") on element meanLevel.")));
             };
-            output.writeInt(this.meanLevel);
+            output.writeVarInt(this.meanLevel);
         }
 
-        override public function deserialize(input:IDataInput):void
+        override public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_FightTeamLightInformations(input);
         }
 
-        public function deserializeAs_FightTeamLightInformations(input:IDataInput):void
+        public function deserializeAs_FightTeamLightInformations(input:ICustomDataInput):void
         {
             super.deserialize(input);
             var _box0:uint = input.readByte();
@@ -95,7 +95,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.teamMembersCount) + ") on element of FightTeamLightInformations.teamMembersCount.")));
             };
-            this.meanLevel = input.readInt();
+            this.meanLevel = input.readVarUhInt();
             if (this.meanLevel < 0)
             {
                 throw (new Error((("Forbidden value (" + this.meanLevel) + ") on element of FightTeamLightInformations.meanLevel.")));

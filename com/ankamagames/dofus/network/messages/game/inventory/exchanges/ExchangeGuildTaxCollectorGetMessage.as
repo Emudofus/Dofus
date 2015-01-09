@@ -5,8 +5,9 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.data.items.ObjectItemQuantity;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
     import __AS3__.vec.*;
 
     [Trusted]
@@ -68,24 +69,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ExchangeGuildTaxCollectorGetMessage(output);
         }
 
-        public function serializeAs_ExchangeGuildTaxCollectorGetMessage(output:IDataOutput):void
+        public function serializeAs_ExchangeGuildTaxCollectorGetMessage(output:ICustomDataOutput):void
         {
             output.writeUTF(this.collectorName);
             if ((((this.worldX < -255)) || ((this.worldX > 0xFF))))
@@ -103,7 +104,7 @@
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element subAreaId.")));
             };
-            output.writeShort(this.subAreaId);
+            output.writeVarShort(this.subAreaId);
             output.writeUTF(this.userName);
             if ((((this.experience < -9007199254740992)) || ((this.experience > 9007199254740992))))
             {
@@ -119,12 +120,12 @@
             };
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ExchangeGuildTaxCollectorGetMessage(input);
         }
 
-        public function deserializeAs_ExchangeGuildTaxCollectorGetMessage(input:IDataInput):void
+        public function deserializeAs_ExchangeGuildTaxCollectorGetMessage(input:ICustomDataInput):void
         {
             var _item8:ObjectItemQuantity;
             this.collectorName = input.readUTF();
@@ -139,7 +140,7 @@
                 throw (new Error((("Forbidden value (" + this.worldY) + ") on element of ExchangeGuildTaxCollectorGetMessage.worldY.")));
             };
             this.mapId = input.readInt();
-            this.subAreaId = input.readShort();
+            this.subAreaId = input.readVarUhShort();
             if (this.subAreaId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.subAreaId) + ") on element of ExchangeGuildTaxCollectorGetMessage.subAreaId.")));

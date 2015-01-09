@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class HouseToSellFilterMessage extends NetworkMessage implements INetworkMessage 
@@ -51,24 +52,24 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_HouseToSellFilterMessage(output);
         }
 
-        public function serializeAs_HouseToSellFilterMessage(output:IDataOutput):void
+        public function serializeAs_HouseToSellFilterMessage(output:ICustomDataOutput):void
         {
             output.writeInt(this.areaId);
             if (this.atLeastNbRoom < 0)
@@ -85,20 +86,20 @@
             {
                 throw (new Error((("Forbidden value (" + this.skillRequested) + ") on element skillRequested.")));
             };
-            output.writeShort(this.skillRequested);
+            output.writeVarShort(this.skillRequested);
             if (this.maxPrice < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxPrice) + ") on element maxPrice.")));
             };
-            output.writeInt(this.maxPrice);
+            output.writeVarInt(this.maxPrice);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_HouseToSellFilterMessage(input);
         }
 
-        public function deserializeAs_HouseToSellFilterMessage(input:IDataInput):void
+        public function deserializeAs_HouseToSellFilterMessage(input:ICustomDataInput):void
         {
             this.areaId = input.readInt();
             this.atLeastNbRoom = input.readByte();
@@ -111,12 +112,12 @@
             {
                 throw (new Error((("Forbidden value (" + this.atLeastNbChest) + ") on element of HouseToSellFilterMessage.atLeastNbChest.")));
             };
-            this.skillRequested = input.readShort();
+            this.skillRequested = input.readVarUhShort();
             if (this.skillRequested < 0)
             {
                 throw (new Error((("Forbidden value (" + this.skillRequested) + ") on element of HouseToSellFilterMessage.skillRequested.")));
             };
-            this.maxPrice = input.readInt();
+            this.maxPrice = input.readVarUhInt();
             if (this.maxPrice < 0)
             {
                 throw (new Error((("Forbidden value (" + this.maxPrice) + ") on element of HouseToSellFilterMessage.maxPrice.")));

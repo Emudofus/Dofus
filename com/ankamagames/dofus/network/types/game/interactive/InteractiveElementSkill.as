@@ -1,8 +1,8 @@
 ﻿package com.ankamagames.dofus.network.types.game.interactive
 {
     import com.ankamagames.jerakine.network.INetworkType;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class InteractiveElementSkill implements INetworkType 
@@ -32,18 +32,18 @@
             this.skillInstanceUid = 0;
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_InteractiveElementSkill(output);
         }
 
-        public function serializeAs_InteractiveElementSkill(output:IDataOutput):void
+        public function serializeAs_InteractiveElementSkill(output:ICustomDataOutput):void
         {
             if (this.skillId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.skillId) + ") on element skillId.")));
             };
-            output.writeInt(this.skillId);
+            output.writeVarInt(this.skillId);
             if (this.skillInstanceUid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.skillInstanceUid) + ") on element skillInstanceUid.")));
@@ -51,14 +51,14 @@
             output.writeInt(this.skillInstanceUid);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_InteractiveElementSkill(input);
         }
 
-        public function deserializeAs_InteractiveElementSkill(input:IDataInput):void
+        public function deserializeAs_InteractiveElementSkill(input:ICustomDataInput):void
         {
-            this.skillId = input.readInt();
+            this.skillId = input.readVarUhInt();
             if (this.skillId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.skillId) + ") on element of InteractiveElementSkill.skillId.")));

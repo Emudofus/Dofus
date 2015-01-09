@@ -25,6 +25,7 @@
         private static var _setQualityIsEnable:Boolean;
         private static var _chrome:Point = new Point();
         private static var _mouseOnStage:Boolean;
+        private static var _isActive:Boolean;
         public static var nativeWindowStartWidth:uint;
         public static var nativeWindowStartHeight:uint;
         public static var chromeWidth:uint;
@@ -74,6 +75,8 @@
             };
             _stage.addEventListener(Event.MOUSE_LEAVE, onStageMouseLeave);
             _stage.addEventListener(MouseEvent.MOUSE_MOVE, onStageMouseMove);
+            _stage.addEventListener(Event.ACTIVATE, onActivate);
+            _stage.addEventListener(Event.DEACTIVATE, onDeactivate);
         }
 
         public static function testQuality():void
@@ -194,6 +197,21 @@
             return (_mouseOnStage);
         }
 
+        public static function get chrome():Point
+        {
+            return (_chrome);
+        }
+
+        public static function set chrome(value:Point):void
+        {
+            _chrome = value;
+        }
+
+        public static function get isActive():Boolean
+        {
+            return (_isActive);
+        }
+
         private static function displayStateChangeHandler(event:NativeWindowDisplayStateEvent):void
         {
             var nativeWindow:NativeWindow;
@@ -221,14 +239,14 @@
             _mouseOnStage = true;
         }
 
-        public static function get chrome():Point
+        private static function onActivate(event:Event):void
         {
-            return (_chrome);
+            _isActive = true;
         }
 
-        public static function set chrome(value:Point):void
+        private static function onDeactivate(event:Event):void
         {
-            _chrome = value;
+            _isActive = false;
         }
 
 

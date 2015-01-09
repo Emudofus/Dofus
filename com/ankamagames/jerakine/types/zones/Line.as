@@ -121,7 +121,6 @@
                         };
                         break;
                 };
-                if (!(added)) break;
                 r++;
             };
             return (aCells);

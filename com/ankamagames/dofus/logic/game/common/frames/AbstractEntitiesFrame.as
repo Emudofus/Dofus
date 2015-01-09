@@ -43,6 +43,7 @@
     import com.ankamagames.jerakine.enum.OptionEnum;
     import com.ankamagames.jerakine.sequencer.SerialSequencer;
     import com.ankamagames.dofus.types.sequences.AddGfxEntityStep;
+    import flash.events.Event;
     import com.ankamagames.dofus.types.enums.AnimationEnum;
     import com.ankamagames.dofus.misc.utils.LookCleaner;
     import com.ankamagames.jerakine.entities.interfaces.IEntity;
@@ -289,7 +290,7 @@
             {
                 characterEntity.setSubEntityBehaviour(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET, new AnimStatiqueSubEntityBehavior());
             };
-            if (infos.disposition.cellId != -1)
+            if (((!(characterEntity.slideOnNextMove)) && (!((infos.disposition.cellId == -1)))))
             {
                 characterEntity.position = MapPoint.fromCellId(infos.disposition.cellId);
             };
@@ -350,6 +351,10 @@
                 ac.look.updateFrom(tel);
                 if (((this._creaturesMode) || (this._creaturesFightMode)))
                 {
+                    if (ac.isPlayingAnimation())
+                    {
+                        ac.dispatchEvent(new Event(TiphonEvent.ANIMATION_END));
+                    };
                     ac.setAnimation(AnimationEnum.ANIM_STATIQUE);
                 }
                 else

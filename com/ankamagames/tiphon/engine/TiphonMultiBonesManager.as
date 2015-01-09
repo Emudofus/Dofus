@@ -70,7 +70,7 @@
             for each (bone in bones)
             {
                 hasBone = BoneIndexManager.getInstance().hasCustomBone(bone);
-                hasRessource = Tiphon.skullLibrary.hasResource(bone);
+                hasRessource = Tiphon.skullLibrary.getResourceById(bone);
                 if (((hasBone) || (hasRessource)))
                 {
                     this.onLoadedBone(bone, callback);

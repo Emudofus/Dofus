@@ -3,8 +3,9 @@
     import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
-    import flash.utils.IDataOutput;
-    import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.CustomDataWrapper;
+    import com.ankamagames.jerakine.network.ICustomDataOutput;
+    import com.ankamagames.jerakine.network.ICustomDataInput;
 
     [Trusted]
     public class ChallengeTargetsListRequestMessage extends NetworkMessage implements INetworkMessage 
@@ -39,40 +40,40 @@
             this._isInitialized = false;
         }
 
-        override public function pack(output:IDataOutput):void
+        override public function pack(output:ICustomDataOutput):void
         {
             var data:ByteArray = new ByteArray();
-            this.serialize(data);
+            this.serialize(new CustomDataWrapper(data));
             writePacket(output, this.getMessageId(), data);
         }
 
-        override public function unpack(input:IDataInput, length:uint):void
+        override public function unpack(input:ICustomDataInput, length:uint):void
         {
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        public function serialize(output:ICustomDataOutput):void
         {
             this.serializeAs_ChallengeTargetsListRequestMessage(output);
         }
 
-        public function serializeAs_ChallengeTargetsListRequestMessage(output:IDataOutput):void
+        public function serializeAs_ChallengeTargetsListRequestMessage(output:ICustomDataOutput):void
         {
             if (this.challengeId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.challengeId) + ") on element challengeId.")));
             };
-            output.writeShort(this.challengeId);
+            output.writeVarShort(this.challengeId);
         }
 
-        public function deserialize(input:IDataInput):void
+        public function deserialize(input:ICustomDataInput):void
         {
             this.deserializeAs_ChallengeTargetsListRequestMessage(input);
         }
 
-        public function deserializeAs_ChallengeTargetsListRequestMessage(input:IDataInput):void
+        public function deserializeAs_ChallengeTargetsListRequestMessage(input:ICustomDataInput):void
         {
-            this.challengeId = input.readShort();
+            this.challengeId = input.readVarUhShort();
             if (this.challengeId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.challengeId) + ") on element of ChallengeTargetsListRequestMessage.challengeId.")));
