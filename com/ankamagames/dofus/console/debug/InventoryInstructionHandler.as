@@ -59,7 +59,7 @@
                     Chrono.start("Add");
                     for each (currentItem in _local_7)
                     {
-                        _local_4.push((((("\t" + currentItem.name) + " (id : ") + currentItem.id) + ")"));
+                        _local_4.push((((("\t" + currentItem.name) + " ( id : ") + currentItem.id) + " )"));
                     };
                     Chrono.stop();
                     Chrono.stop();

@@ -137,8 +137,8 @@
     import com.ankamagames.dofus.logic.game.fight.types.TriggeredSpell;
     import com.ankamagames.dofus.logic.game.fight.types.SplashDamage;
     import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
-    import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
     import com.ankamagames.dofus.logic.game.fight.miscs.DamageUtil;
+    import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
     import com.ankamagames.berilia.managers.UiModuleManager;
     import com.ankamagames.berilia.types.LocationEnum;
     import com.ankamagames.berilia.enums.StrataEnum;
@@ -1289,16 +1289,14 @@
         public function displayEntityTooltip(pEntityId:int, pSpell:Object=null, pSpellInfo:SpellDamageInfo=null, pForceRefresh:Boolean=false, pSpellImpactCell:int=-1):void
         {
             var params:Object;
+            var entityDamagedOrHealedBySpell:Boolean;
+            var ac:AnimatedCharacter;
             var sdi:SpellDamageInfo;
             var currentSpellDamage:SpellDamage;
             var effect:EffectDamage;
-            var spellImpactCell:uint;
             var spellZone:IZone;
             var spellZoneCells:Vector.<uint>;
             var targetId:int;
-            var ac:AnimatedCharacter;
-            var isCarriedEntity:Boolean;
-            var entityDamagedOrHealedBySpell:Boolean;
             var directDamageSpell:SpellWrapper;
             var nbPushedEntities:uint;
             var pushedEntity:PushedEntity;
@@ -1333,6 +1331,17 @@
                 };
                 params.showName = false;
             };
+            var spellImpactCell:uint = ((!((pSpellImpactCell == -1))) ? pSpellImpactCell : currentCell);
+            if (((pSpell) && (!(pSpellInfo))))
+            {
+                ac = (entity as AnimatedCharacter);
+                entityDamagedOrHealedBySpell = ((pSpell) && (DamageUtil.isDamagedOrHealedBySpell(CurrentPlayedFighterManager.getInstance().currentFighterId, pEntityId, pSpell, spellImpactCell)));
+                if (((((((ac) && (ac.parentSprite))) && ((ac.parentSprite.carriedEntity == ac)))) && (!(entityDamagedOrHealedBySpell))))
+                {
+                    TooltipPlacer.removeTooltipPositionByName(("tooltip_tooltipOverEntity_" + pEntityId));
+                    return;
+                };
+            };
             var showDamages:Boolean = ((((pSpell) && ((OptionManager.getOptionManager("dofus")["showDamagesPreview"] == true)))) && (FightSpellCastFrame.isCurrentTargetTargetable()));
             if (showDamages)
             {
@@ -1340,31 +1349,23 @@
                 {
                     return;
                 };
-                spellImpactCell = ((!((pSpellImpactCell == -1))) ? pSpellImpactCell : currentCell);
                 spellZone = SpellZoneManager.getInstance().getSpellZone(pSpell);
                 spellZoneCells = spellZone.getCells(spellImpactCell);
                 if (!(pSpellInfo))
                 {
-                    ac = (entity as AnimatedCharacter);
-                    isCarriedEntity = ((((ac) && (ac.parentSprite))) && ((ac.parentSprite.carriedEntity == ac)));
-                    entityDamagedOrHealedBySpell = ((pSpell) && (DamageUtil.isDamagedOrHealedBySpell(CurrentPlayedFighterManager.getInstance().currentFighterId, pEntityId, pSpell)));
-                    if (((isCarriedEntity) && (!(entityDamagedOrHealedBySpell))))
-                    {
-                        return;
-                    };
                     if (entityDamagedOrHealedBySpell)
                     {
                         if (DamageUtil.BOMB_SPELLS_IDS.indexOf(pSpell.id) != -1)
                         {
                             directDamageSpell = DamageUtil.getBombDirectDamageSpellWrapper((pSpell as SpellWrapper));
-                            sdi = SpellDamageInfo.fromCurrentPlayer(directDamageSpell, pEntityId);
+                            sdi = SpellDamageInfo.fromCurrentPlayer(directDamageSpell, pEntityId, spellImpactCell);
                             for each (targetId in sdi.originalTargetsIds)
                             {
                                 this.displayEntityTooltip(targetId, directDamageSpell, sdi);
                             };
                             return;
                         };
-                        sdi = SpellDamageInfo.fromCurrentPlayer(pSpell, pEntityId);
+                        sdi = SpellDamageInfo.fromCurrentPlayer(pSpell, pEntityId, spellImpactCell);
                         if ((pSpell is SpellWrapper))
                         {
                             sdi.pushedEntities = PushUtil.getPushedEntities((pSpell as SpellWrapper), this.entitiesFrame.getEntityInfos(pSpell.playerId).disposition.cellId, spellImpactCell);
@@ -1385,7 +1386,7 @@
                                     }
                                     else
                                     {
-                                        pushedEntitySdi = SpellDamageInfo.fromCurrentPlayer(pSpell, pushedEntity.id);
+                                        pushedEntitySdi = SpellDamageInfo.fromCurrentPlayer(pSpell, pushedEntity.id, spellImpactCell);
                                         pushedEntitySdi.pushedEntities = sdi.pushedEntities;
                                         this.displayEntityTooltip(pushedEntity.id, pSpell, pushedEntitySdi, true);
                                     };

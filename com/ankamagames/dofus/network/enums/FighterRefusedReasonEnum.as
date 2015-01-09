@@ -27,6 +27,7 @@
         public static const AVA_ZONE:int = 21;
         public static const COMPANION_REFUSED:int = 22;
         public static const NOT_ENOUGH_ROOM:int = 23;
+        public static const GUEST_ACCOUNT:int = 24;
 
 
     }

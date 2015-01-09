@@ -22,6 +22,7 @@
 
         private var _statName:String;
         private var _isABoost:Boolean;
+        private var _zeroDiff:int;
 
         public function StatBuff(effect:FightTemporaryBoostEffect=null, castingSpell:CastingSpell=null, actionId:int=0)
         {
@@ -50,6 +51,11 @@
                 return (((this._isABoost) ? EffectInstanceDice(_effect).diceNum : -(EffectInstanceDice(_effect).diceNum)));
             };
             return (0);
+        }
+
+        public function get zeroDiff():int
+        {
+            return (this._zeroDiff);
         }
 
         override public function onApplyed():void
@@ -156,6 +162,18 @@
                     infos.stats["movementPoints"] = (infos.stats["movementPoints"] + this.delta);
                     infos.stats["maxMovementPoints"] = (infos.stats["maxMovementPoints"] + this.delta);
                     break;
+                case "tackleBlock":
+                case "tackleEvade":
+                    if ((infos.stats[this._statName] + this.delta) < 0)
+                    {
+                        this._zeroDiff = (infos.stats[this._statName] + this.delta);
+                        infos.stats[this._statName] = 0;
+                    }
+                    else
+                    {
+                        infos.stats[this._statName] = (infos.stats[this._statName] + this.delta);
+                    };
+                    break;
                 default:
                     if (infos)
                     {
@@ -206,6 +224,9 @@
             var targetCaracs:CharacterCharacteristicsInformations;
             var _local_4:CharacterCharacteristicsInformations;
             var _local_5:int;
+            var zeroDiff:int;
+            var i:int;
+            var stackLen:int;
             targetCaracs = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations(targetId);
             if (targetCaracs)
             {
@@ -305,6 +326,28 @@
                 case "movementPoints":
                     infos.stats["movementPoints"] = (infos.stats["movementPoints"] - this.delta);
                     infos.stats["maxMovementPoints"] = (infos.stats["maxMovementPoints"] - this.delta);
+                    return;
+                case "tackleBlock":
+                case "tackleEvade":
+                    if (infos.stats[this._statName] == 0)
+                    {
+                        zeroDiff = this._zeroDiff;
+                        if (stack)
+                        {
+                            stackLen = stack.length;
+                            i = 1;
+                            while (i < stackLen)
+                            {
+                                zeroDiff = (zeroDiff + (stack[i] as StatBuff).zeroDiff);
+                                i++;
+                            };
+                        };
+                        infos.stats[this._statName] = ((infos.stats[this._statName] - this.delta) + zeroDiff);
+                    }
+                    else
+                    {
+                        infos.stats[this._statName] = (infos.stats[this._statName] - this.delta);
+                    };
                     return;
                 default:
                     if (infos)

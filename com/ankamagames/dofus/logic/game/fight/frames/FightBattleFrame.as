@@ -211,38 +211,39 @@
             var _local_4:SlaveSwitchContextMessage;
             var _local_5:GameFightTurnStartMessage;
             var _local_6:int;
-            var _local_7:SoundApi;
-            var _local_8:GameFightFighterInformations;
+            var _local_7:Boolean;
+            var _local_8:SoundApi;
             var _local_9:GameFightFighterInformations;
-            var _local_10:Boolean;
+            var _local_10:GameFightFighterInformations;
             var _local_11:Boolean;
-            var _local_12:GameFightTurnEndMessage;
-            var _local_13:GameContextActorInformations;
-            var _local_14:SequenceStartMessage;
-            var _local_15:SequenceEndMessage;
-            var _local_16:GameFightNewWaveMessage;
-            var _local_17:GameFightNewRoundMessage;
-            var _local_18:GameFightLeaveMessage;
-            var _local_19:GameFightFighterInformations;
-            var _local_20:FightSequenceFrame;
-            var _local_21:GameFightEndMessage;
-            var _local_22:uint;
-            var _local_23:FighterStatsListMessage;
+            var _local_12:Boolean;
+            var _local_13:GameFightTurnEndMessage;
+            var _local_14:GameContextActorInformations;
+            var _local_15:SequenceStartMessage;
+            var _local_16:SequenceEndMessage;
+            var _local_17:GameFightNewWaveMessage;
+            var _local_18:GameFightNewRoundMessage;
+            var _local_19:GameFightLeaveMessage;
+            var _local_20:GameFightFighterInformations;
+            var _local_21:FightSequenceFrame;
+            var _local_22:GameFightEndMessage;
+            var _local_23:uint;
+            var _local_24:FighterStatsListMessage;
             var fighter:GameFightFighterInformations;
-            var currentPlayedFighterId:int;
+            var _local_26:int;
             var entity:AnimatedCharacter;
             var ss:SerialSequencer;
             var yOffset:Number;
             var ss2:SerialSequencer;
             var time:int;
             var action:Action;
-            var _local_32:FightEntitiesFrame;
-            var _local_33:int;
-            var _local_34:GameContextActorInformations;
+            var _local_33:FightEntitiesFrame;
+            var _local_34:int;
+            var _local_35:GameContextActorInformations;
             var fighterInfosTE:GameFightFighterInformations;
             var fakeDeathMessage:GameActionFightLeaveMessage;
             var seqEnd:SequenceEndMessage;
-            var _local_38:GameFightEndMessage;
+            var _local_39:GameFightEndMessage;
             switch (true)
             {
                 case (msg is GameFightTurnListMessage):
@@ -300,19 +301,17 @@
                     this._currentPlayerId = _local_5.id;
                     this._playingSlaveEntity = (_local_5.id == this._slaveId);
                     this._turnFrame.turnDuration = _local_5.waitTime;
-                    if (!((msg is GameFightTurnResumeMessage)))
+                    _local_7 = (msg is GameFightTurnResumeMessage);
+                    if (!(_local_7))
                     {
                         BuffManager.getInstance().decrementDuration(_local_5.id);
                     }
                     else
                     {
-                        if ((msg is GameFightTurnResumeMessage))
+                        _local_26 = CurrentPlayedFighterManager.getInstance().currentFighterId;
+                        if (((((this._slaveId) && (!((this._currentPlayerId == _local_26))))) && ((((this._slaveId == this._currentPlayerId)) || ((this.getNextPlayableCharacterId() == this._slaveId))))))
                         {
-                            currentPlayedFighterId = CurrentPlayedFighterManager.getInstance().currentFighterId;
-                            if (((((this._slaveId) && (!((this._currentPlayerId == currentPlayedFighterId))))) && ((((this._slaveId == this._currentPlayerId)) || ((this.getNextPlayableCharacterId() == this._slaveId))))))
-                            {
-                                this.prepareNextPlayableCharacter(this._masterId);
-                            };
+                            this.prepareNextPlayableCharacter(this._masterId);
                         };
                     };
                     if ((((_local_5.id > 0)) || (this._playingSlaveEntity)))
@@ -333,12 +332,12 @@
                             this._playerNewTurn = entity;
                         };
                     };
-                    _local_7 = new SoundApi();
-                    _local_8 = (FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_5.id) as GameFightFighterInformations);
-                    if ((((((((_local_5.id == _local_6)) && (_local_8))) && (_local_8.alive))) || (this._playingSlaveEntity)))
+                    _local_8 = new SoundApi();
+                    _local_9 = (FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_5.id) as GameFightFighterInformations);
+                    if ((((((((_local_5.id == _local_6)) && (_local_9))) && (_local_9.alive))) || (this._playingSlaveEntity)))
                     {
                         CurrentPlayedFighterManager.getInstance().currentFighterId = _local_5.id;
-                        if (_local_7.playSoundAtTurnStart())
+                        if (_local_8.playSoundAtTurnStart())
                         {
                             SoundManager.getInstance().manager.playUISound(UISoundEnum.PLAYER_TURN);
                         };
@@ -349,7 +348,7 @@
                     {
                         this._turnFrame.myTurn = false;
                     };
-                    KernelEventsManager.getInstance().processCallback(HookList.GameFightTurnStart, _local_5.id, _local_5.waitTime, Dofus.getInstance().options.turnPicture);
+                    KernelEventsManager.getInstance().processCallback(HookList.GameFightTurnStart, _local_5.id, _local_5.waitTime, ((_local_7) ? (msg as GameFightTurnResumeMessage).remainingTime : (_local_5.waitTime)), Dofus.getInstance().options.turnPicture);
                     if (this._skipTurnTimer)
                     {
                         this._skipTurnTimer.stop();
@@ -375,16 +374,16 @@
                         }
                         else
                         {
-                            _local_32 = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame);
-                            _local_33 = 0;
-                            for each (_local_34 in _local_32.getEntitiesDictionnary())
+                            _local_33 = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame);
+                            _local_34 = 0;
+                            for each (_local_35 in _local_33.getEntitiesDictionnary())
                             {
-                                if ((((((_local_34 is GameFightCharacterInformations)) && (GameFightCharacterInformations(_local_34).alive))) && ((_local_34.contextualId > 0))))
+                                if ((((((_local_35 is GameFightCharacterInformations)) && (GameFightCharacterInformations(_local_35).alive))) && ((_local_35.contextualId > 0))))
                                 {
-                                    _local_33++;
+                                    _local_34++;
                                 };
                             };
-                            if (_local_33 > 1)
+                            if (_local_34 > 1)
                             {
                                 AFKFightManager.getInstance().initialize();
                             };
@@ -394,10 +393,10 @@
                             Kernel.getWorker().removeFrame(Kernel.getWorker().getFrame(FightSpellCastFrame));
                         };
                     };
-                    _local_9 = (FightEntitiesFrame.getCurrentInstance().getEntityInfos(FightContextFrame.fighterEntityTooltipId) as GameFightFighterInformations);
-                    _local_10 = ((_local_9) && ((_local_9.disposition.cellId == FightContextFrame.currentCell)));
-                    _local_11 = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame).timelineOverEntity;
-                    if (((((((!(_local_10)) && (!(_local_11)))) && (PlayedCharacterManager.getInstance().isSpectator))) && ((OptionManager.getOptionManager("dofus")["spectatorAutoShowCurrentFighterInfo"] == true))))
+                    _local_10 = (FightEntitiesFrame.getCurrentInstance().getEntityInfos(FightContextFrame.fighterEntityTooltipId) as GameFightFighterInformations);
+                    _local_11 = ((_local_10) && ((_local_10.disposition.cellId == FightContextFrame.currentCell)));
+                    _local_12 = (Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame).timelineOverEntity;
+                    if (((((((!(_local_11)) && (!(_local_12)))) && (PlayedCharacterManager.getInstance().isSpectator))) && ((OptionManager.getOptionManager("dofus")["spectatorAutoShowCurrentFighterInfo"] == true))))
                     {
                         KernelEventsManager.getInstance().processCallback(FightHookList.FighterInfoUpdate, (FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_5.id) as GameFightFighterInformations));
                     };
@@ -406,24 +405,24 @@
                     KernelEventsManager.getInstance().processCallback(HookList.GameFightTurnStartPlaying);
                     return (true);
                 case (msg is GameFightTurnEndMessage):
-                    _local_12 = (msg as GameFightTurnEndMessage);
-                    this._lastPlayerId = _local_12.id;
-                    _local_13 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_12.id);
-                    if ((((_local_13 is GameFightFighterInformations)) && (!((_local_13 as GameFightFighterInformations).alive))))
+                    _local_13 = (msg as GameFightTurnEndMessage);
+                    this._lastPlayerId = _local_13.id;
+                    _local_14 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_local_13.id);
+                    if ((((_local_14 is GameFightFighterInformations)) && (!((_local_14 as GameFightFighterInformations).alive))))
                     {
-                        fighterInfosTE = (_local_13 as GameFightFighterInformations);
-                        BuffManager.getInstance().decrementDuration(_local_12.id);
+                        fighterInfosTE = (_local_14 as GameFightFighterInformations);
+                        BuffManager.getInstance().decrementDuration(_local_13.id);
                         BuffManager.getInstance().markFinishingBuffs(this._lastPlayerId);
                         fighterInfosTE.stats.actionPoints = fighterInfosTE.stats.maxActionPoints;
                         fighterInfosTE.stats.movementPoints = fighterInfosTE.stats.maxMovementPoints;
                         KernelEventsManager.getInstance().processCallback(HookList.GameFightTurnEnd, this._lastPlayerId);
-                        if (_local_12.id == CurrentPlayedFighterManager.getInstance().currentFighterId)
+                        if (_local_13.id == CurrentPlayedFighterManager.getInstance().currentFighterId)
                         {
                             CurrentPlayedFighterManager.getInstance().getSpellCastManager().nextTurn();
-                            SpellWrapper.refreshAllPlayerSpellHolder(_local_12.id);
+                            SpellWrapper.refreshAllPlayerSpellHolder(_local_13.id);
                         };
                     };
-                    if (_local_12.id == CurrentPlayedFighterManager.getInstance().currentFighterId)
+                    if (_local_13.id == CurrentPlayedFighterManager.getInstance().currentFighterId)
                     {
                         AFKFightManager.getInstance().lastTurnSkip = getTimer();
                         AFKFightManager.getInstance().confirm = true;
@@ -432,7 +431,7 @@
                     return (true);
                 case (msg is SequenceStartMessage):
                     this._autoEndTurn = false;
-                    _local_14 = (msg as SequenceStartMessage);
+                    _local_15 = (msg as SequenceStartMessage);
                     if (!(this._sequenceFrameSwitcher))
                     {
                         this._sequenceFrameSwitcher = new FightSequenceSwitcherFrame();
@@ -442,14 +441,14 @@
                     this._sequenceFrameSwitcher.currentFrame = this._currentSequenceFrame;
                     return (true);
                 case (msg is SequenceEndMessage):
-                    _local_15 = (msg as SequenceEndMessage);
+                    _local_16 = (msg as SequenceEndMessage);
                     if (!(this._currentSequenceFrame))
                     {
                         _log.warn("Wow wow wow, I've got a Sequence End but no Sequence Start? What the hell?");
                         return (true);
                     };
-                    this._currentSequenceFrame.mustAck = (_local_15.authorId == CurrentPlayedFighterManager.getInstance().currentFighterId);
-                    this._currentSequenceFrame.ackIdent = _local_15.actionId;
+                    this._currentSequenceFrame.mustAck = (_local_16.authorId == CurrentPlayedFighterManager.getInstance().currentFighterId);
+                    this._currentSequenceFrame.ackIdent = _local_16.actionId;
                     this._sequenceFrameSwitcher.currentFrame = null;
                     if (!(this._currentSequenceFrame.parent))
                     {
@@ -478,42 +477,42 @@
                     };
                     return (true);
                 case (msg is GameFightNewWaveMessage):
-                    _local_16 = (msg as GameFightNewWaveMessage);
-                    this._newWaveId = _local_16.id;
+                    _local_17 = (msg as GameFightNewWaveMessage);
+                    this._newWaveId = _local_17.id;
                     this._newWave = true;
-                    KernelEventsManager.getInstance().processCallback(FightHookList.WaveUpdated, _local_16.teamId, _local_16.id, _local_16.nbTurnBeforeNextWave);
+                    KernelEventsManager.getInstance().processCallback(FightHookList.WaveUpdated, _local_17.teamId, _local_17.id, _local_17.nbTurnBeforeNextWave);
                     return (true);
                 case (msg is GameFightNewRoundMessage):
-                    _local_17 = (msg as GameFightNewRoundMessage);
-                    this._turnsCount = _local_17.roundNumber;
+                    _local_18 = (msg as GameFightNewRoundMessage);
+                    this._turnsCount = _local_18.roundNumber;
                     CurrentPlayedFighterManager.getInstance().getSpellCastManager().currentTurn = (this._turnsCount - 1);
                     KernelEventsManager.getInstance().processCallback(FightHookList.TurnCountUpdated, this._turnsCount);
                     BuffManager.getInstance().spellBuffsToIgnore.length = 0;
                     return (true);
                 case (msg is GameFightLeaveMessage):
-                    _local_18 = (msg as GameFightLeaveMessage);
-                    _local_19 = (FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._lastPlayerId) as GameFightFighterInformations);
-                    _local_20 = new FightSequenceFrame(this);
-                    if (((_local_19) && (_local_19.alive)))
+                    _local_19 = (msg as GameFightLeaveMessage);
+                    _local_20 = (FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._lastPlayerId) as GameFightFighterInformations);
+                    _local_21 = new FightSequenceFrame(this);
+                    if (((_local_20) && (_local_20.alive)))
                     {
                         fakeDeathMessage = new GameActionFightLeaveMessage();
-                        _local_20.process(fakeDeathMessage.initGameActionFightLeaveMessage(0, 0, _local_18.charId));
-                        this._sequenceFrames.push(_local_20);
+                        _local_21.process(fakeDeathMessage.initGameActionFightLeaveMessage(0, 0, _local_19.charId));
+                        this._sequenceFrames.push(_local_21);
                         this.executeNextSequence();
                     };
-                    if ((((_local_18.charId == PlayedCharacterManager.getInstance().id)) && (PlayedCharacterManager.getInstance().isSpectator)))
+                    if ((((_local_19.charId == PlayedCharacterManager.getInstance().id)) && (PlayedCharacterManager.getInstance().isSpectator)))
                     {
                         if (this._executingSequence)
                         {
                             this._leaveSpectator = true;
                         };
-                        KernelEventsManager.getInstance().processCallback(HookList.GameFightLeave, _local_18.charId);
+                        KernelEventsManager.getInstance().processCallback(HookList.GameFightLeave, _local_19.charId);
                     };
                     return (true);
                 case (msg is GameFightEndMessage):
-                    _local_21 = (msg as GameFightEndMessage);
-                    _local_22 = 5;
-                    while (((this._currentSequenceFrame) && (--_local_22)))
+                    _local_22 = (msg as GameFightEndMessage);
+                    _local_23 = 5;
+                    while (((this._currentSequenceFrame) && (--_local_23)))
                     {
                         _log.error("/!\\ Fight end but no SequenceEnd was received");
                         seqEnd = new SequenceEndMessage();
@@ -524,11 +523,11 @@
                     {
                         _log.warn("Delaying fight end because we're still in a sequence.");
                         this._endBattle = true;
-                        this._battleResults = _local_21;
+                        this._battleResults = _local_22;
                     }
                     else
                     {
-                        this.endBattle(_local_21);
+                        this.endBattle(_local_22);
                     };
                     FightersStateManager.getInstance().endFight();
                     CurrentPlayedFighterManager.getInstance().endFight();
@@ -543,9 +542,9 @@
                     {
                         _log.debug("Fin de combat brutale (pas de resultat connu)");
                         this._executingSequence = false;
-                        _local_38 = new GameFightEndMessage();
-                        _local_38.initGameFightEndMessage(0, 0, 0, null);
-                        this.process(_local_38);
+                        _local_39 = new GameFightEndMessage();
+                        _local_39.initGameFightEndMessage(0, 0, 0, null);
+                        this.process(_local_39);
                     };
                     return (true);
                 case (msg is DisableAfkAction):
@@ -563,8 +562,8 @@
                     };
                     return (true);
                 case (msg is FighterStatsListMessage):
-                    _local_23 = (msg as FighterStatsListMessage);
-                    CurrentPlayedFighterManager.getInstance().setCharacteristicsInformations(PlayedCharacterManager.getInstance().id, _local_23.stats);
+                    _local_24 = (msg as FighterStatsListMessage);
+                    CurrentPlayedFighterManager.getInstance().setCharacteristicsInformations(PlayedCharacterManager.getInstance().id, _local_24.stats);
                     SpellWrapper.refreshAllPlayerSpellHolder(PlayedCharacterManager.getInstance().id);
                     return (true);
             };
@@ -909,13 +908,19 @@
             var newWaveMonster:Boolean;
             var newWaveMonsterIndex:int;
             var fighterInfos:GameFightFighterInformations;
+            var ignoreEntityId:int;
             var sequencer:SerialSequencer;
             var entitiesFrame:FightEntitiesFrame = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame);
             var fbf:FightBattleFrame = (Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame);
             var bm:BuffManager = BuffManager.getInstance();
             if (synchronizeBuff)
             {
-                BuffManager.getInstance().synchronize();
+                ignoreEntityId = 0;
+                if ((((this.currentPlayerId == this.masterId)) || ((this.currentPlayerId == this.slaveId))))
+                {
+                    ignoreEntityId = (((this.currentPlayerId == this.slaveId)) ? this.masterId : this.slaveId);
+                };
+                BuffManager.getInstance().synchronize(ignoreEntityId);
             };
             for each (fighterInfos in fighters)
             {

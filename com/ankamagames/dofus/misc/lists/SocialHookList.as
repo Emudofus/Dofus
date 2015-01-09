@@ -21,6 +21,7 @@
         public static const MemberWarningState:Hook = new Hook("MemberWarningState", false);
         public static const FriendOrGuildMemberLevelUpWarningState:Hook = new Hook("FriendOrGuildMemberLevelUpWarningState", false);
         public static const FriendGuildWarnOnAchievementCompleteState:Hook = new Hook("FriendGuildWarnOnAchievementCompleteState", false);
+        public static const WarnOnHardcoreDeathState:Hook = new Hook("WarnOnHardcoreDeathState", false);
         public static const SpouseFollowStatusUpdated:Hook = new Hook("SpouseFollowStatusUpdated", false);
         public static const GuildInformationsMembers:Hook = new Hook("GuildInformationsMembers", false);
         public static const GuildMembershipUpdated:Hook = new Hook("GuildMembershipUpdated", false);

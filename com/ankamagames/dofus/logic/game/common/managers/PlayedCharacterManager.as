@@ -207,7 +207,11 @@
 
         public function get currentWorldMap():WorldMap
         {
-            return (this.currentSubArea.worldmap);
+            if (this.currentSubArea)
+            {
+                return (this.currentSubArea.worldmap);
+            };
+            return (null);
         }
 
         public function get isIncarnation():Boolean

@@ -18,11 +18,14 @@
             return ("real");
         }
 
-        override public function addItem(item:ItemWrapper, invisible:int):void
+        override public function addItem(item:ItemWrapper, invisible:int, needUpdateView:Boolean=true):void
         {
-            super.addItem(item, invisible);
+            super.addItem(item, invisible, needUpdateView);
             _hookLock.addHook(InventoryHookList.ObjectAdded, [item]);
-            this.updateView();
+            if (needUpdateView)
+            {
+                this.updateView();
+            };
         }
 
         override public function removeItem(item:ItemWrapper, invisible:int):void

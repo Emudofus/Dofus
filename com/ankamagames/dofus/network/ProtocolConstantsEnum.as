@@ -33,6 +33,7 @@
         public static const MAX_CHAT_OBJECT_REF:int = 16;
         public static const NOT_EQUIPED:int = 63;
         public static const MAX_EQUIPED:int = 0xFF;
+        public static const SLOTS_EQUIPABLE_BY_USER:int = 16;
         public static const MAX_JOBS_PER_CHARACTER:int = 6;
         public static const MAX_CRAFT_SLOT:int = 9;
         public static const MAX_JOB_LEVEL:int = 100;

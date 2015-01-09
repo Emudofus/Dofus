@@ -15,8 +15,10 @@
     import com.ankamagames.berilia.Berilia;
     import flash.display.DisplayObject;
     import com.ankamagames.dofus.logic.game.roleplay.frames.InfoEntitiesFrame;
+    import com.ankamagames.berilia.types.data.LinkedCursorData;
     import com.ankamagames.berilia.managers.TooltipManager;
     import com.ankamagames.dofus.kernel.Kernel;
+    import com.ankamagames.berilia.managers.LinkedCursorSpriteManager;
     import com.ankamagames.jerakine.entities.messages.EntityClickMessage;
     import com.ankamagames.dofus.logic.game.roleplay.messages.InteractiveElementActivationMessage;
     import com.ankamagames.atouin.messages.AdjacentMapClickMessage;
@@ -132,17 +134,28 @@
 
         private function updateElementsPositions(pEvent:Event):void
         {
+            var offSetX:Number;
+            var offSetY:Number;
             var infoEntitiesFrame:InfoEntitiesFrame;
+            var lcd:LinkedCursorData;
             if (((!((this._container.x == this._containerLastX))) || (!((this._container.y == this._containerLastY)))))
             {
-                TooltipManager.updateAllPositions((this._container.x - this._containerLastX), (this._container.y - this._containerLastY));
-                this._containerLastX = this._container.x;
-                this._containerLastY = this._container.y;
+                offSetX = (this._container.x - this._containerLastX);
+                offSetY = (this._container.y - this._containerLastY);
+                TooltipManager.updateAllPositions(offSetX, offSetY);
                 infoEntitiesFrame = (Kernel.getWorker().getFrame(InfoEntitiesFrame) as InfoEntitiesFrame);
                 if (infoEntitiesFrame)
                 {
                     infoEntitiesFrame.updateAllTooltips();
                 };
+                lcd = LinkedCursorSpriteManager.getInstance().getItem("changeMapCursor");
+                if (lcd)
+                {
+                    lcd.sprite.x = (lcd.sprite.x + offSetX);
+                    lcd.sprite.y = (lcd.sprite.y + offSetY);
+                };
+                this._containerLastX = this._container.x;
+                this._containerLastY = this._container.y;
             };
         }
 

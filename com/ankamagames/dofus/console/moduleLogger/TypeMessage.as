@@ -45,33 +45,41 @@
                 }
                 else
                 {
-                    if ((object is Hook))
+                    if ((((object is String)) && ((args[1] == LOG_CHAT))))
                     {
-                        this.displayHookInformations((object as Hook), args[1]);
+                        this.type = LOG_CHAT;
+                        this.textInfo = (((((("<span class='" + args[2]) + "'>[") + this.getDate()) + "] ") + String(object)) + "</span>");
                     }
                     else
                     {
-                        if ((object is Action))
+                        if ((object is Hook))
                         {
-                            this.displayActionInformations((object as Action));
+                            this.displayHookInformations((object as Hook), args[1]);
                         }
                         else
                         {
-                            if ((object is Message))
+                            if ((object is Action))
                             {
-                                this.displayInteractionMessage((object as Message), args[1]);
+                                this.displayActionInformations((object as Action));
                             }
                             else
                             {
-                                if ((object is Bind))
+                                if ((object is Message))
                                 {
-                                    this.displayBind((object as Bind), args[1]);
+                                    this.displayInteractionMessage((object as Message), args[1]);
                                 }
                                 else
                                 {
-                                    this.name = "trace";
-                                    this.textInfo = (object as String);
-                                    this.type = LOG;
+                                    if ((object is Bind))
+                                    {
+                                        this.displayBind((object as Bind), args[1]);
+                                    }
+                                    else
+                                    {
+                                        this.name = "trace";
+                                        this.textInfo = (object as String);
+                                        this.type = LOG;
+                                    };
                                 };
                             };
                         };

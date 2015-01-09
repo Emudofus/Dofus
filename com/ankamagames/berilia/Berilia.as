@@ -480,7 +480,7 @@
                 this.unloadUiEvents(sName, true);
                 ui.hideAfterLoading = true;
                 delete this._aUiList[sName];
-                if (ui.uiClass.unload)
+                if (((ui.uiClass) && (ui.uiClass.unload)))
                 {
                     try
                     {

@@ -17,7 +17,7 @@
             add("cacheMapEnabled", true);
             add("optimizeMultiAccount", true);
             add("fullScreen", false);
-            add("autoConnectType", true);
+            add("autoConnectType", 1);
             add("showEveryMonsters", false);
             add("allowAnimsFun", true);
             add("turnPicture", true);

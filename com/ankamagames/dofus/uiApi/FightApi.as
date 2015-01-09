@@ -22,6 +22,7 @@
     import com.ankamagames.dofus.internalDatacenter.spells.EffectsListWrapper;
     import com.ankamagames.dofus.logic.game.fight.frames.FightSpellCastFrame;
     import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+    import com.ankamagames.dofus.network.types.game.context.fight.GameFightCompanionInformations;
     import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
     import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
     import com.ankamagames.dofus.network.enums.FightTypeEnum;
@@ -212,6 +213,18 @@
         public function getCurrentPlayedFighterId():int
         {
             return (CurrentPlayedFighterManager.getInstance().currentFighterId);
+        }
+
+        [Untrusted]
+        public function getPlayingFighterId():int
+        {
+            return (this.getFightFrame().battleFrame.currentPlayerId);
+        }
+
+        [Untrusted]
+        public function isCompanion(pFighterId:int):Boolean
+        {
+            return ((this.getFightFrame().entitiesFrame.getEntityInfos(pFighterId) is GameFightCompanionInformations));
         }
 
         [Untrusted]

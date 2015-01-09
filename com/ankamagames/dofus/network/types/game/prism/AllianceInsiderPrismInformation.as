@@ -1,8 +1,10 @@
 ﻿package com.ankamagames.dofus.network.types.game.prism
 {
     import com.ankamagames.jerakine.network.INetworkType;
+    import __AS3__.vec.Vector;
     import flash.utils.IDataOutput;
     import flash.utils.IDataInput;
+    import __AS3__.vec.*;
 
     public class AllianceInsiderPrismInformation extends PrismInformation implements INetworkType 
     {
@@ -13,22 +15,27 @@
         public var lastTimeSlotModificationAuthorGuildId:uint = 0;
         public var lastTimeSlotModificationAuthorId:uint = 0;
         public var lastTimeSlotModificationAuthorName:String = "";
-        public var hasTeleporterModule:Boolean = false;
+        public var modulesItemIds:Vector.<uint>;
 
+        public function AllianceInsiderPrismInformation()
+        {
+            this.modulesItemIds = new Vector.<uint>();
+            super();
+        }
 
         override public function getTypeId():uint
         {
             return (431);
         }
 
-        public function initAllianceInsiderPrismInformation(typeId:uint=0, state:uint=1, nextVulnerabilityDate:uint=0, placementDate:uint=0, rewardTokenCount:uint=0, lastTimeSlotModificationDate:uint=0, lastTimeSlotModificationAuthorGuildId:uint=0, lastTimeSlotModificationAuthorId:uint=0, lastTimeSlotModificationAuthorName:String="", hasTeleporterModule:Boolean=false):AllianceInsiderPrismInformation
+        public function initAllianceInsiderPrismInformation(typeId:uint=0, state:uint=1, nextVulnerabilityDate:uint=0, placementDate:uint=0, rewardTokenCount:uint=0, lastTimeSlotModificationDate:uint=0, lastTimeSlotModificationAuthorGuildId:uint=0, lastTimeSlotModificationAuthorId:uint=0, lastTimeSlotModificationAuthorName:String="", modulesItemIds:Vector.<uint>=null):AllianceInsiderPrismInformation
         {
             super.initPrismInformation(typeId, state, nextVulnerabilityDate, placementDate, rewardTokenCount);
             this.lastTimeSlotModificationDate = lastTimeSlotModificationDate;
             this.lastTimeSlotModificationAuthorGuildId = lastTimeSlotModificationAuthorGuildId;
             this.lastTimeSlotModificationAuthorId = lastTimeSlotModificationAuthorId;
             this.lastTimeSlotModificationAuthorName = lastTimeSlotModificationAuthorName;
-            this.hasTeleporterModule = hasTeleporterModule;
+            this.modulesItemIds = modulesItemIds;
             return (this);
         }
 
@@ -39,7 +46,7 @@
             this.lastTimeSlotModificationAuthorGuildId = 0;
             this.lastTimeSlotModificationAuthorId = 0;
             this.lastTimeSlotModificationAuthorName = "";
-            this.hasTeleporterModule = false;
+            this.modulesItemIds = new Vector.<uint>();
         }
 
         override public function serialize(output:IDataOutput):void
@@ -66,7 +73,17 @@
             };
             output.writeInt(this.lastTimeSlotModificationAuthorId);
             output.writeUTF(this.lastTimeSlotModificationAuthorName);
-            output.writeBoolean(this.hasTeleporterModule);
+            output.writeShort(this.modulesItemIds.length);
+            var _i5:uint;
+            while (_i5 < this.modulesItemIds.length)
+            {
+                if (this.modulesItemIds[_i5] < 0)
+                {
+                    throw (new Error((("Forbidden value (" + this.modulesItemIds[_i5]) + ") on element 5 (starting at 1) of modulesItemIds.")));
+                };
+                output.writeInt(this.modulesItemIds[_i5]);
+                _i5++;
+            };
         }
 
         override public function deserialize(input:IDataInput):void
@@ -76,6 +93,7 @@
 
         public function deserializeAs_AllianceInsiderPrismInformation(input:IDataInput):void
         {
+            var _val5:uint;
             super.deserialize(input);
             this.lastTimeSlotModificationDate = input.readInt();
             if (this.lastTimeSlotModificationDate < 0)
@@ -93,7 +111,18 @@
                 throw (new Error((("Forbidden value (" + this.lastTimeSlotModificationAuthorId) + ") on element of AllianceInsiderPrismInformation.lastTimeSlotModificationAuthorId.")));
             };
             this.lastTimeSlotModificationAuthorName = input.readUTF();
-            this.hasTeleporterModule = input.readBoolean();
+            var _modulesItemIdsLen:uint = input.readUnsignedShort();
+            var _i5:uint;
+            while (_i5 < _modulesItemIdsLen)
+            {
+                _val5 = input.readInt();
+                if (_val5 < 0)
+                {
+                    throw (new Error((("Forbidden value (" + _val5) + ") on elements of modulesItemIds.")));
+                };
+                this.modulesItemIds.push(_val5);
+                _i5++;
+            };
         }
 
 

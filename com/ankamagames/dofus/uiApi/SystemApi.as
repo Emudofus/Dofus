@@ -96,6 +96,7 @@
     import com.ankamagames.jerakine.utils.system.CommandLineArguments;
     import com.ankamagames.dofus.modules.utils.ModuleInstallerFrame;
     import com.ankamagames.jerakine.handlers.HumanInputHandler;
+    import com.ankamagames.dofus.logic.connection.managers.GuestModeManager;
     import com.ankamagames.dofus.logic.connection.managers.AuthentificationManager;
     import com.ankamagames.dofus.misc.utils.frames.LuaScriptRecorderFrame;
 
@@ -1268,6 +1269,12 @@
         public function isKeyDown(keyCode:uint):Boolean
         {
             return (HumanInputHandler.getInstance().getKeyboardPoll().isDown(keyCode));
+        }
+
+        [Trusted]
+        public function isGuest():Boolean
+        {
+            return (GuestModeManager.getInstance().isLoggingAsGuest);
         }
 
         private function getAnkamaPortalUrlParams():URLVariables

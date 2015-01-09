@@ -135,6 +135,10 @@
             {
                 if (look.toString() == this._lookUpdate.toString())
                 {
+                    if (((this._entity) && (!(this._entity.parent))))
+                    {
+                        addChild(this._entity);
+                    };
                     return;
                 };
             };
@@ -146,7 +150,7 @@
                 {
                     if (this._entity)
                     {
-                        this.destroyOldEntity(this._entity);
+                        this.destroyEntity(this._entity);
                     };
                     addChild(entity);
                     this._entity = entity;
@@ -387,31 +391,24 @@
 
         public function setAnimationAndDirection(anim:String, dir:uint):void
         {
-            var seq:SerialSequencer;
+            var _local_3:SerialSequencer;
             if (!(this._fromCache))
             {
                 this._animation = anim;
                 this._direction = dir;
-                if ((this._entity is TiphonSprite))
+                if ((((this._entity is TiphonSprite)) && (!(this._listenForUpdate))))
                 {
-                    seq = new SerialSequencer();
-                    if (this._animation == "AnimStatique")
+                    if ((((this._animation == "AnimStatique")) || ((this._animation == "AnimArtwork"))))
                     {
-                        TiphonSprite(this._entity).setAnimationAndDirection("AnimStatique", this._direction);
+                        TiphonSprite(this._entity).setAnimationAndDirection(this._animation, this._direction);
                     }
                     else
                     {
-                        if (this._animation == "AnimArtwork")
-                        {
-                            TiphonSprite(this._entity).setAnimationAndDirection("AnimArtwork", this._direction);
-                        }
-                        else
-                        {
-                            seq.addStep(new SetDirectionStep(TiphonSprite(this._entity), this._direction));
-                            seq.addStep(new PlayAnimationStep(TiphonSprite(this._entity), this._animation, false));
-                            seq.addStep(new SetAnimationStep(TiphonSprite(this._entity), "AnimStatique"));
-                            seq.start();
-                        };
+                        _local_3 = new SerialSequencer();
+                        _local_3.addStep(new SetDirectionStep(TiphonSprite(this._entity), this._direction));
+                        _local_3.addStep(new PlayAnimationStep(TiphonSprite(this._entity), this._animation, false));
+                        _local_3.addStep(new SetAnimationStep(TiphonSprite(this._entity), "AnimStatique"));
+                        _local_3.start();
                     };
                 };
             };
@@ -609,7 +606,7 @@
                 }
                 else
                 {
-                    this.destroyOldEntity(this._oldEntity);
+                    this.destroyEntity(this._oldEntity);
                     this._oldEntity = null;
                 };
             };
@@ -626,7 +623,15 @@
             };
         }
 
-        private function destroyOldEntity(entity:TiphonSprite):void
+        public function destroyCurrentEntity():void
+        {
+            if (((this._entity) && (this._entity.parent)))
+            {
+                removeChild(this._entity);
+            };
+        }
+
+        private function destroyEntity(entity:TiphonSprite):void
         {
             if (entity.parent)
             {
@@ -646,14 +651,14 @@
             this._listenForUpdate = false;
             if (this._oldEntity)
             {
-                this.destroyOldEntity(this._oldEntity);
+                this.destroyEntity(this._oldEntity);
                 this._oldEntity = null;
             };
             if (!(this._lookUpdate))
             {
                 if (this._entity)
                 {
-                    this.destroyOldEntity(this._entity);
+                    this.destroyEntity(this._entity);
                     this._entity = null;
                 };
                 return;
@@ -701,7 +706,7 @@
                 if (this._oldEntity.alpha < 0.05)
                 {
                     this._entity.alpha = 1;
-                    this.destroyOldEntity(this._oldEntity);
+                    this.destroyEntity(this._oldEntity);
                     this._oldEntity = null;
                     EnterFrameDispatcher.removeEventListener(this.onFade);
                 };

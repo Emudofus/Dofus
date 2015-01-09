@@ -1,7 +1,6 @@
 ﻿package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
 {
     import com.ankamagames.dofus.logic.game.common.frames.AbstractEntitiesFrame;
-    import com.ankamagames.dofus.misc.utils.EmbedAssets;
     import com.ankamagames.jerakine.entities.interfaces.IEntity;
     import com.ankamagames.atouin.messages.CellClickMessage;
     import com.ankamagames.dofus.kernel.Kernel;
@@ -11,20 +10,23 @@
     import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterInformations;
     import com.ankamagames.jerakine.types.positions.MapPoint;
+    import com.ankamagames.berilia.frames.ShortcutsFrame;
     import com.ankamagames.jerakine.messages.Message;
     import com.ankamagames.atouin.messages.EntityMovementStoppedMessage;
     import com.ankamagames.dofus.logic.game.roleplay.messages.CharacterMovementStoppedMessage;
+    import com.ankamagames.dofus.misc.utils.EmbedAssets;
+    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayMovementFrame;
 
     public class MoveBehavior extends AbstractBehavior 
     {
 
         private var _abstractEntitiesFrame:AbstractEntitiesFrame;
         private var _fakepos:int = -1;
+        public var forceWalk:Boolean;
 
         public function MoveBehavior()
         {
             type = NORMAL;
-            sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP");
             isAvailableToStart = true;
         }
 
@@ -77,6 +79,7 @@
                             position = (pMsgToProcess as EntityClickMessage).entity.position;
                         };
                     };
+                    this.forceWalk = ShortcutsFrame.ctrlKeyDown;
                     return (true);
                 };
             }
@@ -134,6 +137,8 @@
             cp.pendingMessage = this.pendingMessage;
             cp.position = this.position;
             cp.type = this.type;
+            cp.forceWalk = this.forceWalk;
+            cp.sprite = ((cp.forceWalk) ? EmbedAssets.getSprite("CHECKPOINT_CLIP_WALK") : EmbedAssets.getSprite("CHECKPOINT_CLIP"));
             return (cp);
         }
 
@@ -147,6 +152,13 @@
             var mp:MapPoint = new MapPoint();
             mp.cellId = this._fakepos;
             return (mp);
+        }
+
+        override public function processMessageToWorker():void
+        {
+            var rpMovementFrame:RoleplayMovementFrame = (Kernel.getWorker().getFrame(RoleplayMovementFrame) as RoleplayMovementFrame);
+            rpMovementFrame.setForceWalkForNextMovement(this.forceWalk);
+            super.processMessageToWorker();
         }
 
 

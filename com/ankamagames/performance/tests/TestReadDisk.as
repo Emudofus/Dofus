@@ -3,35 +3,12 @@
     import com.ankamagames.performance.IBenchmarkTest;
     import com.ankamagames.jerakine.types.CustomSharedObject;
     import flash.utils.getTimer;
+    import com.ankamagames.performance.Benchmark;
 
     public class TestReadDisk implements IBenchmarkTest 
     {
 
         private static var _results:Array;
-
-
-        public static function getResults():String
-        {
-            var averageTime:Number;
-            var i:int;
-            if (_results)
-            {
-                averageTime = 0;
-                i = 0;
-                while (i < _results.length)
-                {
-                    if (_results[i] == "error")
-                    {
-                        return ("readDiskTest:error");
-                    };
-                    averageTime = (averageTime + _results[i]);
-                    i++;
-                };
-                averageTime = (averageTime / _results.length);
-                return (("readDiskTest:" + averageTime.toString()));
-            };
-            return ("readDiskTest:none");
-        }
 
 
         public function run():void
@@ -54,6 +31,30 @@
             {
                 _results.push("error");
             };
+            Benchmark.onTestCompleted(this);
+        }
+
+        public function getResults():String
+        {
+            var averageTime:Number;
+            var i:int;
+            if (_results)
+            {
+                averageTime = 0;
+                i = 0;
+                while (i < _results.length)
+                {
+                    if (_results[i] == "error")
+                    {
+                        return ("readDiskTest:error");
+                    };
+                    averageTime = (averageTime + _results[i]);
+                    i++;
+                };
+                averageTime = (averageTime / _results.length);
+                return (("readDiskTest:" + averageTime.toString()));
+            };
+            return ("readDiskTest:none");
         }
 
 

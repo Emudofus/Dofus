@@ -85,9 +85,14 @@
             return (((hour + ":") + minute));
         }
 
-        public function formatDateIRL(time:Number, useTimezoneOffset:Boolean=false):String
+        public function formatDateIRL(time:Number, useTimezoneOffset:Boolean=false, unchanged:Boolean=false):String
         {
-            var date:Array = this.getDateFromTime(time, useTimezoneOffset);
+            var timeToUse:Number = time;
+            if (((unchanged) && ((timeToUse > 0))))
+            {
+                timeToUse = (timeToUse - this.serverTimeLag);
+            };
+            var date:Array = this.getDateFromTime(timeToUse, useTimezoneOffset);
             var day:String = (((date[2] > 9)) ? date[2].toString() : ("0" + date[2]));
             var month:String = (((date[3] > 9)) ? date[3].toString() : ("0" + date[3]));
             return (I18n.getUiText("ui.time.dateNumbers", [day, month, date[4]]));

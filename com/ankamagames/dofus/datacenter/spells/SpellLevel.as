@@ -17,7 +17,7 @@
     {
 
         protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellLevel));
-        private static const MODULE:String = "SpellLevels";
+        public static const MODULE:String = "SpellLevels";
 
         public var id:uint;
         public var spellId:uint;

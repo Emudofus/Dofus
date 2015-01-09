@@ -18,9 +18,10 @@
     import com.ankamagames.dofus.types.events.RpcEvent;
     import com.ankamagames.jerakine.data.I18n;
     import flash.filesystem.File;
+    import com.ankamagames.jerakine.types.CustomSharedObject;
     import flash.filesystem.FileStream;
-    import by.blooddy.crypto.MD5;
     import flash.filesystem.FileMode;
+    import by.blooddy.crypto.MD5;
     import com.ankamagames.jerakine.managers.ErrorManager;
 
     public class SecureModeManager 
@@ -120,21 +121,35 @@
             else
             {
                 RPC_URL = "https://api.ankama.com/ankama/shield.json";
-            };
-            this._rpcManager = new RpcServiceManager(RPC_URL, "json");
-            goto _label_2;
-            
-        _label_1: 
-            this._rpcManager.addEventListener(RpcEvent.EVENT_ERROR, this.onRpcData);
-            while (return, this._rpcManager.addEventListener(RpcEvent.EVENT_DATA, this.onRpcData), true)
-            {
+                goto _label_7;
+                
+            _label_1: 
+                goto _label_5;
+                
+            _label_2: 
+                this._rpcManager.addEventListener(RpcEvent.EVENT_DATA, this.onRpcData);
                 goto _label_1;
                 var _local_1 = _local_1;
+                
+            _label_3: 
+                return;
             };
+            
+        _label_4: 
+            this._rpcManager = new RpcServiceManager(RPC_URL, "json");
+            goto _label_6;
+            
+        _label_5: 
+            this._rpcManager.addEventListener(RpcEvent.EVENT_ERROR, this.onRpcData);
+            goto _label_3;
+            var _local_0 = this;
+            
+        _label_6: 
+            goto _label_2;
             var _local_2 = _local_2;
             
-        _label_2: 
-            //unresolved jump
+        _label_7: 
+            goto _label_4;
             return;
         }
 
@@ -150,180 +165,162 @@
             {
                 goto _label_1;
             };
-            var result = result;
             
         _label_1: 
-            result = new Object();
-            _loop_1:
-            for (;;(result.text = ""), goto _label_2)
+            var result:Object = new Object();
+            result.error = response.error;
+            while ((result.fatal = false), goto _label_3, true)
             {
-                result.fatal = false;
-                while (true)
-                {
-                    result.retry = false;
-                    continue _loop_1;
-                };
-                var _local_5 = _local_5;
+                result.text = "";
+                goto _label_4;
             };
             
         _label_2: 
+            result.retry = false;
+            //unresolved jump
+            var _local_0 = this;
+            
+        _label_3: 
+            goto _label_2;
+            var _local_5 = _local_5;
+            
+        _label_4: 
             switch (response.error)
             {
                 case VALIDATECODE_CODEEXPIRE:
-                    goto _label_6;
-                    
-                _label_3: 
-                    goto _label_7;
-                    
-                _label_4: 
-                    result.fatal = true;
-                    goto _label_3;
-                    
-                _label_5: 
-                    goto _label_4;
-                    
-                _label_6: 
-                    result.text = I18n.getUiText("ui.secureMode.error.checkCode.expire");
-                    goto _label_5;
-                    
-                _label_7: 
-                    goto _label_28;
-                case VALIDATECODE_CODEBADCODE:
-                    goto _label_9;
-                    while ((result.retry = true), true)
+                    //unresolved jump
+                    while ((result.fatal = true), goto _label_5, true)
                     {
-                        goto _label_10;
-                        
-                    _label_8: 
-                        result.text = I18n.getUiText("ui.secureMode.error.checkCode.403");
+                        result.text = I18n.getUiText("ui.secureMode.error.checkCode.expire");
                         continue;
-                        var _local_0 = this;
                     };
                     
+                _label_5: 
+                    goto _label_20;
+                case VALIDATECODE_CODEBADCODE:
+                    _loop_1:
+                    for (;;)
+                    {
+                        result.retry = true;
+                        while (goto _label_7, true)
+                        {
+                            
+                        _label_6: 
+                            result.text = I18n.getUiText("ui.secureMode.error.checkCode.403");
+                            continue _loop_1;
+                        };
+                    };
+                    
+                _label_7: 
+                    goto _label_20;
+                case VALIDATECODE_CODENOTFOUND:
+                    goto _label_10;
+                    
+                _label_8: 
+                    result.fatal = true;
+                    goto _label_11;
+                    
                 _label_9: 
+                    result.text = (I18n.getUiText("ui.secureMode.error.checkCode.404") + " (1)");
                     goto _label_8;
-                    var _local_7 = _local_7;
                     
                 _label_10: 
-                    goto _label_28;
-                case VALIDATECODE_CODENOTFOUND:
-                    _loop_2:
+                    goto _label_9;
+                    var _local_7 = _local_7;
+                    
+                _label_11: 
+                    goto _label_20;
+                case VALIDATECODE_SECURITY:
                     for (;;)
                     {
                         result.fatal = true;
-                        while (goto _label_12, true)
-                        {
-                            
-                        _label_11: 
-                            result.text = (I18n.getUiText("ui.secureMode.error.checkCode.404") + " (1)");
-                            continue _loop_2;
-                        };
+                        //unresolved jump
+                        continue;
                     };
-                    var _local_6 = _local_6;
                     
                 _label_12: 
-                    goto _label_28;
-                case VALIDATECODE_SECURITY:
-                    goto _label_15;
-                    
-                _label_13: 
-                    result.fatal = true;
-                    goto _label_16;
-                    
-                _label_14: 
-                    goto _label_13;
-                    
-                _label_15: 
-                    result.text = I18n.getUiText("ui.secureMode.error.checkCode.security");
-                    goto _label_14;
-                    
-                _label_16: 
-                    goto _label_28;
+                    goto _label_20;
                 case VALIDATECODE_TOOMANYCERTIFICATE:
-                    while ((result.text = I18n.getUiText("ui.secureMode.error.checkCode.413")), true)
+                    while (true)
                     {
-                        result.fatal = true;
-                        goto _label_17;
+                        result.text = I18n.getUiText("ui.secureMode.error.checkCode.413");
+                        goto _label_13;
                     };
                     
-                _label_17: 
-                    goto _label_28;
-                case VALIDATECODE_NOTAVAILABLE:
-                    for (;;goto _label_19)
+                _label_13: 
+                    while ((result.fatal = true), true)
                     {
-                        result.text = I18n.getUiText("ui.secureMode.error.checkCode.202");
-                        continue;
-                        
-                    _label_18: 
-                        goto _label_20;
+                        goto _label_14;
+                    };
+                    
+                _label_14: 
+                    goto _label_20;
+                case VALIDATECODE_NOTAVAILABLE:
+                    goto _label_17;
+                    
+                _label_15: 
+                    while ((result.fatal = true), true)
+                    {
+                        goto _label_18;
+                    };
+                    
+                _label_16: 
+                    result.text = I18n.getUiText("ui.secureMode.error.checkCode.202");
+                    goto _label_15;
+                    
+                _label_17: 
+                    goto _label_16;
+                    
+                _label_18: 
+                    goto _label_20;
+                case ACCOUNT_AUTHENTIFICATION_FAILED:
+                    while ((result.text = (I18n.getUiText("ui.secureMode.error.checkCode.404") + " (2)")), true)
+                    {
+                        while ((result.fatal = true), true)
+                        {
+                            goto _label_19;
+                        };
                     };
                     
                 _label_19: 
+                    goto _label_20;
+                default:
+                    result.text = ((response.error) ? response.error : I18n.getUiText("ui.secureMode.error.default"));
                     result.fatal = true;
-                    goto _label_18;
-                    
-                _label_20: 
-                    goto _label_28;
-                case ACCOUNT_AUTHENTIFICATION_FAILED:
-                    goto _label_23;
-                    
-                _label_21: 
-                    while ((result.fatal = true), true)
-                    {
-                        goto _label_24;
-                    };
+            };
+            
+        _label_20: 
+            if (((response.certificate) && (response.id)))
+            {
+                while (true)
+                {
+                    success = _local_0.addCertificate(response.id, response.certificate, _local_0.shieldLevel);
+                    goto _label_21;
+                };
+                
+            _label_21: 
+                if (!(success))
+                {
+                    goto _label_25;
                     
                 _label_22: 
-                    result.text = (I18n.getUiText("ui.secureMode.error.checkCode.404") + " (2)");
-                    goto _label_21;
+                    goto _label_26;
                     
                 _label_23: 
+                    result.fatal = true;
                     goto _label_22;
                     
                 _label_24: 
-                    goto _label_28;
-                default:
-                    goto _label_27;
+                    goto _label_23;
+                    var _local_6 = _local_6;
                     
                 _label_25: 
-                    result.fatal = true;
-                    //unresolved jump
-                    
-                _label_26: 
-                    goto _label_25;
-                    
-                _label_27: 
-                    result.text = response.error;
-                    goto _label_26;
-            };
-            
-        _label_28: 
-            if (((response.certificate) && (response.id)))
-            {
-                while ((success = this.addCertificate(response.id, response.certificate, this.shieldLevel)), true)
-                {
-                    goto _label_29;
-                };
-                
-            _label_29: 
-                if (!(success))
-                {
-                    goto _label_32;
-                    
-                _label_30: 
-                    result.fatal = true;
-                    goto _label_33;
-                    
-                _label_31: 
-                    goto _label_30;
-                    
-                _label_32: 
                     result.text = I18n.getUiText("ui.secureMode.error.checkCode.202.fatal");
-                    goto _label_31;
+                    goto _label_24;
                 };
             };
             
-        _label_33: 
+        _label_26: 
             return (result);
         }
 
@@ -333,220 +330,267 @@
             {
                 goto _label_1;
             };
-            var _local_0 = this;
             
         _label_1: 
             var result:Object = new Object();
-            while ((result.error = !(result.error)), true)
+            //unresolved jump
+            
+        _label_2: 
+            result.fatal = false;
+            for (;;goto _label_5, (result.text = ""), continue, (var _local_5 = _local_5))
             {
-                goto _label_5;
-                
-            _label_2: 
-                result.retry = false;
-                goto _label_4;
+                goto _label_2;
             };
+            var _local_0 = this;
             
         _label_3: 
-            goto _label_6;
+            //unresolved jump
+            var _local_6 = _local_6;
             
         _label_4: 
-            result.text = "";
+            result.retry = false;
             goto _label_3;
             
         _label_5: 
-            result.fatal = false;
-            goto _label_2;
-            
-        _label_6: 
             if (!(response.error))
             {
-                while ((result.domain = response.domain), true)
-                {
-                    result.error = false;
-                    //unresolved jump
-                };
+                goto _label_8;
+                
+            _label_6: 
+                result.error = false;
+                //unresolved jump
+                
+            _label_7: 
+                goto _label_6;
+                
+            _label_8: 
+                result.domain = response.domain;
+                goto _label_7;
             }
             else
             {
                 switch (response.error)
                 {
-                    case VALIDATECODE_CODEEXPIRE:
-                        goto _label_11;
-                        
-                    _label_7: 
-                        result.fatal = true;
-                        goto _label_10;
-                        
-                    _label_8: 
-                        goto _label_7;
+                    case ACCOUNT_AUTHENTIFICATION_FAILED:
+                        while (true)
+                        {
+                            result.text = (I18n.getUiText("ui.secureMode.error.checkCode.404") + " (3)");
+                            goto _label_9;
+                        };
                         
                     _label_9: 
-                        result.text = I18n.getUiText("ui.secureMode.error.checkCode.expire");
-                        goto _label_8;
-                        var _local_5 = _local_5;
+                        while ((result.fatal = true), true)
+                        {
+                            goto _label_10;
+                        };
                         
                     _label_10: 
-                        goto _label_12;
+                        break;
+                    case VALIDATECODE_CODEEXPIRE:
+                        while ((result.text = I18n.getUiText("ui.secureMode.error.checkCode.expire")), true)
+                        {
+                            result.fatal = true;
+                            goto _label_11;
+                        };
+                        var _local_4 = _local_4;
                         
                     _label_11: 
-                        goto _label_9;
-                        var _local_6 = _local_6;
+                        break;
+                    default:
+                        for (;;)
+                        {
+                            result.fatal = true;
+                            continue;
+                            goto _label_12;
+                        };
                         
                     _label_12: 
-                        goto _label_13;
+                        result.text = I18n.getUiText("ui.secureMode.error.default");
+                        //unresolved jump
                 };
             };
-            
-        _label_13: 
             return (result);
         }
 
-        private function getCertifFolder(version:uint):File
+        private function getCertifFolder(version:uint, useCustomSharedObjectFolder:Boolean=false):File
         {
             var f:File;
+            var tmp:Array;
+            var parentDir:String;
             while (true)
             {
                 goto _label_1;
             };
-            var _local_6 = _local_6;
             
         _label_1: 
-            var tmp:Array = File.applicationStorageDirectory.nativePath.split(File.separator);
-            tmp.pop();
-            while (true)
+            if (!(useCustomSharedObjectFolder))
             {
+                goto _label_5;
+                
+            _label_2: 
                 tmp.pop();
-                goto _label_2;
+                for (;;)
+                {
+                    parentDir = tmp.join(File.separator);
+                    //unresolved jump
+                    
+                _label_3: 
+                    tmp = File.applicationStorageDirectory.nativePath.split(File.separator);
+                    //unresolved jump
+                    tmp.pop();
+                    continue;
+                    
+                _label_4: 
+                    goto _label_3;
+                    var _local_6 = _local_6;
+                };
+                var _local_7 = _local_7;
+                
+            _label_5: 
+                goto _label_4;
+            }
+            else
+            {
+                parentDir = CustomSharedObject.getCustomSharedObjectDirectory();
             };
-            
-        _label_2: 
-            var parentDir:String = tmp.join(File.separator);
             if (version == 1)
             {
                 while ((f = new File(((parentDir + File.separator) + "AnkamaCertificates/"))), true)
                 {
-                    goto _label_3;
+                    goto _label_6;
                 };
             };
-            
-        _label_3: 
-            if (version == 2)
-            {
-                while ((f = new File(((parentDir + File.separator) + "AnkamaCertificates/v2-RELEASE"))), true)
-                {
-                    goto _label_5;
-                };
-                
-            _label_4: 
-                goto _label_6;
-            };
-            
-        _label_5: 
-            f.createDirectory();
-            goto _label_4;
-            var _local_5 = _local_5;
             
         _label_6: 
+            if (version == 2)
+            {
+                goto _label_8;
+            };
+            
+        _label_7: 
+            f.createDirectory();
+            goto _label_9;
+            
+        _label_8: 
+            f = new File(((parentDir + File.separator) + "AnkamaCertificates/v2-RELEASE"));
+            goto _label_7;
+            
+        _label_9: 
             return (f);
         }
 
         private function addCertificate(id:uint, content:String, secureLevel:uint=2):Boolean
         {
-            _loop_1:
-            for (;;)
+            goto _label_7;
+            
+        _label_1: 
+            while (//unresolved jump
+, //unresolved jump
+, goto _label_10, var fs:FileStream, //unresolved jump
+, goto _label_1, (var addCertificate$0 = addCertificate$0), (id = id), //unresolved jump
+, (content = content), var cert:ShieldCertifcate, goto _label_8, (cert.secureLevel = secureLevel), goto _label_4, (var _local_7 = _local_7), goto _label_2, (var _local_5 = _local_5), (cert.content = content), true)
             {
-                for (;;)
+                //unresolved jump
+                
+            _label_2: 
+                cert = new ShieldCertifcate();
+                while (goto _label_9, (content = content), (secureLevel = secureLevel), goto _label_6, true)
                 {
-                    
-                _label_1: 
-                    continue _loop_1;
-                    
-                _label_2: 
-                    content = content;
-                    continue;
-                    var f:File;
+                    cert.version = 3;
                     goto _label_3;
-                    goto _label_5;
                 };
-                var _local_5 = _local_5;
+                //unresolved jump
                 
             _label_3: 
-                var fs:FileStream;
-                goto _label_4;
-                goto _label_2;
-                var _local_7 = _local_7;
+                //unresolved jump
+                
+            _label_4: 
+                goto _label_10;
+                
+            _label_5: 
+                fs = null;
+                //unresolved jump
+                
+            _label_6: 
+                continue;
+                //unresolved jump
+                
+            _label_7: 
+                cert = null;
+                goto _label_8;
             };
-            
-        _label_4: 
-            var cert:ShieldCertifcate;
-            //unresolved jump
             var _local_0 = this;
             
-        _label_5: 
-            f = _local_0.getCertifFolder(2);
-            goto _label_16;
-            
-        _label_6: 
-            cert.secureLevel = secureLevel;
-            goto _label_15;
-            
-        _label_7: 
-            cert.content = content;
-            goto _label_6;
-            var _local_6 = _local_6;
-            
         _label_8: 
-            fs.close();
-            goto _label_17;
+            var f:File;
+            goto _label_5;
             
         _label_9: 
-            while ((fs = new FileStream()), //unresolved jump
-, goto _label_8, (content = content), goto _label_12, (var addCertificate$0 = addCertificate$0), goto _label_13, (_local_0 = _local_0), goto _label_11, (_local_7 = _local_7), (f = f.resolvePath(MD5.hash(_local_0.getUsername()))), goto _label_9, (secureLevel = secureLevel), goto _label_19, //unresolved jump
-, (cert = new ShieldCertifcate()), goto _label_14, (_local_5 = _local_5), (cert.version = 3), true)
+            cert.id = id;
+            //unresolved jump
+            
+        _label_10: 
+            f = _local_0.getCertifFolder(2);
+            goto _label_18;
+            
+        _label_11: 
+            goto _label_19;
+            
+        _label_12: 
+            fs = new FileStream();
+            goto _label_17;
+            
+        _label_13: 
+            fs.writeBytes(cert.serialize());
+            while (true)
             {
-                goto _label_7;
-                
-            _label_10: 
-                //unresolved jump
-                
-            _label_11: 
-                fs.writeBytes(cert.serialize());
-                for (;;)
-                {
-                    
-                _label_12: 
-                    fs.open(f, FileMode.WRITE);
-                    goto _label_10;
-                    
-                _label_13: 
-                    cert.id = id;
-                    goto _label_18;
-                    fs = new FileStream();
-                    continue;
-                    goto _label_8;
-                };
-                
-            _label_14: 
-                goto _label_13;
-                
-            _label_15: 
+                fs.close();
                 goto _label_11;
-                
-            _label_16: 
-                f = f.resolvePath(MD5.hash(_local_0.getUsername()));
-                continue;
-                
-            _label_17: 
-                goto _label_19;
-                
-            _label_18: 
-                //unresolved jump
             };
+            var _local_6 = _local_6;
+            
+        _label_14: 
+            goto _label_13;
+            
+        _label_15: 
+            goto _label_12;
+            
+        _label_16: 
+            fs.open(f, FileMode.WRITE);
+            goto _label_14;
+            
+        _label_17: 
+            goto _label_16;
+            
+        _label_18: 
+            f = f.resolvePath(MD5.hash(_local_0.getUsername()));
+            goto _label_15;
             
         _label_19: 
             return (true);
             e = e;
-            ErrorManager.addError("Impossible de créer le fichier de certificat.", ___slot_1);
+            f = getCertifFolder(2, true);
+            while ((f = f.resolvePath(MD5.hash(getUsername()))), goto _label_20, (id = id), true)
+            {
+                fs.open(f, FileMode.WRITE);
+                for (;;fs.close(), goto _label_22)
+                {
+                    fs.writeBytes(cert.serialize());
+                    continue;
+                    
+                _label_20: 
+                    goto _label_21;
+                };
+            };
+            
+        _label_21: 
+            fs = new FileStream();
+            //unresolved jump
+            
+        _label_22: 
+            return (true);
+            e = e;
+            ErrorManager.addError(("Error writing certificate file at " + f.nativePath), id);
             return (false);
         }
 
@@ -562,42 +606,38 @@
 
         private function getCertificateFile():File
         {
-            goto _label_3;
-            
-        _label_1: 
-            goto _label_4;
-            
-        _label_2: 
-            var f:File;
-            goto _label_1;
-            var _local_0 = this;
-            
-        _label_3: 
             var userName:String;
-            goto _label_2;
-            var _local_3 = _local_3;
+            var f:File;
             try
             {
-                
-            _label_4: 
-                userName = _local_0.getUsername();
-                while ((f = _local_0.getCertifFolder(2).resolvePath(MD5.hash(userName))), true)
+                userName = this.getUsername();
+                while ((f = this.getCertifFolder(2).resolvePath(MD5.hash(userName))), true)
                 {
-                    goto _label_5;
+                    goto _label_1;
                 };
-                var getCertificateFile$0 = getCertificateFile$0;
+                var _local_3 = _local_3;
                 
-            _label_5: 
+            _label_1: 
                 if (!(f.exists))
                 {
-                    while ((f = _local_0.getCertifFolder(1).resolvePath(MD5.hash(userName))), true)
+                    while ((f = this.getCertifFolder(1).resolvePath(MD5.hash(userName))), true)
                     {
-                        goto _label_6;
+                        goto _label_2;
                     };
-                    var _local_4 = _local_4;
+                    var _local_0 = this;
                 };
                 
-            _label_6: 
+            _label_2: 
+                if (!(f.exists))
+                {
+                    while ((f = this.getCertifFolder(2, true).resolvePath(MD5.hash(userName))), true)
+                    {
+                        goto _label_3;
+                    };
+                    var _local_2 = _local_2;
+                };
+                
+            _label_3: 
                 if (f.exists)
                 {
                     return (f);
@@ -677,18 +717,21 @@
             {
                 goto _label_1;
             };
-            var fooCertif = fooCertif;
+            var _local_0 = this;
             
         _label_1: 
-            fooCertif = new ShieldCertifcate();
-            fooCertif.secureLevel = this.shieldLevel;
-            while (true)
+            var fooCertif:ShieldCertifcate = new ShieldCertifcate();
+            while ((fooCertif.secureLevel = _local_0.shieldLevel), true)
             {
-                this._rpcManager.callMethod(RPC_METHOD_MIGRATE, [this.getUsername(), AuthentificationManager.getInstance().ankamaPortalKey, 1, 2, iCertificateId, oldCertif, fooCertif.hash, fooCertif.reverseHash]);
-                goto _label_2;
+                goto _label_3;
             };
             
         _label_2: 
+            return;
+            
+        _label_3: 
+            _local_0._rpcManager.callMethod(RPC_METHOD_MIGRATE, [_local_0.getUsername(), AuthentificationManager.getInstance().ankamaPortalKey, 1, 2, iCertificateId, oldCertif, fooCertif.hash, fooCertif.reverseHash]);
+            goto _label_2;
             return;
         }
 
@@ -706,6 +749,7 @@
         _label_2: 
             this.addCertificate(result.id, result.certificate);
             goto _label_1;
+            var _local_0 = this;
             return;
         }
 

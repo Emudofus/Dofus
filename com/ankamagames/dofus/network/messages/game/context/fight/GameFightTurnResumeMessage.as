@@ -12,6 +12,7 @@
         public static const protocolId:uint = 6307;
 
         private var _isInitialized:Boolean = false;
+        public var remainingTime:uint = 0;
 
 
         override public function get isInitialized():Boolean
@@ -24,9 +25,10 @@
             return (6307);
         }
 
-        public function initGameFightTurnResumeMessage(id:int=0, waitTime:uint=0):GameFightTurnResumeMessage
+        public function initGameFightTurnResumeMessage(id:int=0, waitTime:uint=0, remainingTime:uint=0):GameFightTurnResumeMessage
         {
             super.initGameFightTurnStartMessage(id, waitTime);
+            this.remainingTime = remainingTime;
             this._isInitialized = true;
             return (this);
         }
@@ -34,6 +36,7 @@
         override public function reset():void
         {
             super.reset();
+            this.remainingTime = 0;
             this._isInitialized = false;
         }
 
@@ -57,6 +60,11 @@
         public function serializeAs_GameFightTurnResumeMessage(output:IDataOutput):void
         {
             super.serializeAs_GameFightTurnStartMessage(output);
+            if (this.remainingTime < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.remainingTime) + ") on element remainingTime.")));
+            };
+            output.writeInt(this.remainingTime);
         }
 
         override public function deserialize(input:IDataInput):void
@@ -67,6 +75,11 @@
         public function deserializeAs_GameFightTurnResumeMessage(input:IDataInput):void
         {
             super.deserialize(input);
+            this.remainingTime = input.readInt();
+            if (this.remainingTime < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.remainingTime) + ") on element of GameFightTurnResumeMessage.remainingTime.")));
+            };
         }
 
 

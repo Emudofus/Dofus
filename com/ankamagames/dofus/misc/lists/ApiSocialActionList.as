@@ -18,6 +18,7 @@
     import com.ankamagames.dofus.logic.game.common.actions.social.MemberWarningSetAction;
     import com.ankamagames.dofus.logic.game.common.actions.social.FriendOrGuildMemberLevelUpWarningSetAction;
     import com.ankamagames.dofus.logic.game.common.actions.social.FriendGuildSetWarnOnAchievementCompleteAction;
+    import com.ankamagames.dofus.logic.game.common.actions.social.WarnOnHardcoreDeathAction;
     import com.ankamagames.dofus.logic.game.common.actions.guild.GuildGetInformationsAction;
     import com.ankamagames.dofus.logic.game.common.actions.guild.GuildCreationValidAction;
     import com.ankamagames.dofus.logic.game.common.actions.guild.GuildModificationValidAction;
@@ -73,6 +74,7 @@
         public static const MemberWarningSet:DofusApiAction = new DofusApiAction("MemberWarningSet", MemberWarningSetAction);
         public static const FriendOrGuildMemberLevelUpWarningSet:DofusApiAction = new DofusApiAction("FriendOrGuildMemberLevelUpWarningSet", FriendOrGuildMemberLevelUpWarningSetAction);
         public static const FriendGuildSetWarnOnAchievementComplete:DofusApiAction = new DofusApiAction("FriendGuildSetWarnOnAchievementComplete", FriendGuildSetWarnOnAchievementCompleteAction);
+        public static const WarnOnHardcoreDeath:DofusApiAction = new DofusApiAction("WarnOnHardcoreDeath", WarnOnHardcoreDeathAction);
         public static const GuildGetInformations:DofusApiAction = new DofusApiAction("GuildGetInformations", GuildGetInformationsAction);
         public static const GuildCreationValid:DofusApiAction = new DofusApiAction("GuildCreationValid", GuildCreationValidAction);
         public static const GuildModificationValid:DofusApiAction = new DofusApiAction("GuildModificationValid", GuildModificationValidAction);

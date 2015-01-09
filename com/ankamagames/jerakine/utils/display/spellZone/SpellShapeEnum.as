@@ -23,6 +23,7 @@
         public static const I:uint = 73;
         public static const U:uint = 85;
         public static const A:uint = 65;
+        public static const a:uint = 97;
         public static const B:uint = 66;
         public static const Z:uint = 90;
         public static const semicolon:uint = 59;

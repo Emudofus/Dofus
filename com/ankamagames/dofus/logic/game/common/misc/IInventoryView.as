@@ -9,7 +9,7 @@
         function initialize(_arg_1:Vector.<ItemWrapper>):void;
         function get name():String;
         function get content():Vector.<ItemWrapper>;
-        function addItem(_arg_1:ItemWrapper, _arg_2:int):void;
+        function addItem(_arg_1:ItemWrapper, _arg_2:int, _arg_3:Boolean=true):void;
         function removeItem(_arg_1:ItemWrapper, _arg_2:int):void;
         function modifyItem(_arg_1:ItemWrapper, _arg_2:ItemWrapper, _arg_3:int):void;
         function isListening(_arg_1:ItemWrapper):Boolean;

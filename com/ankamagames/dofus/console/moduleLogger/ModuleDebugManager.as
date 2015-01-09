@@ -148,6 +148,7 @@
 
         private static function onOpenConsole(e:Event):void
         {
+            Console.getInstance().chatMode = false;
             Console.getInstance().toggleDisplay();
         }
 

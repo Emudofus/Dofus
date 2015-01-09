@@ -6,6 +6,7 @@
     import com.ankamagames.jerakine.types.enums.DirectionsEnum;
     import com.ankamagames.tiphon.types.look.TiphonEntityLook;
     import com.ankamagames.jerakine.types.positions.MovementPath;
+    import com.ankamagames.jerakine.entities.behaviours.IMovementBehavior;
 
     public class BenchmarkCharacter extends AnimatedCharacter 
     {
@@ -19,7 +20,7 @@
             this.id = nId;
         }
 
-        override public function move(path:MovementPath, callback:Function=null):void
+        override public function move(path:MovementPath, callback:Function=null, movementBehavior:IMovementBehavior=null):void
         {
             if (!(path.start.equals(position)))
             {

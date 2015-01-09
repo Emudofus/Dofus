@@ -15,6 +15,8 @@
     import com.ankamagames.dofus.network.messages.game.context.roleplay.TeleportOnSameMapMessage;
     import com.ankamagames.dofus.network.messages.game.context.GameMapMovementConfirmMessage;
     import com.ankamagames.dofus.network.messages.game.context.GameMapMovementCancelMessage;
+    import com.ankamagames.dofus.logic.game.common.frames.StackManagementFrame;
+    import com.ankamagames.dofus.logic.game.common.misc.stackedMessages.MoveBehavior;
     import com.ankamagames.dofus.network.messages.game.context.GameMapNoMovementMessage;
     import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
     import com.ankamagames.dofus.kernel.Kernel;
@@ -28,6 +30,8 @@
     import com.ankamagames.jerakine.managers.OptionManager;
     import com.ankamagames.dofus.logic.game.roleplay.managers.AnimFunManager;
     import com.ankamagames.jerakine.entities.interfaces.IMovable;
+    import com.ankamagames.dofus.network.messages.game.context.GameCautiousMapMovementMessage;
+    import com.ankamagames.atouin.entities.behaviours.movements.WalkingMovementBehavior;
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
     import com.ankamagames.dofus.logic.game.roleplay.messages.CharacterMovementStoppedMessage;
     import com.ankamagames.dofus.logic.common.actions.EmptyStackAction;
@@ -39,7 +43,9 @@
     import com.ankamagames.dofus.types.entities.AnimatedCharacter;
     import com.ankamagames.jerakine.pathfinding.Pathfinding;
     import com.ankamagames.atouin.utils.DataMapProvider;
+    import com.ankamagames.dofus.network.messages.game.context.GameCautiousMapMovementRequestMessage;
     import com.ankamagames.dofus.network.messages.game.context.GameMapMovementRequestMessage;
+    import com.ankamagames.berilia.frames.ShortcutsFrame;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.ChangeMapMessage;
     import com.ankamagames.dofus.network.messages.game.interactive.InteractiveUseRequestMessage;
     import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
@@ -57,6 +63,7 @@
         private var _isRequestingMovement:Boolean;
         private var _latestMovementRequest:uint;
         private var _destinationPoint:uint;
+        private var _forceWalkForNextMovement:Boolean;
 
 
         public function get priority():int
@@ -87,6 +94,8 @@
             var _local_10:IEntity;
             var gmmcmsg:GameMapMovementConfirmMessage;
             var canceledMoveMessage:GameMapMovementCancelMessage;
+            var stackFrame:StackManagementFrame;
+            var moveBehavior:MoveBehavior;
             switch (true)
             {
                 case (msg is GameMapNoMovementMessage):
@@ -124,7 +133,7 @@
                     {
                         AnimFunManager.getInstance().cancelAnim(_local_2.actorId);
                     };
-                    (_local_3 as IMovable).move(_local_6);
+                    (_local_3 as IMovable).move(_local_6, null, (((msg is GameCautiousMapMovementMessage)) ? WalkingMovementBehavior.getInstance() : null));
                     return (true);
                 case (msg is EntityMovementCompleteMessage):
                     _local_7 = (msg as EntityMovementCompleteMessage);
@@ -152,11 +161,19 @@
                         canceledMoveMessage = new GameMapMovementCancelMessage();
                         canceledMoveMessage.initGameMapMovementCancelMessage(_local_8.entity.position.cellId);
                         ConnectionsHandler.getConnection().send(canceledMoveMessage);
-                        Kernel.getWorker().process(EmptyStackAction.create());
                         this._isRequestingMovement = false;
                         if (this._followingMove)
                         {
                             this.askMoveTo(this._followingMove);
+                            stackFrame = (Kernel.getWorker().getFrame(StackManagementFrame) as StackManagementFrame);
+                            if (stackFrame.stackOutputMessage.length > 0)
+                            {
+                                moveBehavior = (stackFrame.stackOutputMessage[0] as MoveBehavior);
+                                if (((moveBehavior) && (!((moveBehavior.position.cellId == this._followingMove.cellId)))))
+                                {
+                                    Kernel.getWorker().process(EmptyStackAction.create());
+                                };
+                            };
                             this._followingMove = null;
                         };
                         if (this._followingMessage)
@@ -229,6 +246,11 @@
             this._followingMessage = message;
         }
 
+        public function setForceWalkForNextMovement(pValue:Boolean)
+        {
+            this._forceWalkForNextMovement = pValue;
+        }
+
         function askMoveTo(cell:MapPoint):Boolean
         {
             if (this._isRequestingMovement)
@@ -265,6 +287,8 @@
 
         private function sendPath(path:MovementPath):void
         {
+            var gcmmrmsg:GameCautiousMapMovementRequestMessage;
+            var _local_3:GameMapMovementRequestMessage;
             if (path.start.cellId == path.end.cellId)
             {
                 _log.warn((("Discarding a movement path that begins and ends on the same cell (" + path.start.cellId) + ")."));
@@ -276,9 +300,19 @@
                 };
                 return;
             };
-            var gmmrmsg:GameMapMovementRequestMessage = new GameMapMovementRequestMessage();
-            gmmrmsg.initGameMapMovementRequestMessage(MapMovementAdapter.getServerMovement(path), PlayedCharacterManager.getInstance().currentMap.mapId);
-            ConnectionsHandler.getConnection().send(gmmrmsg);
+            if (((this._forceWalkForNextMovement) || (ShortcutsFrame.ctrlKeyDown)))
+            {
+                gcmmrmsg = new GameCautiousMapMovementRequestMessage();
+                gcmmrmsg.initGameCautiousMapMovementRequestMessage(MapMovementAdapter.getServerMovement(path), PlayedCharacterManager.getInstance().currentMap.mapId);
+                ConnectionsHandler.getConnection().send(gcmmrmsg);
+                this._forceWalkForNextMovement = false;
+            }
+            else
+            {
+                _local_3 = new GameMapMovementRequestMessage();
+                _local_3.initGameMapMovementRequestMessage(MapMovementAdapter.getServerMovement(path), PlayedCharacterManager.getInstance().currentMap.mapId);
+                ConnectionsHandler.getConnection().send(_local_3);
+            };
             this._latestMovementRequest = getTimer();
         }
 

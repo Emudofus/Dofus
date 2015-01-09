@@ -133,7 +133,7 @@
         public var damageSharingTargets:Vector.<int>;
 
 
-        public static function fromCurrentPlayer(pSpell:Object, pTargetId:int):SpellDamageInfo
+        public static function fromCurrentPlayer(pSpell:Object, pTargetId:int, pSpellImpactCell:int):SpellDamageInfo
         {
             var sdi:SpellDamageInfo;
             var cellId:uint;
@@ -186,7 +186,7 @@
                 targetEntities = EntitiesManager.getInstance().getEntitiesOnCell(cellId, AnimatedCharacter);
                 for each (targetEntity in targetEntities)
                 {
-                    if (((((fightContextFrame.entitiesFrame.getEntityInfos(targetEntity.id)) && ((sdi._originalTargetsIds.indexOf(targetEntity.id) == -1)))) && (DamageUtil.isDamagedOrHealedBySpell(sdi.casterId, targetEntity.id, pSpell))))
+                    if (((((fightContextFrame.entitiesFrame.getEntityInfos(targetEntity.id)) && ((sdi._originalTargetsIds.indexOf(targetEntity.id) == -1)))) && (DamageUtil.isDamagedOrHealedBySpell(sdi.casterId, targetEntity.id, pSpell, pSpellImpactCell))))
                     {
                         sdi._originalTargetsIds.push(targetEntity.id);
                     };
@@ -404,7 +404,7 @@
                     sdi.spellShapeEfficiencyPercent = 25;
                 };
             };
-            sdi.spellCenterCell = FightContextFrame.currentCell;
+            sdi.spellCenterCell = pSpellImpactCell;
             for each (effi in pSpell.effects)
             {
                 if (effi.category == DamageUtil.DAMAGE_EFFECT_CATEGORY)
@@ -737,7 +737,7 @@
             var criticalSpellLevel:int;
             for each (eff in this.spellEffects)
             {
-                if ((((((eff.effectId == 1160)) && (DamageUtil.verifySpellEffectMask(this.casterId, this.targetId, eff)))) && (DamageUtil.verifyEffectTrigger(this.casterId, this.targetId, eff, false, eff.triggers))))
+                if ((((((eff.effectId == 1160)) && (DamageUtil.verifySpellEffectMask(this.casterId, this.targetId, eff)))) && (DamageUtil.verifyEffectTrigger(this.casterId, this.targetId, this.spellEffects, eff, false, eff.triggers, this.spellCenterCell))))
                 {
                     if (!(triggeredSpellsByCaster))
                     {
@@ -793,7 +793,7 @@
                     {
                         triggeredSpells = new Vector.<TriggeredSpell>(0);
                     };
-                    triggeredSpells.push(TriggeredSpell.create(DamageUtil.getBuffTriggers(buff), spellId, int(buff.effects.parameter1), criticalSpellLevel, this.targetId, this.targetId));
+                    triggeredSpells.push(TriggeredSpell.create(buff.effects.triggers, spellId, int(buff.effects.parameter1), criticalSpellLevel, this.targetId, this.targetId));
                 };
             };
             return (triggeredSpells);
@@ -821,7 +821,7 @@
                 while (i < numEffects)
                 {
                     effect = this.spellEffects[i];
-                    if ((((effect.random == 0)) && (DamageUtil.verifyEffectTrigger(this.casterId, this.targetId, effect, this.isWeapon, ts.triggers))))
+                    if ((((effect.random == 0)) && (DamageUtil.verifyEffectTrigger(this.casterId, this.targetId, this.spellEffects, effect, this.isWeapon, ts.triggers, this.spellCenterCell))))
                     {
                         for each (triggeredEffect in ts.spell.effects)
                         {
@@ -871,7 +871,7 @@
                 while (i < numCriticalEffects)
                 {
                     effect = this.spellCriticalEffects[i];
-                    if ((((effect.random == 0)) && (DamageUtil.verifyEffectTrigger(this.casterId, this.targetId, effect, this.isWeapon, ts.triggers))))
+                    if ((((effect.random == 0)) && (DamageUtil.verifyEffectTrigger(this.casterId, this.targetId, this.spellCriticalEffects, effect, this.isWeapon, ts.triggers, this.spellCenterCell))))
                     {
                         for each (triggeredEffect in ts.spell.effects)
                         {

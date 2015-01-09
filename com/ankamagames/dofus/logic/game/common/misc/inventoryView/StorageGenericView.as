@@ -18,7 +18,7 @@
     public class StorageGenericView implements IStorageView 
     {
 
-        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StorageView));
+        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StorageGenericView));
 
         protected var _content:Vector.<ItemWrapper>;
         protected var _sortedContent:Vector.<ItemWrapper>;
@@ -55,7 +55,7 @@
             {
                 if (this.isListening(item))
                 {
-                    this.addItem(item, 0);
+                    this.addItem(item, 0, false);
                 };
             };
             this._content.sort(this.sortItemsByIndex);
@@ -81,7 +81,7 @@
             return (this._types);
         }
 
-        public function addItem(item:ItemWrapper, invisible:int):void
+        public function addItem(item:ItemWrapper, invisible:int, needUpdateView:Boolean=true):void
         {
             var clone:ItemWrapper = item.clone();
             clone.quantity = (clone.quantity - invisible);
@@ -92,17 +92,20 @@
             };
             if (((this._typesQty[item.typeId]) && ((this._typesQty[item.typeId] > 0))))
             {
-                var _local_4 = this._typesQty;
-                var _local_5 = item.typeId;
-                var _local_6 = (_local_4[_local_5] + 1);
-                _local_4[_local_5] = _local_6;
+                var _local_5 = this._typesQty;
+                var _local_6 = item.typeId;
+                var _local_7 = (_local_5[_local_6] + 1);
+                _local_5[_local_6] = _local_7;
             }
             else
             {
                 this._typesQty[item.typeId] = 1;
                 this._types[item.typeId] = item.type;
             };
-            this.updateView();
+            if (needUpdateView)
+            {
+                this.updateView();
+            };
         }
 
         public function removeItem(item:ItemWrapper, invisible:int):void

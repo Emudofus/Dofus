@@ -12,10 +12,15 @@
         private static var _cache:Dictionary = new Dictionary();
         public static const DefaultBeriliaSlotIcon:Class = EmbedAssets_DefaultBeriliaSlotIcon;
         public static const CHECKPOINT_CLIP_TOP:Class = EmbedAssets_CHECKPOINT_CLIP_TOP;
+        public static const CHECKPOINT_CLIP_TOP_WALK:Class = EmbedAssets_CHECKPOINT_CLIP_TOP_WALK;
         public static const CHECKPOINT_CLIP_LEFT:Class = EmbedAssets_CHECKPOINT_CLIP_LEFT;
+        public static const CHECKPOINT_CLIP_LEFT_WALK:Class = EmbedAssets_CHECKPOINT_CLIP_LEFT_WALK;
         public static const CHECKPOINT_CLIP_BOTTOM:Class = EmbedAssets_CHECKPOINT_CLIP_BOTTOM;
+        public static const CHECKPOINT_CLIP_BOTTOM_WALK:Class = EmbedAssets_CHECKPOINT_CLIP_BOTTOM_WALK;
         public static const CHECKPOINT_CLIP_RIGHT:Class = EmbedAssets_CHECKPOINT_CLIP_RIGHT;
+        public static const CHECKPOINT_CLIP_RIGHT_WALK:Class = EmbedAssets_CHECKPOINT_CLIP_RIGHT_WALK;
         private static const CHECKPOINT_CLIP:Class = EmbedAssets_CHECKPOINT_CLIP;
+        private static const CHECKPOINT_CLIP_WALK:Class = EmbedAssets_CHECKPOINT_CLIP_WALK;
         private static const QUEST_CLIP:Class = EmbedAssets_QUEST_CLIP;
         private static const QUEST_REPEATABLE_CLIP:Class = EmbedAssets_QUEST_REPEATABLE_CLIP;
         private static const QUEST_OBJECTIVE_CLIP:Class = EmbedAssets_QUEST_OBJECTIVE_CLIP;

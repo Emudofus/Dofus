@@ -13,6 +13,7 @@
         private static var GLOBAL_INSTANCE_ID:uint = 0;
         public static const BIT_RIGHT_SHIFT_LEN_PACKET_ID:uint = 2;
         public static const BIT_MASK:uint = 3;
+        public static var HASH_FUNCTION:Function;
 
         private var _instance_id:uint;
         public var receptionTime:int;

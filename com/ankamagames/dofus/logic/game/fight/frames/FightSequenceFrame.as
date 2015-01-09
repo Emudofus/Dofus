@@ -94,6 +94,7 @@
     import com.ankamagames.dofus.logic.game.fight.steps.FightLeavingStateStep;
     import com.ankamagames.dofus.logic.game.fight.steps.FightEnteringStateStep;
     import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostEffect;
+    import com.ankamagames.dofus.logic.game.fight.types.StatBuff;
     import com.ankamagames.dofus.network.messages.game.actions.AbstractGameActionMessage;
     import com.ankamagames.jerakine.messages.Message;
     import com.ankamagames.jerakine.script.BinaryScript;
@@ -956,7 +957,7 @@
                     if (this._castingSpell)
                     {
                         _local_59.castingSpellId = this._castingSpell.castingSpellId;
-                        if (this._castingSpell.spell.id == _local_58.effect.spellId)
+                        if (this._castingSpell.castingSpellId == _local_58.effect.spellId)
                         {
                             _local_59.spellRank = this._castingSpell.spellRank;
                         };
@@ -988,6 +989,10 @@
                         if (((((((((((!((actionId == ActionIdConverter.ACTION_CHARACTER_MAKE_INVISIBLE))) && (!((actionId == ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST))))) && (!((actionId == ActionIdConverter.ACTION_CHARACTER_CHANGE_LOOK))))) && (!((actionId == ActionIdConverter.ACTION_CHARACTER_CHANGE_COLOR))))) && (!((actionId == ActionIdConverter.ACTION_CHARACTER_ADD_APPEARANCE))))) && (!((actionId == ActionIdConverter.ACTION_FIGHT_SET_STATE)))))
                         {
                             this.pushTemporaryBoostStep(_local_58.effect.targetId, _local_61.effects.description, _local_61.effects.duration, _local_61.effects.durationString);
+                        };
+                        if (actionId == ActionIdConverter.ACTION_CHARACTER_BOOST_SHIELD)
+                        {
+                            this.pushShieldPointsVariationStep(_local_58.effect.targetId, (_local_61 as StatBuff).delta, actionId);
                         };
                     };
                     this.pushDisplayBuffStep(_local_61);
@@ -1193,16 +1198,20 @@
                         break;
                     case (step is FightShieldPointsVariationStep):
                         _local_29 = (step as FightShieldPointsVariationStep);
-                        if (_local_30.target == null)
+                        if (_local_29.target == null)
                         {
                             break;
                         };
-                        if (shieldLoseSum[_local_29.target] == null)
+                        if (_local_29.value < 0)
                         {
-                            shieldLoseSum[_local_29.target] = 0;
+                            _local_29.virtual = true;
+                            if (shieldLoseSum[_local_29.target] == null)
+                            {
+                                shieldLoseSum[_local_29.target] = 0;
+                            };
+                            shieldLoseSum[_local_29.target] = (shieldLoseSum[_local_29.target] + _local_29.value);
+                            shieldLoseLastStep[_local_29.target] = _local_29;
                         };
-                        shieldLoseSum[_local_29.target] = (shieldLoseSum[_local_29.target] + _local_29.value);
-                        shieldLoseLastStep[_local_29.target] = _local_29;
                         this.showTargetTooltip(_local_29.target.id);
                         break;
                     case (step is FightLifeVariationStep):

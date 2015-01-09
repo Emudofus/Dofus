@@ -5,6 +5,7 @@
     import com.ankamagames.dofus.logic.connection.frames.ServerSelectionFrame;
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.connection.GameServerInformations;
+    import com.ankamagames.dofus.logic.connection.managers.GuestModeManager;
     import com.ankamagames.dofus.logic.game.approach.frames.GameServerApproachFrame;
     import com.ankamagames.dofus.logic.common.managers.PlayerManager;
     import com.ankamagames.dofus.datacenter.servers.Server;
@@ -32,6 +33,12 @@
         public function getServers():Vector.<GameServerInformations>
         {
             return (this.serverSelectionFrame.servers);
+        }
+
+        [Untrusted]
+        public function hasGuestAccount():Boolean
+        {
+            return (GuestModeManager.getInstance().hasGuestAccount());
         }
 
         [Untrusted]
@@ -93,6 +100,10 @@
                 firstPop = -1;
                 for each (server in serversList)
                 {
+                    if ((((BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE)) && ((server.id == 36))))
+                    {
+                        return (server);
+                    };
                     data = Server.getServerById(server.id);
                     if ((((server.status == 3)) && ((firstPop == -1))))
                     {

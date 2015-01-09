@@ -740,9 +740,9 @@
             if (this._bUseSimpleResize)
             {
                 this.getUi().render();
-                if (super.contains(this._shResizeBorder))
+                if (((this._shResizeBorder) && (this._shResizeBorder.parent)))
                 {
-                    removeChild(this._shResizeBorder);
+                    this._shResizeBorder.parent.removeChild(this._shResizeBorder);
                 };
             };
         }

@@ -10,6 +10,7 @@
     import com.ankamagames.dofus.network.types.game.achievement.AchievementRewardable;
     import com.ankamagames.jerakine.types.enums.Priority;
     import com.ankamagames.dofus.datacenter.quest.Achievement;
+    import com.ankamagames.dofus.network.enums.TreasureHuntFlagStateEnum;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.quest.QuestListRequestMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.quest.QuestListMessage;
     import com.ankamagames.dofus.logic.game.common.actions.quest.QuestInfosRequestAction;
@@ -49,7 +50,13 @@
     import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntLegendaryRequestAction;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntLegendaryRequestMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntRequestAnswerMessage;
+    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntFlagRequestAction;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFlagRequestMessage;
+    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntFlagRemoveRequestAction;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFlagRemoveRequestMessage;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFlagRequestAnswerMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntMessage;
+    import com.ankamagames.dofus.datacenter.world.MapPosition;
     import com.ankamagames.dofus.internalDatacenter.quest.TreasureHuntWrapper;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntAvailableRetryCountUpdateMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFinishedMessage;
@@ -61,6 +68,8 @@
     import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestActiveDetailedInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestObjectiveInformations;
     import com.ankamagames.dofus.datacenter.quest.QuestStep;
+    import com.ankamagames.dofus.internalDatacenter.quest.TreasureHuntStepWrapper;
+    import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntFlag;
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
     import com.ankamagames.dofus.logic.game.common.actions.quest.QuestListRequestAction;
     import com.ankamagames.berilia.managers.KernelEventsManager;
@@ -78,6 +87,8 @@
     import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
     import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
     import com.ankamagames.dofus.network.enums.TreasureHuntRequestEnum;
+    import com.ankamagames.dofus.network.enums.TreasureHuntFlagRequestEnum;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntDigRequestAnswerFailedMessage;
     import com.ankamagames.dofus.network.enums.TreasureHuntDigRequestEnum;
     import com.ankamagames.dofus.network.enums.TreasureHuntTypeEnum;
     import com.ankamagames.jerakine.messages.Message;
@@ -96,11 +107,14 @@
         private var _finishedAchievementsIds:Vector.<uint>;
         private var _rewardableAchievements:Vector.<AchievementRewardable>;
         private var _rewardableAchievementsVisible:Boolean;
-        private var _treasureHunts:Array;
+        private var _treasureHunts:Dictionary;
+        private var _flagColors:Array;
 
         public function QuestFrame()
         {
             this._questsInformations = new Dictionary();
+            this._treasureHunts = new Dictionary();
+            this._flagColors = new Array();
             super();
         }
 
@@ -143,8 +157,11 @@
         {
             this._rewardableAchievements = new Vector.<AchievementRewardable>();
             this._finishedAchievementsIds = new Vector.<uint>();
-            this._treasureHunts = new Array();
+            this._treasureHunts = new Dictionary();
             this._nbAllAchievements = Achievement.getAchievements().length;
+            this._flagColors[TreasureHuntFlagStateEnum.TREASURE_HUNT_FLAG_STATE_UNKNOWN] = 15636787;
+            this._flagColors[TreasureHuntFlagStateEnum.TREASURE_HUNT_FLAG_STATE_OK] = 4521796;
+            this._flagColors[TreasureHuntFlagStateEnum.TREASURE_HUNT_FLAG_STATE_WRONG] = 16729156;
             return (true);
         }
 
@@ -196,30 +213,41 @@
             var _local_45:TreasureHuntLegendaryRequestMessage;
             var _local_46:TreasureHuntRequestAnswerMessage;
             var _local_47:String;
-            var _local_48:TreasureHuntMessage;
-            var _local_49:TreasureHuntWrapper;
-            var _local_50:TreasureHuntAvailableRetryCountUpdateMessage;
-            var _local_51:TreasureHuntFinishedMessage;
-            var _local_52:TreasureHuntGiveUpRequestAction;
-            var _local_53:TreasureHuntGiveUpRequestMessage;
-            var _local_54:TreasureHuntDigRequestAction;
-            var _local_55:TreasureHuntDigRequestMessage;
-            var _local_56:TreasureHuntDigRequestAnswerMessage;
-            var _local_57:String;
+            var _local_48:TreasureHuntFlagRequestAction;
+            var _local_49:TreasureHuntFlagRequestMessage;
+            var _local_50:TreasureHuntFlagRemoveRequestAction;
+            var _local_51:TreasureHuntFlagRemoveRequestMessage;
+            var _local_52:TreasureHuntFlagRequestAnswerMessage;
+            var _local_53:String;
+            var _local_54:TreasureHuntMessage;
+            var _local_55:MapPosition;
+            var _local_56:TreasureHuntWrapper;
+            var i:int;
+            var _local_58:TreasureHuntAvailableRetryCountUpdateMessage;
+            var _local_59:TreasureHuntFinishedMessage;
+            var _local_60:TreasureHuntGiveUpRequestAction;
+            var _local_61:TreasureHuntGiveUpRequestMessage;
+            var _local_62:TreasureHuntDigRequestAction;
+            var _local_63:TreasureHuntDigRequestMessage;
+            var _local_64:TreasureHuntDigRequestAnswerMessage;
+            var _local_65:int;
+            var _local_66:String;
             var stepsInfos:QuestActiveDetailedInformations;
             var obj:QuestObjectiveInformations;
             var dialogParams:Array;
             var nbParams:int;
-            var i:int;
             var compl:Object;
-            var _local_64:int;
-            var _local_65:QuestActiveInformations;
+            var _local_72:int;
+            var _local_73:QuestActiveInformations;
             var step:QuestStep;
             var questStepObjId:int;
             var stepObjId:int;
             var finishAchId:int;
             var rewAch:AchievementRewardable;
             var achievementRewardable:AchievementRewardable;
+            var j:int;
+            var st:TreasureHuntStepWrapper;
+            var fl:TreasureHuntFlag;
             switch (true)
             {
                 case (msg is QuestListRequestAction):
@@ -319,17 +347,17 @@
                     }
                     else
                     {
-                        for each (_local_65 in this._activeQuests)
+                        for each (_local_73 in this._activeQuests)
                         {
-                            if (_local_65.questId == _local_14.questId)
+                            if (_local_73.questId == _local_14.questId)
                             {
                                 break;
                             };
-                            _local_64++;
+                            _local_72++;
                         };
-                        if (((this._activeQuests) && ((_local_64 < this._activeQuests.length))))
+                        if (((this._activeQuests) && ((_local_72 < this._activeQuests.length))))
                         {
-                            this._activeQuests.splice(_local_64, 1);
+                            this._activeQuests.splice(_local_72, 1);
                         };
                     };
                     this._completedQuests.push(_local_14.questId);
@@ -533,78 +561,181 @@
                         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_47, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     };
                     return (true);
+                case (msg is TreasureHuntFlagRequestAction):
+                    _local_48 = (msg as TreasureHuntFlagRequestAction);
+                    _local_49 = new TreasureHuntFlagRequestMessage();
+                    _local_49.initTreasureHuntFlagRequestMessage(_local_48.questType, _local_48.index);
+                    ConnectionsHandler.getConnection().send(_local_49);
+                    return (true);
+                case (msg is TreasureHuntFlagRemoveRequestAction):
+                    _local_50 = (msg as TreasureHuntFlagRemoveRequestAction);
+                    _local_51 = new TreasureHuntFlagRemoveRequestMessage();
+                    _local_51.initTreasureHuntFlagRemoveRequestMessage(_local_50.questType, _local_50.index);
+                    ConnectionsHandler.getConnection().send(_local_51);
+                    return (true);
+                case (msg is TreasureHuntFlagRequestAnswerMessage):
+                    _local_52 = (msg as TreasureHuntFlagRequestAnswerMessage);
+                    switch (_local_52.result)
+                    {
+                        case TreasureHuntFlagRequestEnum.TREASURE_HUNT_FLAG_OK:
+                            break;
+                        case TreasureHuntFlagRequestEnum.TREASURE_HUNT_FLAG_ERROR_UNDEFINED:
+                        case TreasureHuntFlagRequestEnum.TREASURE_HUNT_FLAG_WRONG:
+                        case TreasureHuntFlagRequestEnum.TREASURE_HUNT_FLAG_TOO_MANY:
+                        case TreasureHuntFlagRequestEnum.TREASURE_HUNT_FLAG_ERROR_IMPOSSIBLE:
+                        case TreasureHuntFlagRequestEnum.TREASURE_HUNT_FLAG_WRONG_INDEX:
+                            _local_53 = I18n.getUiText("ui.treasureHunt.flagFail");
+                            break;
+                        case TreasureHuntFlagRequestEnum.TREASURE_HUNT_FLAG_SAME_MAP:
+                            _local_53 = I18n.getUiText("ui.treasureHunt.flagFailSameMap");
+                            break;
+                    };
+                    if (_local_53)
+                    {
+                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_53, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                    };
+                    return (true);
                 case (msg is TreasureHuntMessage):
-                    _local_48 = (msg as TreasureHuntMessage);
-                    _local_49 = TreasureHuntWrapper.create(_local_48.questType, _local_48.startMapId, _local_48.checkPointCurrent, _local_48.checkPointTotal, _local_48.availableRetryCount, _local_48.stepList);
-                    this._treasureHunts[_local_48.questType] = _local_49;
-                    KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntUpdate, _local_49.questType);
+                    _local_54 = (msg as TreasureHuntMessage);
+                    if (((this._treasureHunts[_local_54.questType]) && (this._treasureHunts[_local_54.questType].stepList.length)))
+                    {
+                        j = 0;
+                        for each (st in this._treasureHunts[_local_54.questType].stepList)
+                        {
+                            if (st.flagState > -1)
+                            {
+                                j++;
+                                if (!(_local_55))
+                                {
+                                    _local_55 = MapPosition.getMapPositionById(st.mapId);
+                                };
+                                if (_local_55.worldMap > -1)
+                                {
+                                    KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag, ((("flag_hunt_" + _local_54.questType) + "_") + j), _local_55.worldMap);
+                                };
+                            };
+                        };
+                    };
+                    _local_56 = TreasureHuntWrapper.create(_local_54.questType, _local_54.startMapId, _local_54.checkPointCurrent, _local_54.checkPointTotal, _local_54.totalStepCount, _local_54.availableRetryCount, _local_54.knownStepsList, _local_54.flags);
+                    this._treasureHunts[_local_54.questType] = _local_56;
+                    i = 0;
+                    for each (fl in _local_54.flags)
+                    {
+                        i++;
+                        _local_55 = MapPosition.getMapPositionById(fl.mapId);
+                        if (_local_55.worldMap > -1)
+                        {
+                            KernelEventsManager.getInstance().processCallback(HookList.AddMapFlag, ((("flag_hunt_" + _local_54.questType) + "_") + i), (((((((I18n.getUiText(("ui.treasureHunt.huntType" + _local_54.questType)) + " - Indice n°") + i) + " [") + _local_55.posX) + ",") + _local_55.posY) + "]"), _local_55.worldMap, _local_55.posX, _local_55.posY, this._flagColors[fl.state], false, false, false);
+                        };
+                    };
+                    KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntUpdate, _local_56.questType);
                     return (true);
                 case (msg is TreasureHuntAvailableRetryCountUpdateMessage):
-                    _local_50 = (msg as TreasureHuntAvailableRetryCountUpdateMessage);
-                    this._treasureHunts[_local_50.questType].availableRetryCount = _local_50.availableRetryCount;
-                    KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntAvailableRetryCountUpdate, _local_50.questType, _local_50.availableRetryCount);
+                    _local_58 = (msg as TreasureHuntAvailableRetryCountUpdateMessage);
+                    this._treasureHunts[_local_58.questType].availableRetryCount = _local_58.availableRetryCount;
+                    KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntAvailableRetryCountUpdate, _local_58.questType, _local_58.availableRetryCount);
                     return (true);
                 case (msg is TreasureHuntFinishedMessage):
-                    _local_51 = (msg as TreasureHuntFinishedMessage);
-                    this._treasureHunts[_local_51.questType] = null;
-                    delete this._treasureHunts[_local_51.questType];
-                    KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntFinished, _local_51.questType);
+                    _local_59 = (msg as TreasureHuntFinishedMessage);
+                    if (this._treasureHunts[_local_59.questType])
+                    {
+                        if (this._treasureHunts[_local_59.questType].stepList.length)
+                        {
+                            j = 0;
+                            for each (st in this._treasureHunts[_local_59.questType].stepList)
+                            {
+                                if (st.flagState > -1)
+                                {
+                                    j++;
+                                    if (!(_local_55))
+                                    {
+                                        _local_55 = MapPosition.getMapPositionById(st.mapId);
+                                    };
+                                    if (_local_55.worldMap > -1)
+                                    {
+                                        KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag, ((("flag_hunt_" + _local_59.questType) + "_") + j), _local_55.worldMap);
+                                    };
+                                };
+                            };
+                        };
+                        this._treasureHunts[_local_59.questType] = null;
+                        delete this._treasureHunts[_local_59.questType];
+                        KernelEventsManager.getInstance().processCallback(QuestHookList.TreasureHuntFinished, _local_59.questType);
+                    };
                     return (true);
                 case (msg is TreasureHuntGiveUpRequestAction):
-                    _local_52 = (msg as TreasureHuntGiveUpRequestAction);
-                    _local_53 = new TreasureHuntGiveUpRequestMessage();
-                    _local_53.initTreasureHuntGiveUpRequestMessage(_local_52.questType);
-                    ConnectionsHandler.getConnection().send(_local_53);
+                    _local_60 = (msg as TreasureHuntGiveUpRequestAction);
+                    _local_61 = new TreasureHuntGiveUpRequestMessage();
+                    _local_61.initTreasureHuntGiveUpRequestMessage(_local_60.questType);
+                    ConnectionsHandler.getConnection().send(_local_61);
                     return (true);
                 case (msg is TreasureHuntDigRequestAction):
-                    _local_54 = (msg as TreasureHuntDigRequestAction);
-                    _local_55 = new TreasureHuntDigRequestMessage();
-                    _local_55.initTreasureHuntDigRequestMessage(_local_54.questType);
-                    ConnectionsHandler.getConnection().send(_local_55);
+                    _local_62 = (msg as TreasureHuntDigRequestAction);
+                    _local_63 = new TreasureHuntDigRequestMessage();
+                    _local_63.initTreasureHuntDigRequestMessage(_local_62.questType);
+                    ConnectionsHandler.getConnection().send(_local_63);
                     return (true);
                 case (msg is TreasureHuntDigRequestAnswerMessage):
-                    _local_56 = (msg as TreasureHuntDigRequestAnswerMessage);
-                    if (_local_56.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_ERROR_IMPOSSIBLE)
+                    _local_64 = (msg as TreasureHuntDigRequestAnswerMessage);
+                    if ((_local_64 is TreasureHuntDigRequestAnswerFailedMessage))
                     {
-                        _local_57 = I18n.getUiText("ui.fight.wrongMap");
+                        _local_65 = (_local_64 as TreasureHuntDigRequestAnswerFailedMessage).wrongFlagCount;
+                    };
+                    if (_local_64.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_ERROR_IMPOSSIBLE)
+                    {
+                        _local_66 = I18n.getUiText("ui.fight.wrongMap");
                     }
                     else
                     {
-                        if (_local_56.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_ERROR_UNDEFINED)
+                        if (_local_64.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_ERROR_UNDEFINED)
                         {
-                            _local_57 = I18n.getUiText("ui.popup.impossible_action");
+                            _local_66 = I18n.getUiText("ui.popup.impossible_action");
                         }
                         else
                         {
-                            if (_local_56.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_LOST)
+                            if (_local_64.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_LOST)
                             {
-                                _local_57 = I18n.getUiText("ui.treasureHunt.huntFail");
+                                _local_66 = I18n.getUiText("ui.treasureHunt.huntFail");
                             }
                             else
                             {
-                                if (_local_56.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_NEW_HINT)
+                                if (_local_64.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_NEW_HINT)
                                 {
-                                    _local_57 = I18n.getUiText("ui.treasureHunt.stepSuccess");
+                                    _local_66 = I18n.getUiText("ui.treasureHunt.stepSuccess");
                                 }
                                 else
                                 {
-                                    if (_local_56.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_WRONG)
+                                    if (_local_64.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_WRONG)
                                     {
-                                        _local_57 = I18n.getUiText("ui.treasureHunt.digFail");
-                                    }
-                                    else
-                                    {
-                                        if (_local_56.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_FINISHED)
+                                        if (_local_65 > 1)
                                         {
-                                            if (_local_56.questType == TreasureHuntTypeEnum.TREASURE_HUNT_CLASSIC)
+                                            _local_66 = I18n.getUiText("ui.treasureHunt.digWrongFlags", [_local_65]);
+                                        }
+                                        else
+                                        {
+                                            if (_local_65 > 0)
                                             {
-                                                _local_57 = I18n.getUiText("ui.treasureHunt.huntSuccess");
+                                                _local_66 = I18n.getUiText("ui.treasureHunt.digWrongFlag");
                                             }
                                             else
                                             {
-                                                if (_local_56.questType == TreasureHuntTypeEnum.TREASURE_HUNT_PORTAL)
+                                                _local_66 = I18n.getUiText("ui.treasureHunt.digFail");
+                                            };
+                                        };
+                                    }
+                                    else
+                                    {
+                                        if (_local_64.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_WRONG_AND_YOU_KNOW_IT)
+                                        {
+                                            _local_66 = I18n.getUiText("ui.treasureHunt.noNewFlag");
+                                        }
+                                        else
+                                        {
+                                            if (_local_64.result == TreasureHuntDigRequestEnum.TREASURE_HUNT_DIG_FINISHED)
+                                            {
+                                                if (_local_64.questType == TreasureHuntTypeEnum.TREASURE_HUNT_CLASSIC)
                                                 {
-                                                    _local_57 = I18n.getUiText("ui.treasureHunt.portalHuntSuccess", [PlayedCharacterManager.getInstance().currentMap.outdoorX, PlayedCharacterManager.getInstance().currentMap.outdoorY]);
+                                                    _local_66 = I18n.getUiText("ui.treasureHunt.huntSuccess");
                                                 };
                                             };
                                         };
@@ -613,9 +744,9 @@
                             };
                         };
                     };
-                    if (_local_57)
+                    if (_local_66)
                     {
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_57, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_66, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     };
                     return (true);
             };

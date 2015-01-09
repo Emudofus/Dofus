@@ -6,7 +6,7 @@
     {
 
 
-        public static function create():ExchangeObjectTransfertExistingFromInvAction
+        public static function create(fromBankExchange:Boolean=false):ExchangeObjectTransfertExistingFromInvAction
         {
             return (new (ExchangeObjectTransfertExistingFromInvAction)());
         }

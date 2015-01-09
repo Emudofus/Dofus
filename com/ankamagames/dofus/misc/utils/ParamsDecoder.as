@@ -23,6 +23,7 @@
     import com.ankamagames.dofus.datacenter.challenges.Challenge;
     import com.ankamagames.dofus.datacenter.alignments.AlignmentSide;
     import com.ankamagames.dofus.datacenter.world.Dungeon;
+    import com.ankamagames.dofus.datacenter.monsters.Companion;
     import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
     import com.ankamagames.dofus.logic.common.managers.HyperlinkItemManager;
     import com.ankamagames.jerakine.utils.misc.StringUtils;
@@ -31,6 +32,7 @@
     import com.ankamagames.dofus.logic.common.managers.HyperlinkShowTitleManager;
     import com.ankamagames.dofus.logic.common.managers.HyperlinkShowOrnamentManager;
     import com.ankamagames.jerakine.data.I18n;
+    import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
 
     public class ParamsDecoder 
     {
@@ -155,6 +157,9 @@
             var _local_24:AlignmentSide;
             var _local_25:Array;
             var _local_26:Dungeon;
+            var _local_27:Date;
+            var _local_28:uint;
+            var _local_29:Companion;
             var itemw:ItemWrapper;
             var newString:String = "";
             nid = (int(Number(id.substr(1))) - 1);
@@ -422,6 +427,24 @@
                         if (_local_26)
                         {
                             newString = _local_26.name;
+                        }
+                        else
+                        {
+                            _log.error((((type + " ") + params[nid]) + " introuvable"));
+                            newString = "";
+                        };
+                        break;
+                    case "$time":
+                        _local_27 = new Date();
+                        _local_28 = ((params[nid] * 1000) - _local_27.time);
+                        newString = TimeManager.getInstance().getDuration(_local_28);
+                        break;
+                    case "$companion":
+                    case "$sidekick":
+                        _local_29 = Companion.getCompanionById(params[nid]);
+                        if (_local_29)
+                        {
+                            newString = _local_29.name;
                         }
                         else
                         {

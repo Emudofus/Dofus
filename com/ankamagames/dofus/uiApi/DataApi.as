@@ -30,12 +30,14 @@
     import com.ankamagames.jerakine.types.positions.WorldPoint;
     import com.ankamagames.dofus.datacenter.items.Item;
     import com.ankamagames.dofus.datacenter.items.IncarnationLevel;
+    import com.ankamagames.dofus.datacenter.items.Incarnation;
     import com.ankamagames.dofus.types.data.GenericSlotData;
     import com.ankamagames.jerakine.types.Uri;
     import com.ankamagames.jerakine.data.XmlConfig;
     import com.ankamagames.dofus.datacenter.items.ItemType;
     import com.ankamagames.dofus.datacenter.items.ItemSet;
     import com.ankamagames.dofus.datacenter.livingObjects.Pet;
+    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
     import flash.utils.Dictionary;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
     import com.ankamagames.dofus.datacenter.effects.Effect;
@@ -59,6 +61,7 @@
     import com.ankamagames.dofus.datacenter.communication.Smiley;
     import com.ankamagames.dofus.internalDatacenter.communication.SmileyWrapper;
     import com.ankamagames.dofus.logic.game.common.frames.ChatFrame;
+    import com.ankamagames.dofus.datacenter.communication.Emoticon;
     import com.ankamagames.dofus.datacenter.npcs.TaxCollectorName;
     import com.ankamagames.dofus.datacenter.npcs.TaxCollectorFirstname;
     import com.ankamagames.dofus.datacenter.guild.EmblemSymbol;
@@ -101,6 +104,11 @@
     import __AS3__.vec.Vector;
     import com.ankamagames.dofus.datacenter.world.Waypoint;
     import com.ankamagames.dofus.internalDatacenter.taxi.TeleportDestinationWrapper;
+    import com.ankamagames.dofus.datacenter.items.VeteranReward;
+    import com.ankamagames.dofus.datacenter.documents.Comic;
+    import flash.net.registerClassAlias;
+    import flash.utils.getDefinitionByName;
+    import flash.utils.ByteArray;
     import __AS3__.vec.*;
 
     [InstanciedApi]
@@ -336,6 +344,12 @@
         }
 
         [Untrusted]
+        public function getIncarnation(incarnationId:int):Incarnation
+        {
+            return (Incarnation.getIncarnationById(incarnationId));
+        }
+
+        [Untrusted]
         [NoBoxing]
         public function getNewGenericSlotData():GenericSlotData
         {
@@ -360,14 +374,10 @@
         }
 
         [Untrusted]
-        public function getItemType(id:int):String
+        public function getItemType(id:int):ItemType
         {
             var it:ItemType = ItemType.getItemTypeById(id);
-            if (it)
-            {
-                return (it.name);
-            };
-            return (null);
+            return (it);
         }
 
         [Untrusted]
@@ -383,7 +393,7 @@
         }
 
         [Untrusted]
-        public function getSetEffects(GIDList:Array, setBonus:Array=null):Array
+        public function getSetEffects(GIDList:Array, aSetBonus:Array=null):Array
         {
             var item:*;
             var GID:*;
@@ -391,9 +401,10 @@
             var line:*;
             var lineNA:*;
             var iGID:*;
-            var effect:*;
+            var effect:EffectInstance;
             var effectEquip:*;
             var setBonusLine:*;
+            var setBonus:Array = this.deepClone(aSetBonus);
             var effectsDice:Dictionary = new Dictionary();
             var effects:Array = new Array();
             var effectsNonAddable:Array = new Array();
@@ -480,7 +491,7 @@
                         }
                         else
                         {
-                            effectsNonAddable.push(SecureCenter.unsecure(setBonusLine).clone());
+                            effectsNonAddable.push(this.deepClone(SecureCenter.unsecure(setBonusLine)));
                         };
                     };
                 };
@@ -759,6 +770,12 @@
         public function getAllSmiley():Array
         {
             return (Smiley.getSmileys());
+        }
+
+        [Untrusted]
+        public function getEmoticon(id:uint):Emoticon
+        {
+            return (Emoticon.getEmoticonById(id));
         }
 
         [Untrusted]
@@ -1200,6 +1217,32 @@
                 };
             };
             return (unknowZaaps);
+        }
+
+        [Untrusted]
+        public function getAllVeteranRewards():Array
+        {
+            return (VeteranReward.getAllVeteranRewards());
+        }
+
+        [Untrusted]
+        public function getComicReaderUrl(pComicRemoteId:String):String
+        {
+            var comicId:uint = GameDataQuery.queryEquals(Comic, "remoteId", pComicRemoteId)[0];
+            var comic:Comic = Comic.getComicById(comicId);
+            return (comic.readerUrl);
+        }
+
+        [Trusted]
+        private function deepClone(source:*)
+        {
+            var className:String = getQualifiedClassName(source);
+            registerClassAlias(className, (getDefinitionByName(className) as Class));
+            var b:ByteArray = new ByteArray();
+            b.writeObject(source);
+            b.position = 0;
+            var temp:* = b.readObject();
+            return (temp);
         }
 
 

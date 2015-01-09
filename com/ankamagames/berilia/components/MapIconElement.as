@@ -12,14 +12,16 @@
         public var follow:Boolean;
         public var canBeGrouped:Boolean = true;
         public var canBeAutoSize:Boolean = true;
+        public var canBeManuallyRemoved:Boolean = true;
         private var _boundsRef:Texture;
         var _texture:Texture;
 
-        public function MapIconElement(id:String, x:int, y:int, layer:String, texture:Texture, legend:String, owner:*)
+        public function MapIconElement(id:String, x:int, y:int, layer:String, texture:Texture, legend:String, owner:*, canBeManuallyRemoved:Boolean=true)
         {
             super(id, x, y, layer, owner);
             this.texture = SecureCenter.secure(texture, false);
             this.legend = legend;
+            this.canBeManuallyRemoved = canBeManuallyRemoved;
             this._texture = texture;
             texture.mouseEnabled = true;
         }

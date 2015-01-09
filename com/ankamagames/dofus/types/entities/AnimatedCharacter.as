@@ -265,7 +265,7 @@
             this._canSeeThrough = value;
         }
 
-        public function move(path:MovementPath, callback:Function=null):void
+        public function move(path:MovementPath, callback:Function=null, movementBehavior:IMovementBehavior=null):void
         {
             var follower:IMovable;
             var infos:GameContextActorInformations;
@@ -287,64 +287,67 @@
                 this.jump(path.start);
             };
             var distance:uint = (path.path.length + 1);
-            this._movementBehavior = null;
-            if (this.slideOnNextMove)
+            this._movementBehavior = movementBehavior;
+            if (!(this._movementBehavior))
             {
-                this._movementBehavior = SlideMovementBehavior.getInstance();
-                this.slideOnNextMove = false;
-            }
-            else
-            {
-                if (Kernel.getWorker().contains(RoleplayEntitiesFrame))
+                if (this.slideOnNextMove)
                 {
-                    infos = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).getEntityInfos(this.id);
-                    if ((infos is GameRolePlayHumanoidInformations))
+                    this._movementBehavior = SlideMovementBehavior.getInstance();
+                    this.slideOnNextMove = false;
+                }
+                else
+                {
+                    if (Kernel.getWorker().contains(RoleplayEntitiesFrame))
                     {
-                        if ((infos as GameRolePlayHumanoidInformations).humanoidInfo.restrictions.cantRun)
+                        infos = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).getEntityInfos(this.id);
+                        if ((infos is GameRolePlayHumanoidInformations))
                         {
-                            this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
-                        };
-                    }
-                    else
-                    {
-                        if ((infos is GameRolePlayGroupMonsterInformations))
+                            if ((infos as GameRolePlayHumanoidInformations).humanoidInfo.restrictions.cantRun)
+                            {
+                                this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
+                            };
+                        }
+                        else
                         {
-                            this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
+                            if ((infos is GameRolePlayGroupMonsterInformations))
+                            {
+                                this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
+                            };
                         };
                     };
-                };
-                if (!(this._movementBehavior))
-                {
-                    if (distance > 3)
+                    if (!(this._movementBehavior))
                     {
-                        isCreatureMode = false;
-                        if (Kernel.getWorker().contains(RoleplayEntitiesFrame))
+                        if (distance > 3)
                         {
-                            isCreatureMode = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).isCreatureMode;
-                        };
-                        if (((!(isCreatureMode)) && (this.isMounted())))
-                        {
-                            this._movementBehavior = MountedMovementBehavior.getInstance();
+                            isCreatureMode = false;
+                            if (Kernel.getWorker().contains(RoleplayEntitiesFrame))
+                            {
+                                isCreatureMode = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).isCreatureMode;
+                            };
+                            if (((!(isCreatureMode)) && (this.isMounted())))
+                            {
+                                this._movementBehavior = MountedMovementBehavior.getInstance();
+                            }
+                            else
+                            {
+                                this._movementBehavior = RunningMovementBehavior.getInstance(this.speedAdjust);
+                            };
                         }
                         else
                         {
-                            this._movementBehavior = RunningMovementBehavior.getInstance(this.speedAdjust);
-                        };
-                    }
-                    else
-                    {
-                        if (distance > 0)
-                        {
-                            this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
-                        }
-                        else
-                        {
-                            return;
+                            if (distance > 0)
+                            {
+                                this._movementBehavior = WalkingMovementBehavior.getInstance(this.speedAdjust);
+                            }
+                            else
+                            {
+                                return;
+                            };
                         };
                     };
                 };
             };
-            var followerDirection:int = this.getDirection();
+            var followerDirection:* = path.end.advancedOrientationTo(this.position);
             var mapData:IDataMapProvider = DataMapProvider.getInstance();
             if (this._followers.length > 0)
             {
@@ -373,7 +376,7 @@
                 tryCount = 0;
                 do 
                 {
-                    followerPoint = path.end.getNearestFreeCellInDirection(followerDirection, mapData, false, false, forbidenCellsId);
+                    followerPoint = path.end.getNearestFreeCellInDirection(followerDirection, mapData, false, false, true, forbidenCellsId);
                     followerDirection++;
                     followerDirection = (followerDirection % 8);
                 } while (((!(followerPoint)) && ((++tryCount < 8))));
@@ -433,7 +436,7 @@
             if (((followPath) && ((followPath.path.length > 0))))
             {
                 follower.movementBehavior = this._movementBehavior;
-                follower.move(followPath);
+                follower.move(followPath, null, this._movementBehavior);
             }
             else
             {

@@ -6,14 +6,13 @@
     import flash.utils.IDataInput;
 
     [Trusted]
-    public class MimicryObjectErrorMessage extends ObjectErrorMessage implements INetworkMessage 
+    public class MimicryObjectErrorMessage extends SymbioticObjectErrorMessage implements INetworkMessage 
     {
 
         public static const protocolId:uint = 6461;
 
         private var _isInitialized:Boolean = false;
         public var preview:Boolean = false;
-        public var errorCode:int = 0;
 
 
         override public function get isInitialized():Boolean
@@ -26,11 +25,10 @@
             return (6461);
         }
 
-        public function initMimicryObjectErrorMessage(reason:int=0, preview:Boolean=false, errorCode:int=0):MimicryObjectErrorMessage
+        public function initMimicryObjectErrorMessage(reason:int=0, errorCode:int=0, preview:Boolean=false):MimicryObjectErrorMessage
         {
-            super.initObjectErrorMessage(reason);
+            super.initSymbioticObjectErrorMessage(reason, errorCode);
             this.preview = preview;
-            this.errorCode = errorCode;
             this._isInitialized = true;
             return (this);
         }
@@ -39,7 +37,6 @@
         {
             super.reset();
             this.preview = false;
-            this.errorCode = 0;
             this._isInitialized = false;
         }
 
@@ -62,9 +59,8 @@
 
         public function serializeAs_MimicryObjectErrorMessage(output:IDataOutput):void
         {
-            super.serializeAs_ObjectErrorMessage(output);
+            super.serializeAs_SymbioticObjectErrorMessage(output);
             output.writeBoolean(this.preview);
-            output.writeByte(this.errorCode);
         }
 
         override public function deserialize(input:IDataInput):void
@@ -76,7 +72,6 @@
         {
             super.deserialize(input);
             this.preview = input.readBoolean();
-            this.errorCode = input.readByte();
         }
 
 

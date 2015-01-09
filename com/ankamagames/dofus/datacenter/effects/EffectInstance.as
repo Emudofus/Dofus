@@ -34,6 +34,7 @@
         private static const UNDEFINED_SHOW:int = -1;
         private static const UNDEFINED_DESCRIPTION:String = "undefined";
 
+        public var effectUid:uint;
         public var effectId:uint;
         public var targetId:int;
         public var targetMask:String;
@@ -185,6 +186,7 @@
             o.zoneMinSize = this.zoneMinSize;
             o.zoneEfficiencyPercent = this.zoneEfficiencyPercent;
             o.zoneMaxEfficiency = this.zoneMaxEfficiency;
+            o.effectUid = this.effectUid;
             o.effectId = this.effectId;
             o.duration = this.duration;
             o.delay = this.delay;
@@ -413,6 +415,7 @@
                         break;
                     case 165:
                     case 1084:
+                    case 1179:
                         aTmp[0] = this.getItemTypeName(aTmp[0]);
                         break;
                     case 197:
@@ -436,6 +439,9 @@
                     case 294:
                     case 1160:
                         aTmp[0] = this.getSpellName(aTmp[0]);
+                        break;
+                    case 1175:
+                        aTmp[0] = (((("{spell," + aTmp[0]) + ",") + aTmp[1]) + "}");
                         break;
                     case 406:
                         aTmp[2] = this.getSpellName(aTmp[2]);
@@ -548,6 +554,7 @@
                         break;
                     case 814:
                     case 1151:
+                    case 1176:
                         aTmp[0] = this.getItemName(aTmp[0]);
                         break;
                     case 905:

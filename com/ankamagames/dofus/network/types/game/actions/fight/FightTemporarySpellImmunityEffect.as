@@ -18,9 +18,9 @@
             return (366);
         }
 
-        public function initFightTemporarySpellImmunityEffect(uid:uint=0, targetId:int=0, turnDuration:int=0, dispelable:uint=1, spellId:uint=0, parentBoostUid:uint=0, immuneSpellId:int=0):FightTemporarySpellImmunityEffect
+        public function initFightTemporarySpellImmunityEffect(uid:uint=0, targetId:int=0, turnDuration:int=0, dispelable:uint=1, spellId:uint=0, effectId:uint=0, parentBoostUid:uint=0, immuneSpellId:int=0):FightTemporarySpellImmunityEffect
         {
-            super.initAbstractFightDispellableEffect(uid, targetId, turnDuration, dispelable, spellId, parentBoostUid);
+            super.initAbstractFightDispellableEffect(uid, targetId, turnDuration, dispelable, spellId, effectId, parentBoostUid);
             this.immuneSpellId = immuneSpellId;
             return (this);
         }

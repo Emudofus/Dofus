@@ -54,6 +54,8 @@
     import com.ankamagames.dofus.network.messages.game.prism.PrismAttackRequestMessage;
     import com.ankamagames.dofus.logic.game.common.actions.prism.PrismUseRequestAction;
     import com.ankamagames.dofus.network.messages.game.prism.PrismUseRequestMessage;
+    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismModuleExchangeRequestAction;
+    import com.ankamagames.dofus.network.messages.game.prism.PrismModuleExchangeRequestMessage;
     import com.ankamagames.dofus.logic.game.common.actions.prism.PrismSetSabotagedRequestAction;
     import com.ankamagames.dofus.network.messages.game.prism.PrismSetSabotagedRequestMessage;
     import com.ankamagames.dofus.network.messages.game.prism.PrismSetSabotagedRefusedMessage;
@@ -274,27 +276,29 @@
             var _local_64:PrismAttackRequestMessage;
             var _local_65:PrismUseRequestAction;
             var _local_66:PrismUseRequestMessage;
-            var _local_67:PrismSetSabotagedRequestAction;
-            var _local_68:PrismSetSabotagedRequestMessage;
-            var _local_69:PrismSetSabotagedRefusedMessage;
-            var _local_70:String;
-            var _local_71:PrismFightDefenderAddMessage;
-            var _local_72:PrismFightDefenderLeaveMessage;
-            var _local_73:PrismFightAttackerAddMessage;
-            var _local_74:PrismFightAttackerRemoveMessage;
-            var _local_75:PrismsListUpdateMessage;
-            var _local_76:Array;
-            var _local_77:PrismSubAreaWrapper;
-            var _local_78:AllianceWrapper;
-            var _local_79:PrismGeolocalizedInformation;
-            var _local_80:AllianceInsiderPrismInformation;
-            var _local_81:AlliancePrismInformation;
-            var _local_82:PrismsListMessage;
-            var _local_83:Vector.<PrismSubAreaWrapper>;
-            var _local_84:PrismFightAddedMessage;
-            var _local_85:PrismFightRemovedMessage;
-            var _local_86:PrismsInfoValidMessage;
-            var _local_87:AlliancePrismDialogQuestionMessage;
+            var _local_67:PrismModuleExchangeRequestAction;
+            var _local_68:PrismModuleExchangeRequestMessage;
+            var _local_69:PrismSetSabotagedRequestAction;
+            var _local_70:PrismSetSabotagedRequestMessage;
+            var _local_71:PrismSetSabotagedRefusedMessage;
+            var _local_72:String;
+            var _local_73:PrismFightDefenderAddMessage;
+            var _local_74:PrismFightDefenderLeaveMessage;
+            var _local_75:PrismFightAttackerAddMessage;
+            var _local_76:PrismFightAttackerRemoveMessage;
+            var _local_77:PrismsListUpdateMessage;
+            var _local_78:Array;
+            var _local_79:PrismSubAreaWrapper;
+            var _local_80:AllianceWrapper;
+            var _local_81:PrismGeolocalizedInformation;
+            var _local_82:AllianceInsiderPrismInformation;
+            var _local_83:AlliancePrismInformation;
+            var _local_84:PrismsListMessage;
+            var _local_85:Vector.<PrismSubAreaWrapper>;
+            var _local_86:PrismFightAddedMessage;
+            var _local_87:PrismFightRemovedMessage;
+            var _local_88:PrismsInfoValidMessage;
+            var _local_89:AlliancePrismDialogQuestionMessage;
             var prism:PrismSubAreaWrapper;
             var oldPrism:PrismSubAreaWrapper;
             var i:int;
@@ -305,7 +309,7 @@
             var insPrism:PrismSubareaEmptyInfo;
             var p:SocialEntityInFightWrapper;
             var defender:Object;
-            var _local_98:Object;
+            var _local_100:Object;
             var plrmsg:PrismsListRegisterMessage;
             var text2:String;
             var prismUpdated:PrismSubareaEmptyInfo;
@@ -696,14 +700,14 @@
                         {
                             this._prismsListeners[_local_59.uiName] = PrismListenEnum.PRISM_LISTEN_NONE;
                         };
-                        for each (_local_98 in this._prismsListeners)
+                        for each (_local_100 in this._prismsListeners)
                         {
-                            if (_local_98 == PrismListenEnum.PRISM_LISTEN_MINE)
+                            if (_local_100 == PrismListenEnum.PRISM_LISTEN_MINE)
                             {
                                 _local_62 = PrismListenEnum.PRISM_LISTEN_MINE;
                                 break;
                             };
-                            if (_local_98 == PrismListenEnum.PRISM_LISTEN_ALL)
+                            if (_local_100 == PrismListenEnum.PRISM_LISTEN_ALL)
                             {
                                 _local_62 = PrismListenEnum.PRISM_LISTEN_ALL;
                             };
@@ -730,136 +734,142 @@
                     _local_66.initPrismUseRequestMessage();
                     ConnectionsHandler.getConnection().send(_local_66);
                     return (true);
-                case (msg is PrismSetSabotagedRequestAction):
-                    _local_67 = (msg as PrismSetSabotagedRequestAction);
-                    _local_68 = new PrismSetSabotagedRequestMessage();
-                    _local_68.initPrismSetSabotagedRequestMessage(_local_67.subAreaId);
+                case (msg is PrismModuleExchangeRequestAction):
+                    _local_67 = (msg as PrismModuleExchangeRequestAction);
+                    _local_68 = new PrismModuleExchangeRequestMessage();
+                    _local_68.initPrismModuleExchangeRequestMessage();
                     ConnectionsHandler.getConnection().send(_local_68);
                     return (true);
+                case (msg is PrismSetSabotagedRequestAction):
+                    _local_69 = (msg as PrismSetSabotagedRequestAction);
+                    _local_70 = new PrismSetSabotagedRequestMessage();
+                    _local_70.initPrismSetSabotagedRequestMessage(_local_69.subAreaId);
+                    ConnectionsHandler.getConnection().send(_local_70);
+                    return (true);
                 case (msg is PrismSetSabotagedRefusedMessage):
-                    _local_69 = (msg as PrismSetSabotagedRefusedMessage);
-                    switch (_local_69.reason)
+                    _local_71 = (msg as PrismSetSabotagedRefusedMessage);
+                    switch (_local_71.reason)
                     {
                         case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_REFUSED:
-                            _local_70 = I18n.getUiText("ui.prism.sabotageRefused");
+                            _local_72 = I18n.getUiText("ui.prism.sabotageRefused");
                             break;
                         case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_INSUFFICIENT_RIGHTS:
-                            _local_70 = I18n.getUiText("ui.social.taxCollectorNoRights");
+                            _local_72 = I18n.getUiText("ui.social.taxCollectorNoRights");
                             break;
                         case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_MEMBER_ACCOUNT_NEEDED:
-                            _local_70 = I18n.getUiText("ui.payzone.limit");
+                            _local_72 = I18n.getUiText("ui.payzone.limit");
                             break;
                         case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_RESTRICTED_ACCOUNT:
-                            _local_70 = I18n.getUiText("ui.charSel.deletionErrorUnsecureMode");
+                            _local_72 = I18n.getUiText("ui.charSel.deletionErrorUnsecureMode");
                             break;
                         case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_WRONG_STATE:
-                            _local_70 = I18n.getUiText("ui.prism.sabotageRefusedWrongState");
+                            _local_72 = I18n.getUiText("ui.prism.sabotageRefusedWrongState");
                             break;
                         case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_WRONG_ALLIANCE:
                         case PrismSetSabotagedRefusedReasonEnum.SABOTAGE_NO_PRISM:
-                            _log.debug(("ERROR : Prism sabotage failed for reason " + _local_69.reason));
+                            _log.debug(("ERROR : Prism sabotage failed for reason " + _local_71.reason));
                             break;
                     };
-                    if (_local_70)
+                    if (_local_72)
                     {
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_70, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_72, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     };
                     return (true);
                 case (msg is PrismFightDefenderAddMessage):
-                    _local_71 = (msg as PrismFightDefenderAddMessage);
-                    TaxCollectorsManager.getInstance().addFighter(1, _local_71.subAreaId, _local_71.defender, true);
+                    _local_73 = (msg as PrismFightDefenderAddMessage);
+                    TaxCollectorsManager.getInstance().addFighter(1, _local_73.subAreaId, _local_73.defender, true);
                     return (true);
                 case (msg is PrismFightDefenderLeaveMessage):
-                    _local_72 = (msg as PrismFightDefenderLeaveMessage);
-                    if (((this._autoLeaveHelpers) && ((_local_72.fighterToRemoveId == PlayedCharacterManager.getInstance().id))))
+                    _local_74 = (msg as PrismFightDefenderLeaveMessage);
+                    if (((this._autoLeaveHelpers) && ((_local_74.fighterToRemoveId == PlayedCharacterManager.getInstance().id))))
                     {
                         text2 = I18n.getUiText("ui.prism.AutoDisjoin");
                         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, text2, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     };
-                    TaxCollectorsManager.getInstance().removeFighter(1, _local_72.subAreaId, _local_72.fighterToRemoveId, true);
+                    TaxCollectorsManager.getInstance().removeFighter(1, _local_74.subAreaId, _local_74.fighterToRemoveId, true);
                     return (true);
                 case (msg is PrismFightAttackerAddMessage):
-                    _local_73 = (msg as PrismFightAttackerAddMessage);
-                    TaxCollectorsManager.getInstance().addFighter(1, _local_73.subAreaId, _local_73.attacker, false);
+                    _local_75 = (msg as PrismFightAttackerAddMessage);
+                    TaxCollectorsManager.getInstance().addFighter(1, _local_75.subAreaId, _local_75.attacker, false);
                     return (true);
                 case (msg is PrismFightAttackerRemoveMessage):
-                    _local_74 = (msg as PrismFightAttackerRemoveMessage);
-                    TaxCollectorsManager.getInstance().removeFighter(1, _local_74.subAreaId, _local_74.fighterToRemoveId, false);
+                    _local_76 = (msg as PrismFightAttackerRemoveMessage);
+                    TaxCollectorsManager.getInstance().removeFighter(1, _local_76.subAreaId, _local_76.fighterToRemoveId, false);
                     return (true);
                 case (msg is PrismsListUpdateMessage):
-                    _local_75 = (msg as PrismsListUpdateMessage);
-                    _local_76 = new Array();
-                    for each (prismUpdated in _local_75.prisms)
+                    _local_77 = (msg as PrismsListUpdateMessage);
+                    _local_78 = new Array();
+                    for each (prismUpdated in _local_77.prisms)
                     {
                         if ((((prismUpdated is PrismGeolocalizedInformation)) && (((prismUpdated as PrismGeolocalizedInformation).prism is AllianceInsiderPrismInformation))))
                         {
-                            _local_79 = (prismUpdated as PrismGeolocalizedInformation);
-                            _local_80 = (_local_79.prism as AllianceInsiderPrismInformation);
-                            _local_77 = PrismSubAreaWrapper.prismList[prismUpdated.subAreaId];
-                            worldX = _local_79.worldX;
-                            worldY = _local_79.worldY;
-                            prismN = (((SubArea.getSubAreaById(_local_79.subAreaId).name + " (") + SubArea.getSubAreaById(_local_79.subAreaId).area.name) + ")");
-                            if ((((((_local_80.state == PrismStateEnum.PRISM_STATE_SABOTAGED)) && (_local_77))) && (!((_local_77.state == PrismStateEnum.PRISM_STATE_SABOTAGED)))))
+                            _local_81 = (prismUpdated as PrismGeolocalizedInformation);
+                            _local_82 = (_local_81.prism as AllianceInsiderPrismInformation);
+                            _local_79 = PrismSubAreaWrapper.prismList[prismUpdated.subAreaId];
+                            worldX = _local_81.worldX;
+                            worldY = _local_81.worldY;
+                            prismN = (((SubArea.getSubAreaById(_local_81.subAreaId).name + " (") + SubArea.getSubAreaById(_local_81.subAreaId).area.name) + ")");
+                            if ((((((_local_82.state == PrismStateEnum.PRISM_STATE_SABOTAGED)) && (_local_79))) && (!((_local_79.state == PrismStateEnum.PRISM_STATE_SABOTAGED)))))
                             {
                                 sentenceToDispatch = I18n.getUiText("ui.prism.sabotaged", [prismN, ((worldX + ",") + worldY)]);
                                 KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, sentenceToDispatch, ChatActivableChannelsEnum.CHANNEL_ALLIANCE, TimeManager.getInstance().getTimestamp());
                             }
                             else
                             {
-                                if ((((((_local_80.state == PrismStateEnum.PRISM_STATE_ATTACKED)) && (_local_77))) && (!((_local_77.state == PrismStateEnum.PRISM_STATE_ATTACKED)))))
+                                if ((((((_local_82.state == PrismStateEnum.PRISM_STATE_ATTACKED)) && (_local_79))) && (!((_local_79.state == PrismStateEnum.PRISM_STATE_ATTACKED)))))
                                 {
                                     sentenceToDispatch = I18n.getUiText("ui.prism.attacked", [prismN, ((worldX + ",") + worldY)]);
-                                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, (((("{openSocial,2,2,1," + _local_79.subAreaId) + "::") + sentenceToDispatch) + "}"), ChatActivableChannelsEnum.CHANNEL_ALLIANCE, TimeManager.getInstance().getTimestamp());
+                                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, (((("{openSocial,2,2,1," + _local_81.subAreaId) + "::") + sentenceToDispatch) + "}"), ChatActivableChannelsEnum.CHANNEL_ALLIANCE, TimeManager.getInstance().getTimestamp());
                                     if (((AirScanner.hasAir()) && (ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.PRISM_ATTACK))))
                                     {
-                                        KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.PRISM_ATTACK, [prismN, ((_local_79.worldX + ",") + _local_79.worldY)]);
+                                        KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.PRISM_ATTACK, [prismN, ((_local_81.worldX + ",") + _local_81.worldY)]);
                                     };
                                     if (OptionManager.getOptionManager("dofus")["warnOnGuildItemAgression"])
                                     {
-                                        nid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.prism.attackedNotificationTitle"), I18n.getUiText("ui.prism.attackedNotification", [SubArea.getSubAreaById(_local_79.subAreaId).name, ((_local_79.worldX + ",") + _local_79.worldY)]), NotificationTypeEnum.INVITATION, "PrismAttacked");
-                                        NotificationManager.getInstance().addButtonToNotification(nid, I18n.getUiText("ui.common.join"), "OpenSocial", [2, 2, [1, _local_79.subAreaId]], false, 200, 0, "hook");
+                                        nid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.prism.attackedNotificationTitle"), I18n.getUiText("ui.prism.attackedNotification", [SubArea.getSubAreaById(_local_81.subAreaId).name, ((_local_81.worldX + ",") + _local_81.worldY)]), NotificationTypeEnum.INVITATION, "PrismAttacked");
+                                        NotificationManager.getInstance().addButtonToNotification(nid, I18n.getUiText("ui.common.join"), "OpenSocial", [2, 2, [1, _local_81.subAreaId]], false, 200, 0, "hook");
                                         NotificationManager.getInstance().sendNotification(nid);
                                     };
                                 };
                             };
                         };
-                        _local_76.push(prismUpdated.subAreaId);
+                        _local_78.push(prismUpdated.subAreaId);
                         PrismSubAreaWrapper.getFromNetwork(prismUpdated, this._alliance);
                     };
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismsListUpdate, _local_76);
+                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismsListUpdate, _local_78);
                     return (true);
                 case (msg is PrismsListMessage):
-                    _local_82 = (msg as PrismsListMessage);
-                    _local_83 = new Vector.<PrismSubAreaWrapper>();
+                    _local_84 = (msg as PrismsListMessage);
+                    _local_85 = new Vector.<PrismSubAreaWrapper>();
                     indPrism = 0;
-                    while (indPrism < _local_82.prisms.length)
+                    while (indPrism < _local_84.prisms.length)
                     {
-                        pw = PrismSubAreaWrapper.getFromNetwork(_local_82.prisms[indPrism], this._alliance);
+                        pw = PrismSubAreaWrapper.getFromNetwork(_local_84.prisms[indPrism], this._alliance);
                         if (pw.alliance)
                         {
-                            _local_83.push(pw);
+                            _local_85.push(pw);
                         };
                         indPrism++;
                     };
                     KernelEventsManager.getInstance().processCallback(PrismHookList.PrismsList, PrismSubAreaWrapper.prismList);
                     return (true);
                 case (msg is PrismFightAddedMessage):
-                    _local_84 = (msg as PrismFightAddedMessage);
-                    TaxCollectorsManager.getInstance().addPrism(_local_84.fight);
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInFightAdded, _local_84.fight.subAreaId);
+                    _local_86 = (msg as PrismFightAddedMessage);
+                    TaxCollectorsManager.getInstance().addPrism(_local_86.fight);
+                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInFightAdded, _local_86.fight.subAreaId);
                     return (true);
                 case (msg is PrismFightRemovedMessage):
-                    _local_85 = (msg as PrismFightRemovedMessage);
-                    delete TaxCollectorsManager.getInstance().prismsFighters[_local_85.subAreaId];
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInFightRemoved, _local_85.subAreaId);
+                    _local_87 = (msg as PrismFightRemovedMessage);
+                    delete TaxCollectorsManager.getInstance().prismsFighters[_local_87.subAreaId];
+                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInFightRemoved, _local_87.subAreaId);
                     return (true);
                 case (msg is PrismsInfoValidMessage):
-                    _local_86 = (msg as PrismsInfoValidMessage);
-                    TaxCollectorsManager.getInstance().setPrismsInFight(_local_86.fights);
+                    _local_88 = (msg as PrismsInfoValidMessage);
+                    TaxCollectorsManager.getInstance().setPrismsInFight(_local_88.fights);
                     KernelEventsManager.getInstance().processCallback(PrismHookList.PrismsInFightList);
                     return (true);
                 case (msg is AlliancePrismDialogQuestionMessage):
-                    _local_87 = (msg as AlliancePrismDialogQuestionMessage);
+                    _local_89 = (msg as AlliancePrismDialogQuestionMessage);
                     KernelEventsManager.getInstance().processCallback(SocialHookList.AlliancePrismDialogQuestion);
                     return (true);
             };

@@ -33,6 +33,7 @@
         private static var _cachedFileData:Dictionary;
         private static var _calcCachedFileData:Dictionary = new Dictionary(true);
         private static var _pathCrcList:Dictionary = new Dictionary();
+        private static var _dataLoading:Dictionary = new Dictionary(true);
         private static var _httpDataToLoad:Vector.<Object> = new Vector.<Object>();
         private static var _fileDataToLoad:Vector.<Object> = new Vector.<Object>();
         private static var _attemptToDownloadFile:Dictionary = new Dictionary(true);
@@ -46,12 +47,9 @@
         private var _serverRootDir:String;
         private var _serverRootUnversionedDir:String;
         private var _isLoadingFilelist:Boolean = false;
-        private var _dataLoading:Dictionary;
 
         public function HttpCacheProtocol()
         {
-            this._dataLoading = new Dictionary(true);
-            super();
             if (AirScanner.hasAir())
             {
                 this._parent = new FileProtocol();
@@ -85,7 +83,7 @@
             };
             if (!(this._isLoadingFilelist))
             {
-                if (this._dataLoading[uri] != null)
+                if (_dataLoading[this.getLocalPath(uri)] != null)
                 {
                     _fileDataToLoad.push({
                         "uri":uri,
@@ -205,7 +203,9 @@
             var arrayIndex:int;
             var cachedCrcFile:int;
             var stream:FileStream;
-            if (this._dataLoading[uri] != null)
+            var path:String = this.getLocalPath(uri);
+            trace(("load file " + path));
+            if (_dataLoading[path] != null)
             {
                 _fileDataToLoad.push({
                     "uri":uri,
@@ -215,8 +215,6 @@
                 });
                 return;
             };
-            var path:String = this.getLocalPath(uri);
-            trace(("load file " + path));
             var file:File = new File(path);
             if (file.exists)
             {
@@ -248,7 +246,7 @@
                 else
                 {
                     _log.debug((uri.path + " mise a jour necessaire"));
-                    this._dataLoading[uri] = {
+                    _dataLoading[path] = {
                         "uri":uri,
                         "observer":observer,
                         "dispatchProgress":dispatchProgress,
@@ -260,7 +258,7 @@
             else
             {
                 _log.debug((uri + " inexistant"));
-                this._dataLoading[uri] = {
+                _dataLoading[path] = {
                     "uri":uri,
                     "observer":observer,
                     "dispatchProgress":dispatchProgress,
@@ -299,10 +297,10 @@
             fileStream.position = 0;
             fileStream.writeBytes(resource);
             fileStream.close();
-            if (this._dataLoading[uri] != null)
+            if (_dataLoading[path] != null)
             {
-                this.loadFromParent(this._dataLoading[uri].uri, this._dataLoading[uri].observer, this._dataLoading[uri].dispatchProgress, this._dataLoading[uri].adapter);
-                this._dataLoading[uri] = null;
+                this.loadFromParent(_dataLoading[path].uri, _dataLoading[path].observer, _dataLoading[path].dispatchProgress, _dataLoading[path].adapter);
+                _dataLoading[path] = null;
             };
         }
 
@@ -327,20 +325,29 @@
 
         private function onRemoteFileFailed(uri:Uri, errorMsg:String, errorCode:uint):void
         {
-            var _local_4:*;
+            var path:String;
+            var _local_5:*;
             _log.warn((((uri.path + ": download failed (") + errorMsg) + ")"));
             if (((!((_attemptToDownloadFile[uri] == null))) && ((_attemptToDownloadFile[uri] <= LIMITE_ATTEMPT_FOR_DOWNLOAD))))
             {
                 _log.warn((uri.path + ": try again"));
-                this.loadDirectlyUri(uri, this._dataLoading[uri].dispatchProgress);
+                if (!(AirScanner.isStreamingVersion()))
+                {
+                    path = this.getLocalPath(uri);
+                }
+                else
+                {
+                    path = this.getPathWithoutAkamaiHack(this.getLocalPath(uri));
+                };
+                this.loadDirectlyUri(uri, _dataLoading[path].dispatchProgress);
             }
             else
             {
                 _log.warn((((uri.path + ": download definitively failed (") + errorMsg) + ")"));
-                _local_4 = this._dataLoading[uri];
-                if (((_local_4) && (_local_4.observer)))
+                _local_5 = _dataLoading[uri];
+                if (((_local_5) && (_local_5.observer)))
                 {
-                    IResourceObserver(_local_4.observer).onFailed(uri, errorMsg, errorCode);
+                    IResourceObserver(_local_5.observer).onFailed(uri, errorMsg, errorCode);
                 };
             };
         }
@@ -352,7 +359,9 @@
         private function loadFromParent(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, adapter:Class):void
         {
             var d:Object;
+            var i:uint;
             var oldUri:Uri = uri;
+            var oldUriPath:String = oldUri.path;
             if (uri.fileType == "swf")
             {
                 uri = new Uri(this.getLocalPath(uri));
@@ -377,13 +386,17 @@
                 };
             };
             this._parent.load(uri, observer, dispatchProgress, null, adapter, false);
-            for each (d in _fileDataToLoad)
+            var l:uint = _fileDataToLoad.length;
+            i = 0;
+            while (i < l)
             {
-                if (((!((d == null))) && ((d.uri.path == uri.path))))
+                d = _fileDataToLoad[i];
+                if (((d) && ((((d.uri.path == uri.path)) || ((d.uri.path == oldUriPath))))))
                 {
-                    this._parent.load(d.uri, d.observer, d.dispatchProgress, null, d.adapter, false);
-                    d = null;
+                    this._parent.load(uri, d.observer, d.dispatchProgress, null, d.adapter, false);
+                    _fileDataToLoad[i] = null;
                 };
+                i++;
             };
             _fileDataToLoad = _fileDataToLoad.filter(this.removeNullValue);
         }

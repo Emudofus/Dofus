@@ -25,10 +25,10 @@
 
         override protected function lowSend(msg:INetworkMessage, autoFlush:Boolean=true):void
         {
-            this._proxy.processAndSend(msg, this);
+            this._proxy.processAndSend(msg, _socket);
             if (autoFlush)
             {
-                flush();
+                _socket.flush();
             };
         }
 

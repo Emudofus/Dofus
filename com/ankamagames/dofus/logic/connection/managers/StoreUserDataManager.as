@@ -24,11 +24,13 @@
     public class StoreUserDataManager 
     {
 
+        private static const INFOS_EXCLUDED_FROM_MD5CHECK:Array = ["CPUFrequencies", "FreeSystemMemory"];
         protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StoreUserDataManager));
         private static var BASE_URL:String = "http://api.ankama.";
         private static var _self:StoreUserDataManager;
 
         private var _so:CustomSharedObject;
+        private var _postMd5CheckInfos:String;
 
         public function StoreUserDataManager()
         {
@@ -260,9 +262,11 @@
             var _local_5:RpcServiceManager;
             var _local_6:Object;
             var md5value:String = MD5.hash(playerData);
+            playerData = (playerData + this._postMd5CheckInfos);
+            this._postMd5CheckInfos = "";
             var playerId:uint = PlayerManager.getInstance().accountId;
             this._so = CustomSharedObject.getLocal(("playerData_" + playerId));
-            if (((((((((this._so.data) && (this._so.data.hasOwnProperty("version")))) && ((this._so.data.md5 == md5value)))) && ((((this._so.data.version.major >= 2)) && ((this._so.data.version.minor >= 22)))))) && (Benchmark.hasCachedResults)))
+            if (((((((((this._so.data) && (this._so.data.hasOwnProperty("version")))) && ((this._so.data.md5 == md5value)))) && ((((this._so.data.version.major >= 2)) && ((this._so.data.version.minor >= 23)))))) && (Benchmark.hasCachedResults)))
             {
                 return;
             };
@@ -317,12 +321,30 @@
         public function onSystemConfiguration(config:*):void
         {
             var key:String;
+            var obj:Object;
             var newValue:String = "";
+            this._postMd5CheckInfos = "";
+            var dict:Array = new Array();
             if (config)
             {
                 for (key in config.config)
                 {
-                    newValue = (newValue + (((key + ":") + config.config[key]) + ";"));
+                    dict.push({
+                        "key":key,
+                        "value":config.config[key]
+                    });
+                };
+            };
+            dict.sortOn("key");
+            for each (obj in dict)
+            {
+                if (INFOS_EXCLUDED_FROM_MD5CHECK.indexOf(obj.key) == -1)
+                {
+                    newValue = (newValue + (((obj.key + ":") + obj.value) + ";"));
+                }
+                else
+                {
+                    this._postMd5CheckInfos = (this._postMd5CheckInfos + (((obj.key + ":") + obj.value) + ";"));
                 };
             };
             this.savePlayerAirData(newValue, true);

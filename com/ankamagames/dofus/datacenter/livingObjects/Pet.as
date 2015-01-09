@@ -5,6 +5,7 @@
     import com.ankamagames.jerakine.logger.Log;
     import flash.utils.getQualifiedClassName;
     import __AS3__.vec.Vector;
+    import com.ankamagames.dofus.datacenter.effects.EffectInstance;
     import com.ankamagames.jerakine.data.GameData;
 
     public class Pet implements IDataCenter 
@@ -16,6 +17,9 @@
         public var id:int;
         public var foodItems:Vector.<int>;
         public var foodTypes:Vector.<int>;
+        public var minDurationBeforeMeal:int;
+        public var maxDurationBeforeMeal:int;
+        public var possibleEffects:Vector.<EffectInstance>;
 
 
         public static function getPetById(id:int):Pet

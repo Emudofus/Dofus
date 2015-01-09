@@ -31,12 +31,13 @@
         private var _method:String;
         private var _result:Object;
         private var _type:String;
+        private var _version:String;
         private var _busy:Boolean;
         private var _callback:Function;
         private var _timedOutTimer:Timer;
         private var _timedOutRetry:int;
 
-        public function RpcServiceManager(pServiceName:String="", pType:String="")
+        public function RpcServiceManager(pServiceName:String="", pType:String="", pVersion:String="1.0")
         {
             this._busy = false;
             if (pServiceName != "")
@@ -47,6 +48,7 @@
             {
                 this.type = pType;
             };
+            this.version = pVersion;
         }
 
         private function onComplete(pEvt:Event):void
@@ -174,6 +176,15 @@
             switch (this._type)
             {
                 case "json":
+                    switch (this._version)
+                    {
+                        case "1.1":
+                            rpcObject.version = "1.1";
+                            break;
+                        case "2.0":
+                            rpcObject.jsonrpc = "2.0";
+                            break;
+                    };
                     rpcObject.method = method;
                     rpcObject.params = this._params;
                     rpcObject.id = 1;
@@ -229,9 +240,9 @@
             return (this._result[name]);
         }
 
-        public function callMethod(name:String, params:*, callback:Function=null):void
+        public function callMethod(name:String, params:*, callback:Function=null, retryOnTimedout:Boolean=true):void
         {
-            var _local_4:Object;
+            var _local_5:Object;
             this._busy = true;
             this._method = name;
             this._params = params;
@@ -240,14 +251,18 @@
             {
                 throw (new Error("there is no data to handle ..."));
             };
-            _local_4 = this.createRpcObject(name);
+            _local_5 = this.createRpcObject(name);
             switch (this._type)
             {
                 case "json":
-                    this._request.data = JSON.encode(_local_4);
+                    this._request.data = JSON.encode(_local_5);
                     break;
                 case "xml":
                     throw (new Error("Not implemented yet"));
+            };
+            if (!(retryOnTimedout))
+            {
+                this._timedOutRetry = RETRY_AFTER_TIMED_OUT;
             };
             this._timedOutTimer = new Timer(5000, 1);
             this._timedOutTimer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onTimedOut);
@@ -270,6 +285,11 @@
                 default:
                     this._type = "xml";
             };
+        }
+
+        public function set version(val:String):void
+        {
+            this._version = val;
         }
 
         public function set service(val:String):void

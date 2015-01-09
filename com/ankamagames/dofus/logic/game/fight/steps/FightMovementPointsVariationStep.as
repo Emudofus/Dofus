@@ -54,10 +54,6 @@
                 };
                 FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(_targetId, -(this._intValue), true);
             };
-            if (fighterInfos.disposition.cellId == -1)
-            {
-                super.executeCallbacks();
-            };
             if (this._showChatmessage)
             {
                 if (this._intValue > 0)
@@ -79,10 +75,7 @@
                     };
                 };
             };
-            if (fighterInfos.disposition.cellId != -1)
-            {
-                super.start();
-            };
+            super.start();
         }
 
 

@@ -3,6 +3,7 @@
     import flash.display.Sprite;
     import flash.filters.BlurFilter;
     import flash.events.Event;
+    import com.ankamagames.performance.tests.TestDisplayPerformance;
 
     public class DisplayObjectDummy extends Sprite 
     {
@@ -20,9 +21,21 @@
 
         protected function onFrame(event:Event):void
         {
-            rotation = (Math.random() * 360);
-            x = (Math.random() * 20);
-            y = (Math.random() * 20);
+            if (!(stage))
+            {
+                return;
+            };
+            rotation = (TestDisplayPerformance.random.nextDouble() * 360);
+            x = (x + (TestDisplayPerformance.random.nextDoubleR(-1, 1) * 20));
+            y = (y + (TestDisplayPerformance.random.nextDoubleR(-1, 1) * 20));
+            if ((((x > stage.stageWidth)) || ((x < 0))))
+            {
+                x = (stage.stageWidth / 2);
+            };
+            if ((((y > stage.stageHeight)) || ((y < 0))))
+            {
+                y = (stage.stageHeight / 2);
+            };
         }
 
 

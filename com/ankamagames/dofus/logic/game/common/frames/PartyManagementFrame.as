@@ -158,6 +158,7 @@
         private var _playerNameInvited:String;
         private var _partyMembers:Vector.<PartyMemberWrapper>;
         private var _arenaPartyMembers:Vector.<PartyMemberWrapper>;
+        private var _previewPartyMembers:Vector.<PartyMemberWrapper>;
         private var _arenaReadyPartyMemberIds:Array;
         private var _arenaAlliesIds:Array;
         private var _timerRegen:Timer;
@@ -168,8 +169,9 @@
         private var _partyLoyalty:Boolean = false;
         private var _isArenaRegistered:Boolean = false;
         private var _arenaCurrentStatus:int = 3;
-        private var _partyId:int;
-        private var _arenaPartyId:int;
+        private var _partyId:int = -1;
+        private var _previewPartyId:int = -1;
+        private var _arenaPartyId:int = -1;
         private var _arenaLeader:PartyMemberWrapper;
         private var _arenaRanks:Array;
         private var _todaysFights:int;
@@ -187,6 +189,7 @@
         {
             this._partyMembers = new Vector.<PartyMemberWrapper>();
             this._arenaPartyMembers = new Vector.<PartyMemberWrapper>();
+            this._previewPartyMembers = new Vector.<PartyMemberWrapper>();
             this._arenaReadyPartyMemberIds = new Array();
             this._arenaAlliesIds = new Array();
             this._playerDungeons = new Vector.<uint>();
@@ -615,6 +618,19 @@
                                     hostName = partyMemberWrapper.name;
                                 };
                             };
+                        }
+                        else
+                        {
+                            if (pngmsg.partyId == this._previewPartyId)
+                            {
+                                for each (partyMemberWrapper in this._previewPartyMembers)
+                                {
+                                    if (partyMemberWrapper.id == pngmsg.guest.hostId)
+                                    {
+                                        hostName = partyMemberWrapper.name;
+                                    };
+                                };
+                            };
                         };
                     };
                     existingGuest = false;
@@ -704,10 +720,17 @@
                             if (pngmsg.partyId == this._partyId)
                             {
                                 this._partyMembers.push(partyMemberWrapper);
+                            }
+                            else
+                            {
+                                if (pngmsg.partyId == this._previewPartyId)
+                                {
+                                    this._previewPartyMembers.push(partyMemberWrapper);
+                                };
                             };
                         };
                     };
-                    if (((!((pngmsg.partyId == this._arenaPartyId))) && (!((pngmsg.partyId == this._partyId)))))
+                    if (pngmsg.partyId == this._previewPartyId)
                     {
                         KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdateDetails, pngmsg.partyId, partyMemberWrapper, false);
                     }
@@ -727,6 +750,7 @@
                     pidemsg = (msg as PartyInvitationDetailsMessage);
                     partyMembersD = new Vector.<PartyMemberWrapper>();
                     partyGuestsD = new Vector.<PartyMemberWrapper>();
+                    this._previewPartyId = pidemsg.partyId;
                     for each (memberInvitedD in pidemsg.members)
                     {
                         partyMemberWrapper = new PartyMemberWrapper(memberInvitedD.id, memberInvitedD.name, 0, true, (memberInvitedD.id == pidemsg.leaderId), memberInvitedD.level, memberInvitedD.entityLook, 0, 0, 0, 0, 0, 0, 0, memberInvitedD.worldX, memberInvitedD.worldY, 0, memberInvitedD.subAreaId, memberInvitedD.breed);
@@ -807,6 +831,7 @@
                                 partyMemberWrapper.mapId = pumsg.memberInformations.mapId;
                                 partyMemberWrapper.subAreaId = pumsg.memberInformations.subAreaId;
                                 existingMember = true;
+                                break;
                             };
                         };
                         if (!(existingMember))
@@ -875,25 +900,101 @@
                                     break;
                                 };
                             };
-                        };
-                        if (!(existingMember))
-                        {
-                            newMember = new PartyMemberWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, pumsg.memberInformations.status.statusId, true, false, pumsg.memberInformations.level, pumsg.memberInformations.entityLook, pumsg.memberInformations.lifePoints, pumsg.memberInformations.maxLifePoints, pumsg.memberInformations.initiative, pumsg.memberInformations.prospecting, pumsg.memberInformations.alignmentSide, pumsg.memberInformations.regenRate, 0, pumsg.memberInformations.worldX, pumsg.memberInformations.worldY, pumsg.memberInformations.mapId, pumsg.memberInformations.subAreaId, pumsg.memberInformations.breed);
-                            if (pumsg.memberInformations.companions.length > 0)
+                            if (!(existingMember))
                             {
-                                for each (partyCompanionMemberInfo in pumsg.memberInformations.companions)
+                                newMember = new PartyMemberWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, pumsg.memberInformations.status.statusId, true, false, pumsg.memberInformations.level, pumsg.memberInformations.entityLook, pumsg.memberInformations.lifePoints, pumsg.memberInformations.maxLifePoints, pumsg.memberInformations.initiative, pumsg.memberInformations.prospecting, pumsg.memberInformations.alignmentSide, pumsg.memberInformations.regenRate, 0, pumsg.memberInformations.worldX, pumsg.memberInformations.worldY, pumsg.memberInformations.mapId, pumsg.memberInformations.subAreaId, pumsg.memberInformations.breed);
+                                if (pumsg.memberInformations.companions.length > 0)
                                 {
-                                    partyCompanionWrapper = new PartyCompanionWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, partyCompanionMemberInfo.companionGenericId, false, pumsg.memberInformations.level, partyCompanionMemberInfo.entityLook, partyCompanionMemberInfo.lifePoints, partyCompanionMemberInfo.maxLifePoints, partyCompanionMemberInfo.initiative, partyCompanionMemberInfo.prospecting, partyCompanionMemberInfo.regenRate);
-                                    partyCompanionWrapper.index = partyCompanionMemberInfo.indexId;
-                                    newMember.companions[partyCompanionMemberInfo.indexId] = partyCompanionWrapper;
+                                    for each (partyCompanionMemberInfo in pumsg.memberInformations.companions)
+                                    {
+                                        partyCompanionWrapper = new PartyCompanionWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, partyCompanionMemberInfo.companionGenericId, false, pumsg.memberInformations.level, partyCompanionMemberInfo.entityLook, partyCompanionMemberInfo.lifePoints, partyCompanionMemberInfo.maxLifePoints, partyCompanionMemberInfo.initiative, partyCompanionMemberInfo.prospecting, partyCompanionMemberInfo.regenRate);
+                                        partyCompanionWrapper.index = partyCompanionMemberInfo.indexId;
+                                        newMember.companions[partyCompanionMemberInfo.indexId] = partyCompanionWrapper;
+                                    };
+                                };
+                                this._partyMembers.push(newMember);
+                            };
+                        }
+                        else
+                        {
+                            if (pumsg.partyId == this._previewPartyId)
+                            {
+                                for each (partyMemberWrapper in this._previewPartyMembers)
+                                {
+                                    if (partyMemberWrapper.id == pumsg.memberInformations.id)
+                                    {
+                                        partyMemberWrapper.name = pumsg.memberInformations.name;
+                                        partyMemberWrapper.isMember = true;
+                                        partyMemberWrapper.level = pumsg.memberInformations.level;
+                                        partyMemberWrapper.entityLook = pumsg.memberInformations.entityLook;
+                                        partyMemberWrapper.lifePoints = pumsg.memberInformations.lifePoints;
+                                        partyMemberWrapper.maxLifePoints = pumsg.memberInformations.maxLifePoints;
+                                        partyMemberWrapper.maxInitiative = pumsg.memberInformations.initiative;
+                                        partyMemberWrapper.prospecting = pumsg.memberInformations.prospecting;
+                                        partyMemberWrapper.alignmentSide = pumsg.memberInformations.alignmentSide;
+                                        partyMemberWrapper.regenRate = pumsg.memberInformations.regenRate;
+                                        partyMemberWrapper.worldX = pumsg.memberInformations.worldX;
+                                        partyMemberWrapper.worldY = pumsg.memberInformations.worldY;
+                                        partyMemberWrapper.mapId = pumsg.memberInformations.mapId;
+                                        partyMemberWrapper.subAreaId = pumsg.memberInformations.subAreaId;
+                                        if (pumsg.memberInformations.companions.length > 0)
+                                        {
+                                            for each (serverMemberComp in pumsg.memberInformations.companions)
+                                            {
+                                                if (partyMemberWrapper.companions[serverMemberComp.indexId])
+                                                {
+                                                    memberComp = partyMemberWrapper.companions[serverMemberComp.indexId];
+                                                    memberComp.companionGenericId = serverMemberComp.companionGenericId;
+                                                    memberComp.isMember = true;
+                                                    memberComp.level = pumsg.memberInformations.level;
+                                                    memberComp.entityLook = serverMemberComp.entityLook;
+                                                    memberComp.lifePoints = serverMemberComp.lifePoints;
+                                                    memberComp.maxLifePoints = serverMemberComp.maxLifePoints;
+                                                    memberComp.maxInitiative = serverMemberComp.initiative;
+                                                    memberComp.prospecting = serverMemberComp.prospecting;
+                                                    memberComp.regenRate = serverMemberComp.regenRate;
+                                                }
+                                                else
+                                                {
+                                                    partyCompanionWrapper = new PartyCompanionWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, serverMemberComp.companionGenericId, true, pumsg.memberInformations.level, serverMemberComp.entityLook, serverMemberComp.lifePoints, serverMemberComp.maxLifePoints, serverMemberComp.initiative, serverMemberComp.prospecting, serverMemberComp.regenRate);
+                                                    partyCompanionWrapper.index = serverMemberComp.indexId;
+                                                    partyMemberWrapper.companions[serverMemberComp.indexId] = partyCompanionWrapper;
+                                                    companionAddedOrRemoved = true;
+                                                };
+                                            };
+                                        }
+                                        else
+                                        {
+                                            if (partyMemberWrapper.companions.length > 0)
+                                            {
+                                                partyMemberWrapper.companions = new Array();
+                                                companionAddedOrRemoved = true;
+                                            };
+                                        };
+                                        existingMember = true;
+                                        break;
+                                    };
+                                };
+                                if (!(existingMember))
+                                {
+                                    newMember = new PartyMemberWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, pumsg.memberInformations.status.statusId, true, false, pumsg.memberInformations.level, pumsg.memberInformations.entityLook, pumsg.memberInformations.lifePoints, pumsg.memberInformations.maxLifePoints, pumsg.memberInformations.initiative, pumsg.memberInformations.prospecting, pumsg.memberInformations.alignmentSide, pumsg.memberInformations.regenRate, 0, pumsg.memberInformations.worldX, pumsg.memberInformations.worldY, pumsg.memberInformations.mapId, pumsg.memberInformations.subAreaId, pumsg.memberInformations.breed);
+                                    if (pumsg.memberInformations.companions.length > 0)
+                                    {
+                                        for each (partyCompanionMemberInfo in pumsg.memberInformations.companions)
+                                        {
+                                            partyCompanionWrapper = new PartyCompanionWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, partyCompanionMemberInfo.companionGenericId, false, pumsg.memberInformations.level, partyCompanionMemberInfo.entityLook, partyCompanionMemberInfo.lifePoints, partyCompanionMemberInfo.maxLifePoints, partyCompanionMemberInfo.initiative, partyCompanionMemberInfo.prospecting, partyCompanionMemberInfo.regenRate);
+                                            partyCompanionWrapper.index = partyCompanionMemberInfo.indexId;
+                                            newMember.companions[partyCompanionMemberInfo.indexId] = partyCompanionWrapper;
+                                        };
+                                    };
+                                    this._previewPartyMembers.push(newMember);
                                 };
                             };
-                            this._partyMembers.push(newMember);
                         };
                     };
-                    if (((!((pumsg.partyId == this._arenaPartyId))) && (!((pumsg.partyId == this._partyId)))))
+                    if (pumsg.partyId == this._previewPartyId)
                     {
-                        KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdateDetails, pumsg.partyId, newMember, true);
+                        KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdateDetails, pumsg.partyId, ((existingMember) ? partyMemberWrapper : newMember), true);
                     }
                     else
                     {
@@ -906,6 +1007,10 @@
                     return (true);
                 case (msg is PartyJoinMessage):
                     pjmsg = (msg as PartyJoinMessage);
+                    if (pjmsg.partyId == this._previewPartyId)
+                    {
+                        this._previewPartyId = -1;
+                    };
                     if (pjmsg.partyType == PartyTypeEnum.PARTY_TYPE_ARENA)
                     {
                         this._arenaPartyMembers = new Vector.<PartyMemberWrapper>();

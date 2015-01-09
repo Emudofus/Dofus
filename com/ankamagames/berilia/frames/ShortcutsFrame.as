@@ -9,9 +9,9 @@
     import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyDownMessage;
     import com.ankamagames.berilia.types.shortcut.Shortcut;
     import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyUpMessage;
+    import flash.ui.Keyboard;
     import com.ankamagames.jerakine.messages.Message;
     import flash.text.TextField;
-    import flash.ui.Keyboard;
     import com.ankamagames.berilia.managers.BindsManager;
     import flash.system.IME;
     import com.ankamagames.berilia.Berilia;
@@ -37,6 +37,7 @@
         public static var shiftKey:Boolean = false;
         public static var ctrlKey:Boolean = false;
         public static var altKey:Boolean = false;
+        public static var ctrlKeyDown:Boolean;
         public static var shortcutsEnabled:Boolean = true;
 
         private var _lastCtrlKey:Boolean = false;
@@ -77,6 +78,10 @@
                     ctrlKey = _local_2.keyboardEvent.ctrlKey;
                     altKey = _local_2.keyboardEvent.altKey;
                     this._lastCtrlKey = false;
+                    if (!(ctrlKeyDown))
+                    {
+                        ctrlKeyDown = (_local_2.keyboardEvent.keyCode == Keyboard.CONTROL);
+                    };
                     _local_3 = this.getShortcut(_local_2);
                     if (((((_local_3) && (_local_3.holdKeys))) && ((this._heldShortcuts.indexOf(_local_3.defaultBind.targetedShortcut) == -1))))
                     {
@@ -89,6 +94,10 @@
                     shiftKey = _local_4.keyboardEvent.shiftKey;
                     ctrlKey = _local_4.keyboardEvent.ctrlKey;
                     altKey = _local_4.keyboardEvent.altKey;
+                    if (_local_4.keyboardEvent.keyCode == Keyboard.CONTROL)
+                    {
+                        ctrlKeyDown = false;
+                    };
                     return (this.handleMessage(_local_4));
             };
             this._isProcessingDirectInteraction = false;
@@ -214,6 +223,7 @@
         {
             this._heldShortcuts.length = 0;
             shiftKey = (ctrlKey = (altKey = false));
+            ctrlKeyDown = false;
         }
 
         public function pushed():Boolean

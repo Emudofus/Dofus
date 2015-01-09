@@ -2,8 +2,8 @@
 {
     import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
     import __AS3__.vec.Vector;
-    import com.ankamagames.jerakine.entities.interfaces.IEntity;
     import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+    import com.ankamagames.jerakine.entities.interfaces.IEntity;
     import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
     import com.ankamagames.jerakine.types.zones.IZone;
     import com.ankamagames.dofus.kernel.Kernel;
@@ -37,8 +37,9 @@
         {
             var targets:Vector.<int>;
             var cellId:uint;
-            var entity:IEntity;
             var effect:EffectInstance;
+            var cellEntities:Array;
+            var cellEntity:IEntity;
             var criticalSw:SpellWrapper;
             var sw:SpellWrapper = SpellWrapper.create(0, pSpellID, pSpellLevel, pUseCache, pCasterId);
             var spellZone:IZone = SpellZoneManager.getInstance().getSpellZone(sw);
@@ -52,19 +53,22 @@
             };
             for each (cellId in spellZoneCells)
             {
-                entity = EntitiesManager.getInstance().getEntityOnCell(cellId, AnimatedCharacter);
-                if (entity)
+                cellEntities = EntitiesManager.getInstance().getEntitiesOnCell(cellId, AnimatedCharacter);
+                for each (cellEntity in cellEntities)
                 {
-                    if (!(targets))
+                    if (fef.getEntityInfos(cellEntity.id))
                     {
-                        targets = new Vector.<int>(0);
-                    };
-                    for each (effect in sw.effects)
-                    {
-                        if (DamageUtil.verifySpellEffectMask(pCasterId, entity.id, effect))
+                        if (!(targets))
                         {
-                            targets.push(entity.id);
-                            break;
+                            targets = new Vector.<int>(0);
+                        };
+                        for each (effect in sw.effects)
+                        {
+                            if (DamageUtil.verifySpellEffectMask(pCasterId, cellEntity.id, effect))
+                            {
+                                targets.push(cellEntity.id);
+                                break;
+                            };
                         };
                     };
                 };

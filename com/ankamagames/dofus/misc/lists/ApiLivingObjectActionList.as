@@ -6,6 +6,7 @@
     import com.ankamagames.dofus.logic.game.common.actions.livingObject.LivingObjectChangeSkinRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.livingObject.MimicryObjectFeedAndAssociateRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.livingObject.MimicryObjectEraseRequestAction;
+    import com.ankamagames.dofus.logic.game.common.actions.livingObject.WrapperObjectDissociateRequestAction;
 
     public class ApiLivingObjectActionList 
     {
@@ -15,6 +16,7 @@
         public static const LivingObjectChangeSkinRequest:DofusApiAction = new DofusApiAction("LivingObjectChangeSkinRequest", LivingObjectChangeSkinRequestAction);
         public static const MimicryObjectFeedAndAssociateRequest:DofusApiAction = new DofusApiAction("MimicryObjectFeedAndAssociateRequest", MimicryObjectFeedAndAssociateRequestAction);
         public static const MimicryObjectEraseRequest:DofusApiAction = new DofusApiAction("MimicryObjectEraseRequest", MimicryObjectEraseRequestAction);
+        public static const WrapperObjectDissociateRequest:DofusApiAction = new DofusApiAction("WrapperObjectDissociateRequest", WrapperObjectDissociateRequestAction);
 
 
     }

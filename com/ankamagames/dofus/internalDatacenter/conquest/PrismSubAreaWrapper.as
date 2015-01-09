@@ -3,6 +3,7 @@
     import com.ankamagames.jerakine.interfaces.IDataCenter;
     import flash.utils.Dictionary;
     import com.ankamagames.dofus.internalDatacenter.guild.AllianceWrapper;
+    import __AS3__.vec.Vector;
     import com.ankamagames.dofus.network.types.game.prism.PrismGeolocalizedInformation;
     import com.ankamagames.dofus.network.types.game.prism.AllianceInsiderPrismInformation;
     import com.ankamagames.dofus.network.types.game.prism.PrismSubareaEmptyInfo;
@@ -14,6 +15,7 @@
     import com.ankamagames.berilia.managers.KernelEventsManager;
     import com.ankamagames.dofus.misc.lists.PrismHookList;
     import com.ankamagames.dofus.datacenter.world.SubArea;
+    import __AS3__.vec.*;
 
     public class PrismSubAreaWrapper implements IDataCenter 
     {
@@ -39,7 +41,13 @@
         private var _isVillage:int = -1;
         private var _subAreaName:String = "";
         private var _rewardTokenCount:uint;
+        private var _modulesItemIds:Vector.<uint>;
 
+        public function PrismSubAreaWrapper()
+        {
+            this._modulesItemIds = new Vector.<uint>();
+            super();
+        }
 
         public static function reset():void
         {
@@ -95,6 +103,7 @@
                     prism._lastTimeSlotModificationAuthorId = aipi.lastTimeSlotModificationAuthorId;
                     prism._lastTimeSlotModificationAuthorName = aipi.lastTimeSlotModificationAuthorName;
                     prism._lastTimeSlotModificationAuthorGuildId = aipi.lastTimeSlotModificationAuthorGuildId;
+                    prism._modulesItemIds = aipi.modulesItemIds;
                 }
                 else
                 {
@@ -102,6 +111,7 @@
                     prism._lastTimeSlotModificationAuthorId = 0;
                     prism._lastTimeSlotModificationAuthorName = null;
                     prism._lastTimeSlotModificationAuthorGuildId = 0;
+                    prism._modulesItemIds = new Vector.<uint>();
                     if ((pgi.prism is AlliancePrismInformation))
                     {
                         prism._alliance = AllianceWrapper.getFromNetwork(AlliancePrismInformation(pgi.prism).alliance);
@@ -161,6 +171,11 @@
         public function get rewardTokenCount():uint
         {
             return (this._rewardTokenCount);
+        }
+
+        public function get modulesItemIds():Vector.<uint>
+        {
+            return (this._modulesItemIds);
         }
 
         public function get nextVulnerabilityDate():uint

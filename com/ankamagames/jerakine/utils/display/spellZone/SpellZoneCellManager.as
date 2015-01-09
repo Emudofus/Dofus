@@ -379,6 +379,7 @@
                     shape = new HalfLozenge(0, ray, dataMapProvider);
                     break;
                 case SpellShapeEnum.A:
+                case SpellShapeEnum.a:
                     shape = new Lozenge(0, 63, dataMapProvider);
                     break;
                 case SpellShapeEnum.P:

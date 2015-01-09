@@ -169,6 +169,12 @@
         }
 
         [Untrusted]
+        public function getWarnOnHardcoreDeath():Boolean
+        {
+            return (this.socialFrame.warnOnHardcoreDeath);
+        }
+
+        [Untrusted]
         public function getSpouse():SpouseWrapper
         {
             return (this.socialFrame.spouse);

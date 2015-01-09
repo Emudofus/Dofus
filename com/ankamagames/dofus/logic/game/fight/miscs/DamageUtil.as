@@ -72,7 +72,7 @@
         public static const NO_BOOST_EFFECTS_IDS:Array = [144, 82];
 
 
-        public static function isDamagedOrHealedBySpell(pCasterId:int, pTargetId:int, pSpell:Object):Boolean
+        public static function isDamagedOrHealedBySpell(pCasterId:int, pTargetId:int, pSpell:Object, pSpellImpactCell:int):Boolean
         {
             var affected:Boolean;
             var effi:EffectInstance;
@@ -102,9 +102,10 @@
             {
                 pSpell = getBombDirectDamageSpellWrapper((pSpell as SpellWrapper));
             };
+            var casterInfos:GameFightFighterInformations = (fef.getEntityInfos(pCasterId) as GameFightFighterInformations);
             for each (effi in pSpell.effects)
             {
-                if ((((((((effi.category == 2)) || (!((HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1))))) || ((((effi.effectId == 5)) && (targetCanBePushed))))) && (verifySpellEffectMask(pCasterId, pTargetId, effi))))
+                if ((((((((effi.triggers == "I")) && ((((((effi.category == 2)) || (!((HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1))))) || ((((effi.effectId == 5)) && (targetCanBePushed))))))) && (verifySpellEffectMask(pCasterId, pTargetId, effi)))) && (verifySpellEffectZone(pTargetId, effi, pSpellImpactCell, casterInfos.disposition.cellId))))
                 {
                     affected = true;
                     break;
@@ -114,7 +115,7 @@
             {
                 for each (effi in pSpell.criticalEffect)
                 {
-                    if ((((((((effi.category == 2)) || (!((HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1))))) || ((((effi.effectId == 5)) && (targetCanBePushed))))) && (verifySpellEffectMask(pCasterId, pTargetId, effi))))
+                    if ((((((((effi.triggers == "I")) && ((((((effi.category == 2)) || (!((HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1))))) || ((((effi.effectId == 5)) && (targetCanBePushed))))))) && (verifySpellEffectMask(pCasterId, pTargetId, effi)))) && (verifySpellEffectZone(pTargetId, effi, pSpellImpactCell, casterInfos.disposition.cellId))))
                     {
                         affected = true;
                         break;
@@ -177,39 +178,12 @@
             return (elements);
         }
 
-        public static function getBuffTriggers(pBuff:BasicBuff):String
-        {
-            var effi:EffectInstance;
-            var buffSpellLevel:SpellLevel = pBuff.castingSpell.spellRank;
-            if (!(buffSpellLevel))
-            {
-                buffSpellLevel = SpellLevel.getLevelById(pBuff.castingSpell.spell.spellLevels[0]);
-            };
-            var effects:Vector.<EffectInstanceDice> = buffSpellLevel.effects;
-            for each (effi in effects)
-            {
-                if (effi.effectId == 1091)
-                {
-                    effects = SpellWrapper.create(0, int(effi.parameter0), int(effi.parameter1), false).spellLevelInfos.effects;
-                    break;
-                };
-            };
-            for each (effi in effects)
-            {
-                if ((((effi.order == pBuff.effects.order)) && ((effi.effectId == pBuff.effects.effectId))))
-                {
-                    return (effi.triggers);
-                };
-            };
-            return (null);
-        }
-
         public static function verifyBuffTriggers(pSpellInfo:SpellDamageInfo, pBuff:BasicBuff):Boolean
         {
             var triggersList:Array;
             var trigger:String;
             var eff:EffectInstance;
-            var triggers:String = getBuffTriggers(pBuff);
+            var triggers:String = pBuff.effects.triggers;
             if (triggers)
             {
                 triggersList = triggers.split("|");
@@ -217,7 +191,7 @@
                 {
                     for each (eff in pSpellInfo.spellEffects)
                     {
-                        if (verifyEffectTrigger(pSpellInfo.casterId, pSpellInfo.targetId, eff, pSpellInfo.isWeapon, trigger))
+                        if (verifyEffectTrigger(pSpellInfo.casterId, pSpellInfo.targetId, pSpellInfo.spellEffects, eff, pSpellInfo.isWeapon, trigger, pSpellInfo.spellCenterCell))
                         {
                             return (true);
                         };
@@ -227,7 +201,7 @@
             return (false);
         }
 
-        public static function verifyEffectTrigger(pCasterId:int, pTargetId:int, pEffect:EffectInstance, pWeaponEffect:Boolean, pTriggers:String):Boolean
+        public static function verifyEffectTrigger(pCasterId:int, pTargetId:int, pSpellEffects:Vector.<EffectInstance>, pEffect:EffectInstance, pWeaponEffect:Boolean, pTriggers:String, pSpellImpactCell:int):Boolean
         {
             var trigger:String;
             var verify:Boolean;
@@ -297,6 +271,7 @@
                         verify = (((pEffect.category == DAMAGE_EFFECT_CATEGORY)) && ((Effect.getEffectById(pEffect.effectId).elementId == WATER_ELEMENT)));
                         break;
                     case "MD":
+                        verify = PushUtil.hasPushDamages(pCasterId, pTargetId, pSpellEffects, pEffect, pSpellImpactCell);
                         break;
                     case "MDM":
                         break;
@@ -355,7 +330,7 @@
             }
             else
             {
-                if (((targetIsCarried) && (!((pEffect.zoneShape == SpellShapeEnum.A)))))
+                if (((((targetIsCarried) && (!((pEffect.zoneShape == SpellShapeEnum.A))))) && (!((pEffect.zoneShape == SpellShapeEnum.a)))))
                 {
                     return (false);
                 };
@@ -475,7 +450,7 @@
             return (verify);
         }
 
-        public static function verifySpellEffectZone(pTargetId:int, pEffect:EffectInstance, pSpellImpactCell:int):Boolean
+        public static function verifySpellEffectZone(pTargetId:int, pEffect:EffectInstance, pSpellImpactCell:int, pCasterCell:int):Boolean
         {
             var fef:FightEntitiesFrame = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame);
             if (!(fef))
@@ -484,6 +459,7 @@
             };
             var targetInfos:GameFightFighterInformations = (fef.getEntityInfos(pTargetId) as GameFightFighterInformations);
             var effectZone:IZone = SpellZoneManager.getInstance().getZone(pEffect.zoneShape, uint(pEffect.zoneSize), uint(pEffect.zoneMinSize));
+            effectZone.direction = MapPoint(MapPoint.fromCellId(pCasterCell)).advancedOrientationTo(MapPoint.fromCellId(pSpellImpactCell), false);
             var effectZoneCells:Vector.<uint> = effectZone.getCells(pSpellImpactCell);
             return (((effectZoneCells) ? !((effectZoneCells.indexOf(targetInfos.disposition.cellId) == -1)) : false));
         }
@@ -511,7 +487,7 @@
             {
                 effi = pSpell.effects[i];
                 effectTriggersBuff = ((((!((HP_BASED_DAMAGE_EFFECTS_IDS.indexOf(effi.effectId) == -1))) && ((effi.targetMask == "C")))) && (!((effi.triggers == "I"))));
-                if ((((((((((effi.category == DAMAGE_EFFECT_CATEGORY)) && ((HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1)))) && ((Effect.getEffectById(effi.effectId).elementId == pElementType)))) && (((((!(effi.targetMask)) || (isWeapon))) || (((effi.targetMask) && (DamageUtil.verifySpellEffectMask(pCasterId, pTargetId, effi)))))))) && (!(effectTriggersBuff))))
+                if ((((((((((((effi.category == DAMAGE_EFFECT_CATEGORY)) && (((isWeapon) || ((effi.triggers == "I")))))) && ((HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1)))) && ((Effect.getEffectById(effi.effectId).elementId == pElementType)))) && (((((!(effi.targetMask)) || (isWeapon))) || (((effi.targetMask) && (DamageUtil.verifySpellEffectMask(pCasterId, pTargetId, effi)))))))) && (!(effectTriggersBuff))))
                 {
                     ed = new EffectDamage(effi.effectId, pElementType, effi.random);
                     sd.addEffectDamage(ed);
@@ -555,7 +531,7 @@
             {
                 effi = pSpell.criticalEffect[i];
                 effectTriggersBuff = ((((!((HP_BASED_DAMAGE_EFFECTS_IDS.indexOf(effi.effectId) == -1))) && ((effi.targetMask == "C")))) && (!((effi.triggers == "I"))));
-                if ((((((((((effi.category == DAMAGE_EFFECT_CATEGORY)) && ((HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1)))) && ((Effect.getEffectById(effi.effectId).elementId == pElementType)))) && (((((!(effi.targetMask)) || (isWeapon))) || (((effi.targetMask) && (DamageUtil.verifySpellEffectMask(pCasterId, pTargetId, effi)))))))) && (!(effectTriggersBuff))))
+                if ((((((((((((effi.category == DAMAGE_EFFECT_CATEGORY)) && (((isWeapon) || ((effi.triggers == "I")))))) && ((HEALING_EFFECTS_IDS.indexOf(effi.effectId) == -1)))) && ((Effect.getEffectById(effi.effectId).elementId == pElementType)))) && (((((!(effi.targetMask)) || (isWeapon))) || (((effi.targetMask) && (DamageUtil.verifySpellEffectMask(pCasterId, pTargetId, effi)))))))) && (!(effectTriggersBuff))))
                 {
                     if (j < numEffectDamages)
                     {
@@ -639,6 +615,7 @@
             var finalAirDmg:EffectDamage;
             var finalFireDmg:EffectDamage;
             var erosion:EffectDamage;
+            var splashEffectDamages:Vector.<EffectDamage>;
             var dmgMultiplier:Number;
             var sharedDamageEffect:EffectDamage;
             var pushDamages:EffectDamage;
@@ -649,6 +626,10 @@
             var splashDmg:SplashDamage;
             var splashCasterCell:uint;
             var buff:BasicBuff;
+            var buffDamage:EffectDamage;
+            var buffEffectDamage:EffectDamage;
+            var buffSpellDamage:SpellDamage;
+            var effid:EffectInstanceDice;
             var finalBuffDmg:EffectDamage;
             var currentCasterLifePoints:int;
             var minShieldDiff:int;
@@ -736,6 +717,7 @@
             };
             if (pSpellDamageInfo.splashDamages)
             {
+                splashEffectDamages = new Vector.<EffectDamage>(0);
                 for each (splashDmg in pSpellDamageInfo.splashDamages)
                 {
                     if (splashDmg.targets.indexOf(pSpellDamageInfo.targetId) != -1)
@@ -743,18 +725,27 @@
                         splashCasterCell = EntitiesManager.getInstance().getEntity(splashDmg.casterId).position.cellId;
                         efficiencyMultiplier = getShapeEfficiency(splashDmg.spellShape, splashCasterCell, pSpellDamageInfo.targetCell, ((!((splashDmg.spellShapeSize == null))) ? int(splashDmg.spellShapeSize) : (EFFECTSHAPE_DEFAULT_AREA_SIZE)), ((!((splashDmg.spellShapeMinSize == null))) ? int(splashDmg.spellShapeMinSize) : (EFFECTSHAPE_DEFAULT_MIN_AREA_SIZE)), ((!((splashDmg.spellShapeEfficiencyPercent == null))) ? int(splashDmg.spellShapeEfficiencyPercent) : (EFFECTSHAPE_DEFAULT_EFFICIENCY)), ((!((splashDmg.spellShapeMaxEfficiency == null))) ? int(splashDmg.spellShapeMaxEfficiency) : EFFECTSHAPE_DEFAULT_MAX_EFFICIENCY_APPLY));
                         splashEffectDmg = computeDamage(splashDmg.damage, pSpellDamageInfo, efficiencyMultiplier, true, !(splashDmg.hasCritical));
+                        splashEffectDamages.push(splashEffectDmg);
                         finalDamage.addEffectDamage(splashEffectDmg);
                     };
                 };
             };
             var applyDamageMultiplier:Function = function (pMultiplier:Number):void
             {
+                var ed:EffectDamage;
                 erosion.applyDamageMultiplier(pMultiplier);
                 finalNeutralDmg.applyDamageMultiplier(pMultiplier);
                 finalEarthDmg.applyDamageMultiplier(pMultiplier);
                 finalWaterDmg.applyDamageMultiplier(pMultiplier);
                 finalAirDmg.applyDamageMultiplier(pMultiplier);
                 finalFireDmg.applyDamageMultiplier(pMultiplier);
+                if (splashEffectDamages)
+                {
+                    for each (ed in splashEffectDamages)
+                    {
+                        ed.applyDamageMultiplier(pMultiplier);
+                    };
+                };
             };
             if (pWithTargetBuffs)
             {
@@ -776,6 +767,17 @@
                                 finalFireDmg.convertDamageToHeal();
                                 pSpellDamageInfo.spellHasCriticalHeal = pSpellDamageInfo.spellHasCriticalDamage;
                                 break;
+                        };
+                        if (buff.effects.category == DAMAGE_EFFECT_CATEGORY)
+                        {
+                            buffSpellDamage = new SpellDamage();
+                            effid = (buff.effects as EffectInstanceDice);
+                            buffEffectDamage = new EffectDamage(buff.effects.effectId, Effect.getEffectById(buff.effects.effectId).elementId, -1);
+                            buffEffectDamage.minDamage = (buffEffectDamage.minCriticalDamage = (effid.value + effid.diceNum));
+                            buffEffectDamage.maxDamage = (buffEffectDamage.maxCriticalDamage = (effid.value + effid.diceSide));
+                            buffSpellDamage.addEffectDamage(buffEffectDamage);
+                            buffDamage = computeDamage(buffSpellDamage, pSpellDamageInfo, 1);
+                            finalDamage.addEffectDamage(buffDamage);
                         };
                     };
                 };
@@ -1040,10 +1042,10 @@
                     {
                         targetCriticalDamageFixedResist = 0;
                     };
-                    minBaseDmg = getDamage(ed.minDamage, stat, statBonus, elementBonus, allDamagesBonus, elementReduction, resistPercent, efficiencyPercent, damageSharingMultiplicator);
-                    minCriticalBaseDmg = getDamage(((!((pSpellDamageInfo.spellWeaponCriticalBonus == 0))) ? (((ed.minDamage > 0)) ? (ed.minDamage + pSpellDamageInfo.spellWeaponCriticalBonus) : 0) : ed.minCriticalDamage), stat, criticalStatBonus, (elementBonus + casterCriticalDamageBonus), allDamagesBonus, (elementReduction + targetCriticalDamageFixedResist), resistPercent, efficiencyPercent, damageSharingMultiplicator);
-                    maxBaseDmg = getDamage(ed.maxDamage, stat, statBonus, elementBonus, allDamagesBonus, elementReduction, resistPercent, efficiencyPercent, damageSharingMultiplicator);
-                    maxCriticalBaseDmg = getDamage(((!((pSpellDamageInfo.spellWeaponCriticalBonus == 0))) ? (((ed.maxDamage > 0)) ? (ed.maxDamage + pSpellDamageInfo.spellWeaponCriticalBonus) : 0) : ed.maxCriticalDamage), stat, criticalStatBonus, (elementBonus + casterCriticalDamageBonus), allDamagesBonus, (elementReduction + targetCriticalDamageFixedResist), resistPercent, efficiencyPercent, damageSharingMultiplicator);
+                    minBaseDmg = getDamage(ed.minDamage, pIgnoreCasterStats, stat, statBonus, elementBonus, allDamagesBonus, elementReduction, resistPercent, efficiencyPercent, damageSharingMultiplicator);
+                    minCriticalBaseDmg = getDamage(((!((pSpellDamageInfo.spellWeaponCriticalBonus == 0))) ? (((ed.minDamage > 0)) ? (ed.minDamage + pSpellDamageInfo.spellWeaponCriticalBonus) : 0) : ed.minCriticalDamage), pIgnoreCasterStats, stat, criticalStatBonus, (elementBonus + casterCriticalDamageBonus), allDamagesBonus, (elementReduction + targetCriticalDamageFixedResist), resistPercent, efficiencyPercent, damageSharingMultiplicator);
+                    maxBaseDmg = getDamage(ed.maxDamage, pIgnoreCasterStats, stat, statBonus, elementBonus, allDamagesBonus, elementReduction, resistPercent, efficiencyPercent, damageSharingMultiplicator);
+                    maxCriticalBaseDmg = getDamage(((!((pSpellDamageInfo.spellWeaponCriticalBonus == 0))) ? (((ed.maxDamage > 0)) ? (ed.maxDamage + pSpellDamageInfo.spellWeaponCriticalBonus) : 0) : ed.maxCriticalDamage), pIgnoreCasterStats, stat, criticalStatBonus, (elementBonus + casterCriticalDamageBonus), allDamagesBonus, (elementReduction + targetCriticalDamageFixedResist), resistPercent, efficiencyPercent, damageSharingMultiplicator);
                 }
                 else
                 {
@@ -1128,8 +1130,13 @@
             return (finalDamage);
         }
 
-        private static function getDamage(pBaseDmg:int, pStat:int, pStatBonus:int, pDamageBonus:int, pAllDamagesBonus:int, pDamageReduction:int, pResistPercent:int, pEfficiencyPercent:int, pDamageSharingMultiplicator:Number=1):int
+        private static function getDamage(pBaseDmg:int, pIgnoreStats:Boolean, pStat:int, pStatBonus:int, pDamageBonus:int, pAllDamagesBonus:int, pDamageReduction:int, pResistPercent:int, pEfficiencyPercent:int, pDamageSharingMultiplicator:Number=1):int
         {
+            if (((!(pIgnoreStats)) && (((pStat + pStatBonus) <= 0))))
+            {
+                pStat = 1;
+                pStatBonus = 0;
+            };
             var dmgWithEfficiency:int = (((pBaseDmg > 0)) ? ((((Math.floor(((pBaseDmg * ((100 + pStat) + pStatBonus)) / 100)) + pDamageBonus) + pAllDamagesBonus) * pEfficiencyPercent) / 100) : 0);
             var dmgWithDamageReduction:int = (((dmgWithEfficiency > 0)) ? (dmgWithEfficiency - pDamageReduction) : 0);
             dmgWithDamageReduction = (((dmgWithDamageReduction < 0)) ? 0 : dmgWithDamageReduction);
@@ -1159,6 +1166,7 @@
             switch (pShape)
             {
                 case SpellShapeEnum.A:
+                case SpellShapeEnum.a:
                 case SpellShapeEnum.Z:
                 case SpellShapeEnum.I:
                 case SpellShapeEnum.O:
@@ -1221,9 +1229,11 @@
             var spellZone:IZone;
             var spellZoneCells:Vector.<uint>;
             var cell:uint;
-            var entity:IEntity;
             var splashTargetsIds:Vector.<int>;
             var sourceSpellDamage:SpellDamage;
+            var cellEntities:Array;
+            var cellEntity:IEntity;
+            var fef:FightEntitiesFrame = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame);
             for each (ts in pTriggeredSpells)
             {
                 sw = ts.spell;
@@ -1236,18 +1246,21 @@
                         splashTargetsIds = null;
                         for each (cell in spellZoneCells)
                         {
-                            entity = EntitiesManager.getInstance().getEntityOnCell(cell, AnimatedCharacter);
-                            if (((entity) && (verifySpellEffectMask(sw.playerId, entity.id, effi))))
+                            cellEntities = EntitiesManager.getInstance().getEntitiesOnCell(cell, AnimatedCharacter);
+                            for each (cellEntity in cellEntities)
                             {
-                                if (!(splashDamages))
+                                if (((fef.getEntityInfos(cellEntity.id)) && (verifySpellEffectMask(sw.playerId, cellEntity.id, effi))))
                                 {
-                                    splashDamages = new Vector.<SplashDamage>(0);
+                                    if (!(splashDamages))
+                                    {
+                                        splashDamages = new Vector.<SplashDamage>(0);
+                                    };
+                                    if (!(splashTargetsIds))
+                                    {
+                                        splashTargetsIds = new Vector.<int>(0);
+                                    };
+                                    splashTargetsIds.push(cellEntity.id);
                                 };
-                                if (!(splashTargetsIds))
-                                {
-                                    splashTargetsIds = new Vector.<int>(0);
-                                };
-                                splashTargetsIds.push(entity.id);
                             };
                         };
                         if (splashTargetsIds)
@@ -1333,7 +1346,7 @@
             effect.effectId = pEffectDamage.effectId;
             for each (buff in targetBuffs)
             {
-                triggers = getBuffTriggers(buff);
+                triggers = buff.effects.triggers;
                 if (triggers)
                 {
                     triggersList = triggers.split("|");
@@ -1343,7 +1356,7 @@
                     };
                     for each (trigger in triggersList)
                     {
-                        if ((((buff.actionId == 265)) && (verifyEffectTrigger(pSpellInfo.casterId, pTargetId, effect, pSpellInfo.isWeapon, trigger))))
+                        if ((((buff.actionId == 265)) && (verifyEffectTrigger(pSpellInfo.casterId, pTargetId, null, effect, pSpellInfo.isWeapon, trigger, pSpellInfo.spellCenterCell))))
                         {
                             if (buffSpellElementsReduced[buff.castingSpell.spell.id].indexOf(pEffectDamage.element) != -1)
                             {

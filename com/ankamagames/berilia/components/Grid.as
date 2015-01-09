@@ -6,7 +6,7 @@
     import com.ankamagames.berilia.components.gridRenderer.LabelGridRenderer;
     import com.ankamagames.berilia.components.gridRenderer.SlotGridRenderer;
     import com.ankamagames.berilia.components.gridRenderer.EntityGridRenderer;
-    import com.ankamagames.berilia.components.gridRenderer.InlineXmlGridRender;
+    import com.ankamagames.berilia.components.gridRenderer.InlineXmlGridRenderer;
     import com.ankamagames.berilia.components.gridRenderer.MultiGridRenderer;
     import flash.utils.Dictionary;
     import com.ankamagames.jerakine.logger.Logger;
@@ -54,7 +54,7 @@
         private static var _include_LabelGridRenderer:LabelGridRenderer = null;
         private static var _include_SlotGridRenderer:SlotGridRenderer = null;
         private static var _include_EntityGridRenderer:EntityGridRenderer = null;
-        private static var _include_InlineXmlGridRender:InlineXmlGridRender = null;
+        private static var _include_InlineXmlGridRenderer:InlineXmlGridRenderer = null;
         private static var _include_MultiGridRenderer:MultiGridRenderer = null;
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
         protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Grid));

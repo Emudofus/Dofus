@@ -34,8 +34,8 @@
     import com.ankamagames.jerakine.entities.interfaces.IAnimated;
     import com.ankamagames.dofus.datacenter.jobs.Skill;
     import flash.events.TimerEvent;
-    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
     import com.ankamagames.dofus.types.entities.AnimatedCharacter;
+    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
     import com.ankamagames.dofus.types.enums.AnimationEnum;
     import com.ankamagames.tiphon.sequence.SetDirectionStep;
     import com.ankamagames.tiphon.sequence.PlayAnimationStep;
@@ -45,6 +45,7 @@
     import com.ankamagames.dofus.logic.game.common.frames.ChatFrame;
     import com.ankamagames.atouin.managers.InteractiveCellManager;
     import com.ankamagames.dofus.network.enums.MapObstacleStateEnum;
+    import com.ankamagames.berilia.frames.ShortcutsFrame;
     import com.ankamagames.dofus.logic.game.roleplay.messages.InteractiveElementMouseOutMessage;
     import com.ankamagames.jerakine.messages.Message;
     import flash.utils.clearTimeout;
@@ -430,6 +431,10 @@
                     delete this._entities[iuemsg.elemId];
                     return (true);
                 case (msg is InteractiveElementMouseOverMessage):
+                    if (ShortcutsFrame.ctrlKeyDown)
+                    {
+                        return (false);
+                    };
                     iemimsg = (msg as InteractiveElementMouseOverMessage);
                     iel = this._ie[iemimsg.sprite];
                     if (((iel) && (iel.element)))
@@ -791,7 +796,10 @@
                 return;
             };
             var ie:Object = this._ie[(me.target as Sprite)];
-            Kernel.getWorker().process(new InteractiveElementMouseOverMessage(ie.element, me.target));
+            if (((ie) && (me)))
+            {
+                Kernel.getWorker().process(new InteractiveElementMouseOverMessage(ie.element, me.target));
+            };
         }
 
         private function out(me:Object):void
@@ -831,6 +839,12 @@
             if (ie.element.elementTypeId > 0)
             {
                 interactive = Interactive.getInteractiveById(ie.element.elementTypeId);
+            };
+            if (ShortcutsFrame.ctrlKeyDown)
+            {
+                this.out(me);
+                InteractiveCellManager.getInstance().getCell(ie.position.cellId).dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+                return;
             };
             var skills:Array = [];
             for each (enabledSkill in ie.element.enabledSkills)

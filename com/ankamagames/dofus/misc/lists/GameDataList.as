@@ -89,6 +89,7 @@
     import com.ankamagames.dofus.datacenter.mounts.RideFood;
     import com.ankamagames.dofus.datacenter.livingObjects.Pet;
     import com.ankamagames.dofus.datacenter.documents.Document;
+    import com.ankamagames.dofus.datacenter.documents.Comic;
     import com.ankamagames.dofus.datacenter.appearance.Appearance;
     import com.ankamagames.dofus.datacenter.appearance.SkinMapping;
     import com.ankamagames.dofus.datacenter.livingObjects.SpeakingItemsTrigger;
@@ -214,6 +215,7 @@
         public static const mountRideFood:RideFood = null;
         public static const pet:Pet = null;
         public static const document:Document = null;
+        public static const comic:Comic = null;
         public static const appearance:Appearance = null;
         public static const skinMapping:SkinMapping = null;
         public static const speakingItemsTrigger:SpeakingItemsTrigger = null;

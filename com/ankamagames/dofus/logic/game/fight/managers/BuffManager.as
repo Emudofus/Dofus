@@ -10,6 +10,8 @@
     import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
     import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostWeaponDamagesEffect;
     import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporarySpellImmunityEffect;
+    import com.ankamagames.dofus.datacenter.spells.SpellLevel;
+    import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
     import com.ankamagames.dofus.logic.game.fight.types.SpellBuff;
     import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporarySpellBoostEffect;
     import com.ankamagames.dofus.logic.game.fight.types.TriggeredBuff;
@@ -18,10 +20,12 @@
     import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostStateEffect;
     import com.ankamagames.dofus.logic.game.fight.types.StatBuff;
     import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostEffect;
+    import com.ankamagames.dofus.misc.utils.GameDataQuery;
     import com.ankamagames.dofus.network.types.game.actions.fight.AbstractFightDispellableEffect;
     import com.ankamagames.berilia.managers.KernelEventsManager;
     import com.ankamagames.dofus.misc.lists.FightHookList;
     import com.ankamagames.dofus.misc.lists.HookList;
+    import com.ankamagames.dofus.logic.game.fight.fightEvents.FightEventsHelper;
     import com.ankamagames.dofus.logic.game.fight.frames.FightBattleFrame;
     import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
@@ -36,9 +40,6 @@
         public static const INCREMENT_MODE_TARGET:int = 2;
         protected static const _log:Logger = Log.getLogger(getQualifiedClassName(BuffManager));
         private static var _self:BuffManager;
-        private static var _buffSpellId:int = -1;
-        private static var _buffTargetId:int;
-        private static var _buffOrder:int;
 
         private var _buffs:Array;
         private var _finishingBuffs:Dictionary;
@@ -68,8 +69,12 @@
         public static function makeBuffFromEffect(effect:AbstractFightDispellableEffect, castingSpell:CastingSpell, actionId:uint):BasicBuff
         {
             var buff:BasicBuff;
-            var _local_5:FightTemporaryBoostWeaponDamagesEffect;
-            var _local_6:FightTemporarySpellImmunityEffect;
+            var criticalEffect:Boolean;
+            var _local_7:FightTemporaryBoostWeaponDamagesEffect;
+            var _local_8:FightTemporarySpellImmunityEffect;
+            var spellLevel:SpellLevel;
+            var effects:Vector.<EffectInstanceDice>;
+            var effid:EffectInstanceDice;
             switch (true)
             {
                 case (effect is FightTemporarySpellBoostEffect):
@@ -79,32 +84,41 @@
                     buff = new TriggeredBuff((effect as FightTriggeredEffect), castingSpell, actionId);
                     break;
                 case (effect is FightTemporaryBoostWeaponDamagesEffect):
-                    _local_5 = (effect as FightTemporaryBoostWeaponDamagesEffect);
-                    buff = new BasicBuff(effect, castingSpell, actionId, _local_5.weaponTypeId, _local_5.delta, _local_5.weaponTypeId);
+                    _local_7 = (effect as FightTemporaryBoostWeaponDamagesEffect);
+                    buff = new BasicBuff(effect, castingSpell, actionId, _local_7.weaponTypeId, _local_7.delta, _local_7.weaponTypeId);
                     break;
                 case (effect is FightTemporaryBoostStateEffect):
                     buff = new StateBuff((effect as FightTemporaryBoostStateEffect), castingSpell, actionId);
                     break;
                 case (effect is FightTemporarySpellImmunityEffect):
-                    _local_6 = (effect as FightTemporarySpellImmunityEffect);
-                    buff = new BasicBuff(effect, castingSpell, actionId, _local_6.immuneSpellId, null, null);
+                    _local_8 = (effect as FightTemporarySpellImmunityEffect);
+                    buff = new BasicBuff(effect, castingSpell, actionId, _local_8.immuneSpellId, null, null);
                     break;
                 case (effect is FightTemporaryBoostEffect):
                     buff = new StatBuff((effect as FightTemporaryBoostEffect), castingSpell, actionId);
                     break;
             };
             buff.id = effect.uid;
-            if (((!((_buffSpellId == castingSpell.spell.id))) || (!((_buffTargetId == buff.targetId)))))
+            var spellLevelsIds:Vector.<uint> = GameDataQuery.queryEquals(SpellLevel, "effects.effectUid", effect.effectId);
+            if (spellLevelsIds.length == 0)
             {
-                _buffSpellId = castingSpell.spell.id;
-                _buffTargetId = buff.targetId;
-                _buffOrder = 0;
-            }
-            else
-            {
-                _buffOrder++;
+                spellLevelsIds = GameDataQuery.queryEquals(SpellLevel, "criticalEffect.effectUid", effect.effectId);
+                criticalEffect = true;
             };
-            buff.effects.order = _buffOrder;
+            if (spellLevelsIds.length > 0)
+            {
+                spellLevel = SpellLevel.getLevelById(spellLevelsIds[0]);
+                effects = ((!(criticalEffect)) ? spellLevel.effects : spellLevel.criticalEffect);
+                for each (effid in effects)
+                {
+                    if (effid.effectUid == effect.effectId)
+                    {
+                        buff.effects.order = effid.order;
+                        buff.effects.triggers = effid.triggers;
+                        break;
+                    };
+                };
+            };
             return (buff);
         }
 
@@ -120,15 +134,21 @@
             this.incrementDuration(targetId, -1);
         }
 
-        public function synchronize():void
+        public function synchronize(ignoreEntityId:int=0):void
         {
-            var buffTarget:Array;
+            var entityId:String;
             var buffItem:BasicBuff;
-            for each (buffTarget in this._buffs)
+            for (entityId in this._buffs)
             {
-                for each (buffItem in buffTarget)
+                if (((ignoreEntityId) && ((entityId == ignoreEntityId.toString()))))
                 {
-                    buffItem.undisable();
+                }
+                else
+                {
+                    for each (buffItem in this._buffs[entityId])
+                    {
+                        buffItem.undisable();
+                    };
                 };
             };
         }
@@ -220,6 +240,7 @@
                 KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
             };
             this._buffs = newBuffs;
+            FightEventsHelper.sendAllFightEvent(true);
         }
 
         public function markFinishingBuffs(targetId:int, ignoreCurrent:Boolean=false):void
@@ -470,7 +491,6 @@
                     this._buffs[targetId].splice(this._buffs[targetId].indexOf(buff), 1);
                     buff.onRemoved();
                     KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, buff, targetId, "Dispell");
-                    KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, buff, targetId, "");
                     if (targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
                     {
                         KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);

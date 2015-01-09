@@ -77,6 +77,7 @@
         public static const PurchasableDialog:Hook = new Hook("PurchasableDialog", false);
         public static const HouseBuyResult:Hook = new Hook("HouseBuyResult", false);
         public static const HouseSold:Hook = new Hook("HouseSold", false);
+        public static const PaddockBuyResult:Hook = new Hook("PaddockBuyResult", false);
         public static const LockableShowCode:Hook = new Hook("LockableShowCode", false);
         public static const LockableCodeResult:Hook = new Hook("LockableCodeResult", false);
         public static const LockableStateUpdateHouseDoor:Hook = new Hook("LockableStateUpdateHouseDoor", false);
@@ -157,6 +158,8 @@
         public static const NonSubscriberPopup:Hook = new Hook("NonSubscriberPopup", false);
         public static const InformationPopup:Hook = new Hook("InformationPopup", false);
         public static const SubscriptionZone:Hook = new Hook("SubscriptionZone", false);
+        public static const GuestMode:Hook = new Hook("GuestMode", false);
+        public static const GuestLimitationPopup:Hook = new Hook("GuestLimitationPopup", false);
         public static const GiftList:Hook = new Hook("GiftList", false);
         public static const GiftAssigned:Hook = new Hook("GiftAssigned", false);
         public static const DocumentReadingBeginMessage:Hook = new Hook("DocumentReadingBeginMessage", false);

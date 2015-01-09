@@ -70,7 +70,10 @@
 
         public function remove():void
         {
-            parent.removeChild(this);
+            if (parent)
+            {
+                parent.removeChild(this);
+            };
         }
 
         private function iconRendered(pEvent:Event):void

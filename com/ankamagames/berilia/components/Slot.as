@@ -1014,7 +1014,10 @@
             if (((this._data) && (this._data.errorIconUri)))
             {
                 e.behavior.cancel = true;
-                this._icon.uri = this._data.errorIconUri;
+                if (this._icon.uri != this._data.errorIconUri)
+                {
+                    this._icon.uri = this._data.errorIconUri;
+                };
             };
         }
 

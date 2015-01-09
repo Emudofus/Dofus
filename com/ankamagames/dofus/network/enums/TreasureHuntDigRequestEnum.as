@@ -10,6 +10,7 @@
         public static const TREASURE_HUNT_DIG_WRONG:uint = 3;
         public static const TREASURE_HUNT_DIG_LOST:uint = 4;
         public static const TREASURE_HUNT_DIG_ERROR_IMPOSSIBLE:uint = 5;
+        public static const TREASURE_HUNT_DIG_WRONG_AND_YOU_KNOW_IT:uint = 6;
 
 
     }

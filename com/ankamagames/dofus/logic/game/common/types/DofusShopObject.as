@@ -5,9 +5,9 @@
     public class DofusShopObject implements IDataCenter 
     {
 
-        private var _id:int;
-        private var _name:String;
-        private var _description:String;
+        protected var _id:int;
+        protected var _name:String;
+        protected var _description:String;
 
         public function DofusShopObject(data:Object)
         {

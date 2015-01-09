@@ -87,13 +87,13 @@
             {
                 currentFighterEntity.setCanSeeThrough(true);
             };
-            if (((!((playerManager.id == id))) || (lastFighterId)))
-            {
-                KernelEventsManager.getInstance().processCallback(FightHookList.SlaveStatsList, this.getCharacteristicsInformations());
-            };
             if (playerManager.isFighting)
             {
                 this.updatePortrait(currentFighterEntity);
+                if (((!((playerManager.id == id))) || (lastFighterId)))
+                {
+                    KernelEventsManager.getInstance().processCallback(FightHookList.SlaveStatsList, this.getCharacteristicsInformations());
+                };
             };
         }
 

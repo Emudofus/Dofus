@@ -32,9 +32,9 @@
             return (6469);
         }
 
-        public function initSelectedServerDataExtendedMessage(serverId:int=0, address:String="", port:uint=0, canCreateNewCharacter:Boolean=false, ticket:String="", serverIds:Vector.<uint>=null):SelectedServerDataExtendedMessage
+        public function initSelectedServerDataExtendedMessage(serverId:int=0, address:String="", port:uint=0, ssl:Boolean=false, canCreateNewCharacter:Boolean=false, ticket:String="", serverIds:Vector.<uint>=null):SelectedServerDataExtendedMessage
         {
-            super.initSelectedServerDataMessage(serverId, address, port, canCreateNewCharacter, ticket);
+            super.initSelectedServerDataMessage(serverId, address, port, ssl, canCreateNewCharacter, ticket);
             this.serverIds = serverIds;
             this._isInitialized = true;
             return (this);

@@ -712,12 +712,9 @@
             {
                 UiModuleManager.getInstance().init(Constants.COMMON_GAME_MODULE.concat(Constants.PRE_GAME_MODULE), true);
             };
-            if (((!(Benchmark.hasCachedResults)) && (!(Benchmark.isDone))))
+            if (((((start) && (!(Benchmark.hasCachedResults)))) && (!(Benchmark.isDone))))
             {
-                if (start)
-                {
-                    Benchmark.run(StageShareManager.stage, this.checkInit);
-                };
+                Benchmark.run(StageShareManager.stage, this.checkInit);
                 return;
             };
             if (start)

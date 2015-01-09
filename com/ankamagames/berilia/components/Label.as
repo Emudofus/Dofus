@@ -67,6 +67,7 @@
         protected var _bFixedWidth:Boolean = true;
         protected var _hyperlinkEnabled:Boolean = false;
         protected var _bFixedHeight:Boolean = true;
+        protected var _bFixedHeightForMultiline:Boolean = false;
         protected var _aStyleObj:Array;
         protected var _ssSheet:ExtendedStyleSheet;
         protected var _tfFormatter:TextFormat;
@@ -453,6 +454,16 @@
             this._tText.wordWrap = !(this._bFixedHeight);
         }
 
+        public function get fixedHeightForMultiline():Boolean
+        {
+            return (this._bFixedHeightForMultiline);
+        }
+
+        public function set fixedHeightForMultiline(bValue:Boolean):void
+        {
+            this._bFixedHeightForMultiline = bValue;
+        }
+
         override public function set bgColor(nColor:int):void
         {
             _bgColor = nColor;
@@ -658,6 +669,7 @@
             this._sAntialiasType = "normal";
             this._bFixedWidth = true;
             this._bFixedHeight = true;
+            this._bFixedHeightForMultiline = false;
             this._ssSheet = null;
             this._useEmbedFonts = true;
             this._nPaddingLeft = 0;
@@ -975,7 +987,7 @@
             var currentTextFieldWidth:int;
             var textWidth:Number;
             this.removeTooltipExtension();
-            if (((((((this._bFixedHeight) && (!(this._tText.multiline)))) && ((this._tText.autoSize == "none")))) && (this._tfFormatter)))
+            if (((((((((this._bFixedHeight) && (!(this._tText.multiline)))) || (this._bFixedHeightForMultiline))) && ((this._tText.autoSize == "none")))) && (this._tfFormatter)))
             {
                 currentSize = int(this._tfFormatter.size);
                 sizeMin = currentSize;
@@ -995,7 +1007,7 @@
                 while (true)
                 {
                     textWidth = this._tText.textWidth;
-                    if ((((textWidth > currentTextFieldWidth)) || ((this._tText.textHeight > this._tText.height))))
+                    if ((((((textWidth > currentTextFieldWidth)) || ((this._tText.textHeight > this._tText.height)))) || (((this._bFixedHeightForMultiline) && ((this._tText.textHeight > this.height))))))
                     {
                         currentSize--;
                         if (currentSize < sizeMin)
@@ -1018,7 +1030,7 @@
                         break;
                     };
                 };
-                if (((((needTooltipExtension) && (!(this.multiline)))) && (this._bFixedHeight)))
+                if (((needTooltipExtension) && (((((!(this.multiline)) && (this._bFixedHeight))) || (this._bFixedHeightForMultiline)))))
                 {
                     this.addTooltipExtension();
                 }
@@ -1067,6 +1079,26 @@
                 this._textFieldTooltipExtension.y = this._tText.y;
                 this._tText.height = (this._tText.textHeight + 3);
                 __height = this._tText.height;
+            }
+            else
+            {
+                if (this._bFixedHeightForMultiline)
+                {
+                    this._tText.height = (this.height + 3);
+                    __height = this._tText.height;
+                    switch (this._sVerticalAlign.toUpperCase())
+                    {
+                        case VALIGN_CENTER:
+                            this._tText.y = ((this.height - this._tText.height) / 2);
+                            break;
+                        case VALIGN_BOTTOM:
+                            this._tText.y = (this.height - this._tText.height);
+                            break;
+                        default:
+                            this._tText.y = 0;
+                    };
+                    this._textFieldTooltipExtension.y = (((this._tText.y + this._tText.height) - this._textFieldTooltipExtension.textHeight) - 5);
+                };
             };
             var target:DisplayObjectContainer = this;
             var i:int;

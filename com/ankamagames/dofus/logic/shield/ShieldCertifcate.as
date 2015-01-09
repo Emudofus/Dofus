@@ -7,6 +7,7 @@
     import flash.utils.ByteArray;
     import com.ankamagames.dofus.network.types.secure.TrustCertificate;
     import by.blooddy.crypto.SHA256;
+    import com.hurlant.crypto.symmetric.ECBMode;
     import com.ankamagames.jerakine.utils.crypto.Base64;
     import com.hurlant.crypto.symmetric.AESKey;
     import flash.system.Capabilities;
@@ -192,43 +193,58 @@
 
         private function decrypt(data:IDataInput):String
         {
-            for (;;)
-            {
-                var cryptedData:ByteArray = Base64.decodeToByteArray(data.readUTFBytes(data.bytesAvailable));
-                goto _label_5;
-                
-            _label_1: 
-                var aesKey:AESKey = new AESKey(key);
-                //unresolved jump
-                
-            _label_2: 
-                goto _label_1;
-                var _local_0 = this;
-                
-            _label_3: 
-                key.writeUTFBytes(_local_0.getHash(true));
-                goto _label_2;
-                var _local_4 = _local_4;
-                
-            _label_4: 
-                goto _label_3;
-                continue;
-            };
-            _local_0 = this;
+            //unresolved jump
+            
+        _label_1: 
+            goto _label_6;
+            
+        _label_2: 
+            goto _label_9;
+            
+        _label_3: 
+            goto _label_8;
+            
+        _label_4: 
+            key.writeUTFBytes(this.getHash(true));
+            goto _label_2;
+            var _local_5 = _local_5;
+            
+        _label_5: 
+            goto _label_1;
+            var decrypt$0 = decrypt$0;
+            goto _label_5;
+            
+        _label_6: 
+            var key:ByteArray = new ByteArray();
+            goto _label_4;
+            var _local_0 = this;
+            
+        _label_7: 
+            var ecb:ECBMode = new ECBMode(aesKey);
+            goto _label_3;
+            var _local_3 = _local_3;
+            
+        _label_8: 
+            var cryptedData:ByteArray = Base64.decodeToByteArray(data.readUTFBytes(data.bytesAvailable));
+            goto _label_10;
+            
+        _label_9: 
+            var aesKey:AESKey = new AESKey(key);
+            goto _label_7;
             try
             {
                 
-            _label_5: 
+            _label_10: 
                 ecb.decrypt(cryptedData);
             }
             catch(e:Error)
             {
                 while (_log.error("Certificat V2 non valide (clef invalide)"), true)
                 {
-                    goto _label_6;
+                    goto _label_11;
                 };
                 
-            _label_6: 
+            _label_11: 
                 return (null);
             };
             cryptedData.position = 0;
@@ -237,63 +253,68 @@
 
         private function getHash(reverse:Boolean=false):String
         {
-            while (var virtualNetworkRegExpr:RegExp, goto _label_1, (var _local_6 = _local_6), true)
+            _loop_1:
+            for (;;)
             {
-                var data:Array = [];
-                goto _label_7;
-                
-            _label_1: 
-                var networkInterface:Object;
-                goto _label_3;
-                
-            _label_2: 
-                var orderInterfaces:Array;
-                goto _label_5;
+                var i:uint;
+                for (;;)
+                {
+                    
+                _label_1: 
+                    var interfaces:* = undefined;
+                    var orderInterfaces:Array;
+                    continue _loop_1;
+                    
+                _label_2: 
+                    var data:Array = [];
+                    goto _label_5;
+                    var virtualNetworkRegExpr:RegExp;
+                    continue;
+                    
+                _label_3: 
+                    goto _label_4;
+                    goto _label_3;
+                    var _local_6 = _local_6;
+                };
+                var _local_0 = this;
             };
-            var _local_0 = this;
-            
-        _label_3: 
-            var interfaces:* = undefined;
-            goto _label_2;
             
         _label_4: 
-            var i:uint;
-            goto _label_6;
-            
-        _label_5: 
-            var netInterface:* = undefined;
-            goto _label_4;
+            goto _label_2;
             var _local_3 = _local_3;
             
-        _label_6: 
-            //unresolved jump
-            
-        _label_7: 
-            if (_local_0.useBasicInfo)
+        _label_5: 
+            if (this.useBasicInfo)
             {
-                for (;;data.push(Capabilities.os), goto _label_10, data.push(Capabilities.language), continue, (_local_3 = _local_3))
+                while (data.push(Capabilities.cpuArchitecture), goto _label_8, true)
                 {
-                    //unresolved jump
-                    
-                _label_8: 
                     data.push(Capabilities.maxLevelIDC);
-                    goto _label_9;
-                    goto _label_11;
-                    
-                _label_9: 
-                    continue;
+                    goto _label_7;
                 };
-                var _local_4 = _local_4;
+                var getHash$0 = getHash$0;
+                
+            _label_6: 
+                data.push(Capabilities.language);
+                goto _label_9;
+                
+            _label_7: 
+                goto _label_6;
+                
+            _label_8: 
+                goto _label_10;
+                
+            _label_9: 
+                goto _label_11;
                 
             _label_10: 
-                goto _label_8;
-                var _local_5 = _local_5;
+                data.push(Capabilities.os);
+                //unresolved jump
             };
             
         _label_11: 
             if (AirScanner.hasAir())
             {
-                if (_local_0.useUserInfo)
+                if (this.useUserInfo)
                 {
                     try
                     {
@@ -304,27 +325,25 @@
                         _log.error("User non disponible.");
                     };
                 };
-                if (_local_0.useBasicNetworkInfo)
+                if (this.useBasicNetworkInfo)
                 {
                     virtualNetworkRegExpr = new RegExp("(6to4)|(adapter)|(teredo)|(tunneling)|(loopback)", "ig");
                     try
                     {
                         if (ApplicationDomain.currentDomain.hasDefinition("flash.net::NetworkInfo"))
                         {
-                            while ((networkInterface = ApplicationDomain.currentDomain.getDefinition("flash.net::NetworkInfo")), true)
+                            while ((var networkInterface:Object = ApplicationDomain.currentDomain.getDefinition("flash.net::NetworkInfo")), goto _label_13, (interfaces = networkInterface.networkInfo.findInterfaces()), true)
                             {
-                                goto _label_13;
-                                
-                            _label_12: 
-                                orderInterfaces = [];
-                                //unresolved jump
+                                goto _label_12;
                             };
                             
+                        _label_12: 
+                            orderInterfaces = [];
+                            //unresolved jump
+                            
                         _label_13: 
-                            interfaces = networkInterface.networkInfo.findInterfaces();
-                            goto _label_12;
-                            var getHash$0 = getHash$0;
-                            for each (netInterface in interfaces)
+                            //unresolved jump
+                            for each (var netInterface:* in interfaces)
                             {
                                 //unresolved jump
                             };
@@ -337,15 +356,19 @@
                             i = 0;
                             while (i < orderInterfaces.length)
                             {
-                                if (((_local_0.filterVirtualNetwork) && (!((String(orderInterfaces[i].displayName).search(virtualNetworkRegExpr) == -1)))))
+                                if (((this.filterVirtualNetwork) && (!((String(orderInterfaces[i].displayName).search(virtualNetworkRegExpr) == -1)))))
                                 {
                                 }
                                 else
                                 {
                                     data.push(orderInterfaces[i].hardwareAddress);
-                                    if (_local_0.useAdvancedNetworkInfo)
+                                    if (this.useAdvancedNetworkInfo)
                                     {
-                                        goto _label_17;
+                                        while (data.push(orderInterfaces[i].name), true)
+                                        {
+                                            data.push(orderInterfaces[i].displayName);
+                                            goto _label_16;
+                                        };
                                     };
                                 };
                                 
@@ -355,14 +378,6 @@
                                 
                             _label_16: 
                                 goto _label_15;
-                                
-                            _label_17: 
-                                data.push(orderInterfaces[i].name);
-                                while (true)
-                                {
-                                    data.push(orderInterfaces[i].displayName);
-                                    goto _label_16;
-                                };
                             };
                         };
                     }
@@ -376,48 +391,69 @@
             {
                 while (data.reverse(), true)
                 {
-                    goto _label_18;
+                    goto _label_17;
                 };
             };
             
-        _label_18: 
+        _label_17: 
             return (MD5.hash(data.toString()));
         }
 
         private function traceInfo(target:*, maxDepth:uint=5, inc:String=""):void
         {
-            _loop_1:
-            for (;;_log.info(("name : " + target.hardwareAddress)), continue, (target = target))
+            while (goto _label_4, _log.info(("active : " + target.active)), true)
             {
-                goto _label_5;
+                goto _label_11;
                 
             _label_1: 
-                while (_log.info("-----------"), goto _label_4, //unresolved jump
-, goto _label_1, (inc = inc), _log.info(("hardwareAddress : " + target.hardwareAddress)), true)
-                {
-                    continue _loop_1;
-                };
+                goto _label_8;
                 
             _label_2: 
-                //unresolved jump
+                goto _label_12;
                 
             _label_3: 
-                _log.info(("active : " + target.active));
-                goto _label_2;
-                _log.info(("displayName : " + target.displayName));
-                //unresolved jump
-                var _local_0 = this;
+                goto _label_10;
             };
-            var _local_4 = _local_4;
+            var _local_0 = this;
             
         _label_4: 
-            goto _label_3;
-            var _local_5 = _local_5;
+            goto _label_2;
             
         _label_5: 
+            _log.info(("name : " + target.hardwareAddress));
+            goto _label_1;
+            
+        _label_6: 
+            //unresolved jump
+            var _local_4 = _local_4;
+            
+        _label_7: 
+            goto _label_13;
+            
+        _label_8: 
+            _log.info(("displayName : " + target.displayName));
+            goto _label_3;
+            
+        _label_9: 
+            goto _label_5;
+            var _local_5 = _local_5;
+            
+        _label_10: 
+            _log.info(("parent : " + target.parent));
+            goto _label_7;
+            
+        _label_11: 
+            _log.info(("hardwareAddress : " + target.hardwareAddress));
+            goto _label_9;
+            
+        _label_12: 
+            _log.info("-----------");
+            goto _label_6;
+            
+        _label_13: 
             if (((target.parent) && (maxDepth)))
             {
-                while (this.traceInfo(target.parent, maxDepth--, (inc + "...")), true)
+                while (_local_0.traceInfo(target.parent, maxDepth--, (inc + "...")), true)
                 {
                     return;
                 };

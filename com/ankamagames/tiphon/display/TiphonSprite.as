@@ -613,7 +613,10 @@
                 {
                     this.mask.parent.removeChild(this.mask);
                 };
-                addChild(infoSprite);
+                if (!(infoSprite.parent))
+                {
+                    addChild(infoSprite);
+                };
                 this.mask = infoSprite;
             };
         }
@@ -1020,9 +1023,21 @@
 
         public function removeBackground(name:String):void
         {
+            var i:int;
             if (((this._rendered) && (this._background[name])))
             {
                 removeChild(this._background[name]);
+            };
+            var nbTempBgClips:int = this._backgroundTemp.length;
+            i = 0;
+            while (i < nbTempBgClips)
+            {
+                if (this._backgroundTemp[i] == this._background[name])
+                {
+                    this._backgroundTemp.splice(i, 2);
+                    break;
+                };
+                i = (i + 2);
             };
             this._background[name] = null;
         }
@@ -1442,7 +1457,14 @@
                     tiphonSprite = (subEntityInfo.entity as TiphonSprite);
                     if (((tiphonSprite) && (!(tiphonSprite._currentAnimation))))
                     {
-                        tiphonSprite._currentAnimation = this._currentAnimation;
+                        if (((tiphonSprite.animationList) && (!((tiphonSprite.animationList.indexOf(this._currentAnimation) == -1)))))
+                        {
+                            tiphonSprite._currentAnimation = this._currentAnimation;
+                        }
+                        else
+                        {
+                            tiphonSprite._currentAnimation = "AnimStatique";
+                        };
                     };
                     this.addSubEntity(subEntityInfo.entity, subEntityInfo.category, subEntityInfo.slot);
                 };

@@ -634,6 +634,12 @@
             return (!((StageShareManager.stage.displayState == StageDisplayState.NORMAL)));
         }
 
+        [Trusted]
+        public function setShortcutUsedToExitFullScreen(value:Boolean):void
+        {
+            StageShareManager.shortcutUsedToExitFullScreen = value;
+        }
+
         [Untrusted]
         public function useIME():Boolean
         {

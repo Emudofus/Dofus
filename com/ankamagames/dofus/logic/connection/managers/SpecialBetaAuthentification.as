@@ -58,19 +58,21 @@
 
         private function onDataReceived(e:Event):void
         {
-            while (true)
+            goto _label_3;
+            
+        _label_1: 
+            while (dispatchEvent(new Event(Event.INIT)), true)
             {
-                this._haveAccess = this._rpc.getAllResultData();
-                goto _label_2;
+                return;
             };
             var _local_3 = _local_3;
             
-        _label_1: 
-            return;
-            
         _label_2: 
-            dispatchEvent(new Event(Event.INIT));
+            this._haveAccess = this._rpc.getAllResultData();
             goto _label_1;
+            
+        _label_3: 
+            goto _label_2;
             return;
         }
 

@@ -20,6 +20,7 @@
     import com.ankamagames.jerakine.data.I18n;
     import com.ankamagames.berilia.managers.KernelEventsManager;
     import com.ankamagames.dofus.misc.lists.HookList;
+    import com.ankamagames.dofus.logic.connection.managers.GuestModeManager;
     import com.ankamagames.dofus.logic.connection.managers.SpecialBetaAuthentification;
     import flash.events.Event;
     import com.ankamagames.jerakine.types.DataStoreType;
@@ -40,6 +41,8 @@
     import com.ankamagames.dofus.logic.game.approach.actions.NewsLoginRequestAction;
     import flash.utils.ByteArray;
     import com.ankamagames.jerakine.utils.crypto.Signature;
+    import com.ankamagames.dofus.logic.connection.actions.LoginAsGuestAction;
+    import com.ankamagames.dofus.logic.connection.actions.LoginValidationAsGuestAction;
     import by.blooddy.crypto.MD5;
     import com.ankamagames.dofus.BuildInfos;
     import com.ankamagames.dofus.network.enums.BuildTypeEnum;
@@ -61,10 +64,10 @@
     import com.ankamagames.dofus.logic.game.approach.managers.PartManager;
     import com.ankamagames.dofus.logic.connection.managers.StoreUserDataManager;
     import com.ankamagames.dofus.logic.common.frames.ChangeCharacterFrame;
+    import com.ankamagames.dofus.network.enums.IdentificationFailureReasonEnum;
     import com.ankamagames.jerakine.messages.Message;
     import com.ankamagames.berilia.Berilia;
     import com.ankamagames.dofus.logic.connection.actions.LoginValidationWithTicketAction;
-    import com.ankamagames.dofus.internalDatacenter.connection.SubscriberGift;
 
     public class AuthentificationFrame implements Frame 
     {
@@ -121,7 +124,14 @@
                         KernelEventsManager.getInstance().processCallback(HookList.AgreementsRequired, files);
                     };
                 };
-                KernelEventsManager.getInstance().processCallback(HookList.AuthentificationStart);
+                if (GuestModeManager.getInstance().forceGuestMode)
+                {
+                    GuestModeManager.getInstance().logAsGuest();
+                }
+                else
+                {
+                    KernelEventsManager.getInstance().processCallback(HookList.AuthentificationStart);
+                };
             };
             return (true);
         }
@@ -131,65 +141,60 @@
             var _local_2:Object;
             if (SpecialBetaAuthentification(e.target).haveAccess)
             {
-                goto _label_3;
-                
-            _label_1: 
-                this.process(this._lva);
-                //unresolved jump
-                
-            _label_2: 
-                goto _label_1;
-                
-            _label_3: 
-                this._streamingBetaAccess = true;
-                goto _label_2;
-                var _local_0 = this;
+                while ((this._streamingBetaAccess = true), true)
+                {
+                    this.process(this._lva);
+                    //unresolved jump
+                };
             }
             else
             {
                 if (UiModuleManager.getInstance().isDevMode)
                 {
-                    goto _label_5;
+                    goto _label_8;
                     
-                _label_4: 
-                    goto _label_7;
-                    
-                _label_5: 
-                    UiModuleManager.getInstance().isDevMode = false;
-                    goto _label_9;
-                    
-                _label_6: 
+                _label_1: 
                     return;
                     
-                _label_7: 
+                _label_2: 
+                    KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed, 0);
+                    goto _label_9;
+                    goto _label_7;
+                    
+                _label_3: 
                     _local_2 = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-                    goto _label_13;
+                    goto _label_11;
+                    
+                _label_4: 
+                    return;
+                    
+                _label_5: 
+                    goto _label_2;
+                    var _local_3 = _local_3;
+                    
+                _label_6: 
+                    this.process(this._lva);
+                    goto _label_4;
                 };
                 
-            _label_8: 
+            _label_7: 
                 this._streamingBetaAccess = false;
-                goto _label_11;
+                goto _label_5;
+                
+            _label_8: 
+                UiModuleManager.getInstance().isDevMode = false;
+                goto _label_10;
                 
             _label_9: 
-                this.process(this._lva);
-                goto _label_6;
-                var _local_4 = _local_4;
-                goto _label_8;
+                goto _label_3;
                 
             _label_10: 
-                return;
+                goto _label_6;
                 
             _label_11: 
-                KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed, 0);
-                goto _label_4;
-                
-            _label_12: 
                 _local_2.openPopup(I18n.getUiText("ui.popup.information"), "You are trying to access to a private beta but your account is not allowed.", [I18n.getUiText("ui.common.ok")]);
-                goto _label_10;
+                goto _label_1;
                 return;
-                
-            _label_13: 
-                goto _label_12;
             };
             return;
         }
@@ -248,8 +253,12 @@
             var files:Array;
             switch (true)
             {
+                case (msg is LoginAsGuestAction):
+                    GuestModeManager.getInstance().logAsGuest();
+                    return (true);
                 case (msg is LoginValidationAction):
                     lva = LoginValidationAction(msg);
+                    GuestModeManager.getInstance().isLoggingAsGuest = (lva is LoginValidationAsGuestAction);
                     if (this._lastLoginHash != MD5.hash(lva.username))
                     {
                         this._streamingBetaAccess = false;
@@ -414,6 +423,7 @@
                     PlayerManager.getInstance().hasRights = ismsg.hasRights;
                     PlayerManager.getInstance().nickname = ismsg.nickname;
                     PlayerManager.getInstance().subscriptionEndDate = ismsg.subscriptionEndDate;
+                    PlayerManager.getInstance().subscriptionDurationElapsed = ismsg.subscriptionElapsedDuration;
                     PlayerManager.getInstance().secretQuestion = ismsg.secretQuestion;
                     PlayerManager.getInstance().accountCreation = ismsg.accountCreation;
                     try
@@ -503,6 +513,10 @@
                     ifmsg = IdentificationFailedMessage(msg);
                     PlayerManager.getInstance().destroy();
                     ConnectionsHandler.closeConnection();
+                    if ((((ifmsg.reason == IdentificationFailureReasonEnum.WRONG_CREDENTIALS)) && (GuestModeManager.getInstance().isLoggingAsGuest)))
+                    {
+                        GuestModeManager.getInstance().clearStoredCredentials();
+                    };
                     KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed, ifmsg.reason);
                     if (!(this._dispatchModuleHook))
                     {
@@ -578,102 +592,83 @@
             var lvwta:LoginValidationWithTicketAction;
             if (CommandLineArguments.getInstance().hasArgument("ticket"))
             {
-                while (true)
-                {
-                    value = CommandLineArguments.getInstance().getArgument("ticket");
-                    goto _label_1;
-                };
-                var _local_0 = this;
-                
-            _label_1: 
+                value = CommandLineArguments.getInstance().getArgument("ticket");
                 if (_lastTicket == value)
                 {
                     return;
-                    
-                _label_2: 
-                    _lastTicket = value;
-                    goto _label_4;
-                    
-                _label_3: 
-                    goto _label_2;
-                    
-                _label_4: 
-                    lvwta = LoginValidationWithTicketAction.create(value, true);
-                    goto _label_8;
-                    
-                _label_5: 
-                    return;
                 };
                 
-            _label_6: 
+            _label_1: 
                 _log.info("Use ticket from launch param's");
-                goto _label_3;
+                for (;;)
+                {
+                    this.process(lvwta);
+                    continue;
+                    goto _label_2;
+                };
                 var _local_3 = _local_3;
                 
-            _label_7: 
-                _local_0.process(lvwta);
-                goto _label_5;
-                goto _label_6;
+            _label_2: 
+                _lastTicket = value;
+                //unresolved jump
                 
-            _label_8: 
-                goto _label_7;
+            _label_3: 
+                lvwta = LoginValidationWithTicketAction.create(value, true);
+                //unresolved jump
+                goto _label_1;
             };
             return;
         }
 
         private function onLoad(e:ResourceLoadedEvent):void
         {
-            goto _label_3;
-            goto _label_7;
+            //unresolved jump
             
         _label_1: 
-            var news:XML;
-            //unresolved jump
-            var _local_0 = this;
-            
-        _label_2: 
-            var id:uint;
-            goto _label_1;
-            var _local_5 = _local_5;
-            
-        _label_3: 
-            var xml:XML;
-            //unresolved jump
-            
-        _label_4: 
-            var subGiftList:Array = new Array();
+            var i:int;
             _loop_1:
-            for (;;)
+            for (;;goto _label_7)
             {
-                var i:int;
-                while (var gift:XML, true)
+                var text:String;
+                for (;;)
                 {
-                    var subGift:SubscriberGift;
+                    goto _label_6;
+                    
+                _label_2: 
+                    var news:XML;
+                    continue;
+                    
+                _label_3: 
+                    var xmlString:String;
+                    goto _label_1;
+                    var _local_0 = this;
+                    var link:String;
+                    goto _label_5;
+                    
+                _label_4: 
+                    var subGiftList:Array = new Array();
                     continue _loop_1;
                 };
+                var _local_4 = _local_4;
                 
             _label_5: 
-                goto _label_4;
+                var id:uint;
+                goto _label_2;
+                var onLoad$0 = onLoad$0;
                 
             _label_6: 
-                var link:String;
-                goto _label_2;
-                goto _label_8;
-                
-            _label_7: 
-                goto _label_5;
-                var onLoad$0 = onLoad$0;
+                goto _label_4;
             };
+            var _local_6 = _local_6;
             try
             {
                 
-            _label_8: 
-                xml = e.resource;
-                while ((var xmlString:String = xml.toXMLString()), true)
+            _label_7: 
+                var xml:XML = e.resource;
+                while ((xmlString = xml.toXMLString()), true)
                 {
                     //unresolved jump
                 };
-                var _local_6 = _local_6;
             }
             catch(error:Error)
             {
@@ -681,26 +676,14 @@
                 {
                     return;
                 };
-                var _local_4 = _local_4;
                 return;
             };
             if (xmlString.substring(1, 17) == "subscribersGifts")
             {
                 i = 0;
-                for each (gift in xml..gift)
+                for each (var gift:XML in xml..gift)
                 {
                     //unresolved jump
-                    
-                _label_9: 
-                    subGift = new SubscriberGift(i, gift.description, gift.uri, gift.link);
-                    //unresolved jump
-                    
-                _label_10: 
-                    i = (i + 1);
-                    goto _label_9;
-                    
-                _label_11: 
-                    subGiftList.push(subGift);
                 };
                 KernelEventsManager.getInstance().processCallback(HookList.SubscribersList, subGiftList);
             }
@@ -709,32 +692,31 @@
                 if (xmlString.substring(1, 9) == "newsList")
                 {
                     id = 0;
-                    _loop_2:
                     for each (news in xml..news)
                     {
                         if (news.@id > id)
                         {
-                            for (;;)
-                            {
-                                link = news.link;
-                                //unresolved jump
-                                var text:String = news.text;
-                                continue;
-                                
-                            _label_12: 
-                                continue _loop_2;
-                                
-                            _label_13: 
-                                id = news.@id;
-                                goto _label_12;
-                            };
-                            var _local_3 = _local_3;
+                            goto _label_10;
+                            
+                        _label_8: 
+                            continue;
+                            
+                        _label_9: 
+                            id = news.@id;
+                            goto _label_8;
+                            var _local_5 = _local_5;
+                            
+                        _label_10: 
+                            text = news.text;
+                            link = news.link;
+                            goto _label_9;
                         };
                     };
                     while (KernelEventsManager.getInstance().processCallback(HookList.NewsLogin, text, link), true)
                     {
                         return;
                     };
+                    _local_0 = this;
                 };
             };
             return;
@@ -742,12 +724,19 @@
 
         private function onLoadError(e:ResourceErrorEvent):void
         {
-            while (true)
-            {
-                _log.error((((("Cannot load xml " + e.uri) + "(") + e.errorMsg) + ")"));
-                return;
-            };
+            goto _label_3;
+            
+        _label_1: 
+            return;
+            
+        _label_2: 
+            _log.error((((("Cannot load xml " + e.uri) + "(") + e.errorMsg) + ")"));
+            goto _label_1;
             var _local_0 = this;
+            
+        _label_3: 
+            goto _label_2;
+            var _local_2 = _local_2;
             return;
         }
 

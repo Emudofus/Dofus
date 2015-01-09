@@ -138,6 +138,7 @@
                     return;
                 case "chatoutput":
                     _local_10 = ((((!(args.length)) || ((String(args[0]).toLowerCase() == "true")))) || ((String(args[0]).toLowerCase() == "on")));
+                    Console.getInstance().chatMode = _local_10;
                     Console.getInstance().display();
                     Console.getInstance().disableLogEvent();
                     KernelEventsManager.getInstance().processCallback(ChatHookList.ToggleChatLog, _local_10);

@@ -83,7 +83,7 @@
             {
                 case "version":
                     return (I18n.getUiText("ui.chat.console.help.version"));
-                case "v":
+                case "ver":
                     return (I18n.getUiText("ui.chat.console.help.version"));
                 case "about":
                     return (I18n.getUiText("ui.chat.console.help.version"));

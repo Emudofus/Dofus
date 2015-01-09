@@ -58,9 +58,9 @@
         }
 
         [Untrusted]
-        public function getDate(time:Number=0, useTimezoneOffset:Boolean=false):String
+        public function getDate(time:Number=0, useTimezoneOffset:Boolean=false, unchanged:Boolean=false):String
         {
-            return (TimeManager.getInstance().formatDateIRL(time, useTimezoneOffset));
+            return (TimeManager.getInstance().formatDateIRL(time, useTimezoneOffset, unchanged));
         }
 
         [Untrusted]

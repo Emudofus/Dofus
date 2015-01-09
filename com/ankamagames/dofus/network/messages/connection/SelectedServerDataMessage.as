@@ -5,6 +5,7 @@
     import flash.utils.ByteArray;
     import flash.utils.IDataOutput;
     import flash.utils.IDataInput;
+    import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
 
     [Trusted]
     public class SelectedServerDataMessage extends NetworkMessage implements INetworkMessage 
@@ -16,6 +17,7 @@
         public var serverId:int = 0;
         public var address:String = "";
         public var port:uint = 0;
+        public var ssl:Boolean = false;
         public var canCreateNewCharacter:Boolean = false;
         public var ticket:String = "";
 
@@ -30,11 +32,12 @@
             return (42);
         }
 
-        public function initSelectedServerDataMessage(serverId:int=0, address:String="", port:uint=0, canCreateNewCharacter:Boolean=false, ticket:String=""):SelectedServerDataMessage
+        public function initSelectedServerDataMessage(serverId:int=0, address:String="", port:uint=0, ssl:Boolean=false, canCreateNewCharacter:Boolean=false, ticket:String=""):SelectedServerDataMessage
         {
             this.serverId = serverId;
             this.address = address;
             this.port = port;
+            this.ssl = ssl;
             this.canCreateNewCharacter = canCreateNewCharacter;
             this.ticket = ticket;
             this._isInitialized = true;
@@ -46,6 +49,7 @@
             this.serverId = 0;
             this.address = "";
             this.port = 0;
+            this.ssl = false;
             this.canCreateNewCharacter = false;
             this.ticket = "";
             this._isInitialized = false;
@@ -70,6 +74,10 @@
 
         public function serializeAs_SelectedServerDataMessage(output:IDataOutput):void
         {
+            var _box0:uint;
+            _box0 = BooleanByteWrapper.setFlag(_box0, 0, this.ssl);
+            _box0 = BooleanByteWrapper.setFlag(_box0, 1, this.canCreateNewCharacter);
+            output.writeByte(_box0);
             output.writeShort(this.serverId);
             output.writeUTF(this.address);
             if ((((this.port < 0)) || ((this.port > 0xFFFF))))
@@ -77,7 +85,6 @@
                 throw (new Error((("Forbidden value (" + this.port) + ") on element port.")));
             };
             output.writeShort(this.port);
-            output.writeBoolean(this.canCreateNewCharacter);
             output.writeUTF(this.ticket);
         }
 
@@ -88,6 +95,9 @@
 
         public function deserializeAs_SelectedServerDataMessage(input:IDataInput):void
         {
+            var _box0:uint = input.readByte();
+            this.ssl = BooleanByteWrapper.getFlag(_box0, 0);
+            this.canCreateNewCharacter = BooleanByteWrapper.getFlag(_box0, 1);
             this.serverId = input.readShort();
             this.address = input.readUTF();
             this.port = input.readUnsignedShort();
@@ -95,7 +105,6 @@
             {
                 throw (new Error((("Forbidden value (" + this.port) + ") on element of SelectedServerDataMessage.port.")));
             };
-            this.canCreateNewCharacter = input.readBoolean();
             this.ticket = input.readUTF();
         }
 

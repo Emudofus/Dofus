@@ -35,6 +35,7 @@
             add("tabsNames", ["0", "1", "2", "3"]);
             add("chatoutput", false);
             add("currentChatTheme", "");
+            add("externalChatEnabledChannels", []);
             CssManager.getInstance().askCss(this._cssUri, new Callback(this.onCssLoaded));
         }
 

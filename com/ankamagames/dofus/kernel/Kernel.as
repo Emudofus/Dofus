@@ -26,6 +26,7 @@
     import com.ankamagames.tiphon.engine.BoneIndexManager;
     import com.ankamagames.dofus.misc.utils.AnimationCleaner;
     import com.ankamagames.dofus.misc.interClient.InterClientManager;
+    import com.ankamagames.dofus.misc.stats.StatisticsManager;
     import com.ankamagames.dofus.network.Metadata;
     import com.ankamagames.jerakine.utils.system.AirScanner;
     import com.ankamagames.dofus.kernel.updater.UpdaterConnexionHandler;
@@ -86,6 +87,7 @@
     import com.ankamagames.berilia.frames.ShortcutsFrame;
     import com.ankamagames.dofus.logic.common.frames.DisconnectionHandlerFrame;
     import com.ankamagames.dofus.logic.common.frames.CleanupCrewFrame;
+    import com.ankamagames.dofus.misc.stats.StatisticsFrame;
     import com.ankamagames.berilia.utils.UriCacheFactory;
     import com.ankamagames.jerakine.newCache.impl.DisplayObjectCache;
     import com.ankamagames.jerakine.newCache.impl.Cache;
@@ -191,6 +193,7 @@
             HumanInputHandler.getInstance().handler = _worker;
             BoneIndexManager.getInstance().setAnimNameModifier(AnimationCleaner.cleanBones1AnimName);
             InterClientManager.getInstance().update();
+            StatisticsManager.getInstance().init();
             this.addInitialFrames(true);
             _log.info((((((("Using protocole #" + Metadata.PROTOCOL_BUILD) + ", build on ") + Metadata.PROTOCOL_DATE) + " (visibility ") + Metadata.PROTOCOL_VISIBILITY) + ")"));
             if (AirScanner.hasAir())
@@ -318,6 +321,7 @@
                 ExternalNotificationManager.getInstance().reset();
             };
             _worker.removeFrame(_worker.getFrame(CameraControlFrame));
+            StatisticsManager.getInstance().statsEnabled = true;
         }
 
         public function initOptions():void
@@ -414,6 +418,10 @@
             if (!(_worker.contains(CleanupCrewFrame)))
             {
                 _worker.addFrame(new CleanupCrewFrame());
+            };
+            if (!(_worker.contains(StatisticsFrame)))
+            {
+                _worker.addFrame(StatisticsManager.getInstance().frame);
             };
         }
 

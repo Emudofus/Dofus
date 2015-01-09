@@ -10,6 +10,9 @@
         public static const ExchangeObjectModified:Hook = new Hook("ExchangeObjectModified", false);
         public static const ExchangeObjectAdded:Hook = new Hook("ExchangeObjectAdded", false);
         public static const ExchangeObjectRemoved:Hook = new Hook("ExchangeObjectRemoved", false);
+        public static const ExchangeObjectListModified:Hook = new Hook("ExchangeObjectListModified", false);
+        public static const ExchangeObjectListAdded:Hook = new Hook("ExchangeObjectListAdded", false);
+        public static const ExchangeObjectListRemoved:Hook = new Hook("ExchangeObjectListRemoved", false);
         public static const ExchangeKamaModified:Hook = new Hook("ExchangeKamaModified", false);
         public static const ExchangeStartOkNpcTrade:Hook = new Hook("ExchangeStartOkNpcTrade", false);
         public static const ExchangeRequestCharacterFromMe:Hook = new Hook("ExchangeRequestCharacterFromMe", false);

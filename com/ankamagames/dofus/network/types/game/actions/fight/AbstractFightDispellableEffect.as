@@ -15,6 +15,7 @@
         public var turnDuration:int = 0;
         public var dispelable:uint = 1;
         public var spellId:uint = 0;
+        public var effectId:uint = 0;
         public var parentBoostUid:uint = 0;
 
 
@@ -23,13 +24,14 @@
             return (206);
         }
 
-        public function initAbstractFightDispellableEffect(uid:uint=0, targetId:int=0, turnDuration:int=0, dispelable:uint=1, spellId:uint=0, parentBoostUid:uint=0):AbstractFightDispellableEffect
+        public function initAbstractFightDispellableEffect(uid:uint=0, targetId:int=0, turnDuration:int=0, dispelable:uint=1, spellId:uint=0, effectId:uint=0, parentBoostUid:uint=0):AbstractFightDispellableEffect
         {
             this.uid = uid;
             this.targetId = targetId;
             this.turnDuration = turnDuration;
             this.dispelable = dispelable;
             this.spellId = spellId;
+            this.effectId = effectId;
             this.parentBoostUid = parentBoostUid;
             return (this);
         }
@@ -41,6 +43,7 @@
             this.turnDuration = 0;
             this.dispelable = 1;
             this.spellId = 0;
+            this.effectId = 0;
             this.parentBoostUid = 0;
         }
 
@@ -64,6 +67,11 @@
                 throw (new Error((("Forbidden value (" + this.spellId) + ") on element spellId.")));
             };
             output.writeShort(this.spellId);
+            if (this.effectId < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.effectId) + ") on element effectId.")));
+            };
+            output.writeInt(this.effectId);
             if (this.parentBoostUid < 0)
             {
                 throw (new Error((("Forbidden value (" + this.parentBoostUid) + ") on element parentBoostUid.")));
@@ -94,6 +102,11 @@
             if (this.spellId < 0)
             {
                 throw (new Error((("Forbidden value (" + this.spellId) + ") on element of AbstractFightDispellableEffect.spellId.")));
+            };
+            this.effectId = input.readInt();
+            if (this.effectId < 0)
+            {
+                throw (new Error((("Forbidden value (" + this.effectId) + ") on element of AbstractFightDispellableEffect.effectId.")));
             };
             this.parentBoostUid = input.readInt();
             if (this.parentBoostUid < 0)

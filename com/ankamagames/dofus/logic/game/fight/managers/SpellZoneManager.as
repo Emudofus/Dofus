@@ -127,7 +127,7 @@
             switch (pShape)
             {
                 case SpellShapeEnum.X:
-                    return (new Cross(0, pZoneSize, DataMapProvider.getInstance()));
+                    return (new Cross(pMinZoneSize, pZoneSize, DataMapProvider.getInstance()));
                 case SpellShapeEnum.L:
                     return (new Line(pZoneSize, DataMapProvider.getInstance()));
                 case SpellShapeEnum.T:
@@ -174,6 +174,7 @@
                 case SpellShapeEnum.U:
                     return (new HalfLozenge(0, pZoneSize, DataMapProvider.getInstance()));
                 case SpellShapeEnum.A:
+                case SpellShapeEnum.a:
                     if (!(pIgnoreShapeA))
                     {
                         return (new Lozenge(0, 63, DataMapProvider.getInstance()));

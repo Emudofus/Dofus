@@ -14,6 +14,7 @@
         {
             var o:EffectInstanceDice = new EffectInstanceDice();
             o.rawZone = rawZone;
+            o.effectUid = effectUid;
             o.effectId = effectId;
             o.duration = duration;
             o.delay = delay;

@@ -3,21 +3,25 @@
     import com.ankamagames.performance.IBenchmarkTest;
     import flash.net.URLLoader;
     import flash.net.URLRequest;
+    import flash.utils.Timer;
     import flash.events.Event;
     import flash.events.IOErrorEvent;
     import flash.events.SecurityErrorEvent;
     import flash.net.URLRequestHeader;
+    import flash.events.TimerEvent;
     import flash.utils.getTimer;
     import com.ankamagames.performance.Benchmark;
 
     public class TestBandwidth implements IBenchmarkTest 
     {
 
+        private static const MAX_DURATION:uint = 4000;
         private static var _results:Array;
 
         private var _loader:URLLoader;
         private var _urlRequest:URLRequest;
         private var _startTime:Number;
+        private var _timer:Timer;
 
         public function TestBandwidth(loader:URLLoader=null, urlRequest:URLRequest=null)
         {
@@ -56,29 +60,24 @@
             _results.push(speed);
         }
 
-        public static function getResults():String
-        {
-            var average:Number;
-            var i:int;
-            if (_results)
-            {
-                average = 0;
-                i = 0;
-                while (i < _results.length)
-                {
-                    average = (average + _results[i]);
-                    i++;
-                };
-                average = (average / _results.length);
-                return (("bandwidthTest:" + average.toString()));
-            };
-            return ("bandwidthTest:none");
-        }
-
 
         public function run():void
         {
             this._loader.load(this._urlRequest);
+            this._timer = new Timer(4000, 1);
+            this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerComplete);
+        }
+
+        private function onTimerComplete(event:TimerEvent):void
+        {
+            try
+            {
+                this._loader.close();
+            }
+            catch(error:Error)
+            {
+            };
+            this.onError(null);
         }
 
         private function onOpen(event:Event):void
@@ -104,10 +103,35 @@
 
         private function clean():void
         {
+            this._timer.stop();
+            this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerComplete);
             this._loader.removeEventListener(Event.OPEN, this.onOpen);
             this._loader.removeEventListener(Event.COMPLETE, this.onComplete);
             this._loader.removeEventListener(IOErrorEvent.IO_ERROR, this.onError);
             this._loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onError);
+        }
+
+        public function getResults():String
+        {
+            var average:Number;
+            var i:int;
+            if (_results)
+            {
+                if (_results.length == 0)
+                {
+                    return ("bandwidthTest:error");
+                };
+                average = 0;
+                i = 0;
+                while (i < _results.length)
+                {
+                    average = (average + _results[i]);
+                    i++;
+                };
+                average = (average / _results.length);
+                return (("bandwidthTest:" + average.toString()));
+            };
+            return ("bandwidthTest:none");
         }
 
 

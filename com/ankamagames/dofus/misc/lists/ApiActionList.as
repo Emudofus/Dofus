@@ -9,6 +9,7 @@
     import com.ankamagames.dofus.logic.common.actions.AuthorizedCommandAction;
     import com.ankamagames.dofus.logic.connection.actions.LoginValidationAction;
     import com.ankamagames.dofus.logic.connection.actions.LoginValidationWithTicketAction;
+    import com.ankamagames.dofus.logic.connection.actions.LoginAsGuestAction;
     import com.ankamagames.dofus.logic.connection.actions.NicknameChoiceRequestAction;
     import com.ankamagames.dofus.logic.connection.actions.ServerSelectionAction;
     import com.ankamagames.dofus.logic.connection.actions.AcquaintanceSearchAction;
@@ -81,6 +82,7 @@
     import com.ankamagames.dofus.logic.game.roleplay.actions.preset.InventoryPresetSaveCustomAction;
     import com.ankamagames.dofus.logic.game.roleplay.actions.preset.InventoryPresetUseAction;
     import com.ankamagames.dofus.logic.game.roleplay.actions.preset.InventoryPresetItemUpdateRequestAction;
+    import com.ankamagames.dofus.logic.game.common.actions.AccessoryPreviewRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.roleplay.SwitchCreatureModeAction;
     import com.ankamagames.dofus.logic.game.roleplay.actions.NpcDialogReplyAction;
     import com.ankamagames.dofus.logic.game.common.actions.InteractiveElementActivationAction;
@@ -131,6 +133,8 @@
     import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntDigRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.PortalUseRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntGiveUpRequestAction;
+    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntFlagRequestAction;
+    import com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt.TreasureHuntFlagRemoveRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.quest.GuidedModeReturnRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.quest.GuidedModeQuitRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.alignment.SetEnablePVPRequestAction;
@@ -142,9 +146,11 @@
     import com.ankamagames.dofus.logic.game.common.actions.prism.PrismsListRegisterAction;
     import com.ankamagames.dofus.logic.game.common.actions.prism.PrismAttackRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.prism.PrismUseRequestAction;
+    import com.ankamagames.dofus.logic.game.common.actions.prism.PrismModuleExchangeRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.prism.PrismSetSabotagedRequestAction;
     import com.ankamagames.dofus.logic.game.roleplay.actions.ObjectUseOnCellAction;
     import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignRequestAction;
+    import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignCancelAction;
     import com.ankamagames.dofus.logic.game.common.actions.NotificationUpdateFlagAction;
     import com.ankamagames.dofus.logic.game.common.actions.NotificationResetAction;
     import com.ankamagames.dofus.logic.game.common.actions.StartZoomAction;
@@ -159,7 +165,10 @@
     import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopFrontPageRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopArticlesListRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopSearchRequestAction;
+    import com.ankamagames.dofus.logic.game.common.actions.externalGame.GetComicRequestAction;
+    import com.ankamagames.dofus.logic.game.common.actions.externalGame.GetComicsLibraryRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.externalGame.ShopBuyRequestAction;
+    import com.ankamagames.dofus.logic.game.common.actions.externalGame.OpenWebServiceAction;
     import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterTokenRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterInventoryRequestAction;
     import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterTransferRequestAction;
@@ -188,6 +197,7 @@
         public static const AuthorizedCommand:DofusApiAction = new DofusApiAction("AuthorizedCommand", AuthorizedCommandAction);
         public static const LoginValidation:DofusApiAction = new DofusApiAction("LoginValidation", LoginValidationAction);
         public static const LoginValidationWithTicket:DofusApiAction = new DofusApiAction("LoginValidationWithTicket", LoginValidationWithTicketAction);
+        public static const LoginAsGuest:DofusApiAction = new DofusApiAction("LoginAsGuest", LoginAsGuestAction);
         public static const NicknameChoiceRequest:DofusApiAction = new DofusApiAction("NicknameChoiceRequest", NicknameChoiceRequestAction);
         public static const ServerSelection:DofusApiAction = new DofusApiAction("ServerSelection", ServerSelectionAction);
         public static const AcquaintanceSearch:DofusApiAction = new DofusApiAction("AcquaintanceSearch", AcquaintanceSearchAction);
@@ -260,6 +270,7 @@
         public static const InventoryPresetSaveCustom:DofusApiAction = new DofusApiAction("InventoryPresetSaveCustom", InventoryPresetSaveCustomAction);
         public static const InventoryPresetUse:DofusApiAction = new DofusApiAction("InventoryPresetUse", InventoryPresetUseAction);
         public static const InventoryPresetItemUpdateRequest:DofusApiAction = new DofusApiAction("InventoryPresetItemUpdateRequest", InventoryPresetItemUpdateRequestAction);
+        public static const AccessoryPreviewRequest:DofusApiAction = new DofusApiAction("AccessoryPreviewRequest", AccessoryPreviewRequestAction);
         public static const SwitchCreatureMode:DofusApiAction = new DofusApiAction("SwitchCreatureMode", SwitchCreatureModeAction);
         public static const NpcDialogReply:DofusApiAction = new DofusApiAction("NpcDialogReply", NpcDialogReplyAction);
         public static const InteractiveElementActivation:DofusApiAction = new DofusApiAction("InteractiveElementActivation", InteractiveElementActivationAction);
@@ -310,6 +321,8 @@
         public static const TreasureHuntDigRequest:DofusApiAction = new DofusApiAction("TreasureHuntDigRequest", TreasureHuntDigRequestAction);
         public static const PortalUseRequest:DofusApiAction = new DofusApiAction("PortalUseRequest", PortalUseRequestAction);
         public static const TreasureHuntGiveUpRequest:DofusApiAction = new DofusApiAction("TreasureHuntGiveUpRequest", TreasureHuntGiveUpRequestAction);
+        public static const TreasureHuntFlagRequest:DofusApiAction = new DofusApiAction("TreasureHuntFlagRequest", TreasureHuntFlagRequestAction);
+        public static const TreasureHuntFlagRemoveRequest:DofusApiAction = new DofusApiAction("TreasureHuntFlagRemoveRequest", TreasureHuntFlagRemoveRequestAction);
         public static const GuidedModeReturnRequest:DofusApiAction = new DofusApiAction("GuidedModeReturnRequest", GuidedModeReturnRequestAction);
         public static const GuidedModeQuitRequest:DofusApiAction = new DofusApiAction("GuidedModeQuitRequest", GuidedModeQuitRequestAction);
         public static const SetEnablePVPRequest:DofusApiAction = new DofusApiAction("SetEnablePVPRequest", SetEnablePVPRequestAction);
@@ -321,9 +334,11 @@
         public static const PrismsListRegister:DofusApiAction = new DofusApiAction("PrismsListRegister", PrismsListRegisterAction);
         public static const PrismAttackRequest:DofusApiAction = new DofusApiAction("PrismAttackRequest", PrismAttackRequestAction);
         public static const PrismUseRequest:DofusApiAction = new DofusApiAction("PrismUseRequest", PrismUseRequestAction);
+        public static const PrismModuleExchangeRequest:DofusApiAction = new DofusApiAction("PrismModuleExchangeRequest", PrismModuleExchangeRequestAction);
         public static const PrismSetSabotagedRequest:DofusApiAction = new DofusApiAction("PrismSetSabotagedRequest", PrismSetSabotagedRequestAction);
         public static const ObjectUseOnCell:DofusApiAction = new DofusApiAction("ObjectUseOnCell", ObjectUseOnCellAction);
         public static const GiftAssignRequest:DofusApiAction = new DofusApiAction("GiftAssignRequest", GiftAssignRequestAction);
+        public static const GiftAssignCancel:DofusApiAction = new DofusApiAction("GiftAssignCancel", GiftAssignCancelAction);
         public static const NotificationUpdateFlag:DofusApiAction = new DofusApiAction("NotificationUpdateFlag", NotificationUpdateFlagAction);
         public static const NotificationReset:DofusApiAction = new DofusApiAction("NotificationReset", NotificationResetAction);
         public static const StartZoom:DofusApiAction = new DofusApiAction("StartZoom", StartZoomAction);
@@ -338,7 +353,10 @@
         public static const ShopFrontPageRequest:DofusApiAction = new DofusApiAction("ShopFrontPageRequest", ShopFrontPageRequestAction);
         public static const ShopArticlesListRequest:DofusApiAction = new DofusApiAction("ShopArticlesListRequest", ShopArticlesListRequestAction);
         public static const ShopSearchRequest:DofusApiAction = new DofusApiAction("ShopSearchRequest", ShopSearchRequestAction);
+        public static const GetComicRequest:DofusApiAction = new DofusApiAction("GetComicRequest", GetComicRequestAction);
+        public static const GetComicsLibraryRequest:DofusApiAction = new DofusApiAction("GetComicsLibraryRequest", GetComicsLibraryRequestAction);
         public static const ShopBuyRequest:DofusApiAction = new DofusApiAction("ShopBuyRequest", ShopBuyRequestAction);
+        public static const OpenWebService:DofusApiAction = new DofusApiAction("OpenWebService", OpenWebServiceAction);
         public static const KrosmasterTokenRequest:DofusApiAction = new DofusApiAction("KrosmasterTokenRequest", KrosmasterTokenRequestAction);
         public static const KrosmasterInventoryRequest:DofusApiAction = new DofusApiAction("KrosmasterInventoryRequest", KrosmasterInventoryRequestAction);
         public static const KrosmasterTransferRequest:DofusApiAction = new DofusApiAction("KrosmasterTransferRequest", KrosmasterTransferRequestAction);

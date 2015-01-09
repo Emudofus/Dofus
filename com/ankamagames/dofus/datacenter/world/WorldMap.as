@@ -3,6 +3,7 @@
     import com.ankamagames.jerakine.interfaces.IDataCenter;
     import __AS3__.vec.Vector;
     import com.ankamagames.jerakine.data.GameData;
+    import com.ankamagames.jerakine.data.I18n;
 
     public class WorldMap implements IDataCenter 
     {
@@ -10,6 +11,7 @@
         public static const MODULE:String = "WorldMaps";
 
         public var id:int;
+        public var nameId:uint;
         public var origineX:int;
         public var origineY:int;
         public var mapWidth:Number;
@@ -25,6 +27,7 @@
         public var totalWidth:int;
         public var totalHeight:int;
         public var zoom:Vector.<String>;
+        private var _name:String;
 
 
         public static function getWorldMapById(id:int):WorldMap
@@ -35,6 +38,16 @@
         public static function getAllWorldMaps():Array
         {
             return (GameData.getObjects(MODULE));
+        }
+
+
+        public function get name():String
+        {
+            if (!(this._name))
+            {
+                this._name = I18n.getText(this.nameId);
+            };
+            return (this._name);
         }
 
 

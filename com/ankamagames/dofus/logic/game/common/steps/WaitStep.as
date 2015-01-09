@@ -25,11 +25,13 @@
 
         override public function pause():void
         {
+            super.pause();
             this._timer.stop();
         }
 
         override public function resume():void
         {
+            super.resume();
             this._timer.start();
         }
 

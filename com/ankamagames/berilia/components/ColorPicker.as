@@ -14,6 +14,7 @@
     import com.ankamagames.berilia.Berilia;
     import com.ankamagames.berilia.components.messages.ColorChangeMessage;
     import flash.display.InteractiveObject;
+    import com.ankamagames.jerakine.utils.display.KeyPoll;
     import com.ankamagames.jerakine.handlers.messages.mouse.MouseDownMessage;
     import flash.geom.Rectangle;
     import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
@@ -28,8 +29,8 @@
 
         private var _nWidth:uint;
         private var _nHeight:uint;
-        private var _nColor:uint = 0xFF0000;
-        private var _nGradientColor:uint = 0xFF0000;
+        private var _nColor:Number = 0xFF0000;
+        private var _nGradientColor:Number = 0xFF0000;
         private var _texCursorSlider:Texture;
         private var _texCursorGradient:Texture;
         private var _nSliderWidth:uint = 20;
@@ -295,6 +296,7 @@
             var r2:Number;
             var g2:Number;
             var b2:Number;
+            var tempColor:Number = 0;
             if (!(this._bFixedColor))
             {
                 this.getGradientColor();
@@ -315,9 +317,17 @@
                     g2 = Math.round((g1 - ((g1 * colorPoint) / 0xFF)));
                     b2 = Math.round((b1 - ((b1 * colorPoint) / 0xFF)));
                 };
-                this._nColor = Math.round((((r2 << 16) + (g2 << 8)) + b2));
+                tempColor = Math.round((((r2 << 16) + (g2 << 8)) + b2));
+            }
+            else
+            {
+                tempColor = this._nColor;
             };
-            Berilia.getInstance().handler.process(new ColorChangeMessage(InteractiveObject(this)));
+            if (tempColor != this._nColor)
+            {
+                this._nColor = tempColor;
+                Berilia.getInstance().handler.process(new ColorChangeMessage(InteractiveObject(this)));
+            };
             return (this._nColor);
         }
 
@@ -327,6 +337,10 @@
             switch (true)
             {
                 case (msg is MouseDownMessage):
+                    if (KeyPoll.getInstance().isDown(16))
+                    {
+                        return (false);
+                    };
                     this._bFixedColor = false;
                     switch (MouseDownMessage(msg).target)
                     {
@@ -352,6 +366,10 @@
                     };
                     return (true);
                 case (msg is MouseUpMessage):
+                    if (KeyPoll.getInstance().isDown(16))
+                    {
+                        return (false);
+                    };
                     switch (MouseUpMessage(msg).target)
                     {
                         case this._sprGradient:

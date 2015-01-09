@@ -96,6 +96,7 @@
         {
             switch (cmd)
             {
+                case "s":
                 case "spectator":
                     return (I18n.getUiText("ui.chat.console.help.spectator"));
                 case "list":

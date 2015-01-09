@@ -52,7 +52,7 @@
         {
             if (!(this._worldmap))
             {
-                if (!(this.worldmapId))
+                if (!(this.hasWorldMap))
                 {
                     this.worldmapId = 1;
                 };

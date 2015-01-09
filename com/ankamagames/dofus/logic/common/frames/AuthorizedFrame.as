@@ -28,8 +28,12 @@
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
     import com.ankamagames.dofus.kernel.net.ConnectionType;
     import com.ankamagames.dofus.network.ProtocolConstantsEnum;
+    import flash.utils.Dictionary;
+    import flash.utils.getDefinitionByName;
     import com.ankamagames.berilia.managers.KernelEventsManager;
     import com.ankamagames.dofus.misc.lists.HookList;
+    import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
+    import com.ankamagames.dofus.misc.lists.GameDataList;
 
     public class AuthorizedFrame extends RegisteringFrame 
     {
@@ -140,12 +144,153 @@
 
         private function onConsoleOutputMessage(comsg:ConsoleOutputMessage):Boolean
         {
+            var match:Array;
+            var m:String;
+            var transformText:String;
+            var params:Array;
+            var className:String;
+            var dataClass:Object;
+            var fctName:String;
+            var data:Object;
             if (comsg.consoleId != "debug")
             {
                 return (false);
             };
-            KernelEventsManager.getInstance().processCallback(HookList.ConsoleOutput, comsg.text, comsg.type);
+            var validClass:Dictionary = this.getValidClass();
+            var t:String = comsg.text;
+            var reg:RegExp = /@client\((\w*)\.(\d*)\.(\w*)\)/gm;
+            var change:Boolean = true;
+            var changeCount:uint;
+            while (((change) && ((changeCount++ < 100))))
+            {
+                match = t.match(reg);
+                change = !((match.length == 0));
+                for each (m in match)
+                {
+                    transformText = null;
+                    params = m.substring(8, (m.length - 1)).split(".");
+                    className = validClass[params[0].toLowerCase()];
+                    if (className != null)
+                    {
+                        dataClass = getDefinitionByName(className);
+                        fctName = this.getIdFunction(className);
+                        if (fctName != null)
+                        {
+                            data = dataClass[fctName](parseInt(params[1]));
+                            if (data != null)
+                            {
+                                if (data.hasOwnProperty(params[2]))
+                                {
+                                    transformText = data[params[2]];
+                                }
+                                else
+                                {
+                                    transformText = (m.substr(0, (m.length - 1)) + ".bad field)");
+                                };
+                            }
+                            else
+                            {
+                                transformText = (m.substr(0, (m.length - 1)) + ".bad ID)");
+                            };
+                        }
+                        else
+                        {
+                            transformText = (m.substr(0, (m.length - 1)) + ".not compatible class)");
+                        };
+                    }
+                    else
+                    {
+                        transformText = (m.substr(0, (m.length - 1)) + ".bad class)");
+                    };
+                    t = t.split(m).join(transformText);
+                };
+            };
+            KernelEventsManager.getInstance().processCallback(HookList.ConsoleOutput, t, comsg.type);
             return (true);
+        }
+
+        private function getValidClass():Dictionary
+        {
+            var subXML:XML;
+            var varAndAccessors:Array;
+            var dico:Dictionary = new Dictionary();
+            var xml:XML = DescribeTypeCache.typeDescription(GameDataList);
+            for each (subXML in xml..constant)
+            {
+                varAndAccessors = this.getSimpleVariablesAndAccessors(String(subXML.@type));
+                if (varAndAccessors.indexOf("id") != -1)
+                {
+                    dico[String(subXML.@name).toLowerCase()] = String(subXML.@type);
+                };
+            };
+            return (dico);
+        }
+
+        private function getSimpleVariablesAndAccessors(clazz:String, addVectors:Boolean=false):Array
+        {
+            var type:String;
+            var currentXML:XML;
+            var result:Array = new Array();
+            var xml:XML = DescribeTypeCache.typeDescription(getDefinitionByName(clazz));
+            for each (currentXML in xml..variable)
+            {
+                type = String(currentXML.@type);
+                if ((((((((type == "int")) || ((type == "uint")))) || ((type == "Number")))) || ((type == "String"))))
+                {
+                    result.push(String(currentXML.@name));
+                };
+                if (addVectors)
+                {
+                    if (((((((!((type.indexOf("Vector.<int>") == -1))) || (!((type.indexOf("Vector.<uint>") == -1))))) || (!((type.indexOf("Vector.<Number>") == -1))))) || (!((type.indexOf("Vector.<String>") == -1)))))
+                    {
+                        if (type.split("Vector").length == 2)
+                        {
+                            result.push(String(currentXML.@name));
+                        };
+                    };
+                };
+            };
+            for each (currentXML in xml..accessor)
+            {
+                type = String(currentXML.@type);
+                if ((((((((type == "int")) || ((type == "uint")))) || ((type == "Number")))) || ((type == "String"))))
+                {
+                    result.push(String(currentXML.@name));
+                };
+                if (addVectors)
+                {
+                    if (((((((!((type.indexOf("Vector.<int>") == -1))) || (!((type.indexOf("Vector.<uint>") == -1))))) || (!((type.indexOf("Vector.<Number>") == -1))))) || (!((type.indexOf("Vector.<String>") == -1)))))
+                    {
+                        if (type.split("Vector").length == 2)
+                        {
+                            result.push(String(currentXML.@name));
+                        };
+                    };
+                };
+            };
+            return (result);
+        }
+
+        private function getIdFunction(clazz:String):String
+        {
+            var subXML:XML;
+            var parameterType:String;
+            var xml:XML = DescribeTypeCache.typeDescription(getDefinitionByName(clazz));
+            for each (subXML in xml..method)
+            {
+                if ((((subXML.@returnType == clazz)) && ((((XMLList(subXML.parameter).length() == 1)) || ((XMLList(subXML.parameter).length() == 2))))))
+                {
+                    parameterType = String(XMLList(subXML.parameter)[0].@type);
+                    if ((((parameterType == "int")) || ((parameterType == "uint"))))
+                    {
+                        if (String(subXML.@name).indexOf("ById") != -1)
+                        {
+                            return (String(subXML.@name));
+                        };
+                    };
+                };
+            };
+            return (null);
         }
 
         private function onQuitGameAction(qga:QuitGameAction):Boolean

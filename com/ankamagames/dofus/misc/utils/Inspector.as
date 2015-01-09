@@ -97,6 +97,7 @@
             var currentTooltipStr:String;
             var rawTooltipStr:String;
             var s:ShortcutItem;
+            this.onRollout(this._lastTarget);
             this._lastTarget = this.findElements((e.target as DisplayObject));
             var tooltipStr:String = "";
             var ind:String = "";
@@ -283,8 +284,8 @@ import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
 import flash.ui.Keyboard;
 import com.ankamagames.berilia.types.graphic.GraphicContainer;
-import com.ankamagames.berilia.components.ComboBox;
 import com.ankamagames.berilia.components.Grid;
+import com.ankamagames.berilia.components.ComboBox;
 import flash.geom.Rectangle;
 import com.ankamagames.berilia.types.graphic.UiRootContainer;
 import com.ankamagames.jerakine.utils.display.StageShareManager;

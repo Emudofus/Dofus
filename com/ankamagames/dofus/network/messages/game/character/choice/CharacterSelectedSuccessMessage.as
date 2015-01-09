@@ -15,6 +15,7 @@
 
         private var _isInitialized:Boolean = false;
         public var infos:CharacterBaseInformations;
+        public var isCollectingStats:Boolean = false;
 
         public function CharacterSelectedSuccessMessage()
         {
@@ -32,9 +33,10 @@
             return (153);
         }
 
-        public function initCharacterSelectedSuccessMessage(infos:CharacterBaseInformations=null):CharacterSelectedSuccessMessage
+        public function initCharacterSelectedSuccessMessage(infos:CharacterBaseInformations=null, isCollectingStats:Boolean=false):CharacterSelectedSuccessMessage
         {
             this.infos = infos;
+            this.isCollectingStats = isCollectingStats;
             this._isInitialized = true;
             return (this);
         }
@@ -65,6 +67,7 @@
         public function serializeAs_CharacterSelectedSuccessMessage(output:IDataOutput):void
         {
             this.infos.serializeAs_CharacterBaseInformations(output);
+            output.writeBoolean(this.isCollectingStats);
         }
 
         public function deserialize(input:IDataInput):void
@@ -76,6 +79,7 @@
         {
             this.infos = new CharacterBaseInformations();
             this.infos.deserialize(input);
+            this.isCollectingStats = input.readBoolean();
         }
 
 

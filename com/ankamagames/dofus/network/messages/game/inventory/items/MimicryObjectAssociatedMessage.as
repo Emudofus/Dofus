@@ -1,24 +1,22 @@
 ﻿package com.ankamagames.dofus.network.messages.game.inventory.items
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
     import com.ankamagames.jerakine.network.INetworkMessage;
     import flash.utils.ByteArray;
     import flash.utils.IDataOutput;
     import flash.utils.IDataInput;
 
     [Trusted]
-    public class MimicryObjectAssociatedMessage extends NetworkMessage implements INetworkMessage 
+    public class MimicryObjectAssociatedMessage extends SymbioticObjectAssociatedMessage implements INetworkMessage 
     {
 
         public static const protocolId:uint = 6462;
 
         private var _isInitialized:Boolean = false;
-        public var hostUID:uint = 0;
 
 
         override public function get isInitialized():Boolean
         {
-            return (this._isInitialized);
+            return (((super.isInitialized) && (this._isInitialized)));
         }
 
         override public function getMessageId():uint
@@ -28,14 +26,14 @@
 
         public function initMimicryObjectAssociatedMessage(hostUID:uint=0):MimicryObjectAssociatedMessage
         {
-            this.hostUID = hostUID;
+            super.initSymbioticObjectAssociatedMessage(hostUID);
             this._isInitialized = true;
             return (this);
         }
 
         override public function reset():void
         {
-            this.hostUID = 0;
+            super.reset();
             this._isInitialized = false;
         }
 
@@ -51,32 +49,24 @@
             this.deserialize(input);
         }
 
-        public function serialize(output:IDataOutput):void
+        override public function serialize(output:IDataOutput):void
         {
             this.serializeAs_MimicryObjectAssociatedMessage(output);
         }
 
         public function serializeAs_MimicryObjectAssociatedMessage(output:IDataOutput):void
         {
-            if (this.hostUID < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.hostUID) + ") on element hostUID.")));
-            };
-            output.writeInt(this.hostUID);
+            super.serializeAs_SymbioticObjectAssociatedMessage(output);
         }
 
-        public function deserialize(input:IDataInput):void
+        override public function deserialize(input:IDataInput):void
         {
             this.deserializeAs_MimicryObjectAssociatedMessage(input);
         }
 
         public function deserializeAs_MimicryObjectAssociatedMessage(input:IDataInput):void
         {
-            this.hostUID = input.readInt();
-            if (this.hostUID < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.hostUID) + ") on element of MimicryObjectAssociatedMessage.hostUID.")));
-            };
+            super.deserialize(input);
         }
 
 

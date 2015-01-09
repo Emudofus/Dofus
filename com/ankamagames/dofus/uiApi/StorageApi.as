@@ -14,6 +14,7 @@
     import com.ankamagames.dofus.network.enums.ShortcutBarEnum;
     import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
     import com.ankamagames.dofus.internalDatacenter.items.MountWrapper;
+    import com.ankamagames.dofus.datacenter.items.ItemType;
     import com.ankamagames.dofus.kernel.Kernel;
     import com.ankamagames.dofus.logic.game.common.frames.MountFrame;
     import com.ankamagames.dofus.logic.game.common.managers.StorageOptionManager;
@@ -158,12 +159,32 @@
         [Untrusted]
         public static function getBestEquipablePosition(item:Object):int
         {
+            var cat:int;
+            var type:ItemType;
             var equipement:Object;
             var freeSlot:int;
             var pos:int;
             var typeId:int;
             var lastIndex:int;
-            var possiblePosition:Object = itemSuperTypeToServerPosition(item.type.superTypeId);
+            var superTypeId:int = item.type.superTypeId;
+            if (((item) && (((item.isLivingObject) || (item.isWrapperObject)))))
+            {
+                cat = 0;
+                if (item.isLivingObject)
+                {
+                    cat = item.livingObjectCategory;
+                }
+                else
+                {
+                    cat = item.wrapperObjectCategory;
+                };
+                type = ItemType.getItemTypeById(cat);
+                if (type)
+                {
+                    superTypeId = type.superTypeId;
+                };
+            };
+            var possiblePosition:Object = itemSuperTypeToServerPosition(superTypeId);
             if (((possiblePosition) && (possiblePosition.length)))
             {
                 equipement = getViewContent("equipment");
@@ -194,11 +215,11 @@
                     {
                         _lastItemPosition[item.type.superTypeId] = 0;
                     };
-                    var _local_8 = _lastItemPosition;
-                    var _local_9 = item.type.superTypeId;
-                    var _local_10 = (_local_8[_local_9] + 1);
-                    _local_8[_local_9] = _local_10;
-                    lastIndex = _local_10;
+                    var _local_11 = _lastItemPosition;
+                    var _local_12 = item.type.superTypeId;
+                    var _local_13 = (_local_11[_local_12] + 1);
+                    _local_11[_local_12] = _local_13;
+                    lastIndex = _local_13;
                     if (lastIndex >= possiblePosition.length)
                     {
                         lastIndex = 0;

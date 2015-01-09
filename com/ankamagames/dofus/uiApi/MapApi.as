@@ -47,7 +47,11 @@
         [Untrusted]
         public function getCurrentWorldMap():WorldMap
         {
-            return (PlayedCharacterManager.getInstance().currentWorldMap);
+            if (PlayedCharacterManager.getInstance().currentWorldMap)
+            {
+                return (PlayedCharacterManager.getInstance().currentWorldMap);
+            };
+            return (null);
         }
 
         [Untrusted]

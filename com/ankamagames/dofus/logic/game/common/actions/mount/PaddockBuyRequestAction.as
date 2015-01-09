@@ -5,10 +5,14 @@
     public class PaddockBuyRequestAction implements Action 
     {
 
+        public var proposedPrice:uint;
 
-        public static function create():PaddockBuyRequestAction
+
+        public static function create(proposedPrice:uint):PaddockBuyRequestAction
         {
-            return (new (PaddockBuyRequestAction)());
+            var action:PaddockBuyRequestAction = new (PaddockBuyRequestAction)();
+            action.proposedPrice = proposedPrice;
+            return (action);
         }
 
 

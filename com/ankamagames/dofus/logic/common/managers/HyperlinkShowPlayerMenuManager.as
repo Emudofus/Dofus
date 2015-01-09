@@ -25,6 +25,10 @@
         public static function showPlayerMenu(playerName:String, playerId:int=0, timestamp:Number=0, fingerprint:String=null, chan:uint=0):void
         {
             var playerInfo:GameRolePlayCharacterInformations;
+            if (playerName)
+            {
+                playerName = unescape(playerName);
+            };
             var _modContextMenu:Object = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
             if (((playerName) && ((playerName.indexOf("★") == 0))))
             {

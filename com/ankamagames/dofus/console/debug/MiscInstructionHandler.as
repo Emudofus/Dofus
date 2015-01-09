@@ -251,22 +251,28 @@
                     KernelEventsManager.getInstance().processCallback(HookList.ShowSmilies);
                     return;
                 case "shieldmax":
-                case "shieldmoy":
+                case "shieldmed":
                 case "shieldmin":
                     if (cmd == "shieldmax")
                     {
                         level = ShieldSecureLevel.MAX;
-                    };
-                    if (cmd == "shieldmoy")
+                    }
+                    else
                     {
-                        level = ShieldSecureLevel.MEDIUM;
-                    };
-                    if (cmd == "shieldmin")
-                    {
-                        level = ShieldSecureLevel.LOW;
+                        if (cmd == "shieldmed")
+                        {
+                            level = ShieldSecureLevel.MEDIUM;
+                        }
+                        else
+                        {
+                            if (cmd == "shieldmin")
+                            {
+                                level = ShieldSecureLevel.LOW;
+                            };
+                        };
                     };
                     SecureModeManager.getInstance().shieldLevel = level;
-                    console.output(("Le niveau de sécurité du shield a bien était modifié au niveau " + cmd.substr(6)));
+                    console.output(I18n.getUiText(("ui.shield.changeNotification" + level.toString())));
                     return;
                 case "debugmouseover":
                     HumanInputHandler.getInstance().debugOver = !(HumanInputHandler.getInstance().debugOver);
@@ -351,6 +357,14 @@
                     return ("Set inactivity time limit (in seconds)");
                 case "setmonsterspeed":
                     return ("Ajuste la vitesse de déplacement d'un monstre");
+                case "shieldmin":
+                    return (I18n.getUiText("ui.shield.changeHelp0"));
+                case "shieldmed":
+                    return (I18n.getUiText("ui.shield.changeHelp1"));
+                case "shieldmax":
+                    return (I18n.getUiText("ui.shield.changeHelp2"));
+                case "showsmilies":
+                    return (I18n.getUiText("ui.chat.console.help.emoticons"));
             };
             return ((("No help for command '" + cmd) + "'"));
         }

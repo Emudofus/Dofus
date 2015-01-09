@@ -144,6 +144,7 @@
     import com.ankamagames.dofus.internalDatacenter.communication.ChatSentenceWithSource;
     import com.ankamagames.dofus.internalDatacenter.communication.ChatInformationSentence;
     import com.ankamagames.dofus.internalDatacenter.communication.BasicChatSentence;
+    import com.ankamagames.dofus.console.moduleLogger.Console;
     import __AS3__.vec.*;
 
     public class ChatFrame implements Frame 
@@ -162,6 +163,7 @@
         private var _aDisallowedChannels:Array;
         private var _aMessagesByChannel:Array;
         private var _aParagraphesByChannel:Array;
+        private var _aHistoryMessagesByChannel:Array;
         private var _msgUId:uint = 0;
         private var _maxMessagesStored:uint = 40;
         private var _aCensoredWords:Dictionary;
@@ -199,6 +201,7 @@
             this._aChannels = ChatChannel.getChannels();
             this._aDisallowedChannels = new Array();
             this._aMessagesByChannel = new Array();
+            this._aHistoryMessagesByChannel = new Array();
             this._aParagraphesByChannel = new Array();
             this._aSmilies = new Array();
             this._aCensoredWords = new Dictionary();
@@ -1095,7 +1098,7 @@
                     return (true);
                 case (msg is ObjectErrorMessage):
                     oemsg = (msg as ObjectErrorMessage);
-                    if (oemsg.reason == ObjectErrorEnum.MIMICRY_OBJECT_ERROR)
+                    if (oemsg.reason == ObjectErrorEnum.SYMBIOTIC_OBJECT_ERROR)
                     {
                         return (false);
                     };
@@ -1328,6 +1331,11 @@
             return (this._aMessagesByChannel);
         }
 
+        public function getHistoryMessages():Array
+        {
+            return (this._aHistoryMessagesByChannel);
+        }
+
         public function getParagraphes():Array
         {
             return (this._aParagraphesByChannel);
@@ -1462,10 +1470,22 @@
         public function removeLinesFromHistory(value:int, channel:int):void
         {
             var i:int;
+            var saveHistoryForExternalChat:Boolean = ((Console.getInstance().opened) && (Console.getInstance().chatMode));
             i = 0;
             while (i < value)
             {
-                this._aMessagesByChannel[channel].shift();
+                if (!(this._aHistoryMessagesByChannel[channel]))
+                {
+                    this._aHistoryMessagesByChannel[channel] = new Array();
+                };
+                if (((saveHistoryForExternalChat) && ((i < this._maxMessagesStored))))
+                {
+                    this._aHistoryMessagesByChannel[channel].push(this._aMessagesByChannel[channel].shift());
+                }
+                else
+                {
+                    this._aMessagesByChannel[channel].shift();
+                };
                 this._aParagraphesByChannel[channel].shift();
                 i++;
             };

@@ -478,6 +478,13 @@
             };
         }
 
+        public function removeAction(pAction:AbstractBehavior):void
+        {
+            this.removeCheckPoint(pAction);
+            pAction.remove();
+            this._stackOutputMessage.splice(this._stackOutputMessage.indexOf(pAction), 1);
+        }
+
         private function emptyStack(all:Boolean=true):void
         {
             var outputMessage:AbstractBehavior;

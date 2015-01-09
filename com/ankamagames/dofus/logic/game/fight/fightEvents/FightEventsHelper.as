@@ -603,7 +603,7 @@
 
         private static function sendFightLogToChat(pFightEvent:FightEvent, pTargetsTeam:String="", pTargetsList:Vector.<int>=null, pActiveColoration:Boolean=true, pAddDeathInTheSameMsg:Boolean=false):void
         {
-            var name:String = (((((pFightEvent.name == FightEventEnum.FIGHTER_LIFE_LOSS)) && (pAddDeathInTheSameMsg))) ? "fightLifeLossAndDeath" : pFightEvent.name);
+            var name:String = (((((pFightEvent.name == FightEventEnum.FIGHTER_LIFE_LOSS)) && (pAddDeathInTheSameMsg))) ? ("fightLifeLossAndDeath") : pFightEvent.name);
             var params:Array = pFightEvent.params;
             if (pActiveColoration)
             {

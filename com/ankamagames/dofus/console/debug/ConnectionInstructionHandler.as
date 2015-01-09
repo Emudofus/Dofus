@@ -20,6 +20,10 @@
                     ServerConnection.DEBUG_VERBOSE = !(ServerConnection.DEBUG_VERBOSE);
                     console.output(("Inspect traffic is " + ((ServerConnection.DEBUG_VERBOSE) ? "ON" : "OFF")));
                     return;
+                case "inspectlowtraffic":
+                    ServerConnection.DEBUG_LOW_LEVEL_VERBOSE = !(ServerConnection.DEBUG_LOW_LEVEL_VERBOSE);
+                    console.output(("Inspect low traffic is " + ((ServerConnection.DEBUG_LOW_LEVEL_VERBOSE) ? "ON" : "OFF")));
+                    return;
             };
         }
 
@@ -31,6 +35,8 @@
                     return ("Print the status of the current connection (if any).");
                 case "inspecttraffic":
                     return ("Show detailled informations about network activities.");
+                case "inspectlowtraffic":
+                    return ("Show detailled informations about network message parsing.");
             };
             return ((("No help for command '" + cmd) + "'"));
         }

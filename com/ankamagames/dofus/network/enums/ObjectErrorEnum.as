@@ -14,7 +14,7 @@
         public static const CANNOT_UNEQUIP:int = 9;
         public static const CANNOT_EQUIP_HERE:int = 10;
         public static const CRITERIONS:int = 11;
-        public static const MIMICRY_OBJECT_ERROR:int = 12;
+        public static const SYMBIOTIC_OBJECT_ERROR:int = 12;
 
 
     }

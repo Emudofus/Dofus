@@ -1,23 +1,30 @@
 ﻿package com.ankamagames.jerakine.logger
 {
+    import __AS3__.vec.Vector;
+    import __AS3__.vec.*;
+
     public final class ModuleLogger 
     {
 
         public static var active:Boolean = false;
-        private static var _callBack:Function;
+        private static var _callbacks:Vector.<Function> = new Vector.<Function>(0);
 
 
         public static function log(... args):void
         {
-            if (((active) && (!((_callBack == null)))))
+            var f:Function;
+            if (active)
             {
-                _callBack.apply(_callBack, args);
+                for each (f in _callbacks)
+                {
+                    f.apply(f, args);
+                };
             };
         }
 
-        public static function init(callBack:Function):void
+        public static function addCallback(callBack:Function):void
         {
-            _callBack = callBack;
+            _callbacks.push(callBack);
         }
 
 

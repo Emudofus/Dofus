@@ -209,7 +209,7 @@
             if (this.finalized)
             {
                 this.initMask();
-                this.updateVisibleChunck();
+                this.updateVisibleChunck(false);
                 this.updateMapElements();
             };
         }
@@ -220,7 +220,19 @@
             if (this.finalized)
             {
                 this.initMask();
-                this.updateVisibleChunck();
+                this.updateVisibleChunck(false);
+                this.updateMapElements();
+            };
+        }
+
+        public function setSize(w:Number, h:Number):void
+        {
+            super.width = w;
+            super.height = h;
+            if (this.finalized)
+            {
+                this.initMask();
+                this.updateVisibleChunck(false);
                 this.updateMapElements();
             };
         }
@@ -276,7 +288,6 @@
             this._mapElements = [];
             this.initMap();
             this._finalized = true;
-            this.updateVisibleChunck();
             var i:int;
             while (i < numChildren)
             {
@@ -324,7 +335,7 @@
             this._layersContainer.addChild(this._layers[name]);
         }
 
-        public function addIcon(layer:String, id:String, uri:*, x:int, y:int, scale:Number=1, legend:String=null, follow:Boolean=false, color:int=-1, canBeGrouped:Boolean=true):MapIconElement
+        public function addIcon(layer:String, id:String, uri:*, x:int, y:int, scale:Number=1, legend:String=null, follow:Boolean=false, color:int=-1, canBeGrouped:Boolean=true, canBeManuallyRemoved:Boolean=true):MapIconElement
         {
             var t:Texture;
             var s:Number;
@@ -359,7 +370,7 @@
                     ct = new ColorTransform(0.6, 0.6, 0.6, 1, (R - 80), (V - 80), (B - 80));
                     t.transform.colorTransform = ct;
                 };
-                mie = new MapIconElement(id, x, y, layer, t, legend, this);
+                mie = new MapIconElement(id, x, y, layer, t, legend, this, canBeManuallyRemoved);
                 mie.canBeGrouped = canBeGrouped;
                 mie.follow = follow;
                 this._mapElements.push(mie);
@@ -1131,14 +1142,17 @@
             this.updateVisibleChunck();
         }
 
-        private function updateVisibleChunck():void
+        private function updateVisibleChunck(refreshIcons:Boolean=true):void
         {
             var rect:MapArea;
             if (((!(this._currentMap)) || (!(this._currentMap.areas))))
             {
                 return;
             };
-            this.updateIcons();
+            if (refreshIcons)
+            {
+                this.updateIcons();
+            };
             var marge:uint = 100;
             this._visibleMapAreas = new Vector.<MapArea>();
             this._viewRect.x = ((-(this._mapContainer.x) / this._mapContainer.scaleX) - marge);
@@ -1532,7 +1546,7 @@
                 this.clearMap(this._mapToClear);
                 this._mapToClear = null;
             };
-            if (this._dragging)
+            if (((this._dragging) && (((!((this._lastMouseX == StageShareManager.mouseX))) || (!((this._lastMouseY == StageShareManager.mouseY)))))))
             {
                 if (((this._enable3DMode) && (this._lastMouseX)))
                 {

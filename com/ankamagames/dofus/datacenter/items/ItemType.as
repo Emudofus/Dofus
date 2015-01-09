@@ -23,6 +23,7 @@
         public var gender:uint;
         public var rawZone:String;
         public var needUseConfirm:Boolean;
+        public var mimickable:Boolean;
         private var _name:String;
 
 

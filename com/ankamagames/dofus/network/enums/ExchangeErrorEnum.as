@@ -10,8 +10,9 @@
         public static const REQUEST_CHARACTER_OVERLOADED:int = 5;
         public static const REQUEST_CHARACTER_NOT_SUSCRIBER:int = 6;
         public static const REQUEST_CHARACTER_RESTRICTED:int = 7;
-        public static const BUY_ERROR:int = 8;
-        public static const SELL_ERROR:int = 9;
+        public static const REQUEST_CHARACTER_GUEST:int = 8;
+        public static const SELL_ERROR:int = 63;
+        public static const BUY_ERROR:int = 64;
         public static const MOUNT_PADDOCK_ERROR:int = 10;
         public static const BID_SEARCH_ERROR:int = 11;
 

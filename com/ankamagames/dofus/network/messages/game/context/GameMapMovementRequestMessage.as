@@ -53,6 +53,10 @@
         {
             var data:ByteArray = new ByteArray();
             this.serialize(data);
+            if (HASH_FUNCTION != null)
+            {
+                HASH_FUNCTION(data);
+            };
             writePacket(output, this.getMessageId(), data);
         }
 

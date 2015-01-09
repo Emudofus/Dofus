@@ -26,20 +26,20 @@
         }
 
 
-        public function makeRpcCall(serviceUrl:String, formatType:String, methodName:String, methodParams:*, callback:Function, newService:Boolean=true):void
+        public function makeRpcCall(serviceUrl:String, formatType:String, formatVersion:String, methodName:String, methodParams:*, callback:Function, newService:Boolean=true, retryOnTimedout:Boolean=true):void
         {
             var rpcs:RpcServiceManager;
             if (newService)
             {
                 _log.debug("makeRpcCall on a new service");
-                rpcs = this.getRpcService(serviceUrl, formatType);
+                rpcs = this.getRpcService(serviceUrl, formatType, formatVersion);
             }
             else
             {
                 _log.debug("makeRpcCall on the main service");
                 if (!(this._mainRpcServiceManager))
                 {
-                    this._mainRpcServiceManager = new RpcServiceManager(serviceUrl, formatType);
+                    this._mainRpcServiceManager = new RpcServiceManager(serviceUrl, formatType, formatVersion);
                 }
                 else
                 {
@@ -48,10 +48,10 @@
                 };
                 rpcs = this._mainRpcServiceManager;
             };
-            rpcs.callMethod(methodName, methodParams, callback);
+            rpcs.callMethod(methodName, methodParams, callback, retryOnTimedout);
         }
 
-        private function getRpcService(serviceUrl:String, formatType:String):RpcServiceManager
+        private function getRpcService(serviceUrl:String, formatType:String, formatVersion:String):RpcServiceManager
         {
             var rpcService:RpcServiceManager;
             var newServiceRcp:RpcServiceManager;
@@ -68,7 +68,7 @@
                     return (rpcService);
                 };
             };
-            newServiceRcp = new RpcServiceManager(serviceUrl, formatType);
+            newServiceRcp = new RpcServiceManager(serviceUrl, formatType, formatVersion);
             _rpcServices.push(newServiceRcp);
             return (newServiceRcp);
         }

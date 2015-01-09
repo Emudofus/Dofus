@@ -5,8 +5,8 @@
     import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberArenaInformations;
-    import com.ankamagames.dofus.network.types.game.character.choice.CharacterHardcoreInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyInvitationMemberInformations;
+    import com.ankamagames.dofus.network.types.game.character.choice.CharacterHardcoreOrEpicInformations;
     import com.ankamagames.dofus.network.types.game.character.CharacterMinimalGuildInformations;
     import com.ankamagames.dofus.network.types.game.character.CharacterMinimalAllianceInformations;
     import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookAndGradeInformations;
@@ -120,6 +120,7 @@
     import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPortalInformations;
+    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayTreasureHintInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.HumanInformations;
     import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOption;
     import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionAlliance;
@@ -155,6 +156,7 @@
     import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFollowDirection;
     import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepDig;
     import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFollowDirectionToPOI;
+    import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.TreasureHuntStepFollowDirectionToHint;
     import com.ankamagames.dofus.network.types.game.context.roleplay.treasureHunt.PortalInformation;
     import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
     import com.ankamagames.dofus.network.types.game.character.status.PlayerStatusExtended;
@@ -174,16 +176,16 @@
             _typesTypes[45] = CharacterBaseInformations;
             _typesTypes[90] = PartyMemberInformations;
             _typesTypes[391] = PartyMemberArenaInformations;
-            _typesTypes[86] = CharacterHardcoreInformations;
             _typesTypes[376] = PartyInvitationMemberInformations;
+            _typesTypes[474] = CharacterHardcoreOrEpicInformations;
             _typesTypes[445] = CharacterMinimalGuildInformations;
             _typesTypes[444] = CharacterMinimalAllianceInformations;
             _typesTypes[193] = CharacterMinimalPlusLookAndGradeInformations;
             _typesTypes[45] = CharacterBaseInformations;
             _typesTypes[90] = PartyMemberInformations;
             _typesTypes[391] = PartyMemberArenaInformations;
-            _typesTypes[86] = CharacterHardcoreInformations;
             _typesTypes[376] = PartyInvitationMemberInformations;
+            _typesTypes[474] = CharacterHardcoreOrEpicInformations;
             _typesTypes[60] = EntityDispositionInformations;
             _typesTypes[107] = IdentifiedEntityDispositionInformations;
             _typesTypes[217] = FightEntityDispositionInformations;
@@ -299,6 +301,7 @@
             _typesTypes[148] = GameRolePlayTaxCollectorInformations;
             _typesTypes[161] = GameRolePlayPrismInformations;
             _typesTypes[467] = GameRolePlayPortalInformations;
+            _typesTypes[471] = GameRolePlayTreasureHintInformations;
             _typesTypes[141] = GameRolePlayActorInformations;
             _typesTypes[154] = GameRolePlayNamedActorInformations;
             _typesTypes[159] = GameRolePlayHumanoidInformations;
@@ -313,6 +316,7 @@
             _typesTypes[148] = GameRolePlayTaxCollectorInformations;
             _typesTypes[161] = GameRolePlayPrismInformations;
             _typesTypes[467] = GameRolePlayPortalInformations;
+            _typesTypes[471] = GameRolePlayTreasureHintInformations;
             _typesTypes[157] = HumanInformations;
             _typesTypes[406] = HumanOption;
             _typesTypes[425] = HumanOptionAlliance;
@@ -357,6 +361,7 @@
             _typesTypes[468] = TreasureHuntStepFollowDirection;
             _typesTypes[465] = TreasureHuntStepDig;
             _typesTypes[461] = TreasureHuntStepFollowDirectionToPOI;
+            _typesTypes[472] = TreasureHuntStepFollowDirectionToHint;
             _typesTypes[466] = PortalInformation;
             _typesTypes[415] = PlayerStatus;
             _typesTypes[414] = PlayerStatusExtended;
@@ -388,16 +393,16 @@
             StoreDataManager.getInstance().registerClass(new CharacterBaseInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new PartyMemberInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new PartyMemberArenaInformations(), true, true);
-            StoreDataManager.getInstance().registerClass(new CharacterHardcoreInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new PartyInvitationMemberInformations(), true, true);
+            StoreDataManager.getInstance().registerClass(new CharacterHardcoreOrEpicInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterMinimalGuildInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterMinimalAllianceInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterMinimalPlusLookAndGradeInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterBaseInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new PartyMemberInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new PartyMemberArenaInformations(), true, true);
-            StoreDataManager.getInstance().registerClass(new CharacterHardcoreInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new PartyInvitationMemberInformations(), true, true);
+            StoreDataManager.getInstance().registerClass(new CharacterHardcoreOrEpicInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new EntityDispositionInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new IdentifiedEntityDispositionInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new FightEntityDispositionInformations(), true, true);
@@ -513,6 +518,7 @@
             StoreDataManager.getInstance().registerClass(new GameRolePlayTaxCollectorInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new GameRolePlayPrismInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new GameRolePlayPortalInformations(), true, true);
+            StoreDataManager.getInstance().registerClass(new GameRolePlayTreasureHintInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new GameRolePlayActorInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new GameRolePlayNamedActorInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new GameRolePlayHumanoidInformations(), true, true);
@@ -527,6 +533,7 @@
             StoreDataManager.getInstance().registerClass(new GameRolePlayTaxCollectorInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new GameRolePlayPrismInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new GameRolePlayPortalInformations(), true, true);
+            StoreDataManager.getInstance().registerClass(new GameRolePlayTreasureHintInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new HumanInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new HumanOption(), true, true);
             StoreDataManager.getInstance().registerClass(new HumanOptionAlliance(), true, true);
@@ -571,6 +578,7 @@
             StoreDataManager.getInstance().registerClass(new TreasureHuntStepFollowDirection(), true, true);
             StoreDataManager.getInstance().registerClass(new TreasureHuntStepDig(), true, true);
             StoreDataManager.getInstance().registerClass(new TreasureHuntStepFollowDirectionToPOI(), true, true);
+            StoreDataManager.getInstance().registerClass(new TreasureHuntStepFollowDirectionToHint(), true, true);
             StoreDataManager.getInstance().registerClass(new PortalInformation(), true, true);
             StoreDataManager.getInstance().registerClass(new PlayerStatus(), true, true);
             StoreDataManager.getInstance().registerClass(new PlayerStatusExtended(), true, true);

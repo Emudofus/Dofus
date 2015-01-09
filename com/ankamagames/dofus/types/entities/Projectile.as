@@ -132,7 +132,7 @@
             super.destroy();
         }
 
-        public function move(path:MovementPath, callback:Function=null):void
+        public function move(path:MovementPath, callback:Function=null, movementBehavior:IMovementBehavior=null):void
         {
             this._movementBehavior.move(this, path, callback);
         }

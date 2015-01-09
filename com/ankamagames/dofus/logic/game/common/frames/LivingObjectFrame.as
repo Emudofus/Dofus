@@ -20,6 +20,10 @@
     import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectAssociatedMessage;
     import com.ankamagames.dofus.logic.game.common.actions.livingObject.MimicryObjectEraseRequestAction;
     import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectEraseRequestMessage;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.WrapperObjectErrorMessage;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.WrapperObjectAssociatedMessage;
+    import com.ankamagames.dofus.logic.game.common.actions.livingObject.WrapperObjectDissociateRequestAction;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.WrapperObjectDissociateRequestMessage;
     import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
     import com.ankamagames.berilia.managers.KernelEventsManager;
     import com.ankamagames.dofus.misc.lists.LivingObjectHookList;
@@ -72,7 +76,13 @@
             var _local_16:ItemWrapper;
             var _local_17:MimicryObjectEraseRequestAction;
             var _local_18:MimicryObjectEraseRequestMessage;
+            var _local_19:WrapperObjectErrorMessage;
+            var _local_20:WrapperObjectAssociatedMessage;
+            var _local_21:ItemWrapper;
+            var _local_22:WrapperObjectDissociateRequestAction;
+            var _local_23:WrapperObjectDissociateRequestMessage;
             var mimicryErrorText:String;
+            var wrapperErrorText:String;
             switch (true)
             {
                 case (msg is LivingObjectDissociateAction):
@@ -106,6 +116,10 @@
                     {
                         return (false);
                     };
+                    if (_local_9.isObjectWrapped)
+                    {
+                        _local_9.update(_local_8.object.position, _local_8.object.objectUID, _local_8.object.objectGID, _local_8.object.quantity, _local_8.object.effects);
+                    };
                     if (this.livingObjectUID == _local_8.object.objectUID)
                     {
                         _local_9.update(_local_8.object.position, _local_8.object.objectUID, _local_8.object.objectGID, _local_8.object.quantity, _local_8.object.effects);
@@ -134,7 +148,7 @@
                 case (msg is MimicryObjectFeedAndAssociateRequestAction):
                     _local_10 = (msg as MimicryObjectFeedAndAssociateRequestAction);
                     _local_11 = new MimicryObjectFeedAndAssociateRequestMessage();
-                    _local_11.initMimicryObjectFeedAndAssociateRequestMessage(_local_10.mimicryUID, _local_10.mimicryPos, _local_10.foodUID, _local_10.foodPos, _local_10.hostUID, _local_10.hostPos, _local_10.preview);
+                    _local_11.initMimicryObjectFeedAndAssociateRequestMessage(_local_10.mimicryUID, _local_10.symbiotePos, _local_10.hostUID, _local_10.hostPos, _local_10.foodUID, _local_10.foodPos, _local_10.preview);
                     ConnectionsHandler.getConnection().send(_local_11);
                     return (true);
                 case (msg is MimicryObjectPreviewMessage):
@@ -148,7 +162,7 @@
                     return (true);
                 case (msg is MimicryObjectErrorMessage):
                     _local_14 = (msg as MimicryObjectErrorMessage);
-                    if (_local_14.reason == ObjectErrorEnum.MIMICRY_OBJECT_ERROR)
+                    if (_local_14.reason == ObjectErrorEnum.SYMBIOTIC_OBJECT_ERROR)
                     {
                         switch (_local_14.errorCode)
                         {
@@ -213,6 +227,61 @@
                     _local_18 = new MimicryObjectEraseRequestMessage();
                     _local_18.initMimicryObjectEraseRequestMessage(_local_17.hostUID, _local_17.hostPos);
                     ConnectionsHandler.getConnection().send(_local_18);
+                    return (true);
+                case (msg is WrapperObjectErrorMessage):
+                    _local_19 = (msg as WrapperObjectErrorMessage);
+                    if (_local_19.reason == ObjectErrorEnum.SYMBIOTIC_OBJECT_ERROR)
+                    {
+                        switch (_local_19.errorCode)
+                        {
+                            case -1:
+                                wrapperErrorText = I18n.getUiText("ui.error.state");
+                                break;
+                            case -2:
+                                wrapperErrorText = I18n.getUiText("ui.charSel.deletionErrorUnsecureMode");
+                                break;
+                            case -7:
+                                wrapperErrorText = I18n.getUiText("ui.mimicry.error.foodType");
+                                break;
+                            case -8:
+                                wrapperErrorText = I18n.getUiText("ui.mimicry.error.invalidWrapperObject");
+                                break;
+                            case -10:
+                                wrapperErrorText = I18n.getUiText("ui.mimicry.error.noValidHost");
+                                break;
+                            case -16:
+                                wrapperErrorText = I18n.getUiText("ui.mimicry.error.noWrapperAssociated");
+                                break;
+                            case -18:
+                                wrapperErrorText = I18n.getUiText("ui.mimicry.error.noAssociationWithLivingObject");
+                                break;
+                            case -19:
+                                wrapperErrorText = I18n.getUiText("ui.mimicry.error.alreadyWrapped");
+                                break;
+                            case -3:
+                            case -4:
+                            case -6:
+                            case -12:
+                            case -14:
+                            case -15:
+                                wrapperErrorText = I18n.getUiText("ui.popup.impossible_action");
+                                break;
+                            default:
+                                wrapperErrorText = I18n.getUiText("ui.common.unknownFail");
+                        };
+                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, wrapperErrorText, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                    };
+                    return (true);
+                case (msg is WrapperObjectAssociatedMessage):
+                    _local_20 = (msg as WrapperObjectAssociatedMessage);
+                    _local_21 = InventoryManager.getInstance().inventory.getItem(_local_20.hostUID);
+                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, I18n.getUiText("ui.mimicry.success", [_local_21.name]), ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                    return (true);
+                case (msg is WrapperObjectDissociateRequestAction):
+                    _local_22 = (msg as WrapperObjectDissociateRequestAction);
+                    _local_23 = new WrapperObjectDissociateRequestMessage();
+                    _local_23.initWrapperObjectDissociateRequestMessage(_local_22.hostUID, _local_22.hostPosition);
+                    ConnectionsHandler.getConnection().send(_local_23);
                     return (true);
             };
             return (false);

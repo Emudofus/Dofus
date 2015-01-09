@@ -55,7 +55,7 @@
     import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListWithModificationsMessage;
     import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRecolorInformation;
     import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRelookInformation;
-    import com.ankamagames.dofus.network.types.game.character.choice.CharacterHardcoreInformations;
+    import com.ankamagames.dofus.network.types.game.character.choice.CharacterHardcoreOrEpicInformations;
     import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
     import com.ankamagames.dofus.network.messages.game.startup.StartupActionsExecuteMessage;
     import com.ankamagames.dofus.logic.game.approach.actions.CharacterSelectionAction;
@@ -99,7 +99,7 @@
     import com.ankamagames.jerakine.types.DataStoreType;
     import com.ankamagames.dofus.Constants;
     import com.ankamagames.dofus.externalnotification.ExternalNotificationManager;
-    import com.ankamagames.jerakine.utils.crypto.Base64;
+    import com.ankamagames.dofus.misc.stats.StatisticsManager;
     import com.ankamagames.dofus.logic.game.common.frames.WorldFrame;
     import com.ankamagames.dofus.logic.game.common.frames.AlignmentFrame;
     import com.ankamagames.dofus.logic.game.common.frames.SynchronisationFrame;
@@ -139,6 +139,7 @@
     import com.ankamagames.berilia.types.messages.AllModulesLoadedMessage;
     import com.ankamagames.jerakine.messages.ConnectionResumedMessage;
     import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+    import com.ankamagames.dofus.logic.game.approach.actions.GiftAssignCancelAction;
     import com.ankamagames.dofus.types.data.ServerCommand;
     import com.ankamagames.dofus.network.messages.game.character.choice.CharactersListRequestMessage;
     import __AS3__.vec.*;
@@ -277,11 +278,8 @@
             var ctrli:CharacterToRelookInformation;
             var ctrid:int;
             var charColors:Array;
-            var num:int;
-            var uIndexedColor:Number;
-            var uIndex:int;
-            var uColor:int;
-            var chi:CharacterHardcoreInformations;
+            var charRelookColors:Array;
+            var chi:CharacterHardcoreOrEpicInformations;
             var cbi:CharacterBaseInformations;
             var bonusXp:int;
             var cbi2:CharacterBaseInformations;
@@ -291,7 +289,7 @@
             var charToConnectSpecificallyId:int;
             var ctc:BasicCharacterWrapper;
             var fakacsa:CharacterSelectionAction;
-            var bChi:CharacterHardcoreInformations;
+            var bChi:CharacterHardcoreOrEpicInformations;
             var bCbi:CharacterBaseInformations;
             var c:* = undefined;
             var persoc:Object;
@@ -361,20 +359,7 @@
                         clwrmsg = (msg as CharactersListWithModificationsMessage);
                         for each (ctrci in clwrmsg.charactersToRecolor)
                         {
-                            charColors = new Array(-1, -1, -1, -1, -1);
-                            num = ctrci.colors.length;
-                            i = 0;
-                            while (i < num)
-                            {
-                                uIndexedColor = ctrci.colors[i];
-                                uIndex = ((uIndexedColor >> 24) - 1);
-                                uColor = (uIndexedColor & 0xFFFFFF);
-                                if ((((uIndex > -1)) && ((uIndex < charColors.length))))
-                                {
-                                    charColors[uIndex] = uColor;
-                                };
-                                i = (i + 1);
-                            };
+                            charColors = this.getCharacterColorsInformations(ctrci);
                             this._charactersToRecolorList[ctrci.id] = {
                                 "id":ctrci.id,
                                 "colors":charColors
@@ -386,7 +371,11 @@
                         };
                         for each (ctrli in clwrmsg.charactersToRelook)
                         {
-                            this._charactersToRelookList[ctrli.id] = ctrli;
+                            charRelookColors = this.getCharacterColorsInformations(ctrli);
+                            this._charactersToRelookList[ctrli.id] = {
+                                "cosmeticId":ctrli.cosmeticId,
+                                "colors":charRelookColors
+                            };
                         };
                         for each (ctrid in clwrmsg.unusableCharacters)
                         {
@@ -800,7 +789,7 @@
                                         charToRelook = perso;
                                     };
                                 };
-                                this._kernel.processCallback(HookList.CharacterCreationStart, new Array("relook", charToRelook, this._charactersToRelookList[characterId].cosmeticId));
+                                this._kernel.processCallback(HookList.CharacterCreationStart, new Array("relook", charToRelook, this._charactersToRelookList[characterId].colors, this._charactersToRelookList[characterId].cosmeticId));
                             }
                             else
                             {
@@ -856,6 +845,7 @@
                     {
                         ExternalNotificationManager.getInstance().init();
                     };
+                    StatisticsManager.getInstance().statsEnabled = cssmsg.isCollectingStats;
                     return (true);
                 case (msg is AllModulesLoadedMessage):
                     this._gmaf = null;
@@ -863,10 +853,6 @@
                     {
                         _changeLogLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onChangeLogError);
                         _changeLogLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onChangeLogLoaded);
-                        if (AirScanner.hasAir())
-                        {
-                            _changeLogLoader.loadBytes(Base64.decodeToByteArray(I18n.getUiText("ui.link.changelog")), this._lc);
-                        };
                     }
                     catch(e:Error)
                     {
@@ -923,6 +909,11 @@
                         ModuleDebugManager.display(XmlConfig.getInstance().getBooleanEntry("config.dev.auto.display.controler"));
                         Console.getInstance().display(!(XmlConfig.getInstance().getBooleanEntry("config.dev.auto.display.eventUtil")));
                         ConsoleLUA.getInstance().display(!(XmlConfig.getInstance().getBooleanEntry("config.dev.auto.display.luaUtil")));
+                    }
+                    else
+                    {
+                        Console.logChatMessagesOnly = true;
+                        Console.getInstance().activate();
                     };
                     this._kernel.processCallback(HookList.GameStart);
                     Kernel.getWorker().addFrame(new ServerTransferFrame());
@@ -1019,17 +1010,16 @@
                     return (true);
                 case (msg is GiftAssignRequestAction):
                     gar = (msg as GiftAssignRequestAction);
-                    if ((((gar.characterId == 0)) && ((gar.giftId == this._giftList[0].uid))))
-                    {
-                        if (!(Berilia.getInstance().getUi("characterSelection")))
-                        {
-                            this._kernel.processCallback(HookList.CharacterSelectionStart, this._charactersList);
-                        };
-                    };
                     sao = new StartupActionsObjetAttributionMessage();
                     sao.initStartupActionsObjetAttributionMessage(gar.giftId, gar.characterId);
                     ConnectionsHandler.getConnection().send(sao);
                     return (true);
+                case (msg is GiftAssignCancelAction):
+                    if (!(Berilia.getInstance().getUi("characterSelection")))
+                    {
+                        this._kernel.processCallback(HookList.CharacterSelectionStart, this._charactersList);
+                        return (true);
+                    };
                 case (msg is StartupActionFinishedMessage):
                     safm = (msg as StartupActionFinishedMessage);
                     KernelEventsManager.getInstance().processCallback(HookList.GiftAssigned, safm.actionId);
@@ -1057,6 +1047,32 @@
         public function pulled():Boolean
         {
             return (true);
+        }
+
+        private function getCharacterColorsInformations(ctrci:*):Array
+        {
+            var uIndexedColor:Number;
+            var uIndex:int;
+            var uColor:int;
+            var charColors:Array = new Array(-1, -1, -1, -1, -1);
+            if (((!(ctrci)) || (!(ctrci.colors))))
+            {
+                return (null);
+            };
+            var num:int = ctrci.colors.length;
+            var i:int;
+            while (i < num)
+            {
+                uIndexedColor = ctrci.colors[i];
+                uIndex = ((uIndexedColor >> 24) - 1);
+                uColor = (uIndexedColor & 0xFFFFFF);
+                if ((((uIndex > -1)) && ((uIndex < charColors.length))))
+                {
+                    charColors[uIndex] = uColor;
+                };
+                i++;
+            };
+            return (charColors);
         }
 
         private function onEscapePopup():void

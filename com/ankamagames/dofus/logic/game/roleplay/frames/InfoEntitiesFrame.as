@@ -544,6 +544,10 @@
             {
                 de.text.x = (de.target.x + (((de.target.width > de.text.textWidth)) ? ((de.target.width - de.text.textWidth) / 2) : (((de.text.textWidth - de.target.width) / 2) * -1)));
                 de.text.y = (de.target.y - 30);
+                if (de.text.y < 0)
+                {
+                    de.text.y = 2;
+                };
             };
         }
 

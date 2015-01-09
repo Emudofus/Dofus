@@ -27,26 +27,28 @@
     import flash.events.Event;
     import flash.events.InvokeEvent;
     import flash.events.NativeWindowBoundsEvent;
-    import flash.filesystem.File;
+    import flash.events.FullScreenEvent;
     import flash.filesystem.FileStream;
+    import flash.filesystem.File;
+    import flash.filesystem.FileMode;
+    import flash.utils.ByteArray;
     import flash.xml.XMLDocument;
     import flash.xml.XMLNode;
     import com.ankamagames.dofus.network.types.updater.ContentPart;
     import com.ankamagames.jerakine.utils.system.CommandLineArguments;
     import com.ankamagames.dofus.logic.game.approach.managers.PartManager;
-    import flash.filesystem.FileMode;
     import com.ankamagames.dofus.network.enums.PartStateEnum;
     import com.ankamagames.dofus.BuildInfos;
     import com.ankamagames.jerakine.types.Version;
     import com.ankamagames.dofus.network.enums.BuildTypeEnum;
     import com.ankamagames.jerakine.types.Uri;
     import flash.system.ApplicationDomain;
+    import com.ankamagames.jerakine.managers.OptionManager;
     import flash.display.DisplayObjectContainer;
     import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
     import com.ankamagames.jerakine.resources.adapters.impl.SignedFileAdapter;
     import com.ankamagames.jerakine.utils.crypto.SignatureKey;
     import com.ankamagames.dofus.Constants;
-    import flash.utils.ByteArray;
     import com.ankamagames.tiphon.engine.TiphonEventsManager;
     import com.ankamagames.tiphon.engine.Tiphon;
     import com.ankamagames.tiphon.events.TiphonEvent;
@@ -229,6 +231,13 @@
                 NativeApplication.nativeApplication.addEventListener(Event.EXITING, this.onExiting);
                 NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, this.onCall);
                 stage.nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, this.onResize);
+            }
+            else
+            {
+                if (AirScanner.isStreamingVersion())
+                {
+                    stage.addEventListener(FullScreenEvent.FULL_SCREEN, this.onFullScreen);
+                };
             };
         }
 
@@ -237,6 +246,17 @@
             return (_self);
         }
 
+
+        public function getRawSignatureData():ByteArray
+        {
+            var fs:FileStream = new FileStream();
+            var f:File = File.applicationDirectory.resolvePath("DofusInvoker.d2sf");
+            fs.open(f, FileMode.READ);
+            var rawData:ByteArray = new ByteArray();
+            fs.readBytes(rawData);
+            fs.close();
+            return (rawData);
+        }
 
         private function onCall(e:InvokeEvent):void
         {
@@ -368,6 +388,16 @@
                 this._stageHeight = stage.nativeWindow.height;
                 this._stageWidth = stage.nativeWindow.width;
             };
+        }
+
+        private function onFullScreen(e:FullScreenEvent):void
+        {
+            var fullScreenOption:Boolean = OptionManager.getOptionManager("dofus").fullScreen;
+            if (fullScreenOption != e.fullScreen)
+            {
+                OptionManager.getOptionManager("dofus").fullScreen = e.fullScreen;
+            };
+            StageShareManager.justExitFullScreen = !(e.fullScreen);
         }
 
         public function getUiContainer():DisplayObjectContainer
@@ -514,42 +544,48 @@
                 for each (file in soList)
                 {
                     fileName = FileUtils.getFileStartName(file.name);
-                    if (selective)
+                    if (fileName == "Dofus_Guest")
                     {
-                        switch (true)
-                        {
-                            case (fileName.indexOf("Module_") == 0):
-                            case (fileName == "dofus"):
-                            case (fileName.indexOf("Dofus_") == 0):
-                            case (fileName == "atouin"):
-                            case (fileName == "berilia"):
-                            case (fileName == "chat"):
-                            case (fileName == "tiphon"):
-                            case (fileName == "tubul"):
-                            case (fileName.indexOf("externalNotifications_") == 0):
-                            case (fileName == "averagePrices"):
-                            case (fileName == "Berilia_binds"):
-                            case (fileName == "maps"):
-                            case (fileName == "logs"):
-                            case (fileName == "uid"):
-                            case (fileName == "appVersion"):
-                                continue;
-                        };
-                    };
-                    try
-                    {
-                        if (file.isDirectory)
-                        {
-                            file.deleteDirectory(true);
-                        }
-                        else
-                        {
-                            file.deleteFile();
-                        };
                     }
-                    catch(e:Error)
+                    else
                     {
-                        trace(("ClearCache method cannot delete " + file.nativePath));
+                        if (selective)
+                        {
+                            switch (true)
+                            {
+                                case (fileName.indexOf("Module_") == 0):
+                                case (fileName == "dofus"):
+                                case (fileName.indexOf("Dofus_") == 0):
+                                case (fileName == "atouin"):
+                                case (fileName == "berilia"):
+                                case (fileName == "chat"):
+                                case (fileName == "tiphon"):
+                                case (fileName == "tubul"):
+                                case (fileName.indexOf("externalNotifications_") == 0):
+                                case (fileName == "averagePrices"):
+                                case (fileName == "Berilia_binds"):
+                                case (fileName == "maps"):
+                                case (fileName == "logs"):
+                                case (fileName == "uid"):
+                                case (fileName == "appVersion"):
+                                    continue;
+                            };
+                        };
+                        try
+                        {
+                            if (file.isDirectory)
+                            {
+                                file.deleteDirectory(true);
+                            }
+                            else
+                            {
+                                file.deleteFile();
+                            };
+                        }
+                        catch(e:Error)
+                        {
+                            trace(("ClearCache method cannot delete " + file.nativePath));
+                        };
                     };
                 };
             };

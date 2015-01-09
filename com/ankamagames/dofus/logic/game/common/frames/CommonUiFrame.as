@@ -24,6 +24,8 @@
     import com.ankamagames.dofus.internalDatacenter.communication.ChatBubble;
     import com.ankamagames.dofus.network.messages.game.subscriber.SubscriptionLimitationMessage;
     import com.ankamagames.dofus.network.messages.game.subscriber.SubscriptionZoneMessage;
+    import com.ankamagames.dofus.network.messages.game.guest.GuestLimitationMessage;
+    import com.ankamagames.dofus.network.messages.game.guest.GuestModeMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.GameFightOptionStateUpdateMessage;
     import com.ankamagames.dofus.network.messages.game.context.fight.GameFightOptionToggleMessage;
     import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayInteractivesFrame;
@@ -55,6 +57,7 @@
     import com.ankamagames.dofus.misc.lists.ChatHookList;
     import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
     import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+    import com.ankamagames.dofus.network.enums.GuestLimitationEnum;
     import com.ankamagames.dofus.network.enums.FightOptionsEnum;
     import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
     import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
@@ -112,16 +115,19 @@
             var _local_27:SubscriptionLimitationMessage;
             var _local_28:String;
             var _local_29:SubscriptionZoneMessage;
-            var _local_30:GameFightOptionStateUpdateMessage;
-            var _local_31:uint;
-            var _local_32:GameFightOptionToggleMessage;
-            var _local_33:uint;
-            var _local_34:GameFightOptionToggleMessage;
-            var _local_35:uint;
-            var _local_36:GameFightOptionToggleMessage;
-            var _local_37:uint;
-            var _local_38:GameFightOptionToggleMessage;
-            var _local_39:RoleplayInteractivesFrame;
+            var _local_30:GuestLimitationMessage;
+            var _local_31:String;
+            var _local_32:GuestModeMessage;
+            var _local_33:GameFightOptionStateUpdateMessage;
+            var _local_34:uint;
+            var _local_35:GameFightOptionToggleMessage;
+            var _local_36:uint;
+            var _local_37:GameFightOptionToggleMessage;
+            var _local_38:uint;
+            var _local_39:GameFightOptionToggleMessage;
+            var _local_40:uint;
+            var _local_41:GameFightOptionToggleMessage;
+            var _local_42:RoleplayInteractivesFrame;
             var dsmdmsg2:DelayedSystemMessageDisplayMessage;
             var prm:*;
             switch (true)
@@ -185,10 +191,10 @@
                     {
                         case NumericalValueTypeEnum.NUMERICAL_VALUE_COLLECT:
                             _local_13 = 7615756;
-                            _local_39 = (Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame);
-                            if (((((_local_39) && (_local_12))) && (!(((_local_12 as IAnimated).getAnimation() == AnimationEnum.ANIM_STATIQUE)))))
+                            _local_42 = (Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame);
+                            if (((((_local_42) && (_local_12))) && (!(((_local_12 as IAnimated).getAnimation() == AnimationEnum.ANIM_STATIQUE)))))
                             {
-                                _local_14 = _local_39.getInteractiveActionTimer(_local_12);
+                                _local_14 = _local_42.getInteractiveActionTimer(_local_12);
                             };
                             break;
                         default:
@@ -301,27 +307,51 @@
                     _log.error(("SubscriptionZoneMessage active " + _local_29.active));
                     KernelEventsManager.getInstance().processCallback(HookList.SubscriptionZone, _local_29.active);
                     return (true);
+                case (msg is GuestLimitationMessage):
+                    _local_30 = (msg as GuestLimitationMessage);
+                    _log.error(("GuestLimitationMessage reason " + _local_30.reason));
+                    _local_31 = "";
+                    switch (_local_30.reason)
+                    {
+                        case GuestLimitationEnum.GUEST_LIMIT_ON_JOB_XP:
+                        case GuestLimitationEnum.GUEST_LIMIT_ON_JOB_USE:
+                        case GuestLimitationEnum.GUEST_LIMIT_ON_MAP:
+                        case GuestLimitationEnum.GUEST_LIMIT_ON_ITEM:
+                        case GuestLimitationEnum.GUEST_LIMIT_ON_VENDOR:
+                        case GuestLimitationEnum.GUEST_LIMIT_ON_GUILD:
+                        case GuestLimitationEnum.GUEST_LIMIT_ON_CHAT:
+                        default:
+                            _local_31 = I18n.getUiText("ui.fight.guestAccount");
+                    };
+                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _local_31, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                    KernelEventsManager.getInstance().processCallback(HookList.GuestLimitationPopup);
+                    return (true);
+                case (msg is GuestModeMessage):
+                    _local_32 = (msg as GuestModeMessage);
+                    _log.error(("GuestModeMessage active " + _local_32.active));
+                    KernelEventsManager.getInstance().processCallback(HookList.GuestMode, _local_32.active);
+                    return (true);
                 case (msg is GameFightOptionStateUpdateMessage):
-                    _local_30 = (msg as GameFightOptionStateUpdateMessage);
-                    switch (_local_30.option)
+                    _local_33 = (msg as GameFightOptionStateUpdateMessage);
+                    switch (_local_33.option)
                     {
                         case FightOptionsEnum.FIGHT_OPTION_SET_SECRET:
-                            KernelEventsManager.getInstance().processCallback(HookList.OptionWitnessForbidden, _local_30.state);
+                            KernelEventsManager.getInstance().processCallback(HookList.OptionWitnessForbidden, _local_33.state);
                             break;
                         case FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY:
                             if (Kernel.getWorker().getFrame(FightContextFrame))
                             {
-                                KernelEventsManager.getInstance().processCallback(HookList.OptionLockParty, _local_30.state);
+                                KernelEventsManager.getInstance().processCallback(HookList.OptionLockParty, _local_33.state);
                             };
                             break;
                         case FightOptionsEnum.FIGHT_OPTION_SET_CLOSED:
-                            if (PlayedCharacterManager.getInstance().teamId == _local_30.teamId)
+                            if (PlayedCharacterManager.getInstance().teamId == _local_33.teamId)
                             {
-                                KernelEventsManager.getInstance().processCallback(HookList.OptionLockFight, _local_30.state);
+                                KernelEventsManager.getInstance().processCallback(HookList.OptionLockFight, _local_33.state);
                             };
                             break;
                         case FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP:
-                            KernelEventsManager.getInstance().processCallback(HookList.OptionHelpWanted, _local_30.state);
+                            KernelEventsManager.getInstance().processCallback(HookList.OptionHelpWanted, _local_33.state);
                             break;
                     };
                     if (Kernel.getWorker().getFrame(RoleplayEntitiesFrame))
@@ -330,28 +360,28 @@
                     };
                     return (true);
                 case (msg is ToggleWitnessForbiddenAction):
-                    _local_31 = FightOptionsEnum.FIGHT_OPTION_SET_SECRET;
-                    _local_32 = new GameFightOptionToggleMessage();
-                    _local_32.initGameFightOptionToggleMessage(_local_31);
-                    ConnectionsHandler.getConnection().send(_local_32);
+                    _local_34 = FightOptionsEnum.FIGHT_OPTION_SET_SECRET;
+                    _local_35 = new GameFightOptionToggleMessage();
+                    _local_35.initGameFightOptionToggleMessage(_local_34);
+                    ConnectionsHandler.getConnection().send(_local_35);
                     return (true);
                 case (msg is ToggleLockPartyAction):
-                    _local_33 = FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY;
-                    _local_34 = new GameFightOptionToggleMessage();
-                    _local_34.initGameFightOptionToggleMessage(_local_33);
-                    ConnectionsHandler.getConnection().send(_local_34);
+                    _local_36 = FightOptionsEnum.FIGHT_OPTION_SET_TO_PARTY_ONLY;
+                    _local_37 = new GameFightOptionToggleMessage();
+                    _local_37.initGameFightOptionToggleMessage(_local_36);
+                    ConnectionsHandler.getConnection().send(_local_37);
                     return (true);
                 case (msg is ToggleLockFightAction):
-                    _local_35 = FightOptionsEnum.FIGHT_OPTION_SET_CLOSED;
-                    _local_36 = new GameFightOptionToggleMessage();
-                    _local_36.initGameFightOptionToggleMessage(_local_35);
-                    ConnectionsHandler.getConnection().send(_local_36);
+                    _local_38 = FightOptionsEnum.FIGHT_OPTION_SET_CLOSED;
+                    _local_39 = new GameFightOptionToggleMessage();
+                    _local_39.initGameFightOptionToggleMessage(_local_38);
+                    ConnectionsHandler.getConnection().send(_local_39);
                     return (true);
                 case (msg is ToggleHelpWantedAction):
-                    _local_37 = FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP;
-                    _local_38 = new GameFightOptionToggleMessage();
-                    _local_38.initGameFightOptionToggleMessage(_local_37);
-                    ConnectionsHandler.getConnection().send(_local_38);
+                    _local_40 = FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP;
+                    _local_41 = new GameFightOptionToggleMessage();
+                    _local_41.initGameFightOptionToggleMessage(_local_40);
+                    ConnectionsHandler.getConnection().send(_local_41);
                     return (true);
             };
             return (false);

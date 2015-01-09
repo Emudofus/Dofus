@@ -93,6 +93,7 @@
     import com.ankamagames.dofus.network.messages.common.basic.BasicPongMessage;
     import com.ankamagames.dofus.network.messages.game.basic.BasicLatencyStatsRequestMessage;
     import com.ankamagames.dofus.network.messages.game.basic.SequenceNumberRequestMessage;
+    import com.ankamagames.dofus.network.messages.game.basic.CurrentServerStatusUpdateMessage;
     import com.ankamagames.dofus.network.messages.game.script.CinematicMessage;
     import com.ankamagames.dofus.network.messages.game.script.URLOpenMessage;
     import com.ankamagames.dofus.network.messages.debug.DebugHighlightCellsMessage;
@@ -320,6 +321,7 @@
     import com.ankamagames.dofus.network.messages.game.friend.FriendUpdateMessage;
     import com.ankamagames.dofus.network.messages.game.friend.FriendDeleteResultMessage;
     import com.ankamagames.dofus.network.messages.game.friend.FriendWarnOnConnectionStateMessage;
+    import com.ankamagames.dofus.network.messages.game.friend.WarnOnPermaDeathStateMessage;
     import com.ankamagames.dofus.network.messages.game.friend.FriendWarnOnLevelGainStateMessage;
     import com.ankamagames.dofus.network.messages.game.friend.IgnoredListMessage;
     import com.ankamagames.dofus.network.messages.game.friend.IgnoredAddFailureMessage;
@@ -412,6 +414,8 @@
     import com.ankamagames.dofus.network.messages.game.context.notification.NotificationByServerMessage;
     import com.ankamagames.dofus.network.messages.game.subscriber.SubscriptionLimitationMessage;
     import com.ankamagames.dofus.network.messages.game.subscriber.SubscriptionZoneMessage;
+    import com.ankamagames.dofus.network.messages.game.guest.GuestLimitationMessage;
+    import com.ankamagames.dofus.network.messages.game.guest.GuestModeMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.MapNpcsQuestStatusUpdateMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.NpcGenericActionFailureMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.NpcDialogCreationMessage;
@@ -465,8 +469,14 @@
     import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectsQuantityMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectModifiedMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectJobAddedMessage;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.ObtainedItemMessage;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.ObtainedItemWithBonusMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.ObjectFoundWhileRecoltingMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.LivingObjectMessageMessage;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.SymbioticObjectErrorMessage;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.SymbioticObjectAssociatedMessage;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.WrapperObjectErrorMessage;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.WrapperObjectAssociatedMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectPreviewMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectErrorMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.MimicryObjectAssociatedMessage;
@@ -480,8 +490,11 @@
     import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeReplayCountModifiedMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectAddedMessage;
+    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectsAddedMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectRemovedMessage;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectsRemovedMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectModifiedMessage;
+    import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectsModifiedMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectPutInBagMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectRemovedFromBagMessage;
     import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectModifiedInBagMessage;
@@ -568,6 +581,7 @@
     import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.HouseToSellListMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.guild.HouseGuildNoneMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.guild.HouseGuildRightsMessage;
+    import com.ankamagames.dofus.network.messages.game.context.mount.PaddockBuyResultMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.paddock.PaddockPropertiesMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.paddock.PaddockSellBuyDialogMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.paddock.GameDataPlayFarmObjectAnimationMessage;
@@ -592,6 +606,7 @@
     import com.ankamagames.dofus.network.messages.game.context.roleplay.lockable.LockableStateUpdateHouseDoorMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.lockable.LockableStateUpdateStorageMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.document.DocumentReadingBeginMessage;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.document.ComicReadingBeginMessage;
     import com.ankamagames.dofus.network.messages.game.tinsel.TitlesAndOrnamentsListMessage;
     import com.ankamagames.dofus.network.messages.game.tinsel.TitleGainedMessage;
     import com.ankamagames.dofus.network.messages.game.tinsel.TitleLostMessage;
@@ -602,6 +617,8 @@
     import com.ankamagames.dofus.network.messages.game.tinsel.OrnamentSelectErrorMessage;
     import com.ankamagames.dofus.network.messages.game.social.ContactLookMessage;
     import com.ankamagames.dofus.network.messages.game.social.ContactLookErrorMessage;
+    import com.ankamagames.dofus.network.messages.game.look.AccessoryPreviewErrorMessage;
+    import com.ankamagames.dofus.network.messages.game.look.AccessoryPreviewMessage;
     import com.ankamagames.dofus.network.messages.web.ankabox.MailStatusMessage;
     import com.ankamagames.dofus.network.messages.web.ankabox.NewMailMessage;
     import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterAuthTokenMessage;
@@ -614,8 +631,9 @@
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFinishedMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntDigRequestAnswerMessage;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntDigRequestAnswerFailedMessage;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntFlagRequestAnswerMessage;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.TreasureHuntAvailableRetryCountUpdateMessage;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.treasureHunt.PortalDialogQuestionMessage;
     import com.ankamagames.dofus.network.messages.game.packs.PackRestrictedSubAreaMessage;
     import com.ankamagames.dofus.network.messages.updater.parts.PartsListMessage;
     import com.ankamagames.dofus.network.messages.updater.parts.PartInfoMessage;
@@ -720,6 +738,7 @@
             _messagesTypes[183] = BasicPongMessage;
             _messagesTypes[5816] = BasicLatencyStatsRequestMessage;
             _messagesTypes[6316] = SequenceNumberRequestMessage;
+            _messagesTypes[6525] = CurrentServerStatusUpdateMessage;
             _messagesTypes[6053] = CinematicMessage;
             _messagesTypes[6266] = URLOpenMessage;
             _messagesTypes[2001] = DebugHighlightCellsMessage;
@@ -947,6 +966,7 @@
             _messagesTypes[5924] = FriendUpdateMessage;
             _messagesTypes[5601] = FriendDeleteResultMessage;
             _messagesTypes[5630] = FriendWarnOnConnectionStateMessage;
+            _messagesTypes[6513] = WarnOnPermaDeathStateMessage;
             _messagesTypes[6078] = FriendWarnOnLevelGainStateMessage;
             _messagesTypes[5674] = IgnoredListMessage;
             _messagesTypes[5679] = IgnoredAddFailureMessage;
@@ -1039,6 +1059,8 @@
             _messagesTypes[6103] = NotificationByServerMessage;
             _messagesTypes[5542] = SubscriptionLimitationMessage;
             _messagesTypes[5573] = SubscriptionZoneMessage;
+            _messagesTypes[6506] = GuestLimitationMessage;
+            _messagesTypes[6505] = GuestModeMessage;
             _messagesTypes[5642] = MapNpcsQuestStatusUpdateMessage;
             _messagesTypes[5900] = NpcGenericActionFailureMessage;
             _messagesTypes[5618] = NpcDialogCreationMessage;
@@ -1092,8 +1114,14 @@
             _messagesTypes[6206] = ObjectsQuantityMessage;
             _messagesTypes[3029] = ObjectModifiedMessage;
             _messagesTypes[6014] = ObjectJobAddedMessage;
+            _messagesTypes[6519] = ObtainedItemMessage;
+            _messagesTypes[6520] = ObtainedItemWithBonusMessage;
             _messagesTypes[6017] = ObjectFoundWhileRecoltingMessage;
             _messagesTypes[6065] = LivingObjectMessageMessage;
+            _messagesTypes[6526] = SymbioticObjectErrorMessage;
+            _messagesTypes[6527] = SymbioticObjectAssociatedMessage;
+            _messagesTypes[6529] = WrapperObjectErrorMessage;
+            _messagesTypes[6523] = WrapperObjectAssociatedMessage;
             _messagesTypes[6458] = MimicryObjectPreviewMessage;
             _messagesTypes[6461] = MimicryObjectErrorMessage;
             _messagesTypes[6462] = MimicryObjectAssociatedMessage;
@@ -1107,8 +1135,11 @@
             _messagesTypes[6023] = ExchangeReplayCountModifiedMessage;
             _messagesTypes[5515] = ExchangeObjectMessage;
             _messagesTypes[5516] = ExchangeObjectAddedMessage;
+            _messagesTypes[6535] = ExchangeObjectsAddedMessage;
             _messagesTypes[5517] = ExchangeObjectRemovedMessage;
+            _messagesTypes[6532] = ExchangeObjectsRemovedMessage;
             _messagesTypes[5519] = ExchangeObjectModifiedMessage;
+            _messagesTypes[6533] = ExchangeObjectsModifiedMessage;
             _messagesTypes[6009] = ExchangeObjectPutInBagMessage;
             _messagesTypes[6010] = ExchangeObjectRemovedFromBagMessage;
             _messagesTypes[6008] = ExchangeObjectModifiedInBagMessage;
@@ -1195,6 +1226,7 @@
             _messagesTypes[6140] = HouseToSellListMessage;
             _messagesTypes[5701] = HouseGuildNoneMessage;
             _messagesTypes[5703] = HouseGuildRightsMessage;
+            _messagesTypes[6516] = PaddockBuyResultMessage;
             _messagesTypes[5824] = PaddockPropertiesMessage;
             _messagesTypes[6018] = PaddockSellBuyDialogMessage;
             _messagesTypes[6026] = GameDataPlayFarmObjectAnimationMessage;
@@ -1219,6 +1251,7 @@
             _messagesTypes[5668] = LockableStateUpdateHouseDoorMessage;
             _messagesTypes[5669] = LockableStateUpdateStorageMessage;
             _messagesTypes[5675] = DocumentReadingBeginMessage;
+            _messagesTypes[6536] = ComicReadingBeginMessage;
             _messagesTypes[6367] = TitlesAndOrnamentsListMessage;
             _messagesTypes[6364] = TitleGainedMessage;
             _messagesTypes[6371] = TitleLostMessage;
@@ -1229,6 +1262,8 @@
             _messagesTypes[6370] = OrnamentSelectErrorMessage;
             _messagesTypes[5934] = ContactLookMessage;
             _messagesTypes[6045] = ContactLookErrorMessage;
+            _messagesTypes[6521] = AccessoryPreviewErrorMessage;
+            _messagesTypes[6517] = AccessoryPreviewMessage;
             _messagesTypes[6275] = MailStatusMessage;
             _messagesTypes[6292] = NewMailMessage;
             _messagesTypes[6351] = KrosmasterAuthTokenMessage;
@@ -1241,8 +1276,9 @@
             _messagesTypes[6486] = TreasureHuntMessage;
             _messagesTypes[6483] = TreasureHuntFinishedMessage;
             _messagesTypes[6484] = TreasureHuntDigRequestAnswerMessage;
+            _messagesTypes[6509] = TreasureHuntDigRequestAnswerFailedMessage;
+            _messagesTypes[6507] = TreasureHuntFlagRequestAnswerMessage;
             _messagesTypes[6491] = TreasureHuntAvailableRetryCountUpdateMessage;
-            _messagesTypes[6495] = PortalDialogQuestionMessage;
             _messagesTypes[6186] = PackRestrictedSubAreaMessage;
             _messagesTypes[1502] = PartsListMessage;
             _messagesTypes[1508] = PartInfoMessage;
@@ -1341,6 +1377,7 @@
             StoreDataManager.getInstance().registerClass(new BasicPongMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new BasicLatencyStatsRequestMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new SequenceNumberRequestMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new CurrentServerStatusUpdateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CinematicMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new URLOpenMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DebugHighlightCellsMessage(), true, true);
@@ -1568,6 +1605,7 @@
             StoreDataManager.getInstance().registerClass(new FriendUpdateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new FriendDeleteResultMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new FriendWarnOnConnectionStateMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new WarnOnPermaDeathStateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new FriendWarnOnLevelGainStateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new IgnoredListMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new IgnoredAddFailureMessage(), true, true);
@@ -1660,6 +1698,8 @@
             StoreDataManager.getInstance().registerClass(new NotificationByServerMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new SubscriptionLimitationMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new SubscriptionZoneMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new GuestLimitationMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new GuestModeMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new MapNpcsQuestStatusUpdateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new NpcGenericActionFailureMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new NpcDialogCreationMessage(), true, true);
@@ -1713,8 +1753,14 @@
             StoreDataManager.getInstance().registerClass(new ObjectsQuantityMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ObjectModifiedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ObjectJobAddedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new ObtainedItemMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new ObtainedItemWithBonusMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ObjectFoundWhileRecoltingMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new LivingObjectMessageMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new SymbioticObjectErrorMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new SymbioticObjectAssociatedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new WrapperObjectErrorMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new WrapperObjectAssociatedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new MimicryObjectPreviewMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new MimicryObjectErrorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new MimicryObjectAssociatedMessage(), true, true);
@@ -1728,8 +1774,11 @@
             StoreDataManager.getInstance().registerClass(new ExchangeReplayCountModifiedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeObjectMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeObjectAddedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new ExchangeObjectsAddedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeObjectRemovedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new ExchangeObjectsRemovedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeObjectModifiedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new ExchangeObjectsModifiedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeObjectPutInBagMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeObjectRemovedFromBagMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeObjectModifiedInBagMessage(), true, true);
@@ -1816,6 +1865,7 @@
             StoreDataManager.getInstance().registerClass(new HouseToSellListMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new HouseGuildNoneMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new HouseGuildRightsMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new PaddockBuyResultMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PaddockPropertiesMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PaddockSellBuyDialogMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameDataPlayFarmObjectAnimationMessage(), true, true);
@@ -1840,6 +1890,7 @@
             StoreDataManager.getInstance().registerClass(new LockableStateUpdateHouseDoorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new LockableStateUpdateStorageMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DocumentReadingBeginMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new ComicReadingBeginMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TitlesAndOrnamentsListMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TitleGainedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TitleLostMessage(), true, true);
@@ -1850,6 +1901,8 @@
             StoreDataManager.getInstance().registerClass(new OrnamentSelectErrorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ContactLookMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ContactLookErrorMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new AccessoryPreviewErrorMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new AccessoryPreviewMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new MailStatusMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new NewMailMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new KrosmasterAuthTokenMessage(), true, true);
@@ -1862,8 +1915,9 @@
             StoreDataManager.getInstance().registerClass(new TreasureHuntMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TreasureHuntFinishedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TreasureHuntDigRequestAnswerMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new TreasureHuntDigRequestAnswerFailedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new TreasureHuntFlagRequestAnswerMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TreasureHuntAvailableRetryCountUpdateMessage(), true, true);
-            StoreDataManager.getInstance().registerClass(new PortalDialogQuestionMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PackRestrictedSubAreaMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PartsListMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PartInfoMessage(), true, true);

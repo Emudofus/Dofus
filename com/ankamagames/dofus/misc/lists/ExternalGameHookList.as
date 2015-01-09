@@ -15,6 +15,10 @@
         public static const DofusShopArticlesList:Hook = new Hook("DofusShopArticlesList", false);
         public static const DofusShopSuccessfulPurchase:Hook = new Hook("DofusShopSuccessfulPurchase", false);
         public static const DofusShopError:Hook = new Hook("DofusShopError", false);
+        public static const OpenWebService:Hook = new Hook("OpenWebService", false);
+        public static const ComicsLibraryLoaded:Hook = new Hook("ComicsLibraryLoaded", false);
+        public static const ComicLoaded:Hook = new Hook("ComicLoaded", false);
+        public static const OpenComic:Hook = new Hook("OpenComic", false);
 
 
     }

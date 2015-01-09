@@ -29,6 +29,7 @@
         public static const PresetsUpdate:Hook = new Hook("PresetsUpdate", false);
         public static const PresetSelected:Hook = new Hook("PresetSelected", false);
         public static const PresetError:Hook = new Hook("PresetError", false);
+        public static const AccessoryPreview:Hook = new Hook("AccessoryPreview", false);
 
 
     }

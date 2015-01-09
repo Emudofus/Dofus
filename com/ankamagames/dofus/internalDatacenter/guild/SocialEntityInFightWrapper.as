@@ -54,15 +54,21 @@
             this.fightTime = pFightTime;
             this.waitTimeForPlacement = pWaitTimeForPlacement;
             this.nbPositionPerTeam = pNbPositionPerTeam;
-            this.allyCharactersInformations = new Array();
-            this.enemyCharactersInformations = new Array();
-            for each (ally in pAllies)
+            if (pAllies.length > 0)
             {
-                this.allyCharactersInformations.push(SocialFightersWrapper.create(0, ally));
+                this.allyCharactersInformations = new Array();
+                for each (ally in pAllies)
+                {
+                    this.allyCharactersInformations.push(SocialFightersWrapper.create(0, ally));
+                };
             };
-            for each (enemy in pEnemies)
+            if (pEnemies.length > 0)
             {
-                this.enemyCharactersInformations.push(SocialFightersWrapper.create(1, enemy));
+                this.enemyCharactersInformations = new Array();
+                for each (enemy in pEnemies)
+                {
+                    this.enemyCharactersInformations.push(SocialFightersWrapper.create(1, enemy));
+                };
             };
         }
 

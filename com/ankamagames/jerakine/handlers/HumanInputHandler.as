@@ -35,7 +35,6 @@
     import com.ankamagames.jerakine.handlers.messages.mouse.MouseReleaseOutsideMessage;
     import com.ankamagames.jerakine.handlers.messages.mouse.MouseUpMessage;
     import flash.ui.Keyboard;
-    import flash.display.StageDisplayState;
     import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyDownMessage;
     import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyUpMessage;
 
@@ -334,18 +333,20 @@
             if (ke.keyCode == Keyboard.ESCAPE)
             {
                 ke.preventDefault();
-                if (((AirScanner.isStreamingVersion()) && ((StageShareManager.stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE))))
+            }
+            else
+            {
+                if (ke.keyCode == Keyboard.COMMAND)
                 {
-                    return;
+                    this._appleDown = true;
+                }
+                else
+                {
+                    if ((((ke.keyCode == Keyboard.S)) && (ke.ctrlKey)))
+                    {
+                        ke.preventDefault();
+                    };
                 };
-            };
-            if (ke.keyCode == 15)
-            {
-                this._appleDown = true;
-            };
-            if ((((ke.keyCode == Keyboard.S)) && (ke.ctrlKey)))
-            {
-                ke.preventDefault();
             };
             if (!(this._useDirectEventMode))
             {
@@ -365,6 +366,21 @@
             if (this._keyPoll.isDown(Keyboard.CONTROL))
             {
                 ke.ctrlKey = true;
+            };
+            if (AirScanner.isStreamingVersion())
+            {
+                if (ke.keyCode == Keyboard.ESCAPE)
+                {
+                    if (StageShareManager.justExitFullScreen)
+                    {
+                        StageShareManager.justExitFullScreen = false;
+                        if (!(StageShareManager.shortcutUsedToExitFullScreen))
+                        {
+                            return;
+                        };
+                        StageShareManager.shortcutUsedToExitFullScreen = false;
+                    };
+                };
             };
             if (!(this._appleDown))
             {
