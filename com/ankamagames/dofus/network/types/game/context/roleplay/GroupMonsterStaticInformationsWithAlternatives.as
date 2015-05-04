@@ -1,80 +1,75 @@
-﻿package com.ankamagames.dofus.network.types.game.context.roleplay
+package com.ankamagames.dofus.network.types.game.context.roleplay
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    public class GroupMonsterStaticInformationsWithAlternatives extends GroupMonsterStaticInformations implements INetworkType 
-    {
-
-        public static const protocolId:uint = 396;
-
-        public var alternatives:Vector.<AlternativeMonstersInGroupLightInformations>;
-
-        public function GroupMonsterStaticInformationsWithAlternatives()
-        {
-            this.alternatives = new Vector.<AlternativeMonstersInGroupLightInformations>();
-            super();
-        }
-
-        override public function getTypeId():uint
-        {
-            return (396);
-        }
-
-        public function initGroupMonsterStaticInformationsWithAlternatives(mainCreatureLightInfos:MonsterInGroupLightInformations=null, underlings:Vector.<MonsterInGroupInformations>=null, alternatives:Vector.<AlternativeMonstersInGroupLightInformations>=null):GroupMonsterStaticInformationsWithAlternatives
-        {
-            super.initGroupMonsterStaticInformations(mainCreatureLightInfos, underlings);
-            this.alternatives = alternatives;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.alternatives = new Vector.<AlternativeMonstersInGroupLightInformations>();
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GroupMonsterStaticInformationsWithAlternatives(output);
-        }
-
-        public function serializeAs_GroupMonsterStaticInformationsWithAlternatives(output:ICustomDataOutput):void
-        {
-            super.serializeAs_GroupMonsterStaticInformations(output);
-            output.writeShort(this.alternatives.length);
-            var _i1:uint;
-            while (_i1 < this.alternatives.length)
-            {
-                (this.alternatives[_i1] as AlternativeMonstersInGroupLightInformations).serializeAs_AlternativeMonstersInGroupLightInformations(output);
-                _i1++;
-            };
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GroupMonsterStaticInformationsWithAlternatives(input);
-        }
-
-        public function deserializeAs_GroupMonsterStaticInformationsWithAlternatives(input:ICustomDataInput):void
-        {
-            var _item1:AlternativeMonstersInGroupLightInformations;
-            super.deserialize(input);
-            var _alternativesLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _alternativesLen)
-            {
-                _item1 = new AlternativeMonstersInGroupLightInformations();
-                _item1.deserialize(input);
-                this.alternatives.push(_item1);
-                _i1++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.context.roleplay
-
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class GroupMonsterStaticInformationsWithAlternatives extends GroupMonsterStaticInformations implements INetworkType
+   {
+      
+      public function GroupMonsterStaticInformationsWithAlternatives()
+      {
+         this.alternatives = new Vector.<AlternativeMonstersInGroupLightInformations>();
+         super();
+      }
+      
+      public static const protocolId:uint = 396;
+      
+      public var alternatives:Vector.<AlternativeMonstersInGroupLightInformations>;
+      
+      override public function getTypeId() : uint
+      {
+         return 396;
+      }
+      
+      public function initGroupMonsterStaticInformationsWithAlternatives(param1:MonsterInGroupLightInformations = null, param2:Vector.<MonsterInGroupInformations> = null, param3:Vector.<AlternativeMonstersInGroupLightInformations> = null) : GroupMonsterStaticInformationsWithAlternatives
+      {
+         super.initGroupMonsterStaticInformations(param1,param2);
+         this.alternatives = param3;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.alternatives = new Vector.<AlternativeMonstersInGroupLightInformations>();
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GroupMonsterStaticInformationsWithAlternatives(param1);
+      }
+      
+      public function serializeAs_GroupMonsterStaticInformationsWithAlternatives(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_GroupMonsterStaticInformations(param1);
+         param1.writeShort(this.alternatives.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.alternatives.length)
+         {
+            (this.alternatives[_loc2_] as AlternativeMonstersInGroupLightInformations).serializeAs_AlternativeMonstersInGroupLightInformations(param1);
+            _loc2_++;
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GroupMonsterStaticInformationsWithAlternatives(param1);
+      }
+      
+      public function deserializeAs_GroupMonsterStaticInformationsWithAlternatives(param1:ICustomDataInput) : void
+      {
+         var _loc4_:AlternativeMonstersInGroupLightInformations = null;
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc4_ = new AlternativeMonstersInGroupLightInformations();
+            _loc4_.deserialize(param1);
+            this.alternatives.push(_loc4_);
+            _loc3_++;
+         }
+      }
+   }
+}

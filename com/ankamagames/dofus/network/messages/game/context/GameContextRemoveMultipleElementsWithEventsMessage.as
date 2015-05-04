@@ -1,110 +1,113 @@
-﻿package com.ankamagames.dofus.network.messages.game.context
+package com.ankamagames.dofus.network.messages.game.context
 {
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class GameContextRemoveMultipleElementsWithEventsMessage extends GameContextRemoveMultipleElementsMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6416;
-
-        private var _isInitialized:Boolean = false;
-        public var elementEventIds:Vector.<uint>;
-
-        public function GameContextRemoveMultipleElementsWithEventsMessage()
-        {
-            this.elementEventIds = new Vector.<uint>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (((super.isInitialized) && (this._isInitialized)));
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6416);
-        }
-
-        public function initGameContextRemoveMultipleElementsWithEventsMessage(id:Vector.<int>=null, elementEventIds:Vector.<uint>=null):GameContextRemoveMultipleElementsWithEventsMessage
-        {
-            super.initGameContextRemoveMultipleElementsMessage(id);
-            this.elementEventIds = elementEventIds;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.elementEventIds = new Vector.<uint>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GameContextRemoveMultipleElementsWithEventsMessage(output);
-        }
-
-        public function serializeAs_GameContextRemoveMultipleElementsWithEventsMessage(output:ICustomDataOutput):void
-        {
-            super.serializeAs_GameContextRemoveMultipleElementsMessage(output);
-            output.writeShort(this.elementEventIds.length);
-            var _i1:uint;
-            while (_i1 < this.elementEventIds.length)
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class GameContextRemoveMultipleElementsWithEventsMessage extends GameContextRemoveMultipleElementsMessage implements INetworkMessage
+   {
+      
+      public function GameContextRemoveMultipleElementsWithEventsMessage()
+      {
+         this.elementEventIds = new Vector.<uint>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6416;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return (super.isInitialized) && (this._isInitialized);
+      }
+      
+      public var elementEventIds:Vector.<uint>;
+      
+      override public function getMessageId() : uint
+      {
+         return 6416;
+      }
+      
+      public function initGameContextRemoveMultipleElementsWithEventsMessage(param1:Vector.<int> = null, param2:Vector.<uint> = null) : GameContextRemoveMultipleElementsWithEventsMessage
+      {
+         super.initGameContextRemoveMultipleElementsMessage(param1);
+         this.elementEventIds = param2;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.elementEventIds = new Vector.<uint>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GameContextRemoveMultipleElementsWithEventsMessage(param1);
+      }
+      
+      public function serializeAs_GameContextRemoveMultipleElementsWithEventsMessage(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_GameContextRemoveMultipleElementsMessage(param1);
+         param1.writeShort(this.elementEventIds.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.elementEventIds.length)
+         {
+            if(this.elementEventIds[_loc2_] < 0)
             {
-                if (this.elementEventIds[_i1] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.elementEventIds[_i1]) + ") on element 1 (starting at 1) of elementEventIds.")));
-                };
-                output.writeByte(this.elementEventIds[_i1]);
-                _i1++;
-            };
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GameContextRemoveMultipleElementsWithEventsMessage(input);
-        }
-
-        public function deserializeAs_GameContextRemoveMultipleElementsWithEventsMessage(input:ICustomDataInput):void
-        {
-            var _val1:uint;
-            super.deserialize(input);
-            var _elementEventIdsLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _elementEventIdsLen)
+               throw new Error("Forbidden value (" + this.elementEventIds[_loc2_] + ") on element 1 (starting at 1) of elementEventIds.");
+            }
+            else
             {
-                _val1 = input.readByte();
-                if (_val1 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val1) + ") on elements of elementEventIds.")));
-                };
-                this.elementEventIds.push(_val1);
-                _i1++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context
-
+               param1.writeByte(this.elementEventIds[_loc2_]);
+               _loc2_++;
+               continue;
+            }
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GameContextRemoveMultipleElementsWithEventsMessage(param1);
+      }
+      
+      public function deserializeAs_GameContextRemoveMultipleElementsWithEventsMessage(param1:ICustomDataInput) : void
+      {
+         var _loc4_:uint = 0;
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc4_ = param1.readByte();
+            if(_loc4_ < 0)
+            {
+               throw new Error("Forbidden value (" + _loc4_ + ") on elements of elementEventIds.");
+            }
+            else
+            {
+               this.elementEventIds.push(_loc4_);
+               _loc3_++;
+               continue;
+            }
+         }
+      }
+   }
+}

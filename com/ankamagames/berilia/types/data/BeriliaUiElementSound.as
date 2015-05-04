@@ -1,13 +1,17 @@
-﻿package com.ankamagames.berilia.types.data
+package com.ankamagames.berilia.types.data
 {
-    public class BeriliaUiElementSound 
-    {
-
-        public var name:String;
-        public var hook:String;
-        public var file:String;
-
-
-    }
-}//package com.ankamagames.berilia.types.data
-
+   public class BeriliaUiElementSound extends Object
+   {
+      
+      public function BeriliaUiElementSound()
+      {
+         super();
+      }
+      
+      public var name:String;
+      
+      public var hook:String;
+      
+      public var file:String;
+   }
+}

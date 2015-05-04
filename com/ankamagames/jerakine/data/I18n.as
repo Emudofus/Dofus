@@ -1,60 +1,61 @@
-﻿package com.ankamagames.jerakine.data
+package com.ankamagames.jerakine.data
 {
-    public class I18n extends AbstractDataManager 
-    {
-
-
-        public static function addOverride(id:uint, newId:uint):void
-        {
-            I18nFileAccessor.getInstance().overrideId(id, newId);
-        }
-
-        public static function getText(id:uint, params:Array=null, replace:String="%"):String
-        {
-            if (!(id))
-            {
-                return (null);
-            };
-            var txt:String = I18nFileAccessor.getInstance().getText(id);
-            if ((((txt == null)) || ((txt == "null"))))
-            {
-                return ((("[UNKNOWN_TEXT_ID_" + id) + "]"));
-            };
-            return (replaceParams(txt, params, replace));
-        }
-
-        public static function getUiText(textId:String, params:Array=null, replace:String="%"):String
-        {
-            var txt:String = I18nFileAccessor.getInstance().getNamedText(textId);
-            if ((((txt == null)) || ((txt == "null"))))
-            {
-                return ((("[UNKNOWN_TEXT_NAME_" + textId) + "]"));
-            };
-            return (replaceParams(txt, params, replace));
-        }
-
-        public static function hasUiText(textId:String):Boolean
-        {
-            return (I18nFileAccessor.getInstance().hasNamedText(textId));
-        }
-
-        public static function replaceParams(text:String, params:Array, replace:String):String
-        {
-            if (((!(params)) || (!(params.length))))
-            {
-                return (text);
-            };
-            var prc:Array = new Array();
-            var i:uint = 1;
-            while (i <= params.length)
-            {
-                text = text.replace((replace + i), params[(i - 1)]);
-                i++;
-            };
-            return (text);
-        }
-
-
-    }
-}//package com.ankamagames.jerakine.data
-
+   public class I18n extends AbstractDataManager
+   {
+      
+      public function I18n()
+      {
+         super();
+      }
+      
+      public static function addOverride(param1:uint, param2:uint) : void
+      {
+         I18nFileAccessor.getInstance().overrideId(param1,param2);
+      }
+      
+      public static function getText(param1:uint, param2:Array = null, param3:String = "%") : String
+      {
+         if(!param1)
+         {
+            return null;
+         }
+         var _loc4_:String = I18nFileAccessor.getInstance().getText(param1);
+         if(_loc4_ == null || _loc4_ == "null")
+         {
+            return "[UNKNOWN_TEXT_ID_" + param1 + "]";
+         }
+         return replaceParams(_loc4_,param2,param3);
+      }
+      
+      public static function getUiText(param1:String, param2:Array = null, param3:String = "%") : String
+      {
+         var _loc4_:String = I18nFileAccessor.getInstance().getNamedText(param1);
+         if(_loc4_ == null || _loc4_ == "null")
+         {
+            return "[UNKNOWN_TEXT_NAME_" + param1 + "]";
+         }
+         return replaceParams(_loc4_,param2,param3);
+      }
+      
+      public static function hasUiText(param1:String) : Boolean
+      {
+         return I18nFileAccessor.getInstance().hasNamedText(param1);
+      }
+      
+      public static function replaceParams(param1:String, param2:Array, param3:String) : String
+      {
+         if(!param2 || !param2.length)
+         {
+            return param1;
+         }
+         var _loc4_:Array = new Array();
+         var _loc5_:uint = 1;
+         while(_loc5_ <= param2.length)
+         {
+            var param1:String = param1.replace(param3 + _loc5_,param2[_loc5_ - 1]);
+            _loc5_++;
+         }
+         return param1;
+      }
+   }
+}

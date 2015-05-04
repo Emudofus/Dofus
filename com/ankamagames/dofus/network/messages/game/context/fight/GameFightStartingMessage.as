@@ -1,92 +1,99 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class GameFightStartingMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 700;
-
-        private var _isInitialized:Boolean = false;
-        public var fightType:uint = 0;
-        public var attackerId:int = 0;
-        public var defenderId:int = 0;
-
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (700);
-        }
-
-        public function initGameFightStartingMessage(fightType:uint=0, attackerId:int=0, defenderId:int=0):GameFightStartingMessage
-        {
-            this.fightType = fightType;
-            this.attackerId = attackerId;
-            this.defenderId = defenderId;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.fightType = 0;
-            this.attackerId = 0;
-            this.defenderId = 0;
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GameFightStartingMessage(output);
-        }
-
-        public function serializeAs_GameFightStartingMessage(output:ICustomDataOutput):void
-        {
-            output.writeByte(this.fightType);
-            output.writeInt(this.attackerId);
-            output.writeInt(this.defenderId);
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GameFightStartingMessage(input);
-        }
-
-        public function deserializeAs_GameFightStartingMessage(input:ICustomDataInput):void
-        {
-            this.fightType = input.readByte();
-            if (this.fightType < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.fightType) + ") on element of GameFightStartingMessage.fightType.")));
-            };
-            this.attackerId = input.readInt();
-            this.defenderId = input.readInt();
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.fight
-
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class GameFightStartingMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function GameFightStartingMessage()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 700;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var fightType:uint = 0;
+      
+      public var attackerId:int = 0;
+      
+      public var defenderId:int = 0;
+      
+      override public function getMessageId() : uint
+      {
+         return 700;
+      }
+      
+      public function initGameFightStartingMessage(param1:uint = 0, param2:int = 0, param3:int = 0) : GameFightStartingMessage
+      {
+         this.fightType = param1;
+         this.attackerId = param2;
+         this.defenderId = param3;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.fightType = 0;
+         this.attackerId = 0;
+         this.defenderId = 0;
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GameFightStartingMessage(param1);
+      }
+      
+      public function serializeAs_GameFightStartingMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeByte(this.fightType);
+         param1.writeInt(this.attackerId);
+         param1.writeInt(this.defenderId);
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GameFightStartingMessage(param1);
+      }
+      
+      public function deserializeAs_GameFightStartingMessage(param1:ICustomDataInput) : void
+      {
+         this.fightType = param1.readByte();
+         if(this.fightType < 0)
+         {
+            throw new Error("Forbidden value (" + this.fightType + ") on element of GameFightStartingMessage.fightType.");
+         }
+         else
+         {
+            this.attackerId = param1.readInt();
+            this.defenderId = param1.readInt();
+            return;
+         }
+      }
+   }
+}

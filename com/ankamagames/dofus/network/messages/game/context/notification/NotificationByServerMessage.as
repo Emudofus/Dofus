@@ -1,117 +1,122 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.notification
+package com.ankamagames.dofus.network.messages.game.context.notification
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class NotificationByServerMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6103;
-
-        private var _isInitialized:Boolean = false;
-        public var id:uint = 0;
-        public var parameters:Vector.<String>;
-        public var forceOpen:Boolean = false;
-
-        public function NotificationByServerMessage()
-        {
-            this.parameters = new Vector.<String>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6103);
-        }
-
-        public function initNotificationByServerMessage(id:uint=0, parameters:Vector.<String>=null, forceOpen:Boolean=false):NotificationByServerMessage
-        {
-            this.id = id;
-            this.parameters = parameters;
-            this.forceOpen = forceOpen;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.id = 0;
-            this.parameters = new Vector.<String>();
-            this.forceOpen = false;
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_NotificationByServerMessage(output);
-        }
-
-        public function serializeAs_NotificationByServerMessage(output:ICustomDataOutput):void
-        {
-            if (this.id < 0)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class NotificationByServerMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function NotificationByServerMessage()
+      {
+         this.parameters = new Vector.<String>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6103;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var id:uint = 0;
+      
+      public var parameters:Vector.<String>;
+      
+      public var forceOpen:Boolean = false;
+      
+      override public function getMessageId() : uint
+      {
+         return 6103;
+      }
+      
+      public function initNotificationByServerMessage(param1:uint = 0, param2:Vector.<String> = null, param3:Boolean = false) : NotificationByServerMessage
+      {
+         this.id = param1;
+         this.parameters = param2;
+         this.forceOpen = param3;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.id = 0;
+         this.parameters = new Vector.<String>();
+         this.forceOpen = false;
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_NotificationByServerMessage(param1);
+      }
+      
+      public function serializeAs_NotificationByServerMessage(param1:ICustomDataOutput) : void
+      {
+         if(this.id < 0)
+         {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+         }
+         else
+         {
+            param1.writeVarShort(this.id);
+            param1.writeShort(this.parameters.length);
+            var _loc2_:uint = 0;
+            while(_loc2_ < this.parameters.length)
             {
-                throw (new Error((("Forbidden value (" + this.id) + ") on element id.")));
-            };
-            output.writeVarShort(this.id);
-            output.writeShort(this.parameters.length);
-            var _i2:uint;
-            while (_i2 < this.parameters.length)
+               param1.writeUTF(this.parameters[_loc2_]);
+               _loc2_++;
+            }
+            param1.writeBoolean(this.forceOpen);
+            return;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_NotificationByServerMessage(param1);
+      }
+      
+      public function deserializeAs_NotificationByServerMessage(param1:ICustomDataInput) : void
+      {
+         var _loc4_:String = null;
+         this.id = param1.readVarUhShort();
+         if(this.id < 0)
+         {
+            throw new Error("Forbidden value (" + this.id + ") on element of NotificationByServerMessage.id.");
+         }
+         else
+         {
+            var _loc2_:uint = param1.readUnsignedShort();
+            var _loc3_:uint = 0;
+            while(_loc3_ < _loc2_)
             {
-                output.writeUTF(this.parameters[_i2]);
-                _i2++;
-            };
-            output.writeBoolean(this.forceOpen);
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_NotificationByServerMessage(input);
-        }
-
-        public function deserializeAs_NotificationByServerMessage(input:ICustomDataInput):void
-        {
-            var _val2:String;
-            this.id = input.readVarUhShort();
-            if (this.id < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.id) + ") on element of NotificationByServerMessage.id.")));
-            };
-            var _parametersLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _parametersLen)
-            {
-                _val2 = input.readUTF();
-                this.parameters.push(_val2);
-                _i2++;
-            };
-            this.forceOpen = input.readBoolean();
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.notification
-
+               _loc4_ = param1.readUTF();
+               this.parameters.push(_loc4_);
+               _loc3_++;
+            }
+            this.forceOpen = param1.readBoolean();
+            return;
+         }
+      }
+   }
+}

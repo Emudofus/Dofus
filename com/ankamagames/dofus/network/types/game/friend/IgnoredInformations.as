@@ -1,52 +1,53 @@
-﻿package com.ankamagames.dofus.network.types.game.friend
+package com.ankamagames.dofus.network.types.game.friend
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    public class IgnoredInformations extends AbstractContactInformations implements INetworkType 
-    {
-
-        public static const protocolId:uint = 106;
-
-
-        override public function getTypeId():uint
-        {
-            return (106);
-        }
-
-        public function initIgnoredInformations(accountId:uint=0, accountName:String=""):IgnoredInformations
-        {
-            super.initAbstractContactInformations(accountId, accountName);
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_IgnoredInformations(output);
-        }
-
-        public function serializeAs_IgnoredInformations(output:ICustomDataOutput):void
-        {
-            super.serializeAs_AbstractContactInformations(output);
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_IgnoredInformations(input);
-        }
-
-        public function deserializeAs_IgnoredInformations(input:ICustomDataInput):void
-        {
-            super.deserialize(input);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.friend
-
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class IgnoredInformations extends AbstractContactInformations implements INetworkType
+   {
+      
+      public function IgnoredInformations()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 106;
+      
+      override public function getTypeId() : uint
+      {
+         return 106;
+      }
+      
+      public function initIgnoredInformations(param1:uint = 0, param2:String = "") : IgnoredInformations
+      {
+         super.initAbstractContactInformations(param1,param2);
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_IgnoredInformations(param1);
+      }
+      
+      public function serializeAs_IgnoredInformations(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_AbstractContactInformations(param1);
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_IgnoredInformations(param1);
+      }
+      
+      public function deserializeAs_IgnoredInformations(param1:ICustomDataInput) : void
+      {
+         super.deserialize(param1);
+      }
+   }
+}

@@ -1,68 +1,64 @@
-﻿package com.ankamagames.jerakine.utils.system
+package com.ankamagames.jerakine.utils.system
 {
-    import flash.utils.Dictionary;
-
-    public class CommandLineArguments 
-    {
-
-        private static var _self:CommandLineArguments;
-
-        private var _arguments:Dictionary;
-
-        public function CommandLineArguments()
-        {
-            this._arguments = new Dictionary();
-            super();
-        }
-
-        public static function getInstance():CommandLineArguments
-        {
-            if (!(_self))
+   import flash.utils.Dictionary;
+   
+   public class CommandLineArguments extends Object
+   {
+      
+      public function CommandLineArguments()
+      {
+         this._arguments = new Dictionary();
+         super();
+      }
+      
+      private static var _self:CommandLineArguments;
+      
+      public static function getInstance() : CommandLineArguments
+      {
+         if(!_self)
+         {
+            _self = new CommandLineArguments();
+         }
+         return _self;
+      }
+      
+      private var _arguments:Dictionary;
+      
+      public function setArguments(param1:Array) : void
+      {
+         var _loc2_:String = null;
+         var _loc3_:Array = null;
+         var _loc4_:String = null;
+         if(param1)
+         {
+            for each(_loc2_ in param1)
             {
-                _self = new (CommandLineArguments)();
-            };
-            return (_self);
-        }
-
-
-        public function setArguments(args:Array):void
-        {
-            var arg:String;
-            var couple:Array;
-            var key:String;
-            if (args)
-            {
-                for each (arg in args)
-                {
-                    couple = arg.split("=");
-                    key = couple[0].replace(/^--?/, "");
-                    this._arguments[key] = couple[1];
-                };
-            };
-        }
-
-        public function hasArgument(argument:String):Boolean
-        {
-            return (this._arguments.hasOwnProperty(argument));
-        }
-
-        public function getArgument(argument:String):String
-        {
-            return (this._arguments[argument]);
-        }
-
-        public function toString():String
-        {
-            var arg:String;
-            var res:Array = [];
-            for (arg in this._arguments)
-            {
-                res.push(((arg + "=") + this._arguments[arg]));
-            };
-            return (res.join("||"));
-        }
-
-
-    }
-}//package com.ankamagames.jerakine.utils.system
-
+               _loc3_ = _loc2_.split("=");
+               _loc4_ = _loc3_[0].replace(new RegExp("^--?"),"");
+               this._arguments[_loc4_] = _loc3_[1];
+            }
+         }
+      }
+      
+      public function hasArgument(param1:String) : Boolean
+      {
+         return this._arguments.hasOwnProperty(param1);
+      }
+      
+      public function getArgument(param1:String) : String
+      {
+         return this._arguments[param1];
+      }
+      
+      public function toString() : String
+      {
+         var _loc2_:String = null;
+         var _loc1_:Array = [];
+         for(_loc2_ in this._arguments)
+         {
+            _loc1_.push(_loc2_ + "=" + this._arguments[_loc2_]);
+         }
+         return _loc1_.join("||");
+      }
+   }
+}

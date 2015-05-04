@@ -1,116 +1,113 @@
-﻿package com.ankamagames.dofus.scripts.spells
+package com.ankamagames.dofus.scripts.spells
 {
-    import com.ankamagames.jerakine.types.positions.MapPoint;
-    import com.ankamagames.dofus.types.entities.Projectile;
-    import com.ankamagames.atouin.types.sequences.AddWorldEntityStep;
-    import com.ankamagames.atouin.types.sequences.ParableGfxMovementStep;
-    import com.ankamagames.atouin.types.sequences.DestroyEntityStep;
-    import com.ankamagames.dofus.scripts.api.FxApi;
-    import com.ankamagames.dofus.scripts.api.SpellFxApi;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.scripts.api.SequenceApi;
-    import com.ankamagames.dofus.scripts.SpellFxRunner;
-
-    public class SpellScript2 extends SpellScriptBase 
-    {
-
-        public function SpellScript2(spellFxRunner:SpellFxRunner)
-        {
-            var entryPortalCell:MapPoint;
-            var exitPortalCell:MapPoint;
-            var missileGfx:Projectile;
-            var addMissileGfxStep:AddWorldEntityStep;
-            var speed:Number;
-            var curvature:Number;
-            var missileOrientedToCurve:Boolean;
-            var missileGfxYOffset:Number;
-            var missileStep:ParableGfxMovementStep;
-            var destroyMissileStep:DestroyEntityStep;
-            var missileGfx2:Projectile;
-            var addMissileGfxStep2:AddWorldEntityStep;
-            var missileStep2:ParableGfxMovementStep;
-            var destroyMissileStep2:DestroyEntityStep;
-            super(spellFxRunner);
-            var targetCell:MapPoint = FxApi.GetCurrentTargetedCell(runner);
-            var casterCell:MapPoint = FxApi.GetEntityCell(caster);
-            var portalsCells:Vector.<MapPoint> = SpellFxApi.GetPortalCells(runner);
-            if (((portalsCells) && ((portalsCells.length > 1))))
+   import com.ankamagames.dofus.scripts.SpellFxRunner;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.dofus.types.entities.Projectile;
+   import com.ankamagames.atouin.types.sequences.AddWorldEntityStep;
+   import com.ankamagames.atouin.types.sequences.ParableGfxMovementStep;
+   import com.ankamagames.atouin.types.sequences.DestroyEntityStep;
+   import com.ankamagames.dofus.scripts.api.FxApi;
+   import com.ankamagames.dofus.scripts.api.SpellFxApi;
+   import com.ankamagames.dofus.scripts.api.SequenceApi;
+   
+   public class SpellScript2 extends SpellScriptBase
+   {
+      
+      public function SpellScript2(param1:SpellFxRunner)
+      {
+         var _loc7_:MapPoint = null;
+         var _loc8_:MapPoint = null;
+         var _loc9_:Projectile = null;
+         var _loc10_:AddWorldEntityStep = null;
+         var _loc11_:* = NaN;
+         var _loc12_:* = NaN;
+         var _loc13_:* = false;
+         var _loc14_:* = NaN;
+         var _loc15_:ParableGfxMovementStep = null;
+         var _loc16_:DestroyEntityStep = null;
+         var _loc17_:Projectile = null;
+         var _loc18_:AddWorldEntityStep = null;
+         var _loc19_:ParableGfxMovementStep = null;
+         var _loc20_:DestroyEntityStep = null;
+         super(param1);
+         var _loc2_:MapPoint = FxApi.GetCurrentTargetedCell(runner);
+         var _loc3_:MapPoint = FxApi.GetEntityCell(caster);
+         var _loc4_:Vector.<MapPoint> = SpellFxApi.GetPortalCells(runner);
+         if((_loc4_) && _loc4_.length > 1)
+         {
+            _loc7_ = _loc4_[0];
+            _loc8_ = _loc4_[_loc4_.length - 1];
+         }
+         var _loc5_:MapPoint = _loc7_?_loc7_:_loc2_;
+         var _loc6_:MapPoint = _loc8_?_loc8_:_loc3_;
+         addCasterSetDirectionStep(_loc5_);
+         addCasterAnimationStep();
+         if(SpellFxApi.HasSpellParam(spell,"casterGfxId"))
+         {
+            addGfxEntityStep(_loc3_,_loc3_,_loc5_,PREFIX_CASTER);
+         }
+         if((SpellFxApi.HasSpellParam(spell,"missileGfxId")) && (_loc5_))
+         {
+            _loc9_ = FxApi.CreateGfxEntity(SpellFxApi.GetSpellParam(spell,"missileGfxId"),_loc3_) as Projectile;
+            _loc10_ = SequenceApi.CreateAddWorldEntityStep(_loc9_);
+            _loc11_ = 100;
+            if(SpellFxApi.HasSpellParam(spell,"missileSpeed"))
             {
-                entryPortalCell = portalsCells[0];
-                exitPortalCell = portalsCells[(portalsCells.length - 1)];
-            };
-            var tmpTargetCell:MapPoint = ((entryPortalCell) ? entryPortalCell : targetCell);
-            var tmpCasterCell:MapPoint = ((exitPortalCell) ? exitPortalCell : casterCell);
-            addCasterSetDirectionStep(tmpTargetCell);
-            addCasterAnimationStep();
-            if (SpellFxApi.HasSpellParam(spell, "casterGfxId"))
+               _loc11_ = (SpellFxApi.GetSpellParam(spell,"missileSpeed") + 10) * 10;
+            }
+            _loc12_ = 0.5;
+            if(SpellFxApi.HasSpellParam(spell,"missileCurvature"))
             {
-                addGfxEntityStep(casterCell, casterCell, tmpTargetCell, PREFIX_CASTER);
-            };
-            if (SpellFxApi.HasSpellParam(spell, "missileGfxId"))
+               _loc12_ = SpellFxApi.GetSpellParam(spell,"missileCurvature") / 10;
+            }
+            _loc13_ = true;
+            if(SpellFxApi.HasSpellParam(spell,"missileOrientedToCurve"))
             {
-                missileGfx = (FxApi.CreateGfxEntity(SpellFxApi.GetSpellParam(spell, "missileGfxId"), casterCell) as Projectile);
-                addMissileGfxStep = SequenceApi.CreateAddWorldEntityStep(missileGfx);
-                speed = 100;
-                if (SpellFxApi.HasSpellParam(spell, "missileSpeed"))
-                {
-                    speed = ((SpellFxApi.GetSpellParam(spell, "missileSpeed") + 10) * 10);
-                };
-                curvature = 0.5;
-                if (SpellFxApi.HasSpellParam(spell, "missileCurvature"))
-                {
-                    curvature = (SpellFxApi.GetSpellParam(spell, "missileCurvature") / 10);
-                };
-                missileOrientedToCurve = true;
-                if (SpellFxApi.HasSpellParam(spell, "missileOrientedToCurve"))
-                {
-                    missileOrientedToCurve = SpellFxApi.GetSpellParam(spell, "missileOrientedToCurve");
-                };
-                missileGfxYOffset = 0;
-                if (SpellFxApi.HasSpellParam(spell, "missileGfxYOffset"))
-                {
-                    missileGfxYOffset = SpellFxApi.GetSpellParam(spell, "missileGfxYOffset");
-                };
-                missileStep = SequenceApi.CreateParableGfxMovementStep(runner, missileGfx, tmpTargetCell, speed, curvature, missileGfxYOffset, missileOrientedToCurve);
-                destroyMissileStep = SequenceApi.CreateDestroyEntityStep(missileGfx);
-                if (tmpTargetCell == entryPortalCell)
-                {
-                    missileGfx2 = (FxApi.CreateGfxEntity(SpellFxApi.GetSpellParam(spell, "missileGfxId"), exitPortalCell) as Projectile);
-                    addMissileGfxStep2 = SequenceApi.CreateAddWorldEntityStep(missileGfx2);
-                    missileStep2 = SequenceApi.CreateParableGfxMovementStep(runner, missileGfx2, targetCell, speed, curvature, missileGfxYOffset, missileOrientedToCurve);
-                    destroyMissileStep2 = SequenceApi.CreateDestroyEntityStep(missileGfx2);
-                };
-                if (!(latestStep))
-                {
-                    SpellFxApi.AddFrontStep(runner, addMissileGfxStep);
-                    SpellFxApi.AddStepAfter(runner, addMissileGfxStep, missileStep);
-                    SpellFxApi.AddStepAfter(runner, missileStep, destroyMissileStep);
-                }
-                else
-                {
-                    SpellFxApi.AddStepAfter(runner, latestStep, addMissileGfxStep);
-                    SpellFxApi.AddStepAfter(runner, addMissileGfxStep, missileStep);
-                    SpellFxApi.AddStepAfter(runner, missileStep, destroyMissileStep);
-                };
-                latestStep = missileStep;
-                if (missileGfx2)
-                {
-                    latestStep = destroyMissileStep;
-                    addPortalAnimationSteps(SpellFxApi.GetPortalIds(runner));
-                    SpellFxApi.AddStepAfter(runner, latestStep, addMissileGfxStep2);
-                    SpellFxApi.AddStepAfter(runner, addMissileGfxStep2, missileStep2);
-                    SpellFxApi.AddStepAfter(runner, missileStep2, destroyMissileStep2);
-                    latestStep = missileStep2;
-                };
-            };
-            if (SpellFxApi.HasSpellParam(spell, "targetGfxId"))
+               _loc13_ = SpellFxApi.GetSpellParam(spell,"missileOrientedToCurve");
+            }
+            _loc14_ = 0;
+            if(SpellFxApi.HasSpellParam(spell,"missileGfxYOffset"))
             {
-                addGfxEntityStep(targetCell, tmpCasterCell, targetCell, PREFIX_TARGET);
-            };
-            addAnimHitSteps();
-            destroy();
-        }
-
-    }
-}//package com.ankamagames.dofus.scripts.spells
-
+               _loc14_ = SpellFxApi.GetSpellParam(spell,"missileGfxYOffset");
+            }
+            _loc15_ = SequenceApi.CreateParableGfxMovementStep(runner,_loc9_,_loc5_,_loc11_,_loc12_,_loc14_,_loc13_);
+            _loc16_ = SequenceApi.CreateDestroyEntityStep(_loc9_);
+            if((_loc7_) && _loc5_ == _loc7_)
+            {
+               _loc17_ = FxApi.CreateGfxEntity(SpellFxApi.GetSpellParam(spell,"missileGfxId"),_loc8_) as Projectile;
+               _loc18_ = SequenceApi.CreateAddWorldEntityStep(_loc17_);
+               _loc19_ = SequenceApi.CreateParableGfxMovementStep(runner,_loc17_,_loc2_,_loc11_,_loc12_,_loc14_,_loc13_);
+               _loc20_ = SequenceApi.CreateDestroyEntityStep(_loc17_);
+            }
+            if(!latestStep)
+            {
+               SpellFxApi.AddFrontStep(runner,_loc10_);
+               SpellFxApi.AddStepAfter(runner,_loc10_,_loc15_);
+               SpellFxApi.AddStepAfter(runner,_loc15_,_loc16_);
+            }
+            else
+            {
+               SpellFxApi.AddStepAfter(runner,latestStep,_loc10_);
+               SpellFxApi.AddStepAfter(runner,_loc10_,_loc15_);
+               SpellFxApi.AddStepAfter(runner,_loc15_,_loc16_);
+            }
+            latestStep = _loc15_;
+            if(_loc17_)
+            {
+               latestStep = _loc16_;
+               addPortalAnimationSteps(SpellFxApi.GetPortalIds(runner));
+               SpellFxApi.AddStepAfter(runner,latestStep,_loc18_);
+               SpellFxApi.AddStepAfter(runner,_loc18_,_loc19_);
+               SpellFxApi.AddStepAfter(runner,_loc19_,_loc20_);
+               latestStep = _loc19_;
+            }
+         }
+         if(SpellFxApi.HasSpellParam(spell,"targetGfxId"))
+         {
+            addGfxEntityStep(_loc2_,_loc6_,_loc2_,PREFIX_TARGET);
+         }
+         addAnimHitSteps();
+         destroy();
+      }
+   }
+}

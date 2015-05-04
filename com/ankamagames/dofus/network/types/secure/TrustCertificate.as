@@ -1,68 +1,77 @@
-﻿package com.ankamagames.dofus.network.types.secure
+package com.ankamagames.dofus.network.types.secure
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class TrustCertificate implements INetworkType 
-    {
-
-        public static const protocolId:uint = 377;
-
-        public var id:uint = 0;
-        public var hash:String = "";
-
-
-        public function getTypeId():uint
-        {
-            return (377);
-        }
-
-        public function initTrustCertificate(id:uint=0, hash:String=""):TrustCertificate
-        {
-            this.id = id;
-            this.hash = hash;
-            return (this);
-        }
-
-        public function reset():void
-        {
-            this.id = 0;
-            this.hash = "";
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_TrustCertificate(output);
-        }
-
-        public function serializeAs_TrustCertificate(output:ICustomDataOutput):void
-        {
-            if (this.id < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.id) + ") on element id.")));
-            };
-            output.writeInt(this.id);
-            output.writeUTF(this.hash);
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_TrustCertificate(input);
-        }
-
-        public function deserializeAs_TrustCertificate(input:ICustomDataInput):void
-        {
-            this.id = input.readInt();
-            if (this.id < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.id) + ") on element of TrustCertificate.id.")));
-            };
-            this.hash = input.readUTF();
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.secure
-
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class TrustCertificate extends Object implements INetworkType
+   {
+      
+      public function TrustCertificate()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 377;
+      
+      public var id:uint = 0;
+      
+      public var hash:String = "";
+      
+      public function getTypeId() : uint
+      {
+         return 377;
+      }
+      
+      public function initTrustCertificate(param1:uint = 0, param2:String = "") : TrustCertificate
+      {
+         this.id = param1;
+         this.hash = param2;
+         return this;
+      }
+      
+      public function reset() : void
+      {
+         this.id = 0;
+         this.hash = "";
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_TrustCertificate(param1);
+      }
+      
+      public function serializeAs_TrustCertificate(param1:ICustomDataOutput) : void
+      {
+         if(this.id < 0)
+         {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+         }
+         else
+         {
+            param1.writeInt(this.id);
+            param1.writeUTF(this.hash);
+            return;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_TrustCertificate(param1);
+      }
+      
+      public function deserializeAs_TrustCertificate(param1:ICustomDataInput) : void
+      {
+         this.id = param1.readInt();
+         if(this.id < 0)
+         {
+            throw new Error("Forbidden value (" + this.id + ") on element of TrustCertificate.id.");
+         }
+         else
+         {
+            this.hash = param1.readUTF();
+            return;
+         }
+      }
+   }
+}

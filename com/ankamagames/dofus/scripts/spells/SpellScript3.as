@@ -1,88 +1,85 @@
-﻿package com.ankamagames.dofus.scripts.spells
+package com.ankamagames.dofus.scripts.spells
 {
-    import com.ankamagames.jerakine.types.positions.MapPoint;
-    import com.ankamagames.jerakine.sequencer.ISequencable;
-    import com.ankamagames.dofus.scripts.api.FxApi;
-    import com.ankamagames.dofus.scripts.api.SpellFxApi;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.scripts.api.SequenceApi;
-    import com.ankamagames.dofus.scripts.SpellFxRunner;
-
-    public class SpellScript3 extends SpellScriptBase 
-    {
-
-        public function SpellScript3(spellFxRunner:SpellFxRunner)
-        {
-            var entryPortalCell:MapPoint;
-            var exitPortalCell:MapPoint;
-            var trailGfxShowUnder:Boolean;
-            var useSpellZone:Boolean;
-            var useOnlySpellZone:Boolean;
-            var trailStep:ISequencable;
-            var trailStep2:ISequencable;
-            super(spellFxRunner);
-            var targetCell:MapPoint = FxApi.GetCurrentTargetedCell(runner);
-            var casterCell:MapPoint = FxApi.GetEntityCell(caster);
-            var portalsCells:Vector.<MapPoint> = SpellFxApi.GetPortalCells(runner);
-            if (((portalsCells) && ((portalsCells.length > 1))))
+   import com.ankamagames.dofus.scripts.SpellFxRunner;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.jerakine.sequencer.ISequencable;
+   import com.ankamagames.dofus.scripts.api.FxApi;
+   import com.ankamagames.dofus.scripts.api.SpellFxApi;
+   import com.ankamagames.dofus.scripts.api.SequenceApi;
+   
+   public class SpellScript3 extends SpellScriptBase
+   {
+      
+      public function SpellScript3(param1:SpellFxRunner)
+      {
+         var _loc7_:MapPoint = null;
+         var _loc8_:MapPoint = null;
+         var _loc9_:* = false;
+         var _loc10_:* = false;
+         var _loc11_:* = false;
+         var _loc12_:ISequencable = null;
+         var _loc13_:ISequencable = null;
+         super(param1);
+         var _loc2_:MapPoint = FxApi.GetCurrentTargetedCell(runner);
+         var _loc3_:MapPoint = FxApi.GetEntityCell(caster);
+         var _loc4_:Vector.<MapPoint> = SpellFxApi.GetPortalCells(runner);
+         if((_loc4_) && _loc4_.length > 1)
+         {
+            _loc7_ = _loc4_[0];
+            _loc8_ = _loc4_[_loc4_.length - 1];
+         }
+         var _loc5_:MapPoint = _loc7_?_loc7_:_loc2_;
+         var _loc6_:MapPoint = _loc8_?_loc8_:_loc3_;
+         addCasterSetDirectionStep(_loc5_);
+         addCasterAnimationStep();
+         if(SpellFxApi.HasSpellParam(spell,"casterGfxId"))
+         {
+            addGfxEntityStep(_loc3_,_loc3_,_loc2_,PREFIX_CASTER);
+         }
+         if((SpellFxApi.HasSpellParam(spell,"trailGfxId")) && (_loc5_))
+         {
+            _loc9_ = false;
+            if(SpellFxApi.HasSpellParam(spell,"trailGfxShowUnder"))
             {
-                entryPortalCell = portalsCells[0];
-                exitPortalCell = portalsCells[(portalsCells.length - 1)];
-            };
-            var tmpTargetCell:MapPoint = ((entryPortalCell) ? entryPortalCell : targetCell);
-            var tmpCasterCell:MapPoint = ((exitPortalCell) ? exitPortalCell : casterCell);
-            addCasterSetDirectionStep(tmpTargetCell);
-            addCasterAnimationStep();
-            if (SpellFxApi.HasSpellParam(spell, "casterGfxId"))
+               _loc9_ = SpellFxApi.GetSpellParam(spell,"trailGfxShowUnder");
+            }
+            _loc10_ = false;
+            if(SpellFxApi.HasSpellParam(spell,"useSpellZone"))
             {
-                addGfxEntityStep(casterCell, casterCell, targetCell, PREFIX_CASTER);
-            };
-            if (SpellFxApi.HasSpellParam(spell, "trailGfxId"))
+               _loc10_ = SpellFxApi.GetSpellParam(spell,"useSpellZone");
+            }
+            _loc11_ = false;
+            if(SpellFxApi.HasSpellParam(spell,"useOnlySpellZone"))
             {
-                trailGfxShowUnder = false;
-                if (SpellFxApi.HasSpellParam(spell, "trailGfxShowUnder"))
-                {
-                    trailGfxShowUnder = SpellFxApi.GetSpellParam(spell, "trailGfxShowUnder");
-                };
-                useSpellZone = false;
-                if (SpellFxApi.HasSpellParam(spell, "useSpellZone"))
-                {
-                    useSpellZone = SpellFxApi.GetSpellParam(spell, "useSpellZone");
-                };
-                useOnlySpellZone = false;
-                if (SpellFxApi.HasSpellParam(spell, "useOnlySpellZone"))
-                {
-                    useOnlySpellZone = SpellFxApi.GetSpellParam(spell, "useOnlySpellZone");
-                };
-                trailStep = SequenceApi.CreateAddGfxInLineStep(runner, SpellFxApi.GetSpellParam(spell, "trailGfxId"), casterCell, tmpTargetCell, SpellFxApi.GetSpellParam(spell, "trailGfxYOffset"), SpellFxApi.GetSpellParam(spell, "trailDisplayType"), SpellFxApi.GetSpellParam(spell, "trailGfxMinScale"), SpellFxApi.GetSpellParam(spell, "trailGfxMaxScale"), SpellFxApi.GetSpellParam(spell, "startTrailOnCaster"), SpellFxApi.GetSpellParam(spell, "endTrailOnTarget"), trailGfxShowUnder, useSpellZone, useOnlySpellZone);
-                if (tmpTargetCell == entryPortalCell)
-                {
-                    trailStep2 = SequenceApi.CreateAddGfxInLineStep(runner, SpellFxApi.GetSpellParam(spell, "trailGfxId"), tmpCasterCell, targetCell, SpellFxApi.GetSpellParam(spell, "trailGfxYOffset"), SpellFxApi.GetSpellParam(spell, "trailDisplayType"), SpellFxApi.GetSpellParam(spell, "trailGfxMinScale"), SpellFxApi.GetSpellParam(spell, "trailGfxMaxScale"), SpellFxApi.GetSpellParam(spell, "startTrailOnCaster"), SpellFxApi.GetSpellParam(spell, "endTrailOnTarget"), trailGfxShowUnder, useSpellZone, useOnlySpellZone);
-                };
-                if (!(latestStep))
-                {
-                    SpellFxApi.AddFrontStep(runner, trailStep);
-                }
-                else
-                {
-                    SpellFxApi.AddStepAfter(runner, latestStep, trailStep);
-                };
-                latestStep = trailStep;
-                if (trailStep2)
-                {
-                    addPortalAnimationSteps(SpellFxApi.GetPortalIds(runner));
-                    SpellFxApi.AddStepAfter(runner, latestStep, trailStep2);
-                    latestStep = trailStep2;
-                };
-            };
-            if (SpellFxApi.HasSpellParam(spell, "targetGfxId"))
+               _loc11_ = SpellFxApi.GetSpellParam(spell,"useOnlySpellZone");
+            }
+            _loc12_ = SequenceApi.CreateAddGfxInLineStep(runner,SpellFxApi.GetSpellParam(spell,"trailGfxId"),_loc3_,_loc5_,SpellFxApi.GetSpellParam(spell,"trailGfxYOffset"),SpellFxApi.GetSpellParam(spell,"trailDisplayType"),SpellFxApi.GetSpellParam(spell,"trailGfxMinScale"),SpellFxApi.GetSpellParam(spell,"trailGfxMaxScale"),SpellFxApi.GetSpellParam(spell,"startTrailOnCaster"),SpellFxApi.GetSpellParam(spell,"endTrailOnTarget"),_loc9_,_loc10_,_loc11_);
+            if((_loc7_) && _loc5_ == _loc7_)
             {
-                addGfxEntityStep(targetCell, tmpCasterCell, targetCell, PREFIX_TARGET);
-            };
-            addAnimHitSteps();
-            destroy();
-        }
-
-    }
-}//package com.ankamagames.dofus.scripts.spells
-
+               _loc13_ = SequenceApi.CreateAddGfxInLineStep(runner,SpellFxApi.GetSpellParam(spell,"trailGfxId"),_loc6_,_loc2_,SpellFxApi.GetSpellParam(spell,"trailGfxYOffset"),SpellFxApi.GetSpellParam(spell,"trailDisplayType"),SpellFxApi.GetSpellParam(spell,"trailGfxMinScale"),SpellFxApi.GetSpellParam(spell,"trailGfxMaxScale"),SpellFxApi.GetSpellParam(spell,"startTrailOnCaster"),SpellFxApi.GetSpellParam(spell,"endTrailOnTarget"),_loc9_,_loc10_,_loc11_);
+            }
+            if(!latestStep)
+            {
+               SpellFxApi.AddFrontStep(runner,_loc12_);
+            }
+            else
+            {
+               SpellFxApi.AddStepAfter(runner,latestStep,_loc12_);
+            }
+            latestStep = _loc12_;
+            if(_loc13_)
+            {
+               addPortalAnimationSteps(SpellFxApi.GetPortalIds(runner));
+               SpellFxApi.AddStepAfter(runner,latestStep,_loc13_);
+               latestStep = _loc13_;
+            }
+         }
+         if(SpellFxApi.HasSpellParam(spell,"targetGfxId"))
+         {
+            addGfxEntityStep(_loc2_,_loc6_,_loc2_,PREFIX_TARGET);
+         }
+         addAnimHitSteps();
+         destroy();
+      }
+   }
+}

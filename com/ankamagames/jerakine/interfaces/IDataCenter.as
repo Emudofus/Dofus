@@ -1,8 +1,6 @@
-﻿package com.ankamagames.jerakine.interfaces
+package com.ankamagames.jerakine.interfaces
 {
-    public interface IDataCenter 
-    {
-
-    }
-}//package com.ankamagames.jerakine.interfaces
-
+   public interface IDataCenter
+   {
+   }
+}

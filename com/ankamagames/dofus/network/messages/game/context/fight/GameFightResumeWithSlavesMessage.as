@@ -1,107 +1,102 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.network.types.game.context.fight.GameFightResumeSlaveInfo;
-    import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
-    import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMark;
-    import com.ankamagames.dofus.network.types.game.context.fight.GameFightSpellCooldown;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class GameFightResumeWithSlavesMessage extends GameFightResumeMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6215;
-
-        private var _isInitialized:Boolean = false;
-        public var slavesInfo:Vector.<GameFightResumeSlaveInfo>;
-
-        public function GameFightResumeWithSlavesMessage()
-        {
-            this.slavesInfo = new Vector.<GameFightResumeSlaveInfo>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (((super.isInitialized) && (this._isInitialized)));
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6215);
-        }
-
-        public function initGameFightResumeWithSlavesMessage(effects:Vector.<FightDispellableEffectExtendedInformations>=null, marks:Vector.<GameActionMark>=null, gameTurn:uint=0, fightStart:uint=0, spellCooldowns:Vector.<GameFightSpellCooldown>=null, summonCount:uint=0, bombCount:uint=0, slavesInfo:Vector.<GameFightResumeSlaveInfo>=null):GameFightResumeWithSlavesMessage
-        {
-            super.initGameFightResumeMessage(effects, marks, gameTurn, fightStart, spellCooldowns, summonCount, bombCount);
-            this.slavesInfo = slavesInfo;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.slavesInfo = new Vector.<GameFightResumeSlaveInfo>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GameFightResumeWithSlavesMessage(output);
-        }
-
-        public function serializeAs_GameFightResumeWithSlavesMessage(output:ICustomDataOutput):void
-        {
-            super.serializeAs_GameFightResumeMessage(output);
-            output.writeShort(this.slavesInfo.length);
-            var _i1:uint;
-            while (_i1 < this.slavesInfo.length)
-            {
-                (this.slavesInfo[_i1] as GameFightResumeSlaveInfo).serializeAs_GameFightResumeSlaveInfo(output);
-                _i1++;
-            };
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GameFightResumeWithSlavesMessage(input);
-        }
-
-        public function deserializeAs_GameFightResumeWithSlavesMessage(input:ICustomDataInput):void
-        {
-            var _item1:GameFightResumeSlaveInfo;
-            super.deserialize(input);
-            var _slavesInfoLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _slavesInfoLen)
-            {
-                _item1 = new GameFightResumeSlaveInfo();
-                _item1.deserialize(input);
-                this.slavesInfo.push(_item1);
-                _i1++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.fight
-
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightResumeSlaveInfo;
+   import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
+   import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMark;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightSpellCooldown;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class GameFightResumeWithSlavesMessage extends GameFightResumeMessage implements INetworkMessage
+   {
+      
+      public function GameFightResumeWithSlavesMessage()
+      {
+         this.slavesInfo = new Vector.<GameFightResumeSlaveInfo>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6215;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return (super.isInitialized) && (this._isInitialized);
+      }
+      
+      public var slavesInfo:Vector.<GameFightResumeSlaveInfo>;
+      
+      override public function getMessageId() : uint
+      {
+         return 6215;
+      }
+      
+      public function initGameFightResumeWithSlavesMessage(param1:Vector.<FightDispellableEffectExtendedInformations> = null, param2:Vector.<GameActionMark> = null, param3:uint = 0, param4:uint = 0, param5:Vector.<GameFightSpellCooldown> = null, param6:uint = 0, param7:uint = 0, param8:Vector.<GameFightResumeSlaveInfo> = null) : GameFightResumeWithSlavesMessage
+      {
+         super.initGameFightResumeMessage(param1,param2,param3,param4,param5,param6,param7);
+         this.slavesInfo = param8;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.slavesInfo = new Vector.<GameFightResumeSlaveInfo>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GameFightResumeWithSlavesMessage(param1);
+      }
+      
+      public function serializeAs_GameFightResumeWithSlavesMessage(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_GameFightResumeMessage(param1);
+         param1.writeShort(this.slavesInfo.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.slavesInfo.length)
+         {
+            (this.slavesInfo[_loc2_] as GameFightResumeSlaveInfo).serializeAs_GameFightResumeSlaveInfo(param1);
+            _loc2_++;
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GameFightResumeWithSlavesMessage(param1);
+      }
+      
+      public function deserializeAs_GameFightResumeWithSlavesMessage(param1:ICustomDataInput) : void
+      {
+         var _loc4_:GameFightResumeSlaveInfo = null;
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc4_ = new GameFightResumeSlaveInfo();
+            _loc4_.deserialize(param1);
+            this.slavesInfo.push(_loc4_);
+            _loc3_++;
+         }
+      }
+   }
+}

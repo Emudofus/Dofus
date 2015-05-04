@@ -1,146 +1,144 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
+package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.GameRolePlayNpcQuestFlag;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class MapNpcsQuestStatusUpdateMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 5642;
-
-        private var _isInitialized:Boolean = false;
-        public var mapId:int = 0;
-        public var npcsIdsWithQuest:Vector.<int>;
-        public var questFlags:Vector.<GameRolePlayNpcQuestFlag>;
-        public var npcsIdsWithoutQuest:Vector.<int>;
-
-        public function MapNpcsQuestStatusUpdateMessage()
-        {
-            this.npcsIdsWithQuest = new Vector.<int>();
-            this.questFlags = new Vector.<GameRolePlayNpcQuestFlag>();
-            this.npcsIdsWithoutQuest = new Vector.<int>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (5642);
-        }
-
-        public function initMapNpcsQuestStatusUpdateMessage(mapId:int=0, npcsIdsWithQuest:Vector.<int>=null, questFlags:Vector.<GameRolePlayNpcQuestFlag>=null, npcsIdsWithoutQuest:Vector.<int>=null):MapNpcsQuestStatusUpdateMessage
-        {
-            this.mapId = mapId;
-            this.npcsIdsWithQuest = npcsIdsWithQuest;
-            this.questFlags = questFlags;
-            this.npcsIdsWithoutQuest = npcsIdsWithoutQuest;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.mapId = 0;
-            this.npcsIdsWithQuest = new Vector.<int>();
-            this.questFlags = new Vector.<GameRolePlayNpcQuestFlag>();
-            this.npcsIdsWithoutQuest = new Vector.<int>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_MapNpcsQuestStatusUpdateMessage(output);
-        }
-
-        public function serializeAs_MapNpcsQuestStatusUpdateMessage(output:ICustomDataOutput):void
-        {
-            output.writeInt(this.mapId);
-            output.writeShort(this.npcsIdsWithQuest.length);
-            var _i2:uint;
-            while (_i2 < this.npcsIdsWithQuest.length)
-            {
-                output.writeInt(this.npcsIdsWithQuest[_i2]);
-                _i2++;
-            };
-            output.writeShort(this.questFlags.length);
-            var _i3:uint;
-            while (_i3 < this.questFlags.length)
-            {
-                (this.questFlags[_i3] as GameRolePlayNpcQuestFlag).serializeAs_GameRolePlayNpcQuestFlag(output);
-                _i3++;
-            };
-            output.writeShort(this.npcsIdsWithoutQuest.length);
-            var _i4:uint;
-            while (_i4 < this.npcsIdsWithoutQuest.length)
-            {
-                output.writeInt(this.npcsIdsWithoutQuest[_i4]);
-                _i4++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_MapNpcsQuestStatusUpdateMessage(input);
-        }
-
-        public function deserializeAs_MapNpcsQuestStatusUpdateMessage(input:ICustomDataInput):void
-        {
-            var _val2:int;
-            var _item3:GameRolePlayNpcQuestFlag;
-            var _val4:int;
-            this.mapId = input.readInt();
-            var _npcsIdsWithQuestLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _npcsIdsWithQuestLen)
-            {
-                _val2 = input.readInt();
-                this.npcsIdsWithQuest.push(_val2);
-                _i2++;
-            };
-            var _questFlagsLen:uint = input.readUnsignedShort();
-            var _i3:uint;
-            while (_i3 < _questFlagsLen)
-            {
-                _item3 = new GameRolePlayNpcQuestFlag();
-                _item3.deserialize(input);
-                this.questFlags.push(_item3);
-                _i3++;
-            };
-            var _npcsIdsWithoutQuestLen:uint = input.readUnsignedShort();
-            var _i4:uint;
-            while (_i4 < _npcsIdsWithoutQuestLen)
-            {
-                _val4 = input.readInt();
-                this.npcsIdsWithoutQuest.push(_val4);
-                _i4++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
-
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.quest.GameRolePlayNpcQuestFlag;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class MapNpcsQuestStatusUpdateMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function MapNpcsQuestStatusUpdateMessage()
+      {
+         this.npcsIdsWithQuest = new Vector.<int>();
+         this.questFlags = new Vector.<GameRolePlayNpcQuestFlag>();
+         this.npcsIdsWithoutQuest = new Vector.<int>();
+         super();
+      }
+      
+      public static const protocolId:uint = 5642;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var mapId:int = 0;
+      
+      public var npcsIdsWithQuest:Vector.<int>;
+      
+      public var questFlags:Vector.<GameRolePlayNpcQuestFlag>;
+      
+      public var npcsIdsWithoutQuest:Vector.<int>;
+      
+      override public function getMessageId() : uint
+      {
+         return 5642;
+      }
+      
+      public function initMapNpcsQuestStatusUpdateMessage(param1:int = 0, param2:Vector.<int> = null, param3:Vector.<GameRolePlayNpcQuestFlag> = null, param4:Vector.<int> = null) : MapNpcsQuestStatusUpdateMessage
+      {
+         this.mapId = param1;
+         this.npcsIdsWithQuest = param2;
+         this.questFlags = param3;
+         this.npcsIdsWithoutQuest = param4;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.mapId = 0;
+         this.npcsIdsWithQuest = new Vector.<int>();
+         this.questFlags = new Vector.<GameRolePlayNpcQuestFlag>();
+         this.npcsIdsWithoutQuest = new Vector.<int>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_MapNpcsQuestStatusUpdateMessage(param1);
+      }
+      
+      public function serializeAs_MapNpcsQuestStatusUpdateMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeInt(this.mapId);
+         param1.writeShort(this.npcsIdsWithQuest.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.npcsIdsWithQuest.length)
+         {
+            param1.writeInt(this.npcsIdsWithQuest[_loc2_]);
+            _loc2_++;
+         }
+         param1.writeShort(this.questFlags.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.questFlags.length)
+         {
+            (this.questFlags[_loc3_] as GameRolePlayNpcQuestFlag).serializeAs_GameRolePlayNpcQuestFlag(param1);
+            _loc3_++;
+         }
+         param1.writeShort(this.npcsIdsWithoutQuest.length);
+         var _loc4_:uint = 0;
+         while(_loc4_ < this.npcsIdsWithoutQuest.length)
+         {
+            param1.writeInt(this.npcsIdsWithoutQuest[_loc4_]);
+            _loc4_++;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_MapNpcsQuestStatusUpdateMessage(param1);
+      }
+      
+      public function deserializeAs_MapNpcsQuestStatusUpdateMessage(param1:ICustomDataInput) : void
+      {
+         var _loc8_:* = 0;
+         var _loc9_:GameRolePlayNpcQuestFlag = null;
+         var _loc10_:* = 0;
+         this.mapId = param1.readInt();
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc8_ = param1.readInt();
+            this.npcsIdsWithQuest.push(_loc8_);
+            _loc3_++;
+         }
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
+         {
+            _loc9_ = new GameRolePlayNpcQuestFlag();
+            _loc9_.deserialize(param1);
+            this.questFlags.push(_loc9_);
+            _loc5_++;
+         }
+         var _loc6_:uint = param1.readUnsignedShort();
+         var _loc7_:uint = 0;
+         while(_loc7_ < _loc6_)
+         {
+            _loc10_ = param1.readInt();
+            this.npcsIdsWithoutQuest.push(_loc10_);
+            _loc7_++;
+         }
+      }
+   }
+}

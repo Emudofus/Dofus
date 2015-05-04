@@ -1,116 +1,139 @@
-﻿package com.ankamagames.dofus.network.messages.game.basic
+package com.ankamagames.dofus.network.messages.game.basic
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class BasicLatencyStatsMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 5663;
-
-        private var _isInitialized:Boolean = false;
-        public var latency:uint = 0;
-        public var sampleCount:uint = 0;
-        public var max:uint = 0;
-
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (5663);
-        }
-
-        public function initBasicLatencyStatsMessage(latency:uint=0, sampleCount:uint=0, max:uint=0):BasicLatencyStatsMessage
-        {
-            this.latency = latency;
-            this.sampleCount = sampleCount;
-            this.max = max;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.latency = 0;
-            this.sampleCount = 0;
-            this.max = 0;
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            if (HASH_FUNCTION != null)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class BasicLatencyStatsMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function BasicLatencyStatsMessage()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 5663;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var latency:uint = 0;
+      
+      public var sampleCount:uint = 0;
+      
+      public var max:uint = 0;
+      
+      override public function getMessageId() : uint
+      {
+         return 5663;
+      }
+      
+      public function initBasicLatencyStatsMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0) : BasicLatencyStatsMessage
+      {
+         this.latency = param1;
+         this.sampleCount = param2;
+         this.max = param3;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.latency = 0;
+         this.sampleCount = 0;
+         this.max = 0;
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         if(HASH_FUNCTION != null)
+         {
+            HASH_FUNCTION(_loc2_);
+         }
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_BasicLatencyStatsMessage(param1);
+      }
+      
+      public function serializeAs_BasicLatencyStatsMessage(param1:ICustomDataOutput) : void
+      {
+         if(this.latency < 0 || this.latency > 65535)
+         {
+            throw new Error("Forbidden value (" + this.latency + ") on element latency.");
+         }
+         else
+         {
+            param1.writeShort(this.latency);
+            if(this.sampleCount < 0)
             {
-                HASH_FUNCTION(data);
-            };
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_BasicLatencyStatsMessage(output);
-        }
-
-        public function serializeAs_BasicLatencyStatsMessage(output:ICustomDataOutput):void
-        {
-            if ((((this.latency < 0)) || ((this.latency > 0xFFFF))))
+               throw new Error("Forbidden value (" + this.sampleCount + ") on element sampleCount.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.latency) + ") on element latency.")));
-            };
-            output.writeShort(this.latency);
-            if (this.sampleCount < 0)
+               param1.writeVarShort(this.sampleCount);
+               if(this.max < 0)
+               {
+                  throw new Error("Forbidden value (" + this.max + ") on element max.");
+               }
+               else
+               {
+                  param1.writeVarShort(this.max);
+                  return;
+               }
+            }
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_BasicLatencyStatsMessage(param1);
+      }
+      
+      public function deserializeAs_BasicLatencyStatsMessage(param1:ICustomDataInput) : void
+      {
+         this.latency = param1.readUnsignedShort();
+         if(this.latency < 0 || this.latency > 65535)
+         {
+            throw new Error("Forbidden value (" + this.latency + ") on element of BasicLatencyStatsMessage.latency.");
+         }
+         else
+         {
+            this.sampleCount = param1.readVarUhShort();
+            if(this.sampleCount < 0)
             {
-                throw (new Error((("Forbidden value (" + this.sampleCount) + ") on element sampleCount.")));
-            };
-            output.writeVarShort(this.sampleCount);
-            if (this.max < 0)
+               throw new Error("Forbidden value (" + this.sampleCount + ") on element of BasicLatencyStatsMessage.sampleCount.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.max) + ") on element max.")));
-            };
-            output.writeVarShort(this.max);
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_BasicLatencyStatsMessage(input);
-        }
-
-        public function deserializeAs_BasicLatencyStatsMessage(input:ICustomDataInput):void
-        {
-            this.latency = input.readUnsignedShort();
-            if ((((this.latency < 0)) || ((this.latency > 0xFFFF))))
-            {
-                throw (new Error((("Forbidden value (" + this.latency) + ") on element of BasicLatencyStatsMessage.latency.")));
-            };
-            this.sampleCount = input.readVarUhShort();
-            if (this.sampleCount < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.sampleCount) + ") on element of BasicLatencyStatsMessage.sampleCount.")));
-            };
-            this.max = input.readVarUhShort();
-            if (this.max < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.max) + ") on element of BasicLatencyStatsMessage.max.")));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.basic
-
+               this.max = param1.readVarUhShort();
+               if(this.max < 0)
+               {
+                  throw new Error("Forbidden value (" + this.max + ") on element of BasicLatencyStatsMessage.max.");
+               }
+               else
+               {
+                  return;
+               }
+            }
+         }
+      }
+   }
+}

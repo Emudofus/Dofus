@@ -1,50 +1,44 @@
-﻿package com.ankamagames.dofus.internalDatacenter.guild
+package com.ankamagames.dofus.internalDatacenter.guild
 {
-    import com.ankamagames.jerakine.interfaces.IDataCenter;
-    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
-    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
-    import com.ankamagames.dofus.misc.EntityLookAdapter;
-
-    public class SocialFightersWrapper implements IDataCenter 
-    {
-
-        public var ally:uint;
-        public var playerCharactersInformations:CharacterMinimalPlusLookInformations;
-        public var entityLook:TiphonEntityLook;
-
-
-        public static function create(pAlly:uint, pFightersInformations:CharacterMinimalPlusLookInformations):SocialFightersWrapper
-        {
-            var item:SocialFightersWrapper = new (SocialFightersWrapper)();
-            item.ally = pAlly;
-            item.playerCharactersInformations = pFightersInformations;
-            if (pFightersInformations.entityLook != null)
-            {
-                item.entityLook = EntityLookAdapter.getRiderLook(pFightersInformations.entityLook);
-            }
-            else
-            {
-                trace("Le entityLook est null :(");
-            };
-            return (item);
-        }
-
-
-        public function update(pAlly:uint, pFightersInformations:CharacterMinimalPlusLookInformations):void
-        {
-            this.ally = pAlly;
-            this.playerCharactersInformations = pFightersInformations;
-            if (pFightersInformations.entityLook != null)
-            {
-                this.entityLook = EntityLookAdapter.getRiderLook(pFightersInformations.entityLook);
-            }
-            else
-            {
-                trace("Le entityLook est null :(");
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.internalDatacenter.guild
-
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
+   import com.ankamagames.dofus.misc.EntityLookAdapter;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   
+   public class SocialFightersWrapper extends Object implements IDataCenter
+   {
+      
+      public function SocialFightersWrapper()
+      {
+         super();
+      }
+      
+      public static function create(param1:uint, param2:CharacterMinimalPlusLookInformations) : SocialFightersWrapper
+      {
+         var _loc3_:SocialFightersWrapper = new SocialFightersWrapper();
+         _loc3_.ally = param1;
+         _loc3_.playerCharactersInformations = param2;
+         if(param2.entityLook != null)
+         {
+            _loc3_.entityLook = EntityLookAdapter.getRiderLook(param2.entityLook);
+         }
+         return _loc3_;
+      }
+      
+      public var ally:uint;
+      
+      public var playerCharactersInformations:CharacterMinimalPlusLookInformations;
+      
+      public var entityLook:TiphonEntityLook;
+      
+      public function update(param1:uint, param2:CharacterMinimalPlusLookInformations) : void
+      {
+         this.ally = param1;
+         this.playerCharactersInformations = param2;
+         if(param2.entityLook != null)
+         {
+            this.entityLook = EntityLookAdapter.getRiderLook(param2.entityLook);
+         }
+      }
+   }
+}

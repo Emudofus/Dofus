@@ -1,157 +1,181 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.preset
+package com.ankamagames.dofus.network.messages.game.inventory.preset
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class InventoryPresetSaveCustomMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6329;
-
-        private var _isInitialized:Boolean = false;
-        public var presetId:uint = 0;
-        public var symbolId:uint = 0;
-        public var itemsPositions:Vector.<uint>;
-        public var itemsUids:Vector.<uint>;
-
-        public function InventoryPresetSaveCustomMessage()
-        {
-            this.itemsPositions = new Vector.<uint>();
-            this.itemsUids = new Vector.<uint>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6329);
-        }
-
-        public function initInventoryPresetSaveCustomMessage(presetId:uint=0, symbolId:uint=0, itemsPositions:Vector.<uint>=null, itemsUids:Vector.<uint>=null):InventoryPresetSaveCustomMessage
-        {
-            this.presetId = presetId;
-            this.symbolId = symbolId;
-            this.itemsPositions = itemsPositions;
-            this.itemsUids = itemsUids;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.presetId = 0;
-            this.symbolId = 0;
-            this.itemsPositions = new Vector.<uint>();
-            this.itemsUids = new Vector.<uint>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_InventoryPresetSaveCustomMessage(output);
-        }
-
-        public function serializeAs_InventoryPresetSaveCustomMessage(output:ICustomDataOutput):void
-        {
-            if (this.presetId < 0)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class InventoryPresetSaveCustomMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function InventoryPresetSaveCustomMessage()
+      {
+         this.itemsPositions = new Vector.<uint>();
+         this.itemsUids = new Vector.<uint>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6329;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var presetId:uint = 0;
+      
+      public var symbolId:uint = 0;
+      
+      public var itemsPositions:Vector.<uint>;
+      
+      public var itemsUids:Vector.<uint>;
+      
+      override public function getMessageId() : uint
+      {
+         return 6329;
+      }
+      
+      public function initInventoryPresetSaveCustomMessage(param1:uint = 0, param2:uint = 0, param3:Vector.<uint> = null, param4:Vector.<uint> = null) : InventoryPresetSaveCustomMessage
+      {
+         this.presetId = param1;
+         this.symbolId = param2;
+         this.itemsPositions = param3;
+         this.itemsUids = param4;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.presetId = 0;
+         this.symbolId = 0;
+         this.itemsPositions = new Vector.<uint>();
+         this.itemsUids = new Vector.<uint>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_InventoryPresetSaveCustomMessage(param1);
+      }
+      
+      public function serializeAs_InventoryPresetSaveCustomMessage(param1:ICustomDataOutput) : void
+      {
+         if(this.presetId < 0)
+         {
+            throw new Error("Forbidden value (" + this.presetId + ") on element presetId.");
+         }
+         else
+         {
+            param1.writeByte(this.presetId);
+            if(this.symbolId < 0)
             {
-                throw (new Error((("Forbidden value (" + this.presetId) + ") on element presetId.")));
-            };
-            output.writeByte(this.presetId);
-            if (this.symbolId < 0)
+               throw new Error("Forbidden value (" + this.symbolId + ") on element symbolId.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.symbolId) + ") on element symbolId.")));
-            };
-            output.writeByte(this.symbolId);
-            output.writeShort(this.itemsPositions.length);
-            var _i3:uint;
-            while (_i3 < this.itemsPositions.length)
+               param1.writeByte(this.symbolId);
+               param1.writeShort(this.itemsPositions.length);
+               var _loc2_:uint = 0;
+               while(_loc2_ < this.itemsPositions.length)
+               {
+                  param1.writeByte(this.itemsPositions[_loc2_]);
+                  _loc2_++;
+               }
+               param1.writeShort(this.itemsUids.length);
+               var _loc3_:uint = 0;
+               while(_loc3_ < this.itemsUids.length)
+               {
+                  if(this.itemsUids[_loc3_] < 0)
+                  {
+                     throw new Error("Forbidden value (" + this.itemsUids[_loc3_] + ") on element 4 (starting at 1) of itemsUids.");
+                  }
+                  else
+                  {
+                     param1.writeVarInt(this.itemsUids[_loc3_]);
+                     _loc3_++;
+                     continue;
+                  }
+               }
+               return;
+            }
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_InventoryPresetSaveCustomMessage(param1);
+      }
+      
+      public function deserializeAs_InventoryPresetSaveCustomMessage(param1:ICustomDataInput) : void
+      {
+         var _loc6_:uint = 0;
+         var _loc7_:uint = 0;
+         this.presetId = param1.readByte();
+         if(this.presetId < 0)
+         {
+            throw new Error("Forbidden value (" + this.presetId + ") on element of InventoryPresetSaveCustomMessage.presetId.");
+         }
+         else
+         {
+            this.symbolId = param1.readByte();
+            if(this.symbolId < 0)
             {
-                output.writeByte(this.itemsPositions[_i3]);
-                _i3++;
-            };
-            output.writeShort(this.itemsUids.length);
-            var _i4:uint;
-            while (_i4 < this.itemsUids.length)
+               throw new Error("Forbidden value (" + this.symbolId + ") on element of InventoryPresetSaveCustomMessage.symbolId.");
+            }
+            else
             {
-                if (this.itemsUids[_i4] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.itemsUids[_i4]) + ") on element 4 (starting at 1) of itemsUids.")));
-                };
-                output.writeVarInt(this.itemsUids[_i4]);
-                _i4++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_InventoryPresetSaveCustomMessage(input);
-        }
-
-        public function deserializeAs_InventoryPresetSaveCustomMessage(input:ICustomDataInput):void
-        {
-            var _val3:uint;
-            var _val4:uint;
-            this.presetId = input.readByte();
-            if (this.presetId < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.presetId) + ") on element of InventoryPresetSaveCustomMessage.presetId.")));
-            };
-            this.symbolId = input.readByte();
-            if (this.symbolId < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.symbolId) + ") on element of InventoryPresetSaveCustomMessage.symbolId.")));
-            };
-            var _itemsPositionsLen:uint = input.readUnsignedShort();
-            var _i3:uint;
-            while (_i3 < _itemsPositionsLen)
-            {
-                _val3 = input.readUnsignedByte();
-                if ((((_val3 < 0)) || ((_val3 > 0xFF))))
-                {
-                    throw (new Error((("Forbidden value (" + _val3) + ") on elements of itemsPositions.")));
-                };
-                this.itemsPositions.push(_val3);
-                _i3++;
-            };
-            var _itemsUidsLen:uint = input.readUnsignedShort();
-            var _i4:uint;
-            while (_i4 < _itemsUidsLen)
-            {
-                _val4 = input.readVarUhInt();
-                if (_val4 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val4) + ") on elements of itemsUids.")));
-                };
-                this.itemsUids.push(_val4);
-                _i4++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.inventory.preset
-
+               var _loc2_:uint = param1.readUnsignedShort();
+               var _loc3_:uint = 0;
+               while(_loc3_ < _loc2_)
+               {
+                  _loc6_ = param1.readUnsignedByte();
+                  if(_loc6_ < 0 || _loc6_ > 255)
+                  {
+                     throw new Error("Forbidden value (" + _loc6_ + ") on elements of itemsPositions.");
+                  }
+                  else
+                  {
+                     this.itemsPositions.push(_loc6_);
+                     _loc3_++;
+                     continue;
+                  }
+               }
+               var _loc4_:uint = param1.readUnsignedShort();
+               var _loc5_:uint = 0;
+               while(_loc5_ < _loc4_)
+               {
+                  _loc7_ = param1.readVarUhInt();
+                  if(_loc7_ < 0)
+                  {
+                     throw new Error("Forbidden value (" + _loc7_ + ") on elements of itemsUids.");
+                  }
+                  else
+                  {
+                     this.itemsUids.push(_loc7_);
+                     _loc5_++;
+                     continue;
+                  }
+               }
+               return;
+            }
+         }
+      }
+   }
+}

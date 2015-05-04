@@ -1,9 +1,11 @@
-﻿package com.ankamagames.atouin.messages
+package com.ankamagames.atouin.messages
 {
-    public class CellOutMessage extends CellInteractionMessage 
-    {
-
-
-    }
-}//package com.ankamagames.atouin.messages
-
+   public class CellOutMessage extends CellInteractionMessage
+   {
+      
+      public function CellOutMessage()
+      {
+         super();
+      }
+   }
+}

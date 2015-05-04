@@ -1,90 +1,87 @@
-﻿package com.ankamagames.dofus.network.messages.security
+package com.ankamagames.dofus.network.messages.security
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class RawDataMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6253;
-
-        private var _isInitialized:Boolean = false;
-        public var content:ByteArray;
-
-        public function RawDataMessage()
-        {
-            this.content = new ByteArray();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6253);
-        }
-
-        public function initRawDataMessage(content:ByteArray=null):RawDataMessage
-        {
-            this.content = content;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.content = new ByteArray();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_RawDataMessage(output);
-        }
-
-        public function serializeAs_RawDataMessage(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.content.length);
-            var _i1:uint;
-            while (_i1 < this.content.length)
-            {
-                output.writeByte(this.content[_i1]);
-                _i1++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_RawDataMessage(input);
-        }
-
-        public function deserializeAs_RawDataMessage(input:ICustomDataInput):void
-        {
-            var _contentLen:uint = input.readUnsignedShort();
-            input.readBytes(this.content, 0, _contentLen);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.security
-
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class RawDataMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function RawDataMessage()
+      {
+         this.content = new ByteArray();
+         super();
+      }
+      
+      public static const protocolId:uint = 6253;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var content:ByteArray;
+      
+      override public function getMessageId() : uint
+      {
+         return 6253;
+      }
+      
+      public function initRawDataMessage(param1:ByteArray = null) : RawDataMessage
+      {
+         this.content = param1;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.content = new ByteArray();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_RawDataMessage(param1);
+      }
+      
+      public function serializeAs_RawDataMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeVarInt(this.content.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.content.length)
+         {
+            param1.writeByte(this.content[_loc2_]);
+            _loc2_++;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_RawDataMessage(param1);
+      }
+      
+      public function deserializeAs_RawDataMessage(param1:ICustomDataInput) : void
+      {
+         var _loc2_:uint = param1.readVarInt();
+         param1.readBytes(this.content,0,_loc2_);
+      }
+   }
+}

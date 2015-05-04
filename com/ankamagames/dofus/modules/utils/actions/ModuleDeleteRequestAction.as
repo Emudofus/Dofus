@@ -1,21 +1,22 @@
-﻿package com.ankamagames.dofus.modules.utils.actions
+package com.ankamagames.dofus.modules.utils.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.Action;
-
-    public class ModuleDeleteRequestAction implements Action 
-    {
-
-        public var moduleDirectory:String;
-
-
-        public static function create(directoryName:String):ModuleDeleteRequestAction
-        {
-            var action:ModuleDeleteRequestAction = new (ModuleDeleteRequestAction)();
-            action.moduleDirectory = directoryName;
-            return (action);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.modules.utils.actions
-
+   import com.ankamagames.jerakine.handlers.messages.Action;
+   
+   public class ModuleDeleteRequestAction extends Object implements Action
+   {
+      
+      public function ModuleDeleteRequestAction()
+      {
+         super();
+      }
+      
+      public static function create(param1:String) : ModuleDeleteRequestAction
+      {
+         var _loc2_:ModuleDeleteRequestAction = new ModuleDeleteRequestAction();
+         _loc2_.moduleDirectory = param1;
+         return _loc2_;
+      }
+      
+      public var moduleDirectory:String;
+   }
+}

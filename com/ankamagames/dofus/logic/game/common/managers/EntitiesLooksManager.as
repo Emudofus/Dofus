@@ -1,344 +1,339 @@
-﻿package com.ankamagames.dofus.logic.game.common.managers
+package com.ankamagames.dofus.logic.game.common.managers
 {
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import com.ankamagames.dofus.logic.game.common.frames.AbstractEntitiesFrame;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
-    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
-    import com.ankamagames.tiphon.types.look.TiphonEntityLook;
-    import com.ankamagames.dofus.datacenter.breeds.Breed;
-    import com.ankamagames.dofus.datacenter.appearance.CreatureBoneType;
-    import com.ankamagames.dofus.datacenter.items.Incarnation;
-    import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
-    import com.ankamagames.dofus.types.entities.AnimatedCharacter;
-    import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
-    import com.ankamagames.dofus.misc.EntityLookAdapter;
-    import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
-    import com.ankamagames.dofus.network.types.game.context.fight.GameFightCompanionInformations;
-    import com.ankamagames.dofus.datacenter.monsters.Companion;
-    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
-    import com.ankamagames.dofus.datacenter.monsters.Monster;
-    import com.ankamagames.tiphon.types.TiphonUtility;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayHumanoidInformations;
-    import com.ankamagames.dofus.network.types.game.context.fight.GameFightCharacterInformations;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantInformations;
-    import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
-    import com.ankamagames.dofus.network.types.game.context.fight.GameFightTaxCollectorInformations;
-    import com.ankamagames.dofus.network.types.game.context.fight.GameFightMutantInformations;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
-    import com.ankamagames.dofus.logic.game.fight.managers.FightersStateManager;
-
-    public class EntitiesLooksManager 
-    {
-
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(EntitiesLooksManager));
-        private static var _self:EntitiesLooksManager;
-
-        private var _entitiesFrame:AbstractEntitiesFrame;
-
-
-        public static function getInstance():EntitiesLooksManager
-        {
-            if (!(_self))
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.logic.game.common.frames.AbstractEntitiesFrame;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import com.ankamagames.dofus.datacenter.breeds.Breed;
+   import com.ankamagames.dofus.datacenter.appearance.CreatureBoneType;
+   import com.ankamagames.dofus.datacenter.items.Incarnation;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.dofus.types.entities.AnimatedCharacter;
+   import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
+   import com.ankamagames.dofus.misc.EntityLookAdapter;
+   import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightCompanionInformations;
+   import com.ankamagames.dofus.datacenter.monsters.Companion;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightMonsterInformations;
+   import com.ankamagames.dofus.datacenter.monsters.Monster;
+   import com.ankamagames.tiphon.types.TiphonUtility;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayHumanoidInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightCharacterInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantInformations;
+   import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightTaxCollectorInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightMutantInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
+   import com.ankamagames.dofus.logic.game.fight.managers.FightersStateManager;
+   
+   public class EntitiesLooksManager extends Object
+   {
+      
+      public function EntitiesLooksManager()
+      {
+         super();
+      }
+      
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(EntitiesLooksManager));
+      
+      private static var _self:EntitiesLooksManager;
+      
+      public static function getInstance() : EntitiesLooksManager
+      {
+         if(!_self)
+         {
+            _self = new EntitiesLooksManager();
+         }
+         return _self;
+      }
+      
+      private var _entitiesFrame:AbstractEntitiesFrame;
+      
+      public function set entitiesFrame(param1:AbstractEntitiesFrame) : void
+      {
+         this._entitiesFrame = param1;
+      }
+      
+      public function isCreatureMode() : Boolean
+      {
+         if(!this._entitiesFrame)
+         {
+            return false;
+         }
+         return this._entitiesFrame is RoleplayEntitiesFrame?(this._entitiesFrame as RoleplayEntitiesFrame).isCreatureMode:(this._entitiesFrame as FightEntitiesFrame).isInCreaturesFightMode();
+      }
+      
+      public function isCreature(param1:int) : Boolean
+      {
+         var _loc2_:TiphonEntityLook = this.getTiphonEntityLook(param1);
+         if(_loc2_)
+         {
+            if((this.isCreatureFromLook(_loc2_)) || (this.isCreatureMode()) && this.getLookFromContext(param1).getBone() == _loc2_.getBone())
             {
-                _self = new (EntitiesLooksManager)();
-            };
-            return (_self);
-        }
-
-
-        public function set entitiesFrame(pFrame:AbstractEntitiesFrame):void
-        {
-            this._entitiesFrame = pFrame;
-        }
-
-        public function isCreatureMode():Boolean
-        {
-            return ((((this._entitiesFrame is RoleplayEntitiesFrame)) ? ((this._entitiesFrame as RoleplayEntitiesFrame).isCreatureMode) : (this._entitiesFrame as FightEntitiesFrame).isInCreaturesFightMode()));
-        }
-
-        public function isCreature(pEntityId:int):Boolean
-        {
-            var look:TiphonEntityLook = this.getTiphonEntityLook(pEntityId);
-            if (look)
+               return true;
+            }
+         }
+         return false;
+      }
+      
+      public function isCreatureFromLook(param1:TiphonEntityLook) : Boolean
+      {
+         var _loc4_:Breed = null;
+         var _loc2_:uint = param1.getBone();
+         var _loc3_:Array = Breed.getBreeds();
+         for each(_loc4_ in _loc3_)
+         {
+            if(_loc4_.creatureBonesId == _loc2_)
             {
-                if (((this.isCreatureFromLook(look)) || (((this.isCreatureMode()) && ((this.getLookFromContext(pEntityId).getBone() == look.getBone()))))))
-                {
-                    return (true);
-                };
-            };
-            return (false);
-        }
-
-        public function isCreatureFromLook(pLook:TiphonEntityLook):Boolean
-        {
-            var breed:Breed;
-            var bone:uint = pLook.getBone();
-            var breeds:Array = Breed.getBreeds();
-            for each (breed in breeds)
+               return true;
+            }
+         }
+         if(param1.getBone() == CreatureBoneType.getPlayerIncarnationCreatureBone())
+         {
+            return true;
+         }
+         return false;
+      }
+      
+      public function isIncarnation(param1:int) : Boolean
+      {
+         var _loc2_:TiphonEntityLook = this.getRealTiphonEntityLook(param1,true);
+         if((_loc2_) && (this.isIncarnationFromLook(_loc2_)))
+         {
+            return true;
+         }
+         return false;
+      }
+      
+      public function isIncarnationFromLook(param1:TiphonEntityLook) : Boolean
+      {
+         var _loc3_:Incarnation = null;
+         var _loc6_:String = null;
+         var _loc7_:String = null;
+         if(param1.getBone() == CreatureBoneType.getPlayerIncarnationCreatureBone())
+         {
+            return true;
+         }
+         var _loc2_:Array = Incarnation.getAllIncarnation();
+         var _loc4_:String = param1.toString();
+         var _loc5_:String = _loc4_.slice(1,_loc4_.indexOf("|"));
+         for each(_loc3_ in _loc2_)
+         {
+            _loc6_ = _loc3_.lookMale.slice(1,_loc3_.lookMale.indexOf("|"));
+            _loc7_ = _loc3_.lookFemale.slice(1,_loc3_.lookFemale.indexOf("|"));
+            if(_loc5_ == _loc6_ || _loc5_ == _loc7_)
             {
-                if (breed.creatureBonesId == bone)
-                {
-                    return (true);
-                };
-            };
-            if (pLook.getBone() == CreatureBoneType.getPlayerIncarnationCreatureBone())
+               return true;
+            }
+         }
+         return false;
+      }
+      
+      public function getTiphonEntityLook(param1:int) : TiphonEntityLook
+      {
+         var _loc2_:AnimatedCharacter = DofusEntities.getEntity(param1) as AnimatedCharacter;
+         return _loc2_?_loc2_.look.clone():null;
+      }
+      
+      public function getRealTiphonEntityLook(param1:int, param2:Boolean = false) : TiphonEntityLook
+      {
+         var _loc3_:EntityLook = null;
+         var _loc5_:GameContextActorInformations = null;
+         var _loc6_:TiphonEntityLook = null;
+         if(this._entitiesFrame)
+         {
+            if(this._entitiesFrame is FightEntitiesFrame)
             {
-                return (true);
-            };
-            return (false);
-        }
-
-        public function isIncarnation(pEntityId:int):Boolean
-        {
-            var look:TiphonEntityLook = this.getRealTiphonEntityLook(pEntityId, true);
-            if (((look) && (this.isIncarnationFromLook(look))))
-            {
-                return (true);
-            };
-            return (false);
-        }
-
-        public function isIncarnationFromLook(pLook:TiphonEntityLook):Boolean
-        {
-            var incarnation:Incarnation;
-            var boneIdMale:String;
-            var boneIdFemale:String;
-            if (pLook.getBone() == CreatureBoneType.getPlayerIncarnationCreatureBone())
-            {
-                return (true);
-            };
-            var incarnations:Array = Incarnation.getAllIncarnation();
-            var entityLookStr:String = pLook.toString();
-            var boneId:String = entityLookStr.slice(1, entityLookStr.indexOf("|"));
-            for each (incarnation in incarnations)
-            {
-                boneIdMale = incarnation.lookMale.slice(1, incarnation.lookMale.indexOf("|"));
-                boneIdFemale = incarnation.lookFemale.slice(1, incarnation.lookFemale.indexOf("|"));
-                if ((((boneId == boneIdMale)) || ((boneId == boneIdFemale))))
-                {
-                    return (true);
-                };
-            };
-            return (false);
-        }
-
-        public function getTiphonEntityLook(pEntityId:int):TiphonEntityLook
-        {
-            var char:AnimatedCharacter = (DofusEntities.getEntity(pEntityId) as AnimatedCharacter);
-            return (((char) ? char.look.clone() : null));
-        }
-
-        public function getRealTiphonEntityLook(pEntityId:int, pWithoutMount:Boolean=false):TiphonEntityLook
-        {
-            var entityLook:EntityLook;
-            var _local_5:GameContextActorInformations;
-            var riderLook:TiphonEntityLook;
-            if (this._entitiesFrame)
-            {
-                if ((this._entitiesFrame is FightEntitiesFrame))
-                {
-                    entityLook = (this._entitiesFrame as FightEntitiesFrame).getRealFighterLook(pEntityId);
-                }
-                else
-                {
-                    _local_5 = this._entitiesFrame.getEntityInfos(pEntityId);
-                    entityLook = ((_local_5) ? _local_5.look : null);
-                };
-            };
-            if (((!(entityLook)) && ((pEntityId == PlayedCharacterManager.getInstance().id))))
-            {
-                entityLook = PlayedCharacterManager.getInstance().infos.entityLook;
-            };
-            var look:TiphonEntityLook = ((entityLook) ? EntityLookAdapter.fromNetwork(entityLook) : null);
-            if (((look) && (pWithoutMount)))
-            {
-                riderLook = look.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0);
-                if (riderLook)
-                {
-                    look = riderLook;
-                };
-            };
-            return (look);
-        }
-
-        public function getCreatureLook(pEntityId:int):TiphonEntityLook
-        {
-            var infos:GameContextActorInformations = ((this._entitiesFrame) ? this._entitiesFrame.getEntityInfos(pEntityId) : null);
-            return (((infos) ? this.getLookFromContextInfos(infos, true) : null));
-        }
-
-        public function getLookFromContext(pEntityId:int, pForceCreature:Boolean=false):TiphonEntityLook
-        {
-            var infos:GameContextActorInformations = ((this._entitiesFrame) ? this._entitiesFrame.getEntityInfos(pEntityId) : null);
-            return (((infos) ? this.getLookFromContextInfos(infos, pForceCreature) : null));
-        }
-
-        public function getLookFromContextInfos(pInfos:GameContextActorInformations, pForceCreature:Boolean=false):TiphonEntityLook
-        {
-            var _local_4:GameFightCompanionInformations;
-            var _local_5:Companion;
-            var _local_6:GameFightMonsterInformations;
-            var _local_7:Boolean;
-            var _local_8:Monster;
-            var _local_9:int;
-            var _local_10:TiphonEntityLook;
-            var _local_11:int;
-            var _local_12:Boolean;
-            var _local_13:Breed;
-            var fighterLook:TiphonEntityLook;
-            var oldBone:int;
-            var entityStates:Array;
-            var look:TiphonEntityLook = EntityLookAdapter.fromNetwork(pInfos.look);
-            if (((this.isCreatureMode()) || (pForceCreature)))
-            {
-                switch (true)
-                {
-                    case (pInfos is GameRolePlayHumanoidInformations):
-                    case (pInfos is GameFightCharacterInformations):
-                        if (this.isIncarnation(pInfos.contextualId))
-                        {
-                            look.setBone(CreatureBoneType.getPlayerIncarnationCreatureBone());
-                        }
-                        else
-                        {
-                            _local_10 = ((look.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0)) ? (TiphonUtility.getLookWithoutMount(look)) : look);
-                            _local_11 = ((pInfos.hasOwnProperty("breed")) ? pInfos["breed"] : 0);
-                            _local_12 = this.isBoneCorrect(_local_10.getBone());
-                            _local_13 = Breed.getBreedFromSkin(_local_10.firstSkin);
-                            if ((((((_local_11 <= 0)) && (_local_12))) && (_local_13)))
-                            {
-                                _local_11 = _local_13.id;
-                            }
-                            else
-                            {
-                                if (!(_local_12))
-                                {
-                                    switch (_local_10.getBone())
-                                    {
-                                        case 453:
-                                            _local_11 = 12;
-                                            break;
-                                        case 706:
-                                        case 1504:
-                                        case 1509:
-                                        case 113:
-                                            look.setBone(CreatureBoneType.getPlayerIncarnationCreatureBone());
-                                            break;
-                                    };
-                                };
-                            };
-                            if (_local_11 > 0)
-                            {
-                                look.setBone(Breed.getBreedById(_local_11).creatureBonesId);
-                            }
-                            else
-                            {
-                                return (look);
-                            };
-                        };
-                        break;
-                    case (pInfos is GameRolePlayPrismInformations):
-                        look.setBone(CreatureBoneType.getPrismCreatureBone());
-                        break;
-                    case (pInfos is GameRolePlayMerchantInformations):
-                        look.setBone(CreatureBoneType.getPlayerMerchantCreatureBone());
-                        break;
-                    case (pInfos is GameRolePlayTaxCollectorInformations):
-                    case (pInfos is GameFightTaxCollectorInformations):
-                        look.setBone(CreatureBoneType.getTaxCollectorCreatureBone());
-                        break;
-                    case (pInfos is GameFightCompanionInformations):
-                        _local_4 = (pInfos as GameFightCompanionInformations);
-                        _local_5 = Companion.getCompanionById(_local_4.companionGenericId);
-                        look.setBone(_local_5.creatureBoneId);
-                        break;
-                    case (pInfos is GameFightMutantInformations):
-                        look.setBone(CreatureBoneType.getMonsterCreatureBone());
-                        break;
-                    case (pInfos is GameFightMonsterInformations):
-                        _local_6 = (pInfos as GameFightMonsterInformations);
-                        _local_7 = (_local_6.creatureGenericId == 3451);
-                        _local_8 = Monster.getMonsterById(_local_6.creatureGenericId);
-                        if (_local_6.stats.summoned)
-                        {
-                            _local_9 = CreatureBoneType.getMonsterInvocationCreatureBone();
-                        }
-                        else
-                        {
-                            if (_local_8.isBoss)
-                            {
-                                _local_9 = CreatureBoneType.getBossMonsterCreatureBone();
-                            }
-                            else
-                            {
-                                if (_local_7)
-                                {
-                                    _local_9 = CreatureBoneType.getPrismCreatureBone();
-                                }
-                                else
-                                {
-                                    _local_9 = CreatureBoneType.getMonsterCreatureBone();
-                                };
-                            };
-                        };
-                        look.setBone(_local_9);
-                        break;
-                    case (pInfos is GameRolePlayActorInformations):
-                        return (look);
-                };
-                look.setScales(0.9, 0.9);
+               _loc3_ = (this._entitiesFrame as FightEntitiesFrame).getRealFighterLook(param1);
             }
             else
             {
-                if ((((pInfos is GameFightCharacterInformations)) && (!((this._entitiesFrame as FightEntitiesFrame).charactersMountsVisible))))
-                {
-                    fighterLook = look.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0);
-                    if (!(fighterLook))
-                    {
-                        fighterLook = look;
-                    };
-                    oldBone = fighterLook.getBone();
-                    look = TiphonUtility.getLookWithoutMount(look);
-                    if (oldBone == 2)
-                    {
-                        entityStates = FightersStateManager.getInstance().getStates(pInfos.contextualId);
-                        if (entityStates)
-                        {
-                            if (entityStates.indexOf(98) == -1)
-                            {
-                                if (entityStates.indexOf(99) != -1)
-                                {
-                                    look.setBone(1575);
-                                }
-                                else
-                                {
-                                    if (entityStates.indexOf(100) != -1)
-                                    {
-                                        look.setBone(1576);
-                                    };
-                                };
-                            };
-                        };
-                    };
-                };
-            };
-            return (look);
-        }
-
-        private function isBoneCorrect(boneId:int):Boolean
-        {
-            if ((((((((boneId == 1)) || ((boneId == 44)))) || ((boneId == 1575)))) || ((boneId == 1576))))
+               _loc5_ = this._entitiesFrame.getEntityInfos(param1);
+               _loc3_ = _loc5_?_loc5_.look:null;
+            }
+         }
+         if(!_loc3_ && param1 == PlayedCharacterManager.getInstance().id)
+         {
+            _loc3_ = PlayedCharacterManager.getInstance().infos.entityLook;
+         }
+         var _loc4_:TiphonEntityLook = _loc3_?EntityLookAdapter.fromNetwork(_loc3_):null;
+         if((_loc4_) && (param2))
+         {
+            _loc6_ = _loc4_.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0);
+            if(_loc6_)
             {
-                return (true);
-            };
-            return (false);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.logic.game.common.managers
-
+               _loc4_ = _loc6_;
+            }
+         }
+         return _loc4_;
+      }
+      
+      public function getCreatureLook(param1:int) : TiphonEntityLook
+      {
+         var _loc2_:GameContextActorInformations = this._entitiesFrame?this._entitiesFrame.getEntityInfos(param1):null;
+         return _loc2_?this.getLookFromContextInfos(_loc2_,true):null;
+      }
+      
+      public function getLookFromContext(param1:int, param2:Boolean = false) : TiphonEntityLook
+      {
+         var _loc3_:GameContextActorInformations = this._entitiesFrame?this._entitiesFrame.getEntityInfos(param1):null;
+         return _loc3_?this.getLookFromContextInfos(_loc3_,param2):null;
+      }
+      
+      public function getLookFromContextInfos(param1:GameContextActorInformations, param2:Boolean = false) : TiphonEntityLook
+      {
+         var _loc4_:GameFightCompanionInformations = null;
+         var _loc5_:Companion = null;
+         var _loc6_:GameFightMonsterInformations = null;
+         var _loc7_:* = false;
+         var _loc8_:Monster = null;
+         var _loc9_:* = 0;
+         var _loc10_:TiphonEntityLook = null;
+         var _loc11_:* = 0;
+         var _loc12_:* = false;
+         var _loc13_:Breed = null;
+         var _loc14_:TiphonEntityLook = null;
+         var _loc15_:* = 0;
+         var _loc16_:Array = null;
+         var _loc3_:TiphonEntityLook = EntityLookAdapter.fromNetwork(param1.look);
+         if((this.isCreatureMode()) || (param2))
+         {
+            switch(true)
+            {
+               case param1 is GameRolePlayHumanoidInformations:
+               case param1 is GameFightCharacterInformations:
+                  if(this.isIncarnation(param1.contextualId))
+                  {
+                     _loc3_.setBone(CreatureBoneType.getPlayerIncarnationCreatureBone());
+                  }
+                  else
+                  {
+                     _loc10_ = _loc3_.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0)?TiphonUtility.getLookWithoutMount(_loc3_):_loc3_;
+                     _loc11_ = param1.hasOwnProperty("breed")?param1["breed"]:0;
+                     _loc12_ = this.isBoneCorrect(_loc10_.getBone());
+                     _loc13_ = Breed.getBreedFromSkin(_loc10_.firstSkin);
+                     if(_loc11_ <= 0 && (_loc12_) && (_loc13_))
+                     {
+                        _loc11_ = _loc13_.id;
+                     }
+                     else if(!_loc12_)
+                     {
+                        switch(_loc10_.getBone())
+                        {
+                           case 453:
+                              _loc11_ = 12;
+                              break;
+                           case 706:
+                           case 1504:
+                           case 1509:
+                           case 113:
+                              _loc3_.setBone(CreatureBoneType.getPlayerIncarnationCreatureBone());
+                              break;
+                        }
+                     }
+                     
+                     if(_loc11_ > 0)
+                     {
+                        _loc3_.setBone(Breed.getBreedById(_loc11_).creatureBonesId);
+                     }
+                     else
+                     {
+                        return _loc3_;
+                     }
+                  }
+                  break;
+               case param1 is GameRolePlayPrismInformations:
+                  _loc3_.setBone(CreatureBoneType.getPrismCreatureBone());
+                  break;
+               case param1 is GameRolePlayMerchantInformations:
+                  _loc3_.setBone(CreatureBoneType.getPlayerMerchantCreatureBone());
+                  break;
+               case param1 is GameRolePlayTaxCollectorInformations:
+               case param1 is GameFightTaxCollectorInformations:
+                  _loc3_.setBone(CreatureBoneType.getTaxCollectorCreatureBone());
+                  break;
+               case param1 is GameFightCompanionInformations:
+                  _loc4_ = param1 as GameFightCompanionInformations;
+                  _loc5_ = Companion.getCompanionById(_loc4_.companionGenericId);
+                  _loc3_.setBone(_loc5_.creatureBoneId);
+                  break;
+               case param1 is GameFightMutantInformations:
+                  _loc3_.setBone(CreatureBoneType.getMonsterCreatureBone());
+                  break;
+               case param1 is GameFightMonsterInformations:
+                  _loc6_ = param1 as GameFightMonsterInformations;
+                  _loc7_ = _loc6_.creatureGenericId == 3451;
+                  _loc8_ = Monster.getMonsterById(_loc6_.creatureGenericId);
+                  if(_loc6_.stats.summoned)
+                  {
+                     _loc9_ = CreatureBoneType.getMonsterInvocationCreatureBone();
+                  }
+                  else if(_loc8_.isBoss)
+                  {
+                     _loc9_ = CreatureBoneType.getBossMonsterCreatureBone();
+                  }
+                  else if(_loc7_)
+                  {
+                     _loc9_ = CreatureBoneType.getPrismCreatureBone();
+                  }
+                  else
+                  {
+                     _loc9_ = CreatureBoneType.getMonsterCreatureBone();
+                  }
+                  
+                  
+                  _loc3_.setBone(_loc9_);
+                  break;
+               case param1 is GameRolePlayActorInformations:
+                  return _loc3_;
+            }
+            _loc3_.setScales(0.9,0.9);
+         }
+         else if(param1 is GameFightCharacterInformations && !(this._entitiesFrame as FightEntitiesFrame).charactersMountsVisible)
+         {
+            _loc14_ = _loc3_.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0);
+            if(!_loc14_)
+            {
+               _loc14_ = _loc3_;
+            }
+            _loc15_ = _loc14_.getBone();
+            _loc3_ = TiphonUtility.getLookWithoutMount(_loc3_);
+            if(_loc15_ == 2)
+            {
+               _loc16_ = FightersStateManager.getInstance().getStates(param1.contextualId);
+               if(_loc16_)
+               {
+                  if(_loc16_.indexOf(98) == -1)
+                  {
+                     if(_loc16_.indexOf(99) != -1)
+                     {
+                        _loc3_.setBone(1575);
+                     }
+                     else if(_loc16_.indexOf(100) != -1)
+                     {
+                        _loc3_.setBone(1576);
+                     }
+                     
+                  }
+               }
+            }
+         }
+         
+         return _loc3_;
+      }
+      
+      private function isBoneCorrect(param1:int) : Boolean
+      {
+         if(param1 == 1 || param1 == 44 || param1 == 1575 || param1 == 1576)
+         {
+            return true;
+         }
+         return false;
+      }
+   }
+}

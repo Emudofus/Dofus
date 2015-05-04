@@ -1,21 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt
+package com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt
 {
-    import com.ankamagames.jerakine.handlers.messages.Action;
-
-    public class TreasureHuntLegendaryRequestAction implements Action 
-    {
-
-        public var legendaryId:int;
-
-
-        public static function create(legendaryId:int):TreasureHuntLegendaryRequestAction
-        {
-            var action:TreasureHuntLegendaryRequestAction = new (TreasureHuntLegendaryRequestAction)();
-            action.legendaryId = legendaryId;
-            return (action);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.logic.game.common.actions.quest.treasureHunt
-
+   import com.ankamagames.jerakine.handlers.messages.Action;
+   
+   public class TreasureHuntLegendaryRequestAction extends Object implements Action
+   {
+      
+      public function TreasureHuntLegendaryRequestAction()
+      {
+         super();
+      }
+      
+      public static function create(param1:int) : TreasureHuntLegendaryRequestAction
+      {
+         var _loc2_:TreasureHuntLegendaryRequestAction = new TreasureHuntLegendaryRequestAction();
+         _loc2_.legendaryId = param1;
+         return _loc2_;
+      }
+      
+      public var legendaryId:int;
+   }
+}

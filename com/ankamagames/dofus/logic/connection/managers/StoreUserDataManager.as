@@ -1,345 +1,325 @@
-﻿package com.ankamagames.dofus.logic.connection.managers
+package com.ankamagames.dofus.logic.connection.managers
 {
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import com.ankamagames.jerakine.types.CustomSharedObject;
-    import com.ankamagames.jerakine.utils.errors.SingletonError;
-    import com.ankamagames.jerakine.utils.system.AirScanner;
-    import com.ankamagames.jerakine.utils.system.CommandLineArguments;
-    import com.hurlant.util.Base64;
-    import com.ankamagames.dofus.logic.game.approach.managers.PartManagerV2;
-    import com.ankamagames.dofus.logic.common.managers.PlayerManager;
-    import com.ankamagames.dofus.misc.interClient.InterClientManager;
-    import flash.system.Capabilities;
-    import com.ankamagames.jerakine.utils.system.SystemManager;
-    import com.ankamagames.dofus.misc.utils.RpcServiceManager;
-    import by.blooddy.crypto.MD5;
-    import com.ankamagames.performance.Benchmark;
-    import com.ankamagames.dofus.BuildInfos;
-    import com.ankamagames.dofus.misc.utils.RpcServiceCenter;
-    import flash.events.Event;
-    import flash.events.IOErrorEvent;
-
-    public class StoreUserDataManager 
-    {
-
-        private static const INFOS_EXCLUDED_FROM_MD5CHECK:Array = ["CPUFrequencies", "FreeSystemMemory"];
-        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StoreUserDataManager));
-        private static var _self:StoreUserDataManager;
-
-        private var _so:CustomSharedObject;
-        private var _postMd5CheckInfos:String;
-
-        public function StoreUserDataManager()
-        {
-            if (_self != null)
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.CustomSharedObject;
+   import com.ankamagames.jerakine.utils.system.AirScanner;
+   import com.ankamagames.jerakine.utils.system.CommandLineArguments;
+   import com.hurlant.util.Base64;
+   import com.ankamagames.dofus.logic.game.approach.managers.PartManagerV2;
+   import com.ankamagames.dofus.logic.common.managers.PlayerManager;
+   import com.ankamagames.dofus.misc.interClient.InterClientManager;
+   import flash.system.Capabilities;
+   import com.ankamagames.jerakine.utils.system.SystemManager;
+   import com.ankamagames.dofus.misc.utils.RpcServiceManager;
+   import by.blooddy.crypto.MD5;
+   import com.ankamagames.performance.Benchmark;
+   import com.ankamagames.dofus.BuildInfos;
+   import com.ankamagames.dofus.misc.utils.RpcServiceCenter;
+   import flash.events.Event;
+   import flash.events.IOErrorEvent;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
+   
+   public class StoreUserDataManager extends Object
+   {
+      
+      public function StoreUserDataManager()
+      {
+         super();
+         if(_self != null)
+         {
+            throw new SingletonError("StoreUserDataManager is a singleton and should not be instanciated directly.");
+         }
+         else
+         {
+            return;
+         }
+      }
+      
+      private static const INFOS_EXCLUDED_FROM_MD5CHECK:Array = ["CPUFrequencies","FreeSystemMemory"];
+      
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StoreUserDataManager));
+      
+      private static var _self:StoreUserDataManager;
+      
+      public static function getInstance() : StoreUserDataManager
+      {
+         if(_self == null)
+         {
+            _self = new StoreUserDataManager();
+         }
+         return _self;
+      }
+      
+      private var _so:CustomSharedObject;
+      
+      private var _postMd5CheckInfos:String;
+      
+      public function savePlayerData() : void
+      {
+         var _loc4_:Array = null;
+         var _loc5_:String = null;
+         var _loc6_:String = null;
+         var _loc7_:String = null;
+         var _loc8_:Array = null;
+         var _loc9_:Object = null;
+         var _loc10_:Array = null;
+         if(AirScanner.isStreamingVersion())
+         {
+            this.savePlayerStreamingData();
+            return;
+         }
+         var _loc1_:* = false;
+         var _loc2_:* = "";
+         var _loc3_:* = "";
+         if(CommandLineArguments.getInstance().hasArgument("sysinfos"))
+         {
+            _loc3_ = Base64.decode(CommandLineArguments.getInstance().getArgument("sysinfos"));
+            _loc4_ = _loc3_.split("\n");
+            _loc8_ = new Array();
+            for each(_loc5_ in _loc4_)
             {
-                throw (new SingletonError("StoreUserDataManager is a singleton and should not be instanciated directly."));
-            };
-        }
-
-        public static function getInstance():StoreUserDataManager
-        {
-            if (_self == null)
-            {
-                _self = new (StoreUserDataManager)();
-            };
-            return (_self);
-        }
-
-
-        public function savePlayerData():void
-        {
-            var datas:Array;
-            var data:String;
-            var key:String;
-            var value:String;
-            var dict:Array;
-            var obj:Object;
-            var tmp:Array;
-            if (AirScanner.isStreamingVersion())
-            {
-                this.savePlayerStreamingData();
-                return;
-            };
-            var isUsingUpdater:Boolean;
-            var newValue:String = "";
-            var val:String = "";
-            if (CommandLineArguments.getInstance().hasArgument("sysinfos"))
-            {
-                val = Base64.decode(CommandLineArguments.getInstance().getArgument("sysinfos"));
-                datas = val.split("\n");
-                dict = new Array();
-                for each (data in datas)
-                {
-                    data = data.replace("\n", "");
-                    if ((((data == "")) || ((data.search(":") == -1))))
-                    {
-                    }
-                    else
-                    {
-                        tmp = data.split(":");
-                        key = tmp[0];
-                        value = tmp[1];
-                        if ((((value == "")) || ((key == ""))))
-                        {
-                        }
-                        else
-                        {
-                            switch (key)
-                            {
-                                case "RAM_FREE":
-                                case "DISK_FREE":
-                                    continue;
-                                case "VIDEO_DRIVER_INSTALLATION_DATE":
-                                    value = value.substr(0, 6);
-                                    break;
-                            };
-                            dict.push({
-                                "key":key,
-                                "value":value
-                            });
-                        };
-                    };
-                };
-                dict.sortOn("key");
-                for each (obj in dict)
-                {
-                    newValue = (newValue + (((obj.key + ":") + obj.value) + ";"));
-                };
-                isUsingUpdater = true;
+               _loc5_ = _loc5_.replace("\n","");
+               if(!(_loc5_ == "" || _loc5_.search(":") == -1))
+               {
+                  _loc10_ = _loc5_.split(":");
+                  _loc6_ = _loc10_[0];
+                  _loc7_ = _loc10_[1];
+                  if(!(_loc7_ == "" || _loc6_ == ""))
+                  {
+                     switch(_loc6_)
+                     {
+                        case "RAM_FREE":
+                        case "DISK_FREE":
+                           continue;
+                        case "VIDEO_DRIVER_INSTALLATION_DATE":
+                           _loc7_ = _loc7_.substr(0,6);
+                           break;
+                     }
+                     _loc8_.push({
+                        "key":_loc6_,
+                        "value":_loc7_
+                     });
+                  }
+               }
             }
-            else
+            _loc8_.sortOn("key");
+            for each(_loc9_ in _loc8_)
             {
-                if (((CommandLineArguments.getInstance().hasArgument("updater_version")) && ((CommandLineArguments.getInstance().getArgument("updater_version") == "v2"))))
-                {
-                    PartManagerV2.getInstance().getSystemConfiguration();
-                    isUsingUpdater = true;
-                    return;
-                };
-            };
-            this.savePlayerAirData(newValue, isUsingUpdater);
-        }
-
-        private function savePlayerAirData(newValue:String, isUsingUpdater:Boolean):void
-        {
-            newValue = (newValue + "envType:air;");
-            newValue = (newValue + (("isAbo:" + (((PlayerManager.getInstance().subscriptionEndDate > 0)) || (PlayerManager.getInstance().hasRights))) + ";"));
-            newValue = (newValue + (("creationAbo:" + PlayerManager.getInstance().accountCreation) + ";"));
-            newValue = (newValue + (("flashKey:" + InterClientManager.getInstance().flashKey) + ";"));
-            newValue = (newValue + (((("screenResolution:" + Capabilities.screenResolutionX) + "x") + Capabilities.screenResolutionY) + ";"));
-            var osNoFormate:String = Capabilities.os.toLowerCase();
-            newValue = (newValue + "os:");
-            if (osNoFormate.search("windows") != -1)
-            {
-                newValue = (newValue + "windows");
+               _loc2_ = _loc2_ + (_loc9_.key + ":" + _loc9_.value + ";");
             }
-            else
-            {
-                if (osNoFormate.search("mac") != -1)
-                {
-                    newValue = (newValue + "mac");
-                }
-                else
-                {
-                    if (osNoFormate.search("linux") != -1)
-                    {
-                        newValue = (newValue + "linux");
-                    }
-                    else
-                    {
-                        newValue = (newValue + "other");
-                    };
-                };
-            };
-            newValue = (newValue + ";");
-            newValue = (newValue + (("osVersion:" + SystemManager.getSingleton().version) + ";"));
-            newValue = (newValue + "supports:");
-            if (((Capabilities.supports32BitProcesses) && (!(Capabilities.supports64BitProcesses))))
-            {
-                newValue = (newValue + "32Bits");
+            _loc1_ = true;
+         }
+         else if((CommandLineArguments.getInstance().hasArgument("updater_version")) && CommandLineArguments.getInstance().getArgument("updater_version") == "v2")
+         {
+            PartManagerV2.getInstance().getSystemConfiguration();
+            _loc1_ = true;
+            return;
+         }
+         
+         this.savePlayerAirData(_loc2_,_loc1_);
+      }
+      
+      private function savePlayerAirData(param1:String, param2:Boolean) : void
+      {
+         var param1:* = param1 + "envType:air;";
+         param1 = param1 + ("isAbo:" + (PlayerManager.getInstance().subscriptionEndDate > 0 || PlayerManager.getInstance().hasRights) + ";");
+         param1 = param1 + ("creationAbo:" + PlayerManager.getInstance().accountCreation + ";");
+         param1 = param1 + ("flashKey:" + InterClientManager.getInstance().flashKey + ";");
+         param1 = param1 + ("screenResolution:" + Capabilities.screenResolutionX + "x" + Capabilities.screenResolutionY + ";");
+         var _loc3_:String = Capabilities.os.toLowerCase();
+         param1 = param1 + "os:";
+         if(_loc3_.search("windows") != -1)
+         {
+            param1 = param1 + "windows";
+         }
+         else if(_loc3_.search("mac") != -1)
+         {
+            param1 = param1 + "mac";
+         }
+         else if(_loc3_.search("linux") != -1)
+         {
+            param1 = param1 + "linux";
+         }
+         else
+         {
+            param1 = param1 + "other";
+         }
+         
+         
+         param1 = param1 + ";";
+         param1 = param1 + ("osVersion:" + SystemManager.getSingleton().version + ";");
+         param1 = param1 + "supports:";
+         if((Capabilities.supports32BitProcesses) && !Capabilities.supports64BitProcesses)
+         {
+            param1 = param1 + "32Bits";
+         }
+         else if(Capabilities.supports64BitProcesses)
+         {
+            param1 = param1 + "64Bits";
+         }
+         else
+         {
+            param1 = param1 + "none";
+         }
+         
+         param1 = param1 + ";";
+         param1 = param1 + ("isUsingUpdater:" + param2 + ";");
+         this.submitData(param1);
+      }
+      
+      private function savePlayerStreamingData() : void
+      {
+         var _loc1_:* = "";
+         _loc1_ = _loc1_ + "envType:streaming;";
+         _loc1_ = _loc1_ + ("isAbo:" + (PlayerManager.getInstance().subscriptionEndDate > 0 || PlayerManager.getInstance().hasRights) + ";");
+         _loc1_ = _loc1_ + ("creationAbo:" + PlayerManager.getInstance().accountCreation + ";");
+         _loc1_ = _loc1_ + ("screenResolution:" + Capabilities.screenResolutionX + "x" + Capabilities.screenResolutionY + ";");
+         var _loc2_:String = Capabilities.os.toLowerCase();
+         _loc1_ = _loc1_ + "os:";
+         if(_loc2_.search("windows") != -1)
+         {
+            _loc1_ = _loc1_ + "windows";
+         }
+         else if(_loc2_.search("mac") != -1)
+         {
+            _loc1_ = _loc1_ + "mac";
+         }
+         else if(Capabilities.manufacturer.toLowerCase().search("android") != -1)
+         {
+            _loc1_ = _loc1_ + "android";
+         }
+         else if(_loc2_.search("linux") != -1)
+         {
+            _loc1_ = _loc1_ + "linux";
+         }
+         else if(!(_loc2_.search("ipad") == -1) || !(_loc2_.search("iphone") == -1))
+         {
+            _loc1_ = _loc1_ + "ios";
+         }
+         else
+         {
+            _loc1_ = _loc1_ + "other";
+         }
+         
+         
+         
+         
+         _loc1_ = _loc1_ + ";";
+         _loc1_ = _loc1_ + ("osVersion:" + SystemManager.getSingleton().version + ";");
+         _loc1_ = _loc1_ + "supports:";
+         if((Capabilities.supports32BitProcesses) && !Capabilities.supports64BitProcesses)
+         {
+            _loc1_ = _loc1_ + "32Bits";
+         }
+         else if(Capabilities.supports64BitProcesses)
+         {
+            _loc1_ = _loc1_ + "64Bits";
+         }
+         else
+         {
+            _loc1_ = _loc1_ + "none";
+         }
+         
+         _loc1_ = _loc1_ + ";";
+         _loc1_ = _loc1_ + ("browser:" + SystemManager.getSingleton().browser + ";");
+         _loc1_ = _loc1_ + ("browserVersion:" + SystemManager.getSingleton().browserVersion + ";");
+         _loc1_ = _loc1_ + ("fpVersion:" + Capabilities.version + ";");
+         _loc1_ = _loc1_ + ("fpManufacturer:" + Capabilities.manufacturer + ";");
+         this.submitData(_loc1_);
+      }
+      
+      private function submitData(param1:String) : void
+      {
+         var _loc4_:RpcServiceManager = null;
+         var _loc5_:Object = null;
+         var _loc2_:String = MD5.hash(param1);
+         var param1:String = param1 + this._postMd5CheckInfos;
+         this._postMd5CheckInfos = "";
+         var _loc3_:uint = PlayerManager.getInstance().accountId;
+         this._so = CustomSharedObject.getLocal("playerData_" + _loc3_);
+         if((this._so.data && this._so.data.hasOwnProperty("version") && this._so.data.md5 == _loc2_) && (this._so.data.version.major >= 2 && this._so.data.version.minor >= 23) && (Benchmark.hasCachedResults))
+         {
+            return;
+         }
+         this._so.data = new Object();
+         this._so.data.md5 = _loc2_;
+         this._so.data.version = {
+            "major":BuildInfos.BUILD_VERSION.major,
+            "minor":BuildInfos.BUILD_VERSION.minor
+         };
+         this._so.flush();
+         _loc4_ = new RpcServiceManager(RpcServiceCenter.getInstance().apiDomain + "/dofus/logger.json","json");
+         _loc4_.addEventListener(Event.COMPLETE,this.onDataSavedComplete);
+         _loc4_.addEventListener(IOErrorEvent.IO_ERROR,this.onDataSavedError);
+         _loc4_.addEventListener(RpcServiceManager.SERVER_ERROR,this.onDataSavedError);
+         _loc5_ = {
+            "sUid":MD5.hash(_loc3_.toString()),
+            "aValues":{
+               "config":param1,
+               "benchmark":Benchmark.getResults(true)
             }
-            else
-            {
-                if (Capabilities.supports64BitProcesses)
-                {
-                    newValue = (newValue + "64Bits");
-                }
-                else
-                {
-                    newValue = (newValue + "none");
-                };
-            };
-            newValue = (newValue + ";");
-            newValue = (newValue + (("isUsingUpdater:" + isUsingUpdater) + ";"));
-            this.submitData(newValue);
-        }
-
-        private function savePlayerStreamingData():void
-        {
-            var newValue:String = "";
-            newValue = (newValue + "envType:streaming;");
-            newValue = (newValue + (("isAbo:" + (((PlayerManager.getInstance().subscriptionEndDate > 0)) || (PlayerManager.getInstance().hasRights))) + ";"));
-            newValue = (newValue + (("creationAbo:" + PlayerManager.getInstance().accountCreation) + ";"));
-            newValue = (newValue + (((("screenResolution:" + Capabilities.screenResolutionX) + "x") + Capabilities.screenResolutionY) + ";"));
-            var osNoFormate:String = Capabilities.os.toLowerCase();
-            newValue = (newValue + "os:");
-            if (osNoFormate.search("windows") != -1)
-            {
-                newValue = (newValue + "windows");
-            }
-            else
-            {
-                if (osNoFormate.search("mac") != -1)
-                {
-                    newValue = (newValue + "mac");
-                }
-                else
-                {
-                    if (Capabilities.manufacturer.toLowerCase().search("android") != -1)
-                    {
-                        newValue = (newValue + "android");
-                    }
-                    else
-                    {
-                        if (osNoFormate.search("linux") != -1)
-                        {
-                            newValue = (newValue + "linux");
-                        }
-                        else
-                        {
-                            if (((!((osNoFormate.search("ipad") == -1))) || (!((osNoFormate.search("iphone") == -1)))))
-                            {
-                                newValue = (newValue + "ios");
-                            }
-                            else
-                            {
-                                newValue = (newValue + "other");
-                            };
-                        };
-                    };
-                };
-            };
-            newValue = (newValue + ";");
-            newValue = (newValue + (("osVersion:" + SystemManager.getSingleton().version) + ";"));
-            newValue = (newValue + "supports:");
-            if (((Capabilities.supports32BitProcesses) && (!(Capabilities.supports64BitProcesses))))
-            {
-                newValue = (newValue + "32Bits");
-            }
-            else
-            {
-                if (Capabilities.supports64BitProcesses)
-                {
-                    newValue = (newValue + "64Bits");
-                }
-                else
-                {
-                    newValue = (newValue + "none");
-                };
-            };
-            newValue = (newValue + ";");
-            newValue = (newValue + (("browser:" + SystemManager.getSingleton().browser) + ";"));
-            newValue = (newValue + (("browserVersion:" + SystemManager.getSingleton().browserVersion) + ";"));
-            newValue = (newValue + (("fpVersion:" + Capabilities.version) + ";"));
-            newValue = (newValue + (("fpManufacturer:" + Capabilities.manufacturer) + ";"));
-            this.submitData(newValue);
-        }
-
-        private function submitData(playerData:String):void
-        {
-            var _local_4:RpcServiceManager;
-            var _local_5:Object;
-            var md5value:String = MD5.hash(playerData);
-            playerData = (playerData + this._postMd5CheckInfos);
-            this._postMd5CheckInfos = "";
-            var playerId:uint = PlayerManager.getInstance().accountId;
-            this._so = CustomSharedObject.getLocal(("playerData_" + playerId));
-            if (((((((((this._so.data) && (this._so.data.hasOwnProperty("version")))) && ((this._so.data.md5 == md5value)))) && ((((this._so.data.version.major >= 2)) && ((this._so.data.version.minor >= 23)))))) && (Benchmark.hasCachedResults)))
-            {
-                return;
-            };
-            this._so.data = new Object();
-            this._so.data.md5 = md5value;
-            this._so.data.version = {
-                "major":BuildInfos.BUILD_VERSION.major,
-                "minor":BuildInfos.BUILD_VERSION.minor
-            };
+         };
+         _loc4_.callMethod("Log",_loc5_);
+      }
+      
+      private function onDataSavedComplete(param1:Event) : void
+      {
+         var _loc2_:RpcServiceManager = param1.currentTarget as RpcServiceManager;
+         if(this._so != null)
+         {
+            _log.debug("User data saved.");
             this._so.flush();
-            _local_4 = new RpcServiceManager((RpcServiceCenter.getInstance().apiDomain + "/dofus/logger.json"), "json");
-            _local_4.addEventListener(Event.COMPLETE, this.onDataSavedComplete);
-            _local_4.addEventListener(IOErrorEvent.IO_ERROR, this.onDataSavedError);
-            _local_4.addEventListener(RpcServiceManager.SERVER_ERROR, this.onDataSavedError);
-            _local_5 = {
-                "sUid":MD5.hash(playerId.toString()),
-                "aValues":{
-                    "config":playerData,
-                    "benchmark":Benchmark.getResults(true)
-                }
-            };
-            _local_4.callMethod("Log", _local_5);
-        }
-
-        private function onDataSavedComplete(pEvt:Event):void
-        {
-            var rpcService:RpcServiceManager = (pEvt.currentTarget as RpcServiceManager);
-            if (this._so != null)
+         }
+         this.clearService(_loc2_);
+      }
+      
+      private function onDataSavedError(param1:Event) : void
+      {
+         _log.error("Can\'t send player\'s data to server !");
+         var _loc2_:RpcServiceManager = param1.currentTarget as RpcServiceManager;
+         this.clearService(_loc2_);
+      }
+      
+      private function clearService(param1:RpcServiceManager) : void
+      {
+         param1.removeEventListener(Event.COMPLETE,this.onDataSavedComplete);
+         param1.removeEventListener(IOErrorEvent.IO_ERROR,this.onDataSavedError);
+         param1.removeEventListener(RpcServiceManager.SERVER_ERROR,this.onDataSavedError);
+         param1.destroy();
+      }
+      
+      public function onSystemConfiguration(param1:*) : void
+      {
+         var _loc4_:String = null;
+         var _loc5_:Object = null;
+         var _loc2_:* = "";
+         this._postMd5CheckInfos = "";
+         var _loc3_:Array = new Array();
+         if(param1)
+         {
+            for(_loc4_ in param1.config)
             {
-                _log.debug("User data saved.");
-                this._so.flush();
-            };
-            this.clearService(rpcService);
-        }
-
-        private function onDataSavedError(pEvt:Event):void
-        {
-            _log.error("Can't send player's data to server !");
-            var rpcService:RpcServiceManager = (pEvt.currentTarget as RpcServiceManager);
-            this.clearService(rpcService);
-        }
-
-        private function clearService(rpcService:RpcServiceManager):void
-        {
-            rpcService.removeEventListener(Event.COMPLETE, this.onDataSavedComplete);
-            rpcService.removeEventListener(IOErrorEvent.IO_ERROR, this.onDataSavedError);
-            rpcService.removeEventListener(RpcServiceManager.SERVER_ERROR, this.onDataSavedError);
-            rpcService.destroy();
-        }
-
-        public function onSystemConfiguration(config:*):void
-        {
-            var key:String;
-            var obj:Object;
-            var newValue:String = "";
-            this._postMd5CheckInfos = "";
-            var dict:Array = new Array();
-            if (config)
+               _loc3_.push({
+                  "key":_loc4_,
+                  "value":param1.config[_loc4_]
+               });
+            }
+         }
+         _loc3_.sortOn("key");
+         for each(_loc5_ in _loc3_)
+         {
+            if(INFOS_EXCLUDED_FROM_MD5CHECK.indexOf(_loc5_.key) == -1)
             {
-                for (key in config.config)
-                {
-                    dict.push({
-                        "key":key,
-                        "value":config.config[key]
-                    });
-                };
-            };
-            dict.sortOn("key");
-            for each (obj in dict)
+               _loc2_ = _loc2_ + (_loc5_.key + ":" + _loc5_.value + ";");
+            }
+            else
             {
-                if (INFOS_EXCLUDED_FROM_MD5CHECK.indexOf(obj.key) == -1)
-                {
-                    newValue = (newValue + (((obj.key + ":") + obj.value) + ";"));
-                }
-                else
-                {
-                    this._postMd5CheckInfos = (this._postMd5CheckInfos + (((obj.key + ":") + obj.value) + ";"));
-                };
-            };
-            this.savePlayerAirData(newValue, true);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.logic.connection.managers
-
+               this._postMd5CheckInfos = this._postMd5CheckInfos + (_loc5_.key + ":" + _loc5_.value + ";");
+            }
+         }
+         this.savePlayerAirData(_loc2_,true);
+      }
+   }
+}

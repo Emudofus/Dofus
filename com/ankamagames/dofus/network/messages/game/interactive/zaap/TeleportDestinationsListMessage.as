@@ -1,196 +1,227 @@
-﻿package com.ankamagames.dofus.network.messages.game.interactive.zaap
+package com.ankamagames.dofus.network.messages.game.interactive.zaap
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class TeleportDestinationsListMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 5960;
-
-        private var _isInitialized:Boolean = false;
-        public var teleporterType:uint = 0;
-        public var mapIds:Vector.<uint>;
-        public var subAreaIds:Vector.<uint>;
-        public var costs:Vector.<uint>;
-        public var destTeleporterType:Vector.<uint>;
-
-        public function TeleportDestinationsListMessage()
-        {
-            this.mapIds = new Vector.<uint>();
-            this.subAreaIds = new Vector.<uint>();
-            this.costs = new Vector.<uint>();
-            this.destTeleporterType = new Vector.<uint>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (5960);
-        }
-
-        public function initTeleportDestinationsListMessage(teleporterType:uint=0, mapIds:Vector.<uint>=null, subAreaIds:Vector.<uint>=null, costs:Vector.<uint>=null, destTeleporterType:Vector.<uint>=null):TeleportDestinationsListMessage
-        {
-            this.teleporterType = teleporterType;
-            this.mapIds = mapIds;
-            this.subAreaIds = subAreaIds;
-            this.costs = costs;
-            this.destTeleporterType = destTeleporterType;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.teleporterType = 0;
-            this.mapIds = new Vector.<uint>();
-            this.subAreaIds = new Vector.<uint>();
-            this.costs = new Vector.<uint>();
-            this.destTeleporterType = new Vector.<uint>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_TeleportDestinationsListMessage(output);
-        }
-
-        public function serializeAs_TeleportDestinationsListMessage(output:ICustomDataOutput):void
-        {
-            output.writeByte(this.teleporterType);
-            output.writeShort(this.mapIds.length);
-            var _i2:uint;
-            while (_i2 < this.mapIds.length)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class TeleportDestinationsListMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function TeleportDestinationsListMessage()
+      {
+         this.mapIds = new Vector.<uint>();
+         this.subAreaIds = new Vector.<uint>();
+         this.costs = new Vector.<uint>();
+         this.destTeleporterType = new Vector.<uint>();
+         super();
+      }
+      
+      public static const protocolId:uint = 5960;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var teleporterType:uint = 0;
+      
+      public var mapIds:Vector.<uint>;
+      
+      public var subAreaIds:Vector.<uint>;
+      
+      public var costs:Vector.<uint>;
+      
+      public var destTeleporterType:Vector.<uint>;
+      
+      override public function getMessageId() : uint
+      {
+         return 5960;
+      }
+      
+      public function initTeleportDestinationsListMessage(param1:uint = 0, param2:Vector.<uint> = null, param3:Vector.<uint> = null, param4:Vector.<uint> = null, param5:Vector.<uint> = null) : TeleportDestinationsListMessage
+      {
+         this.teleporterType = param1;
+         this.mapIds = param2;
+         this.subAreaIds = param3;
+         this.costs = param4;
+         this.destTeleporterType = param5;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.teleporterType = 0;
+         this.mapIds = new Vector.<uint>();
+         this.subAreaIds = new Vector.<uint>();
+         this.costs = new Vector.<uint>();
+         this.destTeleporterType = new Vector.<uint>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_TeleportDestinationsListMessage(param1);
+      }
+      
+      public function serializeAs_TeleportDestinationsListMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeByte(this.teleporterType);
+         param1.writeShort(this.mapIds.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.mapIds.length)
+         {
+            if(this.mapIds[_loc2_] < 0)
             {
-                if (this.mapIds[_i2] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.mapIds[_i2]) + ") on element 2 (starting at 1) of mapIds.")));
-                };
-                output.writeInt(this.mapIds[_i2]);
-                _i2++;
-            };
-            output.writeShort(this.subAreaIds.length);
-            var _i3:uint;
-            while (_i3 < this.subAreaIds.length)
+               throw new Error("Forbidden value (" + this.mapIds[_loc2_] + ") on element 2 (starting at 1) of mapIds.");
+            }
+            else
             {
-                if (this.subAreaIds[_i3] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.subAreaIds[_i3]) + ") on element 3 (starting at 1) of subAreaIds.")));
-                };
-                output.writeVarShort(this.subAreaIds[_i3]);
-                _i3++;
-            };
-            output.writeShort(this.costs.length);
-            var _i4:uint;
-            while (_i4 < this.costs.length)
+               param1.writeInt(this.mapIds[_loc2_]);
+               _loc2_++;
+               continue;
+            }
+         }
+         param1.writeShort(this.subAreaIds.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.subAreaIds.length)
+         {
+            if(this.subAreaIds[_loc3_] < 0)
             {
-                if (this.costs[_i4] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.costs[_i4]) + ") on element 4 (starting at 1) of costs.")));
-                };
-                output.writeVarShort(this.costs[_i4]);
-                _i4++;
-            };
-            output.writeShort(this.destTeleporterType.length);
-            var _i5:uint;
-            while (_i5 < this.destTeleporterType.length)
+               throw new Error("Forbidden value (" + this.subAreaIds[_loc3_] + ") on element 3 (starting at 1) of subAreaIds.");
+            }
+            else
             {
-                output.writeByte(this.destTeleporterType[_i5]);
-                _i5++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_TeleportDestinationsListMessage(input);
-        }
-
-        public function deserializeAs_TeleportDestinationsListMessage(input:ICustomDataInput):void
-        {
-            var _val2:uint;
-            var _val3:uint;
-            var _val4:uint;
-            var _val5:uint;
-            this.teleporterType = input.readByte();
-            if (this.teleporterType < 0)
+               param1.writeVarShort(this.subAreaIds[_loc3_]);
+               _loc3_++;
+               continue;
+            }
+         }
+         param1.writeShort(this.costs.length);
+         var _loc4_:uint = 0;
+         while(_loc4_ < this.costs.length)
+         {
+            if(this.costs[_loc4_] < 0)
             {
-                throw (new Error((("Forbidden value (" + this.teleporterType) + ") on element of TeleportDestinationsListMessage.teleporterType.")));
-            };
-            var _mapIdsLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _mapIdsLen)
+               throw new Error("Forbidden value (" + this.costs[_loc4_] + ") on element 4 (starting at 1) of costs.");
+            }
+            else
             {
-                _val2 = input.readInt();
-                if (_val2 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val2) + ") on elements of mapIds.")));
-                };
-                this.mapIds.push(_val2);
-                _i2++;
-            };
-            var _subAreaIdsLen:uint = input.readUnsignedShort();
-            var _i3:uint;
-            while (_i3 < _subAreaIdsLen)
+               param1.writeVarShort(this.costs[_loc4_]);
+               _loc4_++;
+               continue;
+            }
+         }
+         param1.writeShort(this.destTeleporterType.length);
+         var _loc5_:uint = 0;
+         while(_loc5_ < this.destTeleporterType.length)
+         {
+            param1.writeByte(this.destTeleporterType[_loc5_]);
+            _loc5_++;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_TeleportDestinationsListMessage(param1);
+      }
+      
+      public function deserializeAs_TeleportDestinationsListMessage(param1:ICustomDataInput) : void
+      {
+         var _loc10_:uint = 0;
+         var _loc11_:uint = 0;
+         var _loc12_:uint = 0;
+         var _loc13_:uint = 0;
+         this.teleporterType = param1.readByte();
+         if(this.teleporterType < 0)
+         {
+            throw new Error("Forbidden value (" + this.teleporterType + ") on element of TeleportDestinationsListMessage.teleporterType.");
+         }
+         else
+         {
+            var _loc2_:uint = param1.readUnsignedShort();
+            var _loc3_:uint = 0;
+            while(_loc3_ < _loc2_)
             {
-                _val3 = input.readVarUhShort();
-                if (_val3 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val3) + ") on elements of subAreaIds.")));
-                };
-                this.subAreaIds.push(_val3);
-                _i3++;
-            };
-            var _costsLen:uint = input.readUnsignedShort();
-            var _i4:uint;
-            while (_i4 < _costsLen)
+               _loc10_ = param1.readInt();
+               if(_loc10_ < 0)
+               {
+                  throw new Error("Forbidden value (" + _loc10_ + ") on elements of mapIds.");
+               }
+               else
+               {
+                  this.mapIds.push(_loc10_);
+                  _loc3_++;
+                  continue;
+               }
+            }
+            var _loc4_:uint = param1.readUnsignedShort();
+            var _loc5_:uint = 0;
+            while(_loc5_ < _loc4_)
             {
-                _val4 = input.readVarUhShort();
-                if (_val4 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val4) + ") on elements of costs.")));
-                };
-                this.costs.push(_val4);
-                _i4++;
-            };
-            var _destTeleporterTypeLen:uint = input.readUnsignedShort();
-            var _i5:uint;
-            while (_i5 < _destTeleporterTypeLen)
+               _loc11_ = param1.readVarUhShort();
+               if(_loc11_ < 0)
+               {
+                  throw new Error("Forbidden value (" + _loc11_ + ") on elements of subAreaIds.");
+               }
+               else
+               {
+                  this.subAreaIds.push(_loc11_);
+                  _loc5_++;
+                  continue;
+               }
+            }
+            var _loc6_:uint = param1.readUnsignedShort();
+            var _loc7_:uint = 0;
+            while(_loc7_ < _loc6_)
             {
-                _val5 = input.readByte();
-                if (_val5 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val5) + ") on elements of destTeleporterType.")));
-                };
-                this.destTeleporterType.push(_val5);
-                _i5++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.interactive.zaap
-
+               _loc12_ = param1.readVarUhShort();
+               if(_loc12_ < 0)
+               {
+                  throw new Error("Forbidden value (" + _loc12_ + ") on elements of costs.");
+               }
+               else
+               {
+                  this.costs.push(_loc12_);
+                  _loc7_++;
+                  continue;
+               }
+            }
+            var _loc8_:uint = param1.readUnsignedShort();
+            var _loc9_:uint = 0;
+            while(_loc9_ < _loc8_)
+            {
+               _loc13_ = param1.readByte();
+               if(_loc13_ < 0)
+               {
+                  throw new Error("Forbidden value (" + _loc13_ + ") on elements of destTeleporterType.");
+               }
+               else
+               {
+                  this.destTeleporterType.push(_loc13_);
+                  _loc9_++;
+                  continue;
+               }
+            }
+            return;
+         }
+      }
+   }
+}

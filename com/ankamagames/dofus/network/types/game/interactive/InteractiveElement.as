@@ -1,123 +1,128 @@
-﻿package com.ankamagames.dofus.network.types.game.interactive
+package com.ankamagames.dofus.network.types.game.interactive
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import com.ankamagames.dofus.network.ProtocolTypeManager;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class InteractiveElement implements INetworkType 
-    {
-
-        public static const protocolId:uint = 80;
-
-        public var elementId:uint = 0;
-        public var elementTypeId:int = 0;
-        public var enabledSkills:Vector.<InteractiveElementSkill>;
-        public var disabledSkills:Vector.<InteractiveElementSkill>;
-
-        public function InteractiveElement()
-        {
-            this.enabledSkills = new Vector.<InteractiveElementSkill>();
-            this.disabledSkills = new Vector.<InteractiveElementSkill>();
-            super();
-        }
-
-        public function getTypeId():uint
-        {
-            return (80);
-        }
-
-        public function initInteractiveElement(elementId:uint=0, elementTypeId:int=0, enabledSkills:Vector.<InteractiveElementSkill>=null, disabledSkills:Vector.<InteractiveElementSkill>=null):InteractiveElement
-        {
-            this.elementId = elementId;
-            this.elementTypeId = elementTypeId;
-            this.enabledSkills = enabledSkills;
-            this.disabledSkills = disabledSkills;
-            return (this);
-        }
-
-        public function reset():void
-        {
-            this.elementId = 0;
-            this.elementTypeId = 0;
-            this.enabledSkills = new Vector.<InteractiveElementSkill>();
-            this.disabledSkills = new Vector.<InteractiveElementSkill>();
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_InteractiveElement(output);
-        }
-
-        public function serializeAs_InteractiveElement(output:ICustomDataOutput):void
-        {
-            if (this.elementId < 0)
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
+   
+   public class InteractiveElement extends Object implements INetworkType
+   {
+      
+      public function InteractiveElement()
+      {
+         this.enabledSkills = new Vector.<InteractiveElementSkill>();
+         this.disabledSkills = new Vector.<InteractiveElementSkill>();
+         super();
+      }
+      
+      public static const protocolId:uint = 80;
+      
+      public var elementId:uint = 0;
+      
+      public var elementTypeId:int = 0;
+      
+      public var enabledSkills:Vector.<InteractiveElementSkill>;
+      
+      public var disabledSkills:Vector.<InteractiveElementSkill>;
+      
+      public function getTypeId() : uint
+      {
+         return 80;
+      }
+      
+      public function initInteractiveElement(param1:uint = 0, param2:int = 0, param3:Vector.<InteractiveElementSkill> = null, param4:Vector.<InteractiveElementSkill> = null) : InteractiveElement
+      {
+         this.elementId = param1;
+         this.elementTypeId = param2;
+         this.enabledSkills = param3;
+         this.disabledSkills = param4;
+         return this;
+      }
+      
+      public function reset() : void
+      {
+         this.elementId = 0;
+         this.elementTypeId = 0;
+         this.enabledSkills = new Vector.<InteractiveElementSkill>();
+         this.disabledSkills = new Vector.<InteractiveElementSkill>();
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_InteractiveElement(param1);
+      }
+      
+      public function serializeAs_InteractiveElement(param1:ICustomDataOutput) : void
+      {
+         if(this.elementId < 0)
+         {
+            throw new Error("Forbidden value (" + this.elementId + ") on element elementId.");
+         }
+         else
+         {
+            param1.writeInt(this.elementId);
+            param1.writeInt(this.elementTypeId);
+            param1.writeShort(this.enabledSkills.length);
+            var _loc2_:uint = 0;
+            while(_loc2_ < this.enabledSkills.length)
             {
-                throw (new Error((("Forbidden value (" + this.elementId) + ") on element elementId.")));
-            };
-            output.writeInt(this.elementId);
-            output.writeInt(this.elementTypeId);
-            output.writeShort(this.enabledSkills.length);
-            var _i3:uint;
-            while (_i3 < this.enabledSkills.length)
+               param1.writeShort((this.enabledSkills[_loc2_] as InteractiveElementSkill).getTypeId());
+               (this.enabledSkills[_loc2_] as InteractiveElementSkill).serialize(param1);
+               _loc2_++;
+            }
+            param1.writeShort(this.disabledSkills.length);
+            var _loc3_:uint = 0;
+            while(_loc3_ < this.disabledSkills.length)
             {
-                output.writeShort((this.enabledSkills[_i3] as InteractiveElementSkill).getTypeId());
-                (this.enabledSkills[_i3] as InteractiveElementSkill).serialize(output);
-                _i3++;
-            };
-            output.writeShort(this.disabledSkills.length);
-            var _i4:uint;
-            while (_i4 < this.disabledSkills.length)
+               param1.writeShort((this.disabledSkills[_loc3_] as InteractiveElementSkill).getTypeId());
+               (this.disabledSkills[_loc3_] as InteractiveElementSkill).serialize(param1);
+               _loc3_++;
+            }
+            return;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_InteractiveElement(param1);
+      }
+      
+      public function deserializeAs_InteractiveElement(param1:ICustomDataInput) : void
+      {
+         var _loc6_:uint = 0;
+         var _loc7_:InteractiveElementSkill = null;
+         var _loc8_:uint = 0;
+         var _loc9_:InteractiveElementSkill = null;
+         this.elementId = param1.readInt();
+         if(this.elementId < 0)
+         {
+            throw new Error("Forbidden value (" + this.elementId + ") on element of InteractiveElement.elementId.");
+         }
+         else
+         {
+            this.elementTypeId = param1.readInt();
+            var _loc2_:uint = param1.readUnsignedShort();
+            var _loc3_:uint = 0;
+            while(_loc3_ < _loc2_)
             {
-                output.writeShort((this.disabledSkills[_i4] as InteractiveElementSkill).getTypeId());
-                (this.disabledSkills[_i4] as InteractiveElementSkill).serialize(output);
-                _i4++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_InteractiveElement(input);
-        }
-
-        public function deserializeAs_InteractiveElement(input:ICustomDataInput):void
-        {
-            var _id3:uint;
-            var _item3:InteractiveElementSkill;
-            var _id4:uint;
-            var _item4:InteractiveElementSkill;
-            this.elementId = input.readInt();
-            if (this.elementId < 0)
+               _loc6_ = param1.readUnsignedShort();
+               _loc7_ = ProtocolTypeManager.getInstance(InteractiveElementSkill,_loc6_);
+               _loc7_.deserialize(param1);
+               this.enabledSkills.push(_loc7_);
+               _loc3_++;
+            }
+            var _loc4_:uint = param1.readUnsignedShort();
+            var _loc5_:uint = 0;
+            while(_loc5_ < _loc4_)
             {
-                throw (new Error((("Forbidden value (" + this.elementId) + ") on element of InteractiveElement.elementId.")));
-            };
-            this.elementTypeId = input.readInt();
-            var _enabledSkillsLen:uint = input.readUnsignedShort();
-            var _i3:uint;
-            while (_i3 < _enabledSkillsLen)
-            {
-                _id3 = input.readUnsignedShort();
-                _item3 = ProtocolTypeManager.getInstance(InteractiveElementSkill, _id3);
-                _item3.deserialize(input);
-                this.enabledSkills.push(_item3);
-                _i3++;
-            };
-            var _disabledSkillsLen:uint = input.readUnsignedShort();
-            var _i4:uint;
-            while (_i4 < _disabledSkillsLen)
-            {
-                _id4 = input.readUnsignedShort();
-                _item4 = ProtocolTypeManager.getInstance(InteractiveElementSkill, _id4);
-                _item4.deserialize(input);
-                this.disabledSkills.push(_item4);
-                _i4++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.interactive
-
+               _loc8_ = param1.readUnsignedShort();
+               _loc9_ = ProtocolTypeManager.getInstance(InteractiveElementSkill,_loc8_);
+               _loc9_.deserialize(param1);
+               this.disabledSkills.push(_loc9_);
+               _loc5_++;
+            }
+            return;
+         }
+      }
+   }
+}

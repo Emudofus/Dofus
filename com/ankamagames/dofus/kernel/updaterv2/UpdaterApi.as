@@ -1,51 +1,49 @@
-﻿package com.ankamagames.dofus.kernel.updaterv2
+package com.ankamagames.dofus.kernel.updaterv2
 {
-    import com.ankamagames.berilia.interfaces.IApi;
-    import com.ankamagames.dofus.logic.game.approach.managers.PartManagerV2;
-    import com.ankamagames.dofus.kernel.updaterv2.messages.impl.ActivateComponentMessage;
-    import com.ankamagames.dofus.kernel.updaterv2.messages.impl.GetComponentsListMessage;
-    import com.ankamagames.dofus.kernel.updaterv2.messages.impl.GetSystemConfiguration;
-
-    public class UpdaterApi implements IApi 
-    {
-
-        public static const updaterConnection:UpdaterConnexionHelper = new UpdaterConnexionHelper();
-
-        public function UpdaterApi(handler:IUpdaterMessageHandler)
-        {
-            updaterConnection.addObserver(handler);
-        }
-
-        public function sayHello():void
-        {
-        }
-
-        public function log(message:String):void
-        {
-        }
-
-        public function hasComponent(name:String):Boolean
-        {
-            return (PartManagerV2.getInstance().hasComponent(name));
-        }
-
-        public function activateComponent(name:String, activate:Boolean, projectName:String="game"):void
-        {
-            var acm:ActivateComponentMessage = new ActivateComponentMessage(name, activate, projectName);
-            updaterConnection.sendMessage(acm);
-        }
-
-        public function getComponentList(project:String="game"):void
-        {
-            updaterConnection.sendMessage(new GetComponentsListMessage(project));
-        }
-
-        public function getSystemConfiguration(key:String=""):void
-        {
-            updaterConnection.sendMessage(new GetSystemConfiguration(key));
-        }
-
-
-    }
-}//package com.ankamagames.dofus.kernel.updaterv2
-
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.dofus.logic.game.approach.managers.PartManagerV2;
+   import com.ankamagames.dofus.kernel.updaterv2.messages.impl.ActivateComponentMessage;
+   import com.ankamagames.dofus.kernel.updaterv2.messages.impl.GetComponentsListMessage;
+   import com.ankamagames.dofus.kernel.updaterv2.messages.impl.GetSystemConfiguration;
+   
+   public class UpdaterApi extends Object implements IApi
+   {
+      
+      public function UpdaterApi(param1:IUpdaterMessageHandler)
+      {
+         super();
+         updaterConnection.addObserver(param1);
+      }
+      
+      public static const updaterConnection:UpdaterConnexionHelper = new UpdaterConnexionHelper();
+      
+      public function sayHello() : void
+      {
+      }
+      
+      public function log(param1:String) : void
+      {
+      }
+      
+      public function hasComponent(param1:String) : Boolean
+      {
+         return PartManagerV2.getInstance().hasComponent(param1);
+      }
+      
+      public function activateComponent(param1:String, param2:Boolean, param3:String = "game") : void
+      {
+         var _loc4_:ActivateComponentMessage = new ActivateComponentMessage(param1,param2,param3);
+         updaterConnection.sendMessage(_loc4_);
+      }
+      
+      public function getComponentList(param1:String = "game") : void
+      {
+         updaterConnection.sendMessage(new GetComponentsListMessage(param1));
+      }
+      
+      public function getSystemConfiguration(param1:String = "") : void
+      {
+         updaterConnection.sendMessage(new GetSystemConfiguration(param1));
+      }
+   }
+}

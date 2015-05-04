@@ -1,127 +1,131 @@
-﻿package com.ankamagames.dofus.network.messages.game.chat.channel
+package com.ankamagames.dofus.network.messages.game.chat.channel
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class EnabledChannelsMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 892;
-
-        private var _isInitialized:Boolean = false;
-        public var channels:Vector.<uint>;
-        public var disallowed:Vector.<uint>;
-
-        public function EnabledChannelsMessage()
-        {
-            this.channels = new Vector.<uint>();
-            this.disallowed = new Vector.<uint>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (892);
-        }
-
-        public function initEnabledChannelsMessage(channels:Vector.<uint>=null, disallowed:Vector.<uint>=null):EnabledChannelsMessage
-        {
-            this.channels = channels;
-            this.disallowed = disallowed;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.channels = new Vector.<uint>();
-            this.disallowed = new Vector.<uint>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_EnabledChannelsMessage(output);
-        }
-
-        public function serializeAs_EnabledChannelsMessage(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.channels.length);
-            var _i1:uint;
-            while (_i1 < this.channels.length)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class EnabledChannelsMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function EnabledChannelsMessage()
+      {
+         this.channels = new Vector.<uint>();
+         this.disallowed = new Vector.<uint>();
+         super();
+      }
+      
+      public static const protocolId:uint = 892;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var channels:Vector.<uint>;
+      
+      public var disallowed:Vector.<uint>;
+      
+      override public function getMessageId() : uint
+      {
+         return 892;
+      }
+      
+      public function initEnabledChannelsMessage(param1:Vector.<uint> = null, param2:Vector.<uint> = null) : EnabledChannelsMessage
+      {
+         this.channels = param1;
+         this.disallowed = param2;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.channels = new Vector.<uint>();
+         this.disallowed = new Vector.<uint>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_EnabledChannelsMessage(param1);
+      }
+      
+      public function serializeAs_EnabledChannelsMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeShort(this.channels.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.channels.length)
+         {
+            param1.writeByte(this.channels[_loc2_]);
+            _loc2_++;
+         }
+         param1.writeShort(this.disallowed.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.disallowed.length)
+         {
+            param1.writeByte(this.disallowed[_loc3_]);
+            _loc3_++;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_EnabledChannelsMessage(param1);
+      }
+      
+      public function deserializeAs_EnabledChannelsMessage(param1:ICustomDataInput) : void
+      {
+         var _loc6_:uint = 0;
+         var _loc7_:uint = 0;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc6_ = param1.readByte();
+            if(_loc6_ < 0)
             {
-                output.writeByte(this.channels[_i1]);
-                _i1++;
-            };
-            output.writeShort(this.disallowed.length);
-            var _i2:uint;
-            while (_i2 < this.disallowed.length)
+               throw new Error("Forbidden value (" + _loc6_ + ") on elements of channels.");
+            }
+            else
             {
-                output.writeByte(this.disallowed[_i2]);
-                _i2++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_EnabledChannelsMessage(input);
-        }
-
-        public function deserializeAs_EnabledChannelsMessage(input:ICustomDataInput):void
-        {
-            var _val1:uint;
-            var _val2:uint;
-            var _channelsLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _channelsLen)
+               this.channels.push(_loc6_);
+               _loc3_++;
+               continue;
+            }
+         }
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
+         {
+            _loc7_ = param1.readByte();
+            if(_loc7_ < 0)
             {
-                _val1 = input.readByte();
-                if (_val1 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val1) + ") on elements of channels.")));
-                };
-                this.channels.push(_val1);
-                _i1++;
-            };
-            var _disallowedLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _disallowedLen)
+               throw new Error("Forbidden value (" + _loc7_ + ") on elements of disallowed.");
+            }
+            else
             {
-                _val2 = input.readByte();
-                if (_val2 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val2) + ") on elements of disallowed.")));
-                };
-                this.disallowed.push(_val2);
-                _i2++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.chat.channel
-
+               this.disallowed.push(_loc7_);
+               _loc5_++;
+               continue;
+            }
+         }
+      }
+   }
+}

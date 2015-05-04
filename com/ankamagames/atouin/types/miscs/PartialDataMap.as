@@ -1,18 +1,17 @@
-﻿package com.ankamagames.atouin.types.miscs
+package com.ankamagames.atouin.types.miscs
 {
-    public class PartialDataMap 
-    {
-
-        public var cell:Array;
-        public var gfx:Array;
-
-        public function PartialDataMap()
-        {
-            this.cell = new Array();
-            this.gfx = new Array();
-            super();
-        }
-
-    }
-}//package com.ankamagames.atouin.types.miscs
-
+   public class PartialDataMap extends Object
+   {
+      
+      public function PartialDataMap()
+      {
+         this.cell = new Array();
+         this.gfx = new Array();
+         super();
+      }
+      
+      public var cell:Array;
+      
+      public var gfx:Array;
+   }
+}

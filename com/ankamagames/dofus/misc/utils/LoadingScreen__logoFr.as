@@ -1,12 +1,13 @@
-﻿package com.ankamagames.dofus.misc.utils
+package com.ankamagames.dofus.misc.utils
 {
-    import mx.core.BitmapAsset;
-
-    [ExcludeClass]
-    public class LoadingScreen__logoFr extends BitmapAsset 
-    {
-
-
-    }
-}//package com.ankamagames.dofus.misc.utils
-
+   import mx.core.BitmapAsset;
+   
+   public class LoadingScreen__logoFr extends BitmapAsset
+   {
+      
+      public function LoadingScreen__logoFr()
+      {
+         super();
+      }
+   }
+}

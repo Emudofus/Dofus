@@ -1,96 +1,97 @@
-﻿package com.ankamagames.dofus.logic.common.managers
+package com.ankamagames.dofus.logic.common.managers
 {
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import avmplus.getQualifiedClassName;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayCharacterInformations;
-    import com.ankamagames.berilia.managers.UiModuleManager;
-    import com.ankamagames.dofus.kernel.Kernel;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
-    import com.ankamagames.berilia.factories.MenusFactory;
-    import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
-    import com.ankamagames.dofus.logic.game.common.managers.ChatAutocompleteNameManager;
-    import flash.geom.Rectangle;
-    import com.ankamagames.berilia.types.data.TextTooltipInfo;
-    import com.ankamagames.jerakine.data.I18n;
-    import com.ankamagames.berilia.managers.TooltipManager;
-    import com.ankamagames.berilia.enums.StrataEnum;
-
-    public class HyperlinkShowPlayerMenuManager 
-    {
-
-        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(HyperlinkShowPlayerMenuManager));
-
-
-        public static function showPlayerMenu(playerName:String, playerId:int=0, timestamp:Number=0, fingerprint:String=null, chan:uint=0):void
-        {
-            var playerInfo:GameRolePlayCharacterInformations;
-            if (playerName)
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayCharacterInformations;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
+   import com.ankamagames.berilia.factories.MenusFactory;
+   import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
+   import com.ankamagames.dofus.logic.game.common.managers.ChatAutocompleteNameManager;
+   import flash.geom.Rectangle;
+   import com.ankamagames.berilia.types.data.TextTooltipInfo;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import com.ankamagames.berilia.enums.StrataEnum;
+   import com.ankamagames.jerakine.logger.Log;
+   import avmplus.getQualifiedClassName;
+   
+   public class HyperlinkShowPlayerMenuManager extends Object
+   {
+      
+      public function HyperlinkShowPlayerMenuManager()
+      {
+         super();
+      }
+      
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(HyperlinkShowPlayerMenuManager));
+      
+      public static function showPlayerMenu(param1:String, param2:int = 0, param3:Number = 0, param4:String = null, param5:uint = 0) : void
+      {
+         var _loc8_:GameRolePlayCharacterInformations = null;
+         if(param1)
+         {
+            var param1:String = unescape(param1);
+         }
+         var _loc6_:Object = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
+         if((param1) && param1.indexOf("★") == 0)
+         {
+            param1 = param1.substr(1);
+         }
+         var _loc7_:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         if((_loc7_) && (param2))
+         {
+            _loc8_ = _loc7_.getEntityInfos(param2) as GameRolePlayCharacterInformations;
+            if(!_loc8_)
             {
-                playerName = unescape(playerName);
-            };
-            var _modContextMenu:Object = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
-            if (((playerName) && ((playerName.indexOf("★") == 0))))
-            {
-                playerName = playerName.substr(1);
-            };
-            var roleplayEntitiesFrame:RoleplayEntitiesFrame = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame);
-            if (((roleplayEntitiesFrame) && (playerId)))
-            {
-                playerInfo = (roleplayEntitiesFrame.getEntityInfos(playerId) as GameRolePlayCharacterInformations);
-                if (!(playerInfo))
-                {
-                    playerInfo = new GameRolePlayCharacterInformations();
-                    playerInfo.contextualId = playerId;
-                    playerInfo.name = playerName;
-                };
-                _modContextMenu.createContextMenu(MenusFactory.create(playerInfo, null, [{
-                    "id":playerId,
-                    "fingerprint":fingerprint,
-                    "timestamp":timestamp,
-                    "chan":chan
-                }]));
+               _loc8_ = new GameRolePlayCharacterInformations();
+               _loc8_.contextualId = param2;
+               _loc8_.name = param1;
             }
-            else
-            {
-                _modContextMenu.createContextMenu(MenusFactory.create(playerName));
-            };
-        }
-
-        public static function getPlayerName(playerName:String, playerId:int=0, timestamp:Number=0, fingerprint:String=null, chan:uint=0):String
-        {
-            var priority:int;
-            switch (chan)
-            {
-                case ChatActivableChannelsEnum.CHANNEL_TEAM:
-                case ChatActivableChannelsEnum.CHANNEL_GUILD:
-                case ChatActivableChannelsEnum.CHANNEL_PARTY:
-                case ChatActivableChannelsEnum.CHANNEL_ARENA:
-                case ChatActivableChannelsEnum.CHANNEL_ADMIN:
-                    priority = 3;
-                    break;
-                case ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE:
-                    priority = 4;
-                    break;
-                default:
-                    priority = 1;
-            };
-            if (((playerName) && ((playerName.indexOf("★") == 0))))
-            {
-                playerName = playerName.substr(1);
-            };
-            ChatAutocompleteNameManager.getInstance().addEntry(playerName, priority);
-            return (playerName);
-        }
-
-        public static function rollOverPlayer(pX:int, pY:int, playerName:String, playerId:int=0, timestamp:Number=0, fingerprint:String=null, chan:uint=0):void
-        {
-            var target:Rectangle = new Rectangle(pX, pY, 10, 10);
-            var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.player"));
-            TooltipManager.show(info, target, UiModuleManager.getInstance().getModule("Ankama_GameUiCore"), false, "HyperLink", 6, 2, 3, true, null, null, null, null, false, StrataEnum.STRATA_TOOLTIP, 1);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.logic.common.managers
-
+            _loc6_.createContextMenu(MenusFactory.create(_loc8_,null,[{
+               "id":param2,
+               "fingerprint":param4,
+               "timestamp":param3,
+               "chan":param5
+            }]));
+         }
+         else
+         {
+            _loc6_.createContextMenu(MenusFactory.create(param1));
+         }
+      }
+      
+      public static function getPlayerName(param1:String, param2:int = 0, param3:Number = 0, param4:String = null, param5:uint = 0) : String
+      {
+         var _loc6_:* = 0;
+         switch(param5)
+         {
+            case ChatActivableChannelsEnum.CHANNEL_TEAM:
+            case ChatActivableChannelsEnum.CHANNEL_GUILD:
+            case ChatActivableChannelsEnum.CHANNEL_PARTY:
+            case ChatActivableChannelsEnum.CHANNEL_ARENA:
+            case ChatActivableChannelsEnum.CHANNEL_ADMIN:
+               _loc6_ = 3;
+               break;
+            case ChatActivableChannelsEnum.PSEUDO_CHANNEL_PRIVATE:
+               _loc6_ = 4;
+               break;
+            default:
+               _loc6_ = 1;
+         }
+         if((param1) && param1.indexOf("★") == 0)
+         {
+            var param1:String = param1.substr(1);
+         }
+         ChatAutocompleteNameManager.getInstance().addEntry(param1,_loc6_);
+         return param1;
+      }
+      
+      public static function rollOverPlayer(param1:int, param2:int, param3:String, param4:int = 0, param5:Number = 0, param6:String = null, param7:uint = 0) : void
+      {
+         var _loc8_:Rectangle = new Rectangle(param1,param2,10,10);
+         var _loc9_:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.player"));
+         TooltipManager.show(_loc9_,_loc8_,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
+      }
+   }
+}

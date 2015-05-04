@@ -1,104 +1,99 @@
-﻿package com.ankamagames.dofus.network.messages.game.chat
+package com.ankamagames.dofus.network.messages.game.chat
 {
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class ChatServerCopyWithObjectMessage extends ChatServerCopyMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 884;
-
-        private var _isInitialized:Boolean = false;
-        public var objects:Vector.<ObjectItem>;
-
-        public function ChatServerCopyWithObjectMessage()
-        {
-            this.objects = new Vector.<ObjectItem>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (((super.isInitialized) && (this._isInitialized)));
-        }
-
-        override public function getMessageId():uint
-        {
-            return (884);
-        }
-
-        public function initChatServerCopyWithObjectMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="", receiverId:uint=0, receiverName:String="", objects:Vector.<ObjectItem>=null):ChatServerCopyWithObjectMessage
-        {
-            super.initChatServerCopyMessage(channel, content, timestamp, fingerprint, receiverId, receiverName);
-            this.objects = objects;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.objects = new Vector.<ObjectItem>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_ChatServerCopyWithObjectMessage(output);
-        }
-
-        public function serializeAs_ChatServerCopyWithObjectMessage(output:ICustomDataOutput):void
-        {
-            super.serializeAs_ChatServerCopyMessage(output);
-            output.writeShort(this.objects.length);
-            var _i1:uint;
-            while (_i1 < this.objects.length)
-            {
-                (this.objects[_i1] as ObjectItem).serializeAs_ObjectItem(output);
-                _i1++;
-            };
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_ChatServerCopyWithObjectMessage(input);
-        }
-
-        public function deserializeAs_ChatServerCopyWithObjectMessage(input:ICustomDataInput):void
-        {
-            var _item1:ObjectItem;
-            super.deserialize(input);
-            var _objectsLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _objectsLen)
-            {
-                _item1 = new ObjectItem();
-                _item1.deserialize(input);
-                this.objects.push(_item1);
-                _i1++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.chat
-
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class ChatServerCopyWithObjectMessage extends ChatServerCopyMessage implements INetworkMessage
+   {
+      
+      public function ChatServerCopyWithObjectMessage()
+      {
+         this.objects = new Vector.<ObjectItem>();
+         super();
+      }
+      
+      public static const protocolId:uint = 884;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return (super.isInitialized) && (this._isInitialized);
+      }
+      
+      public var objects:Vector.<ObjectItem>;
+      
+      override public function getMessageId() : uint
+      {
+         return 884;
+      }
+      
+      public function initChatServerCopyWithObjectMessage(param1:uint = 0, param2:String = "", param3:uint = 0, param4:String = "", param5:uint = 0, param6:String = "", param7:Vector.<ObjectItem> = null) : ChatServerCopyWithObjectMessage
+      {
+         super.initChatServerCopyMessage(param1,param2,param3,param4,param5,param6);
+         this.objects = param7;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.objects = new Vector.<ObjectItem>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_ChatServerCopyWithObjectMessage(param1);
+      }
+      
+      public function serializeAs_ChatServerCopyWithObjectMessage(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_ChatServerCopyMessage(param1);
+         param1.writeShort(this.objects.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.objects.length)
+         {
+            (this.objects[_loc2_] as ObjectItem).serializeAs_ObjectItem(param1);
+            _loc2_++;
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_ChatServerCopyWithObjectMessage(param1);
+      }
+      
+      public function deserializeAs_ChatServerCopyWithObjectMessage(param1:ICustomDataInput) : void
+      {
+         var _loc4_:ObjectItem = null;
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc4_ = new ObjectItem();
+            _loc4_.deserialize(param1);
+            this.objects.push(_loc4_);
+            _loc3_++;
+         }
+      }
+   }
+}

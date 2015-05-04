@@ -1,70 +1,67 @@
-﻿package com.ankamagames.dofus.network.types.game.context.roleplay
+package com.ankamagames.dofus.network.types.game.context.roleplay
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import com.ankamagames.dofus.network.types.game.prism.PrismInformation;
-    import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import com.ankamagames.dofus.network.ProtocolTypeManager;
-
-    public class GameRolePlayPrismInformations extends GameRolePlayActorInformations implements INetworkType 
-    {
-
-        public static const protocolId:uint = 161;
-
-        public var prism:PrismInformation;
-
-        public function GameRolePlayPrismInformations()
-        {
-            this.prism = new PrismInformation();
-            super();
-        }
-
-        override public function getTypeId():uint
-        {
-            return (161);
-        }
-
-        public function initGameRolePlayPrismInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, prism:PrismInformation=null):GameRolePlayPrismInformations
-        {
-            super.initGameRolePlayActorInformations(contextualId, look, disposition);
-            this.prism = prism;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.prism = new PrismInformation();
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GameRolePlayPrismInformations(output);
-        }
-
-        public function serializeAs_GameRolePlayPrismInformations(output:ICustomDataOutput):void
-        {
-            super.serializeAs_GameRolePlayActorInformations(output);
-            output.writeShort(this.prism.getTypeId());
-            this.prism.serialize(output);
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GameRolePlayPrismInformations(input);
-        }
-
-        public function deserializeAs_GameRolePlayPrismInformations(input:ICustomDataInput):void
-        {
-            super.deserialize(input);
-            var _id1:uint = input.readUnsignedShort();
-            this.prism = ProtocolTypeManager.getInstance(PrismInformation, _id1);
-            this.prism.deserialize(input);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.context.roleplay
-
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.dofus.network.types.game.prism.PrismInformation;
+   import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
+   
+   public class GameRolePlayPrismInformations extends GameRolePlayActorInformations implements INetworkType
+   {
+      
+      public function GameRolePlayPrismInformations()
+      {
+         this.prism = new PrismInformation();
+         super();
+      }
+      
+      public static const protocolId:uint = 161;
+      
+      public var prism:PrismInformation;
+      
+      override public function getTypeId() : uint
+      {
+         return 161;
+      }
+      
+      public function initGameRolePlayPrismInformations(param1:int = 0, param2:EntityLook = null, param3:EntityDispositionInformations = null, param4:PrismInformation = null) : GameRolePlayPrismInformations
+      {
+         super.initGameRolePlayActorInformations(param1,param2,param3);
+         this.prism = param4;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.prism = new PrismInformation();
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GameRolePlayPrismInformations(param1);
+      }
+      
+      public function serializeAs_GameRolePlayPrismInformations(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_GameRolePlayActorInformations(param1);
+         param1.writeShort(this.prism.getTypeId());
+         this.prism.serialize(param1);
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GameRolePlayPrismInformations(param1);
+      }
+      
+      public function deserializeAs_GameRolePlayPrismInformations(param1:ICustomDataInput) : void
+      {
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readUnsignedShort();
+         this.prism = ProtocolTypeManager.getInstance(PrismInformation,_loc2_);
+         this.prism.deserialize(param1);
+      }
+   }
+}

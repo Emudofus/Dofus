@@ -1,132 +1,143 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.network.types.game.context.fight.GameFightSpellCooldown;
-    import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
-    import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMark;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class GameFightResumeMessage extends GameFightSpectateMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6067;
-
-        private var _isInitialized:Boolean = false;
-        public var spellCooldowns:Vector.<GameFightSpellCooldown>;
-        public var summonCount:uint = 0;
-        public var bombCount:uint = 0;
-
-        public function GameFightResumeMessage()
-        {
-            this.spellCooldowns = new Vector.<GameFightSpellCooldown>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (((super.isInitialized) && (this._isInitialized)));
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6067);
-        }
-
-        public function initGameFightResumeMessage(effects:Vector.<FightDispellableEffectExtendedInformations>=null, marks:Vector.<GameActionMark>=null, gameTurn:uint=0, fightStart:uint=0, spellCooldowns:Vector.<GameFightSpellCooldown>=null, summonCount:uint=0, bombCount:uint=0):GameFightResumeMessage
-        {
-            super.initGameFightSpectateMessage(effects, marks, gameTurn, fightStart);
-            this.spellCooldowns = spellCooldowns;
-            this.summonCount = summonCount;
-            this.bombCount = bombCount;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.spellCooldowns = new Vector.<GameFightSpellCooldown>();
-            this.summonCount = 0;
-            this.bombCount = 0;
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GameFightResumeMessage(output);
-        }
-
-        public function serializeAs_GameFightResumeMessage(output:ICustomDataOutput):void
-        {
-            super.serializeAs_GameFightSpectateMessage(output);
-            output.writeShort(this.spellCooldowns.length);
-            var _i1:uint;
-            while (_i1 < this.spellCooldowns.length)
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightSpellCooldown;
+   import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
+   import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMark;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class GameFightResumeMessage extends GameFightSpectateMessage implements INetworkMessage
+   {
+      
+      public function GameFightResumeMessage()
+      {
+         this.spellCooldowns = new Vector.<GameFightSpellCooldown>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6067;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return (super.isInitialized) && (this._isInitialized);
+      }
+      
+      public var spellCooldowns:Vector.<GameFightSpellCooldown>;
+      
+      public var summonCount:uint = 0;
+      
+      public var bombCount:uint = 0;
+      
+      override public function getMessageId() : uint
+      {
+         return 6067;
+      }
+      
+      public function initGameFightResumeMessage(param1:Vector.<FightDispellableEffectExtendedInformations> = null, param2:Vector.<GameActionMark> = null, param3:uint = 0, param4:uint = 0, param5:Vector.<GameFightSpellCooldown> = null, param6:uint = 0, param7:uint = 0) : GameFightResumeMessage
+      {
+         super.initGameFightSpectateMessage(param1,param2,param3,param4);
+         this.spellCooldowns = param5;
+         this.summonCount = param6;
+         this.bombCount = param7;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.spellCooldowns = new Vector.<GameFightSpellCooldown>();
+         this.summonCount = 0;
+         this.bombCount = 0;
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GameFightResumeMessage(param1);
+      }
+      
+      public function serializeAs_GameFightResumeMessage(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_GameFightSpectateMessage(param1);
+         param1.writeShort(this.spellCooldowns.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.spellCooldowns.length)
+         {
+            (this.spellCooldowns[_loc2_] as GameFightSpellCooldown).serializeAs_GameFightSpellCooldown(param1);
+            _loc2_++;
+         }
+         if(this.summonCount < 0)
+         {
+            throw new Error("Forbidden value (" + this.summonCount + ") on element summonCount.");
+         }
+         else
+         {
+            param1.writeByte(this.summonCount);
+            if(this.bombCount < 0)
             {
-                (this.spellCooldowns[_i1] as GameFightSpellCooldown).serializeAs_GameFightSpellCooldown(output);
-                _i1++;
-            };
-            if (this.summonCount < 0)
+               throw new Error("Forbidden value (" + this.bombCount + ") on element bombCount.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.summonCount) + ") on element summonCount.")));
-            };
-            output.writeByte(this.summonCount);
-            if (this.bombCount < 0)
+               param1.writeByte(this.bombCount);
+               return;
+            }
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GameFightResumeMessage(param1);
+      }
+      
+      public function deserializeAs_GameFightResumeMessage(param1:ICustomDataInput) : void
+      {
+         var _loc4_:GameFightSpellCooldown = null;
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc4_ = new GameFightSpellCooldown();
+            _loc4_.deserialize(param1);
+            this.spellCooldowns.push(_loc4_);
+            _loc3_++;
+         }
+         this.summonCount = param1.readByte();
+         if(this.summonCount < 0)
+         {
+            throw new Error("Forbidden value (" + this.summonCount + ") on element of GameFightResumeMessage.summonCount.");
+         }
+         else
+         {
+            this.bombCount = param1.readByte();
+            if(this.bombCount < 0)
             {
-                throw (new Error((("Forbidden value (" + this.bombCount) + ") on element bombCount.")));
-            };
-            output.writeByte(this.bombCount);
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GameFightResumeMessage(input);
-        }
-
-        public function deserializeAs_GameFightResumeMessage(input:ICustomDataInput):void
-        {
-            var _item1:GameFightSpellCooldown;
-            super.deserialize(input);
-            var _spellCooldownsLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _spellCooldownsLen)
+               throw new Error("Forbidden value (" + this.bombCount + ") on element of GameFightResumeMessage.bombCount.");
+            }
+            else
             {
-                _item1 = new GameFightSpellCooldown();
-                _item1.deserialize(input);
-                this.spellCooldowns.push(_item1);
-                _i1++;
-            };
-            this.summonCount = input.readByte();
-            if (this.summonCount < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.summonCount) + ") on element of GameFightResumeMessage.summonCount.")));
-            };
-            this.bombCount = input.readByte();
-            if (this.bombCount < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.bombCount) + ") on element of GameFightResumeMessage.bombCount.")));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.fight
-
+               return;
+            }
+         }
+      }
+   }
+}

@@ -1,76 +1,76 @@
-﻿package com.ankamagames.jerakine.newCache.impl
+package com.ankamagames.jerakine.newCache.impl
 {
-    import com.ankamagames.jerakine.newCache.ICache;
-    import com.ankamagames.jerakine.newCache.ICacheGarbageCollector;
-
-    public class Cache extends InfiniteCache implements ICache 
-    {
-
-        private static var _namedCacheIndex:Array = new Array();
-
-        private var _bounds:uint;
-        private var _gc:ICacheGarbageCollector;
-        private var _name:String;
-
-        public function Cache(bounds:uint, gc:ICacheGarbageCollector)
-        {
-            this._bounds = bounds;
-            this._gc = gc;
-            this._gc.cache = this;
-        }
-
-        public static function create(bounds:uint, gc:ICacheGarbageCollector, name:String):Cache
-        {
-            var cache:Cache;
-            if (((name) && (_namedCacheIndex[name])))
-            {
-                return (_namedCacheIndex[name]);
-            };
-            cache = new (Cache)(bounds, gc);
-            if (name)
-            {
-                _namedCacheIndex[name] = cache;
-                cache._name = name;
-            };
-            return (cache);
-        }
-
-
-        override public function destroy():void
-        {
-            if (this._name)
-            {
-                delete _namedCacheIndex[this._name];
-            };
-            super.destroy();
-        }
-
-        override public function extract(ref:*)
-        {
-            this._gc.used(ref);
-            return (super.extract(ref));
-        }
-
-        override public function peek(ref:*)
-        {
-            this._gc.used(ref);
-            return (super.peek(ref));
-        }
-
-        override public function store(ref:*, obj:*):Boolean
-        {
-            var bb:uint;
-            if (((this._bounds) && (((_size + 1) > this._bounds))))
-            {
-                bb = (((this._bounds * 0.7) + 1) >> 0);
-                this._gc.purge(bb);
-            };
-            super.store(ref, obj);
-            this._gc.used(ref);
-            return (true);
-        }
-
-
-    }
-}//package com.ankamagames.jerakine.newCache.impl
-
+   import com.ankamagames.jerakine.newCache.ICache;
+   import com.ankamagames.jerakine.newCache.ICacheGarbageCollector;
+   
+   public class Cache extends InfiniteCache implements ICache
+   {
+      
+      public function Cache(param1:uint, param2:ICacheGarbageCollector)
+      {
+         super();
+         this._bounds = param1;
+         this._gc = param2;
+         this._gc.cache = this;
+      }
+      
+      private static var _namedCacheIndex:Array = new Array();
+      
+      public static function create(param1:uint, param2:ICacheGarbageCollector, param3:String) : Cache
+      {
+         var _loc4_:Cache = null;
+         if((param3) && (_namedCacheIndex[param3]))
+         {
+            return _namedCacheIndex[param3];
+         }
+         _loc4_ = new Cache(param1,param2);
+         if(param3)
+         {
+            _namedCacheIndex[param3] = _loc4_;
+            _loc4_._name = param3;
+         }
+         return _loc4_;
+      }
+      
+      private var _bounds:uint;
+      
+      private var _gc:ICacheGarbageCollector;
+      
+      private var _name:String;
+      
+      override public function destroy() : void
+      {
+         if(this._name)
+         {
+            delete _namedCacheIndex[this._name];
+            true;
+         }
+         super.destroy();
+      }
+      
+      override public function extract(param1:*) : *
+      {
+         this._gc.used(param1);
+         return super.extract(param1);
+      }
+      
+      override public function peek(param1:*) : *
+      {
+         this._gc.used(param1);
+         return super.peek(param1);
+      }
+      
+      override public function store(param1:*, param2:*) : Boolean
+      {
+         var _loc3_:uint = 0;
+         if((this._bounds) && _size + 1 > this._bounds)
+         {
+            _loc3_ = this._bounds * 0.7 + 1 >> 0;
+            this._gc.purge(_loc3_);
+         }
+         super.store(param1,param2);
+         this._gc.used(param1);
+         return true;
+      }
+   }
+}

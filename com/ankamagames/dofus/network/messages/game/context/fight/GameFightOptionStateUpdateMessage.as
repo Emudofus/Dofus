@@ -1,109 +1,127 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class GameFightOptionStateUpdateMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 5927;
-
-        private var _isInitialized:Boolean = false;
-        public var fightId:uint = 0;
-        public var teamId:uint = 2;
-        public var option:uint = 3;
-        public var state:Boolean = false;
-
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (5927);
-        }
-
-        public function initGameFightOptionStateUpdateMessage(fightId:uint=0, teamId:uint=2, option:uint=3, state:Boolean=false):GameFightOptionStateUpdateMessage
-        {
-            this.fightId = fightId;
-            this.teamId = teamId;
-            this.option = option;
-            this.state = state;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.fightId = 0;
-            this.teamId = 2;
-            this.option = 3;
-            this.state = false;
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GameFightOptionStateUpdateMessage(output);
-        }
-
-        public function serializeAs_GameFightOptionStateUpdateMessage(output:ICustomDataOutput):void
-        {
-            if (this.fightId < 0)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class GameFightOptionStateUpdateMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function GameFightOptionStateUpdateMessage()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 5927;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var fightId:uint = 0;
+      
+      public var teamId:uint = 2;
+      
+      public var option:uint = 3;
+      
+      public var state:Boolean = false;
+      
+      override public function getMessageId() : uint
+      {
+         return 5927;
+      }
+      
+      public function initGameFightOptionStateUpdateMessage(param1:uint = 0, param2:uint = 2, param3:uint = 3, param4:Boolean = false) : GameFightOptionStateUpdateMessage
+      {
+         this.fightId = param1;
+         this.teamId = param2;
+         this.option = param3;
+         this.state = param4;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.fightId = 0;
+         this.teamId = 2;
+         this.option = 3;
+         this.state = false;
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GameFightOptionStateUpdateMessage(param1);
+      }
+      
+      public function serializeAs_GameFightOptionStateUpdateMessage(param1:ICustomDataOutput) : void
+      {
+         if(this.fightId < 0)
+         {
+            throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+         }
+         else
+         {
+            param1.writeShort(this.fightId);
+            param1.writeByte(this.teamId);
+            param1.writeByte(this.option);
+            param1.writeBoolean(this.state);
+            return;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GameFightOptionStateUpdateMessage(param1);
+      }
+      
+      public function deserializeAs_GameFightOptionStateUpdateMessage(param1:ICustomDataInput) : void
+      {
+         this.fightId = param1.readShort();
+         if(this.fightId < 0)
+         {
+            throw new Error("Forbidden value (" + this.fightId + ") on element of GameFightOptionStateUpdateMessage.fightId.");
+         }
+         else
+         {
+            this.teamId = param1.readByte();
+            if(this.teamId < 0)
             {
-                throw (new Error((("Forbidden value (" + this.fightId) + ") on element fightId.")));
-            };
-            output.writeShort(this.fightId);
-            output.writeByte(this.teamId);
-            output.writeByte(this.option);
-            output.writeBoolean(this.state);
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GameFightOptionStateUpdateMessage(input);
-        }
-
-        public function deserializeAs_GameFightOptionStateUpdateMessage(input:ICustomDataInput):void
-        {
-            this.fightId = input.readShort();
-            if (this.fightId < 0)
+               throw new Error("Forbidden value (" + this.teamId + ") on element of GameFightOptionStateUpdateMessage.teamId.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.fightId) + ") on element of GameFightOptionStateUpdateMessage.fightId.")));
-            };
-            this.teamId = input.readByte();
-            if (this.teamId < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.teamId) + ") on element of GameFightOptionStateUpdateMessage.teamId.")));
-            };
-            this.option = input.readByte();
-            if (this.option < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.option) + ") on element of GameFightOptionStateUpdateMessage.option.")));
-            };
-            this.state = input.readBoolean();
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.fight
-
+               this.option = param1.readByte();
+               if(this.option < 0)
+               {
+                  throw new Error("Forbidden value (" + this.option + ") on element of GameFightOptionStateUpdateMessage.option.");
+               }
+               else
+               {
+                  this.state = param1.readBoolean();
+                  return;
+               }
+            }
+         }
+      }
+   }
+}

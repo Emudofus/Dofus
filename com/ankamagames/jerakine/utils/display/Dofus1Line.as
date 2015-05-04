@@ -1,293 +1,250 @@
-﻿package com.ankamagames.jerakine.utils.display
+package com.ankamagames.jerakine.utils.display
 {
-    import flash.geom.Point;
-    import com.ankamagames.jerakine.types.Point3D;
-
-    public class Dofus1Line 
-    {
-
-        public static const useDofus2Line:Boolean = true;
-
-
-        public static function getLine(x1:int, y1:int, z1:int, x2:int, y2:int, z2:int):Array
-        {
-            var i:int;
-            var cell:Point;
-            var erreurSupArrondis:int;
-            var erreurInfArrondis:int;
-            var beforeY:Number;
-            var afterY:Number;
-            var diffBeforeCenterY:Number;
-            var diffCenterAfterY:Number;
-            var beforeX:Number;
-            var afterX:Number;
-            var diffBeforeCenterX:Number;
-            var diffCenterAfterX:Number;
-            var y:uint;
-            var x:uint;
-            var line:Array = new Array();
-            var pFrom:Point3D = new Point3D(x1, y1, z1);
-            var pTo:Point3D = new Point3D(x2, y2, z2);
-            var pStart:Point3D = new Point3D((pFrom.x + 0.5), (pFrom.y + 0.5), pFrom.z);
-            var pEnd:Point3D = new Point3D((pTo.x + 0.5), (pTo.y + 0.5), pTo.z);
-            var padX:Number = 0;
-            var padY:Number = 0;
-            var padZ:Number = 0;
-            var steps:Number = 0;
-            var descending:Boolean = (pStart.z > pEnd.z);
-            var xToTest:Array = new Array();
-            var yToTest:Array = new Array();
-            var cas:uint;
-            if (Math.abs((pStart.x - pEnd.x)) == Math.abs((pStart.y - pEnd.y)))
+   import flash.geom.Point;
+   import com.ankamagames.jerakine.types.Point3D;
+   
+   public class Dofus1Line extends Object
+   {
+      
+      public function Dofus1Line()
+      {
+         super();
+      }
+      
+      public static const useDofus2Line:Boolean = true;
+      
+      public static function getLine(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int) : Array
+      {
+         var _loc10_:* = 0;
+         var _loc21_:Point = null;
+         var _loc22_:* = 0;
+         var _loc23_:* = 0;
+         var _loc24_:* = NaN;
+         var _loc25_:* = NaN;
+         var _loc26_:* = NaN;
+         var _loc27_:* = NaN;
+         var _loc28_:* = NaN;
+         var _loc29_:* = NaN;
+         var _loc30_:* = NaN;
+         var _loc31_:* = NaN;
+         var _loc32_:uint = 0;
+         var _loc33_:uint = 0;
+         var _loc7_:Array = new Array();
+         var _loc8_:Point3D = new Point3D(param1,param2,param3);
+         var _loc9_:Point3D = new Point3D(param4,param5,param6);
+         var _loc11_:Point3D = new Point3D(_loc8_.x + 0.5,_loc8_.y + 0.5,_loc8_.z);
+         var _loc12_:Point3D = new Point3D(_loc9_.x + 0.5,_loc9_.y + 0.5,_loc9_.z);
+         var _loc13_:Number = 0;
+         var _loc14_:Number = 0;
+         var _loc15_:Number = 0;
+         var _loc16_:Number = 0;
+         var _loc17_:* = _loc11_.z > _loc12_.z;
+         var _loc18_:Array = new Array();
+         var _loc19_:Array = new Array();
+         var _loc20_:uint = 0;
+         if(Math.abs(_loc11_.x - _loc12_.x) == Math.abs(_loc11_.y - _loc12_.y))
+         {
+            _loc16_ = Math.abs(_loc11_.x - _loc12_.x);
+            _loc13_ = _loc12_.x > _loc11_.x?1:-1;
+            _loc14_ = _loc12_.y > _loc11_.y?1:-1;
+            _loc15_ = _loc16_ == 0?0:_loc17_?(_loc8_.z - _loc9_.z) / _loc16_:(_loc9_.z - _loc8_.z) / _loc16_;
+            _loc20_ = 1;
+         }
+         else if(Math.abs(_loc11_.x - _loc12_.x) > Math.abs(_loc11_.y - _loc12_.y))
+         {
+            _loc16_ = Math.abs(_loc11_.x - _loc12_.x);
+            _loc13_ = _loc12_.x > _loc11_.x?1:-1;
+            _loc14_ = _loc12_.y > _loc11_.y?Math.abs(_loc11_.y - _loc12_.y) == 0?0:Math.abs(_loc11_.y - _loc12_.y) / _loc16_:-Math.abs(_loc11_.y - _loc12_.y) / _loc16_;
+            _loc14_ = _loc14_ * 100;
+            _loc14_ = Math.ceil(_loc14_) / 100;
+            _loc15_ = _loc16_ == 0?0:_loc17_?(_loc8_.z - _loc9_.z) / _loc16_:(_loc9_.z - _loc8_.z) / _loc16_;
+            _loc20_ = 2;
+         }
+         else
+         {
+            _loc16_ = Math.abs(_loc11_.y - _loc12_.y);
+            _loc13_ = _loc12_.x > _loc11_.x?Math.abs(_loc11_.x - _loc12_.x) == 0?0:Math.abs(_loc11_.x - _loc12_.x) / _loc16_:-Math.abs(_loc11_.x - _loc12_.x) / _loc16_;
+            _loc13_ = _loc13_ * 100;
+            _loc13_ = Math.ceil(_loc13_) / 100;
+            _loc14_ = _loc12_.y > _loc11_.y?1:-1;
+            _loc15_ = _loc16_ == 0?0:_loc17_?(_loc8_.z - _loc9_.z) / _loc16_:(_loc9_.z - _loc8_.z) / _loc16_;
+            _loc20_ = 3;
+         }
+         
+         _loc10_ = 0;
+         while(_loc10_ < _loc16_)
+         {
+            _loc22_ = int(3 + _loc16_ / 2);
+            _loc23_ = int(97 - _loc16_ / 2);
+            if(_loc20_ == 2)
             {
-                steps = Math.abs((pStart.x - pEnd.x));
-                padX = (((pEnd.x)>pStart.x) ? 1 : -1);
-                padY = (((pEnd.y)>pStart.y) ? 1 : -1);
-                padZ = (((steps == 0)) ? 0 : ((descending) ? ((pFrom.z - pTo.z) / steps) : ((pTo.z - pFrom.z) / steps)));
-                cas = 1;
+               _loc24_ = Math.ceil(_loc11_.y * 100 + _loc14_ * 50) / 100;
+               _loc25_ = Math.floor(_loc11_.y * 100 + _loc14_ * 150) / 100;
+               _loc26_ = Math.floor(Math.abs(Math.floor(_loc24_) * 100 - _loc24_ * 100)) / 100;
+               _loc27_ = Math.ceil(Math.abs(Math.ceil(_loc25_) * 100 - _loc25_ * 100)) / 100;
+               if(Math.floor(_loc24_) == Math.floor(_loc25_))
+               {
+                  _loc19_ = [Math.floor(_loc11_.y + _loc14_)];
+                  if(_loc24_ == _loc19_[0] && _loc25_ < _loc19_[0])
+                  {
+                     _loc19_ = [Math.ceil(_loc11_.y + _loc14_)];
+                  }
+                  else if(_loc24_ == _loc19_[0] && _loc25_ > _loc19_[0])
+                  {
+                     _loc19_ = [Math.floor(_loc11_.y + _loc14_)];
+                  }
+                  else if(_loc25_ == _loc19_[0] && _loc24_ < _loc19_[0])
+                  {
+                     _loc19_ = [Math.ceil(_loc11_.y + _loc14_)];
+                  }
+                  else if(_loc25_ == _loc19_[0] && _loc24_ > _loc19_[0])
+                  {
+                     _loc19_ = [Math.floor(_loc11_.y + _loc14_)];
+                  }
+                  
+                  
+                  
+               }
+               else if(Math.ceil(_loc24_) == Math.ceil(_loc25_))
+               {
+                  _loc19_ = [Math.ceil(_loc11_.y + _loc14_)];
+                  if(_loc24_ == _loc19_[0] && _loc25_ < _loc19_[0])
+                  {
+                     _loc19_ = [Math.floor(_loc11_.y + _loc14_)];
+                  }
+                  else if(_loc24_ == _loc19_[0] && _loc25_ > _loc19_[0])
+                  {
+                     _loc19_ = [Math.ceil(_loc11_.y + _loc14_)];
+                  }
+                  else if(_loc25_ == _loc19_[0] && _loc24_ < _loc19_[0])
+                  {
+                     _loc19_ = [Math.floor(_loc11_.y + _loc14_)];
+                  }
+                  else if(_loc25_ == _loc19_[0] && _loc24_ > _loc19_[0])
+                  {
+                     _loc19_ = [Math.ceil(_loc11_.y + _loc14_)];
+                  }
+                  
+                  
+                  
+               }
+               else if(int(_loc26_ * 100) <= _loc22_)
+               {
+                  _loc19_ = [Math.floor(_loc25_)];
+               }
+               else if(int(_loc27_ * 100) >= _loc23_)
+               {
+                  _loc19_ = [Math.floor(_loc24_)];
+               }
+               else
+               {
+                  _loc19_ = [Math.floor(_loc24_),Math.floor(_loc25_)];
+               }
+               
+               
+               
             }
-            else
+            else if(_loc20_ == 3)
             {
-                if (Math.abs((pStart.x - pEnd.x)) > Math.abs((pStart.y - pEnd.y)))
-                {
-                    steps = Math.abs((pStart.x - pEnd.x));
-                    padX = (((pEnd.x)>pStart.x) ? 1 : -1);
-                    padY = (((pEnd.y)>pStart.y) ? (((Math.abs((pStart.y - pEnd.y)) == 0)) ? 0 : (Math.abs((pStart.y - pEnd.y)) / steps)) : (-(Math.abs((pStart.y - pEnd.y))) / steps));
-                    padY = (padY * 100);
-                    padY = (Math.ceil(padY) / 100);
-                    padZ = (((steps == 0)) ? 0 : ((descending) ? ((pFrom.z - pTo.z) / steps) : ((pTo.z - pFrom.z) / steps)));
-                    cas = 2;
-                }
-                else
-                {
-                    steps = Math.abs((pStart.y - pEnd.y));
-                    padX = (((pEnd.x)>pStart.x) ? (((Math.abs((pStart.x - pEnd.x)) == 0)) ? 0 : (Math.abs((pStart.x - pEnd.x)) / steps)) : (-(Math.abs((pStart.x - pEnd.x))) / steps));
-                    padX = (padX * 100);
-                    padX = (Math.ceil(padX) / 100);
-                    padY = (((pEnd.y)>pStart.y) ? 1 : -1);
-                    padZ = (((steps == 0)) ? 0 : ((descending) ? ((pFrom.z - pTo.z) / steps) : ((pTo.z - pFrom.z) / steps)));
-                    cas = 3;
-                };
-            };
-            i = 0;
-            while (i < steps)
+               _loc28_ = Math.ceil(_loc11_.x * 100 + _loc13_ * 50) / 100;
+               _loc29_ = Math.floor(_loc11_.x * 100 + _loc13_ * 150) / 100;
+               _loc30_ = Math.floor(Math.abs(Math.floor(_loc28_) * 100 - _loc28_ * 100)) / 100;
+               _loc31_ = Math.ceil(Math.abs(Math.ceil(_loc29_) * 100 - _loc29_ * 100)) / 100;
+               if(Math.floor(_loc28_) == Math.floor(_loc29_))
+               {
+                  _loc18_ = [Math.floor(_loc11_.x + _loc13_)];
+                  if(_loc28_ == _loc18_[0] && _loc29_ < _loc18_[0])
+                  {
+                     _loc18_ = [Math.ceil(_loc11_.x + _loc13_)];
+                  }
+                  else if(_loc28_ == _loc18_[0] && _loc29_ > _loc18_[0])
+                  {
+                     _loc18_ = [Math.floor(_loc11_.x + _loc13_)];
+                  }
+                  else if(_loc29_ == _loc18_[0] && _loc28_ < _loc18_[0])
+                  {
+                     _loc18_ = [Math.ceil(_loc11_.x + _loc13_)];
+                  }
+                  else if(_loc29_ == _loc18_[0] && _loc28_ > _loc18_[0])
+                  {
+                     _loc18_ = [Math.floor(_loc11_.x + _loc13_)];
+                  }
+                  
+                  
+                  
+               }
+               else if(Math.ceil(_loc28_) == Math.ceil(_loc29_))
+               {
+                  _loc18_ = [Math.ceil(_loc11_.x + _loc13_)];
+                  if(_loc28_ == _loc18_[0] && _loc29_ < _loc18_[0])
+                  {
+                     _loc18_ = [Math.floor(_loc11_.x + _loc13_)];
+                  }
+                  else if(_loc28_ == _loc18_[0] && _loc29_ > _loc18_[0])
+                  {
+                     _loc18_ = [Math.ceil(_loc11_.x + _loc13_)];
+                  }
+                  else if(_loc29_ == _loc18_[0] && _loc28_ < _loc18_[0])
+                  {
+                     _loc18_ = [Math.floor(_loc11_.x + _loc13_)];
+                  }
+                  else if(_loc29_ == _loc18_[0] && _loc28_ > _loc18_[0])
+                  {
+                     _loc18_ = [Math.ceil(_loc11_.x + _loc13_)];
+                  }
+                  
+                  
+                  
+               }
+               else if(int(_loc30_ * 100) <= _loc22_)
+               {
+                  _loc18_ = [Math.floor(_loc29_)];
+               }
+               else if(int(_loc31_ * 100) >= _loc23_)
+               {
+                  _loc18_ = [Math.floor(_loc28_)];
+               }
+               else
+               {
+                  _loc18_ = [Math.floor(_loc28_),Math.floor(_loc29_)];
+               }
+               
+               
+               
+            }
+            
+            if(_loc19_.length > 0)
             {
-                erreurSupArrondis = int((3 + (steps / 2)));
-                erreurInfArrondis = int((97 - (steps / 2)));
-                if (cas == 2)
-                {
-                    beforeY = (Math.ceil(((pStart.y * 100) + (padY * 50))) / 100);
-                    afterY = (Math.floor(((pStart.y * 100) + (padY * 150))) / 100);
-                    diffBeforeCenterY = (Math.floor(Math.abs(((Math.floor(beforeY) * 100) - (beforeY * 100)))) / 100);
-                    diffCenterAfterY = (Math.ceil(Math.abs(((Math.ceil(afterY) * 100) - (afterY * 100)))) / 100);
-                    if (Math.floor(beforeY) == Math.floor(afterY))
-                    {
-                        yToTest = [Math.floor((pStart.y + padY))];
-                        if ((((beforeY == yToTest[0])) && ((afterY < yToTest[0]))))
-                        {
-                            yToTest = [Math.ceil((pStart.y + padY))];
-                        }
-                        else
-                        {
-                            if ((((beforeY == yToTest[0])) && ((afterY > yToTest[0]))))
-                            {
-                                yToTest = [Math.floor((pStart.y + padY))];
-                            }
-                            else
-                            {
-                                if ((((afterY == yToTest[0])) && ((beforeY < yToTest[0]))))
-                                {
-                                    yToTest = [Math.ceil((pStart.y + padY))];
-                                }
-                                else
-                                {
-                                    if ((((afterY == yToTest[0])) && ((beforeY > yToTest[0]))))
-                                    {
-                                        yToTest = [Math.floor((pStart.y + padY))];
-                                    };
-                                };
-                            };
-                        };
-                    }
-                    else
-                    {
-                        if (Math.ceil(beforeY) == Math.ceil(afterY))
-                        {
-                            yToTest = [Math.ceil((pStart.y + padY))];
-                            if ((((beforeY == yToTest[0])) && ((afterY < yToTest[0]))))
-                            {
-                                yToTest = [Math.floor((pStart.y + padY))];
-                            }
-                            else
-                            {
-                                if ((((beforeY == yToTest[0])) && ((afterY > yToTest[0]))))
-                                {
-                                    yToTest = [Math.ceil((pStart.y + padY))];
-                                }
-                                else
-                                {
-                                    if ((((afterY == yToTest[0])) && ((beforeY < yToTest[0]))))
-                                    {
-                                        yToTest = [Math.floor((pStart.y + padY))];
-                                    }
-                                    else
-                                    {
-                                        if ((((afterY == yToTest[0])) && ((beforeY > yToTest[0]))))
-                                        {
-                                            yToTest = [Math.ceil((pStart.y + padY))];
-                                        };
-                                    };
-                                };
-                            };
-                        }
-                        else
-                        {
-                            if (int((diffBeforeCenterY * 100)) <= erreurSupArrondis)
-                            {
-                                yToTest = [Math.floor(afterY)];
-                            }
-                            else
-                            {
-                                if (int((diffCenterAfterY * 100)) >= erreurInfArrondis)
-                                {
-                                    yToTest = [Math.floor(beforeY)];
-                                }
-                                else
-                                {
-                                    yToTest = [Math.floor(beforeY), Math.floor(afterY)];
-                                };
-                            };
-                        };
-                    };
-                }
-                else
-                {
-                    if (cas == 3)
-                    {
-                        beforeX = (Math.ceil(((pStart.x * 100) + (padX * 50))) / 100);
-                        afterX = (Math.floor(((pStart.x * 100) + (padX * 150))) / 100);
-                        diffBeforeCenterX = (Math.floor(Math.abs(((Math.floor(beforeX) * 100) - (beforeX * 100)))) / 100);
-                        diffCenterAfterX = (Math.ceil(Math.abs(((Math.ceil(afterX) * 100) - (afterX * 100)))) / 100);
-                        if (Math.floor(beforeX) == Math.floor(afterX))
-                        {
-                            xToTest = [Math.floor((pStart.x + padX))];
-                            if ((((beforeX == xToTest[0])) && ((afterX < xToTest[0]))))
-                            {
-                                xToTest = [Math.ceil((pStart.x + padX))];
-                            }
-                            else
-                            {
-                                if ((((beforeX == xToTest[0])) && ((afterX > xToTest[0]))))
-                                {
-                                    xToTest = [Math.floor((pStart.x + padX))];
-                                }
-                                else
-                                {
-                                    if ((((afterX == xToTest[0])) && ((beforeX < xToTest[0]))))
-                                    {
-                                        xToTest = [Math.ceil((pStart.x + padX))];
-                                    }
-                                    else
-                                    {
-                                        if ((((afterX == xToTest[0])) && ((beforeX > xToTest[0]))))
-                                        {
-                                            xToTest = [Math.floor((pStart.x + padX))];
-                                        };
-                                    };
-                                };
-                            };
-                        }
-                        else
-                        {
-                            if (Math.ceil(beforeX) == Math.ceil(afterX))
-                            {
-                                xToTest = [Math.ceil((pStart.x + padX))];
-                                if ((((beforeX == xToTest[0])) && ((afterX < xToTest[0]))))
-                                {
-                                    xToTest = [Math.floor((pStart.x + padX))];
-                                }
-                                else
-                                {
-                                    if ((((beforeX == xToTest[0])) && ((afterX > xToTest[0]))))
-                                    {
-                                        xToTest = [Math.ceil((pStart.x + padX))];
-                                    }
-                                    else
-                                    {
-                                        if ((((afterX == xToTest[0])) && ((beforeX < xToTest[0]))))
-                                        {
-                                            xToTest = [Math.floor((pStart.x + padX))];
-                                        }
-                                        else
-                                        {
-                                            if ((((afterX == xToTest[0])) && ((beforeX > xToTest[0]))))
-                                            {
-                                                xToTest = [Math.ceil((pStart.x + padX))];
-                                            };
-                                        };
-                                    };
-                                };
-                            }
-                            else
-                            {
-                                if (int((diffBeforeCenterX * 100)) <= erreurSupArrondis)
-                                {
-                                    xToTest = [Math.floor(afterX)];
-                                }
-                                else
-                                {
-                                    if (int((diffCenterAfterX * 100)) >= erreurInfArrondis)
-                                    {
-                                        xToTest = [Math.floor(beforeX)];
-                                    }
-                                    else
-                                    {
-                                        xToTest = [Math.floor(beforeX), Math.floor(afterX)];
-                                    };
-                                };
-                            };
-                        };
-                    };
-                };
-                if (yToTest.length > 0)
-                {
-                    y = 0;
-                    while (y < yToTest.length)
-                    {
-                        cell = new Point(Math.floor((pStart.x + padX)), yToTest[y]);
-                        line.push(cell);
-                        y++;
-                    };
-                }
-                else
-                {
-                    if (xToTest.length > 0)
-                    {
-                        x = 0;
-                        while (x < xToTest.length)
-                        {
-                            cell = new Point(xToTest[x], Math.floor((pStart.y + padY)));
-                            line.push(cell);
-                            x++;
-                        };
-                    }
-                    else
-                    {
-                        if (cas == 1)
-                        {
-                            cell = new Point(Math.floor((pStart.x + padX)), Math.floor((pStart.y + padY)));
-                            line.push(cell);
-                        };
-                    };
-                };
-                pStart.x = (((pStart.x * 100) + (padX * 100)) / 100);
-                pStart.y = (((pStart.y * 100) + (padY * 100)) / 100);
-                i++;
-            };
-            return (line);
-        }
-
-
-    }
-}//package com.ankamagames.jerakine.utils.display
-
+               _loc32_ = 0;
+               while(_loc32_ < _loc19_.length)
+               {
+                  _loc21_ = new Point(Math.floor(_loc11_.x + _loc13_),_loc19_[_loc32_]);
+                  _loc7_.push(_loc21_);
+                  _loc32_++;
+               }
+            }
+            else if(_loc18_.length > 0)
+            {
+               _loc33_ = 0;
+               while(_loc33_ < _loc18_.length)
+               {
+                  _loc21_ = new Point(_loc18_[_loc33_],Math.floor(_loc11_.y + _loc14_));
+                  _loc7_.push(_loc21_);
+                  _loc33_++;
+               }
+            }
+            else if(_loc20_ == 1)
+            {
+               _loc21_ = new Point(Math.floor(_loc11_.x + _loc13_),Math.floor(_loc11_.y + _loc14_));
+               _loc7_.push(_loc21_);
+            }
+            
+            
+            _loc11_.x = (_loc11_.x * 100 + _loc13_ * 100) / 100;
+            _loc11_.y = (_loc11_.y * 100 + _loc14_ * 100) / 100;
+            _loc10_++;
+         }
+         return _loc7_;
+      }
+   }
+}

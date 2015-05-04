@@ -1,111 +1,123 @@
-﻿package com.ankamagames.dofus.network.types.game.context.roleplay.quest
+package com.ankamagames.dofus.network.types.game.context.roleplay.quest
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    public class GameRolePlayNpcQuestFlag implements INetworkType 
-    {
-
-        public static const protocolId:uint = 384;
-
-        public var questsToValidId:Vector.<uint>;
-        public var questsToStartId:Vector.<uint>;
-
-        public function GameRolePlayNpcQuestFlag()
-        {
-            this.questsToValidId = new Vector.<uint>();
-            this.questsToStartId = new Vector.<uint>();
-            super();
-        }
-
-        public function getTypeId():uint
-        {
-            return (384);
-        }
-
-        public function initGameRolePlayNpcQuestFlag(questsToValidId:Vector.<uint>=null, questsToStartId:Vector.<uint>=null):GameRolePlayNpcQuestFlag
-        {
-            this.questsToValidId = questsToValidId;
-            this.questsToStartId = questsToStartId;
-            return (this);
-        }
-
-        public function reset():void
-        {
-            this.questsToValidId = new Vector.<uint>();
-            this.questsToStartId = new Vector.<uint>();
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GameRolePlayNpcQuestFlag(output);
-        }
-
-        public function serializeAs_GameRolePlayNpcQuestFlag(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.questsToValidId.length);
-            var _i1:uint;
-            while (_i1 < this.questsToValidId.length)
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class GameRolePlayNpcQuestFlag extends Object implements INetworkType
+   {
+      
+      public function GameRolePlayNpcQuestFlag()
+      {
+         this.questsToValidId = new Vector.<uint>();
+         this.questsToStartId = new Vector.<uint>();
+         super();
+      }
+      
+      public static const protocolId:uint = 384;
+      
+      public var questsToValidId:Vector.<uint>;
+      
+      public var questsToStartId:Vector.<uint>;
+      
+      public function getTypeId() : uint
+      {
+         return 384;
+      }
+      
+      public function initGameRolePlayNpcQuestFlag(param1:Vector.<uint> = null, param2:Vector.<uint> = null) : GameRolePlayNpcQuestFlag
+      {
+         this.questsToValidId = param1;
+         this.questsToStartId = param2;
+         return this;
+      }
+      
+      public function reset() : void
+      {
+         this.questsToValidId = new Vector.<uint>();
+         this.questsToStartId = new Vector.<uint>();
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GameRolePlayNpcQuestFlag(param1);
+      }
+      
+      public function serializeAs_GameRolePlayNpcQuestFlag(param1:ICustomDataOutput) : void
+      {
+         param1.writeShort(this.questsToValidId.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.questsToValidId.length)
+         {
+            if(this.questsToValidId[_loc2_] < 0)
             {
-                if (this.questsToValidId[_i1] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.questsToValidId[_i1]) + ") on element 1 (starting at 1) of questsToValidId.")));
-                };
-                output.writeVarShort(this.questsToValidId[_i1]);
-                _i1++;
-            };
-            output.writeShort(this.questsToStartId.length);
-            var _i2:uint;
-            while (_i2 < this.questsToStartId.length)
+               throw new Error("Forbidden value (" + this.questsToValidId[_loc2_] + ") on element 1 (starting at 1) of questsToValidId.");
+            }
+            else
             {
-                if (this.questsToStartId[_i2] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.questsToStartId[_i2]) + ") on element 2 (starting at 1) of questsToStartId.")));
-                };
-                output.writeVarShort(this.questsToStartId[_i2]);
-                _i2++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GameRolePlayNpcQuestFlag(input);
-        }
-
-        public function deserializeAs_GameRolePlayNpcQuestFlag(input:ICustomDataInput):void
-        {
-            var _val1:uint;
-            var _val2:uint;
-            var _questsToValidIdLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _questsToValidIdLen)
+               param1.writeVarShort(this.questsToValidId[_loc2_]);
+               _loc2_++;
+               continue;
+            }
+         }
+         param1.writeShort(this.questsToStartId.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.questsToStartId.length)
+         {
+            if(this.questsToStartId[_loc3_] < 0)
             {
-                _val1 = input.readVarUhShort();
-                if (_val1 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val1) + ") on elements of questsToValidId.")));
-                };
-                this.questsToValidId.push(_val1);
-                _i1++;
-            };
-            var _questsToStartIdLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _questsToStartIdLen)
+               throw new Error("Forbidden value (" + this.questsToStartId[_loc3_] + ") on element 2 (starting at 1) of questsToStartId.");
+            }
+            else
             {
-                _val2 = input.readVarUhShort();
-                if (_val2 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val2) + ") on elements of questsToStartId.")));
-                };
-                this.questsToStartId.push(_val2);
-                _i2++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.context.roleplay.quest
-
+               param1.writeVarShort(this.questsToStartId[_loc3_]);
+               _loc3_++;
+               continue;
+            }
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GameRolePlayNpcQuestFlag(param1);
+      }
+      
+      public function deserializeAs_GameRolePlayNpcQuestFlag(param1:ICustomDataInput) : void
+      {
+         var _loc6_:uint = 0;
+         var _loc7_:uint = 0;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc6_ = param1.readVarUhShort();
+            if(_loc6_ < 0)
+            {
+               throw new Error("Forbidden value (" + _loc6_ + ") on elements of questsToValidId.");
+            }
+            else
+            {
+               this.questsToValidId.push(_loc6_);
+               _loc3_++;
+               continue;
+            }
+         }
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
+         {
+            _loc7_ = param1.readVarUhShort();
+            if(_loc7_ < 0)
+            {
+               throw new Error("Forbidden value (" + _loc7_ + ") on elements of questsToStartId.");
+            }
+            else
+            {
+               this.questsToStartId.push(_loc7_);
+               _loc5_++;
+               continue;
+            }
+         }
+      }
+   }
+}

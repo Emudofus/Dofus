@@ -1,296 +1,305 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import flash.events.EventDispatcher;
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import flash.utils.Dictionary;
-    import com.ankamagames.tiphon.engine.Tiphon;
-    import com.ankamagames.jerakine.data.CensoredContentManager;
-    import com.ankamagames.jerakine.types.Uri;
-    import com.ankamagames.tiphon.TiphonConstants;
-    import com.ankamagames.jerakine.types.Callback;
-    import flash.display.Sprite;
-    import com.ankamagames.jerakine.types.Swl;
-    import flash.events.Event;
-    import flash.events.ProgressEvent;
-
-    public class Skin extends EventDispatcher 
-    {
-
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(Skin));
-        private static var _censoredSkin:Dictionary;
-        private static var _alternativeSkin:Dictionary = new Dictionary();
-        public static var skinPartTransformProvider:ISkinPartTransformProvider;
-
-        private var _ressourceCount:uint = 0;
-        private var _ressourceLoading:uint = 0;
-        private var _partToSwl:Dictionary;
-        private var _skinParts:Array;
-        private var _skinClass:Array;
-        private var _aSkinPartOrdered:Array;
-        private var _validate:Boolean = true;
-        private var _partTransformData:Dictionary;
-        private var _transformData:Dictionary;
-        private var _baseSkins:Dictionary;
-
-        public function Skin()
-        {
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.logger.Logger;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.tiphon.engine.Tiphon;
+   import com.ankamagames.jerakine.data.CensoredContentManager;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.tiphon.TiphonConstants;
+   import com.ankamagames.jerakine.types.Callback;
+   import flash.display.Sprite;
+   import com.ankamagames.jerakine.types.Swl;
+   import flash.events.Event;
+   import flash.events.ProgressEvent;
+   
+   public class Skin extends EventDispatcher
+   {
+      
+      public function Skin()
+      {
+         this._partTransformData = new Dictionary();
+         this._transformData = new Dictionary();
+         this._baseSkins = new Dictionary();
+         super();
+         this._partToSwl = new Dictionary();
+         this._skinParts = new Array();
+         this._skinClass = new Array();
+         this._aSkinPartOrdered = new Array();
+      }
+      
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(Skin));
+      
+      private static var _censoredSkin:Dictionary;
+      
+      private static var _alternativeSkin:Dictionary = new Dictionary();
+      
+      public static var skinPartTransformProvider:ISkinPartTransformProvider;
+      
+      public static function addAlternativeSkin(param1:uint, param2:uint) : void
+      {
+         if(!_alternativeSkin[param1])
+         {
+            _alternativeSkin[param1] = new Array();
+         }
+         _alternativeSkin[param1].push(param2);
+      }
+      
+      private var _ressourceCount:uint = 0;
+      
+      private var _ressourceLoading:uint = 0;
+      
+      private var _partToSwl:Dictionary;
+      
+      private var _skinParts:Array;
+      
+      private var _skinClass:Array;
+      
+      private var _aSkinPartOrdered:Array;
+      
+      private var _validate:Boolean = true;
+      
+      private var _partTransformData:Dictionary;
+      
+      private var _transformData:Dictionary;
+      
+      private var _baseSkins:Dictionary;
+      
+      public function get skinList() : Array
+      {
+         return this._aSkinPartOrdered;
+      }
+      
+      public function get complete() : Boolean
+      {
+         var _loc2_:uint = 0;
+         if(!this._validate)
+         {
+            return false;
+         }
+         var _loc1_:* = true;
+         for each(_loc2_ in this._aSkinPartOrdered)
+         {
+            _loc1_ = (_loc1_) && ((Tiphon.skinLibrary.isLoaded(_loc2_)) || (Tiphon.skinLibrary.hasError(_loc2_)));
+         }
+         return _loc1_;
+      }
+      
+      public function get validate() : Boolean
+      {
+         return this._validate;
+      }
+      
+      public function set validate(param1:Boolean) : void
+      {
+         this._validate = param1;
+         if((param1) && (this.complete))
+         {
+            this.processSkin();
+         }
+      }
+      
+      public function reprocess() : void
+      {
+         this.processSkin();
+      }
+      
+      public function getSwlFromPart(param1:String) : uint
+      {
+         return this._partToSwl[param1];
+      }
+      
+      public function add(param1:uint, param2:int = -1) : uint
+      {
+         var _loc3_:* = -1;
+         if(!_censoredSkin)
+         {
+            _censoredSkin = CensoredContentManager.getInstance().getCensoredIndex(2);
+         }
+         if(_censoredSkin[param1])
+         {
+            var param1:uint = _censoredSkin[param1];
+         }
+         if((!(param2 == -1)) && (_alternativeSkin) && (_alternativeSkin[param1]) && param2 < _alternativeSkin[param1].length)
+         {
+            _loc3_ = param1;
+            param1 = _alternativeSkin[param1][param2];
+            this._baseSkins[param1] = _loc3_;
+         }
+         var _loc4_:Array = new Array();
+         var _loc5_:uint = 0;
+         while(_loc5_ < this._aSkinPartOrdered.length)
+         {
+            if(!(this._aSkinPartOrdered[_loc5_] == param1) && !(this._aSkinPartOrdered[_loc5_] == _loc3_))
+            {
+               _loc4_.push(this._aSkinPartOrdered[_loc5_]);
+            }
+            _loc5_++;
+         }
+         _loc4_.push(param1);
+         if(this._aSkinPartOrdered.length != _loc4_.length)
+         {
+            this._aSkinPartOrdered = _loc4_;
+            this._ressourceLoading++;
+            Tiphon.skinLibrary.addResource(param1,new Uri(TiphonConstants.SWF_SKIN_PATH + param1 + ".swl"));
+            Tiphon.skinLibrary.askResource(param1,null,new Callback(this.onResourceLoaded,param1),new Callback(this.onResourceLoaded,param1));
+         }
+         else
+         {
+            this._aSkinPartOrdered = _loc4_;
+         }
+         return param1;
+      }
+      
+      public function getTransformData(param1:String) : TransformData
+      {
+         return this._transformData[param1];
+      }
+      
+      public function getPart(param1:String) : Sprite
+      {
+         var _loc2_:TransformData = this._transformData[param1];
+         if((_loc2_) && (_loc2_.overrideClip))
+         {
+            if(_loc2_.overrideClip != param1)
+            {
+               return null;
+            }
+            var param1:String = _loc2_.originalClip;
+         }
+         var _loc3_:Sprite = this._skinParts[param1];
+         if((_loc3_) && !_loc3_.parent)
+         {
+            if(_loc2_)
+            {
+               _loc3_.x = _loc2_.x;
+               _loc3_.y = _loc2_.y;
+               _loc3_.scaleX = _loc2_.scaleX;
+               _loc3_.scaleY = _loc2_.scaleY;
+               _loc3_.rotation = _loc2_.rotation;
+            }
+            else
+            {
+               _loc3_.x = 0.0;
+               _loc3_.y = 0.0;
+               _loc3_.scaleX = 1;
+               _loc3_.scaleY = 1;
+               _loc3_.rotation = 0.0;
+            }
+            return _loc3_;
+         }
+         if(this._skinClass[param1])
+         {
+            _loc3_ = new this._skinClass[param1]();
+            if((_loc2_) && (_loc3_))
+            {
+               _loc3_.x = _loc2_.x;
+               _loc3_.y = _loc2_.y;
+               _loc3_.scaleX = _loc2_.scaleX;
+               _loc3_.scaleY = _loc2_.scaleY;
+               _loc3_.rotation = _loc2_.rotation;
+            }
+            this._skinParts[param1] = _loc3_;
+            return _loc3_;
+         }
+         return null;
+      }
+      
+      public function reset() : void
+      {
+         this._skinParts = new Array();
+         this._skinClass = new Array();
+         this._aSkinPartOrdered = new Array();
+         this._baseSkins = new Dictionary();
+      }
+      
+      public function addTransform(param1:String, param2:uint, param3:TransformData) : void
+      {
+         if(!this._partTransformData[param1])
+         {
+            this._partTransformData[param1] = new Dictionary();
+         }
+         this._partTransformData[param1][param2] = param3;
+      }
+      
+      private function onResourceLoaded(param1:uint) : void
+      {
+         this._ressourceCount++;
+         this._ressourceLoading--;
+         this.processSkin();
+      }
+      
+      private function processSkin() : void
+      {
+         var _loc1_:uint = 0;
+         var _loc3_:Swl = null;
+         var _loc4_:Array = null;
+         var _loc5_:String = null;
+         var _loc6_:String = null;
+         var _loc7_:Dictionary = null;
+         var _loc8_:* = 0;
+         var _loc9_:TransformData = null;
+         var _loc2_:uint = 0;
+         while(_loc2_ < this._aSkinPartOrdered.length)
+         {
+            _loc1_ = this._aSkinPartOrdered[_loc2_];
+            _loc3_ = Tiphon.skinLibrary.getResourceById(_loc1_);
+            if(_loc3_)
+            {
+               _loc4_ = _loc3_.getDefinitions();
+               for each(_loc5_ in _loc4_)
+               {
+                  this._skinClass[_loc5_] = _loc3_.getDefinition(_loc5_);
+                  this._partToSwl[_loc5_] = _loc1_;
+                  delete this._skinParts[_loc5_];
+                  true;
+               }
+            }
+            _loc2_++;
+         }
+         if(this.complete)
+         {
             this._partTransformData = new Dictionary();
             this._transformData = new Dictionary();
-            this._baseSkins = new Dictionary();
-            super();
-            this._partToSwl = new Dictionary();
-            this._skinParts = new Array();
-            this._skinClass = new Array();
-            this._aSkinPartOrdered = new Array();
-        }
-
-        public static function addAlternativeSkin(gfxId:uint, alternativeGfxId:uint):void
-        {
-            if (!(_alternativeSkin[gfxId]))
+            if(skinPartTransformProvider)
             {
-                _alternativeSkin[gfxId] = new Array();
-            };
-            _alternativeSkin[gfxId].push(alternativeGfxId);
-        }
-
-
-        public function get skinList():Array
-        {
-            return (this._aSkinPartOrdered);
-        }
-
-        public function get complete():Boolean
-        {
-            var skinId:uint;
-            if (!(this._validate))
-            {
-                return (false);
-            };
-            var isComplete:Boolean = true;
-            for each (skinId in this._aSkinPartOrdered)
-            {
-                isComplete = ((isComplete) && (((Tiphon.skinLibrary.isLoaded(skinId)) || (Tiphon.skinLibrary.hasError(skinId)))));
-            };
-            return (isComplete);
-        }
-
-        public function get validate():Boolean
-        {
-            return (this._validate);
-        }
-
-        public function set validate(b:Boolean):void
-        {
-            this._validate = b;
-            if (((b) && (this.complete)))
-            {
-                this.processSkin();
-            };
-        }
-
-        public function reprocess():void
-        {
-            this.processSkin();
-        }
-
-        public function getSwlFromPart(clipName:String):uint
-        {
-            return (this._partToSwl[clipName]);
-        }
-
-        public function add(gfxId:uint, alternativeSkinIndex:int=-1):uint
-        {
-            var oldSkinGfxId:int = -1;
-            if (!(_censoredSkin))
-            {
-                _censoredSkin = CensoredContentManager.getInstance().getCensoredIndex(2);
-            };
-            if (_censoredSkin[gfxId])
-            {
-                gfxId = _censoredSkin[gfxId];
-            };
-            if (((((((!((alternativeSkinIndex == -1))) && (_alternativeSkin))) && (_alternativeSkin[gfxId]))) && ((alternativeSkinIndex < _alternativeSkin[gfxId].length))))
-            {
-                oldSkinGfxId = gfxId;
-                gfxId = _alternativeSkin[gfxId][alternativeSkinIndex];
-                this._baseSkins[gfxId] = oldSkinGfxId;
-            };
-            var parts:Array = new Array();
-            var i:uint;
-            while (i < this._aSkinPartOrdered.length)
-            {
-                if (((!((this._aSkinPartOrdered[i] == gfxId))) && (!((this._aSkinPartOrdered[i] == oldSkinGfxId)))))
-                {
-                    parts.push(this._aSkinPartOrdered[i]);
-                };
-                i++;
-            };
-            parts.push(gfxId);
-            if (this._aSkinPartOrdered.length != parts.length)
-            {
-                this._aSkinPartOrdered = parts;
-                this._ressourceLoading++;
-                Tiphon.skinLibrary.addResource(gfxId, new Uri(((TiphonConstants.SWF_SKIN_PATH + gfxId) + ".swl")));
-                Tiphon.skinLibrary.askResource(gfxId, null, new Callback(this.onResourceLoaded, gfxId), new Callback(this.onResourceLoaded, gfxId));
-            }
-            else
-            {
-                this._aSkinPartOrdered = parts;
-            };
-            return (gfxId);
-        }
-
-        public function getTransformData(clipName:String):TransformData
-        {
-            return (this._transformData[clipName]);
-        }
-
-        public function getPart(sName:String):Sprite
-        {
-            var t:TransformData = this._transformData[sName];
-            if (((t) && (t.overrideClip)))
-            {
-                if (t.overrideClip != sName)
-                {
-                    return (null);
-                };
-                sName = t.originalClip;
-            };
-            var p:Sprite = this._skinParts[sName];
-            if (((p) && (!(p.parent))))
-            {
-                if (t)
-                {
-                    p.x = t.x;
-                    p.y = t.y;
-                    p.scaleX = t.scaleX;
-                    p.scaleY = t.scaleY;
-                    p.rotation = t.rotation;
-                }
-                else
-                {
-                    p.x = 0;
-                    p.y = 0;
-                    p.scaleX = 1;
-                    p.scaleY = 1;
-                    p.rotation = 0;
-                };
-                return (p);
-            };
-            if (this._skinClass[sName])
-            {
-                p = new (this._skinClass[sName])();
-                if (((t) && (p)))
-                {
-                    p.x = t.x;
-                    p.y = t.y;
-                    p.scaleX = t.scaleX;
-                    p.scaleY = t.scaleY;
-                    p.rotation = t.rotation;
-                };
-                this._skinParts[sName] = p;
-                return (p);
-            };
-            return (null);
-        }
-
-        public function reset():void
-        {
-            this._skinParts = new Array();
-            this._skinClass = new Array();
-            this._aSkinPartOrdered = new Array();
-            this._baseSkins = new Dictionary();
-        }
-
-        public function addTransform(part:String, skinId:uint, data:TransformData):void
-        {
-            if (!(this._partTransformData[part]))
-            {
-                this._partTransformData[part] = new Dictionary();
-            };
-            this._partTransformData[part][skinId] = data;
-        }
-
-        private function onResourceLoaded(gfxId:uint):void
-        {
-            this._ressourceCount++;
-            this._ressourceLoading--;
-            this.processSkin();
-        }
-
-        private function processSkin():void
-        {
-            var gfxId:uint;
-            var lib:Swl;
-            var classPart:Array;
-            var className:String;
-            var part:String;
-            var skinTransform:Dictionary;
-            var j:int;
-            var td:TransformData;
-            var i:uint;
-            while (i < this._aSkinPartOrdered.length)
-            {
-                gfxId = this._aSkinPartOrdered[i];
-                lib = Tiphon.skinLibrary.getResourceById(gfxId);
-                if (!!(lib))
-                {
-                    classPart = lib.getDefinitions();
-                    for each (className in classPart)
-                    {
-                        this._skinClass[className] = lib.getDefinition(className);
-                        this._partToSwl[className] = gfxId;
-                        delete this._skinParts[className];
-                    };
-                };
-                i++;
-            };
-            if (this.complete)
-            {
-                this._partTransformData = new Dictionary();
-                this._transformData = new Dictionary();
-                if (skinPartTransformProvider)
-                {
-                    skinPartTransformProvider.init(this);
-                    for (part in this._skinClass)
-                    {
-                        if (this._partTransformData[part])
+               skinPartTransformProvider.init(this);
+               for(_loc6_ in this._skinClass)
+               {
+                  if(this._partTransformData[_loc6_])
+                  {
+                     _loc7_ = this._partTransformData[_loc6_];
+                     _loc8_ = this._aSkinPartOrdered.length - 1;
+                     while(_loc8_ >= -1)
+                     {
+                        _loc1_ = _loc8_ >= 0?this._aSkinPartOrdered[_loc8_]:0;
+                        if((this._baseSkins[_loc1_]) && !(this._baseSkins[_loc1_] == _loc1_))
                         {
-                            skinTransform = this._partTransformData[part];
-                            j = (this._aSkinPartOrdered.length - 1);
-                            while (j >= -1)
-                            {
-                                gfxId = (((j >= 0)) ? this._aSkinPartOrdered[j] : 0);
-                                if (((this._baseSkins[gfxId]) && (!((this._baseSkins[gfxId] == gfxId)))))
-                                {
-                                    gfxId = this._baseSkins[gfxId];
-                                };
-                                if (skinTransform[gfxId])
-                                {
-                                    td = skinTransform[gfxId];
-                                    this._transformData[part] = td;
-                                    if (td.overrideClip)
-                                    {
-                                        this._transformData[td.overrideClip] = td;
-                                    };
-                                    break;
-                                };
-                                j--;
-                            };
-                        };
-                    };
-                };
-                dispatchEvent(new Event(Event.COMPLETE));
+                           _loc1_ = this._baseSkins[_loc1_];
+                        }
+                        if(_loc7_[_loc1_])
+                        {
+                           _loc9_ = _loc7_[_loc1_];
+                           this._transformData[_loc6_] = _loc9_;
+                           if(_loc9_.overrideClip)
+                           {
+                              this._transformData[_loc9_.overrideClip] = _loc9_;
+                           }
+                           break;
+                        }
+                        _loc8_--;
+                     }
+                  }
+               }
             }
-            else
-            {
-                dispatchEvent(new Event(ProgressEvent.PROGRESS));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.tiphon.types
-
+            dispatchEvent(new Event(Event.COMPLETE));
+         }
+         else
+         {
+            dispatchEvent(new Event(ProgressEvent.PROGRESS));
+         }
+      }
+   }
+}

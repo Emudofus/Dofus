@@ -1,157 +1,172 @@
-﻿package com.ankamagames.dofus.network.types.game.look
+package com.ankamagames.dofus.network.types.game.look
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    public class EntityLook implements INetworkType 
-    {
-
-        public static const protocolId:uint = 55;
-
-        public var bonesId:uint = 0;
-        public var skins:Vector.<uint>;
-        public var indexedColors:Vector.<int>;
-        public var scales:Vector.<int>;
-        public var subentities:Vector.<SubEntity>;
-
-        public function EntityLook()
-        {
-            this.skins = new Vector.<uint>();
-            this.indexedColors = new Vector.<int>();
-            this.scales = new Vector.<int>();
-            this.subentities = new Vector.<SubEntity>();
-            super();
-        }
-
-        public function getTypeId():uint
-        {
-            return (55);
-        }
-
-        public function initEntityLook(bonesId:uint=0, skins:Vector.<uint>=null, indexedColors:Vector.<int>=null, scales:Vector.<int>=null, subentities:Vector.<SubEntity>=null):EntityLook
-        {
-            this.bonesId = bonesId;
-            this.skins = skins;
-            this.indexedColors = indexedColors;
-            this.scales = scales;
-            this.subentities = subentities;
-            return (this);
-        }
-
-        public function reset():void
-        {
-            this.bonesId = 0;
-            this.skins = new Vector.<uint>();
-            this.indexedColors = new Vector.<int>();
-            this.scales = new Vector.<int>();
-            this.subentities = new Vector.<SubEntity>();
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_EntityLook(output);
-        }
-
-        public function serializeAs_EntityLook(output:ICustomDataOutput):void
-        {
-            if (this.bonesId < 0)
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class EntityLook extends Object implements INetworkType
+   {
+      
+      public function EntityLook()
+      {
+         this.skins = new Vector.<uint>();
+         this.indexedColors = new Vector.<int>();
+         this.scales = new Vector.<int>();
+         this.subentities = new Vector.<SubEntity>();
+         super();
+      }
+      
+      public static const protocolId:uint = 55;
+      
+      public var bonesId:uint = 0;
+      
+      public var skins:Vector.<uint>;
+      
+      public var indexedColors:Vector.<int>;
+      
+      public var scales:Vector.<int>;
+      
+      public var subentities:Vector.<SubEntity>;
+      
+      public function getTypeId() : uint
+      {
+         return 55;
+      }
+      
+      public function initEntityLook(param1:uint = 0, param2:Vector.<uint> = null, param3:Vector.<int> = null, param4:Vector.<int> = null, param5:Vector.<SubEntity> = null) : EntityLook
+      {
+         this.bonesId = param1;
+         this.skins = param2;
+         this.indexedColors = param3;
+         this.scales = param4;
+         this.subentities = param5;
+         return this;
+      }
+      
+      public function reset() : void
+      {
+         this.bonesId = 0;
+         this.skins = new Vector.<uint>();
+         this.indexedColors = new Vector.<int>();
+         this.scales = new Vector.<int>();
+         this.subentities = new Vector.<SubEntity>();
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_EntityLook(param1);
+      }
+      
+      public function serializeAs_EntityLook(param1:ICustomDataOutput) : void
+      {
+         if(this.bonesId < 0)
+         {
+            throw new Error("Forbidden value (" + this.bonesId + ") on element bonesId.");
+         }
+         else
+         {
+            param1.writeVarShort(this.bonesId);
+            param1.writeShort(this.skins.length);
+            var _loc2_:uint = 0;
+            while(_loc2_ < this.skins.length)
             {
-                throw (new Error((("Forbidden value (" + this.bonesId) + ") on element bonesId.")));
-            };
-            output.writeVarShort(this.bonesId);
-            output.writeShort(this.skins.length);
-            var _i2:uint;
-            while (_i2 < this.skins.length)
+               if(this.skins[_loc2_] < 0)
+               {
+                  throw new Error("Forbidden value (" + this.skins[_loc2_] + ") on element 2 (starting at 1) of skins.");
+               }
+               else
+               {
+                  param1.writeVarShort(this.skins[_loc2_]);
+                  _loc2_++;
+                  continue;
+               }
+            }
+            param1.writeShort(this.indexedColors.length);
+            var _loc3_:uint = 0;
+            while(_loc3_ < this.indexedColors.length)
             {
-                if (this.skins[_i2] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.skins[_i2]) + ") on element 2 (starting at 1) of skins.")));
-                };
-                output.writeVarShort(this.skins[_i2]);
-                _i2++;
-            };
-            output.writeShort(this.indexedColors.length);
-            var _i3:uint;
-            while (_i3 < this.indexedColors.length)
+               param1.writeInt(this.indexedColors[_loc3_]);
+               _loc3_++;
+            }
+            param1.writeShort(this.scales.length);
+            var _loc4_:uint = 0;
+            while(_loc4_ < this.scales.length)
             {
-                output.writeInt(this.indexedColors[_i3]);
-                _i3++;
-            };
-            output.writeShort(this.scales.length);
-            var _i4:uint;
-            while (_i4 < this.scales.length)
+               param1.writeVarShort(this.scales[_loc4_]);
+               _loc4_++;
+            }
+            param1.writeShort(this.subentities.length);
+            var _loc5_:uint = 0;
+            while(_loc5_ < this.subentities.length)
             {
-                output.writeVarShort(this.scales[_i4]);
-                _i4++;
-            };
-            output.writeShort(this.subentities.length);
-            var _i5:uint;
-            while (_i5 < this.subentities.length)
+               (this.subentities[_loc5_] as SubEntity).serializeAs_SubEntity(param1);
+               _loc5_++;
+            }
+            return;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_EntityLook(param1);
+      }
+      
+      public function deserializeAs_EntityLook(param1:ICustomDataInput) : void
+      {
+         var _loc10_:uint = 0;
+         var _loc11_:* = 0;
+         var _loc12_:* = 0;
+         var _loc13_:SubEntity = null;
+         this.bonesId = param1.readVarUhShort();
+         if(this.bonesId < 0)
+         {
+            throw new Error("Forbidden value (" + this.bonesId + ") on element of EntityLook.bonesId.");
+         }
+         else
+         {
+            var _loc2_:uint = param1.readUnsignedShort();
+            var _loc3_:uint = 0;
+            while(_loc3_ < _loc2_)
             {
-                (this.subentities[_i5] as SubEntity).serializeAs_SubEntity(output);
-                _i5++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_EntityLook(input);
-        }
-
-        public function deserializeAs_EntityLook(input:ICustomDataInput):void
-        {
-            var _val2:uint;
-            var _val3:int;
-            var _val4:int;
-            var _item5:SubEntity;
-            this.bonesId = input.readVarUhShort();
-            if (this.bonesId < 0)
+               _loc10_ = param1.readVarUhShort();
+               if(_loc10_ < 0)
+               {
+                  throw new Error("Forbidden value (" + _loc10_ + ") on elements of skins.");
+               }
+               else
+               {
+                  this.skins.push(_loc10_);
+                  _loc3_++;
+                  continue;
+               }
+            }
+            var _loc4_:uint = param1.readUnsignedShort();
+            var _loc5_:uint = 0;
+            while(_loc5_ < _loc4_)
             {
-                throw (new Error((("Forbidden value (" + this.bonesId) + ") on element of EntityLook.bonesId.")));
-            };
-            var _skinsLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _skinsLen)
+               _loc11_ = param1.readInt();
+               this.indexedColors.push(_loc11_);
+               _loc5_++;
+            }
+            var _loc6_:uint = param1.readUnsignedShort();
+            var _loc7_:uint = 0;
+            while(_loc7_ < _loc6_)
             {
-                _val2 = input.readVarUhShort();
-                if (_val2 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val2) + ") on elements of skins.")));
-                };
-                this.skins.push(_val2);
-                _i2++;
-            };
-            var _indexedColorsLen:uint = input.readUnsignedShort();
-            var _i3:uint;
-            while (_i3 < _indexedColorsLen)
+               _loc12_ = param1.readVarShort();
+               this.scales.push(_loc12_);
+               _loc7_++;
+            }
+            var _loc8_:uint = param1.readUnsignedShort();
+            var _loc9_:uint = 0;
+            while(_loc9_ < _loc8_)
             {
-                _val3 = input.readInt();
-                this.indexedColors.push(_val3);
-                _i3++;
-            };
-            var _scalesLen:uint = input.readUnsignedShort();
-            var _i4:uint;
-            while (_i4 < _scalesLen)
-            {
-                _val4 = input.readVarShort();
-                this.scales.push(_val4);
-                _i4++;
-            };
-            var _subentitiesLen:uint = input.readUnsignedShort();
-            var _i5:uint;
-            while (_i5 < _subentitiesLen)
-            {
-                _item5 = new SubEntity();
-                _item5.deserialize(input);
-                this.subentities.push(_item5);
-                _i5++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.look
-
+               _loc13_ = new SubEntity();
+               _loc13_.deserialize(param1);
+               this.subentities.push(_loc13_);
+               _loc9_++;
+            }
+            return;
+         }
+      }
+   }
+}

@@ -1,267 +1,282 @@
-﻿package com.ankamagames.jerakine.data
+package com.ankamagames.jerakine.data
 {
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import flash.utils.Dictionary;
-    import com.ankamagames.jerakine.utils.errors.SingletonError;
-    import flash.filesystem.File;
-    import flash.filesystem.FileStream;
-    import flash.utils.Endian;
-    import flash.filesystem.FileMode;
-    import com.ankamagames.jerakine.types.Uri;
-    import com.ankamagames.jerakine.utils.crypto.Signature;
-    import flash.utils.IDataInput;
-
-    public class GameDataFileAccessor 
-    {
-
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(GameDataFileAccessor));
-        private static var _self:GameDataFileAccessor;
-
-        private var _streams:Dictionary;
-        private var _streamStartIndex:Dictionary;
-        private var _indexes:Dictionary;
-        private var _classes:Dictionary;
-        private var _counter:Dictionary;
-        private var _gameDataProcessor:Dictionary;
-
-        public function GameDataFileAccessor()
-        {
-            if (_self)
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.types.Uri;
+   import flash.filesystem.File;
+   import flash.filesystem.FileStream;
+   import flash.utils.Endian;
+   import flash.filesystem.FileMode;
+   import flash.utils.IDataInput;
+   import com.ankamagames.jerakine.utils.crypto.Signature;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
+   
+   public class GameDataFileAccessor extends Object
+   {
+      
+      public function GameDataFileAccessor()
+      {
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
+            return;
+         }
+      }
+      
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(GameDataFileAccessor));
+      
+      private static var _self:GameDataFileAccessor;
+      
+      public static function getInstance() : GameDataFileAccessor
+      {
+         if(!_self)
+         {
+            _self = new GameDataFileAccessor();
+         }
+         return _self;
+      }
+      
+      private var _streams:Dictionary;
+      
+      private var _streamStartIndex:Dictionary;
+      
+      private var _indexes:Dictionary;
+      
+      private var _classes:Dictionary;
+      
+      private var _counter:Dictionary;
+      
+      private var _gameDataProcessor:Dictionary;
+      
+      public function init(param1:Uri) : void
+      {
+         var _loc2_:File = param1.toFile();
+         if(!_loc2_ || !_loc2_.exists)
+         {
+            throw new Error("Game data file \'" + _loc2_ + "\' not readable.");
+         }
+         else
+         {
+            var _loc3_:String = param1.fileName.substr(0,param1.fileName.indexOf(".d2o"));
+            if(!this._streams)
             {
-                throw (new SingletonError());
-            };
-        }
-
-        public static function getInstance():GameDataFileAccessor
-        {
-            if (!(_self))
+               this._streams = new Dictionary();
+            }
+            if(!this._streamStartIndex)
             {
-                _self = new (GameDataFileAccessor)();
-            };
-            return (_self);
-        }
-
-
-        public function init(fileUri:Uri):void
-        {
-            var nativeFile:File = fileUri.toFile();
-            if (((!(nativeFile)) || (!(nativeFile.exists))))
+               this._streamStartIndex = new Dictionary();
+            }
+            var _loc4_:FileStream = this._streams[_loc3_];
+            if(!_loc4_)
             {
-                throw (new Error((("Game data file '" + nativeFile) + "' not readable.")));
-            };
-            var moduleName:String = fileUri.fileName.substr(0, fileUri.fileName.indexOf(".d2o"));
-            if (!(this._streams))
-            {
-                this._streams = new Dictionary();
-            };
-            if (!(this._streamStartIndex))
-            {
-                this._streamStartIndex = new Dictionary();
-            };
-            var stream:FileStream = this._streams[moduleName];
-            if (!(stream))
-            {
-                stream = new FileStream();
-                stream.endian = Endian.BIG_ENDIAN;
-                stream.open(nativeFile, FileMode.READ);
-                this._streams[moduleName] = stream;
-                this._streamStartIndex[moduleName] = 7;
+               _loc4_ = new FileStream();
+               _loc4_.endian = Endian.BIG_ENDIAN;
+               _loc4_.open(_loc2_,FileMode.READ);
+               this._streams[_loc3_] = _loc4_;
+               this._streamStartIndex[_loc3_] = 7;
             }
             else
             {
-                stream.position = 0;
-            };
-            this.initFromIDataInput(stream, moduleName);
-        }
-
-        public function initFromIDataInput(stream:IDataInput, moduleName:String):void
-        {
-            var key:int;
-            var pointer:int;
-            var count:uint;
-            var classIdentifier:int;
-            var formatVersion:uint;
-            var len:uint;
-            if (!(this._streams))
+               _loc4_.position = 0;
+            }
+            this.initFromIDataInput(_loc4_,_loc3_);
+            return;
+         }
+      }
+      
+      public function initFromIDataInput(param1:IDataInput, param2:String) : void
+      {
+         var _loc8_:* = 0;
+         var _loc9_:* = 0;
+         var _loc10_:uint = 0;
+         var _loc14_:* = 0;
+         var _loc16_:uint = 0;
+         var _loc17_:uint = 0;
+         if(!this._streams)
+         {
+            this._streams = new Dictionary();
+         }
+         if(!this._indexes)
+         {
+            this._indexes = new Dictionary();
+         }
+         if(!this._classes)
+         {
+            this._classes = new Dictionary();
+         }
+         if(!this._counter)
+         {
+            this._counter = new Dictionary();
+         }
+         if(!this._streamStartIndex)
+         {
+            this._streamStartIndex = new Dictionary();
+         }
+         if(!this._gameDataProcessor)
+         {
+            this._gameDataProcessor = new Dictionary();
+         }
+         this._streams[param2] = param1;
+         if(!this._streamStartIndex[param2])
+         {
+            this._streamStartIndex[param2] = 7;
+         }
+         var _loc3_:Dictionary = new Dictionary();
+         this._indexes[param2] = _loc3_;
+         var _loc4_:uint = 0;
+         var _loc5_:String = param1.readMultiByte(3,"ASCII");
+         if(_loc5_ != "D2O")
+         {
+            param1["position"] = 0;
+            try
             {
-                this._streams = new Dictionary();
-            };
-            if (!(this._indexes))
+               _loc5_ = param1.readUTF();
+            }
+            catch(e:Error)
             {
-                this._indexes = new Dictionary();
-            };
-            if (!(this._classes))
+            }
+            if(_loc5_ != Signature.ANKAMA_SIGNED_FILE_HEADER)
             {
-                this._classes = new Dictionary();
-            };
-            if (!(this._counter))
+               throw new Error("Malformated game data file.");
+            }
+            else
             {
-                this._counter = new Dictionary();
-            };
-            if (!(this._streamStartIndex))
+               _loc16_ = param1.readShort();
+               _loc17_ = param1.readInt();
+               param1["position"] = param1["position"] + _loc17_;
+               _loc4_ = param1["position"];
+               this._streamStartIndex[param2] = _loc4_ + 7;
+               _loc5_ = param1.readMultiByte(3,"ASCII");
+               if(_loc5_ != "D2O")
+               {
+                  throw new Error("Malformated game data file.");
+               }
+            }
+         }
+         var _loc6_:int = param1.readInt();
+         param1["position"] = _loc4_ + _loc6_;
+         var _loc7_:int = param1.readInt();
+         var _loc11_:uint = 0;
+         while(_loc11_ < _loc7_)
+         {
+            _loc8_ = param1.readInt();
+            _loc9_ = param1.readInt();
+            _loc3_[_loc8_] = _loc4_ + _loc9_;
+            _loc10_++;
+            _loc11_ = _loc11_ + 8;
+         }
+         this._counter[param2] = _loc10_;
+         var _loc12_:Dictionary = new Dictionary();
+         this._classes[param2] = _loc12_;
+         var _loc13_:int = param1.readInt();
+         var _loc15_:uint = 0;
+         while(_loc15_ < _loc13_)
+         {
+            _loc14_ = param1.readInt();
+            this.readClassDefinition(_loc14_,param1,_loc12_);
+            _loc15_++;
+         }
+         if(param1.bytesAvailable)
+         {
+            this._gameDataProcessor[param2] = new GameDataProcess(param1);
+         }
+      }
+      
+      public function getDataProcessor(param1:String) : GameDataProcess
+      {
+         return this._gameDataProcessor[param1];
+      }
+      
+      public function getClassDefinition(param1:String, param2:int) : GameDataClassDefinition
+      {
+         return this._classes[param1][param2];
+      }
+      
+      public function getCount(param1:String) : uint
+      {
+         return this._counter[param1];
+      }
+      
+      public function getObject(param1:String, param2:int) : *
+      {
+         if(!this._indexes || !this._indexes[param1])
+         {
+            return null;
+         }
+         var _loc3_:int = this._indexes[param1][param2];
+         if(!_loc3_)
+         {
+            return null;
+         }
+         this._streams[param1].position = _loc3_;
+         var _loc4_:int = this._streams[param1].readInt();
+         return this._classes[param1][_loc4_].read(param1,this._streams[param1]);
+      }
+      
+      public function getObjects(param1:String) : Array
+      {
+         if(!this._counter || !this._counter[param1])
+         {
+            return null;
+         }
+         var _loc2_:uint = this._counter[param1];
+         var _loc3_:Dictionary = this._classes[param1];
+         var _loc4_:IDataInput = this._streams[param1];
+         _loc4_["position"] = this._streamStartIndex[param1];
+         var _loc5_:Array = new Array(_loc2_);
+         var _loc6_:uint = 0;
+         while(_loc6_ < _loc2_)
+         {
+            _loc5_[_loc6_] = _loc3_[_loc4_.readInt()].read(param1,_loc4_);
+            _loc6_++;
+         }
+         return _loc5_;
+      }
+      
+      public function close() : void
+      {
+         var _loc1_:IDataInput = null;
+         for each(_loc1_ in this._streams)
+         {
+            try
             {
-                this._streamStartIndex = new Dictionary();
-            };
-            if (!(this._gameDataProcessor))
+               if(_loc1_ is FileStream)
+               {
+                  FileStream(_loc1_).close();
+               }
+            }
+            catch(e:Error)
             {
-                this._gameDataProcessor = new Dictionary();
-            };
-            this._streams[moduleName] = stream;
-            if (!(this._streamStartIndex[moduleName]))
-            {
-                this._streamStartIndex[moduleName] = 7;
-            };
-            var indexes:Dictionary = new Dictionary();
-            this._indexes[moduleName] = indexes;
-            var contentOffset:uint;
-            var headers:String = stream.readMultiByte(3, "ASCII");
-            if (headers != "D2O")
-            {
-                stream["position"] = 0;
-                try
-                {
-                    headers = stream.readUTF();
-                }
-                catch(e:Error)
-                {
-                };
-                if (headers != Signature.ANKAMA_SIGNED_FILE_HEADER)
-                {
-                    throw (new Error("Malformated game data file."));
-                };
-                formatVersion = stream.readShort();
-                len = stream.readInt();
-                stream["position"] = (stream["position"] + len);
-                contentOffset = stream["position"];
-                this._streamStartIndex[moduleName] = (contentOffset + 7);
-                headers = stream.readMultiByte(3, "ASCII");
-                if (headers != "D2O")
-                {
-                    throw (new Error("Malformated game data file."));
-                };
-            };
-            var indexesPointer:int = stream.readInt();
-            stream["position"] = (contentOffset + indexesPointer);
-            var indexesLength:int = stream.readInt();
-            var i:uint;
-            while (i < indexesLength)
-            {
-                key = stream.readInt();
-                pointer = stream.readInt();
-                indexes[key] = (contentOffset + pointer);
-                count++;
-                i = (i + 8);
-            };
-            this._counter[moduleName] = count;
-            var classes:Dictionary = new Dictionary();
-            this._classes[moduleName] = classes;
-            var classesCount:int = stream.readInt();
-            var j:uint;
-            while (j < classesCount)
-            {
-                classIdentifier = stream.readInt();
-                this.readClassDefinition(classIdentifier, stream, classes);
-                j++;
-            };
-            if (stream.bytesAvailable)
-            {
-                this._gameDataProcessor[moduleName] = new GameDataProcess(stream);
-            };
-        }
-
-        public function getDataProcessor(moduleName:String):GameDataProcess
-        {
-            return (this._gameDataProcessor[moduleName]);
-        }
-
-        public function getClassDefinition(moduleName:String, classId:int):GameDataClassDefinition
-        {
-            return (this._classes[moduleName][classId]);
-        }
-
-        public function getCount(moduleName:String):uint
-        {
-            return (this._counter[moduleName]);
-        }
-
-        public function getObject(moduleName:String, objectId:int)
-        {
-            if (((!(this._indexes)) || (!(this._indexes[moduleName]))))
-            {
-                return (null);
-            };
-            var pointer:int = this._indexes[moduleName][objectId];
-            if (!(pointer))
-            {
-                return (null);
-            };
-            this._streams[moduleName].position = pointer;
-            var classId:int = this._streams[moduleName].readInt();
-            return (this._classes[moduleName][classId].read(moduleName, this._streams[moduleName]));
-        }
-
-        public function getObjects(moduleName:String):Array
-        {
-            if (((!(this._counter)) || (!(this._counter[moduleName]))))
-            {
-                return (null);
-            };
-            var len:uint = this._counter[moduleName];
-            var classes:Dictionary = this._classes[moduleName];
-            var stream:IDataInput = this._streams[moduleName];
-            stream["position"] = this._streamStartIndex[moduleName];
-            var objs:Array = new Array(len);
-            var i:uint;
-            while (i < len)
-            {
-                objs[i] = classes[stream.readInt()].read(moduleName, stream);
-                i++;
-            };
-            return (objs);
-        }
-
-        public function close():void
-        {
-            var stream:IDataInput;
-            for each (stream in this._streams)
-            {
-                try
-                {
-                    if ((stream is FileStream))
-                    {
-                        FileStream(stream).close();
-                    };
-                }
-                catch(e:Error)
-                {
-                };
-            };
-            this._streams = null;
-            this._indexes = null;
-            this._classes = null;
-        }
-
-        private function readClassDefinition(classId:int, stream:IDataInput, store:Dictionary):void
-        {
-            var fieldName:String;
-            var fieldType:int;
-            var className:String = stream.readUTF();
-            var packageName:String = stream.readUTF();
-            var classDef:GameDataClassDefinition = new GameDataClassDefinition(packageName, className);
-            var fieldsCount:int = stream.readInt();
-            var i:uint;
-            while (i < fieldsCount)
-            {
-                fieldName = stream.readUTF();
-                classDef.addField(fieldName, stream);
-                i++;
-            };
-            store[classId] = classDef;
-        }
-
-
-    }
-}//package com.ankamagames.jerakine.data
-
+               continue;
+            }
+         }
+         this._streams = null;
+         this._indexes = null;
+         this._classes = null;
+      }
+      
+      private function readClassDefinition(param1:int, param2:IDataInput, param3:Dictionary) : void
+      {
+         var _loc8_:String = null;
+         var _loc9_:* = 0;
+         var _loc4_:String = param2.readUTF();
+         var _loc5_:String = param2.readUTF();
+         var _loc6_:GameDataClassDefinition = new GameDataClassDefinition(_loc5_,_loc4_);
+         var _loc7_:int = param2.readInt();
+         var _loc10_:uint = 0;
+         while(_loc10_ < _loc7_)
+         {
+            _loc8_ = param2.readUTF();
+            _loc6_.addField(_loc8_,param2);
+            _loc10_++;
+         }
+         param3[param1] = _loc6_;
+      }
+   }
+}

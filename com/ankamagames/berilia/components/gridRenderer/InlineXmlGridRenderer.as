@@ -1,60 +1,55 @@
-﻿package com.ankamagames.berilia.components.gridRenderer
+package com.ankamagames.berilia.components.gridRenderer
 {
-    import flash.geom.ColorTransform;
-    import flash.display.DisplayObject;
-    import flash.display.DisplayObjectContainer;
-    import com.ankamagames.berilia.managers.SecureCenter;
-    import com.ankamagames.berilia.types.graphic.UiRootContainer;
-
-    [RendererArgs(updateLineMethod="Function", evenLineColor="uint", oddLineColor="uint")]
-    public class InlineXmlGridRenderer extends MultiGridRenderer 
-    {
-
-        public function InlineXmlGridRenderer(args:String)
-        {
-            super(null);
-            var params:Array = args.split(",");
-            _updateFunctionName = params[0];
-            if (params[1])
-            {
-                _bgColor1 = new ColorTransform();
-                _color1 = parseInt(params[1], 16);
-                _bgColor1.color = _color1;
-            };
-            if (params[2])
-            {
-                _bgColor2 = new ColorTransform();
-                _color2 = parseInt(params[2], 16);
-                _bgColor2.color = _color2;
-            };
-            if (params[3])
-            {
-                _bgAlpha = Number(params[3]);
-            };
-            _defaultLineType = "default";
-        }
-
-        override public function update(data:*, index:uint, target:DisplayObject, selected:Boolean, subIndex:uint=0):void
-        {
-            super.update(data, index, target, selected, subIndex);
-        }
-
-        override protected function uiUpdate(ui:UiRootContainer, target:DisplayObject, data:*, selected:Boolean, subIndex:uint):void
-        {
-            if (DisplayObjectContainer(target).numChildren)
-            {
-                var _local_6 = ui.uiClass;
-                (_local_6[_updateFunctionName](SecureCenter.secure(data), _cptNameReferences[DisplayObjectContainer(target).getChildAt(0)], selected));
-            };
-        }
-
-        override public function renderModificator(childs:Array):Array
-        {
-            _containerDefinition["default"] = childs[0];
-            return ([]);
-        }
-
-
-    }
-}//package com.ankamagames.berilia.components.gridRenderer
-
+   import flash.display.DisplayObject;
+   import com.ankamagames.berilia.types.graphic.UiRootContainer;
+   import flash.display.DisplayObjectContainer;
+   import com.ankamagames.berilia.managers.SecureCenter;
+   import flash.geom.ColorTransform;
+   
+   public class InlineXmlGridRenderer extends MultiGridRenderer
+   {
+      
+      public function InlineXmlGridRenderer(param1:String)
+      {
+         super(null);
+         var _loc2_:Array = param1.split(",");
+         _updateFunctionName = _loc2_[0];
+         if(_loc2_[1])
+         {
+            _bgColor1 = new ColorTransform();
+            _color1 = parseInt(_loc2_[1],16);
+            _bgColor1.color = _color1;
+         }
+         if(_loc2_[2])
+         {
+            _bgColor2 = new ColorTransform();
+            _color2 = parseInt(_loc2_[2],16);
+            _bgColor2.color = _color2;
+         }
+         if(_loc2_[3])
+         {
+            _bgAlpha = Number(_loc2_[3]);
+         }
+         _defaultLineType = "default";
+      }
+      
+      override public function update(param1:*, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void
+      {
+         super.update(param1,param2,param3,param4,param5);
+      }
+      
+      override protected function uiUpdate(param1:UiRootContainer, param2:DisplayObject, param3:*, param4:Boolean, param5:uint) : void
+      {
+         if(DisplayObjectContainer(param2).numChildren)
+         {
+            param1.uiClass[_updateFunctionName](SecureCenter.secure(param3),_cptNameReferences[DisplayObjectContainer(param2).getChildAt(0)],param4);
+         }
+      }
+      
+      override public function renderModificator(param1:Array) : Array
+      {
+         _containerDefinition["default"] = param1[0];
+         return [];
+      }
+   }
+}

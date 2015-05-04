@@ -1,9 +1,11 @@
-﻿package com.ankamagames.atouin.messages
+package com.ankamagames.atouin.messages
 {
-    public class MapsLoadingStartedMessage extends MapMessage 
-    {
-
-
-    }
-}//package com.ankamagames.atouin.messages
-
+   public class MapsLoadingStartedMessage extends MapMessage
+   {
+      
+      public function MapsLoadingStartedMessage()
+      {
+         super();
+      }
+   }
+}

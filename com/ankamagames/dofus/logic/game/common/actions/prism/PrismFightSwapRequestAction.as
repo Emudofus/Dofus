@@ -1,23 +1,25 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.prism
+package com.ankamagames.dofus.logic.game.common.actions.prism
 {
-    import com.ankamagames.jerakine.handlers.messages.Action;
-
-    public class PrismFightSwapRequestAction implements Action 
-    {
-
-        public var subAreaId:uint;
-        public var targetId:uint;
-
-
-        public static function create(subAreaId:uint, targetId:uint):PrismFightSwapRequestAction
-        {
-            var action:PrismFightSwapRequestAction = new (PrismFightSwapRequestAction)();
-            action.targetId = targetId;
-            action.subAreaId = subAreaId;
-            return (action);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.logic.game.common.actions.prism
-
+   import com.ankamagames.jerakine.handlers.messages.Action;
+   
+   public class PrismFightSwapRequestAction extends Object implements Action
+   {
+      
+      public function PrismFightSwapRequestAction()
+      {
+         super();
+      }
+      
+      public static function create(param1:uint, param2:uint) : PrismFightSwapRequestAction
+      {
+         var _loc3_:PrismFightSwapRequestAction = new PrismFightSwapRequestAction();
+         _loc3_.targetId = param2;
+         _loc3_.subAreaId = param1;
+         return _loc3_;
+      }
+      
+      public var subAreaId:uint;
+      
+      public var targetId:uint;
+   }
+}

@@ -1,67 +1,75 @@
-﻿package com.ankamagames.dofus.network.types.game.interactive
+package com.ankamagames.dofus.network.types.game.interactive
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class InteractiveElementNamedSkill extends InteractiveElementSkill implements INetworkType 
-    {
-
-        public static const protocolId:uint = 220;
-
-        public var nameId:uint = 0;
-
-
-        override public function getTypeId():uint
-        {
-            return (220);
-        }
-
-        public function initInteractiveElementNamedSkill(skillId:uint=0, skillInstanceUid:uint=0, nameId:uint=0):InteractiveElementNamedSkill
-        {
-            super.initInteractiveElementSkill(skillId, skillInstanceUid);
-            this.nameId = nameId;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.nameId = 0;
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_InteractiveElementNamedSkill(output);
-        }
-
-        public function serializeAs_InteractiveElementNamedSkill(output:ICustomDataOutput):void
-        {
-            super.serializeAs_InteractiveElementSkill(output);
-            if (this.nameId < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.nameId) + ") on element nameId.")));
-            };
-            output.writeVarInt(this.nameId);
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_InteractiveElementNamedSkill(input);
-        }
-
-        public function deserializeAs_InteractiveElementNamedSkill(input:ICustomDataInput):void
-        {
-            super.deserialize(input);
-            this.nameId = input.readVarUhInt();
-            if (this.nameId < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.nameId) + ") on element of InteractiveElementNamedSkill.nameId.")));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.interactive
-
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class InteractiveElementNamedSkill extends InteractiveElementSkill implements INetworkType
+   {
+      
+      public function InteractiveElementNamedSkill()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 220;
+      
+      public var nameId:uint = 0;
+      
+      override public function getTypeId() : uint
+      {
+         return 220;
+      }
+      
+      public function initInteractiveElementNamedSkill(param1:uint = 0, param2:uint = 0, param3:uint = 0) : InteractiveElementNamedSkill
+      {
+         super.initInteractiveElementSkill(param1,param2);
+         this.nameId = param3;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.nameId = 0;
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_InteractiveElementNamedSkill(param1);
+      }
+      
+      public function serializeAs_InteractiveElementNamedSkill(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_InteractiveElementSkill(param1);
+         if(this.nameId < 0)
+         {
+            throw new Error("Forbidden value (" + this.nameId + ") on element nameId.");
+         }
+         else
+         {
+            param1.writeVarInt(this.nameId);
+            return;
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_InteractiveElementNamedSkill(param1);
+      }
+      
+      public function deserializeAs_InteractiveElementNamedSkill(param1:ICustomDataInput) : void
+      {
+         super.deserialize(param1);
+         this.nameId = param1.readVarUhInt();
+         if(this.nameId < 0)
+         {
+            throw new Error("Forbidden value (" + this.nameId + ") on element of InteractiveElementNamedSkill.nameId.");
+         }
+         else
+         {
+            return;
+         }
+      }
+   }
+}

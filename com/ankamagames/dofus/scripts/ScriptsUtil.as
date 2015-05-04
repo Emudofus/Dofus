@@ -1,39 +1,40 @@
-﻿package com.ankamagames.dofus.scripts
+package com.ankamagames.dofus.scripts
 {
-    import com.ankamagames.jerakine.types.positions.MapPoint;
-
-    public class ScriptsUtil 
-    {
-
-
-        public static function getMapPoint(pArgs:Array):MapPoint
-        {
-            var mp:MapPoint;
-            var se:ScriptEntity;
-            if (pArgs)
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   
+   public class ScriptsUtil extends Object
+   {
+      
+      public function ScriptsUtil()
+      {
+         super();
+      }
+      
+      public static function getMapPoint(param1:Array) : MapPoint
+      {
+         var _loc2_:MapPoint = null;
+         var _loc3_:ScriptEntity = null;
+         if(param1)
+         {
+            switch(param1.length)
             {
-                switch (pArgs.length)
-                {
-                    case 1:
-                        if ((pArgs[0] is ScriptEntity))
-                        {
-                            se = (pArgs[0] as ScriptEntity);
-                            mp = MapPoint.fromCoords(se.x, se.y);
-                        }
-                        else
-                        {
-                            mp = MapPoint.fromCellId(pArgs[0]);
-                        };
-                        break;
-                    case 2:
-                        mp = MapPoint.fromCoords(pArgs[0], pArgs[1]);
-                        break;
-                };
-            };
-            return (mp);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.scripts
-
+               case 1:
+                  if(param1[0] is ScriptEntity)
+                  {
+                     _loc3_ = param1[0] as ScriptEntity;
+                     _loc2_ = MapPoint.fromCoords(_loc3_.x,_loc3_.y);
+                  }
+                  else
+                  {
+                     _loc2_ = MapPoint.fromCellId(param1[0]);
+                  }
+                  break;
+               case 2:
+                  _loc2_ = MapPoint.fromCoords(param1[0],param1[1]);
+                  break;
+            }
+         }
+         return _loc2_;
+      }
+   }
+}

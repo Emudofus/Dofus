@@ -1,44 +1,46 @@
-﻿package com.ankamagames.dofus.datacenter.misc
+package com.ankamagames.dofus.datacenter.misc
 {
-    import com.ankamagames.jerakine.interfaces.IDataCenter;
-    import flash.utils.Dictionary;
-    import com.ankamagames.jerakine.data.GameData;
-
-    public class OptionalFeature implements IDataCenter 
-    {
-
-        public static const MODULE:String = "OptionalFeatures";
-        private static var _keywords:Dictionary;
-
-        public var id:int;
-        public var keyword:String;
-
-
-        public static function getOptionalFeatureById(id:int):OptionalFeature
-        {
-            return ((GameData.getObject(MODULE, id) as OptionalFeature));
-        }
-
-        public static function getOptionalFeatureByKeyword(key:String):OptionalFeature
-        {
-            var feature:OptionalFeature;
-            if (((!(_keywords)) || (!(_keywords[key]))))
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
+   import flash.utils.Dictionary;
+   
+   public class OptionalFeature extends Object implements IDataCenter
+   {
+      
+      public function OptionalFeature()
+      {
+         super();
+      }
+      
+      public static const MODULE:String = "OptionalFeatures";
+      
+      public static function getOptionalFeatureById(param1:int) : OptionalFeature
+      {
+         return GameData.getObject(MODULE,param1) as OptionalFeature;
+      }
+      
+      private static var _keywords:Dictionary;
+      
+      public static function getOptionalFeatureByKeyword(param1:String) : OptionalFeature
+      {
+         var _loc2_:OptionalFeature = null;
+         if(!_keywords || !_keywords[param1])
+         {
+            _keywords = new Dictionary();
+            for each(_keywords[_loc2_.keyword] in getAllOptionalFeatures())
             {
-                _keywords = new Dictionary();
-                for each (feature in getAllOptionalFeatures())
-                {
-                    _keywords[feature.keyword] = feature;
-                };
-            };
-            return (_keywords[key]);
-        }
-
-        public static function getAllOptionalFeatures():Array
-        {
-            return (GameData.getObjects(MODULE));
-        }
-
-
-    }
-}//package com.ankamagames.dofus.datacenter.misc
-
+            }
+         }
+         return _keywords[param1];
+      }
+      
+      public static function getAllOptionalFeatures() : Array
+      {
+         return GameData.getObjects(MODULE);
+      }
+      
+      public var id:int;
+      
+      public var keyword:String;
+   }
+}

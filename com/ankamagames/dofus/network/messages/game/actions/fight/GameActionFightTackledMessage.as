@@ -1,103 +1,98 @@
-﻿package com.ankamagames.dofus.network.messages.game.actions.fight
+package com.ankamagames.dofus.network.messages.game.actions.fight
 {
-    import com.ankamagames.dofus.network.messages.game.actions.AbstractGameActionMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class GameActionFightTackledMessage extends AbstractGameActionMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 1004;
-
-        private var _isInitialized:Boolean = false;
-        public var tacklersIds:Vector.<int>;
-
-        public function GameActionFightTackledMessage()
-        {
-            this.tacklersIds = new Vector.<int>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (((super.isInitialized) && (this._isInitialized)));
-        }
-
-        override public function getMessageId():uint
-        {
-            return (1004);
-        }
-
-        public function initGameActionFightTackledMessage(actionId:uint=0, sourceId:int=0, tacklersIds:Vector.<int>=null):GameActionFightTackledMessage
-        {
-            super.initAbstractGameActionMessage(actionId, sourceId);
-            this.tacklersIds = tacklersIds;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.tacklersIds = new Vector.<int>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GameActionFightTackledMessage(output);
-        }
-
-        public function serializeAs_GameActionFightTackledMessage(output:ICustomDataOutput):void
-        {
-            super.serializeAs_AbstractGameActionMessage(output);
-            output.writeShort(this.tacklersIds.length);
-            var _i1:uint;
-            while (_i1 < this.tacklersIds.length)
-            {
-                output.writeInt(this.tacklersIds[_i1]);
-                _i1++;
-            };
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GameActionFightTackledMessage(input);
-        }
-
-        public function deserializeAs_GameActionFightTackledMessage(input:ICustomDataInput):void
-        {
-            var _val1:int;
-            super.deserialize(input);
-            var _tacklersIdsLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _tacklersIdsLen)
-            {
-                _val1 = input.readInt();
-                this.tacklersIds.push(_val1);
-                _i1++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.actions.fight
-
+   import com.ankamagames.dofus.network.messages.game.actions.AbstractGameActionMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class GameActionFightTackledMessage extends AbstractGameActionMessage implements INetworkMessage
+   {
+      
+      public function GameActionFightTackledMessage()
+      {
+         this.tacklersIds = new Vector.<int>();
+         super();
+      }
+      
+      public static const protocolId:uint = 1004;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return (super.isInitialized) && (this._isInitialized);
+      }
+      
+      public var tacklersIds:Vector.<int>;
+      
+      override public function getMessageId() : uint
+      {
+         return 1004;
+      }
+      
+      public function initGameActionFightTackledMessage(param1:uint = 0, param2:int = 0, param3:Vector.<int> = null) : GameActionFightTackledMessage
+      {
+         super.initAbstractGameActionMessage(param1,param2);
+         this.tacklersIds = param3;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.tacklersIds = new Vector.<int>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GameActionFightTackledMessage(param1);
+      }
+      
+      public function serializeAs_GameActionFightTackledMessage(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_AbstractGameActionMessage(param1);
+         param1.writeShort(this.tacklersIds.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.tacklersIds.length)
+         {
+            param1.writeInt(this.tacklersIds[_loc2_]);
+            _loc2_++;
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GameActionFightTackledMessage(param1);
+      }
+      
+      public function deserializeAs_GameActionFightTackledMessage(param1:ICustomDataInput) : void
+      {
+         var _loc4_:* = 0;
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc4_ = param1.readInt();
+            this.tacklersIds.push(_loc4_);
+            _loc3_++;
+         }
+      }
+   }
+}

@@ -1,350 +1,377 @@
-﻿package com.ankamagames.tubul.types
+package com.ankamagames.tubul.types
 {
-    import flash.events.EventDispatcher;
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.tubul.interfaces.ISound;
-    import com.ankamagames.jerakine.BalanceManager.BalanceManager;
-    import com.ankamagames.tubul.events.PlaylistEvent;
-    import com.ankamagames.tubul.events.FadeEvent;
-    import com.ankamagames.tubul.events.SoundCompleteEvent;
-    import com.ankamagames.tubul.enum.EventListenerPriority;
-    import com.ankamagames.tubul.interfaces.IAudioBus;
-    import com.ankamagames.tubul.events.SoundSilenceEvent;
-    import __AS3__.vec.*;
-
-    [Event(name="complete", type="com.ankamagames.tubul.events.PlaylistEvent")]
-    [Event(name="new_sound", type="com.ankamagames.tubul.events.PlaylistEvent")]
-    public class PlayList extends EventDispatcher 
-    {
-
-        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayList));
-
-        private var _sounds:Vector.<ISound>;
-        private var _playingSound:ISound;
-        private var _playedSoundsId:Vector.<int>;
-        public var shuffle:Boolean;
-        public var loop:Boolean;
-        private var _isPlaying:Boolean = false;
-        private var _balanceManager:BalanceManager;
-        private var _playSilence:Boolean = false;
-        private var _silence:SoundSilence;
-        private var _fadeIn:VolumeFadeEffect;
-        private var _fadeOut:VolumeFadeEffect;
-
-        public function PlayList(pShuffle:Boolean=false, pLoop:Boolean=false, pSilence:SoundSilence=null, pFadeIn:VolumeFadeEffect=null, pFadeOut:VolumeFadeEffect=null)
-        {
-            this.shuffle = pShuffle;
-            this.loop = pLoop;
-            this._silence = pSilence;
-            this._fadeIn = pFadeIn;
-            this._fadeOut = pFadeOut;
-            if (this._silence)
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.tubul.interfaces.ISound;
+   import com.ankamagames.jerakine.BalanceManager.BalanceManager;
+   import com.ankamagames.tubul.events.PlaylistEvent;
+   import com.ankamagames.tubul.events.FadeEvent;
+   import com.ankamagames.tubul.events.SoundCompleteEvent;
+   import com.ankamagames.tubul.enum.EventListenerPriority;
+   import com.ankamagames.tubul.interfaces.IAudioBus;
+   import com.ankamagames.tubul.events.SoundSilenceEvent;
+   
+   public class PlayList extends EventDispatcher
+   {
+      
+      public function PlayList(param1:Boolean = false, param2:Boolean = false, param3:SoundSilence = null, param4:VolumeFadeEffect = null, param5:VolumeFadeEffect = null)
+      {
+         super();
+         this.shuffle = param1;
+         this.loop = param2;
+         this._silence = param3;
+         this._fadeIn = param4;
+         this._fadeOut = param5;
+         if(this._silence)
+         {
+            this.playSilenceBetweenTwoSounds(true,this._silence);
+         }
+         this.init();
+      }
+      
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayList));
+      
+      private var _sounds:Vector.<ISound>;
+      
+      private var _playingSound:ISound;
+      
+      private var _lastPlayedSound:ISound;
+      
+      public var shuffle:Boolean;
+      
+      public var loop:Boolean;
+      
+      private var _isPlaying:Boolean = false;
+      
+      private var _balanceManager:BalanceManager;
+      
+      private var _playSilence:Boolean = false;
+      
+      private var _silence:SoundSilence;
+      
+      private var _fadeIn:VolumeFadeEffect;
+      
+      private var _fadeOut:VolumeFadeEffect;
+      
+      public function get tracklist() : Vector.<ISound>
+      {
+         return this._sounds;
+      }
+      
+      public function get playingSound() : ISound
+      {
+         if(this._isPlaying)
+         {
+            return this._playingSound;
+         }
+         return null;
+      }
+      
+      public function get playingSoundIndex() : int
+      {
+         var _loc1_:uint = 0;
+         if(this._isPlaying)
+         {
+            _loc1_ = this._sounds.indexOf(this._playingSound);
+            return _loc1_;
+         }
+         return -1;
+      }
+      
+      public function get playSilence() : Boolean
+      {
+         return this._playSilence;
+      }
+      
+      public function get running() : Boolean
+      {
+         return this._isPlaying;
+      }
+      
+      public function addSound(param1:ISound) : uint
+      {
+         this._sounds.push(param1);
+         this._balanceManager.addItem(param1);
+         return this._sounds.length;
+      }
+      
+      public function removeSound(param1:ISound) : uint
+      {
+         var _loc2_:int = this._sounds.indexOf(param1);
+         if(_loc2_ != -1)
+         {
+            if(param1.isPlaying)
             {
-                this.playSilenceBetweenTwoSounds(true, this._silence);
-            };
-            this.init();
-        }
-
-        public function get tracklist():Vector.<ISound>
-        {
-            return (this._sounds);
-        }
-
-        public function get playingSound():ISound
-        {
-            if (this._isPlaying)
+               param1.stop();
+            }
+            this._balanceManager.removeItem(param1);
+            this._sounds.splice(_loc2_,1);
+         }
+         return this._sounds.length;
+      }
+      
+      public function removeSoundBySoundId(param1:String, param2:Boolean = true) : uint
+      {
+         var _loc3_:ISound = null;
+         var _loc4_:* = 0;
+         for each(_loc3_ in this._sounds)
+         {
+            if(_loc3_.uri.fileName.split(".")[0] == param1)
             {
-                return (this._playingSound);
-            };
-            return (null);
-        }
-
-        public function get playingSoundIndex():int
-        {
-            var index:uint;
-            if (this._isPlaying)
+               _loc4_ = this._sounds.indexOf(_loc3_);
+               if(_loc4_ != -1)
+               {
+                  if(_loc3_.isPlaying)
+                  {
+                     _loc3_.stop();
+                  }
+                  this._balanceManager.removeItem(_loc3_);
+                  this._sounds.splice(_loc4_,1);
+               }
+            }
+         }
+         return this._sounds.length;
+      }
+      
+      public function play() : void
+      {
+         if(this._isPlaying)
+         {
+            return;
+         }
+         if((this._sounds) && this._sounds.length > 0)
+         {
+            this._isPlaying = true;
+            if(this.shuffle)
             {
-                index = this._sounds.indexOf(this._playingSound);
-                return (index);
-            };
-            return (-1);
-        }
-
-        public function get playSilence():Boolean
-        {
-            return (this._playSilence);
-        }
-
-        public function get running():Boolean
-        {
-            return (this._isPlaying);
-        }
-
-        public function addSound(pSound:ISound):uint
-        {
-            this._sounds.push(pSound);
-            this._balanceManager.addItem(pSound);
-            return (this._sounds.length);
-        }
-
-        public function removeSound(pSound:ISound):uint
-        {
-            var index:int = this._sounds.indexOf(pSound);
-            if (index != -1)
-            {
-                if (pSound.isPlaying)
-                {
-                    pSound.stop();
-                };
-                this._balanceManager.removeItem(pSound);
-                this._sounds.splice(index, 1);
-            };
-            return (this._sounds.length);
-        }
-
-        public function removeSoundBySoundId(pSoundId:String, pRemoveAll:Boolean=true):uint
-        {
-            var sound:ISound;
-            var index:int;
-            for each (sound in this._sounds)
-            {
-                if (sound.uri.fileName.split(".")[0] == pSoundId)
-                {
-                    index = this._sounds.indexOf(sound);
-                    if (index != -1)
-                    {
-                        if (sound.isPlaying)
-                        {
-                            sound.stop();
-                        };
-                        this._balanceManager.removeItem(sound);
-                        this._sounds.splice(index, 1);
-                    };
-                };
-            };
-            return (this._sounds.length);
-        }
-
-        public function play():void
-        {
-            if (this._isPlaying)
-            {
-                return;
-            };
-            if (((this._sounds) && ((this._sounds.length > 0))))
-            {
-                this._isPlaying = true;
-                if (this.shuffle)
-                {
-                    this._playingSound = (this._balanceManager.callItem() as ISound);
-                }
-                else
-                {
-                    this._playingSound = (this._sounds[0] as ISound);
-                };
-                this.playSound(this._playingSound);
-            };
-        }
-
-        public function nextSound(pFadeOutCurrentSound:VolumeFadeEffect=null, pPlaySilenceBefore:Boolean=false):void
-        {
-            var _local_3:int;
-            if (((pPlaySilenceBefore) && (this._playingSound)))
-            {
-                this._playingSound.stop(pFadeOutCurrentSound);
+               this._playingSound = this._balanceManager.callItem() as ISound;
             }
             else
             {
-                this._playingSound = null;
-                if (this.shuffle)
-                {
-                    this._playingSound = (this._balanceManager.callItem() as ISound);
-                }
-                else
-                {
-                    _local_3 = this._sounds.indexOf(this._playingSound);
-                    if (_local_3 == (this._sounds.length - 1))
-                    {
-                        _log.info("We reached the end of the playlist.");
-                        if (this.loop)
-                        {
-                            _log.info("Playlist is in loop mode. Looping.");
-                            this._playingSound = (this._sounds[0] as ISound);
-                        }
-                        else
-                        {
-                            _log.info("Playlist stop.");
-                            this._playingSound = null;
-                        };
-                        dispatchEvent(new PlaylistEvent(PlaylistEvent.COMPLETE));
-                    }
-                    else
-                    {
-                        this._playingSound = (this._sounds[(_local_3 + 1)] as ISound);
-                    };
-                };
-                if (this._playingSound)
-                {
-                    this.playSound(this._playingSound);
-                };
-            };
-        }
-
-        public function previousSound():void
-        {
-            switch (this.shuffle)
-            {
-                case true:
-                    return;
-                case false:
-                    return;
-            };
-        }
-
-        public function stop(pFadeOut:VolumeFadeEffect=null):void
-        {
-            if (this._playingSound == null)
-            {
-                return;
-            };
-            if (pFadeOut)
-            {
-                pFadeOut.attachToSoundSource(this._playingSound);
-                pFadeOut.addEventListener(FadeEvent.COMPLETE, this.onFadeOutStopPlaylistComplete);
-                pFadeOut.start();
+               this._playingSound = this._sounds[0] as ISound;
             }
-            else
-            {
-                this._playingSound.eventDispatcher.removeEventListener(SoundCompleteEvent.SOUND_COMPLETE, this.onSoundComplete);
-                this._playingSound.stop();
-                this._isPlaying = false;
-                dispatchEvent(new PlaylistEvent(PlaylistEvent.COMPLETE));
-            };
-        }
-
-        public function reset():void
-        {
-            this.stop();
-            this.init();
-        }
-
-        public function playSilenceBetweenTwoSounds(pPlay:Boolean=false, pSilence:SoundSilence=null):void
-        {
-            this._playSilence = pPlay;
-            if ((((pPlay == false)) && (!((this._silence == null)))))
-            {
-                this._silence.clean();
-                this._silence = null;
-                return;
-            };
-            if (pPlay == true)
-            {
-                if ((((pSilence == null)) && ((this._silence == null))))
-                {
-                    _log.error("Aucun silence à jouer !");
-                    this._playSilence = false;
-                    return;
-                };
-                if (pSilence != null)
-                {
-                    if (this._silence != null)
-                    {
-                        this._silence.clean();
-                    };
-                    this._silence = pSilence;
-                };
-                return;
-            };
-        }
-
-        private function init():void
-        {
-            var s:ISound;
-            if (this._silence)
-            {
-                this._silence.clean();
-            };
-            if (this._sounds)
-            {
-                for each (s in this._sounds)
-                {
-                    s.stop();
-                    s = null;
-                };
-            };
-            this._sounds = new Vector.<ISound>();
-            this._balanceManager = new BalanceManager();
+            this.playSound(this._playingSound);
+         }
+      }
+      
+      public function playLastSound(param1:int) : void
+      {
+         if((this._silence) && (this._silence.running))
+         {
+            this._silence.stop();
             this._isPlaying = false;
-        }
-
-        private function playSound(pSound:ISound):void
-        {
-            var loop:Boolean;
-            var fadeIn:VolumeFadeEffect;
-            var fadeOut:VolumeFadeEffect;
-            var event:PlaylistEvent;
-            this._playingSound = pSound;
-            this._playingSound.eventDispatcher.addEventListener(SoundCompleteEvent.SOUND_COMPLETE, this.onSoundComplete, false, EventListenerPriority.NORMAL);
-            var bus:IAudioBus = this._playingSound.bus;
-            if (bus != null)
+         }
+         if((this._lastPlayedSound) && (this._playingSound == this._silence || !this._isPlaying))
+         {
+            this._lastPlayedSound.setLoops(param1);
+            this.playSound(this._lastPlayedSound);
+         }
+      }
+      
+      public function nextSound(param1:VolumeFadeEffect = null, param2:Boolean = false) : void
+      {
+         var _loc3_:* = 0;
+         if((param2) && (this._playingSound))
+         {
+            this._playingSound.stop(param1);
+            this._isPlaying = false;
+         }
+         else
+         {
+            if(this.shuffle)
             {
-                loop = false;
-                if (this._playingSound.totalLoops > -1)
-                {
-                    loop = true;
-                };
-                if (this._fadeIn)
-                {
-                    fadeIn = this._fadeIn.clone();
-                };
-                if (this._fadeOut)
-                {
-                    fadeOut = this._fadeOut.clone();
-                };
-                this._playingSound.play(loop, this._playingSound.totalLoops, fadeIn, fadeOut);
-                event = new PlaylistEvent(PlaylistEvent.NEW_SOUND);
-                event.newSound = this._playingSound;
-                dispatchEvent(event);
-            };
-        }
-
-        private function onSoundComplete(pEvent:SoundCompleteEvent):void
-        {
-            this._playingSound.eventDispatcher.removeEventListener(SoundCompleteEvent.SOUND_COMPLETE, this.onSoundComplete);
-            if (((this._playSilence) && (!((this._silence == null)))))
-            {
-                if (!(this._silence.hasEventListener(SoundSilenceEvent.COMPLETE)))
-                {
-                    this._silence.addEventListener(SoundSilenceEvent.COMPLETE, this.onSilenceComplete);
-                };
-                _log.info("Playlist silence Start");
-                this._silence.start();
+               this._playingSound = this._balanceManager.callItem() as ISound;
             }
             else
             {
-                pEvent.stopImmediatePropagation();
-                this.nextSound();
-            };
-        }
-
-        private function onSilenceComplete(pEvent:SoundSilenceEvent):void
-        {
-            var e:SoundCompleteEvent = new SoundCompleteEvent(SoundCompleteEvent.SOUND_COMPLETE);
-            e.sound = this.playingSound;
-            dispatchEvent(e);
-            _log.info("Playlist silence End");
+               _loc3_ = this._sounds.indexOf(this._playingSound);
+               if(_loc3_ == this._sounds.length - 1)
+               {
+                  _log.info("We reached the end of the playlist.");
+                  if(this.loop)
+                  {
+                     _log.info("Playlist is in loop mode. Looping.");
+                     this._playingSound = this._sounds[0] as ISound;
+                  }
+                  else
+                  {
+                     _log.info("Playlist stop.");
+                     this._playingSound = null;
+                  }
+                  dispatchEvent(new PlaylistEvent(PlaylistEvent.COMPLETE));
+               }
+               else
+               {
+                  this._playingSound = this._sounds[_loc3_ + 1] as ISound;
+               }
+            }
+            if(this._playingSound)
+            {
+               this.playSound(this._playingSound);
+            }
+         }
+      }
+      
+      public function previousSound() : void
+      {
+         switch(this.shuffle)
+         {
+            case true:
+               break;
+            case false:
+               break;
+         }
+      }
+      
+      public function stop(param1:VolumeFadeEffect = null) : void
+      {
+         if(this._playingSound == null)
+         {
+            return;
+         }
+         if(param1)
+         {
+            param1.attachToSoundSource(this._playingSound);
+            param1.addEventListener(FadeEvent.COMPLETE,this.onFadeOutStopPlaylistComplete);
+            param1.start();
+         }
+         else
+         {
+            this._playingSound.eventDispatcher.removeEventListener(SoundCompleteEvent.SOUND_COMPLETE,this.onSoundComplete);
+            this._playingSound.stop();
+            this._isPlaying = false;
+            dispatchEvent(new PlaylistEvent(PlaylistEvent.COMPLETE));
+         }
+      }
+      
+      public function reset() : void
+      {
+         this.stop();
+         this.init();
+      }
+      
+      public function playSilenceBetweenTwoSounds(param1:Boolean = false, param2:SoundSilence = null) : void
+      {
+         this._playSilence = param1;
+         if(param1 == false && !(this._silence == null))
+         {
+            this._silence.clean();
+            this._silence = null;
+            return;
+         }
+         if(param1 == true)
+         {
+            if(param2 == null && this._silence == null)
+            {
+               _log.error("Aucun silence à jouer !");
+               this._playSilence = false;
+               return;
+            }
+            if(param2 != null)
+            {
+               if(this._silence != null)
+               {
+                  this._silence.clean();
+               }
+               this._silence = param2;
+            }
+            return;
+         }
+      }
+      
+      private function init() : void
+      {
+         var _loc1_:ISound = null;
+         if(this._silence)
+         {
+            this._silence.clean();
+         }
+         if(this._sounds)
+         {
+            for each(_loc1_ in this._sounds)
+            {
+               _loc1_.stop();
+               _loc1_ = null;
+            }
+         }
+         this._sounds = new Vector.<ISound>();
+         this._balanceManager = new BalanceManager();
+         this._isPlaying = false;
+      }
+      
+      private function playSound(param1:ISound) : void
+      {
+         var _loc3_:* = false;
+         var _loc4_:VolumeFadeEffect = null;
+         var _loc5_:VolumeFadeEffect = null;
+         var _loc6_:PlaylistEvent = null;
+         if(!this._isPlaying)
+         {
+            this._isPlaying = true;
+         }
+         this._lastPlayedSound = param1;
+         this._playingSound = param1;
+         this._playingSound.eventDispatcher.addEventListener(SoundCompleteEvent.SOUND_COMPLETE,this.onSoundComplete,false,EventListenerPriority.NORMAL);
+         var _loc2_:IAudioBus = this._playingSound.bus;
+         if(_loc2_ != null)
+         {
+            _loc3_ = false;
+            if(this._playingSound.totalLoops > -1)
+            {
+               _loc3_ = true;
+            }
+            if(this._fadeIn)
+            {
+               _loc4_ = this._fadeIn.clone();
+            }
+            if(this._fadeOut)
+            {
+               _loc5_ = this._fadeOut.clone();
+            }
+            this._playingSound.play(_loc3_,this._playingSound.totalLoops,_loc4_,_loc5_);
+            _loc6_ = new PlaylistEvent(PlaylistEvent.NEW_SOUND);
+            _loc6_.newSound = this._playingSound;
+            dispatchEvent(_loc6_);
+         }
+      }
+      
+      private function onSoundComplete(param1:SoundCompleteEvent) : void
+      {
+         this._playingSound.eventDispatcher.removeEventListener(SoundCompleteEvent.SOUND_COMPLETE,this.onSoundComplete);
+         if((this._playSilence) && !(this._silence == null))
+         {
+            if(!this._silence.hasEventListener(SoundSilenceEvent.COMPLETE))
+            {
+               this._silence.addEventListener(SoundSilenceEvent.COMPLETE,this.onSilenceComplete);
+            }
+            _log.info("Playlist silence Start");
+            this._silence.start();
+         }
+         else
+         {
+            param1.stopImmediatePropagation();
             this.nextSound();
-        }
-
-        private function onFadeOutStopPlaylistComplete(pEvent:FadeEvent):void
-        {
-            this.stop();
-        }
-
-
-    }
-}//package com.ankamagames.tubul.types
-
+         }
+      }
+      
+      private function onSilenceComplete(param1:SoundSilenceEvent) : void
+      {
+         if(!this._silence.running)
+         {
+            return;
+         }
+         var _loc2_:SoundCompleteEvent = new SoundCompleteEvent(SoundCompleteEvent.SOUND_COMPLETE);
+         _loc2_.sound = this.playingSound;
+         dispatchEvent(_loc2_);
+         _log.info("Playlist silence End");
+         this.nextSound();
+      }
+      
+      private function onFadeOutStopPlaylistComplete(param1:FadeEvent) : void
+      {
+         this.stop();
+      }
+   }
+}

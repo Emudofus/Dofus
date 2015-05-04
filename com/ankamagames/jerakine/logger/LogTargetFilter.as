@@ -1,17 +1,17 @@
-﻿package com.ankamagames.jerakine.logger
+package com.ankamagames.jerakine.logger
 {
-    public class LogTargetFilter 
-    {
-
-        public var allow:Boolean = true;
-        public var target:String;
-
-        public function LogTargetFilter(pTarget:String, pAllow:Boolean=true)
-        {
-            this.target = pTarget;
-            this.allow = pAllow;
-        }
-
-    }
-}//package com.ankamagames.jerakine.logger
-
+   public class LogTargetFilter extends Object
+   {
+      
+      public function LogTargetFilter(param1:String, param2:Boolean = true)
+      {
+         super();
+         this.target = param1;
+         this.allow = param2;
+      }
+      
+      public var allow:Boolean = true;
+      
+      public var target:String;
+   }
+}

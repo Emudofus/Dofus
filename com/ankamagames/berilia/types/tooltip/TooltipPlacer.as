@@ -1,591 +1,589 @@
-﻿package com.ankamagames.berilia.types.tooltip
+package com.ankamagames.berilia.types.tooltip
 {
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import __AS3__.vec.Vector;
-    import flash.utils.Dictionary;
-    import com.ankamagames.berilia.types.LocationEnum;
-    import flash.geom.Point;
-    import com.ankamagames.jerakine.utils.display.Rectangle2;
-    import flash.geom.Rectangle;
-    import com.ankamagames.jerakine.utils.display.StageShareManager;
-    import flash.display.DisplayObject;
-    import com.ankamagames.jerakine.interfaces.IRectangle;
-    import com.ankamagames.berilia.managers.TooltipManager;
-    import com.ankamagames.berilia.types.graphic.UiRootContainer;
-    import com.ankamagames.berilia.types.event.UiRenderEvent;
-    import flash.events.Event;
-    import __AS3__.vec.*;
-
-    public class TooltipPlacer 
-    {
-
-        protected static var _log:Logger = Log.getLogger(getQualifiedClassName(TooltipPlacer));
-        private static var _tooltips:Vector.<TooltipPosition> = new Vector.<TooltipPosition>(0);
-        private static var _tooltipsRows:Dictionary = new Dictionary();
-        private static var _tooltipsToWait:Vector.<String> = new Vector.<String>(0);
-        private static const _anchors:Array = [];
-        private static var _init:Boolean;
-
-
-        private static function init():void
-        {
-            var pt1:uint;
-            var pt2:uint;
-            if (_init)
+   import com.ankamagames.jerakine.logger.Logger;
+   import flash.utils.Dictionary;
+   import com.ankamagames.berilia.types.LocationEnum;
+   import flash.display.DisplayObject;
+   import com.ankamagames.jerakine.interfaces.IRectangle;
+   import flash.geom.Point;
+   import com.ankamagames.jerakine.utils.display.Rectangle2;
+   import flash.geom.Rectangle;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import com.ankamagames.berilia.types.graphic.UiRootContainer;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import flash.events.Event;
+   import com.ankamagames.berilia.types.event.UiRenderEvent;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   
+   public class TooltipPlacer extends Object
+   {
+      
+      public function TooltipPlacer()
+      {
+         super();
+      }
+      
+      protected static var _log:Logger = Log.getLogger(getQualifiedClassName(TooltipPlacer));
+      
+      private static var _tooltips:Vector.<TooltipPosition> = new Vector.<TooltipPosition>(0);
+      
+      private static var _tooltipsRows:Dictionary = new Dictionary();
+      
+      private static var _tooltipsToWait:Vector.<String> = new Vector.<String>(0);
+      
+      private static const _anchors:Array = [];
+      
+      private static var _init:Boolean;
+      
+      private static function init() : void
+      {
+         var _loc2_:uint = 0;
+         var _loc3_:uint = 0;
+         if(_init)
+         {
+            return;
+         }
+         _init = true;
+         var _loc1_:Array = [LocationEnum.POINT_TOPLEFT,LocationEnum.POINT_TOP,LocationEnum.POINT_TOPRIGHT,LocationEnum.POINT_LEFT,LocationEnum.POINT_CENTER,LocationEnum.POINT_RIGHT,LocationEnum.POINT_BOTTOMLEFT,LocationEnum.POINT_BOTTOM,LocationEnum.POINT_BOTTOMRIGHT];
+         for each(_loc2_ in _loc1_)
+         {
+            for each(_loc3_ in _loc1_)
             {
-                return;
-            };
-            _init = true;
-            var config:Array = [LocationEnum.POINT_TOPLEFT, LocationEnum.POINT_TOP, LocationEnum.POINT_TOPRIGHT, LocationEnum.POINT_LEFT, LocationEnum.POINT_CENTER, LocationEnum.POINT_RIGHT, LocationEnum.POINT_BOTTOMLEFT, LocationEnum.POINT_BOTTOM, LocationEnum.POINT_BOTTOMRIGHT];
-            for each (pt1 in config)
+               _anchors.push({
+                  "p1":_loc2_,
+                  "p2":_loc3_
+               });
+            }
+         }
+      }
+      
+      private static function getAnchors() : Array
+      {
+         init();
+         return _anchors.concat();
+      }
+      
+      public static function place(param1:DisplayObject, param2:IRectangle, param3:uint = 6, param4:uint = 0, param5:int = 3, param6:Boolean = true) : void
+      {
+         var _loc14_:Point = null;
+         var _loc15_:Point = null;
+         var _loc16_:Rectangle2 = null;
+         var _loc17_:Point = null;
+         var _loc18_:Rectangle2 = null;
+         var _loc19_:* = 0;
+         var _loc20_:Object = null;
+         var _loc21_:Object = null;
+         var _loc22_:Object = null;
+         var _loc7_:* = false;
+         var _loc8_:Rectangle = param1.getBounds(param1);
+         var _loc9_:uint = param3;
+         var _loc10_:uint = param4;
+         var _loc11_:* = false;
+         var _loc12_:Array = getAnchors();
+         var _loc13_:Array = new Array();
+         while(!_loc7_)
+         {
+            _loc14_ = new Point(param2.x,param2.y);
+            _loc15_ = new Point(param1.x,param1.y);
+            _loc16_ = new Rectangle2(param1.x,param1.y,param1.width,param1.height);
+            processAnchor(_loc15_,_loc16_,param3);
+            processAnchor(_loc14_,param2,param4);
+            _loc17_ = makeOffset(param3,param5);
+            _loc14_.x = _loc14_.x - (_loc15_.x - _loc17_.x + _loc8_.left);
+            _loc14_.y = _loc14_.y - (_loc15_.y - _loc17_.y);
+            _loc18_ = new Rectangle2(_loc14_.x,_loc14_.y,_loc16_.width,_loc16_.height);
+            if(param6)
             {
-                for each (pt2 in config)
-                {
-                    _anchors.push({
-                        "p1":pt1,
-                        "p2":pt2
-                    });
-                };
-            };
-        }
-
-        private static function getAnchors():Array
-        {
-            init();
-            return (_anchors.concat());
-        }
-
-        public static function place(tooltip:DisplayObject, target:IRectangle, point:uint=6, relativePoint:uint=0, offset:int=3, alwaysDisplayed:Boolean=true):void
-        {
-            var pTarget:Point;
-            var pTooltip:Point;
-            var hackIRectangle:Rectangle2;
-            var offsetPt:Point;
-            var tooltipZone:Rectangle2;
-            var hitZoneSize:int;
-            var newPt:Object;
-            var smallerZone:Object;
-            var obj:Object;
-            var ok:Boolean;
-            var ttBounds:Rectangle = tooltip.getBounds(tooltip);
-            var truePoint:uint = point;
-            var trueRelativePoint:uint = relativePoint;
-            var lastTurn:Boolean;
-            var anchors:Array = getAnchors();
-            var hitZones:Array = new Array();
-            while (!(ok))
+               if(_loc18_.y < 0)
+               {
+                  _loc18_.y = 0;
+               }
+               if(_loc18_.x < 0)
+               {
+                  _loc18_.x = 0;
+               }
+               if(_loc18_.y + _loc18_.height > StageShareManager.startHeight)
+               {
+                  _loc18_.y = _loc18_.y - (_loc18_.height + _loc18_.y - StageShareManager.startHeight);
+               }
+               if(_loc18_.x + _loc18_.width > StageShareManager.startWidth)
+               {
+                  _loc18_.x = _loc18_.x - (_loc18_.width + _loc18_.x - StageShareManager.startWidth);
+               }
+            }
+            if(!_loc11_)
             {
-                pTarget = new Point(target.x, target.y);
-                pTooltip = new Point(tooltip.x, tooltip.y);
-                hackIRectangle = new Rectangle2(tooltip.x, tooltip.y, tooltip.width, tooltip.height);
-                processAnchor(pTooltip, hackIRectangle, point);
-                processAnchor(pTarget, target, relativePoint);
-                offsetPt = makeOffset(point, offset);
-                pTarget.x = (pTarget.x - ((pTooltip.x - offsetPt.x) + ttBounds.left));
-                pTarget.y = (pTarget.y - (pTooltip.y - offsetPt.y));
-                tooltipZone = new Rectangle2(pTarget.x, pTarget.y, hackIRectangle.width, hackIRectangle.height);
-                if (alwaysDisplayed)
-                {
-                    if (tooltipZone.y < 0)
-                    {
-                        tooltipZone.y = 0;
-                    };
-                    if (tooltipZone.x < 0)
-                    {
-                        tooltipZone.x = 0;
-                    };
-                    if ((tooltipZone.y + tooltipZone.height) > StageShareManager.startHeight)
-                    {
-                        tooltipZone.y = (tooltipZone.y - ((tooltipZone.height + tooltipZone.y) - StageShareManager.startHeight));
-                    };
-                    if ((tooltipZone.x + tooltipZone.width) > StageShareManager.startWidth)
-                    {
-                        tooltipZone.x = (tooltipZone.x - ((tooltipZone.width + tooltipZone.x) - StageShareManager.startWidth));
-                    };
-                };
-                if (!(lastTurn))
-                {
-                    hitZoneSize = hitTest(tooltipZone, target);
-                    ok = (hitZoneSize == 0);
-                    if (!(ok))
-                    {
-                        newPt = anchors.shift();
-                        if (!(newPt))
-                        {
-                            smallerZone = {
-                                "size":(target.width * target.height),
-                                "point":{
-                                    "p1":truePoint,
-                                    "p2":trueRelativePoint
-                                }
-                            };
-                            for each (obj in hitZones)
-                            {
-                                if (smallerZone.size > obj.size)
-                                {
-                                    smallerZone = obj;
-                                };
-                            };
-                            lastTurn = true;
-                            point = smallerZone.point.p1;
-                            relativePoint = smallerZone.point.p2;
+               _loc19_ = hitTest(_loc18_,param2);
+               _loc7_ = _loc19_ == 0;
+               if(!_loc7_)
+               {
+                  _loc20_ = _loc12_.shift();
+                  if(!_loc20_)
+                  {
+                     _loc21_ = {
+                        "size":param2.width * param2.height,
+                        "point":{
+                           "p1":_loc9_,
+                           "p2":_loc10_
                         }
-                        else
+                     };
+                     for each(_loc22_ in _loc13_)
+                     {
+                        if(_loc21_.size > _loc22_.size)
                         {
-                            hitZones.push({
-                                "size":hitZoneSize,
-                                "point":{
-                                    "p1":point,
-                                    "p2":relativePoint
-                                }
-                            });
-                            point = newPt.p1;
-                            relativePoint = newPt.p2;
-                        };
-                    };
-                }
-                else
-                {
-                    ok = true;
-                };
-            };
-            tooltip.x = tooltipZone.x;
-            tooltip.y = tooltipZone.y;
-        }
-
-        public static function placeWithArrow(tooltip:DisplayObject, target:IRectangle):Object
-        {
-            var pTooltip:Point = new Point(tooltip.x, tooltip.y);
-            var info:Object = {
-                "bottomFlip":false,
-                "leftFlip":false
-            };
-            pTooltip.x = ((target.x + (target.width / 2)) + 5);
-            pTooltip.y = (target.y - tooltip.height);
-            if ((pTooltip.x + tooltip.width) > StageShareManager.startWidth)
+                           _loc21_ = _loc22_;
+                        }
+                     }
+                     _loc11_ = true;
+                     var param3:uint = _loc21_.point.p1;
+                     var param4:uint = _loc21_.point.p2;
+                  }
+                  else
+                  {
+                     _loc13_.push({
+                        "size":_loc19_,
+                        "point":{
+                           "p1":param3,
+                           "p2":param4
+                        }
+                     });
+                     param3 = _loc20_.p1;
+                     param4 = _loc20_.p2;
+                  }
+               }
+            }
+            else
             {
-                info.leftFlip = true;
-                pTooltip.x = (pTooltip.x - (tooltip.width + 10));
-            };
-            if (pTooltip.y < 0)
+               _loc7_ = true;
+            }
+         }
+         param1.x = _loc18_.x;
+         param1.y = _loc18_.y;
+      }
+      
+      public static function placeWithArrow(param1:DisplayObject, param2:IRectangle) : Object
+      {
+         var _loc3_:Point = new Point(param1.x,param1.y);
+         var _loc4_:Object = {
+            "bottomFlip":false,
+            "leftFlip":false
+         };
+         _loc3_.x = param2.x + param2.width / 2 + 5;
+         _loc3_.y = param2.y - param1.height;
+         if(_loc3_.x + param1.width > StageShareManager.startWidth)
+         {
+            _loc4_.leftFlip = true;
+            _loc3_.x = _loc3_.x - (param1.width + 10);
+         }
+         if(_loc3_.y < 0)
+         {
+            _loc4_.bottomFlip = true;
+            _loc3_.y = param2.y + param2.height;
+         }
+         param1.x = _loc3_.x;
+         param1.y = _loc3_.y;
+         return _loc4_;
+      }
+      
+      public static function waitBeforeOrder(param1:String) : void
+      {
+         if(_tooltipsToWait.indexOf(param1) == -1)
+         {
+            _tooltipsToWait.push(param1);
+         }
+      }
+      
+      public static function addTooltipPosition(param1:UiRootContainer, param2:IRectangle, param3:uint) : void
+      {
+         var _loc4_:* = 0;
+         var _loc5_:int = _tooltips.length;
+         var _loc6_:* = false;
+         var _loc7_:String = TooltipManager.getTooltipName(param1);
+         if(!_loc7_)
+         {
+            _loc7_ = param1.customUnicName;
+         }
+         _loc4_ = 0;
+         while(_loc4_ < _loc5_)
+         {
+            if(_tooltips[_loc4_].tooltip == param1)
             {
-                info.bottomFlip = true;
-                pTooltip.y = (target.y + target.height);
-            };
-            tooltip.x = pTooltip.x;
-            tooltip.y = pTooltip.y;
-            return (info);
-        }
-
-        public static function waitBeforeOrder(pTooltipId:String):void
-        {
-            if (_tooltipsToWait.indexOf(pTooltipId) == -1)
+               _loc6_ = true;
+               _tooltips.splice(_loc4_,1,new TooltipPosition(param1,param2,param3));
+               break;
+            }
+            _loc4_++;
+         }
+         if(!_loc6_)
+         {
+            _tooltips.push(new TooltipPosition(param1,param2,param3));
+         }
+         var _loc8_:int = _tooltipsToWait.indexOf(_loc7_);
+         if(_loc8_ != -1)
+         {
+            _tooltipsToWait.splice(_loc8_,1);
+         }
+         if(_tooltipsToWait.length == 0)
+         {
+            checkRender();
+         }
+      }
+      
+      public static function checkRender(param1:Event = null) : void
+      {
+         var _loc2_:TooltipPosition = null;
+         if(param1)
+         {
+            param1.currentTarget.removeEventListener(UiRenderEvent.UIRenderComplete,checkRender);
+         }
+         for each(_loc2_ in _tooltips)
+         {
+            if(!_loc2_.tooltip.ready)
             {
-                _tooltipsToWait.push(pTooltipId);
-            };
-        }
-
-        public static function addTooltipPosition(pTooltip:UiRootContainer, pTarget:IRectangle, pCellId:uint):void
-        {
-            var i:int;
-            var nbTooltips:int = _tooltips.length;
-            var exists:Boolean;
-            var tooltipName:String = TooltipManager.getTooltipName(pTooltip);
-            if (!(tooltipName))
+               _loc2_.tooltip.addEventListener(UiRenderEvent.UIRenderComplete,checkRender);
+               return;
+            }
+         }
+         orderTooltips();
+      }
+      
+      public static function removeTooltipPosition(param1:UiRootContainer) : void
+      {
+         var _loc2_:TooltipPosition = null;
+         var _loc5_:* = 0;
+         var _loc3_:* = -1;
+         for each(_loc2_ in _tooltips)
+         {
+            if(_loc2_.tooltip == param1)
             {
-                tooltipName = pTooltip.customUnicName;
-            };
-            i = 0;
-            while (i < nbTooltips)
+               _loc3_ = _tooltips.indexOf(_loc2_);
+               break;
+            }
+         }
+         if(_loc3_ != -1)
+         {
+            _tooltips.splice(_loc3_,1);
+         }
+         var _loc4_:String = TooltipManager.getTooltipName(param1);
+         _loc5_ = _tooltipsToWait.indexOf(_loc4_);
+         if(_loc5_ != -1)
+         {
+            _tooltipsToWait.splice(_loc5_,1);
+         }
+      }
+      
+      public static function removeTooltipPositionByName(param1:String) : void
+      {
+         var _loc2_:TooltipPosition = null;
+         var _loc4_:* = 0;
+         var _loc3_:* = -1;
+         for each(_loc2_ in _tooltips)
+         {
+            if(_loc2_.tooltip.customUnicName == param1)
             {
-                if (_tooltips[i].tooltip == pTooltip)
-                {
-                    exists = true;
-                    _tooltips.splice(i, 1, new TooltipPosition(pTooltip, pTarget, pCellId));
-                    break;
-                };
-                i++;
-            };
-            if (!(exists))
+               _loc3_ = _tooltips.indexOf(_loc2_);
+               break;
+            }
+         }
+         if(_loc3_ != -1)
+         {
+            _tooltips.splice(_loc3_,1);
+         }
+         _loc4_ = _tooltipsToWait.indexOf(param1);
+         if(_loc4_ != -1)
+         {
+            _tooltipsToWait.splice(_loc4_,1);
+         }
+      }
+      
+      private static function orderTooltips() : void
+      {
+         var _loc2_:* = 0;
+         var _loc3_:* = 0;
+         var _loc4_:TooltipPosition = null;
+         var _loc5_:Vector.<TooltipPosition> = null;
+         var _loc9_:* = NaN;
+         var _loc10_:* = NaN;
+         var _loc11_:* = 0;
+         var _loc12_:* = 0;
+         var _loc13_:* = 0;
+         var _loc14_:* = false;
+         var _loc15_:* = NaN;
+         var _loc16_:* = false;
+         var _loc17_:* = NaN;
+         var _loc18_:* = false;
+         var _loc19_:Object = null;
+         var _loc1_:int = _tooltips.length;
+         var _loc6_:Number = 0;
+         var _loc7_:Number = 0;
+         var _loc8_:Number = 0;
+         _tooltips.sort(compareVerticalPos);
+         _loc2_ = _loc1_ - 1;
+         while(_loc2_ >= 0)
+         {
+            _loc12_ = _tooltips[_loc2_].mapRow;
+            if(!_tooltipsRows[_loc12_])
             {
-                _tooltips.push(new TooltipPosition(pTooltip, pTarget, pCellId));
-            };
-            var tIndex:int = _tooltipsToWait.indexOf(tooltipName);
-            if (tIndex != -1)
+               _tooltipsRows[_loc12_] = new Vector.<TooltipPosition>(0);
+            }
+            _loc5_ = isTooltipSuperposed(_tooltips[_loc2_]);
+            _loc16_ = false;
+            for each(_loc4_ in _loc5_)
             {
-                _tooltipsToWait.splice(tIndex, 1);
-            };
-            if (_tooltipsToWait.length == 0)
+               if(_loc4_.mapRow == _loc12_ && !(_loc4_.tooltip.customUnicName == _tooltips[_loc2_].tooltip.customUnicName))
+               {
+                  _loc16_ = true;
+                  break;
+               }
+            }
+            if(_loc16_)
             {
-                checkRender();
-            };
-        }
-
-        public static function checkRender(pEvent:Event=null):void
-        {
-            var tp:TooltipPosition;
-            if (pEvent)
+               _tooltipsRows[_loc12_].push(_tooltips[_loc2_]);
+            }
+            if(_loc2_ + 1 < _loc1_)
             {
-                pEvent.currentTarget.removeEventListener(UiRenderEvent.UIRenderComplete, checkRender);
-            };
-            for each (tp in _tooltips)
-            {
-                if (!(tp.tooltip.ready))
-                {
-                    tp.tooltip.addEventListener(UiRenderEvent.UIRenderComplete, checkRender);
-                    return;
-                };
-            };
-            orderTooltips();
-        }
-
-        public static function removeTooltipPosition(pTooltip:UiRootContainer):void
-        {
-            var tp:TooltipPosition;
-            var tIndexWait:int;
-            var tIndex:int = -1;
-            for each (tp in _tooltips)
-            {
-                if (tp.tooltip == pTooltip)
-                {
-                    tIndex = _tooltips.indexOf(tp);
-                    break;
-                };
-            };
-            if (tIndex != -1)
-            {
-                _tooltips.splice(tIndex, 1);
-            };
-            var uiName:String = TooltipManager.getTooltipName(pTooltip);
-            tIndexWait = _tooltipsToWait.indexOf(uiName);
-            if (tIndexWait != -1)
-            {
-                _tooltipsToWait.splice(tIndexWait, 1);
-            };
-        }
-
-        public static function removeTooltipPositionByName(pTooltipName:String):void
-        {
-            var tp:TooltipPosition;
-            var tIndexWait:int;
-            var tIndex:int = -1;
-            for each (tp in _tooltips)
-            {
-                if (tp.tooltip.customUnicName == pTooltipName)
-                {
-                    tIndex = _tooltips.indexOf(tp);
-                    break;
-                };
-            };
-            if (tIndex != -1)
-            {
-                _tooltips.splice(tIndex, 1);
-            };
-            tIndexWait = _tooltipsToWait.indexOf(pTooltipName);
-            if (tIndexWait != -1)
-            {
-                _tooltipsToWait.splice(tIndexWait, 1);
-            };
-        }
-
-        private static function orderTooltips():void
-        {
-            var i:int;
-            var j:int;
-            var ttp:TooltipPosition;
-            var ttps:Vector.<TooltipPosition>;
-            var centerX:Number;
-            var rowWidth:Number;
-            var rowLen:int;
-            var currentTooltipRow:int;
-            var ttpRow:int;
-            var ok:Boolean;
-            var newY:Number;
-            var addToRow:Boolean;
-            var prevX:Number;
-            var offScreenX:Boolean;
-            var row:Object;
-            var len:int = _tooltips.length;
-            var minX:Number = 0;
-            var minTooltipY:Number = 0;
-            var maxX:Number = 0;
-            _tooltips.sort(compareVerticalPos);
-            i = (len - 1);
-            while (i >= 0)
-            {
-                currentTooltipRow = _tooltips[i].mapRow;
-                if (!(_tooltipsRows[currentTooltipRow]))
-                {
-                    _tooltipsRows[currentTooltipRow] = new Vector.<TooltipPosition>(0);
-                };
-                ttps = isTooltipSuperposed(_tooltips[i]);
-                addToRow = false;
-                for each (ttp in ttps)
-                {
-                    if ((((ttp.mapRow == currentTooltipRow)) && (!((ttp.tooltip.customUnicName == _tooltips[i].tooltip.customUnicName)))))
-                    {
-                        addToRow = true;
+               _loc11_ = _tooltipsRows[_loc12_].length;
+               if(_loc11_ > 1)
+               {
+                  _loc10_ = 0;
+                  _loc6_ = 0;
+                  _loc8_ = 0;
+                  _loc7_ = 0;
+                  for each(_loc4_ in _tooltipsRows[_loc12_])
+                  {
+                     _loc7_ = _loc7_ == 0?_loc4_.tooltip.y:_loc4_.tooltip.y < _loc7_?_loc4_.tooltip.y:_loc7_;
+                  }
+                  _loc3_ = _loc2_ + 1;
+                  while(_loc3_ < _loc1_)
+                  {
+                     if(!(_tooltips[_loc3_].mapRow == _loc12_) && _loc7_ > _tooltips[_loc3_].tooltip.y - _tooltips[_loc2_].tooltip.height - 2)
+                     {
+                        _loc7_ = _tooltips[_loc3_].tooltip.y - _tooltips[_loc2_].tooltip.height - 2;
                         break;
-                    };
-                };
-                if (addToRow)
-                {
-                    _tooltipsRows[currentTooltipRow].push(_tooltips[i]);
-                };
-                if ((i + 1) < len)
-                {
-                    rowLen = _tooltipsRows[currentTooltipRow].length;
-                    if (rowLen > 1)
-                    {
-                        rowWidth = 0;
-                        minX = 0;
-                        maxX = 0;
-                        minTooltipY = 0;
-                        for each (ttp in _tooltipsRows[currentTooltipRow])
+                     }
+                     _loc3_++;
+                  }
+                  for each(_loc4_ in _tooltipsRows[_loc12_])
+                  {
+                     _loc4_.tooltip.y = _loc7_;
+                  }
+                  _loc6_ = _loc8_ = _tooltips[_loc2_].target.x;
+                  for each(_loc4_ in _tooltipsRows[_loc12_])
+                  {
+                     if(_loc4_.target.x < _loc6_)
+                     {
+                        _loc6_ = _loc4_.target.x;
+                     }
+                     else if(_loc4_.target.x > _loc8_)
+                     {
+                        _loc8_ = _loc4_.target.x;
+                     }
+                     
+                     _loc10_ = _loc10_ + _loc4_.tooltip.width;
+                  }
+                  _tooltipsRows[_loc12_].sort(compareHorizontalPos);
+                  _loc11_ = _tooltipsRows[_loc12_].length;
+                  if(_loc11_ > 0)
+                  {
+                     _loc10_ = _loc10_ + 2 * (_loc11_ - 1);
+                     _loc9_ = _loc8_ - (_loc8_ - _loc6_) / 2;
+                     _tooltipsRows[_loc12_][0].tooltip.x = _loc9_ + 43 - _loc10_ / 2;
+                     _loc3_ = 1;
+                     while(_loc3_ < _loc11_)
+                     {
+                        _tooltipsRows[_loc12_][_loc3_].tooltip.x = _tooltipsRows[_loc12_][_loc3_ - 1].tooltip.x + _tooltipsRows[_loc12_][_loc3_ - 1].tooltip.width + 2;
+                        _loc3_++;
+                     }
+                  }
+               }
+               else
+               {
+                  _loc14_ = false;
+                  while(!_loc14_)
+                  {
+                     _loc3_ = _loc2_ + 1;
+                     while(_loc3_ < _loc1_)
+                     {
+                        _loc14_ = true;
+                        if(hitTest(_tooltips[_loc2_].rect,_tooltips[_loc3_].rect) != 0)
                         {
-                            minTooltipY = (((minTooltipY == 0)) ? ttp.tooltip.y : (((ttp.tooltip.y < minTooltipY)) ? ttp.tooltip.y : minTooltipY));
-                        };
-                        j = (i + 1);
-                        while (j < len)
-                        {
-                            if (((!((_tooltips[j].mapRow == currentTooltipRow))) && ((minTooltipY > ((_tooltips[j].tooltip.y - _tooltips[i].tooltip.height) - 2)))))
-                            {
-                                minTooltipY = ((_tooltips[j].tooltip.y - _tooltips[i].tooltip.height) - 2);
-                                break;
-                            };
-                            j++;
-                        };
-                        for each (ttp in _tooltipsRows[currentTooltipRow])
-                        {
-                            ttp.tooltip.y = minTooltipY;
-                        };
-                        maxX = _tooltips[i].target.x;
-                        minX = maxX;
-                        for each (ttp in _tooltipsRows[currentTooltipRow])
-                        {
-                            if (ttp.target.x < minX)
-                            {
-                                minX = ttp.target.x;
-                            }
-                            else
-                            {
-                                if (ttp.target.x > maxX)
-                                {
-                                    maxX = ttp.target.x;
-                                };
-                            };
-                            rowWidth = (rowWidth + ttp.tooltip.width);
-                        };
-                        _tooltipsRows[currentTooltipRow].sort(compareHorizontalPos);
-                        rowLen = _tooltipsRows[currentTooltipRow].length;
-                        if (rowLen > 0)
-                        {
-                            rowWidth = (rowWidth + (2 * (rowLen - 1)));
-                            centerX = (maxX - ((maxX - minX) / 2));
-                            _tooltipsRows[currentTooltipRow][0].tooltip.x = ((centerX + 43) - (rowWidth / 2));
-                            j = 1;
-                            while (j < rowLen)
-                            {
-                                _tooltipsRows[currentTooltipRow][j].tooltip.x = ((_tooltipsRows[currentTooltipRow][(j - 1)].tooltip.x + _tooltipsRows[currentTooltipRow][(j - 1)].tooltip.width) + 2);
-                                j++;
-                            };
-                        };
-                    }
-                    else
-                    {
-                        ok = false;
-                        while (!(ok))
-                        {
-                            j = (i + 1);
-                            while (j < len)
-                            {
-                                ok = true;
-                                if (hitTest(_tooltips[i].rect, _tooltips[j].rect) != 0)
-                                {
-                                    newY = ((_tooltips[j].tooltip.y - _tooltips[i].tooltip.height) - 2);
-                                    if (newY < 0)
-                                    {
-                                        _tooltips[i].tooltip.y = 0;
-                                        ttp = _tooltips[j];
-                                        prevX = _tooltips[i].tooltip.x;
-                                        if (_tooltips[i].originalX < ttp.originalX)
-                                        {
-                                            _tooltips[i].tooltip.x = ((ttp.tooltip.x - _tooltips[i].tooltip.width) - 2);
-                                        }
-                                        else
-                                        {
-                                            _tooltips[i].tooltip.x = ((ttp.tooltip.x + ttp.tooltip.width) + 2);
-                                        };
-                                        offScreenX = (((_tooltips[i].tooltip.x < 0)) || ((((_tooltips[i].tooltip.x + _tooltips[i].tooltip.width) + 2) > StageShareManager.stage.stageWidth)));
-                                        if (((offScreenX) || (isTooltipSuperposed(_tooltips[i]))))
-                                        {
-                                            _tooltips[i].tooltip.x = prevX;
-                                            _tooltips[i].tooltip.y = newY;
-                                        };
-                                    }
-                                    else
-                                    {
-                                        _tooltips[i].tooltip.y = newY;
-                                    };
-                                    ok = false;
-                                    break;
-                                };
-                                j++;
-                            };
-                        };
-                    };
-                };
-                i--;
-            };
-            for (row in _tooltipsRows)
-            {
-                delete _tooltipsRows[row];
-            };
-        }
-
-        private static function isTooltipSuperposed(pTooltipPosition:TooltipPosition):Vector.<TooltipPosition>
-        {
-            var tp:TooltipPosition;
-            var ttpsInCollision:Vector.<TooltipPosition>;
-            for each (tp in _tooltips)
-            {
-                if (((!((tp == pTooltipPosition))) && (!((hitTest(tp.rect, pTooltipPosition.rect) == 0)))))
-                {
-                    if (!(ttpsInCollision))
-                    {
-                        ttpsInCollision = new Vector.<TooltipPosition>(0);
-                    };
-                    ttpsInCollision.push(tp);
-                };
-            };
-            return (ttpsInCollision);
-        }
-
-        private static function compareVerticalPos(pTooltipPosA:TooltipPosition, pTooltipPosB:TooltipPosition):int
-        {
-            var result:int;
-            if (pTooltipPosA.mapRow > pTooltipPosB.mapRow)
-            {
-                result = 1;
+                           _loc15_ = _tooltips[_loc3_].tooltip.y - _tooltips[_loc2_].tooltip.height - 2;
+                           if(_loc15_ < 0)
+                           {
+                              _tooltips[_loc2_].tooltip.y = 0;
+                              _loc4_ = _tooltips[_loc3_];
+                              _loc17_ = _tooltips[_loc2_].tooltip.x;
+                              if(_tooltips[_loc2_].originalX < _loc4_.originalX)
+                              {
+                                 _tooltips[_loc2_].tooltip.x = _loc4_.tooltip.x - _tooltips[_loc2_].tooltip.width - 2;
+                              }
+                              else
+                              {
+                                 _tooltips[_loc2_].tooltip.x = _loc4_.tooltip.x + _loc4_.tooltip.width + 2;
+                              }
+                              _loc18_ = _tooltips[_loc2_].tooltip.x < 0 || _tooltips[_loc2_].tooltip.x + _tooltips[_loc2_].tooltip.width + 2 > StageShareManager.stage.stageWidth;
+                              if((_loc18_) || (isTooltipSuperposed(_tooltips[_loc2_])))
+                              {
+                                 _tooltips[_loc2_].tooltip.x = _loc17_;
+                                 _tooltips[_loc2_].tooltip.y = _loc15_;
+                              }
+                           }
+                           else
+                           {
+                              _tooltips[_loc2_].tooltip.y = _loc15_;
+                           }
+                           _loc14_ = false;
+                           break;
+                        }
+                        _loc3_++;
+                     }
+                  }
+               }
             }
-            else
+            _loc2_--;
+         }
+         for(_loc19_ in _tooltipsRows)
+         {
+            delete _tooltipsRows[_loc19_];
+            true;
+         }
+      }
+      
+      private static function isTooltipSuperposed(param1:TooltipPosition) : Vector.<TooltipPosition>
+      {
+         var _loc2_:TooltipPosition = null;
+         var _loc3_:Vector.<TooltipPosition> = null;
+         for each(_loc2_ in _tooltips)
+         {
+            if(!(_loc2_ == param1) && !(hitTest(_loc2_.rect,param1.rect) == 0))
             {
-                if (pTooltipPosA.mapRow < pTooltipPosB.mapRow)
-                {
-                    result = -1;
-                }
-                else
-                {
-                    result = 0;
-                };
-            };
-            return (result);
-        }
-
-        private static function compareHorizontalPos(pTooltipPosA:TooltipPosition, pTooltipPosB:TooltipPosition):int
-        {
-            var result:int;
-            if (pTooltipPosA.tooltip.x > pTooltipPosB.tooltip.x)
-            {
-                result = 1;
+               if(!_loc3_)
+               {
+                  _loc3_ = new Vector.<TooltipPosition>(0);
+               }
+               _loc3_.push(_loc2_);
             }
-            else
-            {
-                if (pTooltipPosA.tooltip.x < pTooltipPosB.tooltip.x)
-                {
-                    result = -1;
-                }
-                else
-                {
-                    result = 0;
-                };
-            };
-            return (result);
-        }
-
-        private static function hitTest(item:IRectangle, zone:IRectangle):int
-        {
-            var r1:Rectangle = new Rectangle(item.x, item.y, item.width, item.height);
-            var r2:Rectangle = new Rectangle(zone.x, zone.y, zone.width, zone.height);
-            var r3:Rectangle = r1.intersection(r2);
-            return ((r3.width * r3.height));
-        }
-
-        private static function processAnchor(p:Point, target:IRectangle, location:uint):Point
-        {
-            switch (location)
-            {
-                case LocationEnum.POINT_TOPLEFT:
-                    break;
-                case LocationEnum.POINT_TOP:
-                    p.x = (p.x + (target.width / 2));
-                    break;
-                case LocationEnum.POINT_TOPRIGHT:
-                    p.x = (p.x + target.width);
-                    break;
-                case LocationEnum.POINT_LEFT:
-                    p.y = (p.y + (target.height / 2));
-                    break;
-                case LocationEnum.POINT_CENTER:
-                    p.x = (p.x + (target.width / 2));
-                    p.y = (p.y + (target.height / 2));
-                    break;
-                case LocationEnum.POINT_RIGHT:
-                    p.x = (p.x + target.width);
-                    p.y = (p.y + (target.height / 2));
-                    break;
-                case LocationEnum.POINT_BOTTOMLEFT:
-                    p.y = (p.y + target.height);
-                    break;
-                case LocationEnum.POINT_BOTTOM:
-                    p.x = (p.x + (target.width / 2));
-                    p.y = (p.y + target.height);
-                    break;
-                case LocationEnum.POINT_BOTTOMRIGHT:
-                    p.x = (p.x + target.width);
-                    p.y = (p.y + target.height);
-                    break;
-            };
-            return (p);
-        }
-
-        private static function makeOffset(point:uint, offset:uint):Point
-        {
-            var offsetPt:Point = new Point();
-            switch (point)
-            {
-                case LocationEnum.POINT_TOPLEFT:
-                case LocationEnum.POINT_BOTTOMLEFT:
-                case LocationEnum.POINT_LEFT:
-                    offsetPt.x = offset;
-                    break;
-                case LocationEnum.POINT_TOP:
-                    break;
-                case LocationEnum.POINT_BOTTOMRIGHT:
-                case LocationEnum.POINT_TOPRIGHT:
-                case LocationEnum.POINT_RIGHT:
-                    offsetPt.x = -(offset);
-                    break;
-            };
-            switch (point)
-            {
-                case LocationEnum.POINT_TOPLEFT:
-                case LocationEnum.POINT_TOP:
-                case LocationEnum.POINT_TOPRIGHT:
-                    offsetPt.y = offset;
-                    break;
-                case LocationEnum.POINT_BOTTOMLEFT:
-                case LocationEnum.POINT_BOTTOMRIGHT:
-                case LocationEnum.POINT_BOTTOM:
-                    offsetPt.y = -(offset);
-                    break;
-            };
-            return (offsetPt);
-        }
-
-
-    }
-}//package com.ankamagames.berilia.types.tooltip
-
+         }
+         return _loc3_;
+      }
+      
+      private static function compareVerticalPos(param1:TooltipPosition, param2:TooltipPosition) : int
+      {
+         var _loc3_:* = 0;
+         if(param1.mapRow > param2.mapRow)
+         {
+            _loc3_ = 1;
+         }
+         else if(param1.mapRow < param2.mapRow)
+         {
+            _loc3_ = -1;
+         }
+         else
+         {
+            _loc3_ = 0;
+         }
+         
+         return _loc3_;
+      }
+      
+      private static function compareHorizontalPos(param1:TooltipPosition, param2:TooltipPosition) : int
+      {
+         var _loc3_:* = 0;
+         if(param1.tooltip.x > param2.tooltip.x)
+         {
+            _loc3_ = 1;
+         }
+         else if(param1.tooltip.x < param2.tooltip.x)
+         {
+            _loc3_ = -1;
+         }
+         else
+         {
+            _loc3_ = 0;
+         }
+         
+         return _loc3_;
+      }
+      
+      private static function hitTest(param1:IRectangle, param2:IRectangle) : int
+      {
+         var _loc3_:Rectangle = new Rectangle(param1.x,param1.y,param1.width,param1.height);
+         var _loc4_:Rectangle = new Rectangle(param2.x,param2.y,param2.width,param2.height);
+         var _loc5_:Rectangle = _loc3_.intersection(_loc4_);
+         return _loc5_.width * _loc5_.height;
+      }
+      
+      private static function processAnchor(param1:Point, param2:IRectangle, param3:uint) : Point
+      {
+         switch(param3)
+         {
+            case LocationEnum.POINT_TOPLEFT:
+               break;
+            case LocationEnum.POINT_TOP:
+               param1.x = param1.x + param2.width / 2;
+               break;
+            case LocationEnum.POINT_TOPRIGHT:
+               param1.x = param1.x + param2.width;
+               break;
+            case LocationEnum.POINT_LEFT:
+               param1.y = param1.y + param2.height / 2;
+               break;
+            case LocationEnum.POINT_CENTER:
+               param1.x = param1.x + param2.width / 2;
+               param1.y = param1.y + param2.height / 2;
+               break;
+            case LocationEnum.POINT_RIGHT:
+               param1.x = param1.x + param2.width;
+               param1.y = param1.y + param2.height / 2;
+               break;
+            case LocationEnum.POINT_BOTTOMLEFT:
+               param1.y = param1.y + param2.height;
+               break;
+            case LocationEnum.POINT_BOTTOM:
+               param1.x = param1.x + param2.width / 2;
+               param1.y = param1.y + param2.height;
+               break;
+            case LocationEnum.POINT_BOTTOMRIGHT:
+               param1.x = param1.x + param2.width;
+               param1.y = param1.y + param2.height;
+               break;
+         }
+         return param1;
+      }
+      
+      private static function makeOffset(param1:uint, param2:uint) : Point
+      {
+         var _loc3_:Point = new Point();
+         switch(param1)
+         {
+            case LocationEnum.POINT_TOPLEFT:
+            case LocationEnum.POINT_BOTTOMLEFT:
+            case LocationEnum.POINT_LEFT:
+               _loc3_.x = param2;
+               break;
+            case LocationEnum.POINT_TOP:
+               break;
+            case LocationEnum.POINT_BOTTOMRIGHT:
+            case LocationEnum.POINT_TOPRIGHT:
+            case LocationEnum.POINT_RIGHT:
+               _loc3_.x = -param2;
+               break;
+         }
+         switch(param1)
+         {
+            case LocationEnum.POINT_TOPLEFT:
+            case LocationEnum.POINT_TOP:
+            case LocationEnum.POINT_TOPRIGHT:
+               _loc3_.y = param2;
+               break;
+            case LocationEnum.POINT_BOTTOMLEFT:
+            case LocationEnum.POINT_BOTTOMRIGHT:
+            case LocationEnum.POINT_BOTTOM:
+               _loc3_.y = -param2;
+               break;
+         }
+         return _loc3_;
+      }
+   }
+}

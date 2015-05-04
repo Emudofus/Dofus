@@ -1,23 +1,21 @@
-﻿package com.ankamagames.berilia.types.messages
+package com.ankamagames.berilia.types.messages
 {
-    import com.ankamagames.jerakine.messages.Message;
-
-    public class ThemeLoadedMessage implements Message 
-    {
-
-        private var _themeName:String;
-
-        public function ThemeLoadedMessage(themeName:String)
-        {
-            this._themeName = themeName;
-        }
-
-        public function get themeName():String
-        {
-            return (this._themeName);
-        }
-
-
-    }
-}//package com.ankamagames.berilia.types.messages
-
+   import com.ankamagames.jerakine.messages.Message;
+   
+   public class ThemeLoadedMessage extends Object implements Message
+   {
+      
+      public function ThemeLoadedMessage(param1:String)
+      {
+         super();
+         this._themeName = param1;
+      }
+      
+      private var _themeName:String;
+      
+      public function get themeName() : String
+      {
+         return this._themeName;
+      }
+   }
+}

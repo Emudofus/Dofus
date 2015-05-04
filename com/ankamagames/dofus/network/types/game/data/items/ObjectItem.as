@@ -1,131 +1,153 @@
-﻿package com.ankamagames.dofus.network.types.game.data.items
+package com.ankamagames.dofus.network.types.game.data.items
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import com.ankamagames.dofus.network.ProtocolTypeManager;
-    import __AS3__.vec.*;
-
-    public class ObjectItem extends Item implements INetworkType 
-    {
-
-        public static const protocolId:uint = 37;
-
-        public var position:uint = 63;
-        public var objectGID:uint = 0;
-        public var effects:Vector.<ObjectEffect>;
-        public var objectUID:uint = 0;
-        public var quantity:uint = 0;
-
-        public function ObjectItem()
-        {
-            this.effects = new Vector.<ObjectEffect>();
-            super();
-        }
-
-        override public function getTypeId():uint
-        {
-            return (37);
-        }
-
-        public function initObjectItem(position:uint=63, objectGID:uint=0, effects:Vector.<ObjectEffect>=null, objectUID:uint=0, quantity:uint=0):ObjectItem
-        {
-            this.position = position;
-            this.objectGID = objectGID;
-            this.effects = effects;
-            this.objectUID = objectUID;
-            this.quantity = quantity;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.position = 63;
-            this.objectGID = 0;
-            this.effects = new Vector.<ObjectEffect>();
-            this.objectUID = 0;
-            this.quantity = 0;
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_ObjectItem(output);
-        }
-
-        public function serializeAs_ObjectItem(output:ICustomDataOutput):void
-        {
-            super.serializeAs_Item(output);
-            output.writeByte(this.position);
-            if (this.objectGID < 0)
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
+   
+   public class ObjectItem extends Item implements INetworkType
+   {
+      
+      public function ObjectItem()
+      {
+         this.effects = new Vector.<ObjectEffect>();
+         super();
+      }
+      
+      public static const protocolId:uint = 37;
+      
+      public var position:uint = 63;
+      
+      public var objectGID:uint = 0;
+      
+      public var effects:Vector.<ObjectEffect>;
+      
+      public var objectUID:uint = 0;
+      
+      public var quantity:uint = 0;
+      
+      override public function getTypeId() : uint
+      {
+         return 37;
+      }
+      
+      public function initObjectItem(param1:uint = 63, param2:uint = 0, param3:Vector.<ObjectEffect> = null, param4:uint = 0, param5:uint = 0) : ObjectItem
+      {
+         this.position = param1;
+         this.objectGID = param2;
+         this.effects = param3;
+         this.objectUID = param4;
+         this.quantity = param5;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.position = 63;
+         this.objectGID = 0;
+         this.effects = new Vector.<ObjectEffect>();
+         this.objectUID = 0;
+         this.quantity = 0;
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_ObjectItem(param1);
+      }
+      
+      public function serializeAs_ObjectItem(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_Item(param1);
+         param1.writeByte(this.position);
+         if(this.objectGID < 0)
+         {
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+         }
+         else
+         {
+            param1.writeVarShort(this.objectGID);
+            param1.writeShort(this.effects.length);
+            var _loc2_:uint = 0;
+            while(_loc2_ < this.effects.length)
             {
-                throw (new Error((("Forbidden value (" + this.objectGID) + ") on element objectGID.")));
-            };
-            output.writeVarShort(this.objectGID);
-            output.writeShort(this.effects.length);
-            var _i3:uint;
-            while (_i3 < this.effects.length)
+               param1.writeShort((this.effects[_loc2_] as ObjectEffect).getTypeId());
+               (this.effects[_loc2_] as ObjectEffect).serialize(param1);
+               _loc2_++;
+            }
+            if(this.objectUID < 0)
             {
-                output.writeShort((this.effects[_i3] as ObjectEffect).getTypeId());
-                (this.effects[_i3] as ObjectEffect).serialize(output);
-                _i3++;
-            };
-            if (this.objectUID < 0)
+               throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.objectUID) + ") on element objectUID.")));
-            };
-            output.writeVarInt(this.objectUID);
-            if (this.quantity < 0)
+               param1.writeVarInt(this.objectUID);
+               if(this.quantity < 0)
+               {
+                  throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
+               }
+               else
+               {
+                  param1.writeVarInt(this.quantity);
+                  return;
+               }
+            }
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_ObjectItem(param1);
+      }
+      
+      public function deserializeAs_ObjectItem(param1:ICustomDataInput) : void
+      {
+         var _loc4_:uint = 0;
+         var _loc5_:ObjectEffect = null;
+         super.deserialize(param1);
+         this.position = param1.readUnsignedByte();
+         if(this.position < 0 || this.position > 255)
+         {
+            throw new Error("Forbidden value (" + this.position + ") on element of ObjectItem.position.");
+         }
+         else
+         {
+            this.objectGID = param1.readVarUhShort();
+            if(this.objectGID < 0)
             {
-                throw (new Error((("Forbidden value (" + this.quantity) + ") on element quantity.")));
-            };
-            output.writeVarInt(this.quantity);
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_ObjectItem(input);
-        }
-
-        public function deserializeAs_ObjectItem(input:ICustomDataInput):void
-        {
-            var _id3:uint;
-            var _item3:ObjectEffect;
-            super.deserialize(input);
-            this.position = input.readUnsignedByte();
-            if ((((this.position < 0)) || ((this.position > 0xFF))))
+               throw new Error("Forbidden value (" + this.objectGID + ") on element of ObjectItem.objectGID.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.position) + ") on element of ObjectItem.position.")));
-            };
-            this.objectGID = input.readVarUhShort();
-            if (this.objectGID < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.objectGID) + ") on element of ObjectItem.objectGID.")));
-            };
-            var _effectsLen:uint = input.readUnsignedShort();
-            var _i3:uint;
-            while (_i3 < _effectsLen)
-            {
-                _id3 = input.readUnsignedShort();
-                _item3 = ProtocolTypeManager.getInstance(ObjectEffect, _id3);
-                _item3.deserialize(input);
-                this.effects.push(_item3);
-                _i3++;
-            };
-            this.objectUID = input.readVarUhInt();
-            if (this.objectUID < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.objectUID) + ") on element of ObjectItem.objectUID.")));
-            };
-            this.quantity = input.readVarUhInt();
-            if (this.quantity < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.quantity) + ") on element of ObjectItem.quantity.")));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.data.items
-
+               var _loc2_:uint = param1.readUnsignedShort();
+               var _loc3_:uint = 0;
+               while(_loc3_ < _loc2_)
+               {
+                  _loc4_ = param1.readUnsignedShort();
+                  _loc5_ = ProtocolTypeManager.getInstance(ObjectEffect,_loc4_);
+                  _loc5_.deserialize(param1);
+                  this.effects.push(_loc5_);
+                  _loc3_++;
+               }
+               this.objectUID = param1.readVarUhInt();
+               if(this.objectUID < 0)
+               {
+                  throw new Error("Forbidden value (" + this.objectUID + ") on element of ObjectItem.objectUID.");
+               }
+               else
+               {
+                  this.quantity = param1.readVarUhInt();
+                  if(this.quantity < 0)
+                  {
+                     throw new Error("Forbidden value (" + this.quantity + ") on element of ObjectItem.quantity.");
+                  }
+                  else
+                  {
+                     return;
+                  }
+               }
+            }
+         }
+      }
+   }
+}

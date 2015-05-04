@@ -1,650 +1,659 @@
-﻿package com.ankamagames.dofus.logic.game.fight.managers
+package com.ankamagames.dofus.logic.game.fight.managers
 {
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import flash.utils.Dictionary;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.logic.game.fight.types.CastingSpell;
-    import com.ankamagames.jerakine.utils.errors.SingletonError;
-    import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
-    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostWeaponDamagesEffect;
-    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporarySpellImmunityEffect;
-    import com.ankamagames.dofus.datacenter.spells.SpellLevel;
-    import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
-    import com.ankamagames.dofus.logic.game.fight.types.SpellBuff;
-    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporarySpellBoostEffect;
-    import com.ankamagames.dofus.logic.game.fight.types.TriggeredBuff;
-    import com.ankamagames.dofus.network.types.game.actions.fight.FightTriggeredEffect;
-    import com.ankamagames.dofus.logic.game.fight.types.StateBuff;
-    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostStateEffect;
-    import com.ankamagames.dofus.logic.game.fight.types.StatBuff;
-    import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostEffect;
-    import com.ankamagames.dofus.misc.utils.GameDataQuery;
-    import com.ankamagames.dofus.network.types.game.actions.fight.AbstractFightDispellableEffect;
-    import com.ankamagames.berilia.managers.KernelEventsManager;
-    import com.ankamagames.dofus.misc.lists.FightHookList;
-    import com.ankamagames.dofus.misc.lists.HookList;
-    import com.ankamagames.dofus.logic.game.fight.fightEvents.FightEventsHelper;
-    import com.ankamagames.dofus.logic.game.fight.frames.FightBattleFrame;
-    import com.ankamagames.dofus.kernel.Kernel;
-    import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
-    import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
-    import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
-    import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
-    import __AS3__.vec.*;
-
-    public class BuffManager 
-    {
-
-        public static const INCREMENT_MODE_SOURCE:int = 1;
-        public static const INCREMENT_MODE_TARGET:int = 2;
-        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(BuffManager));
-        private static var _self:BuffManager;
-
-        private var _buffs:Array;
-        private var _finishingBuffs:Dictionary;
-        public var spellBuffsToIgnore:Vector.<CastingSpell>;
-
-        public function BuffManager()
-        {
-            this._buffs = new Array();
-            this._finishingBuffs = new Dictionary();
-            this.spellBuffsToIgnore = new Vector.<CastingSpell>();
-            super();
-            if (_self)
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
+   import com.ankamagames.dofus.network.types.game.actions.fight.AbstractFightDispellableEffect;
+   import com.ankamagames.dofus.logic.game.fight.types.CastingSpell;
+   import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostWeaponDamagesEffect;
+   import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporarySpellImmunityEffect;
+   import com.ankamagames.dofus.datacenter.spells.SpellLevel;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
+   import com.ankamagames.dofus.logic.game.fight.types.SpellBuff;
+   import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporarySpellBoostEffect;
+   import com.ankamagames.dofus.logic.game.fight.types.TriggeredBuff;
+   import com.ankamagames.dofus.network.types.game.actions.fight.FightTriggeredEffect;
+   import com.ankamagames.dofus.logic.game.fight.types.StateBuff;
+   import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostStateEffect;
+   import com.ankamagames.dofus.logic.game.fight.types.StatBuff;
+   import com.ankamagames.dofus.network.types.game.actions.fight.FightTemporaryBoostEffect;
+   import com.ankamagames.dofus.misc.utils.GameDataQuery;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Dictionary;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.FightHookList;
+   import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.logic.game.fight.fightEvents.FightEventsHelper;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightBattleFrame;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
+   
+   public class BuffManager extends Object
+   {
+      
+      public function BuffManager()
+      {
+         this._buffs = new Array();
+         this._finishingBuffs = new Dictionary();
+         this.spellBuffsToIgnore = new Vector.<CastingSpell>();
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
+            return;
+         }
+      }
+      
+      public static const INCREMENT_MODE_SOURCE:int = 1;
+      
+      public static const INCREMENT_MODE_TARGET:int = 2;
+      
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(BuffManager));
+      
+      private static var _self:BuffManager;
+      
+      public static function getInstance() : BuffManager
+      {
+         if(!_self)
+         {
+            _self = new BuffManager();
+         }
+         return _self;
+      }
+      
+      public static function makeBuffFromEffect(param1:AbstractFightDispellableEffect, param2:CastingSpell, param3:uint) : BasicBuff
+      {
+         var _loc4_:BasicBuff = null;
+         var _loc6_:* = false;
+         var _loc7_:FightTemporaryBoostWeaponDamagesEffect = null;
+         var _loc8_:FightTemporarySpellImmunityEffect = null;
+         var _loc9_:SpellLevel = null;
+         var _loc10_:Vector.<EffectInstanceDice> = null;
+         var _loc11_:EffectInstanceDice = null;
+         switch(true)
+         {
+            case param1 is FightTemporarySpellBoostEffect:
+               _loc4_ = new SpellBuff(param1 as FightTemporarySpellBoostEffect,param2,param3);
+               break;
+            case param1 is FightTriggeredEffect:
+               _loc4_ = new TriggeredBuff(param1 as FightTriggeredEffect,param2,param3);
+               break;
+            case param1 is FightTemporaryBoostWeaponDamagesEffect:
+               _loc7_ = param1 as FightTemporaryBoostWeaponDamagesEffect;
+               _loc4_ = new BasicBuff(param1,param2,param3,_loc7_.weaponTypeId,_loc7_.delta,_loc7_.weaponTypeId);
+               break;
+            case param1 is FightTemporaryBoostStateEffect:
+               _loc4_ = new StateBuff(param1 as FightTemporaryBoostStateEffect,param2,param3);
+               break;
+            case param1 is FightTemporarySpellImmunityEffect:
+               _loc8_ = param1 as FightTemporarySpellImmunityEffect;
+               _loc4_ = new BasicBuff(param1,param2,param3,_loc8_.immuneSpellId,null,null);
+               break;
+            case param1 is FightTemporaryBoostEffect:
+               _loc4_ = new StatBuff(param1 as FightTemporaryBoostEffect,param2,param3);
+               break;
+         }
+         _loc4_.id = param1.uid;
+         var _loc5_:Vector.<uint> = GameDataQuery.queryEquals(SpellLevel,"effects.effectUid",param1.effectId);
+         if(_loc5_.length == 0)
+         {
+            _loc5_ = GameDataQuery.queryEquals(SpellLevel,"criticalEffect.effectUid",param1.effectId);
+            _loc6_ = true;
+         }
+         if(_loc5_.length > 0)
+         {
+            _loc9_ = SpellLevel.getLevelById(_loc5_[0]);
+            _loc10_ = !_loc6_?_loc9_.effects:_loc9_.criticalEffect;
+            for each(_loc11_ in _loc10_)
             {
-                throw (new SingletonError());
-            };
-        }
-
-        public static function getInstance():BuffManager
-        {
-            if (!(_self))
+               if(_loc11_.effectUid == param1.effectId)
+               {
+                  _loc4_.effects.order = _loc11_.order;
+                  _loc4_.effects.triggers = _loc11_.triggers;
+                  break;
+               }
+            }
+         }
+         return _loc4_;
+      }
+      
+      private var _buffs:Array;
+      
+      private var _finishingBuffs:Dictionary;
+      
+      private var _updateStatList:Boolean = false;
+      
+      public var spellBuffsToIgnore:Vector.<CastingSpell>;
+      
+      public function destroy() : void
+      {
+         _self = null;
+         this.spellBuffsToIgnore.length = 0;
+      }
+      
+      public function decrementDuration(param1:int) : void
+      {
+         this.incrementDuration(param1,-1);
+      }
+      
+      public function synchronize(param1:int = 0) : void
+      {
+         var _loc2_:String = null;
+         var _loc3_:BasicBuff = null;
+         for(_loc2_ in this._buffs)
+         {
+            if(!((param1) && _loc2_ == param1.toString()))
             {
-                _self = new (BuffManager)();
-            };
-            return (_self);
-        }
-
-        public static function makeBuffFromEffect(effect:AbstractFightDispellableEffect, castingSpell:CastingSpell, actionId:uint):BasicBuff
-        {
-            var buff:BasicBuff;
-            var criticalEffect:Boolean;
-            var _local_7:FightTemporaryBoostWeaponDamagesEffect;
-            var _local_8:FightTemporarySpellImmunityEffect;
-            var spellLevel:SpellLevel;
-            var effects:Vector.<EffectInstanceDice>;
-            var effid:EffectInstanceDice;
-            switch (true)
+               for each(_loc3_ in this._buffs[_loc2_])
+               {
+                  _loc3_.undisable();
+               }
+            }
+         }
+      }
+      
+      public function incrementDuration(param1:int, param2:int, param3:Boolean = false, param4:int = 1) : void
+      {
+         var _loc6_:Array = null;
+         var _loc7_:BasicBuff = null;
+         var _loc8_:* = false;
+         var _loc9_:* = false;
+         var _loc10_:CastingSpell = null;
+         var _loc11_:* = 0;
+         var _loc5_:Array = new Array();
+         this._updateStatList = false;
+         for each(_loc6_ in this._buffs)
+         {
+            for each(_loc7_ in _loc6_)
             {
-                case (effect is FightTemporarySpellBoostEffect):
-                    buff = new SpellBuff((effect as FightTemporarySpellBoostEffect), castingSpell, actionId);
-                    break;
-                case (effect is FightTriggeredEffect):
-                    buff = new TriggeredBuff((effect as FightTriggeredEffect), castingSpell, actionId);
-                    break;
-                case (effect is FightTemporaryBoostWeaponDamagesEffect):
-                    _local_7 = (effect as FightTemporaryBoostWeaponDamagesEffect);
-                    buff = new BasicBuff(effect, castingSpell, actionId, _local_7.weaponTypeId, _local_7.delta, _local_7.weaponTypeId);
-                    break;
-                case (effect is FightTemporaryBoostStateEffect):
-                    buff = new StateBuff((effect as FightTemporaryBoostStateEffect), castingSpell, actionId);
-                    break;
-                case (effect is FightTemporarySpellImmunityEffect):
-                    _local_8 = (effect as FightTemporarySpellImmunityEffect);
-                    buff = new BasicBuff(effect, castingSpell, actionId, _local_8.immuneSpellId, null, null);
-                    break;
-                case (effect is FightTemporaryBoostEffect):
-                    buff = new StatBuff((effect as FightTemporaryBoostEffect), castingSpell, actionId);
-                    break;
-            };
-            buff.id = effect.uid;
-            var spellLevelsIds:Vector.<uint> = GameDataQuery.queryEquals(SpellLevel, "effects.effectUid", effect.effectId);
-            if (spellLevelsIds.length == 0)
-            {
-                spellLevelsIds = GameDataQuery.queryEquals(SpellLevel, "criticalEffect.effectUid", effect.effectId);
-                criticalEffect = true;
-            };
-            if (spellLevelsIds.length > 0)
-            {
-                spellLevel = SpellLevel.getLevelById(spellLevelsIds[0]);
-                effects = ((!(criticalEffect)) ? spellLevel.effects : spellLevel.criticalEffect);
-                for each (effid in effects)
-                {
-                    if (effid.effectUid == effect.effectId)
-                    {
-                        buff.effects.order = effid.order;
-                        buff.effects.triggers = effid.triggers;
-                        break;
-                    };
-                };
-            };
-            return (buff);
-        }
-
-
-        public function destroy():void
-        {
-            _self = null;
-            this.spellBuffsToIgnore.length = 0;
-        }
-
-        public function decrementDuration(targetId:int):void
-        {
-            this.incrementDuration(targetId, -1);
-        }
-
-        public function synchronize(ignoreEntityId:int=0):void
-        {
-            var entityId:String;
-            var buffItem:BasicBuff;
-            for (entityId in this._buffs)
-            {
-                if (((ignoreEntityId) && ((entityId == ignoreEntityId.toString()))))
-                {
-                }
-                else
-                {
-                    for each (buffItem in this._buffs[entityId])
-                    {
-                        buffItem.undisable();
-                    };
-                };
-            };
-        }
-
-        public function incrementDuration(targetId:int, delta:int, dispellEffect:Boolean=false, incrementMode:int=1):void
-        {
-            var buffTarget:Array;
-            var buffItem:BasicBuff;
-            var modified:Boolean;
-            var skipBuffUpdate:Boolean;
-            var spell:CastingSpell;
-            var _local_12:int;
-            var newBuffs:Array = new Array();
-            var updateStatList:Boolean;
-            for each (buffTarget in this._buffs)
-            {
-                for each (buffItem in buffTarget)
-                {
-                    if (((((dispellEffect) && ((buffItem is TriggeredBuff)))) && ((TriggeredBuff(buffItem).delay > 0))))
-                    {
-                        if (!(newBuffs.hasOwnProperty(String(buffItem.targetId))))
+               if((param3) && _loc7_ is TriggeredBuff && TriggeredBuff(_loc7_).delay > 0)
+               {
+                  if(!_loc5_.hasOwnProperty(String(_loc7_.targetId)))
+                  {
+                     _loc5_[_loc7_.targetId] = new Array();
+                  }
+                  _loc5_[_loc7_.targetId].push(_loc7_);
+               }
+               else if(param4 == INCREMENT_MODE_SOURCE && _loc7_.aliveSource == param1 || param4 == INCREMENT_MODE_TARGET && _loc7_.targetId == param1)
+               {
+                  if(param4 == INCREMENT_MODE_SOURCE && (this.spellBuffsToIgnore.length))
+                  {
+                     _loc9_ = false;
+                     for each(_loc10_ in this.spellBuffsToIgnore)
+                     {
+                        if(_loc10_.castingSpellId == _loc7_.castingSpell.castingSpellId && _loc10_.casterId == param1)
                         {
-                            newBuffs[buffItem.targetId] = new Array();
-                        };
-                        newBuffs[buffItem.targetId].push(buffItem);
-                    }
-                    else
-                    {
-                        if ((((((incrementMode == INCREMENT_MODE_SOURCE)) && ((buffItem.aliveSource == targetId)))) || ((((incrementMode == INCREMENT_MODE_TARGET)) && ((buffItem.targetId == targetId))))))
-                        {
-                            if ((((incrementMode == INCREMENT_MODE_SOURCE)) && (this.spellBuffsToIgnore.length)))
-                            {
-                                skipBuffUpdate = false;
-                                for each (spell in this.spellBuffsToIgnore)
-                                {
-                                    if ((((spell.castingSpellId == buffItem.castingSpell.castingSpellId)) && ((spell.casterId == targetId))))
-                                    {
-                                        skipBuffUpdate = true;
-                                        break;
-                                    };
-                                };
-                                if (skipBuffUpdate)
-                                {
-                                    if (!(newBuffs.hasOwnProperty(String(buffItem.targetId))))
-                                    {
-                                        newBuffs[buffItem.targetId] = new Array();
-                                    };
-                                    newBuffs[buffItem.targetId].push(buffItem);
-                                    continue;
-                                };
-                            };
-                            modified = buffItem.incrementDuration(delta, dispellEffect);
-                            if (buffItem.active)
-                            {
-                                if (!(newBuffs.hasOwnProperty(String(buffItem.targetId))))
-                                {
-                                    newBuffs[buffItem.targetId] = new Array();
-                                };
-                                newBuffs[buffItem.targetId].push(buffItem);
-                                if (modified)
-                                {
-                                    KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate, buffItem.id, buffItem.targetId);
-                                };
-                            }
-                            else
-                            {
-                                BasicBuff(buffItem).onRemoved();
-                                KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, buffItem, buffItem.targetId, "CoolDown");
-                                _local_12 = CurrentPlayedFighterManager.getInstance().currentFighterId;
-                                if ((((targetId == _local_12)) || ((buffItem.targetId == _local_12))))
-                                {
-                                    updateStatList = true;
-                                };
-                            };
+                           _loc9_ = true;
+                           break;
                         }
-                        else
+                     }
+                     if(_loc9_)
+                     {
+                        if(!_loc5_.hasOwnProperty(String(_loc7_.targetId)))
                         {
-                            if (!(newBuffs.hasOwnProperty(String(buffItem.targetId))))
-                            {
-                                newBuffs[buffItem.targetId] = new Array();
-                            };
-                            newBuffs[buffItem.targetId].push(buffItem);
-                        };
-                    };
-                };
-            };
-            if (updateStatList)
+                           _loc5_[_loc7_.targetId] = new Array();
+                        }
+                        _loc5_[_loc7_.targetId].push(_loc7_);
+                        continue;
+                     }
+                  }
+                  _loc8_ = _loc7_.incrementDuration(param2,param3);
+                  if(_loc7_.active)
+                  {
+                     if(!_loc5_.hasOwnProperty(String(_loc7_.targetId)))
+                     {
+                        _loc5_[_loc7_.targetId] = new Array();
+                     }
+                     _loc5_[_loc7_.targetId].push(_loc7_);
+                     if(_loc8_)
+                     {
+                        KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,_loc7_.id,_loc7_.targetId);
+                     }
+                  }
+                  else
+                  {
+                     BasicBuff(_loc7_).onRemoved();
+                     KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,_loc7_,_loc7_.targetId,"CoolDown");
+                     _loc11_ = CurrentPlayedFighterManager.getInstance().currentFighterId;
+                     if(param1 == _loc11_ || _loc7_.targetId == _loc11_)
+                     {
+                        this._updateStatList = true;
+                     }
+                  }
+               }
+               else
+               {
+                  if(!_loc5_.hasOwnProperty(String(_loc7_.targetId)))
+                  {
+                     _loc5_[_loc7_.targetId] = new Array();
+                  }
+                  _loc5_[_loc7_.targetId].push(_loc7_);
+               }
+               
+            }
+         }
+         if(this._updateStatList)
+         {
+            KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
+         }
+         this._buffs = _loc5_;
+         FightEventsHelper.sendAllFightEvent(true);
+      }
+      
+      public function markFinishingBuffs(param1:int, param2:Boolean = false) : void
+      {
+         var _loc3_:BasicBuff = null;
+         var _loc4_:* = false;
+         var _loc5_:FightBattleFrame = null;
+         var _loc6_:* = 0;
+         var _loc7_:* = false;
+         var _loc8_:* = 0;
+         var _loc9_:StatBuff = null;
+         if(this._buffs.hasOwnProperty(String(param1)))
+         {
+            this._updateStatList = false;
+            for each(_loc3_ in this._buffs[param1])
             {
-                KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
-            };
-            this._buffs = newBuffs;
-            FightEventsHelper.sendAllFightEvent(true);
-        }
-
-        public function markFinishingBuffs(targetId:int, ignoreCurrent:Boolean=false):void
-        {
-            var updateStatList:Boolean;
-            var buffItem:BasicBuff;
-            var mark:Boolean;
-            var fightBattleFrame:FightBattleFrame;
-            var state:int;
-            var casterFound:Boolean;
-            var fighter:int;
-            var statBuffItem:StatBuff;
-            if (this._buffs.hasOwnProperty(String(targetId)))
-            {
-                updateStatList = false;
-                for each (buffItem in this._buffs[targetId])
-                {
-                    mark = false;
-                    if (buffItem.duration == 1)
-                    {
-                        fightBattleFrame = (Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame);
-                        if (fightBattleFrame == null)
+               _loc4_ = false;
+               if(_loc3_.duration == 1)
+               {
+                  _loc5_ = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
+                  if(_loc5_ == null)
+                  {
+                     return;
+                  }
+                  _loc6_ = 0;
+                  _loc7_ = false;
+                  for each(_loc8_ in _loc5_.fightersList)
+                  {
+                     if(_loc8_ == _loc3_.aliveSource)
+                     {
+                        _loc7_ = true;
+                     }
+                     if(_loc8_ == _loc5_.currentPlayerId)
+                     {
+                        _loc6_ = 1;
+                     }
+                     if(_loc6_ == 1)
+                     {
+                        if((_loc7_) && (!(_loc8_ == _loc5_.currentPlayerId) || !param2))
                         {
-                            return;
-                        };
-                        state = 0;
-                        casterFound = false;
-                        for each (fighter in fightBattleFrame.fightersList)
+                           _loc6_ = 2;
+                           _loc4_ = true;
+                        }
+                        else if(_loc8_ == param1 && !(_loc8_ == _loc5_.currentPlayerId))
                         {
-                            if (fighter == buffItem.aliveSource)
-                            {
-                                casterFound = true;
-                            };
-                            if (fighter == fightBattleFrame.currentPlayerId)
-                            {
-                                state = 1;
-                            };
-                            if (state == 1)
-                            {
-                                if (((casterFound) && (((!((fighter == fightBattleFrame.currentPlayerId))) || (!(ignoreCurrent))))))
-                                {
-                                    state = 2;
-                                    mark = true;
-                                }
-                                else
-                                {
-                                    if ((((fighter == targetId)) && (!((fighter == fightBattleFrame.currentPlayerId)))))
-                                    {
-                                        state = 2;
-                                        mark = false;
-                                    };
-                                };
-                            };
-                        };
-                        if (((mark) && (!(ignoreCurrent))))
+                           _loc6_ = 2;
+                           _loc4_ = false;
+                        }
+                        
+                     }
+                  }
+                  if((_loc4_) && !param2)
+                  {
+                     _loc3_.finishing = true;
+                     if(_loc3_ is StatBuff && !(param1 == PlayedCharacterManager.getInstance().id))
+                     {
+                        _loc9_ = _loc3_ as StatBuff;
+                        if(_loc9_.statName)
                         {
-                            buffItem.finishing = true;
-                            if ((((buffItem is StatBuff)) && (!((targetId == PlayedCharacterManager.getInstance().id)))))
-                            {
-                                statBuffItem = (buffItem as StatBuff);
-                                if (statBuffItem.statName)
-                                {
-                                    targetId = statBuffItem.targetId;
-                                    if (!(this._finishingBuffs[targetId]))
-                                    {
-                                        this._finishingBuffs[targetId] = new Array();
-                                    };
-                                    this._finishingBuffs[targetId].push(buffItem);
-                                };
-                            };
-                            BasicBuff(buffItem).onDisabled();
-                            if (targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
-                            {
-                                updateStatList = true;
-                            };
-                        };
-                    };
-                };
-                if (updateStatList)
-                {
-                    KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
-                };
-            };
-        }
-
-        public function addBuff(buff:BasicBuff, applyBuff:Boolean=true):void
-        {
-            var sameBuff:BasicBuff;
-            var actualBuff:BasicBuff;
-            if (!(this._buffs[buff.targetId]))
+                           var param1:int = _loc9_.targetId;
+                           if(!this._finishingBuffs[param1])
+                           {
+                              this._finishingBuffs[param1] = new Array();
+                           }
+                           this._finishingBuffs[param1].push(_loc3_);
+                        }
+                     }
+                     BasicBuff(_loc3_).onDisabled();
+                     if(param1 == CurrentPlayedFighterManager.getInstance().currentFighterId)
+                     {
+                        this._updateStatList = true;
+                     }
+                  }
+               }
+            }
+            if(this._updateStatList)
             {
-                this._buffs[buff.targetId] = new Array();
-            };
-            for each (actualBuff in this._buffs[buff.targetId])
+               KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
+            }
+         }
+      }
+      
+      public function addBuff(param1:BasicBuff, param2:Boolean = true) : void
+      {
+         var _loc3_:BasicBuff = null;
+         var _loc4_:BasicBuff = null;
+         if(!this._buffs[param1.targetId])
+         {
+            this._buffs[param1.targetId] = new Array();
+         }
+         for each(_loc4_ in this._buffs[param1.targetId])
+         {
+            if(param1.equals(_loc4_))
             {
-                if (buff.equals(actualBuff))
-                {
-                    sameBuff = actualBuff;
-                    break;
-                };
-            };
-            if (!(sameBuff))
+               _loc3_ = _loc4_;
+               break;
+            }
+         }
+         if(!_loc3_)
+         {
+            this._buffs[param1.targetId].push(param1);
+         }
+         else
+         {
+            if((_loc3_.castingSpell.spellRank && _loc3_.castingSpell.spellRank.maxStack > 0) && (_loc3_.stack) && _loc3_.stack.length == _loc3_.castingSpell.spellRank.maxStack)
             {
-                this._buffs[buff.targetId].push(buff);
+               return;
+            }
+            _loc3_.add(param1);
+         }
+         if(param2)
+         {
+            param1.onApplyed();
+         }
+         if(!_loc3_)
+         {
+            KernelEventsManager.getInstance().processCallback(FightHookList.BuffAdd,param1.id,param1.targetId);
+         }
+         else
+         {
+            KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,_loc3_.id,_loc3_.targetId);
+         }
+      }
+      
+      public function updateBuff(param1:BasicBuff) : Boolean
+      {
+         var _loc3_:BasicBuff = null;
+         var _loc2_:int = param1.targetId;
+         if(!this._buffs[_loc2_])
+         {
+            return false;
+         }
+         var _loc4_:int = this.getBuffIndex(_loc2_,param1.id);
+         if(_loc4_ == -1)
+         {
+            return false;
+         }
+         (this._buffs[_loc2_][_loc4_] as BasicBuff).onRemoved();
+         (this._buffs[_loc2_][_loc4_] as BasicBuff).updateParam(param1.param1,param1.param2,param1.param3,param1.id);
+         _loc3_ = this._buffs[_loc2_][_loc4_];
+         if(!_loc3_)
+         {
+            return false;
+         }
+         _loc3_.onApplyed();
+         KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,_loc3_.id,_loc2_);
+         return true;
+      }
+      
+      public function dispell(param1:int, param2:Boolean = false, param3:Boolean = false, param4:Boolean = false) : void
+      {
+         var _loc7_:BasicBuff = null;
+         var _loc5_:Array = new Array();
+         var _loc6_:Array = new Array();
+         for each(_loc7_ in this._buffs[param1])
+         {
+            if(_loc7_.canBeDispell(param2,int.MIN_VALUE,param4))
+            {
+               KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,_loc7_.id,param1,"Dispell");
+               _loc7_.onRemoved();
+               _loc5_.push(_loc7_);
             }
             else
             {
-                if (((((((sameBuff.castingSpell.spellRank) && ((sameBuff.castingSpell.spellRank.maxStack > 0)))) && (sameBuff.stack))) && ((sameBuff.stack.length == sameBuff.castingSpell.spellRank.maxStack))))
-                {
-                    return;
-                };
-                sameBuff.add(buff);
-            };
-            if (applyBuff)
+               _loc6_.push(_loc7_);
+            }
+         }
+         this._buffs[param1] = _loc6_;
+      }
+      
+      public function dispellSpell(param1:int, param2:uint, param3:Boolean = false, param4:Boolean = false, param5:Boolean = false) : void
+      {
+         var _loc8_:BasicBuff = null;
+         var _loc9_:* = 0;
+         var _loc10_:BasicBuff = null;
+         var _loc6_:Array = new Array();
+         var _loc7_:Array = new Array();
+         for each(_loc8_ in this._buffs[param1])
+         {
+            if(param2 == _loc8_.castingSpell.spell.id && (_loc8_.canBeDispell(param3,int.MIN_VALUE,param5)))
             {
-                buff.onApplyed();
-            };
-            if (!(sameBuff))
-            {
-                KernelEventsManager.getInstance().processCallback(FightHookList.BuffAdd, buff.id, buff.targetId);
+               _loc8_.onRemoved();
+               _loc6_.push(_loc8_);
             }
             else
             {
-                KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate, sameBuff.id, sameBuff.targetId);
-            };
-        }
-
-        public function updateBuff(buff:BasicBuff):Boolean
-        {
-            var oldBuff:BasicBuff;
-            var targetId:int = buff.targetId;
-            if (!(this._buffs[targetId]))
+               _loc7_.push(_loc8_);
+            }
+         }
+         this._buffs[param1] = _loc7_;
+         _loc9_ = CurrentPlayedFighterManager.getInstance().currentFighterId;
+         this._updateStatList = false;
+         for each(_loc10_ in _loc6_)
+         {
+            if(param1 == _loc9_ || _loc10_.targetId == _loc9_)
             {
-                return (false);
-            };
-            var i:int = this.getBuffIndex(targetId, buff.id);
-            if (i == -1)
+               this._updateStatList = true;
+            }
+            if(_loc10_.stack)
             {
-                return (false);
-            };
-            (this._buffs[targetId][i] as BasicBuff).onRemoved();
-            (this._buffs[targetId][i] as BasicBuff).updateParam(buff.param1, buff.param2, buff.param3, buff.id);
-            oldBuff = this._buffs[targetId][i];
-            if (!(oldBuff))
+               while(_loc10_.stack.length)
+               {
+                  _loc10_.stack.shift().onRemoved();
+               }
+            }
+            KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,_loc10_,param1,"Dispell");
+         }
+         if(this._updateStatList)
+         {
+            KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
+         }
+      }
+      
+      public function dispellUniqueBuff(param1:int, param2:int, param3:Boolean = false, param4:Boolean = false, param5:Boolean = true) : void
+      {
+         var _loc6_:int = this.getBuffIndex(param1,param2);
+         if(_loc6_ == -1)
+         {
+            return;
+         }
+         var _loc7_:BasicBuff = this._buffs[param1][_loc6_];
+         if(_loc7_.canBeDispell(param3,param5?param2:int.MIN_VALUE,param4))
+         {
+            if((_loc7_.stack) && (_loc7_.stack.length > 1) && !param4)
             {
-                return (false);
-            };
-            oldBuff.onApplyed();
-            KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate, oldBuff.id, targetId);
-            return (true);
-        }
-
-        public function dispell(targetId:int, forceUndispellable:Boolean=false, critical:Boolean=false, dying:Boolean=false):void
-        {
-            var buff:BasicBuff;
-            var deletedBuffs:Array = new Array();
-            var newBuffs:Array = new Array();
-            for each (buff in this._buffs[targetId])
+               _loc7_.onRemoved();
+               switch(_loc7_.actionId)
+               {
+                  case 293:
+                     _loc7_.param1 = _loc7_.stack[0].param1;
+                     _loc7_.param2 = _loc7_.param2 - _loc7_.stack[0].param2;
+                     _loc7_.param3 = _loc7_.param3 - _loc7_.stack[0].param3;
+                     if((_loc7_.castingSpell.spellRank) && (_loc7_.castingSpell.spellRank.maxStack > 0) && _loc7_.stack.length == _loc7_.castingSpell.spellRank.maxStack)
+                     {
+                        return;
+                     }
+                     break;
+                  case 788:
+                     _loc7_.param1 = _loc7_.param1 - _loc7_.stack[0].param2;
+                     break;
+                  case 950:
+                  case 951:
+                     break;
+                  default:
+                     _loc7_.param1 = _loc7_.param1 - _loc7_.stack[0].param1;
+                     _loc7_.param2 = _loc7_.param2 - _loc7_.stack[0].param2;
+                     _loc7_.param3 = _loc7_.param3 - _loc7_.stack[0].param3;
+               }
+               _loc7_.stack.shift();
+               _loc7_.refreshDescription();
+               _loc7_.onApplyed();
+               KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate,_loc7_.id,_loc7_.targetId);
+            }
+            else
             {
-                if (buff.canBeDispell(forceUndispellable, int.MIN_VALUE, dying))
-                {
-                    KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, buff.id, targetId, "Dispell");
-                    buff.onRemoved();
-                    deletedBuffs.push(buff);
-                }
-                else
-                {
-                    newBuffs.push(buff);
-                };
-            };
-            this._buffs[targetId] = newBuffs;
-        }
-
-        public function dispellSpell(targetId:int, spellId:uint, forceUndispellable:Boolean=false, critical:Boolean=false, dying:Boolean=false):void
-        {
-            var buff:BasicBuff;
-            var deletedBuff:BasicBuff;
-            var deletedBuffs:Array = new Array();
-            var newBuffs:Array = new Array();
-            for each (buff in this._buffs[targetId])
+               KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove,_loc7_.id,param1,"Dispell");
+               this._buffs[param1].splice(this._buffs[param1].indexOf(_loc7_),1);
+               _loc7_.onRemoved();
+               if(param1 == CurrentPlayedFighterManager.getInstance().currentFighterId)
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
+                  SpellWrapper.refreshAllPlayerSpellHolder(param1);
+               }
+            }
+         }
+      }
+      
+      public function removeLinkedBuff(param1:int, param2:Boolean = false, param3:Boolean = false) : Array
+      {
+         var _loc7_:Array = null;
+         var _loc8_:Array = null;
+         var _loc9_:BasicBuff = null;
+         var _loc4_:Array = [];
+         var _loc5_:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         var _loc6_:GameFightFighterInformations = _loc5_.getEntityInfos(param1) as GameFightFighterInformations;
+         for each(_loc7_ in this._buffs)
+         {
+            _loc8_ = new Array();
+            for each(_loc9_ in _loc7_)
             {
-                if ((((spellId == buff.castingSpell.spell.id)) && (buff.canBeDispell(forceUndispellable, int.MIN_VALUE, dying))))
-                {
-                    buff.onRemoved();
-                    deletedBuffs.push(buff);
-                }
-                else
-                {
-                    newBuffs.push(buff);
-                };
-            };
-            this._buffs[targetId] = newBuffs;
-            for each (deletedBuff in deletedBuffs)
+               _loc8_.push(_loc9_);
+            }
+            for each(_loc9_ in _loc8_)
             {
-                if (deletedBuff.stack)
-                {
-                    while (deletedBuff.stack.length)
-                    {
-                        deletedBuff.stack.shift().onRemoved();
-                    };
-                };
-                KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, deletedBuff, targetId, "Dispell");
-            };
-        }
-
-        public function dispellUniqueBuff(targetId:int, boostUID:int, forceUndispellable:Boolean=false, dying:Boolean=false, ultimateDebuff:Boolean=true):void
-        {
-            var i:int = this.getBuffIndex(targetId, boostUID);
-            if (i == -1)
+               if(_loc9_.source == param1)
+               {
+                  this.dispellUniqueBuff(_loc9_.targetId,_loc9_.id,param2,param3,false);
+                  if(_loc4_.indexOf(_loc9_.targetId) == -1)
+                  {
+                     _loc4_.push(_loc9_.targetId);
+                  }
+                  if((param3) && (_loc6_.stats.summoned))
+                  {
+                     _loc9_.aliveSource = _loc6_.stats.summoner;
+                  }
+               }
+            }
+         }
+         return _loc4_;
+      }
+      
+      public function reaffectBuffs(param1:int) : void
+      {
+         var _loc3_:* = 0;
+         var _loc4_:Array = null;
+         var _loc5_:BasicBuff = null;
+         var _loc2_:GameFightFighterInformations = this.fightEntitiesFrame.getEntityInfos(param1) as GameFightFighterInformations;
+         if(_loc2_.stats.summoned)
+         {
+            _loc3_ = this.getNextFighter(param1);
+            if(_loc3_ == -1)
             {
-                return;
-            };
-            var buff:BasicBuff = this._buffs[targetId][i];
-            if (buff.canBeDispell(forceUndispellable, ((ultimateDebuff) ? boostUID : int.MIN_VALUE), dying))
+               return;
+            }
+            for each(_loc4_ in this._buffs)
             {
-                if (((((buff.stack) && ((buff.stack.length > 1)))) && (!(dying))))
-                {
-                    buff.onRemoved();
-                    switch (buff.actionId)
-                    {
-                        case 293:
-                            buff.param1 = buff.stack[0].param1;
-                            buff.param2 = (buff.param2 - buff.stack[0].param2);
-                            buff.param3 = (buff.param3 - buff.stack[0].param3);
-                            if (((((buff.castingSpell.spellRank) && ((buff.castingSpell.spellRank.maxStack > 0)))) && ((buff.stack.length == buff.castingSpell.spellRank.maxStack))))
-                            {
-                                return;
-                            };
-                            break;
-                        case 788:
-                            buff.param1 = (buff.param1 - buff.stack[0].param2);
-                            break;
-                        case 950:
-                        case 951:
-                            break;
-                        default:
-                            buff.param1 = (buff.param1 - buff.stack[0].param1);
-                            buff.param2 = (buff.param2 - buff.stack[0].param2);
-                            buff.param3 = (buff.param3 - buff.stack[0].param3);
-                    };
-                    buff.stack.shift();
-                    buff.refreshDescription();
-                    buff.onApplyed();
-                    KernelEventsManager.getInstance().processCallback(FightHookList.BuffUpdate, buff.id, buff.targetId);
-                }
-                else
-                {
-                    KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, buff.id, targetId, "Dispell");
-                    this._buffs[targetId].splice(this._buffs[targetId].indexOf(buff), 1);
-                    buff.onRemoved();
-                    if (targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
-                    {
-                        KernelEventsManager.getInstance().processCallback(HookList.CharacterStatsList);
-                        SpellWrapper.refreshAllPlayerSpellHolder(targetId);
-                    };
-                };
-            };
-        }
-
-        public function removeLinkedBuff(sourceId:int, forceUndispellable:Boolean=false, dying:Boolean=false):Array
-        {
-            var buffList:Array;
-            var buffListCopy:Array;
-            var buff:BasicBuff;
-            var impactedTarget:Array = [];
-            var entitiesFrame:FightEntitiesFrame = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame);
-            var infos:GameFightFighterInformations = (entitiesFrame.getEntityInfos(sourceId) as GameFightFighterInformations);
-            for each (buffList in this._buffs)
+               for each(_loc5_ in _loc4_)
+               {
+                  if(_loc5_.aliveSource == param1)
+                  {
+                     _loc5_.aliveSource = _loc3_;
+                  }
+               }
+            }
+         }
+      }
+      
+      private function getNextFighter(param1:int) : int
+      {
+         var _loc4_:* = 0;
+         var _loc2_:FightBattleFrame = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
+         if(_loc2_ == null)
+         {
+            return -1;
+         }
+         var _loc3_:* = false;
+         for each(_loc4_ in _loc2_.fightersList)
+         {
+            if(_loc3_)
             {
-                buffListCopy = new Array();
-                for each (buff in buffList)
-                {
-                    buffListCopy.push(buff);
-                };
-                for each (buff in buffListCopy)
-                {
-                    if (buff.source == sourceId)
-                    {
-                        this.dispellUniqueBuff(buff.targetId, buff.id, forceUndispellable, dying, false);
-                        if (impactedTarget.indexOf(buff.targetId) == -1)
-                        {
-                            impactedTarget.push(buff.targetId);
-                        };
-                        if (((dying) && (infos.stats.summoned)))
-                        {
-                            buff.aliveSource = infos.stats.summoner;
-                        };
-                    };
-                };
-            };
-            return (impactedTarget);
-        }
-
-        public function reaffectBuffs(sourceId:int):void
-        {
-            var next:int;
-            var buffList:Array;
-            var buff:BasicBuff;
-            var entity:GameFightFighterInformations = (this.fightEntitiesFrame.getEntityInfos(sourceId) as GameFightFighterInformations);
-            if (entity.stats.summoned)
+               return _loc4_;
+            }
+            if(_loc4_ == param1)
             {
-                next = this.getNextFighter(sourceId);
-                if (next == -1)
-                {
-                    return;
-                };
-                for each (buffList in this._buffs)
-                {
-                    for each (buff in buffList)
-                    {
-                        if (buff.aliveSource == sourceId)
-                        {
-                            buff.aliveSource = next;
-                        };
-                    };
-                };
-            };
-        }
-
-        private function getNextFighter(sourceId:int):int
-        {
-            var fighter:int;
-            var frame:FightBattleFrame = (Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame);
-            if (frame == null)
+               _loc3_ = true;
+            }
+         }
+         if(_loc3_)
+         {
+            return _loc2_.fightersList[0];
+         }
+         return -1;
+      }
+      
+      public function getFighterInfo(param1:int) : GameFightFighterInformations
+      {
+         return this.fightEntitiesFrame.getEntityInfos(param1) as GameFightFighterInformations;
+      }
+      
+      public function getAllBuff(param1:int) : Array
+      {
+         return this._buffs[param1];
+      }
+      
+      public function getBuff(param1:uint, param2:int) : BasicBuff
+      {
+         var _loc3_:BasicBuff = null;
+         for each(_loc3_ in this._buffs[param2])
+         {
+            if(param1 == _loc3_.id)
             {
-                return (-1);
-            };
-            var found:Boolean;
-            for each (fighter in frame.fightersList)
+               return _loc3_;
+            }
+         }
+         return null;
+      }
+      
+      public function getFinishingBuffs(param1:int) : Array
+      {
+         var _loc2_:Array = this._finishingBuffs[param1];
+         delete this._finishingBuffs[param1];
+         true;
+         return _loc2_;
+      }
+      
+      private function get fightEntitiesFrame() : FightEntitiesFrame
+      {
+         return Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+      }
+      
+      private function getBuffIndex(param1:int, param2:int) : int
+      {
+         var _loc3_:Object = null;
+         var _loc4_:BasicBuff = null;
+         for(_loc3_ in this._buffs[param1])
+         {
+            if(param2 == this._buffs[param1][_loc3_].id)
             {
-                if (found)
-                {
-                    return (fighter);
-                };
-                if (fighter == sourceId)
-                {
-                    found = true;
-                };
-            };
-            if (found)
+               return int(_loc3_);
+            }
+            for each(_loc4_ in (this._buffs[param1][_loc3_] as BasicBuff).stack)
             {
-                return (frame.fightersList[0]);
-            };
-            return (-1);
-        }
-
-        public function getFighterInfo(targetId:int):GameFightFighterInformations
-        {
-            return ((this.fightEntitiesFrame.getEntityInfos(targetId) as GameFightFighterInformations));
-        }
-
-        public function getAllBuff(targetId:int):Array
-        {
-            return (this._buffs[targetId]);
-        }
-
-        public function getBuff(buffId:uint, playerId:int):BasicBuff
-        {
-            var buff:BasicBuff;
-            for each (buff in this._buffs[playerId])
-            {
-                if (buffId == buff.id)
-                {
-                    return (buff);
-                };
-            };
-            return (null);
-        }
-
-        public function getFinishingBuffs(fighterid:int):Array
-        {
-            var buffArray:Array = this._finishingBuffs[fighterid];
-            delete this._finishingBuffs[fighterid];
-            return (buffArray);
-        }
-
-        private function get fightEntitiesFrame():FightEntitiesFrame
-        {
-            return ((Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame));
-        }
-
-        private function getBuffIndex(targetId:int, buffId:int):int
-        {
-            var i:Object;
-            var _local_4:BasicBuff;
-            for (i in this._buffs[targetId])
-            {
-                if (buffId == this._buffs[targetId][i].id)
-                {
-                    return (int(i));
-                };
-                for each (_local_4 in (this._buffs[targetId][i] as BasicBuff).stack)
-                {
-                    if (buffId == _local_4.id)
-                    {
-                        return (int(i));
-                    };
-                };
-            };
-            return (-1);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.logic.game.fight.managers
-
+               if(param2 == _loc4_.id)
+               {
+                  return int(_loc3_);
+               }
+            }
+         }
+         return -1;
+      }
+   }
+}

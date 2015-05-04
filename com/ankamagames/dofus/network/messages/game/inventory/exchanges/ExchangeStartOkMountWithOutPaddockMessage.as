@@ -1,101 +1,96 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.network.types.game.mount.MountClientData;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class ExchangeStartOkMountWithOutPaddockMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 5991;
-
-        private var _isInitialized:Boolean = false;
-        public var stabledMountsDescription:Vector.<MountClientData>;
-
-        public function ExchangeStartOkMountWithOutPaddockMessage()
-        {
-            this.stabledMountsDescription = new Vector.<MountClientData>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (5991);
-        }
-
-        public function initExchangeStartOkMountWithOutPaddockMessage(stabledMountsDescription:Vector.<MountClientData>=null):ExchangeStartOkMountWithOutPaddockMessage
-        {
-            this.stabledMountsDescription = stabledMountsDescription;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.stabledMountsDescription = new Vector.<MountClientData>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_ExchangeStartOkMountWithOutPaddockMessage(output);
-        }
-
-        public function serializeAs_ExchangeStartOkMountWithOutPaddockMessage(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.stabledMountsDescription.length);
-            var _i1:uint;
-            while (_i1 < this.stabledMountsDescription.length)
-            {
-                (this.stabledMountsDescription[_i1] as MountClientData).serializeAs_MountClientData(output);
-                _i1++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_ExchangeStartOkMountWithOutPaddockMessage(input);
-        }
-
-        public function deserializeAs_ExchangeStartOkMountWithOutPaddockMessage(input:ICustomDataInput):void
-        {
-            var _item1:MountClientData;
-            var _stabledMountsDescriptionLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _stabledMountsDescriptionLen)
-            {
-                _item1 = new MountClientData();
-                _item1.deserialize(input);
-                this.stabledMountsDescription.push(_item1);
-                _i1++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.inventory.exchanges
-
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.mount.MountClientData;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class ExchangeStartOkMountWithOutPaddockMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function ExchangeStartOkMountWithOutPaddockMessage()
+      {
+         this.stabledMountsDescription = new Vector.<MountClientData>();
+         super();
+      }
+      
+      public static const protocolId:uint = 5991;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var stabledMountsDescription:Vector.<MountClientData>;
+      
+      override public function getMessageId() : uint
+      {
+         return 5991;
+      }
+      
+      public function initExchangeStartOkMountWithOutPaddockMessage(param1:Vector.<MountClientData> = null) : ExchangeStartOkMountWithOutPaddockMessage
+      {
+         this.stabledMountsDescription = param1;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.stabledMountsDescription = new Vector.<MountClientData>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_ExchangeStartOkMountWithOutPaddockMessage(param1);
+      }
+      
+      public function serializeAs_ExchangeStartOkMountWithOutPaddockMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeShort(this.stabledMountsDescription.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.stabledMountsDescription.length)
+         {
+            (this.stabledMountsDescription[_loc2_] as MountClientData).serializeAs_MountClientData(param1);
+            _loc2_++;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_ExchangeStartOkMountWithOutPaddockMessage(param1);
+      }
+      
+      public function deserializeAs_ExchangeStartOkMountWithOutPaddockMessage(param1:ICustomDataInput) : void
+      {
+         var _loc4_:MountClientData = null;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc4_ = new MountClientData();
+            _loc4_.deserialize(param1);
+            this.stabledMountsDescription.push(_loc4_);
+            _loc3_++;
+         }
+      }
+   }
+}

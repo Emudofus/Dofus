@@ -1,115 +1,119 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class ExchangeBidPriceForSellerMessage extends ExchangeBidPriceMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6464;
-
-        private var _isInitialized:Boolean = false;
-        public var allIdentical:Boolean = false;
-        public var minimalPrices:Vector.<uint>;
-
-        public function ExchangeBidPriceForSellerMessage()
-        {
-            this.minimalPrices = new Vector.<uint>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (((super.isInitialized) && (this._isInitialized)));
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6464);
-        }
-
-        public function initExchangeBidPriceForSellerMessage(genericId:uint=0, averagePrice:int=0, allIdentical:Boolean=false, minimalPrices:Vector.<uint>=null):ExchangeBidPriceForSellerMessage
-        {
-            super.initExchangeBidPriceMessage(genericId, averagePrice);
-            this.allIdentical = allIdentical;
-            this.minimalPrices = minimalPrices;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.allIdentical = false;
-            this.minimalPrices = new Vector.<uint>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_ExchangeBidPriceForSellerMessage(output);
-        }
-
-        public function serializeAs_ExchangeBidPriceForSellerMessage(output:ICustomDataOutput):void
-        {
-            super.serializeAs_ExchangeBidPriceMessage(output);
-            output.writeBoolean(this.allIdentical);
-            output.writeShort(this.minimalPrices.length);
-            var _i2:uint;
-            while (_i2 < this.minimalPrices.length)
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class ExchangeBidPriceForSellerMessage extends ExchangeBidPriceMessage implements INetworkMessage
+   {
+      
+      public function ExchangeBidPriceForSellerMessage()
+      {
+         this.minimalPrices = new Vector.<uint>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6464;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return (super.isInitialized) && (this._isInitialized);
+      }
+      
+      public var allIdentical:Boolean = false;
+      
+      public var minimalPrices:Vector.<uint>;
+      
+      override public function getMessageId() : uint
+      {
+         return 6464;
+      }
+      
+      public function initExchangeBidPriceForSellerMessage(param1:uint = 0, param2:int = 0, param3:Boolean = false, param4:Vector.<uint> = null) : ExchangeBidPriceForSellerMessage
+      {
+         super.initExchangeBidPriceMessage(param1,param2);
+         this.allIdentical = param3;
+         this.minimalPrices = param4;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.allIdentical = false;
+         this.minimalPrices = new Vector.<uint>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_ExchangeBidPriceForSellerMessage(param1);
+      }
+      
+      public function serializeAs_ExchangeBidPriceForSellerMessage(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_ExchangeBidPriceMessage(param1);
+         param1.writeBoolean(this.allIdentical);
+         param1.writeShort(this.minimalPrices.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.minimalPrices.length)
+         {
+            if(this.minimalPrices[_loc2_] < 0)
             {
-                if (this.minimalPrices[_i2] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.minimalPrices[_i2]) + ") on element 2 (starting at 1) of minimalPrices.")));
-                };
-                output.writeVarInt(this.minimalPrices[_i2]);
-                _i2++;
-            };
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_ExchangeBidPriceForSellerMessage(input);
-        }
-
-        public function deserializeAs_ExchangeBidPriceForSellerMessage(input:ICustomDataInput):void
-        {
-            var _val2:uint;
-            super.deserialize(input);
-            this.allIdentical = input.readBoolean();
-            var _minimalPricesLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _minimalPricesLen)
+               throw new Error("Forbidden value (" + this.minimalPrices[_loc2_] + ") on element 2 (starting at 1) of minimalPrices.");
+            }
+            else
             {
-                _val2 = input.readVarUhInt();
-                if (_val2 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val2) + ") on elements of minimalPrices.")));
-                };
-                this.minimalPrices.push(_val2);
-                _i2++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.inventory.exchanges
-
+               param1.writeVarInt(this.minimalPrices[_loc2_]);
+               _loc2_++;
+               continue;
+            }
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_ExchangeBidPriceForSellerMessage(param1);
+      }
+      
+      public function deserializeAs_ExchangeBidPriceForSellerMessage(param1:ICustomDataInput) : void
+      {
+         var _loc4_:uint = 0;
+         super.deserialize(param1);
+         this.allIdentical = param1.readBoolean();
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc4_ = param1.readVarUhInt();
+            if(_loc4_ < 0)
+            {
+               throw new Error("Forbidden value (" + _loc4_ + ") on elements of minimalPrices.");
+            }
+            else
+            {
+               this.minimalPrices.push(_loc4_);
+               _loc3_++;
+               continue;
+            }
+         }
+      }
+   }
+}

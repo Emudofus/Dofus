@@ -1,239 +1,309 @@
-﻿package com.ankamagames.dofus.network.messages.game.guild
+package com.ankamagames.dofus.network.messages.game.guild
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class GuildInfosUpgradeMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 5636;
-
-        private var _isInitialized:Boolean = false;
-        public var maxTaxCollectorsCount:uint = 0;
-        public var taxCollectorsCount:uint = 0;
-        public var taxCollectorLifePoints:uint = 0;
-        public var taxCollectorDamagesBonuses:uint = 0;
-        public var taxCollectorPods:uint = 0;
-        public var taxCollectorProspecting:uint = 0;
-        public var taxCollectorWisdom:uint = 0;
-        public var boostPoints:uint = 0;
-        public var spellId:Vector.<uint>;
-        public var spellLevel:Vector.<uint>;
-
-        public function GuildInfosUpgradeMessage()
-        {
-            this.spellId = new Vector.<uint>();
-            this.spellLevel = new Vector.<uint>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (5636);
-        }
-
-        public function initGuildInfosUpgradeMessage(maxTaxCollectorsCount:uint=0, taxCollectorsCount:uint=0, taxCollectorLifePoints:uint=0, taxCollectorDamagesBonuses:uint=0, taxCollectorPods:uint=0, taxCollectorProspecting:uint=0, taxCollectorWisdom:uint=0, boostPoints:uint=0, spellId:Vector.<uint>=null, spellLevel:Vector.<uint>=null):GuildInfosUpgradeMessage
-        {
-            this.maxTaxCollectorsCount = maxTaxCollectorsCount;
-            this.taxCollectorsCount = taxCollectorsCount;
-            this.taxCollectorLifePoints = taxCollectorLifePoints;
-            this.taxCollectorDamagesBonuses = taxCollectorDamagesBonuses;
-            this.taxCollectorPods = taxCollectorPods;
-            this.taxCollectorProspecting = taxCollectorProspecting;
-            this.taxCollectorWisdom = taxCollectorWisdom;
-            this.boostPoints = boostPoints;
-            this.spellId = spellId;
-            this.spellLevel = spellLevel;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.maxTaxCollectorsCount = 0;
-            this.taxCollectorsCount = 0;
-            this.taxCollectorLifePoints = 0;
-            this.taxCollectorDamagesBonuses = 0;
-            this.taxCollectorPods = 0;
-            this.taxCollectorProspecting = 0;
-            this.taxCollectorWisdom = 0;
-            this.boostPoints = 0;
-            this.spellId = new Vector.<uint>();
-            this.spellLevel = new Vector.<uint>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GuildInfosUpgradeMessage(output);
-        }
-
-        public function serializeAs_GuildInfosUpgradeMessage(output:ICustomDataOutput):void
-        {
-            if (this.maxTaxCollectorsCount < 0)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class GuildInfosUpgradeMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function GuildInfosUpgradeMessage()
+      {
+         this.spellId = new Vector.<uint>();
+         this.spellLevel = new Vector.<uint>();
+         super();
+      }
+      
+      public static const protocolId:uint = 5636;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var maxTaxCollectorsCount:uint = 0;
+      
+      public var taxCollectorsCount:uint = 0;
+      
+      public var taxCollectorLifePoints:uint = 0;
+      
+      public var taxCollectorDamagesBonuses:uint = 0;
+      
+      public var taxCollectorPods:uint = 0;
+      
+      public var taxCollectorProspecting:uint = 0;
+      
+      public var taxCollectorWisdom:uint = 0;
+      
+      public var boostPoints:uint = 0;
+      
+      public var spellId:Vector.<uint>;
+      
+      public var spellLevel:Vector.<uint>;
+      
+      override public function getMessageId() : uint
+      {
+         return 5636;
+      }
+      
+      public function initGuildInfosUpgradeMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0, param4:uint = 0, param5:uint = 0, param6:uint = 0, param7:uint = 0, param8:uint = 0, param9:Vector.<uint> = null, param10:Vector.<uint> = null) : GuildInfosUpgradeMessage
+      {
+         this.maxTaxCollectorsCount = param1;
+         this.taxCollectorsCount = param2;
+         this.taxCollectorLifePoints = param3;
+         this.taxCollectorDamagesBonuses = param4;
+         this.taxCollectorPods = param5;
+         this.taxCollectorProspecting = param6;
+         this.taxCollectorWisdom = param7;
+         this.boostPoints = param8;
+         this.spellId = param9;
+         this.spellLevel = param10;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.maxTaxCollectorsCount = 0;
+         this.taxCollectorsCount = 0;
+         this.taxCollectorLifePoints = 0;
+         this.taxCollectorDamagesBonuses = 0;
+         this.taxCollectorPods = 0;
+         this.taxCollectorProspecting = 0;
+         this.taxCollectorWisdom = 0;
+         this.boostPoints = 0;
+         this.spellId = new Vector.<uint>();
+         this.spellLevel = new Vector.<uint>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GuildInfosUpgradeMessage(param1);
+      }
+      
+      public function serializeAs_GuildInfosUpgradeMessage(param1:ICustomDataOutput) : void
+      {
+         if(this.maxTaxCollectorsCount < 0)
+         {
+            throw new Error("Forbidden value (" + this.maxTaxCollectorsCount + ") on element maxTaxCollectorsCount.");
+         }
+         else
+         {
+            param1.writeByte(this.maxTaxCollectorsCount);
+            if(this.taxCollectorsCount < 0)
             {
-                throw (new Error((("Forbidden value (" + this.maxTaxCollectorsCount) + ") on element maxTaxCollectorsCount.")));
-            };
-            output.writeByte(this.maxTaxCollectorsCount);
-            if (this.taxCollectorsCount < 0)
+               throw new Error("Forbidden value (" + this.taxCollectorsCount + ") on element taxCollectorsCount.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.taxCollectorsCount) + ") on element taxCollectorsCount.")));
-            };
-            output.writeByte(this.taxCollectorsCount);
-            if (this.taxCollectorLifePoints < 0)
+               param1.writeByte(this.taxCollectorsCount);
+               if(this.taxCollectorLifePoints < 0)
+               {
+                  throw new Error("Forbidden value (" + this.taxCollectorLifePoints + ") on element taxCollectorLifePoints.");
+               }
+               else
+               {
+                  param1.writeVarShort(this.taxCollectorLifePoints);
+                  if(this.taxCollectorDamagesBonuses < 0)
+                  {
+                     throw new Error("Forbidden value (" + this.taxCollectorDamagesBonuses + ") on element taxCollectorDamagesBonuses.");
+                  }
+                  else
+                  {
+                     param1.writeVarShort(this.taxCollectorDamagesBonuses);
+                     if(this.taxCollectorPods < 0)
+                     {
+                        throw new Error("Forbidden value (" + this.taxCollectorPods + ") on element taxCollectorPods.");
+                     }
+                     else
+                     {
+                        param1.writeVarShort(this.taxCollectorPods);
+                        if(this.taxCollectorProspecting < 0)
+                        {
+                           throw new Error("Forbidden value (" + this.taxCollectorProspecting + ") on element taxCollectorProspecting.");
+                        }
+                        else
+                        {
+                           param1.writeVarShort(this.taxCollectorProspecting);
+                           if(this.taxCollectorWisdom < 0)
+                           {
+                              throw new Error("Forbidden value (" + this.taxCollectorWisdom + ") on element taxCollectorWisdom.");
+                           }
+                           else
+                           {
+                              param1.writeVarShort(this.taxCollectorWisdom);
+                              if(this.boostPoints < 0)
+                              {
+                                 throw new Error("Forbidden value (" + this.boostPoints + ") on element boostPoints.");
+                              }
+                              else
+                              {
+                                 param1.writeVarShort(this.boostPoints);
+                                 param1.writeShort(this.spellId.length);
+                                 var _loc2_:uint = 0;
+                                 while(_loc2_ < this.spellId.length)
+                                 {
+                                    if(this.spellId[_loc2_] < 0)
+                                    {
+                                       throw new Error("Forbidden value (" + this.spellId[_loc2_] + ") on element 9 (starting at 1) of spellId.");
+                                    }
+                                    else
+                                    {
+                                       param1.writeVarShort(this.spellId[_loc2_]);
+                                       _loc2_++;
+                                       continue;
+                                    }
+                                 }
+                                 param1.writeShort(this.spellLevel.length);
+                                 var _loc3_:uint = 0;
+                                 while(_loc3_ < this.spellLevel.length)
+                                 {
+                                    if(this.spellLevel[_loc3_] < 0)
+                                    {
+                                       throw new Error("Forbidden value (" + this.spellLevel[_loc3_] + ") on element 10 (starting at 1) of spellLevel.");
+                                    }
+                                    else
+                                    {
+                                       param1.writeByte(this.spellLevel[_loc3_]);
+                                       _loc3_++;
+                                       continue;
+                                    }
+                                 }
+                                 return;
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GuildInfosUpgradeMessage(param1);
+      }
+      
+      public function deserializeAs_GuildInfosUpgradeMessage(param1:ICustomDataInput) : void
+      {
+         var _loc6_:uint = 0;
+         var _loc7_:uint = 0;
+         this.maxTaxCollectorsCount = param1.readByte();
+         if(this.maxTaxCollectorsCount < 0)
+         {
+            throw new Error("Forbidden value (" + this.maxTaxCollectorsCount + ") on element of GuildInfosUpgradeMessage.maxTaxCollectorsCount.");
+         }
+         else
+         {
+            this.taxCollectorsCount = param1.readByte();
+            if(this.taxCollectorsCount < 0)
             {
-                throw (new Error((("Forbidden value (" + this.taxCollectorLifePoints) + ") on element taxCollectorLifePoints.")));
-            };
-            output.writeVarShort(this.taxCollectorLifePoints);
-            if (this.taxCollectorDamagesBonuses < 0)
+               throw new Error("Forbidden value (" + this.taxCollectorsCount + ") on element of GuildInfosUpgradeMessage.taxCollectorsCount.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.taxCollectorDamagesBonuses) + ") on element taxCollectorDamagesBonuses.")));
-            };
-            output.writeVarShort(this.taxCollectorDamagesBonuses);
-            if (this.taxCollectorPods < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.taxCollectorPods) + ") on element taxCollectorPods.")));
-            };
-            output.writeVarShort(this.taxCollectorPods);
-            if (this.taxCollectorProspecting < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.taxCollectorProspecting) + ") on element taxCollectorProspecting.")));
-            };
-            output.writeVarShort(this.taxCollectorProspecting);
-            if (this.taxCollectorWisdom < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.taxCollectorWisdom) + ") on element taxCollectorWisdom.")));
-            };
-            output.writeVarShort(this.taxCollectorWisdom);
-            if (this.boostPoints < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.boostPoints) + ") on element boostPoints.")));
-            };
-            output.writeVarShort(this.boostPoints);
-            output.writeShort(this.spellId.length);
-            var _i9:uint;
-            while (_i9 < this.spellId.length)
-            {
-                if (this.spellId[_i9] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.spellId[_i9]) + ") on element 9 (starting at 1) of spellId.")));
-                };
-                output.writeVarShort(this.spellId[_i9]);
-                _i9++;
-            };
-            output.writeShort(this.spellLevel.length);
-            var _i10:uint;
-            while (_i10 < this.spellLevel.length)
-            {
-                if (this.spellLevel[_i10] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.spellLevel[_i10]) + ") on element 10 (starting at 1) of spellLevel.")));
-                };
-                output.writeByte(this.spellLevel[_i10]);
-                _i10++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GuildInfosUpgradeMessage(input);
-        }
-
-        public function deserializeAs_GuildInfosUpgradeMessage(input:ICustomDataInput):void
-        {
-            var _val9:uint;
-            var _val10:uint;
-            this.maxTaxCollectorsCount = input.readByte();
-            if (this.maxTaxCollectorsCount < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.maxTaxCollectorsCount) + ") on element of GuildInfosUpgradeMessage.maxTaxCollectorsCount.")));
-            };
-            this.taxCollectorsCount = input.readByte();
-            if (this.taxCollectorsCount < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.taxCollectorsCount) + ") on element of GuildInfosUpgradeMessage.taxCollectorsCount.")));
-            };
-            this.taxCollectorLifePoints = input.readVarUhShort();
-            if (this.taxCollectorLifePoints < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.taxCollectorLifePoints) + ") on element of GuildInfosUpgradeMessage.taxCollectorLifePoints.")));
-            };
-            this.taxCollectorDamagesBonuses = input.readVarUhShort();
-            if (this.taxCollectorDamagesBonuses < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.taxCollectorDamagesBonuses) + ") on element of GuildInfosUpgradeMessage.taxCollectorDamagesBonuses.")));
-            };
-            this.taxCollectorPods = input.readVarUhShort();
-            if (this.taxCollectorPods < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.taxCollectorPods) + ") on element of GuildInfosUpgradeMessage.taxCollectorPods.")));
-            };
-            this.taxCollectorProspecting = input.readVarUhShort();
-            if (this.taxCollectorProspecting < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.taxCollectorProspecting) + ") on element of GuildInfosUpgradeMessage.taxCollectorProspecting.")));
-            };
-            this.taxCollectorWisdom = input.readVarUhShort();
-            if (this.taxCollectorWisdom < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.taxCollectorWisdom) + ") on element of GuildInfosUpgradeMessage.taxCollectorWisdom.")));
-            };
-            this.boostPoints = input.readVarUhShort();
-            if (this.boostPoints < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.boostPoints) + ") on element of GuildInfosUpgradeMessage.boostPoints.")));
-            };
-            var _spellIdLen:uint = input.readUnsignedShort();
-            var _i9:uint;
-            while (_i9 < _spellIdLen)
-            {
-                _val9 = input.readVarUhShort();
-                if (_val9 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val9) + ") on elements of spellId.")));
-                };
-                this.spellId.push(_val9);
-                _i9++;
-            };
-            var _spellLevelLen:uint = input.readUnsignedShort();
-            var _i10:uint;
-            while (_i10 < _spellLevelLen)
-            {
-                _val10 = input.readByte();
-                if (_val10 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val10) + ") on elements of spellLevel.")));
-                };
-                this.spellLevel.push(_val10);
-                _i10++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.guild
-
+               this.taxCollectorLifePoints = param1.readVarUhShort();
+               if(this.taxCollectorLifePoints < 0)
+               {
+                  throw new Error("Forbidden value (" + this.taxCollectorLifePoints + ") on element of GuildInfosUpgradeMessage.taxCollectorLifePoints.");
+               }
+               else
+               {
+                  this.taxCollectorDamagesBonuses = param1.readVarUhShort();
+                  if(this.taxCollectorDamagesBonuses < 0)
+                  {
+                     throw new Error("Forbidden value (" + this.taxCollectorDamagesBonuses + ") on element of GuildInfosUpgradeMessage.taxCollectorDamagesBonuses.");
+                  }
+                  else
+                  {
+                     this.taxCollectorPods = param1.readVarUhShort();
+                     if(this.taxCollectorPods < 0)
+                     {
+                        throw new Error("Forbidden value (" + this.taxCollectorPods + ") on element of GuildInfosUpgradeMessage.taxCollectorPods.");
+                     }
+                     else
+                     {
+                        this.taxCollectorProspecting = param1.readVarUhShort();
+                        if(this.taxCollectorProspecting < 0)
+                        {
+                           throw new Error("Forbidden value (" + this.taxCollectorProspecting + ") on element of GuildInfosUpgradeMessage.taxCollectorProspecting.");
+                        }
+                        else
+                        {
+                           this.taxCollectorWisdom = param1.readVarUhShort();
+                           if(this.taxCollectorWisdom < 0)
+                           {
+                              throw new Error("Forbidden value (" + this.taxCollectorWisdom + ") on element of GuildInfosUpgradeMessage.taxCollectorWisdom.");
+                           }
+                           else
+                           {
+                              this.boostPoints = param1.readVarUhShort();
+                              if(this.boostPoints < 0)
+                              {
+                                 throw new Error("Forbidden value (" + this.boostPoints + ") on element of GuildInfosUpgradeMessage.boostPoints.");
+                              }
+                              else
+                              {
+                                 var _loc2_:uint = param1.readUnsignedShort();
+                                 var _loc3_:uint = 0;
+                                 while(_loc3_ < _loc2_)
+                                 {
+                                    _loc6_ = param1.readVarUhShort();
+                                    if(_loc6_ < 0)
+                                    {
+                                       throw new Error("Forbidden value (" + _loc6_ + ") on elements of spellId.");
+                                    }
+                                    else
+                                    {
+                                       this.spellId.push(_loc6_);
+                                       _loc3_++;
+                                       continue;
+                                    }
+                                 }
+                                 var _loc4_:uint = param1.readUnsignedShort();
+                                 var _loc5_:uint = 0;
+                                 while(_loc5_ < _loc4_)
+                                 {
+                                    _loc7_ = param1.readByte();
+                                    if(_loc7_ < 0)
+                                    {
+                                       throw new Error("Forbidden value (" + _loc7_ + ") on elements of spellLevel.");
+                                    }
+                                    else
+                                    {
+                                       this.spellLevel.push(_loc7_);
+                                       _loc5_++;
+                                       continue;
+                                    }
+                                 }
+                                 return;
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+}
