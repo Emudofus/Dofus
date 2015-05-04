@@ -1,171 +1,149 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import com.ankamagames.berilia.interfaces.IApi;
-    import com.ankamagames.berilia.types.data.UiModule;
-    import com.ankamagames.berilia.managers.BindsManager;
-    import com.ankamagames.berilia.types.shortcut.Shortcut;
-    import com.ankamagames.berilia.types.shortcut.Bind;
-    import com.ankamagames.berilia.frames.ShortcutsFrame;
-
-    [InstanciedApi]
-    public class BindsApi implements IApi 
-    {
-
-        private var _module:UiModule;
-
-
-        [ApiData(name="module")]
-        public function set module(value:UiModule):void
-        {
-            this._module = value;
-        }
-
-        [Trusted]
-        public function destroy():void
-        {
-            this._module = null;
-        }
-
-        [Untrusted]
-        public function getBindList():Array
-        {
-            return (BindsManager.getInstance().binds);
-        }
-
-        [Untrusted]
-        public function getShortcut():Array
-        {
-            var s:Shortcut;
-            var copy:Array = new Array();
-            var ss:Array = Shortcut.getShortcuts();
-            for each (s in ss)
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import com.ankamagames.berilia.managers.BindsManager;
+   import com.ankamagames.berilia.types.shortcut.Shortcut;
+   import com.ankamagames.berilia.types.shortcut.Bind;
+   import com.ankamagames.berilia.frames.ShortcutsFrame;
+   
+   public class BindsApi extends Object implements IApi
+   {
+      
+      public function BindsApi()
+      {
+         super();
+      }
+      
+      private var _module:UiModule;
+      
+      public function set module(param1:UiModule) : void
+      {
+         this._module = param1;
+      }
+      
+      public function destroy() : void
+      {
+         this._module = null;
+      }
+      
+      public function getBindList() : Array
+      {
+         return BindsManager.getInstance().binds;
+      }
+      
+      public function getShortcut() : Array
+      {
+         var _loc3_:Shortcut = null;
+         var _loc1_:Array = new Array();
+         var _loc2_:Array = Shortcut.getShortcuts();
+         for each(_loc3_ in _loc2_)
+         {
+            if(_loc3_.visible)
             {
-                if (s.visible)
-                {
-                    copy.push(s);
-                };
-            };
-            return (copy);
-        }
-
-        [Untrusted]
-        public function getShortcutBind(shortcutName:String, returnDisabled:Boolean=false):Bind
-        {
-            return (BindsManager.getInstance().getBindFromShortcut(shortcutName, returnDisabled));
-        }
-
-        [Untrusted]
-        public function setShortcutBind(targetedShorcut:String, key:String, alt:Boolean, ctrl:Boolean, shift:Boolean):void
-        {
-            BindsManager.getInstance().addBind(new Bind(key, targetedShorcut, alt, ctrl, shift));
-        }
-
-        [Untrusted]
-        public function removeShortcutBind(targetedBind:String):void
-        {
-            BindsManager.getInstance().removeBind(BindsManager.getInstance().getBindFromShortcut(targetedBind));
-        }
-
-        [Untrusted]
-        public function getShortcutBindStr(shortcutName:String, returnDisabled:Boolean=false):String
-        {
-            var bind:Bind = this.getShortcutBind(shortcutName, returnDisabled);
-            if (((!((bind == null))) && (!((bind.key == null)))))
-            {
-                return (bind.toString());
-            };
-            return ("");
-        }
-
-        [Trusted]
-        public function resetAllBinds():void
-        {
-            BindsManager.getInstance().reset();
-        }
-
-        [Untrusted]
-        public function availableKeyboards():Array
-        {
-            return (BindsManager.getInstance().availableKeyboards.concat());
-        }
-
-        [Trusted]
-        public function changeKeyboard(locale:String):void
-        {
-            BindsManager.getInstance().changeKeyboard(locale, true);
-        }
-
-        [Untrusted]
-        public function getCurrentLocale():String
-        {
-            return (BindsManager.getInstance().currentLocale);
-        }
-
-        [Untrusted]
-        public function bindIsRegister(bind:Bind):Boolean
-        {
-            return (BindsManager.getInstance().isRegister(bind));
-        }
-
-        [Untrusted]
-        public function bindIsPermanent(bind:Bind):Boolean
-        {
-            return (BindsManager.getInstance().isPermanent(bind));
-        }
-
-        [Untrusted]
-        public function bindIsDisabled(bind:Bind):Boolean
-        {
-            return (BindsManager.getInstance().isDisabled(bind));
-        }
-
-        [Trusted]
-        public function setBindDisabled(bind:Bind, disabled:Boolean):void
-        {
-            BindsManager.getInstance().setDisabled(bind, disabled);
-        }
-
-        [Untrusted]
-        public function getRegisteredBind(bind:Bind):Bind
-        {
-            return (BindsManager.getInstance().getRegisteredBind(bind));
-        }
-
-        [Untrusted]
-        public function getShortcutByName(name:String):Shortcut
-        {
-            return (Shortcut.getShortcutByName(name));
-        }
-
-        [Trusted]
-        public function setShortcutEnabled(enabled:Boolean):void
-        {
-            ShortcutsFrame.shortcutsEnabled = enabled;
-        }
-
-        [Untrusted]
-        public function getIsShortcutEnabled():Boolean
-        {
-            return (ShortcutsFrame.shortcutsEnabled);
-        }
-
-        [Untrusted]
-        public function disableShortcut(name:String, val:Boolean):void
-        {
-            var shortcut:Shortcut = Shortcut.getShortcutByName(name);
-            if (shortcut != null)
-            {
-                shortcut.disable = val;
-            };
-        }
-
-        [Untrusted]
-        public function enableShortcutKey(keyCode:uint, charCode:uint, enabled:Boolean):void
-        {
-            BindsManager.getInstance().setDisabled(new Bind(BindsManager.getInstance().getShortcutString(keyCode, charCode)), !(enabled));
-        }
-
-
-    }
-}//package com.ankamagames.dofus.uiApi
-
+               _loc1_.push(_loc3_);
+            }
+         }
+         return _loc1_;
+      }
+      
+      public function getShortcutBind(param1:String, param2:Boolean = false) : Bind
+      {
+         return BindsManager.getInstance().getBindFromShortcut(param1,param2);
+      }
+      
+      public function setShortcutBind(param1:String, param2:String, param3:Boolean, param4:Boolean, param5:Boolean) : void
+      {
+         BindsManager.getInstance().addBind(new Bind(param2,param1,param3,param4,param5));
+      }
+      
+      public function removeShortcutBind(param1:String) : void
+      {
+         BindsManager.getInstance().removeBind(BindsManager.getInstance().getBindFromShortcut(param1));
+      }
+      
+      public function getShortcutBindStr(param1:String, param2:Boolean = false) : String
+      {
+         var _loc3_:Bind = this.getShortcutBind(param1,param2);
+         if(!(_loc3_ == null) && !(_loc3_.key == null))
+         {
+            return _loc3_.toString();
+         }
+         return "";
+      }
+      
+      public function resetAllBinds() : void
+      {
+         BindsManager.getInstance().reset();
+      }
+      
+      public function availableKeyboards() : Array
+      {
+         return BindsManager.getInstance().availableKeyboards.concat();
+      }
+      
+      public function changeKeyboard(param1:String) : void
+      {
+         BindsManager.getInstance().changeKeyboard(param1,true);
+      }
+      
+      public function getCurrentLocale() : String
+      {
+         return BindsManager.getInstance().currentLocale;
+      }
+      
+      public function bindIsRegister(param1:Bind) : Boolean
+      {
+         return BindsManager.getInstance().isRegister(param1);
+      }
+      
+      public function bindIsPermanent(param1:Bind) : Boolean
+      {
+         return BindsManager.getInstance().isPermanent(param1);
+      }
+      
+      public function bindIsDisabled(param1:Bind) : Boolean
+      {
+         return BindsManager.getInstance().isDisabled(param1);
+      }
+      
+      public function setBindDisabled(param1:Bind, param2:Boolean) : void
+      {
+         BindsManager.getInstance().setDisabled(param1,param2);
+      }
+      
+      public function getRegisteredBind(param1:Bind) : Bind
+      {
+         return BindsManager.getInstance().getRegisteredBind(param1);
+      }
+      
+      public function getShortcutByName(param1:String) : Shortcut
+      {
+         return Shortcut.getShortcutByName(param1);
+      }
+      
+      public function setShortcutEnabled(param1:Boolean) : void
+      {
+         ShortcutsFrame.shortcutsEnabled = param1;
+      }
+      
+      public function getIsShortcutEnabled() : Boolean
+      {
+         return ShortcutsFrame.shortcutsEnabled;
+      }
+      
+      public function disableShortcut(param1:String, param2:Boolean) : void
+      {
+         var _loc3_:Shortcut = Shortcut.getShortcutByName(param1);
+         if(_loc3_ != null)
+         {
+            _loc3_.disable = param2;
+         }
+      }
+      
+      public function enableShortcutKey(param1:uint, param2:uint, param3:Boolean) : void
+      {
+         BindsManager.getInstance().setDisabled(new Bind(BindsManager.getInstance().getShortcutString(param1,param2)),!param3);
+      }
+   }
+}

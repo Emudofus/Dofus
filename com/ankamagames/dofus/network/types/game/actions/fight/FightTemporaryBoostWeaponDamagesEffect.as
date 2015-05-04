@@ -1,59 +1,59 @@
-﻿package com.ankamagames.dofus.network.types.game.actions.fight
+package com.ankamagames.dofus.network.types.game.actions.fight
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class FightTemporaryBoostWeaponDamagesEffect extends FightTemporaryBoostEffect implements INetworkType 
-    {
-
-        public static const protocolId:uint = 211;
-
-        public var weaponTypeId:int = 0;
-
-
-        override public function getTypeId():uint
-        {
-            return (211);
-        }
-
-        public function initFightTemporaryBoostWeaponDamagesEffect(uid:uint=0, targetId:int=0, turnDuration:int=0, dispelable:uint=1, spellId:uint=0, effectId:uint=0, parentBoostUid:uint=0, delta:int=0, weaponTypeId:int=0):FightTemporaryBoostWeaponDamagesEffect
-        {
-            super.initFightTemporaryBoostEffect(uid, targetId, turnDuration, dispelable, spellId, effectId, parentBoostUid, delta);
-            this.weaponTypeId = weaponTypeId;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.weaponTypeId = 0;
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_FightTemporaryBoostWeaponDamagesEffect(output);
-        }
-
-        public function serializeAs_FightTemporaryBoostWeaponDamagesEffect(output:ICustomDataOutput):void
-        {
-            super.serializeAs_FightTemporaryBoostEffect(output);
-            output.writeShort(this.weaponTypeId);
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_FightTemporaryBoostWeaponDamagesEffect(input);
-        }
-
-        public function deserializeAs_FightTemporaryBoostWeaponDamagesEffect(input:ICustomDataInput):void
-        {
-            super.deserialize(input);
-            this.weaponTypeId = input.readShort();
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.actions.fight
-
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class FightTemporaryBoostWeaponDamagesEffect extends FightTemporaryBoostEffect implements INetworkType
+   {
+      
+      public function FightTemporaryBoostWeaponDamagesEffect()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 211;
+      
+      public var weaponTypeId:int = 0;
+      
+      override public function getTypeId() : uint
+      {
+         return 211;
+      }
+      
+      public function initFightTemporaryBoostWeaponDamagesEffect(param1:uint = 0, param2:int = 0, param3:int = 0, param4:uint = 1, param5:uint = 0, param6:uint = 0, param7:uint = 0, param8:int = 0, param9:int = 0) : FightTemporaryBoostWeaponDamagesEffect
+      {
+         super.initFightTemporaryBoostEffect(param1,param2,param3,param4,param5,param6,param7,param8);
+         this.weaponTypeId = param9;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.weaponTypeId = 0;
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_FightTemporaryBoostWeaponDamagesEffect(param1);
+      }
+      
+      public function serializeAs_FightTemporaryBoostWeaponDamagesEffect(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_FightTemporaryBoostEffect(param1);
+         param1.writeShort(this.weaponTypeId);
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_FightTemporaryBoostWeaponDamagesEffect(param1);
+      }
+      
+      public function deserializeAs_FightTemporaryBoostWeaponDamagesEffect(param1:ICustomDataInput) : void
+      {
+         super.deserialize(param1);
+         this.weaponTypeId = param1.readShort();
+      }
+   }
+}

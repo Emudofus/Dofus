@@ -1,99 +1,94 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.notification
+package com.ankamagames.dofus.network.messages.game.context.notification
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class NotificationListMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6087;
-
-        private var _isInitialized:Boolean = false;
-        public var flags:Vector.<int>;
-
-        public function NotificationListMessage()
-        {
-            this.flags = new Vector.<int>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6087);
-        }
-
-        public function initNotificationListMessage(flags:Vector.<int>=null):NotificationListMessage
-        {
-            this.flags = flags;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.flags = new Vector.<int>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_NotificationListMessage(output);
-        }
-
-        public function serializeAs_NotificationListMessage(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.flags.length);
-            var _i1:uint;
-            while (_i1 < this.flags.length)
-            {
-                output.writeVarInt(this.flags[_i1]);
-                _i1++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_NotificationListMessage(input);
-        }
-
-        public function deserializeAs_NotificationListMessage(input:ICustomDataInput):void
-        {
-            var _val1:int;
-            var _flagsLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _flagsLen)
-            {
-                _val1 = input.readVarInt();
-                this.flags.push(_val1);
-                _i1++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.notification
-
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class NotificationListMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function NotificationListMessage()
+      {
+         this.flags = new Vector.<int>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6087;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var flags:Vector.<int>;
+      
+      override public function getMessageId() : uint
+      {
+         return 6087;
+      }
+      
+      public function initNotificationListMessage(param1:Vector.<int> = null) : NotificationListMessage
+      {
+         this.flags = param1;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.flags = new Vector.<int>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_NotificationListMessage(param1);
+      }
+      
+      public function serializeAs_NotificationListMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeShort(this.flags.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.flags.length)
+         {
+            param1.writeVarInt(this.flags[_loc2_]);
+            _loc2_++;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_NotificationListMessage(param1);
+      }
+      
+      public function deserializeAs_NotificationListMessage(param1:ICustomDataInput) : void
+      {
+         var _loc4_:* = 0;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc4_ = param1.readVarInt();
+            this.flags.push(_loc4_);
+            _loc3_++;
+         }
+      }
+   }
+}

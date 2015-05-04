@@ -1,113 +1,112 @@
-﻿package com.hurlant.crypto.prng
+package com.hurlant.crypto.prng
 {
-    import com.hurlant.crypto.symmetric.IStreamCipher;
-    import flash.utils.ByteArray;
-    import com.hurlant.util.Memory;
-
-    public class ARC4 implements IPRNG, IStreamCipher 
-    {
-
-        private const psize:uint = 0x0100;
-
-        private var i:int = 0;
-        private var j:int = 0;
-        private var S:ByteArray;
-
-        public function ARC4(key:ByteArray=null)
-        {
-            this.S = new ByteArray();
-            if (key)
+   import com.hurlant.crypto.symmetric.IStreamCipher;
+   import flash.utils.ByteArray;
+   import com.hurlant.util.Memory;
+   
+   public class ARC4 extends Object implements IPRNG, IStreamCipher
+   {
+      
+      public function ARC4(param1:ByteArray = null)
+      {
+         super();
+         this.S = new ByteArray();
+         if(param1)
+         {
+            this.init(param1);
+         }
+      }
+      
+      private var i:int = 0;
+      
+      private var j:int = 0;
+      
+      private var S:ByteArray;
+      
+      private const psize:uint = 256;
+      
+      public function getPoolSize() : uint
+      {
+         return this.psize;
+      }
+      
+      public function init(param1:ByteArray) : void
+      {
+         var _loc2_:* = 0;
+         var _loc3_:* = 0;
+         var _loc4_:* = 0;
+         _loc2_ = 0;
+         while(_loc2_ < 256)
+         {
+            this.S[_loc2_] = _loc2_;
+            _loc2_++;
+         }
+         _loc3_ = 0;
+         _loc2_ = 0;
+         while(_loc2_ < 256)
+         {
+            _loc3_ = _loc3_ + this.S[_loc2_] + param1[_loc2_ % param1.length] & 255;
+            _loc4_ = this.S[_loc2_];
+            this.S[_loc2_] = this.S[_loc3_];
+            this.S[_loc3_] = _loc4_;
+            _loc2_++;
+         }
+         this.i = 0;
+         this.j = 0;
+      }
+      
+      public function next() : uint
+      {
+         var _loc1_:* = 0;
+         this.i = this.i + 1 & 255;
+         this.j = this.j + this.S[this.i] & 255;
+         _loc1_ = this.S[this.i];
+         this.S[this.i] = this.S[this.j];
+         this.S[this.j] = _loc1_;
+         return this.S[_loc1_ + this.S[this.i] & 255];
+      }
+      
+      public function getBlockSize() : uint
+      {
+         return 1;
+      }
+      
+      public function encrypt(param1:ByteArray) : void
+      {
+         var _loc2_:uint = 0;
+         while(_loc2_ < param1.length)
+         {
+            param1[_loc2_++] = param1[_loc2_++] ^ this.next();
+         }
+      }
+      
+      public function decrypt(param1:ByteArray) : void
+      {
+         this.encrypt(param1);
+      }
+      
+      public function dispose() : void
+      {
+         var _loc1_:uint = 0;
+         if(this.S != null)
+         {
+            _loc1_ = 0;
+            while(_loc1_ < this.S.length)
             {
-                this.init(key);
-            };
-        }
-
-        public function getPoolSize():uint
-        {
-            return (this.psize);
-        }
-
-        public function init(key:ByteArray):void
-        {
-            var i:int;
-            var j:int;
-            var t:int;
-            i = 0;
-            while (i < 0x0100)
-            {
-                this.S[i] = i;
-                i++;
-            };
-            j = 0;
-            i = 0;
-            while (i < 0x0100)
-            {
-                j = (((j + this.S[i]) + key[(i % key.length)]) & 0xFF);
-                t = this.S[i];
-                this.S[i] = this.S[j];
-                this.S[j] = t;
-                i++;
-            };
-            this.i = 0;
-            this.j = 0;
-        }
-
-        public function next():uint
-        {
-            var t:int;
-            this.i = ((this.i + 1) & 0xFF);
-            this.j = ((this.j + this.S[this.i]) & 0xFF);
-            t = this.S[this.i];
-            this.S[this.i] = this.S[this.j];
-            this.S[this.j] = t;
-            return (this.S[((t + this.S[this.i]) & 0xFF)]);
-        }
-
-        public function getBlockSize():uint
-        {
-            return (1);
-        }
-
-        public function encrypt(block:ByteArray):void
-        {
-            var i:uint;
-            while (i < block.length)
-            {
-                var _local_3 = i++;
-                block[_local_3] = (block[_local_3] ^ this.next());
-            };
-        }
-
-        public function decrypt(block:ByteArray):void
-        {
-            this.encrypt(block);
-        }
-
-        public function dispose():void
-        {
-            var i:uint;
-            if (this.S != null)
-            {
-                i = 0;
-                while (i < this.S.length)
-                {
-                    this.S[i] = (Math.random() * 0x0100);
-                    i++;
-                };
-                this.S.length = 0;
-                this.S = null;
-            };
-            this.i = 0;
-            this.j = 0;
-            Memory.gc();
-        }
-
-        public function toString():String
-        {
-            return ("rc4");
-        }
-
-
-    }
-}//package com.hurlant.crypto.prng
-
+               this.S[_loc1_] = Math.random() * 256;
+               _loc1_++;
+            }
+            this.S.length = 0;
+            this.S = null;
+         }
+         this.i = 0;
+         this.j = 0;
+         Memory.gc();
+      }
+      
+      public function toString() : String
+      {
+         return "rc4";
+      }
+   }
+}

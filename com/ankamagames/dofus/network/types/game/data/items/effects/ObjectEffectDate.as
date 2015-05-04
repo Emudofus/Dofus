@@ -1,119 +1,155 @@
-﻿package com.ankamagames.dofus.network.types.game.data.items.effects
+package com.ankamagames.dofus.network.types.game.data.items.effects
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class ObjectEffectDate extends ObjectEffect implements INetworkType 
-    {
-
-        public static const protocolId:uint = 72;
-
-        public var year:uint = 0;
-        public var month:uint = 0;
-        public var day:uint = 0;
-        public var hour:uint = 0;
-        public var minute:uint = 0;
-
-
-        override public function getTypeId():uint
-        {
-            return (72);
-        }
-
-        public function initObjectEffectDate(actionId:uint=0, year:uint=0, month:uint=0, day:uint=0, hour:uint=0, minute:uint=0):ObjectEffectDate
-        {
-            super.initObjectEffect(actionId);
-            this.year = year;
-            this.month = month;
-            this.day = day;
-            this.hour = hour;
-            this.minute = minute;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.year = 0;
-            this.month = 0;
-            this.day = 0;
-            this.hour = 0;
-            this.minute = 0;
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_ObjectEffectDate(output);
-        }
-
-        public function serializeAs_ObjectEffectDate(output:ICustomDataOutput):void
-        {
-            super.serializeAs_ObjectEffect(output);
-            if (this.year < 0)
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class ObjectEffectDate extends ObjectEffect implements INetworkType
+   {
+      
+      public function ObjectEffectDate()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 72;
+      
+      public var year:uint = 0;
+      
+      public var month:uint = 0;
+      
+      public var day:uint = 0;
+      
+      public var hour:uint = 0;
+      
+      public var minute:uint = 0;
+      
+      override public function getTypeId() : uint
+      {
+         return 72;
+      }
+      
+      public function initObjectEffectDate(param1:uint = 0, param2:uint = 0, param3:uint = 0, param4:uint = 0, param5:uint = 0, param6:uint = 0) : ObjectEffectDate
+      {
+         super.initObjectEffect(param1);
+         this.year = param2;
+         this.month = param3;
+         this.day = param4;
+         this.hour = param5;
+         this.minute = param6;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.year = 0;
+         this.month = 0;
+         this.day = 0;
+         this.hour = 0;
+         this.minute = 0;
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_ObjectEffectDate(param1);
+      }
+      
+      public function serializeAs_ObjectEffectDate(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_ObjectEffect(param1);
+         if(this.year < 0)
+         {
+            throw new Error("Forbidden value (" + this.year + ") on element year.");
+         }
+         else
+         {
+            param1.writeVarShort(this.year);
+            if(this.month < 0)
             {
-                throw (new Error((("Forbidden value (" + this.year) + ") on element year.")));
-            };
-            output.writeVarShort(this.year);
-            if (this.month < 0)
+               throw new Error("Forbidden value (" + this.month + ") on element month.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.month) + ") on element month.")));
-            };
-            output.writeByte(this.month);
-            if (this.day < 0)
+               param1.writeByte(this.month);
+               if(this.day < 0)
+               {
+                  throw new Error("Forbidden value (" + this.day + ") on element day.");
+               }
+               else
+               {
+                  param1.writeByte(this.day);
+                  if(this.hour < 0)
+                  {
+                     throw new Error("Forbidden value (" + this.hour + ") on element hour.");
+                  }
+                  else
+                  {
+                     param1.writeByte(this.hour);
+                     if(this.minute < 0)
+                     {
+                        throw new Error("Forbidden value (" + this.minute + ") on element minute.");
+                     }
+                     else
+                     {
+                        param1.writeByte(this.minute);
+                        return;
+                     }
+                  }
+               }
+            }
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_ObjectEffectDate(param1);
+      }
+      
+      public function deserializeAs_ObjectEffectDate(param1:ICustomDataInput) : void
+      {
+         super.deserialize(param1);
+         this.year = param1.readVarUhShort();
+         if(this.year < 0)
+         {
+            throw new Error("Forbidden value (" + this.year + ") on element of ObjectEffectDate.year.");
+         }
+         else
+         {
+            this.month = param1.readByte();
+            if(this.month < 0)
             {
-                throw (new Error((("Forbidden value (" + this.day) + ") on element day.")));
-            };
-            output.writeByte(this.day);
-            if (this.hour < 0)
+               throw new Error("Forbidden value (" + this.month + ") on element of ObjectEffectDate.month.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.hour) + ") on element hour.")));
-            };
-            output.writeByte(this.hour);
-            if (this.minute < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.minute) + ") on element minute.")));
-            };
-            output.writeByte(this.minute);
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_ObjectEffectDate(input);
-        }
-
-        public function deserializeAs_ObjectEffectDate(input:ICustomDataInput):void
-        {
-            super.deserialize(input);
-            this.year = input.readVarUhShort();
-            if (this.year < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.year) + ") on element of ObjectEffectDate.year.")));
-            };
-            this.month = input.readByte();
-            if (this.month < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.month) + ") on element of ObjectEffectDate.month.")));
-            };
-            this.day = input.readByte();
-            if (this.day < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.day) + ") on element of ObjectEffectDate.day.")));
-            };
-            this.hour = input.readByte();
-            if (this.hour < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.hour) + ") on element of ObjectEffectDate.hour.")));
-            };
-            this.minute = input.readByte();
-            if (this.minute < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.minute) + ") on element of ObjectEffectDate.minute.")));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.data.items.effects
-
+               this.day = param1.readByte();
+               if(this.day < 0)
+               {
+                  throw new Error("Forbidden value (" + this.day + ") on element of ObjectEffectDate.day.");
+               }
+               else
+               {
+                  this.hour = param1.readByte();
+                  if(this.hour < 0)
+                  {
+                     throw new Error("Forbidden value (" + this.hour + ") on element of ObjectEffectDate.hour.");
+                  }
+                  else
+                  {
+                     this.minute = param1.readByte();
+                     if(this.minute < 0)
+                     {
+                        throw new Error("Forbidden value (" + this.minute + ") on element of ObjectEffectDate.minute.");
+                     }
+                     else
+                     {
+                        return;
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+}

@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.network
+package com.ankamagames.dofus.network
 {
-    public class Metadata 
-    {
-
-        public static const PROTOCOL_BUILD:uint = 1626;
-        public static const PROTOCOL_REQUIRED_BUILD:uint = 1626;
-        public static const PROTOCOL_DATE:String = "Thu, 20 Nov 2014 10:36:44 +0100";
-        public static const PROTOCOL_VISIBILITY:String = "local";
-
-
-    }
-}//package com.ankamagames.dofus.network
-
+   public class Metadata extends Object
+   {
+      
+      public function Metadata()
+      {
+         super();
+      }
+      
+      public static const PROTOCOL_BUILD:uint = 1645;
+      
+      public static const PROTOCOL_REQUIRED_BUILD:uint = 1645;
+      
+      public static const PROTOCOL_DATE:String = "Tue, 24 Mar 2015 16:41:14 +0100";
+      
+      public static const PROTOCOL_VISIBILITY:String = "local";
+   }
+}

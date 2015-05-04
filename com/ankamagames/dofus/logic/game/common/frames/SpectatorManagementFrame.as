@@ -1,170 +1,167 @@
-﻿package com.ankamagames.dofus.logic.game.common.frames
+package com.ankamagames.dofus.logic.game.common.frames
 {
-    import com.ankamagames.jerakine.messages.Frame;
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import com.ankamagames.dofus.network.types.game.context.fight.FightExternalInformations;
-    import com.ankamagames.jerakine.types.enums.Priority;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightListRequestMessage;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightListMessage;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.logic.game.common.actions.spectator.MapRunningFightDetailsRequestAction;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightDetailsRequestMessage;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.StopToListenRunningFightRequestMessage;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightDetailsExtendedMessage;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightDetailsMessage;
-    import com.ankamagames.dofus.logic.game.common.actions.spectator.JoinAsSpectatorRequestAction;
-    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightJoinRequestMessage;
-    import com.ankamagames.dofus.logic.game.common.actions.roleplay.JoinFightRequestAction;
-    import com.ankamagames.dofus.logic.game.common.actions.spectator.GameFightSpectatePlayerRequestAction;
-    import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSpectatePlayerRequestMessage;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.party.NamedPartyTeam;
-    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
-    import com.ankamagames.dofus.logic.game.common.actions.OpenCurrentFightAction;
-    import com.ankamagames.berilia.managers.KernelEventsManager;
-    import com.ankamagames.dofus.misc.lists.HookList;
-    import com.ankamagames.dofus.logic.game.common.actions.spectator.StopToListenRunningFightAction;
-    import com.ankamagames.dofus.network.enums.TeamEnum;
-    import com.ankamagames.jerakine.messages.Message;
-    import __AS3__.vec.*;
-
-    public class SpectatorManagementFrame implements Frame 
-    {
-
-        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpectatorManagementFrame));
-
-
-        private static function sortFights(a:FightExternalInformations, b:FightExternalInformations):int
-        {
-            if (a.fightStart == b.fightStart)
-            {
-                return (0);
-            };
-            if (a.fightStart == 0)
-            {
-                return (-1);
-            };
-            if (b.fightStart == 0)
-            {
-                return (1);
-            };
-            return ((b.fightStart - a.fightStart));
-        }
-
-
-        public function get priority():int
-        {
-            return (Priority.NORMAL);
-        }
-
-        public function pushed():Boolean
-        {
-            return (true);
-        }
-
-        public function process(msg:Message):Boolean
-        {
-            var _local_2:MapRunningFightListRequestMessage;
-            var _local_3:MapRunningFightListMessage;
-            var _local_4:Vector.<FightExternalInformations>;
-            var _local_5:MapRunningFightDetailsRequestAction;
-            var _local_6:MapRunningFightDetailsRequestMessage;
-            var _local_7:StopToListenRunningFightRequestMessage;
-            var _local_8:MapRunningFightDetailsExtendedMessage;
-            var _local_9:String;
-            var _local_10:String;
-            var _local_11:MapRunningFightDetailsMessage;
-            var _local_12:JoinAsSpectatorRequestAction;
-            var _local_13:GameFightJoinRequestMessage;
-            var _local_14:JoinFightRequestAction;
-            var _local_15:GameFightSpectatePlayerRequestAction;
-            var _local_16:GameFightSpectatePlayerRequestMessage;
-            var f:FightExternalInformations;
-            var namedTeam:NamedPartyTeam;
-            switch (true)
-            {
-                case (msg is OpenCurrentFightAction):
-                    _local_2 = new MapRunningFightListRequestMessage();
-                    _local_2.initMapRunningFightListRequestMessage();
-                    ConnectionsHandler.getConnection().send(_local_2);
-                    return (true);
-                case (msg is MapRunningFightListMessage):
-                    _local_3 = (msg as MapRunningFightListMessage);
-                    _local_4 = new Vector.<FightExternalInformations>();
-                    for each (f in _local_3.fights)
-                    {
-                        _local_4.push(f);
-                    };
-                    _local_4.sort(sortFights);
-                    KernelEventsManager.getInstance().processCallback(HookList.MapRunningFightList, _local_4);
-                    return (true);
-                case (msg is MapRunningFightDetailsRequestAction):
-                    _local_5 = (msg as MapRunningFightDetailsRequestAction);
-                    _local_6 = new MapRunningFightDetailsRequestMessage();
-                    _local_6.initMapRunningFightDetailsRequestMessage(_local_5.fightId);
-                    ConnectionsHandler.getConnection().send(_local_6);
-                    return (true);
-                case (msg is StopToListenRunningFightAction):
-                    _local_7 = new StopToListenRunningFightRequestMessage();
-                    _local_7.initStopToListenRunningFightRequestMessage();
-                    ConnectionsHandler.getConnection().send(_local_7);
-                    return (true);
-                case (msg is MapRunningFightDetailsExtendedMessage):
-                    _local_8 = (msg as MapRunningFightDetailsExtendedMessage);
-                    _local_9 = "";
-                    _local_10 = "";
-                    for each (namedTeam in _local_8.namedPartyTeams)
-                    {
-                        if (((namedTeam.partyName) && (!((namedTeam.partyName == "")))))
-                        {
-                            if (namedTeam.teamId == TeamEnum.TEAM_CHALLENGER)
-                            {
-                                _local_9 = namedTeam.partyName;
-                            }
-                            else
-                            {
-                                if (namedTeam.teamId == TeamEnum.TEAM_DEFENDER)
-                                {
-                                    _local_10 = namedTeam.partyName;
-                                };
-                            };
-                        };
-                    };
-                    KernelEventsManager.getInstance().processCallback(HookList.MapRunningFightDetails, _local_8.fightId, _local_8.attackers, _local_8.defenders, _local_9, _local_10);
-                    return (true);
-                case (msg is MapRunningFightDetailsMessage):
-                    _local_11 = (msg as MapRunningFightDetailsMessage);
-                    KernelEventsManager.getInstance().processCallback(HookList.MapRunningFightDetails, _local_11.fightId, _local_11.attackers, _local_11.defenders, "", "");
-                    return (true);
-                case (msg is JoinAsSpectatorRequestAction):
-                    _local_12 = (msg as JoinAsSpectatorRequestAction);
-                    _local_13 = new GameFightJoinRequestMessage();
-                    _local_13.initGameFightJoinRequestMessage(0, _local_12.fightId);
-                    ConnectionsHandler.getConnection().send(_local_13);
-                    return (true);
-                case (msg is JoinFightRequestAction):
-                    _local_14 = (msg as JoinFightRequestAction);
-                    _local_13 = new GameFightJoinRequestMessage();
-                    _local_13.initGameFightJoinRequestMessage(_local_14.teamLeaderId, _local_14.fightId);
-                    ConnectionsHandler.getConnection().send(_local_13);
-                    return (true);
-                case (msg is GameFightSpectatePlayerRequestAction):
-                    _local_15 = (msg as GameFightSpectatePlayerRequestAction);
-                    _local_16 = new GameFightSpectatePlayerRequestMessage();
-                    _local_16.initGameFightSpectatePlayerRequestMessage(_local_15.playerId);
-                    ConnectionsHandler.getConnection().send(_local_16);
-                    return (true);
-            };
-            return (false);
-        }
-
-        public function pulled():Boolean
-        {
-            return (true);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.logic.game.common.frames
-
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightExternalInformations;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightListRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightListMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.spectator.MapRunningFightDetailsRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightDetailsRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.StopToListenRunningFightRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightDetailsExtendedMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.MapRunningFightDetailsMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.spectator.JoinAsSpectatorRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightJoinRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.roleplay.JoinFightRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.spectator.GameFightSpectatePlayerRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightSpectatePlayerRequestMessage;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.NamedPartyTeam;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.network.enums.TeamEnum;
+   import com.ankamagames.dofus.logic.game.common.actions.OpenCurrentFightAction;
+   import com.ankamagames.dofus.logic.game.common.actions.spectator.StopToListenRunningFightAction;
+   
+   public class SpectatorManagementFrame extends Object implements Frame
+   {
+      
+      public function SpectatorManagementFrame()
+      {
+         super();
+      }
+      
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpectatorManagementFrame));
+      
+      private static function sortFights(param1:FightExternalInformations, param2:FightExternalInformations) : int
+      {
+         if(param1.fightStart == param2.fightStart)
+         {
+            return 0;
+         }
+         if(param1.fightStart == 0)
+         {
+            return -1;
+         }
+         if(param2.fightStart == 0)
+         {
+            return 1;
+         }
+         return param2.fightStart - param1.fightStart;
+      }
+      
+      public function get priority() : int
+      {
+         return Priority.NORMAL;
+      }
+      
+      public function pushed() : Boolean
+      {
+         return true;
+      }
+      
+      public function process(param1:Message) : Boolean
+      {
+         var _loc2_:MapRunningFightListRequestMessage = null;
+         var _loc3_:MapRunningFightListMessage = null;
+         var _loc4_:Vector.<FightExternalInformations> = null;
+         var _loc5_:MapRunningFightDetailsRequestAction = null;
+         var _loc6_:MapRunningFightDetailsRequestMessage = null;
+         var _loc7_:StopToListenRunningFightRequestMessage = null;
+         var _loc8_:MapRunningFightDetailsExtendedMessage = null;
+         var _loc9_:String = null;
+         var _loc10_:String = null;
+         var _loc11_:MapRunningFightDetailsMessage = null;
+         var _loc12_:JoinAsSpectatorRequestAction = null;
+         var _loc13_:GameFightJoinRequestMessage = null;
+         var _loc14_:JoinFightRequestAction = null;
+         var _loc15_:GameFightSpectatePlayerRequestAction = null;
+         var _loc16_:GameFightSpectatePlayerRequestMessage = null;
+         var _loc17_:FightExternalInformations = null;
+         var _loc18_:NamedPartyTeam = null;
+         switch(true)
+         {
+            case param1 is OpenCurrentFightAction:
+               _loc2_ = new MapRunningFightListRequestMessage();
+               _loc2_.initMapRunningFightListRequestMessage();
+               ConnectionsHandler.getConnection().send(_loc2_);
+               return true;
+            case param1 is MapRunningFightListMessage:
+               _loc3_ = param1 as MapRunningFightListMessage;
+               _loc4_ = new Vector.<FightExternalInformations>();
+               for each(_loc17_ in _loc3_.fights)
+               {
+                  _loc4_.push(_loc17_);
+               }
+               _loc4_.sort(sortFights);
+               KernelEventsManager.getInstance().processCallback(HookList.MapRunningFightList,_loc4_);
+               return true;
+            case param1 is MapRunningFightDetailsRequestAction:
+               _loc5_ = param1 as MapRunningFightDetailsRequestAction;
+               _loc6_ = new MapRunningFightDetailsRequestMessage();
+               _loc6_.initMapRunningFightDetailsRequestMessage(_loc5_.fightId);
+               ConnectionsHandler.getConnection().send(_loc6_);
+               return true;
+            case param1 is StopToListenRunningFightAction:
+               _loc7_ = new StopToListenRunningFightRequestMessage();
+               _loc7_.initStopToListenRunningFightRequestMessage();
+               ConnectionsHandler.getConnection().send(_loc7_);
+               return true;
+            case param1 is MapRunningFightDetailsExtendedMessage:
+               _loc8_ = param1 as MapRunningFightDetailsExtendedMessage;
+               _loc9_ = "";
+               _loc10_ = "";
+               for each(_loc18_ in _loc8_.namedPartyTeams)
+               {
+                  if((_loc18_.partyName) && !(_loc18_.partyName == ""))
+                  {
+                     if(_loc18_.teamId == TeamEnum.TEAM_CHALLENGER)
+                     {
+                        _loc9_ = _loc18_.partyName;
+                     }
+                     else if(_loc18_.teamId == TeamEnum.TEAM_DEFENDER)
+                     {
+                        _loc10_ = _loc18_.partyName;
+                     }
+                     
+                  }
+               }
+               KernelEventsManager.getInstance().processCallback(HookList.MapRunningFightDetails,_loc8_.fightId,_loc8_.attackers,_loc8_.defenders,_loc9_,_loc10_);
+               return true;
+            case param1 is MapRunningFightDetailsMessage:
+               _loc11_ = param1 as MapRunningFightDetailsMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.MapRunningFightDetails,_loc11_.fightId,_loc11_.attackers,_loc11_.defenders,"","");
+               return true;
+            case param1 is JoinAsSpectatorRequestAction:
+               _loc12_ = param1 as JoinAsSpectatorRequestAction;
+               _loc13_ = new GameFightJoinRequestMessage();
+               _loc13_.initGameFightJoinRequestMessage(0,_loc12_.fightId);
+               ConnectionsHandler.getConnection().send(_loc13_);
+               return true;
+            case param1 is JoinFightRequestAction:
+               _loc14_ = param1 as JoinFightRequestAction;
+               _loc13_ = new GameFightJoinRequestMessage();
+               _loc13_.initGameFightJoinRequestMessage(_loc14_.teamLeaderId,_loc14_.fightId);
+               ConnectionsHandler.getConnection().send(_loc13_);
+               return true;
+            case param1 is GameFightSpectatePlayerRequestAction:
+               _loc15_ = param1 as GameFightSpectatePlayerRequestAction;
+               _loc16_ = new GameFightSpectatePlayerRequestMessage();
+               _loc16_.initGameFightSpectatePlayerRequestMessage(_loc15_.playerId);
+               ConnectionsHandler.getConnection().send(_loc16_);
+               return true;
+            default:
+               return false;
+         }
+      }
+      
+      public function pulled() : Boolean
+      {
+         return true;
+      }
+   }
+}

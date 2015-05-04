@@ -1,142 +1,155 @@
-﻿package com.ankamagames.dofus.network.messages.game.guild
+package com.ankamagames.dofus.network.messages.game.guild
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import com.ankamagames.dofus.network.types.game.social.GuildFactSheetInformations;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.network.types.game.character.CharacterMinimalInformations;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import com.ankamagames.dofus.network.ProtocolTypeManager;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class GuildFactsMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6415;
-
-        private var _isInitialized:Boolean = false;
-        public var infos:GuildFactSheetInformations;
-        public var creationDate:uint = 0;
-        public var nbTaxCollectors:uint = 0;
-        public var enabled:Boolean = false;
-        public var members:Vector.<CharacterMinimalInformations>;
-
-        public function GuildFactsMessage()
-        {
-            this.infos = new GuildFactSheetInformations();
-            this.members = new Vector.<CharacterMinimalInformations>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6415);
-        }
-
-        public function initGuildFactsMessage(infos:GuildFactSheetInformations=null, creationDate:uint=0, nbTaxCollectors:uint=0, enabled:Boolean=false, members:Vector.<CharacterMinimalInformations>=null):GuildFactsMessage
-        {
-            this.infos = infos;
-            this.creationDate = creationDate;
-            this.nbTaxCollectors = nbTaxCollectors;
-            this.enabled = enabled;
-            this.members = members;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.infos = new GuildFactSheetInformations();
-            this.nbTaxCollectors = 0;
-            this.enabled = false;
-            this.members = new Vector.<CharacterMinimalInformations>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GuildFactsMessage(output);
-        }
-
-        public function serializeAs_GuildFactsMessage(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.infos.getTypeId());
-            this.infos.serialize(output);
-            if (this.creationDate < 0)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.social.GuildFactSheetInformations;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalInformations;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
+   
+   public class GuildFactsMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function GuildFactsMessage()
+      {
+         this.infos = new GuildFactSheetInformations();
+         this.members = new Vector.<CharacterMinimalInformations>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6415;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var infos:GuildFactSheetInformations;
+      
+      public var creationDate:uint = 0;
+      
+      public var nbTaxCollectors:uint = 0;
+      
+      public var enabled:Boolean = false;
+      
+      public var members:Vector.<CharacterMinimalInformations>;
+      
+      override public function getMessageId() : uint
+      {
+         return 6415;
+      }
+      
+      public function initGuildFactsMessage(param1:GuildFactSheetInformations = null, param2:uint = 0, param3:uint = 0, param4:Boolean = false, param5:Vector.<CharacterMinimalInformations> = null) : GuildFactsMessage
+      {
+         this.infos = param1;
+         this.creationDate = param2;
+         this.nbTaxCollectors = param3;
+         this.enabled = param4;
+         this.members = param5;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.infos = new GuildFactSheetInformations();
+         this.nbTaxCollectors = 0;
+         this.enabled = false;
+         this.members = new Vector.<CharacterMinimalInformations>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GuildFactsMessage(param1);
+      }
+      
+      public function serializeAs_GuildFactsMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeShort(this.infos.getTypeId());
+         this.infos.serialize(param1);
+         if(this.creationDate < 0)
+         {
+            throw new Error("Forbidden value (" + this.creationDate + ") on element creationDate.");
+         }
+         else
+         {
+            param1.writeInt(this.creationDate);
+            if(this.nbTaxCollectors < 0)
             {
-                throw (new Error((("Forbidden value (" + this.creationDate) + ") on element creationDate.")));
-            };
-            output.writeInt(this.creationDate);
-            if (this.nbTaxCollectors < 0)
+               throw new Error("Forbidden value (" + this.nbTaxCollectors + ") on element nbTaxCollectors.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.nbTaxCollectors) + ") on element nbTaxCollectors.")));
-            };
-            output.writeVarShort(this.nbTaxCollectors);
-            output.writeBoolean(this.enabled);
-            output.writeShort(this.members.length);
-            var _i5:uint;
-            while (_i5 < this.members.length)
+               param1.writeVarShort(this.nbTaxCollectors);
+               param1.writeBoolean(this.enabled);
+               param1.writeShort(this.members.length);
+               var _loc2_:uint = 0;
+               while(_loc2_ < this.members.length)
+               {
+                  (this.members[_loc2_] as CharacterMinimalInformations).serializeAs_CharacterMinimalInformations(param1);
+                  _loc2_++;
+               }
+               return;
+            }
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GuildFactsMessage(param1);
+      }
+      
+      public function deserializeAs_GuildFactsMessage(param1:ICustomDataInput) : void
+      {
+         var _loc5_:CharacterMinimalInformations = null;
+         var _loc2_:uint = param1.readUnsignedShort();
+         this.infos = ProtocolTypeManager.getInstance(GuildFactSheetInformations,_loc2_);
+         this.infos.deserialize(param1);
+         this.creationDate = param1.readInt();
+         if(this.creationDate < 0)
+         {
+            throw new Error("Forbidden value (" + this.creationDate + ") on element of GuildFactsMessage.creationDate.");
+         }
+         else
+         {
+            this.nbTaxCollectors = param1.readVarUhShort();
+            if(this.nbTaxCollectors < 0)
             {
-                (this.members[_i5] as CharacterMinimalInformations).serializeAs_CharacterMinimalInformations(output);
-                _i5++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GuildFactsMessage(input);
-        }
-
-        public function deserializeAs_GuildFactsMessage(input:ICustomDataInput):void
-        {
-            var _item5:CharacterMinimalInformations;
-            var _id1:uint = input.readUnsignedShort();
-            this.infos = ProtocolTypeManager.getInstance(GuildFactSheetInformations, _id1);
-            this.infos.deserialize(input);
-            this.creationDate = input.readInt();
-            if (this.creationDate < 0)
+               throw new Error("Forbidden value (" + this.nbTaxCollectors + ") on element of GuildFactsMessage.nbTaxCollectors.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.creationDate) + ") on element of GuildFactsMessage.creationDate.")));
-            };
-            this.nbTaxCollectors = input.readVarUhShort();
-            if (this.nbTaxCollectors < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.nbTaxCollectors) + ") on element of GuildFactsMessage.nbTaxCollectors.")));
-            };
-            this.enabled = input.readBoolean();
-            var _membersLen:uint = input.readUnsignedShort();
-            var _i5:uint;
-            while (_i5 < _membersLen)
-            {
-                _item5 = new CharacterMinimalInformations();
-                _item5.deserialize(input);
-                this.members.push(_item5);
-                _i5++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.guild
-
+               this.enabled = param1.readBoolean();
+               var _loc3_:uint = param1.readUnsignedShort();
+               var _loc4_:uint = 0;
+               while(_loc4_ < _loc3_)
+               {
+                  _loc5_ = new CharacterMinimalInformations();
+                  _loc5_.deserialize(param1);
+                  this.members.push(_loc5_);
+                  _loc4_++;
+               }
+               return;
+            }
+         }
+      }
+   }
+}

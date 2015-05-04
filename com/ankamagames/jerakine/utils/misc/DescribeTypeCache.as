@@ -1,189 +1,194 @@
-﻿package com.ankamagames.jerakine.utils.misc
+package com.ankamagames.jerakine.utils.misc
 {
-    import flash.utils.Dictionary;
-    import flash.utils.describeType;
-    import flash.utils.getQualifiedClassName;
-    import flash.utils.Proxy;
-
-    public class DescribeTypeCache 
-    {
-
-        private static var _classDesc:Dictionary = new Dictionary();
-        private static var _variables:Dictionary = new Dictionary();
-        private static var _variablesAndAccessor:Dictionary = new Dictionary();
-        private static var _tags:Dictionary = new Dictionary();
-        private static var _consts:Dictionary = new Dictionary();
-
-
-        public static function typeDescription(o:Object, useCache:Boolean=true):XML
-        {
-            if (!(useCache))
+   import flash.utils.Dictionary;
+   import flash.utils.describeType;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Proxy;
+   
+   public class DescribeTypeCache extends Object
+   {
+      
+      public function DescribeTypeCache()
+      {
+         super();
+      }
+      
+      private static var _classDesc:Dictionary = new Dictionary();
+      
+      private static var _variables:Dictionary = new Dictionary();
+      
+      private static var _variablesAndAccessor:Dictionary = new Dictionary();
+      
+      private static var _tags:Dictionary = new Dictionary();
+      
+      private static var _consts:Dictionary = new Dictionary();
+      
+      public static function typeDescription(param1:Object, param2:Boolean = true) : XML
+      {
+         if(!param2)
+         {
+            return describeType(param1);
+         }
+         var _loc3_:String = getQualifiedClassName(param1);
+         if(!_classDesc[_loc3_])
+         {
+            _classDesc[_loc3_] = describeType(param1);
+         }
+         return _classDesc[_loc3_];
+      }
+      
+      public static function getVariables(param1:Object, param2:Boolean = false, param3:Boolean = true, param4:Boolean = false) : Array
+      {
+         var _loc6_:Array = null;
+         var _loc7_:XML = null;
+         var _loc8_:XML = null;
+         var _loc9_:String = null;
+         var _loc10_:String = null;
+         var _loc11_:XML = null;
+         var _loc12_:String = null;
+         var _loc5_:String = getQualifiedClassName(param1);
+         if(_loc5_ == "Object")
+         {
+            var param3:* = false;
+         }
+         if(param3)
+         {
+            if((param2) && (_variables[_loc5_]))
             {
-                return (describeType(o));
-            };
-            var c:String = getQualifiedClassName(o);
-            if (!(_classDesc[c]))
+               return _variables[_loc5_];
+            }
+            if(!param2 && (_variablesAndAccessor[_loc5_]))
             {
-                _classDesc[c] = describeType(o);
-            };
-            return (_classDesc[c]);
-        }
-
-        public static function getVariables(o:Object, onlyVar:Boolean=false, useCache:Boolean=true, skipUselessVars:Boolean=false):Array
-        {
-            var variables:Array;
-            var description:XML;
-            var variableNode:XML;
-            var key:String;
-            var varName:String;
-            var accessorNode:XML;
-            var type:String;
-            var className:String = getQualifiedClassName(o);
-            if (className == "Object")
+               return _variablesAndAccessor[_loc5_];
+            }
+         }
+         _loc6_ = new Array();
+         _loc7_ = typeDescription(param1,param3);
+         if(_loc7_.@isDynamic.toString() == "true" || param1 is Proxy)
+         {
+            try
             {
-                useCache = false;
-            };
-            if (useCache)
+               for(_loc9_ in param1)
+               {
+                  _loc6_.push(_loc9_);
+               }
+            }
+            catch(e:Error)
             {
-                if (((onlyVar) && (_variables[className])))
-                {
-                    return (_variables[className]);
-                };
-                if (((!(onlyVar)) && (_variablesAndAccessor[className])))
-                {
-                    return (_variablesAndAccessor[className]);
-                };
-            };
-            variables = new Array();
-            description = typeDescription(o, useCache);
-            if ((((description.@isDynamic.toString() == "true")) || ((o is Proxy))))
+            }
+         }
+         for each(_loc8_ in _loc7_..variable)
+         {
+            _loc10_ = _loc8_.@name.toString();
+            if(!(_loc10_ == "MEMORY_LOG") && !(_loc10_ == "FLAG") && _loc10_.indexOf("PATTERN") == -1 && _loc10_.indexOf("OFFSET") == -1)
             {
-                try
-                {
-                    for (key in o)
-                    {
-                        variables.push(key);
-                    };
-                }
-                catch(e:Error)
-                {
-                };
-            };
-            for each (variableNode in description..variable)
+               _loc6_.push(_loc10_);
+            }
+         }
+         if(!param2)
+         {
+            for each(_loc11_ in _loc7_..accessor)
             {
-                varName = variableNode.@name.toString();
-                if (((((((!((varName == "MEMORY_LOG"))) && (!((varName == "FLAG"))))) && ((varName.indexOf("PATTERN") == -1)))) && ((varName.indexOf("OFFSET") == -1))))
-                {
-                    variables.push(varName);
-                };
-            };
-            if (!(onlyVar))
+               if(param4)
+               {
+                  if(_loc11_.@access.toString() != "readOnly")
+                  {
+                     _loc12_ = _loc11_.@type.toString();
+                     if(_loc12_ == "uint" || _loc12_ == "int" || _loc12_ == "Number" || _loc12_ == "String" || _loc12_ == "Boolean")
+                     {
+                        _loc6_.push(_loc11_.@name.toString());
+                     }
+                  }
+               }
+               else
+               {
+                  _loc6_.push(_loc11_.@name.toString());
+               }
+            }
+         }
+         if(param3)
+         {
+            if(param2)
             {
-                for each (accessorNode in description..accessor)
-                {
-                    if (skipUselessVars)
-                    {
-                        if (accessorNode.@access.toString() != "readOnly")
-                        {
-                            type = accessorNode.@type.toString();
-                            if ((((((((((type == "uint")) || ((type == "int")))) || ((type == "Number")))) || ((type == "String")))) || ((type == "Boolean"))))
-                            {
-                                variables.push(accessorNode.@name.toString());
-                            };
-                        };
-                    }
-                    else
-                    {
-                        variables.push(accessorNode.@name.toString());
-                    };
-                };
-            };
-            if (useCache)
+               _variables[_loc5_] = _loc6_;
+            }
+            else
             {
-                if (onlyVar)
-                {
-                    _variables[className] = variables;
-                }
-                else
-                {
-                    _variablesAndAccessor[className] = variables;
-                };
-            };
-            return (variables);
-        }
-
-        public static function getTags(o:Object):Dictionary
-        {
-            var tagNode:XML;
-            var node:XML;
-            var objectName:String;
-            var className:String = getQualifiedClassName(o);
-            if (_tags[className])
+               _variablesAndAccessor[_loc5_] = _loc6_;
+            }
+         }
+         return _loc6_;
+      }
+      
+      public static function getTags(param1:Object) : Dictionary
+      {
+         var _loc4_:XML = null;
+         var _loc5_:XML = null;
+         var _loc6_:String = null;
+         var _loc2_:String = getQualifiedClassName(param1);
+         if(_tags[_loc2_])
+         {
+            return _tags[_loc2_];
+         }
+         _tags[_loc2_] = new Dictionary();
+         var _loc3_:XML = typeDescription(param1);
+         for each(_loc4_ in _loc3_..metadata)
+         {
+            _loc6_ = _loc4_.parent().@name;
+            if(!_tags[_loc2_][_loc6_])
             {
-                return (_tags[className]);
-            };
-            _tags[className] = new Dictionary();
-            var description:XML = typeDescription(o);
-            for each (tagNode in description..metadata)
+               _tags[_loc2_][_loc6_] = new Dictionary();
+            }
+            _tags[_loc2_][_loc6_][_loc4_.@name.toString()] = true;
+         }
+         for each(_loc5_ in _loc3_..variable)
+         {
+            _loc6_ = _loc5_.@name;
+            if(!_tags[_loc2_][_loc6_])
             {
-                objectName = tagNode.parent().@name;
-                if (!(_tags[className][objectName]))
-                {
-                    _tags[className][objectName] = new Dictionary();
-                };
-                _tags[className][objectName][tagNode.@name.toString()] = true;
-            };
-            for each (node in description..variable)
+               _tags[_loc2_][_loc6_] = new Dictionary();
+            }
+         }
+         for each(_loc5_ in _loc3_..method)
+         {
+            _loc6_ = _loc5_.@name;
+            if(!_tags[_loc2_][_loc6_])
             {
-                objectName = node.@name;
-                if (!(_tags[className][objectName]))
-                {
-                    _tags[className][objectName] = new Dictionary();
-                };
-            };
-            for each (node in description..method)
+               _tags[_loc2_][_loc6_] = new Dictionary();
+            }
+         }
+         return _tags[_loc2_];
+      }
+      
+      public static function getConstants(param1:Object) : Dictionary
+      {
+         var _loc4_:XML = null;
+         var _loc2_:String = getQualifiedClassName(param1);
+         if(_consts[_loc2_])
+         {
+            return _consts[_loc2_];
+         }
+         _consts[_loc2_] = new Dictionary();
+         var _loc3_:XML = typeDescription(param1);
+         for each(_loc4_ in _loc3_..constant)
+         {
+            _consts[_loc2_][_loc4_.@name.toString()] = _loc4_.@type.toString();
+         }
+         return _consts[_loc2_];
+      }
+      
+      public static function getConstantName(param1:Class, param2:*) : String
+      {
+         var _loc4_:String = null;
+         var _loc3_:Dictionary = getConstants(param1);
+         for(_loc4_ in _loc3_)
+         {
+            if(param1[_loc4_] === param2)
             {
-                objectName = node.@name;
-                if (!(_tags[className][objectName]))
-                {
-                    _tags[className][objectName] = new Dictionary();
-                };
-            };
-            return (_tags[className]);
-        }
-
-        public static function getConstants(o:Object):Dictionary
-        {
-            var cst:XML;
-            var className:String = getQualifiedClassName(o);
-            if (_consts[className])
-            {
-                return (_consts[className]);
-            };
-            _consts[className] = new Dictionary();
-            var description:XML = typeDescription(o);
-            for each (cst in description..constant)
-            {
-                _consts[className][cst.@name.toString()] = cst.@type.toString();
-            };
-            return (_consts[className]);
-        }
-
-        public static function getConstantName(type:Class, value:*):String
-        {
-            var constName:String;
-            var constants:Dictionary = getConstants(type);
-            for (constName in constants)
-            {
-                if (type[constName] === value)
-                {
-                    return (constName);
-                };
-            };
-            return (null);
-        }
-
-
-    }
-}//package com.ankamagames.jerakine.utils.misc
-
+               return _loc4_;
+            }
+         }
+         return null;
+      }
+   }
+}

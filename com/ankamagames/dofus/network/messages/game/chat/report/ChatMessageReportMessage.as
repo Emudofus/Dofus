@@ -1,123 +1,146 @@
-﻿package com.ankamagames.dofus.network.messages.game.chat.report
+package com.ankamagames.dofus.network.messages.game.chat.report
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class ChatMessageReportMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 821;
-
-        private var _isInitialized:Boolean = false;
-        public var senderName:String = "";
-        public var content:String = "";
-        public var timestamp:uint = 0;
-        public var channel:uint = 0;
-        public var fingerprint:String = "";
-        public var reason:uint = 0;
-
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (821);
-        }
-
-        public function initChatMessageReportMessage(senderName:String="", content:String="", timestamp:uint=0, channel:uint=0, fingerprint:String="", reason:uint=0):ChatMessageReportMessage
-        {
-            this.senderName = senderName;
-            this.content = content;
-            this.timestamp = timestamp;
-            this.channel = channel;
-            this.fingerprint = fingerprint;
-            this.reason = reason;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.senderName = "";
-            this.content = "";
-            this.timestamp = 0;
-            this.channel = 0;
-            this.fingerprint = "";
-            this.reason = 0;
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_ChatMessageReportMessage(output);
-        }
-
-        public function serializeAs_ChatMessageReportMessage(output:ICustomDataOutput):void
-        {
-            output.writeUTF(this.senderName);
-            output.writeUTF(this.content);
-            if (this.timestamp < 0)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class ChatMessageReportMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function ChatMessageReportMessage()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 821;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var senderName:String = "";
+      
+      public var content:String = "";
+      
+      public var timestamp:uint = 0;
+      
+      public var channel:uint = 0;
+      
+      public var fingerprint:String = "";
+      
+      public var reason:uint = 0;
+      
+      override public function getMessageId() : uint
+      {
+         return 821;
+      }
+      
+      public function initChatMessageReportMessage(param1:String = "", param2:String = "", param3:uint = 0, param4:uint = 0, param5:String = "", param6:uint = 0) : ChatMessageReportMessage
+      {
+         this.senderName = param1;
+         this.content = param2;
+         this.timestamp = param3;
+         this.channel = param4;
+         this.fingerprint = param5;
+         this.reason = param6;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.senderName = "";
+         this.content = "";
+         this.timestamp = 0;
+         this.channel = 0;
+         this.fingerprint = "";
+         this.reason = 0;
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_ChatMessageReportMessage(param1);
+      }
+      
+      public function serializeAs_ChatMessageReportMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeUTF(this.senderName);
+         param1.writeUTF(this.content);
+         if(this.timestamp < 0)
+         {
+            throw new Error("Forbidden value (" + this.timestamp + ") on element timestamp.");
+         }
+         else
+         {
+            param1.writeInt(this.timestamp);
+            param1.writeByte(this.channel);
+            param1.writeUTF(this.fingerprint);
+            if(this.reason < 0)
             {
-                throw (new Error((("Forbidden value (" + this.timestamp) + ") on element timestamp.")));
-            };
-            output.writeInt(this.timestamp);
-            output.writeByte(this.channel);
-            output.writeUTF(this.fingerprint);
-            if (this.reason < 0)
+               throw new Error("Forbidden value (" + this.reason + ") on element reason.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.reason) + ") on element reason.")));
-            };
-            output.writeByte(this.reason);
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_ChatMessageReportMessage(input);
-        }
-
-        public function deserializeAs_ChatMessageReportMessage(input:ICustomDataInput):void
-        {
-            this.senderName = input.readUTF();
-            this.content = input.readUTF();
-            this.timestamp = input.readInt();
-            if (this.timestamp < 0)
+               param1.writeByte(this.reason);
+               return;
+            }
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_ChatMessageReportMessage(param1);
+      }
+      
+      public function deserializeAs_ChatMessageReportMessage(param1:ICustomDataInput) : void
+      {
+         this.senderName = param1.readUTF();
+         this.content = param1.readUTF();
+         this.timestamp = param1.readInt();
+         if(this.timestamp < 0)
+         {
+            throw new Error("Forbidden value (" + this.timestamp + ") on element of ChatMessageReportMessage.timestamp.");
+         }
+         else
+         {
+            this.channel = param1.readByte();
+            if(this.channel < 0)
             {
-                throw (new Error((("Forbidden value (" + this.timestamp) + ") on element of ChatMessageReportMessage.timestamp.")));
-            };
-            this.channel = input.readByte();
-            if (this.channel < 0)
+               throw new Error("Forbidden value (" + this.channel + ") on element of ChatMessageReportMessage.channel.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.channel) + ") on element of ChatMessageReportMessage.channel.")));
-            };
-            this.fingerprint = input.readUTF();
-            this.reason = input.readByte();
-            if (this.reason < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.reason) + ") on element of ChatMessageReportMessage.reason.")));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.chat.report
-
+               this.fingerprint = param1.readUTF();
+               this.reason = param1.readByte();
+               if(this.reason < 0)
+               {
+                  throw new Error("Forbidden value (" + this.reason + ") on element of ChatMessageReportMessage.reason.");
+               }
+               else
+               {
+                  return;
+               }
+            }
+         }
+      }
+   }
+}

@@ -1,34 +1,35 @@
-﻿package com.ankamagames.dofus.misc.utils
+package com.ankamagames.dofus.misc.utils
 {
-    import com.ankamagames.tiphon.types.ISkinPartTransformProvider;
-    import com.ankamagames.dofus.datacenter.appearance.SkinPosition;
-    import com.ankamagames.tiphon.types.Skin;
-
-    public class SkinPartTransformProvider implements ISkinPartTransformProvider 
-    {
-
-
-        public function init(skin:Skin):void
-        {
-            var skinId:uint;
-            var sp:SkinPosition;
-            var i:uint;
-            for each (skinId in skin.skinList)
+   import com.ankamagames.tiphon.types.ISkinPartTransformProvider;
+   import com.ankamagames.tiphon.types.Skin;
+   import com.ankamagames.dofus.datacenter.appearance.SkinPosition;
+   
+   public class SkinPartTransformProvider extends Object implements ISkinPartTransformProvider
+   {
+      
+      public function SkinPartTransformProvider()
+      {
+         super();
+      }
+      
+      public function init(param1:Skin) : void
+      {
+         var _loc2_:uint = 0;
+         var _loc3_:SkinPosition = null;
+         var _loc4_:uint = 0;
+         for each(_loc2_ in param1.skinList)
+         {
+            _loc3_ = SkinPosition.getSkinPositionById(_loc2_);
+            if(_loc3_)
             {
-                sp = SkinPosition.getSkinPositionById(skinId);
-                if (sp)
-                {
-                    i = 0;
-                    while (i < sp.skin.length)
-                    {
-                        skin.addTransform(sp.clip[i], sp.skin[i], sp.transformation[i]);
-                        i++;
-                    };
-                };
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.misc.utils
-
+               _loc4_ = 0;
+               while(_loc4_ < _loc3_.skin.length)
+               {
+                  param1.addTransform(_loc3_.clip[_loc4_],_loc3_.skin[_loc4_],_loc3_.transformation[_loc4_]);
+                  _loc4_++;
+               }
+            }
+         }
+      }
+   }
+}

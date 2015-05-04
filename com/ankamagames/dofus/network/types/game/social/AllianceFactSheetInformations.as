@@ -1,69 +1,77 @@
-﻿package com.ankamagames.dofus.network.types.game.social
+package com.ankamagames.dofus.network.types.game.social
 {
-    import com.ankamagames.dofus.network.types.game.context.roleplay.AllianceInformations;
-    import com.ankamagames.jerakine.network.INetworkType;
-    import com.ankamagames.dofus.network.types.game.guild.GuildEmblem;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class AllianceFactSheetInformations extends AllianceInformations implements INetworkType 
-    {
-
-        public static const protocolId:uint = 421;
-
-        public var creationDate:uint = 0;
-
-
-        override public function getTypeId():uint
-        {
-            return (421);
-        }
-
-        public function initAllianceFactSheetInformations(allianceId:uint=0, allianceTag:String="", allianceName:String="", allianceEmblem:GuildEmblem=null, creationDate:uint=0):AllianceFactSheetInformations
-        {
-            super.initAllianceInformations(allianceId, allianceTag, allianceName, allianceEmblem);
-            this.creationDate = creationDate;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.creationDate = 0;
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_AllianceFactSheetInformations(output);
-        }
-
-        public function serializeAs_AllianceFactSheetInformations(output:ICustomDataOutput):void
-        {
-            super.serializeAs_AllianceInformations(output);
-            if (this.creationDate < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.creationDate) + ") on element creationDate.")));
-            };
-            output.writeInt(this.creationDate);
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_AllianceFactSheetInformations(input);
-        }
-
-        public function deserializeAs_AllianceFactSheetInformations(input:ICustomDataInput):void
-        {
-            super.deserialize(input);
-            this.creationDate = input.readInt();
-            if (this.creationDate < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.creationDate) + ") on element of AllianceFactSheetInformations.creationDate.")));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.social
-
+   import com.ankamagames.dofus.network.types.game.context.roleplay.AllianceInformations;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.dofus.network.types.game.guild.GuildEmblem;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class AllianceFactSheetInformations extends AllianceInformations implements INetworkType
+   {
+      
+      public function AllianceFactSheetInformations()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 421;
+      
+      public var creationDate:uint = 0;
+      
+      override public function getTypeId() : uint
+      {
+         return 421;
+      }
+      
+      public function initAllianceFactSheetInformations(param1:uint = 0, param2:String = "", param3:String = "", param4:GuildEmblem = null, param5:uint = 0) : AllianceFactSheetInformations
+      {
+         super.initAllianceInformations(param1,param2,param3,param4);
+         this.creationDate = param5;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.creationDate = 0;
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_AllianceFactSheetInformations(param1);
+      }
+      
+      public function serializeAs_AllianceFactSheetInformations(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_AllianceInformations(param1);
+         if(this.creationDate < 0)
+         {
+            throw new Error("Forbidden value (" + this.creationDate + ") on element creationDate.");
+         }
+         else
+         {
+            param1.writeInt(this.creationDate);
+            return;
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_AllianceFactSheetInformations(param1);
+      }
+      
+      public function deserializeAs_AllianceFactSheetInformations(param1:ICustomDataInput) : void
+      {
+         super.deserialize(param1);
+         this.creationDate = param1.readInt();
+         if(this.creationDate < 0)
+         {
+            throw new Error("Forbidden value (" + this.creationDate + ") on element of AllianceFactSheetInformations.creationDate.");
+         }
+         else
+         {
+            return;
+         }
+      }
+   }
+}

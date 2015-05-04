@@ -1,213 +1,214 @@
-﻿package com.ankamagames.dofus.logic.game.common.managers
+package com.ankamagames.dofus.logic.game.common.managers
 {
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import com.ankamagames.dofus.misc.utils.RpcServiceManager;
-    import com.ankamagames.dofus.internalDatacenter.almanax.AlmanaxEvent;
-    import com.ankamagames.dofus.internalDatacenter.almanax.AlmanaxMonth;
-    import com.ankamagames.dofus.internalDatacenter.almanax.AlmanaxZodiac;
-    import com.ankamagames.jerakine.types.DataStoreType;
-    import com.ankamagames.jerakine.types.enums.DataStoreEnum;
-    import com.ankamagames.jerakine.utils.errors.SingletonError;
-    import com.ankamagames.jerakine.managers.StoreDataManager;
-    import com.ankamagames.dofus.misc.utils.RpcServiceCenter;
-    import flash.events.Event;
-    import com.ankamagames.dofus.types.events.RpcEvent;
-    import com.ankamagames.jerakine.managers.LangManager;
-    import com.ankamagames.jerakine.data.XmlConfig;
-
-    public class AlmanaxManager 
-    {
-
-        private static var _self:AlmanaxManager;
-        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlmanaxManager));
-
-        private var _rpcService:RpcServiceManager;
-        private var _currentEvent:AlmanaxEvent;
-        private var _currentMonth:AlmanaxMonth;
-        private var _currentZodiac:AlmanaxZodiac;
-        private var _ds:DataStoreType;
-
-        public function AlmanaxManager()
-        {
-            this._ds = new DataStoreType("AlmanaxCache", true, DataStoreEnum.LOCATION_LOCAL, DataStoreEnum.BIND_COMPUTER);
-            super();
-            if (_self)
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.misc.utils.RpcServiceManager;
+   import com.ankamagames.dofus.internalDatacenter.almanax.AlmanaxEvent;
+   import com.ankamagames.dofus.internalDatacenter.almanax.AlmanaxMonth;
+   import com.ankamagames.dofus.internalDatacenter.almanax.AlmanaxZodiac;
+   import com.ankamagames.jerakine.types.DataStoreType;
+   import com.ankamagames.dofus.misc.utils.RpcServiceCenter;
+   import flash.events.Event;
+   import com.ankamagames.dofus.types.events.RpcEvent;
+   import com.ankamagames.jerakine.managers.LangManager;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.jerakine.managers.StoreDataManager;
+   import com.ankamagames.jerakine.types.enums.DataStoreEnum;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
+   
+   public class AlmanaxManager extends Object
+   {
+      
+      public function AlmanaxManager()
+      {
+         this._ds = new DataStoreType("AlmanaxCache",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_COMPUTER);
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
+            var _loc1_:Date = StoreDataManager.getInstance().getSetData(this._ds,"cacheDate",new Date(2000));
+            var _loc2_:Date = new Date();
+            if(!(_loc1_.day == _loc2_.day) || _loc2_.time - _loc1_.time > 120000)
             {
-                throw (new SingletonError());
-            };
-            var cacheDate:Date = StoreDataManager.getInstance().getSetData(this._ds, "cacheDate", new Date(2000));
-            var currentDate:Date = new Date();
-            if (((!((cacheDate.day == currentDate.day))) || (((currentDate.time - cacheDate.time) > 120000))))
-            {
-                this.getEventFromApi();
+               this.getEventFromApi();
             }
             else
             {
-                StoreDataManager.getInstance().registerClass(new AlmanaxEvent());
-                StoreDataManager.getInstance().registerClass(new AlmanaxMonth());
-                StoreDataManager.getInstance().registerClass(new AlmanaxZodiac());
-                this._currentEvent = (StoreDataManager.getInstance().getData(this._ds, "currentEvent") as AlmanaxEvent);
-                this._currentMonth = (StoreDataManager.getInstance().getData(this._ds, "currentMonth") as AlmanaxMonth);
-                this._currentZodiac = (StoreDataManager.getInstance().getData(this._ds, "currentZodiac") as AlmanaxZodiac);
-                if (((((!(this._currentEvent)) || (!(this._currentMonth)))) || (!(this._currentZodiac))))
-                {
-                    this.getEventFromApi();
-                }
-                else
-                {
-                    this.checkData();
-                };
-            };
-        }
-
-        public static function getInstance():AlmanaxManager
-        {
-            if (!(_self))
-            {
-                _self = new (AlmanaxManager)();
-            };
-            return (_self);
-        }
-
-
-        public function get event():AlmanaxEvent
-        {
-            return (this._currentEvent);
-        }
-
-        public function get month():AlmanaxMonth
-        {
-            return (this._currentMonth);
-        }
-
-        public function get zodiac():AlmanaxZodiac
-        {
-            return (this._currentZodiac);
-        }
-
-        private function getEventFromApi():void
-        {
-            this._rpcService = new RpcServiceManager((RpcServiceCenter.getInstance().apiDomain + "/krosmoz/event.json"), "json");
-            this._rpcService.addEventListener(Event.COMPLETE, this.onData);
-            this._rpcService.addEventListener(RpcEvent.EVENT_ERROR, this.onError);
-            this._rpcService.callMethod("GetEvent", [LangManager.getInstance().getEntry("config.lang.current")]);
-        }
-
-        private function setDefaultData(pAlmanaxElement:Object):void
-        {
-            if ((pAlmanaxElement is AlmanaxEvent))
-            {
-                if (!(pAlmanaxElement.bossText))
-                {
-                    pAlmanaxElement.bossText = "ui.almanax.default.boss";
-                };
-                if (!(pAlmanaxElement.ephemeris))
-                {
-                    pAlmanaxElement.ephemeris = "ui.almanax.default.ephemeris";
-                };
-                pAlmanaxElement.festText = "";
-                pAlmanaxElement.name = "";
-                pAlmanaxElement.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/jour.jpg");
+               StoreDataManager.getInstance().registerClass(new AlmanaxEvent());
+               StoreDataManager.getInstance().registerClass(new AlmanaxMonth());
+               StoreDataManager.getInstance().registerClass(new AlmanaxZodiac());
+               this._currentEvent = StoreDataManager.getInstance().getData(this._ds,"currentEvent") as AlmanaxEvent;
+               this._currentMonth = StoreDataManager.getInstance().getData(this._ds,"currentMonth") as AlmanaxMonth;
+               this._currentZodiac = StoreDataManager.getInstance().getData(this._ds,"currentZodiac") as AlmanaxZodiac;
+               if(!this._currentEvent || !this._currentMonth || !this._currentZodiac)
+               {
+                  this.getEventFromApi();
+               }
+               else
+               {
+                  this.checkData();
+               }
             }
-            else
+            return;
+         }
+      }
+      
+      private static var _self:AlmanaxManager;
+      
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AlmanaxManager));
+      
+      public static function getInstance() : AlmanaxManager
+      {
+         if(!_self)
+         {
+            _self = new AlmanaxManager();
+         }
+         return _self;
+      }
+      
+      private var _rpcService:RpcServiceManager;
+      
+      private var _currentEvent:AlmanaxEvent;
+      
+      private var _currentMonth:AlmanaxMonth;
+      
+      private var _currentZodiac:AlmanaxZodiac;
+      
+      private var _ds:DataStoreType;
+      
+      public function get event() : AlmanaxEvent
+      {
+         return this._currentEvent;
+      }
+      
+      public function get month() : AlmanaxMonth
+      {
+         return this._currentMonth;
+      }
+      
+      public function get zodiac() : AlmanaxZodiac
+      {
+         return this._currentZodiac;
+      }
+      
+      private function getEventFromApi() : void
+      {
+         this._rpcService = new RpcServiceManager(RpcServiceCenter.getInstance().apiDomain + "/krosmoz/event.json","json");
+         this._rpcService.addEventListener(Event.COMPLETE,this.onData);
+         this._rpcService.addEventListener(RpcEvent.EVENT_ERROR,this.onError);
+         this._rpcService.callMethod("GetEvent",[LangManager.getInstance().getEntry("config.lang.current")]);
+      }
+      
+      private function setDefaultData(param1:Object) : void
+      {
+         if(param1 is AlmanaxEvent)
+         {
+            if(!param1.bossText)
             {
-                if ((pAlmanaxElement is AlmanaxMonth))
-                {
-                    if (!(pAlmanaxElement.protectorDescription))
-                    {
-                        pAlmanaxElement.protectorDescription = "ui.almanax.default.protector";
-                    };
-                    pAlmanaxElement.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/protecteur.jpg");
-                }
-                else
-                {
-                    if ((pAlmanaxElement is AlmanaxZodiac))
-                    {
-                        pAlmanaxElement.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/constellation.jpg");
-                        if (!(pAlmanaxElement.description))
-                        {
-                            pAlmanaxElement.description = "ui.almanax.default.zodiac";
-                        };
-                    };
-                };
-            };
-        }
-
-        private function checkData():void
-        {
-            if (!(this.isValidImageUrl(this._currentEvent.webImageUrl)))
+               param1.bossText = "ui.almanax.default.boss";
+            }
+            if(!param1.ephemeris)
             {
-                this.setDefaultData(this._currentEvent);
-            };
-            if (!(this.isValidImageUrl(this._currentMonth.webImageUrl)))
+               param1.ephemeris = "ui.almanax.default.ephemeris";
+            }
+            param1.festText = "";
+            param1.name = "";
+            param1.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/jour.jpg");
+         }
+         else if(param1 is AlmanaxMonth)
+         {
+            if(!param1.protectorDescription)
             {
-                this.setDefaultData(this._currentMonth);
-            };
-            if (!(this.isValidImageUrl(this._currentZodiac.webImageUrl)))
+               param1.protectorDescription = "ui.almanax.default.protector";
+            }
+            param1.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/protecteur.jpg");
+         }
+         else if(param1 is AlmanaxZodiac)
+         {
+            param1.webImageUrl = XmlConfig.getInstance().getEntry("config.gfx.path").concat("almanax/constellation.jpg");
+            if(!param1.description)
             {
-                this.setDefaultData(this._currentZodiac);
-            };
-        }
-
-        private function isValidImageUrl(pUrl:String):Boolean
-        {
-            return (((pUrl) && (!((pUrl == "false")))));
-        }
-
-        private function onData(e:Event):void
-        {
-            var eventRawData:Object = this._rpcService.getResultData("event");
-            var monthRawData:Object = this._rpcService.getResultData("month");
-            var zodiacRawData:Object = this._rpcService.getResultData("zodiac");
-            this._rpcService.removeEventListener(Event.COMPLETE, this.onData);
-            this._rpcService.removeEventListener(RpcEvent.EVENT_ERROR, this.onError);
-            this._rpcService = null;
-            this._currentEvent = new AlmanaxEvent();
-            this.event.bossText = eventRawData.bosstext;
-            this.event.ephemeris = eventRawData.ephemeris;
-            this.event.festText = eventRawData.festtext;
-            this.event.id = eventRawData.id;
-            this.event.name = eventRawData.name;
-            this.event.rubrikabrax = eventRawData.rubrikabrax;
-            this.event.webImageUrl = eventRawData.imageurl;
-            this._currentMonth = new AlmanaxMonth();
-            this.month.id = monthRawData.id;
-            this.month.monthNum = monthRawData.month;
-            this.month.protectorDescription = monthRawData.protectordesc;
-            this.month.protectorName = monthRawData.protectorname;
-            this.month.webImageUrl = monthRawData.protectorimageurl;
-            this._currentZodiac = new AlmanaxZodiac();
-            this.zodiac.id = zodiacRawData.id;
-            this.zodiac.name = zodiacRawData.name;
-            this.zodiac.webImageUrl = zodiacRawData.imageurl;
-            this.zodiac.description = zodiacRawData.description;
-            this.checkData();
-            StoreDataManager.getInstance().setData(this._ds, "currentEvent", this._currentEvent);
-            StoreDataManager.getInstance().setData(this._ds, "currentMonth", this._currentMonth);
-            StoreDataManager.getInstance().setData(this._ds, "currentZodiac", this._currentZodiac);
-            StoreDataManager.getInstance().setData(this._ds, "cacheDate", new Date());
-        }
-
-        private function onError(e:Event):void
-        {
-            this._rpcService.removeEventListener(Event.COMPLETE, this.onData);
-            this._rpcService.removeEventListener(RpcEvent.EVENT_ERROR, this.onError);
-            this._rpcService = null;
-            this._currentEvent = new AlmanaxEvent();
+               param1.description = "ui.almanax.default.zodiac";
+            }
+         }
+         
+         
+      }
+      
+      private function checkData() : void
+      {
+         if(!this.isValidImageUrl(this._currentEvent.webImageUrl))
+         {
             this.setDefaultData(this._currentEvent);
-            this._currentMonth = new AlmanaxMonth();
+         }
+         if(!this.isValidImageUrl(this._currentMonth.webImageUrl))
+         {
             this.setDefaultData(this._currentMonth);
-            this._currentZodiac = new AlmanaxZodiac();
+         }
+         if(!this.isValidImageUrl(this._currentZodiac.webImageUrl))
+         {
             this.setDefaultData(this._currentZodiac);
-            StoreDataManager.getInstance().setData(this._ds, "currentEvent", this._currentEvent);
-            StoreDataManager.getInstance().setData(this._ds, "currentMonth", this._currentMonth);
-            StoreDataManager.getInstance().setData(this._ds, "currentZodiac", this._currentZodiac);
-            StoreDataManager.getInstance().setData(this._ds, "cacheDate", new Date());
-        }
-
-
-    }
-}//package com.ankamagames.dofus.logic.game.common.managers
-
+         }
+      }
+      
+      private function isValidImageUrl(param1:String) : Boolean
+      {
+         return (param1) && !(param1 == "false");
+      }
+      
+      private function onData(param1:Event) : void
+      {
+         var _loc2_:Object = this._rpcService.getResultData("event");
+         var _loc3_:Object = this._rpcService.getResultData("month");
+         var _loc4_:Object = this._rpcService.getResultData("zodiac");
+         this._rpcService.removeEventListener(Event.COMPLETE,this.onData);
+         this._rpcService.removeEventListener(RpcEvent.EVENT_ERROR,this.onError);
+         this._rpcService = null;
+         this._currentEvent = new AlmanaxEvent();
+         this.event.bossText = _loc2_.bosstext;
+         this.event.ephemeris = _loc2_.ephemeris;
+         this.event.festText = _loc2_.festtext;
+         this.event.id = _loc2_.id;
+         this.event.name = _loc2_.name;
+         this.event.rubrikabrax = _loc2_.rubrikabrax;
+         this.event.webImageUrl = _loc2_.imageurl;
+         this._currentMonth = new AlmanaxMonth();
+         this.month.id = _loc3_.id;
+         this.month.monthNum = _loc3_.month;
+         this.month.protectorDescription = _loc3_.protectordesc;
+         this.month.protectorName = _loc3_.protectorname;
+         this.month.webImageUrl = _loc3_.protectorimageurl;
+         this._currentZodiac = new AlmanaxZodiac();
+         this.zodiac.id = _loc4_.id;
+         this.zodiac.name = _loc4_.name;
+         this.zodiac.webImageUrl = _loc4_.imageurl;
+         this.zodiac.description = _loc4_.description;
+         this.checkData();
+         StoreDataManager.getInstance().setData(this._ds,"currentEvent",this._currentEvent);
+         StoreDataManager.getInstance().setData(this._ds,"currentMonth",this._currentMonth);
+         StoreDataManager.getInstance().setData(this._ds,"currentZodiac",this._currentZodiac);
+         StoreDataManager.getInstance().setData(this._ds,"cacheDate",new Date());
+      }
+      
+      private function onError(param1:Event) : void
+      {
+         this._rpcService.removeEventListener(Event.COMPLETE,this.onData);
+         this._rpcService.removeEventListener(RpcEvent.EVENT_ERROR,this.onError);
+         this._rpcService = null;
+         this._currentEvent = new AlmanaxEvent();
+         this.setDefaultData(this._currentEvent);
+         this._currentMonth = new AlmanaxMonth();
+         this.setDefaultData(this._currentMonth);
+         this._currentZodiac = new AlmanaxZodiac();
+         this.setDefaultData(this._currentZodiac);
+         StoreDataManager.getInstance().setData(this._ds,"currentEvent",this._currentEvent);
+         StoreDataManager.getInstance().setData(this._ds,"currentMonth",this._currentMonth);
+         StoreDataManager.getInstance().setData(this._ds,"currentZodiac",this._currentZodiac);
+         StoreDataManager.getInstance().setData(this._ds,"cacheDate",new Date());
+      }
+   }
+}

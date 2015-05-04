@@ -1,118 +1,135 @@
-﻿package com.ankamagames.dofus.network.types.game.context.roleplay
+package com.ankamagames.dofus.network.types.game.context.roleplay
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import com.ankamagames.dofus.network.types.game.look.EntityLook;
-    import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import com.ankamagames.dofus.network.ProtocolTypeManager;
-
-    public class GameRolePlayGroupMonsterInformations extends GameRolePlayActorInformations implements INetworkType 
-    {
-
-        public static const protocolId:uint = 160;
-
-        public var staticInfos:GroupMonsterStaticInformations;
-        public var ageBonus:int = 0;
-        public var lootShare:int = 0;
-        public var alignmentSide:int = 0;
-        public var keyRingBonus:Boolean = false;
-        public var hasHardcoreDrop:Boolean = false;
-        public var hasAVARewardToken:Boolean = false;
-
-        public function GameRolePlayGroupMonsterInformations()
-        {
-            this.staticInfos = new GroupMonsterStaticInformations();
-            super();
-        }
-
-        override public function getTypeId():uint
-        {
-            return (160);
-        }
-
-        public function initGameRolePlayGroupMonsterInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, staticInfos:GroupMonsterStaticInformations=null, ageBonus:int=0, lootShare:int=0, alignmentSide:int=0, keyRingBonus:Boolean=false, hasHardcoreDrop:Boolean=false, hasAVARewardToken:Boolean=false):GameRolePlayGroupMonsterInformations
-        {
-            super.initGameRolePlayActorInformations(contextualId, look, disposition);
-            this.staticInfos = staticInfos;
-            this.ageBonus = ageBonus;
-            this.lootShare = lootShare;
-            this.alignmentSide = alignmentSide;
-            this.keyRingBonus = keyRingBonus;
-            this.hasHardcoreDrop = hasHardcoreDrop;
-            this.hasAVARewardToken = hasAVARewardToken;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.staticInfos = new GroupMonsterStaticInformations();
-            this.lootShare = 0;
-            this.alignmentSide = 0;
-            this.keyRingBonus = false;
-            this.hasHardcoreDrop = false;
-            this.hasAVARewardToken = false;
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GameRolePlayGroupMonsterInformations(output);
-        }
-
-        public function serializeAs_GameRolePlayGroupMonsterInformations(output:ICustomDataOutput):void
-        {
-            super.serializeAs_GameRolePlayActorInformations(output);
-            var _box0:uint;
-            _box0 = BooleanByteWrapper.setFlag(_box0, 0, this.keyRingBonus);
-            _box0 = BooleanByteWrapper.setFlag(_box0, 1, this.hasHardcoreDrop);
-            _box0 = BooleanByteWrapper.setFlag(_box0, 2, this.hasAVARewardToken);
-            output.writeByte(_box0);
-            output.writeShort(this.staticInfos.getTypeId());
-            this.staticInfos.serialize(output);
-            if ((((this.ageBonus < -1)) || ((this.ageBonus > 1000))))
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
+   
+   public class GameRolePlayGroupMonsterInformations extends GameRolePlayActorInformations implements INetworkType
+   {
+      
+      public function GameRolePlayGroupMonsterInformations()
+      {
+         this.staticInfos = new GroupMonsterStaticInformations();
+         super();
+      }
+      
+      public static const protocolId:uint = 160;
+      
+      public var staticInfos:GroupMonsterStaticInformations;
+      
+      public var ageBonus:int = 0;
+      
+      public var lootShare:int = 0;
+      
+      public var alignmentSide:int = 0;
+      
+      public var keyRingBonus:Boolean = false;
+      
+      public var hasHardcoreDrop:Boolean = false;
+      
+      public var hasAVARewardToken:Boolean = false;
+      
+      override public function getTypeId() : uint
+      {
+         return 160;
+      }
+      
+      public function initGameRolePlayGroupMonsterInformations(param1:int = 0, param2:EntityLook = null, param3:EntityDispositionInformations = null, param4:GroupMonsterStaticInformations = null, param5:int = 0, param6:int = 0, param7:int = 0, param8:Boolean = false, param9:Boolean = false, param10:Boolean = false) : GameRolePlayGroupMonsterInformations
+      {
+         super.initGameRolePlayActorInformations(param1,param2,param3);
+         this.staticInfos = param4;
+         this.ageBonus = param5;
+         this.lootShare = param6;
+         this.alignmentSide = param7;
+         this.keyRingBonus = param8;
+         this.hasHardcoreDrop = param9;
+         this.hasAVARewardToken = param10;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.staticInfos = new GroupMonsterStaticInformations();
+         this.lootShare = 0;
+         this.alignmentSide = 0;
+         this.keyRingBonus = false;
+         this.hasHardcoreDrop = false;
+         this.hasAVARewardToken = false;
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GameRolePlayGroupMonsterInformations(param1);
+      }
+      
+      public function serializeAs_GameRolePlayGroupMonsterInformations(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_GameRolePlayActorInformations(param1);
+         var _loc2_:uint = 0;
+         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,0,this.keyRingBonus);
+         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,1,this.hasHardcoreDrop);
+         _loc2_ = BooleanByteWrapper.setFlag(_loc2_,2,this.hasAVARewardToken);
+         param1.writeByte(_loc2_);
+         param1.writeShort(this.staticInfos.getTypeId());
+         this.staticInfos.serialize(param1);
+         if(this.ageBonus < -1 || this.ageBonus > 1000)
+         {
+            throw new Error("Forbidden value (" + this.ageBonus + ") on element ageBonus.");
+         }
+         else
+         {
+            param1.writeShort(this.ageBonus);
+            if(this.lootShare < -1 || this.lootShare > 8)
             {
-                throw (new Error((("Forbidden value (" + this.ageBonus) + ") on element ageBonus.")));
-            };
-            output.writeShort(this.ageBonus);
-            if ((((this.lootShare < -1)) || ((this.lootShare > 8))))
+               throw new Error("Forbidden value (" + this.lootShare + ") on element lootShare.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.lootShare) + ") on element lootShare.")));
-            };
-            output.writeByte(this.lootShare);
-            output.writeByte(this.alignmentSide);
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GameRolePlayGroupMonsterInformations(input);
-        }
-
-        public function deserializeAs_GameRolePlayGroupMonsterInformations(input:ICustomDataInput):void
-        {
-            super.deserialize(input);
-            var _box0:uint = input.readByte();
-            this.keyRingBonus = BooleanByteWrapper.getFlag(_box0, 0);
-            this.hasHardcoreDrop = BooleanByteWrapper.getFlag(_box0, 1);
-            this.hasAVARewardToken = BooleanByteWrapper.getFlag(_box0, 2);
-            var _id1:uint = input.readUnsignedShort();
-            this.staticInfos = ProtocolTypeManager.getInstance(GroupMonsterStaticInformations, _id1);
-            this.staticInfos.deserialize(input);
-            this.ageBonus = input.readShort();
-            if ((((this.ageBonus < -1)) || ((this.ageBonus > 1000))))
+               param1.writeByte(this.lootShare);
+               param1.writeByte(this.alignmentSide);
+               return;
+            }
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GameRolePlayGroupMonsterInformations(param1);
+      }
+      
+      public function deserializeAs_GameRolePlayGroupMonsterInformations(param1:ICustomDataInput) : void
+      {
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readByte();
+         this.keyRingBonus = BooleanByteWrapper.getFlag(_loc2_,0);
+         this.hasHardcoreDrop = BooleanByteWrapper.getFlag(_loc2_,1);
+         this.hasAVARewardToken = BooleanByteWrapper.getFlag(_loc2_,2);
+         var _loc3_:uint = param1.readUnsignedShort();
+         this.staticInfos = ProtocolTypeManager.getInstance(GroupMonsterStaticInformations,_loc3_);
+         this.staticInfos.deserialize(param1);
+         this.ageBonus = param1.readShort();
+         if(this.ageBonus < -1 || this.ageBonus > 1000)
+         {
+            throw new Error("Forbidden value (" + this.ageBonus + ") on element of GameRolePlayGroupMonsterInformations.ageBonus.");
+         }
+         else
+         {
+            this.lootShare = param1.readByte();
+            if(this.lootShare < -1 || this.lootShare > 8)
             {
-                throw (new Error((("Forbidden value (" + this.ageBonus) + ") on element of GameRolePlayGroupMonsterInformations.ageBonus.")));
-            };
-            this.lootShare = input.readByte();
-            if ((((this.lootShare < -1)) || ((this.lootShare > 8))))
+               throw new Error("Forbidden value (" + this.lootShare + ") on element of GameRolePlayGroupMonsterInformations.lootShare.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.lootShare) + ") on element of GameRolePlayGroupMonsterInformations.lootShare.")));
-            };
-            this.alignmentSide = input.readByte();
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.context.roleplay
-
+               this.alignmentSide = param1.readByte();
+               return;
+            }
+         }
+      }
+   }
+}

@@ -1,146 +1,138 @@
-﻿package com.ankamagames.atouin.renderers
+package com.ankamagames.atouin.renderers
 {
-    import com.ankamagames.atouin.utils.IZoneRenderer;
-    import com.ankamagames.atouin.types.TrapZoneTile;
-    import com.ankamagames.jerakine.types.positions.MapPoint;
-    import flash.filters.ColorMatrixFilter;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.jerakine.types.Color;
-    import com.ankamagames.atouin.types.DataMapContainer;
-
-    public class TrapZoneRenderer implements IZoneRenderer 
-    {
-
-        private var _aZoneTile:Array;
-        private var _aCellTile:Array;
-        private var _visible:Boolean;
-        public var strata:uint;
-
-        public function TrapZoneRenderer(nStrata:uint=10, visible:Boolean=true)
-        {
-            this._aZoneTile = new Array();
-            this._aCellTile = new Array();
-            this._visible = visible;
-            this.strata = nStrata;
-        }
-
-        public function render(cells:Vector.<uint>, oColor:Color, mapContainer:DataMapContainer, alpha:Boolean=false, updateStrata:Boolean=false):void
-        {
-            var tzt:TrapZoneTile;
-            var daCellId:uint;
-            var daPoint:MapPoint;
-            var zzTop:Boolean;
-            var zzBottom:Boolean;
-            var zzRight:Boolean;
-            var zzLeft:Boolean;
-            var cid:uint;
-            var mp:MapPoint;
-            var j:int;
-            while (j < cells.length)
+   import com.ankamagames.atouin.utils.IZoneRenderer;
+   import com.ankamagames.jerakine.types.Color;
+   import com.ankamagames.atouin.types.DataMapContainer;
+   import com.ankamagames.atouin.types.TrapZoneTile;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import flash.filters.ColorMatrixFilter;
+   
+   public class TrapZoneRenderer extends Object implements IZoneRenderer
+   {
+      
+      public function TrapZoneRenderer(param1:uint = 10, param2:Boolean = true)
+      {
+         super();
+         this._aZoneTile = new Array();
+         this._aCellTile = new Array();
+         this._visible = param2;
+         this.strata = param1;
+      }
+      
+      private var _aZoneTile:Array;
+      
+      private var _aCellTile:Array;
+      
+      private var _visible:Boolean;
+      
+      public var strata:uint;
+      
+      public function render(param1:Vector.<uint>, param2:Color, param3:DataMapContainer, param4:Boolean = false, param5:Boolean = false) : void
+      {
+         var _loc6_:TrapZoneTile = null;
+         var _loc8_:uint = 0;
+         var _loc9_:MapPoint = null;
+         var _loc10_:* = false;
+         var _loc11_:* = false;
+         var _loc12_:* = false;
+         var _loc13_:* = false;
+         var _loc14_:uint = 0;
+         var _loc15_:MapPoint = null;
+         var _loc7_:* = 0;
+         while(_loc7_ < param1.length)
+         {
+            if(!this._aZoneTile[_loc7_])
             {
-                if (!(this._aZoneTile[j]))
-                {
-                    tzt = new TrapZoneTile();
-                    this._aZoneTile[j] = tzt;
-                    tzt.mouseChildren = false;
-                    tzt.mouseEnabled = false;
-                    tzt.strata = this.strata;
-                    tzt.visible = this._visible;
-                    tzt.filters = [new ColorMatrixFilter([0, 0, 0, 0, oColor.red, 0, 0, 0, 0, oColor.green, 0, 0, 0, 0, oColor.blue, 0, 0, 0, 0.7, 0])];
-                };
-                this._aCellTile[j] = cells[j];
-                daCellId = cells[j];
-                daPoint = MapPoint.fromCellId(daCellId);
-                TrapZoneTile(this._aZoneTile[j]).cellId = daCellId;
-                zzTop = false;
-                zzBottom = false;
-                zzRight = false;
-                zzLeft = false;
-                for each (cid in cells)
-                {
-                    if (cid == daCellId)
-                    {
-                    }
-                    else
-                    {
-                        mp = MapPoint.fromCellId(cid);
-                        if (mp.x == daPoint.x)
-                        {
-                            if (mp.y == (daPoint.y - 1))
-                            {
-                                zzTop = true;
-                            }
-                            else
-                            {
-                                if (mp.y == (daPoint.y + 1))
-                                {
-                                    zzBottom = true;
-                                };
-                            };
-                        }
-                        else
-                        {
-                            if (mp.y == daPoint.y)
-                            {
-                                if (mp.x == (daPoint.x - 1))
-                                {
-                                    zzRight = true;
-                                }
-                                else
-                                {
-                                    if (mp.x == (daPoint.x + 1))
-                                    {
-                                        zzLeft = true;
-                                    };
-                                };
-                            };
-                        };
-                    };
-                };
-                TrapZoneTile(this._aZoneTile[j]).drawStroke(zzTop, zzRight, zzBottom, zzLeft);
-                TrapZoneTile(this._aZoneTile[j]).display(this.strata);
-                j++;
-            };
-            while (j < this._aZoneTile.length)
+               this._aZoneTile[_loc7_] = _loc6_ = new TrapZoneTile();
+               _loc6_.mouseChildren = false;
+               _loc6_.mouseEnabled = false;
+               _loc6_.strata = this.strata;
+               _loc6_.visible = this._visible;
+               _loc6_.filters = [new ColorMatrixFilter([0,0,0,0,param2.red,0,0,0,0,param2.green,0,0,0,0,param2.blue,0,0,0,0.7,0])];
+            }
+            this._aCellTile[_loc7_] = param1[_loc7_];
+            _loc8_ = param1[_loc7_];
+            _loc9_ = MapPoint.fromCellId(_loc8_);
+            TrapZoneTile(this._aZoneTile[_loc7_]).cellId = _loc8_;
+            _loc10_ = false;
+            _loc11_ = false;
+            _loc12_ = false;
+            _loc13_ = false;
+            for each(_loc14_ in param1)
             {
-                if (this._aZoneTile[j])
-                {
-                    (this._aZoneTile[j] as TrapZoneTile).remove();
-                };
-                j++;
-            };
-        }
-
-        public function remove(cells:Vector.<uint>, mapContainer:DataMapContainer):void
-        {
-            if (!(cells))
+               if(_loc14_ != _loc8_)
+               {
+                  _loc15_ = MapPoint.fromCellId(_loc14_);
+                  if(_loc15_.x == _loc9_.x)
+                  {
+                     if(_loc15_.y == _loc9_.y - 1)
+                     {
+                        _loc10_ = true;
+                     }
+                     else if(_loc15_.y == _loc9_.y + 1)
+                     {
+                        _loc11_ = true;
+                     }
+                     
+                  }
+                  else if(_loc15_.y == _loc9_.y)
+                  {
+                     if(_loc15_.x == _loc9_.x - 1)
+                     {
+                        _loc12_ = true;
+                     }
+                     else if(_loc15_.x == _loc9_.x + 1)
+                     {
+                        _loc13_ = true;
+                     }
+                     
+                  }
+                  
+               }
+            }
+            TrapZoneTile(this._aZoneTile[_loc7_]).drawStroke(_loc10_,_loc12_,_loc11_,_loc13_);
+            TrapZoneTile(this._aZoneTile[_loc7_]).display(this.strata);
+            _loc7_++;
+         }
+         while(_loc7_ < this._aZoneTile.length)
+         {
+            if(this._aZoneTile[_loc7_])
             {
-                return;
-            };
-            var mapping:Array = new Array();
-            var j:int;
-            while (j < cells.length)
+               (this._aZoneTile[_loc7_] as TrapZoneTile).remove();
+            }
+            _loc7_++;
+         }
+      }
+      
+      public function remove(param1:Vector.<uint>, param2:DataMapContainer) : void
+      {
+         if(!param1)
+         {
+            return;
+         }
+         var _loc3_:Array = new Array();
+         var _loc4_:* = 0;
+         while(_loc4_ < param1.length)
+         {
+            _loc3_[param1[_loc4_]] = true;
+            _loc4_++;
+         }
+         _loc4_ = 0;
+         while(_loc4_ < this._aCellTile.length)
+         {
+            if(_loc3_[this._aCellTile[_loc4_]])
             {
-                mapping[cells[j]] = true;
-                j++;
-            };
-            j = 0;
-            while (j < this._aCellTile.length)
-            {
-                if (mapping[this._aCellTile[j]])
-                {
-                    if (this._aZoneTile[j])
-                    {
-                        TrapZoneTile(this._aZoneTile[j]).remove();
-                    };
-                    delete this._aZoneTile[j];
-                    delete this._aCellTile[j];
-                };
-                j++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.atouin.renderers
-
+               if(this._aZoneTile[_loc4_])
+               {
+                  TrapZoneTile(this._aZoneTile[_loc4_]).remove();
+               }
+               delete this._aZoneTile[_loc4_];
+               true;
+               delete this._aCellTile[_loc4_];
+               true;
+            }
+            _loc4_++;
+         }
+      }
+   }
+}

@@ -1,29 +1,34 @@
-﻿package com.ankamagames.dofus.kernel.sound.type
+package com.ankamagames.dofus.kernel.sound.type
 {
-    import flash.geom.Point;
-
-    public class LocalizedMapSound 
-    {
-
-        public var soundId:String;
-        public var position:Point;
-        public var range:int;
-        public var saturationRange:int;
-        public var silenceMin:int;
-        public var silenceMax:int;
-        public var volumeMax:Number;
-
-        public function LocalizedMapSound(pSoundId:String, pPosition:Point, pRange:int, pSaturationRange:int, pSilenceMin:int, pSilenceMax:int, pVolumeMax:Number)
-        {
-            this.soundId = pSoundId;
-            this.position = pPosition;
-            this.range = pRange;
-            this.saturationRange = pSaturationRange;
-            this.silenceMin = pSilenceMin;
-            this.silenceMax = pSilenceMax;
-            this.volumeMax = pVolumeMax;
-        }
-
-    }
-}//package com.ankamagames.dofus.kernel.sound.type
-
+   import flash.geom.Point;
+   
+   public class LocalizedMapSound extends Object
+   {
+      
+      public function LocalizedMapSound(param1:String, param2:Point, param3:int, param4:int, param5:int, param6:int, param7:Number)
+      {
+         super();
+         this.soundId = param1;
+         this.position = param2;
+         this.range = param3;
+         this.saturationRange = param4;
+         this.silenceMin = param5;
+         this.silenceMax = param6;
+         this.volumeMax = param7;
+      }
+      
+      public var soundId:String;
+      
+      public var position:Point;
+      
+      public var range:int;
+      
+      public var saturationRange:int;
+      
+      public var silenceMin:int;
+      
+      public var silenceMax:int;
+      
+      public var volumeMax:Number;
+   }
+}

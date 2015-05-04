@@ -1,101 +1,96 @@
-﻿package com.ankamagames.dofus.network.messages.game.interactive
+package com.ankamagames.dofus.network.messages.game.interactive
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.network.types.game.interactive.StatedElement;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class StatedMapUpdateMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 5716;
-
-        private var _isInitialized:Boolean = false;
-        public var statedElements:Vector.<StatedElement>;
-
-        public function StatedMapUpdateMessage()
-        {
-            this.statedElements = new Vector.<StatedElement>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (5716);
-        }
-
-        public function initStatedMapUpdateMessage(statedElements:Vector.<StatedElement>=null):StatedMapUpdateMessage
-        {
-            this.statedElements = statedElements;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.statedElements = new Vector.<StatedElement>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_StatedMapUpdateMessage(output);
-        }
-
-        public function serializeAs_StatedMapUpdateMessage(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.statedElements.length);
-            var _i1:uint;
-            while (_i1 < this.statedElements.length)
-            {
-                (this.statedElements[_i1] as StatedElement).serializeAs_StatedElement(output);
-                _i1++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_StatedMapUpdateMessage(input);
-        }
-
-        public function deserializeAs_StatedMapUpdateMessage(input:ICustomDataInput):void
-        {
-            var _item1:StatedElement;
-            var _statedElementsLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _statedElementsLen)
-            {
-                _item1 = new StatedElement();
-                _item1.deserialize(input);
-                this.statedElements.push(_item1);
-                _i1++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.interactive
-
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.interactive.StatedElement;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class StatedMapUpdateMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function StatedMapUpdateMessage()
+      {
+         this.statedElements = new Vector.<StatedElement>();
+         super();
+      }
+      
+      public static const protocolId:uint = 5716;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var statedElements:Vector.<StatedElement>;
+      
+      override public function getMessageId() : uint
+      {
+         return 5716;
+      }
+      
+      public function initStatedMapUpdateMessage(param1:Vector.<StatedElement> = null) : StatedMapUpdateMessage
+      {
+         this.statedElements = param1;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.statedElements = new Vector.<StatedElement>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_StatedMapUpdateMessage(param1);
+      }
+      
+      public function serializeAs_StatedMapUpdateMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeShort(this.statedElements.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.statedElements.length)
+         {
+            (this.statedElements[_loc2_] as StatedElement).serializeAs_StatedElement(param1);
+            _loc2_++;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_StatedMapUpdateMessage(param1);
+      }
+      
+      public function deserializeAs_StatedMapUpdateMessage(param1:ICustomDataInput) : void
+      {
+         var _loc4_:StatedElement = null;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc4_ = new StatedElement();
+            _loc4_.deserialize(param1);
+            this.statedElements.push(_loc4_);
+            _loc3_++;
+         }
+      }
+   }
+}

@@ -1,135 +1,147 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class ExchangeObjectTransfertListWithQuantityToInvMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6470;
-
-        private var _isInitialized:Boolean = false;
-        public var ids:Vector.<uint>;
-        public var qtys:Vector.<uint>;
-
-        public function ExchangeObjectTransfertListWithQuantityToInvMessage()
-        {
-            this.ids = new Vector.<uint>();
-            this.qtys = new Vector.<uint>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6470);
-        }
-
-        public function initExchangeObjectTransfertListWithQuantityToInvMessage(ids:Vector.<uint>=null, qtys:Vector.<uint>=null):ExchangeObjectTransfertListWithQuantityToInvMessage
-        {
-            this.ids = ids;
-            this.qtys = qtys;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.ids = new Vector.<uint>();
-            this.qtys = new Vector.<uint>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_ExchangeObjectTransfertListWithQuantityToInvMessage(output);
-        }
-
-        public function serializeAs_ExchangeObjectTransfertListWithQuantityToInvMessage(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.ids.length);
-            var _i1:uint;
-            while (_i1 < this.ids.length)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class ExchangeObjectTransfertListWithQuantityToInvMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function ExchangeObjectTransfertListWithQuantityToInvMessage()
+      {
+         this.ids = new Vector.<uint>();
+         this.qtys = new Vector.<uint>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6470;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var ids:Vector.<uint>;
+      
+      public var qtys:Vector.<uint>;
+      
+      override public function getMessageId() : uint
+      {
+         return 6470;
+      }
+      
+      public function initExchangeObjectTransfertListWithQuantityToInvMessage(param1:Vector.<uint> = null, param2:Vector.<uint> = null) : ExchangeObjectTransfertListWithQuantityToInvMessage
+      {
+         this.ids = param1;
+         this.qtys = param2;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.ids = new Vector.<uint>();
+         this.qtys = new Vector.<uint>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_ExchangeObjectTransfertListWithQuantityToInvMessage(param1);
+      }
+      
+      public function serializeAs_ExchangeObjectTransfertListWithQuantityToInvMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeShort(this.ids.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.ids.length)
+         {
+            if(this.ids[_loc2_] < 0)
             {
-                if (this.ids[_i1] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.ids[_i1]) + ") on element 1 (starting at 1) of ids.")));
-                };
-                output.writeVarInt(this.ids[_i1]);
-                _i1++;
-            };
-            output.writeShort(this.qtys.length);
-            var _i2:uint;
-            while (_i2 < this.qtys.length)
+               throw new Error("Forbidden value (" + this.ids[_loc2_] + ") on element 1 (starting at 1) of ids.");
+            }
+            else
             {
-                if (this.qtys[_i2] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.qtys[_i2]) + ") on element 2 (starting at 1) of qtys.")));
-                };
-                output.writeVarInt(this.qtys[_i2]);
-                _i2++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_ExchangeObjectTransfertListWithQuantityToInvMessage(input);
-        }
-
-        public function deserializeAs_ExchangeObjectTransfertListWithQuantityToInvMessage(input:ICustomDataInput):void
-        {
-            var _val1:uint;
-            var _val2:uint;
-            var _idsLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _idsLen)
+               param1.writeVarInt(this.ids[_loc2_]);
+               _loc2_++;
+               continue;
+            }
+         }
+         param1.writeShort(this.qtys.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.qtys.length)
+         {
+            if(this.qtys[_loc3_] < 0)
             {
-                _val1 = input.readVarUhInt();
-                if (_val1 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val1) + ") on elements of ids.")));
-                };
-                this.ids.push(_val1);
-                _i1++;
-            };
-            var _qtysLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _qtysLen)
+               throw new Error("Forbidden value (" + this.qtys[_loc3_] + ") on element 2 (starting at 1) of qtys.");
+            }
+            else
             {
-                _val2 = input.readVarUhInt();
-                if (_val2 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val2) + ") on elements of qtys.")));
-                };
-                this.qtys.push(_val2);
-                _i2++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.inventory.exchanges
-
+               param1.writeVarInt(this.qtys[_loc3_]);
+               _loc3_++;
+               continue;
+            }
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_ExchangeObjectTransfertListWithQuantityToInvMessage(param1);
+      }
+      
+      public function deserializeAs_ExchangeObjectTransfertListWithQuantityToInvMessage(param1:ICustomDataInput) : void
+      {
+         var _loc6_:uint = 0;
+         var _loc7_:uint = 0;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc6_ = param1.readVarUhInt();
+            if(_loc6_ < 0)
+            {
+               throw new Error("Forbidden value (" + _loc6_ + ") on elements of ids.");
+            }
+            else
+            {
+               this.ids.push(_loc6_);
+               _loc3_++;
+               continue;
+            }
+         }
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
+         {
+            _loc7_ = param1.readVarUhInt();
+            if(_loc7_ < 0)
+            {
+               throw new Error("Forbidden value (" + _loc7_ + ") on elements of qtys.");
+            }
+            else
+            {
+               this.qtys.push(_loc7_);
+               _loc5_++;
+               continue;
+            }
+         }
+      }
+   }
+}

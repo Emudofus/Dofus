@@ -1,16 +1,16 @@
-﻿package com.hurlant.math
+package com.hurlant.math
 {
-    import com.hurlant.math.BigInteger;
-
-    interface IReduction 
-    {
-
-        function convert(_arg_1:BigInteger):BigInteger;
-        function revert(_arg_1:BigInteger):BigInteger;
-        function reduce(_arg_1:BigInteger):void;
-        function mulTo(_arg_1:BigInteger, _arg_2:BigInteger, _arg_3:BigInteger):void;
-        function sqrTo(_arg_1:BigInteger, _arg_2:BigInteger):void;
-
-    }
-}//package com.hurlant.math
-
+   interface IReduction
+   {
+      
+      function convert(param1:BigInteger) : BigInteger;
+      
+      function revert(param1:BigInteger) : BigInteger;
+      
+      function reduce(param1:BigInteger) : void;
+      
+      function mulTo(param1:BigInteger, param2:BigInteger, param3:BigInteger) : void;
+      
+      function sqrTo(param1:BigInteger, param2:BigInteger) : void;
+   }
+}

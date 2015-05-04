@@ -1,149 +1,161 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
-    import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMark;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class GameFightSpectateMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6069;
-
-        private var _isInitialized:Boolean = false;
-        public var effects:Vector.<FightDispellableEffectExtendedInformations>;
-        public var marks:Vector.<GameActionMark>;
-        public var gameTurn:uint = 0;
-        public var fightStart:uint = 0;
-
-        public function GameFightSpectateMessage()
-        {
-            this.effects = new Vector.<FightDispellableEffectExtendedInformations>();
-            this.marks = new Vector.<GameActionMark>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6069);
-        }
-
-        public function initGameFightSpectateMessage(effects:Vector.<FightDispellableEffectExtendedInformations>=null, marks:Vector.<GameActionMark>=null, gameTurn:uint=0, fightStart:uint=0):GameFightSpectateMessage
-        {
-            this.effects = effects;
-            this.marks = marks;
-            this.gameTurn = gameTurn;
-            this.fightStart = fightStart;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.effects = new Vector.<FightDispellableEffectExtendedInformations>();
-            this.marks = new Vector.<GameActionMark>();
-            this.gameTurn = 0;
-            this.fightStart = 0;
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GameFightSpectateMessage(output);
-        }
-
-        public function serializeAs_GameFightSpectateMessage(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.effects.length);
-            var _i1:uint;
-            while (_i1 < this.effects.length)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.action.fight.FightDispellableEffectExtendedInformations;
+   import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMark;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class GameFightSpectateMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function GameFightSpectateMessage()
+      {
+         this.effects = new Vector.<FightDispellableEffectExtendedInformations>();
+         this.marks = new Vector.<GameActionMark>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6069;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var effects:Vector.<FightDispellableEffectExtendedInformations>;
+      
+      public var marks:Vector.<GameActionMark>;
+      
+      public var gameTurn:uint = 0;
+      
+      public var fightStart:uint = 0;
+      
+      override public function getMessageId() : uint
+      {
+         return 6069;
+      }
+      
+      public function initGameFightSpectateMessage(param1:Vector.<FightDispellableEffectExtendedInformations> = null, param2:Vector.<GameActionMark> = null, param3:uint = 0, param4:uint = 0) : GameFightSpectateMessage
+      {
+         this.effects = param1;
+         this.marks = param2;
+         this.gameTurn = param3;
+         this.fightStart = param4;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.effects = new Vector.<FightDispellableEffectExtendedInformations>();
+         this.marks = new Vector.<GameActionMark>();
+         this.gameTurn = 0;
+         this.fightStart = 0;
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GameFightSpectateMessage(param1);
+      }
+      
+      public function serializeAs_GameFightSpectateMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeShort(this.effects.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.effects.length)
+         {
+            (this.effects[_loc2_] as FightDispellableEffectExtendedInformations).serializeAs_FightDispellableEffectExtendedInformations(param1);
+            _loc2_++;
+         }
+         param1.writeShort(this.marks.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.marks.length)
+         {
+            (this.marks[_loc3_] as GameActionMark).serializeAs_GameActionMark(param1);
+            _loc3_++;
+         }
+         if(this.gameTurn < 0)
+         {
+            throw new Error("Forbidden value (" + this.gameTurn + ") on element gameTurn.");
+         }
+         else
+         {
+            param1.writeVarShort(this.gameTurn);
+            if(this.fightStart < 0)
             {
-                (this.effects[_i1] as FightDispellableEffectExtendedInformations).serializeAs_FightDispellableEffectExtendedInformations(output);
-                _i1++;
-            };
-            output.writeShort(this.marks.length);
-            var _i2:uint;
-            while (_i2 < this.marks.length)
+               throw new Error("Forbidden value (" + this.fightStart + ") on element fightStart.");
+            }
+            else
             {
-                (this.marks[_i2] as GameActionMark).serializeAs_GameActionMark(output);
-                _i2++;
-            };
-            if (this.gameTurn < 0)
+               param1.writeInt(this.fightStart);
+               return;
+            }
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GameFightSpectateMessage(param1);
+      }
+      
+      public function deserializeAs_GameFightSpectateMessage(param1:ICustomDataInput) : void
+      {
+         var _loc6_:FightDispellableEffectExtendedInformations = null;
+         var _loc7_:GameActionMark = null;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc6_ = new FightDispellableEffectExtendedInformations();
+            _loc6_.deserialize(param1);
+            this.effects.push(_loc6_);
+            _loc3_++;
+         }
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
+         {
+            _loc7_ = new GameActionMark();
+            _loc7_.deserialize(param1);
+            this.marks.push(_loc7_);
+            _loc5_++;
+         }
+         this.gameTurn = param1.readVarUhShort();
+         if(this.gameTurn < 0)
+         {
+            throw new Error("Forbidden value (" + this.gameTurn + ") on element of GameFightSpectateMessage.gameTurn.");
+         }
+         else
+         {
+            this.fightStart = param1.readInt();
+            if(this.fightStart < 0)
             {
-                throw (new Error((("Forbidden value (" + this.gameTurn) + ") on element gameTurn.")));
-            };
-            output.writeVarShort(this.gameTurn);
-            if (this.fightStart < 0)
+               throw new Error("Forbidden value (" + this.fightStart + ") on element of GameFightSpectateMessage.fightStart.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.fightStart) + ") on element fightStart.")));
-            };
-            output.writeInt(this.fightStart);
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GameFightSpectateMessage(input);
-        }
-
-        public function deserializeAs_GameFightSpectateMessage(input:ICustomDataInput):void
-        {
-            var _item1:FightDispellableEffectExtendedInformations;
-            var _item2:GameActionMark;
-            var _effectsLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _effectsLen)
-            {
-                _item1 = new FightDispellableEffectExtendedInformations();
-                _item1.deserialize(input);
-                this.effects.push(_item1);
-                _i1++;
-            };
-            var _marksLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _marksLen)
-            {
-                _item2 = new GameActionMark();
-                _item2.deserialize(input);
-                this.marks.push(_item2);
-                _i2++;
-            };
-            this.gameTurn = input.readVarUhShort();
-            if (this.gameTurn < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.gameTurn) + ") on element of GameFightSpectateMessage.gameTurn.")));
-            };
-            this.fightStart = input.readInt();
-            if (this.fightStart < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.fightStart) + ") on element of GameFightSpectateMessage.fightStart.")));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.fight
-
+               return;
+            }
+         }
+      }
+   }
+}

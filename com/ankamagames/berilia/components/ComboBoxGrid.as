@@ -1,58 +1,59 @@
-﻿package com.ankamagames.berilia.components
+package com.ankamagames.berilia.components
 {
-    import com.ankamagames.jerakine.handlers.messages.mouse.MouseMessage;
-    import com.ankamagames.berilia.types.data.GridItem;
-    import com.ankamagames.jerakine.utils.display.FrameIdManager;
-    import com.ankamagames.jerakine.handlers.messages.mouse.MouseDoubleClickMessage;
-    import com.ankamagames.jerakine.handlers.messages.mouse.MouseClickMessage;
-    import com.ankamagames.berilia.managers.UIEventManager;
-    import com.ankamagames.berilia.components.messages.SelectEmptyItemMessage;
-    import com.ankamagames.berilia.enums.SelectMethodEnum;
-    import com.ankamagames.jerakine.handlers.messages.mouse.MouseUpMessage;
-    import com.ankamagames.jerakine.messages.Message;
-
-    public class ComboBoxGrid extends Grid 
-    {
-
-        private var _lastMouseUpFrameId:int = -1;
-
-
-        override public function process(msg:Message):Boolean
-        {
-            var _local_2:MouseMessage;
-            var _local_3:GridItem;
-            switch (true)
-            {
-                case (msg is MouseDoubleClickMessage):
-                case (msg is MouseClickMessage):
-                    if (this._lastMouseUpFrameId == FrameIdManager.frameId)
-                    {
-                        break;
-                    };
-                case (msg is MouseUpMessage):
-                    this._lastMouseUpFrameId = FrameIdManager.frameId;
-                    _local_2 = MouseMessage(msg);
-                    _local_3 = super.getGridItem(_local_2.target);
-                    if (_local_3)
-                    {
-                        if (!(_local_3.data))
-                        {
-                            if (UIEventManager.getInstance().isRegisteredInstance(this, SelectEmptyItemMessage))
-                            {
-                                super.dispatchMessage(new SelectEmptyItemMessage(this, SelectMethodEnum.CLICK));
-                            };
-                            setSelectedIndex(-1, SelectMethodEnum.CLICK);
-                        };
-                        setSelectedIndex(_local_3.index, SelectMethodEnum.CLICK);
-                    };
-                    return (true);
-                default:
-                    super.process(msg);
-            };
-            return (false);
-        }
-
-
-    }
-}//package com.ankamagames.berilia.components
-
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.jerakine.handlers.messages.mouse.MouseMessage;
+   import com.ankamagames.berilia.types.data.GridItem;
+   import com.ankamagames.jerakine.utils.display.FrameIdManager;
+   import com.ankamagames.berilia.managers.UIEventManager;
+   import com.ankamagames.berilia.components.messages.SelectEmptyItemMessage;
+   import com.ankamagames.berilia.enums.SelectMethodEnum;
+   import com.ankamagames.jerakine.handlers.messages.mouse.MouseDoubleClickMessage;
+   import com.ankamagames.jerakine.handlers.messages.mouse.MouseClickMessage;
+   import com.ankamagames.jerakine.handlers.messages.mouse.MouseUpMessage;
+   
+   public class ComboBoxGrid extends Grid
+   {
+      
+      public function ComboBoxGrid()
+      {
+         super();
+      }
+      
+      private var _lastMouseUpFrameId:int = -1;
+      
+      override public function process(param1:Message) : Boolean
+      {
+         var _loc2_:MouseMessage = null;
+         var _loc3_:GridItem = null;
+         switch(true)
+         {
+            case param1 is MouseDoubleClickMessage:
+            case param1 is MouseClickMessage:
+               if(this._lastMouseUpFrameId == FrameIdManager.frameId)
+               {
+                  return false;
+               }
+            case param1 is MouseUpMessage:
+               this._lastMouseUpFrameId = FrameIdManager.frameId;
+               _loc2_ = MouseMessage(param1);
+               _loc3_ = super.getGridItem(_loc2_.target);
+               if(_loc3_)
+               {
+                  if(!_loc3_.data)
+                  {
+                     if(UIEventManager.getInstance().isRegisteredInstance(this,SelectEmptyItemMessage))
+                     {
+                        super.dispatchMessage(new SelectEmptyItemMessage(this,SelectMethodEnum.CLICK));
+                     }
+                     setSelectedIndex(-1,SelectMethodEnum.CLICK);
+                  }
+                  setSelectedIndex(_loc3_.index,SelectMethodEnum.CLICK);
+               }
+               return true;
+            default:
+               super.process(param1);
+               return false;
+         }
+      }
+   }
+}

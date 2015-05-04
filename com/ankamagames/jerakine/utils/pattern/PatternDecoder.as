@@ -1,250 +1,244 @@
-﻿package com.ankamagames.jerakine.utils.pattern
+package com.ankamagames.jerakine.utils.pattern
 {
-    public class PatternDecoder 
-    {
-
-
-        public static function getDescription(sText:String, aParams:Array):String
-        {
-            var aTmp:Array = sText.split("");
-            var sFinal:String = decodeDescription(aTmp, aParams).join("");
-            return (sFinal);
-        }
-
-        public static function combine(str:String, gender:String, singular:Boolean):String
-        {
-            if (!(str))
+   public class PatternDecoder extends Object
+   {
+      
+      public function PatternDecoder()
+      {
+         super();
+      }
+      
+      public static function getDescription(param1:String, param2:Array) : String
+      {
+         var _loc3_:Array = param1.split("");
+         var _loc4_:String = decodeDescription(_loc3_,param2).join("");
+         return _loc4_;
+      }
+      
+      public static function combine(param1:String, param2:String, param3:Boolean) : String
+      {
+         if(!param1)
+         {
+            return "";
+         }
+         var _loc4_:Array = param1.split("");
+         var _loc5_:Object = new Object();
+         _loc5_.m = param2 == "m";
+         _loc5_.f = param2 == "f";
+         _loc5_.n = param2 == "n";
+         _loc5_.p = !param3;
+         _loc5_.s = param3;
+         var _loc6_:String = decodeCombine(_loc4_,_loc5_).join("");
+         return _loc6_;
+      }
+      
+      public static function decode(param1:String, param2:Array) : String
+      {
+         if(!param1)
+         {
+            return "";
+         }
+         return decodeCombine(param1.split(""),param2).join("");
+      }
+      
+      public static function replace(param1:String, param2:String) : String
+      {
+         var _loc5_:Array = null;
+         var _loc3_:Array = param1.split("##");
+         var _loc4_:uint = 1;
+         while(_loc4_ < _loc3_.length)
+         {
+            _loc5_ = _loc3_[_loc4_].split(",");
+            _loc3_[_loc4_] = getDescription(param2,_loc5_);
+            _loc4_ = _loc4_ + 2;
+         }
+         return _loc3_.join("");
+      }
+      
+      public static function replaceStr(param1:String, param2:String, param3:String) : String
+      {
+         var _loc4_:Array = param1.split(param2);
+         return _loc4_.join(param3);
+      }
+      
+      private static function findOptionnalDices(param1:Array, param2:Array) : Array
+      {
+         var _loc10_:uint = 0;
+         var _loc11_:uint = 0;
+         var _loc3_:uint = param1.length;
+         var _loc4_:* = "";
+         var _loc5_:Array = new Array();
+         var _loc6_:Array = new Array();
+         var _loc7_:Array = param1;
+         var _loc8_:Number = find(param1,"{");
+         var _loc9_:Number = find(param1,"}");
+         if(_loc8_ >= 0 && _loc9_ > _loc8_)
+         {
+            _loc10_ = 0;
+            while(param1[_loc8_ - (_loc10_ + 1)] == " ")
             {
-                return ("");
-            };
-            var aTmp:Array = str.split("");
-            var oParams:Object = new Object();
-            oParams.m = (gender == "m");
-            oParams.f = (gender == "f");
-            oParams.n = (gender == "n");
-            oParams.p = !(singular);
-            oParams.s = singular;
-            var sFinal:String = decodeCombine(aTmp, oParams).join("");
-            return (sFinal);
-        }
-
-        public static function decode(str:String, params:Array):String
-        {
-            if (!(str))
+               _loc10_++;
+            }
+            _loc11_ = 0;
+            while(param1[_loc9_ + (_loc11_ + 1)] == " ")
             {
-                return ("");
-            };
-            return (decodeCombine(str.split(""), params).join(""));
-        }
-
-        public static function replace(sSrc:String, sPattern:String):String
-        {
-            var aTmp2:Array;
-            var aTmp:Array = sSrc.split("##");
-            var i:uint = 1;
-            while (i < aTmp.length)
+               _loc11_++;
+            }
+            _loc5_ = param1.splice(0,_loc8_ - (2 + _loc10_));
+            _loc6_ = param1.splice(_loc9_ - _loc8_ + 5 + _loc11_ + _loc10_,param1.length - (_loc9_ - _loc8_));
+            if(param1[0] == "#" && param1[param1.length - 2] == "#")
             {
-                aTmp2 = aTmp[i].split(",");
-                aTmp[i] = getDescription(sPattern, aTmp2);
-                i = (i + 2);
-            };
-            return (aTmp.join(""));
-        }
-
-        public static function replaceStr(sSrc:String, sSearchPattern:String, sReplaceStr:String):String
-        {
-            var aTmp:Array = sSrc.split(sSearchPattern);
-            return (aTmp.join(sReplaceStr));
-        }
-
-        private static function findOptionnalDices(aStr:Array, aParams:Array):Array
-        {
-            var nBlancDebut:uint;
-            var nBlancFin:uint;
-            var l:uint = aStr.length;
-            var returnString:String = "";
-            var aStrCopyFirstPart:Array = new Array();
-            var aStrCopySecondPart:Array = new Array();
-            var returnArray:Array = aStr;
-            var posAcc1:Number = find(aStr, "{");
-            var posAcc2:Number = find(aStr, "}");
-            if ((((posAcc1 >= 0)) && ((posAcc2 > posAcc1))))
+               if(param2[1] == null && param2[2] == null && param2[3] == null)
+               {
+                  _loc5_.push(param2[0]);
+               }
+               else if(param2[0] == 0 && param2[1] == 0)
+               {
+                  _loc5_.push(param2[2]);
+               }
+               else if(!param2[2])
+               {
+                  param1.splice(param1.indexOf("#"),2,param2[0]);
+                  param1.splice(param1.indexOf("{"),1);
+                  param1.splice(param1.indexOf("~"),4);
+                  param1.splice(param1.indexOf("#"),2,param2[1]);
+                  param1.splice(param1.indexOf("}"),1);
+                  _loc5_ = _loc5_.concat(param1);
+               }
+               else
+               {
+                  param1.splice(param1.indexOf("#"),2,param2[0] + param2[2]);
+                  param1.splice(param1.indexOf("{"),1);
+                  param1.splice(param1.indexOf("~"),4);
+                  param1.splice(param1.indexOf("#"),2,param2[0] * param2[1] + param2[2]);
+                  param1.splice(param1.indexOf("}"),1);
+                  _loc5_ = _loc5_.concat(param1);
+               }
+               
+               
+               _loc7_ = _loc5_.concat(_loc6_);
+            }
+         }
+         return _loc7_;
+      }
+      
+      private static function decodeDescription(param1:Array, param2:Array) : Array
+      {
+         var _loc3_:* = NaN;
+         var _loc6_:* = NaN;
+         var _loc7_:* = NaN;
+         var _loc8_:* = NaN;
+         var _loc9_:String = null;
+         var _loc10_:* = NaN;
+         var _loc11_:* = NaN;
+         _loc3_ = 0;
+         var _loc4_:String = new String();
+         var _loc5_:Number = param1.length;
+         var param1:Array = findOptionnalDices(param1,param2);
+         while(_loc3_ < _loc5_)
+         {
+            _loc4_ = param1[_loc3_];
+            switch(_loc4_)
             {
-                nBlancDebut = 0;
-                while (aStr[(posAcc1 - (nBlancDebut + 1))] == " ")
-                {
-                    nBlancDebut++;
-                };
-                nBlancFin = 0;
-                while (aStr[(posAcc2 + (nBlancFin + 1))] == " ")
-                {
-                    nBlancFin++;
-                };
-                aStrCopyFirstPart = aStr.splice(0, (posAcc1 - (2 + nBlancDebut)));
-                aStrCopySecondPart = aStr.splice(((((posAcc2 - posAcc1) + 5) + nBlancFin) + nBlancDebut), (aStr.length - (posAcc2 - posAcc1)));
-                if ((((aStr[0] == "#")) && ((aStr[(aStr.length - 2)] == "#"))))
-                {
-                    if ((((((aParams[1] == null)) && ((aParams[2] == null)))) && ((aParams[3] == null))))
-                    {
-                        aStrCopyFirstPart.push(aParams[0]);
-                    }
-                    else
-                    {
-                        if ((((aParams[0] == 0)) && ((aParams[1] == 0))))
-                        {
-                            aStrCopyFirstPart.push(aParams[2]);
-                        }
-                        else
-                        {
-                            if (!(aParams[2]))
-                            {
-                                aStr.splice(aStr.indexOf("#"), 2, aParams[0]);
-                                aStr.splice(aStr.indexOf("{"), 1);
-                                aStr.splice(aStr.indexOf("~"), 4);
-                                aStr.splice(aStr.indexOf("#"), 2, aParams[1]);
-                                aStr.splice(aStr.indexOf("}"), 1);
-                                aStrCopyFirstPart = aStrCopyFirstPart.concat(aStr);
-                            }
-                            else
-                            {
-                                aStr.splice(aStr.indexOf("#"), 2, (aParams[0] + aParams[2]));
-                                aStr.splice(aStr.indexOf("{"), 1);
-                                aStr.splice(aStr.indexOf("~"), 4);
-                                aStr.splice(aStr.indexOf("#"), 2, ((aParams[0] * aParams[1]) + aParams[2]));
-                                aStr.splice(aStr.indexOf("}"), 1);
-                                aStrCopyFirstPart = aStrCopyFirstPart.concat(aStr);
-                            };
-                        };
-                    };
-                    returnArray = aStrCopyFirstPart.concat(aStrCopySecondPart);
-                };
-            };
-            return (returnArray);
-        }
-
-        private static function decodeDescription(aStr:Array, aParams:Array):Array
-        {
-            var i:Number;
-            var _local_6:Number;
-            var _local_7:Number;
-            var _local_8:Number;
-            var _local_9:String;
-            var _local_10:Number;
-            var _local_11:Number;
-            i = 0;
-            var sChar:String = new String();
-            var nLen:Number = aStr.length;
-            aStr = findOptionnalDices(aStr, aParams);
-            while (i < nLen)
+               case "#":
+                  _loc6_ = param1[_loc3_ + 1];
+                  if(!isNaN(_loc6_))
+                  {
+                     if(param2[_loc6_ - 1] != undefined)
+                     {
+                        param1.splice(_loc3_,2,param2[_loc6_ - 1]);
+                        _loc3_--;
+                     }
+                     else
+                     {
+                        param1.splice(_loc3_,2);
+                        _loc3_ = _loc3_ - 2;
+                     }
+                  }
+                  break;
+               case "~":
+                  _loc7_ = param1[_loc3_ + 1];
+                  if(!isNaN(_loc7_))
+                  {
+                     if(param2[_loc7_ - 1] != null)
+                     {
+                        param1.splice(_loc3_,2);
+                        _loc3_ = _loc3_ - 2;
+                     }
+                     else
+                     {
+                        return param1.slice(0,_loc3_);
+                     }
+                  }
+                  break;
+               case "{":
+                  _loc8_ = find(param1.slice(_loc3_),"}");
+                  _loc9_ = decodeDescription(param1.slice(_loc3_ + 1,_loc3_ + _loc8_),param2).join("");
+                  param1.splice(_loc3_,_loc8_ + 1,_loc9_);
+                  break;
+               case "[":
+                  _loc10_ = find(param1.slice(_loc3_),"]");
+                  _loc11_ = Number(param1.slice(_loc3_ + 1,_loc3_ + _loc10_).join(""));
+                  if(!isNaN(_loc11_))
+                  {
+                     param1.splice(_loc3_,_loc10_ + 1,param2[_loc11_] + " ");
+                     _loc3_ = _loc3_ - _loc10_;
+                  }
+                  break;
+            }
+            _loc3_++;
+         }
+         return param1;
+      }
+      
+      private static function decodeCombine(param1:Array, param2:Object) : Array
+      {
+         var _loc3_:* = NaN;
+         var _loc6_:String = null;
+         var _loc7_:* = NaN;
+         var _loc8_:String = null;
+         _loc3_ = 0;
+         var _loc4_:String = new String();
+         var _loc5_:Number = param1.length;
+         while(_loc3_ < _loc5_)
+         {
+            _loc4_ = param1[_loc3_];
+            switch(_loc4_)
             {
-                sChar = aStr[i];
-                switch (sChar)
-                {
-                    case "#":
-                        _local_6 = aStr[(i + 1)];
-                        if (!(isNaN(_local_6)))
-                        {
-                            if (aParams[(_local_6 - 1)] != undefined)
-                            {
-                                aStr.splice(i, 2, aParams[(_local_6 - 1)]);
-                                i--;
-                            }
-                            else
-                            {
-                                aStr.splice(i, 2);
-                                i = (i - 2);
-                            };
-                        };
-                        break;
-                    case "~":
-                        _local_7 = aStr[(i + 1)];
-                        if (!(isNaN(_local_7)))
-                        {
-                            if (aParams[(_local_7 - 1)] != null)
-                            {
-                                aStr.splice(i, 2);
-                                i = (i - 2);
-                            }
-                            else
-                            {
-                                return (aStr.slice(0, i));
-                            };
-                        };
-                        break;
-                    case "{":
-                        _local_8 = find(aStr.slice(i), "}");
-                        _local_9 = decodeDescription(aStr.slice((i + 1), (i + _local_8)), aParams).join("");
-                        aStr.splice(i, (_local_8 + 1), _local_9);
-                        break;
-                    case "[":
-                        _local_10 = find(aStr.slice(i), "]");
-                        _local_11 = Number(aStr.slice((i + 1), (i + _local_10)).join(""));
-                        if (!(isNaN(_local_11)))
-                        {
-                            aStr.splice(i, (_local_10 + 1), (aParams[_local_11] + " "));
-                            i = (i - _local_10);
-                        };
-                        break;
-                };
-                i++;
-            };
-            return (aStr);
-        }
-
-        private static function decodeCombine(aStr:Array, oParams:Object):Array
-        {
-            var i:Number;
-            var _local_6:String;
-            var _local_7:Number;
-            var _local_8:String;
-            i = 0;
-            var sChar:String = new String();
-            var nLen:Number = aStr.length;
-            while (i < nLen)
+               case "~":
+                  _loc6_ = param1[_loc3_ + 1];
+                  if(param2[_loc6_])
+                  {
+                     param1.splice(_loc3_,2);
+                     _loc3_ = _loc3_ - 2;
+                     break;
+                  }
+                  return param1.slice(0,_loc3_);
+               case "{":
+                  _loc7_ = find(param1.slice(_loc3_),"}");
+                  _loc8_ = decodeCombine(param1.slice(_loc3_ + 1,_loc3_ + _loc7_),param2).join("");
+                  param1.splice(_loc3_,_loc7_ + 1,_loc8_);
+                  break;
+            }
+            _loc3_++;
+         }
+         return param1;
+      }
+      
+      private static function find(param1:Array, param2:Object) : Number
+      {
+         var _loc4_:* = NaN;
+         var _loc3_:Number = param1.length;
+         _loc4_ = 0;
+         while(_loc4_ < _loc3_)
+         {
+            if(param1[_loc4_] == param2)
             {
-                sChar = aStr[i];
-                switch (sChar)
-                {
-                    case "~":
-                        _local_6 = aStr[(i + 1)];
-                        if (oParams[_local_6])
-                        {
-                            aStr.splice(i, 2);
-                            i = (i - 2);
-                        }
-                        else
-                        {
-                            return (aStr.slice(0, i));
-                        };
-                        break;
-                    case "{":
-                        _local_7 = find(aStr.slice(i), "}");
-                        _local_8 = decodeCombine(aStr.slice((i + 1), (i + _local_7)), oParams).join("");
-                        aStr.splice(i, (_local_7 + 1), _local_8);
-                        break;
-                };
-                i++;
-            };
-            return (aStr);
-        }
-
-        private static function find(a:Array, f:Object):Number
-        {
-            var i:Number;
-            var nLen:Number = a.length;
-            i = 0;
-            while (i < nLen)
-            {
-                if (a[i] == f)
-                {
-                    return (i);
-                };
-                i++;
-            };
-            return (-1);
-        }
-
-
-    }
-}//package com.ankamagames.jerakine.utils.pattern
-
+               return _loc4_;
+            }
+            _loc4_++;
+         }
+         return -1;
+      }
+   }
+}

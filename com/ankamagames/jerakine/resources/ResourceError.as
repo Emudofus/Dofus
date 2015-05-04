@@ -1,13 +1,11 @@
-﻿package com.ankamagames.jerakine.resources
+package com.ankamagames.jerakine.resources
 {
-    public class ResourceError extends Error 
-    {
-
-        public function ResourceError(message:String="", id:int=0)
-        {
-            super(message, id);
-        }
-
-    }
-}//package com.ankamagames.jerakine.resources
-
+   public class ResourceError extends Error
+   {
+      
+      public function ResourceError(param1:String = "", param2:int = 0)
+      {
+         super(param1,param2);
+      }
+   }
+}

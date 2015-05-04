@@ -1,38 +1,35 @@
-﻿package com.hurlant.math
+package com.hurlant.math
 {
-    import com.hurlant.math.bi_internal; 
-
-    use namespace bi_internal;
-
-    public class NullReduction implements IReduction 
-    {
-
-
-        public function revert(x:BigInteger):BigInteger
-        {
-            return (x);
-        }
-
-        public function mulTo(x:BigInteger, y:BigInteger, r:BigInteger):void
-        {
-            x.multiplyTo(y, r);
-        }
-
-        public function sqrTo(x:BigInteger, r:BigInteger):void
-        {
-            x.squareTo(r);
-        }
-
-        public function convert(x:BigInteger):BigInteger
-        {
-            return (x);
-        }
-
-        public function reduce(x:BigInteger):void
-        {
-        }
-
-
-    }
-}//package com.hurlant.math
-
+   public class NullReduction extends Object implements IReduction
+   {
+      
+      public function NullReduction()
+      {
+         super();
+      }
+      
+      public function revert(param1:BigInteger) : BigInteger
+      {
+         return param1;
+      }
+      
+      public function mulTo(param1:BigInteger, param2:BigInteger, param3:BigInteger) : void
+      {
+         param1.multiplyTo(param2,param3);
+      }
+      
+      public function sqrTo(param1:BigInteger, param2:BigInteger) : void
+      {
+         param1.squareTo(param2);
+      }
+      
+      public function convert(param1:BigInteger) : BigInteger
+      {
+         return param1;
+      }
+      
+      public function reduce(param1:BigInteger) : void
+      {
+      }
+   }
+}

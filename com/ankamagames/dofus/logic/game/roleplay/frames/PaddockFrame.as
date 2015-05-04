@@ -1,90 +1,92 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.frames
+package com.ankamagames.dofus.logic.game.roleplay.frames
 {
-    import com.ankamagames.jerakine.messages.Frame;
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import com.ankamagames.jerakine.types.enums.Priority;
-    import com.ankamagames.dofus.logic.game.common.actions.mount.PaddockBuyRequestAction;
-    import com.ankamagames.dofus.network.messages.game.context.mount.PaddockBuyRequestMessage;
-    import com.ankamagames.dofus.network.messages.game.context.mount.PaddockBuyResultMessage;
-    import com.ankamagames.dofus.logic.game.common.actions.mount.PaddockSellRequestAction;
-    import com.ankamagames.dofus.network.messages.game.context.mount.PaddockSellRequestMessage;
-    import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogMessage;
-    import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
-    import com.ankamagames.berilia.managers.KernelEventsManager;
-    import com.ankamagames.dofus.misc.lists.HookList;
-    import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogRequestMessage;
-    import com.ankamagames.dofus.logic.game.roleplay.actions.LeaveDialogRequestAction;
-    import com.ankamagames.dofus.network.enums.DialogTypeEnum;
-    import com.ankamagames.dofus.kernel.Kernel;
-    import com.ankamagames.dofus.logic.common.actions.ChangeWorldInteractionAction;
-    import com.ankamagames.jerakine.messages.Message;
-
-    public class PaddockFrame implements Frame 
-    {
-
-        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(NpcDialogFrame));
-
-
-        public function get priority():int
-        {
-            return (Priority.NORMAL);
-        }
-
-        public function pushed():Boolean
-        {
-            return (true);
-        }
-
-        public function process(msg:Message):Boolean
-        {
-            var _local_2:PaddockBuyRequestAction;
-            var _local_3:PaddockBuyRequestMessage;
-            var _local_4:PaddockBuyResultMessage;
-            var _local_5:PaddockSellRequestAction;
-            var _local_6:PaddockSellRequestMessage;
-            var _local_7:LeaveDialogMessage;
-            switch (true)
-            {
-                case (msg is PaddockBuyRequestAction):
-                    _local_2 = (msg as PaddockBuyRequestAction);
-                    _local_3 = new PaddockBuyRequestMessage();
-                    _local_3.initPaddockBuyRequestMessage(_local_2.proposedPrice);
-                    ConnectionsHandler.getConnection().send(_local_3);
-                    return (true);
-                case (msg is PaddockBuyResultMessage):
-                    _local_4 = (msg as PaddockBuyResultMessage);
-                    KernelEventsManager.getInstance().processCallback(HookList.PaddockBuyResult, _local_4.paddockId, _local_4.bought, _local_4.realPrice);
-                    return (true);
-                case (msg is PaddockSellRequestAction):
-                    _local_5 = (msg as PaddockSellRequestAction);
-                    _local_6 = new PaddockSellRequestMessage();
-                    _local_6.initPaddockSellRequestMessage(_local_5.price);
-                    ConnectionsHandler.getConnection().send(_local_6);
-                    return (true);
-                case (msg is LeaveDialogRequestAction):
-                    ConnectionsHandler.getConnection().send(new LeaveDialogRequestMessage());
-                    return (true);
-                case (msg is LeaveDialogMessage):
-                    _local_7 = (msg as LeaveDialogMessage);
-                    if (_local_7.dialogType == DialogTypeEnum.DIALOG_PURCHASABLE)
-                    {
-                        Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
-                        Kernel.getWorker().removeFrame(this);
-                    };
-                    return (true);
-            };
-            return (false);
-        }
-
-        public function pulled():Boolean
-        {
-            KernelEventsManager.getInstance().processCallback(HookList.LeaveDialog);
-            return (true);
-        }
-
-
-    }
-}//package com.ankamagames.dofus.logic.game.roleplay.frames
-
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.PaddockBuyRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.mount.PaddockBuyRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.mount.PaddockBuyResultMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.PaddockSellRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.mount.PaddockSellRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogMessage;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogRequestMessage;
+   import com.ankamagames.dofus.network.enums.DialogTypeEnum;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.common.actions.ChangeWorldInteractionAction;
+   import com.ankamagames.dofus.logic.game.roleplay.actions.LeaveDialogRequestAction;
+   
+   public class PaddockFrame extends Object implements Frame
+   {
+      
+      public function PaddockFrame()
+      {
+         super();
+      }
+      
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(NpcDialogFrame));
+      
+      public function get priority() : int
+      {
+         return Priority.NORMAL;
+      }
+      
+      public function pushed() : Boolean
+      {
+         return true;
+      }
+      
+      public function process(param1:Message) : Boolean
+      {
+         var _loc2_:PaddockBuyRequestAction = null;
+         var _loc3_:PaddockBuyRequestMessage = null;
+         var _loc4_:PaddockBuyResultMessage = null;
+         var _loc5_:PaddockSellRequestAction = null;
+         var _loc6_:PaddockSellRequestMessage = null;
+         var _loc7_:LeaveDialogMessage = null;
+         switch(true)
+         {
+            case param1 is PaddockBuyRequestAction:
+               _loc2_ = param1 as PaddockBuyRequestAction;
+               _loc3_ = new PaddockBuyRequestMessage();
+               _loc3_.initPaddockBuyRequestMessage(_loc2_.proposedPrice);
+               ConnectionsHandler.getConnection().send(_loc3_);
+               return true;
+            case param1 is PaddockBuyResultMessage:
+               _loc4_ = param1 as PaddockBuyResultMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.PaddockBuyResult,_loc4_.paddockId,_loc4_.bought,_loc4_.realPrice);
+               return true;
+            case param1 is PaddockSellRequestAction:
+               _loc5_ = param1 as PaddockSellRequestAction;
+               _loc6_ = new PaddockSellRequestMessage();
+               _loc6_.initPaddockSellRequestMessage(_loc5_.price);
+               ConnectionsHandler.getConnection().send(_loc6_);
+               return true;
+            case param1 is LeaveDialogRequestAction:
+               ConnectionsHandler.getConnection().send(new LeaveDialogRequestMessage());
+               return true;
+            case param1 is LeaveDialogMessage:
+               _loc7_ = param1 as LeaveDialogMessage;
+               if(_loc7_.dialogType == DialogTypeEnum.DIALOG_PURCHASABLE)
+               {
+                  Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
+                  Kernel.getWorker().removeFrame(this);
+               }
+               return true;
+            default:
+               return false;
+         }
+      }
+      
+      public function pulled() : Boolean
+      {
+         KernelEventsManager.getInstance().processCallback(HookList.LeaveDialog);
+         return true;
+      }
+   }
+}

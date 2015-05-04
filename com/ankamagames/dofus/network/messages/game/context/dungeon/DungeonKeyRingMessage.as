@@ -1,135 +1,147 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.dungeon
+package com.ankamagames.dofus.network.messages.game.context.dungeon
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class DungeonKeyRingMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6299;
-
-        private var _isInitialized:Boolean = false;
-        public var availables:Vector.<uint>;
-        public var unavailables:Vector.<uint>;
-
-        public function DungeonKeyRingMessage()
-        {
-            this.availables = new Vector.<uint>();
-            this.unavailables = new Vector.<uint>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6299);
-        }
-
-        public function initDungeonKeyRingMessage(availables:Vector.<uint>=null, unavailables:Vector.<uint>=null):DungeonKeyRingMessage
-        {
-            this.availables = availables;
-            this.unavailables = unavailables;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.availables = new Vector.<uint>();
-            this.unavailables = new Vector.<uint>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_DungeonKeyRingMessage(output);
-        }
-
-        public function serializeAs_DungeonKeyRingMessage(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.availables.length);
-            var _i1:uint;
-            while (_i1 < this.availables.length)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class DungeonKeyRingMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function DungeonKeyRingMessage()
+      {
+         this.availables = new Vector.<uint>();
+         this.unavailables = new Vector.<uint>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6299;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var availables:Vector.<uint>;
+      
+      public var unavailables:Vector.<uint>;
+      
+      override public function getMessageId() : uint
+      {
+         return 6299;
+      }
+      
+      public function initDungeonKeyRingMessage(param1:Vector.<uint> = null, param2:Vector.<uint> = null) : DungeonKeyRingMessage
+      {
+         this.availables = param1;
+         this.unavailables = param2;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.availables = new Vector.<uint>();
+         this.unavailables = new Vector.<uint>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_DungeonKeyRingMessage(param1);
+      }
+      
+      public function serializeAs_DungeonKeyRingMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeShort(this.availables.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.availables.length)
+         {
+            if(this.availables[_loc2_] < 0)
             {
-                if (this.availables[_i1] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.availables[_i1]) + ") on element 1 (starting at 1) of availables.")));
-                };
-                output.writeVarShort(this.availables[_i1]);
-                _i1++;
-            };
-            output.writeShort(this.unavailables.length);
-            var _i2:uint;
-            while (_i2 < this.unavailables.length)
+               throw new Error("Forbidden value (" + this.availables[_loc2_] + ") on element 1 (starting at 1) of availables.");
+            }
+            else
             {
-                if (this.unavailables[_i2] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.unavailables[_i2]) + ") on element 2 (starting at 1) of unavailables.")));
-                };
-                output.writeVarShort(this.unavailables[_i2]);
-                _i2++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_DungeonKeyRingMessage(input);
-        }
-
-        public function deserializeAs_DungeonKeyRingMessage(input:ICustomDataInput):void
-        {
-            var _val1:uint;
-            var _val2:uint;
-            var _availablesLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _availablesLen)
+               param1.writeVarShort(this.availables[_loc2_]);
+               _loc2_++;
+               continue;
+            }
+         }
+         param1.writeShort(this.unavailables.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.unavailables.length)
+         {
+            if(this.unavailables[_loc3_] < 0)
             {
-                _val1 = input.readVarUhShort();
-                if (_val1 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val1) + ") on elements of availables.")));
-                };
-                this.availables.push(_val1);
-                _i1++;
-            };
-            var _unavailablesLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _unavailablesLen)
+               throw new Error("Forbidden value (" + this.unavailables[_loc3_] + ") on element 2 (starting at 1) of unavailables.");
+            }
+            else
             {
-                _val2 = input.readVarUhShort();
-                if (_val2 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val2) + ") on elements of unavailables.")));
-                };
-                this.unavailables.push(_val2);
-                _i2++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.dungeon
-
+               param1.writeVarShort(this.unavailables[_loc3_]);
+               _loc3_++;
+               continue;
+            }
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_DungeonKeyRingMessage(param1);
+      }
+      
+      public function deserializeAs_DungeonKeyRingMessage(param1:ICustomDataInput) : void
+      {
+         var _loc6_:uint = 0;
+         var _loc7_:uint = 0;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc6_ = param1.readVarUhShort();
+            if(_loc6_ < 0)
+            {
+               throw new Error("Forbidden value (" + _loc6_ + ") on elements of availables.");
+            }
+            else
+            {
+               this.availables.push(_loc6_);
+               _loc3_++;
+               continue;
+            }
+         }
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
+         {
+            _loc7_ = param1.readVarUhShort();
+            if(_loc7_ < 0)
+            {
+               throw new Error("Forbidden value (" + _loc7_ + ") on elements of unavailables.");
+            }
+            else
+            {
+               this.unavailables.push(_loc7_);
+               _loc5_++;
+               continue;
+            }
+         }
+      }
+   }
+}

@@ -1,9 +1,26 @@
-﻿package com.ankamagames.berilia.utils.web
+package com.ankamagames.berilia.utils.web
 {
-    public class MimeTypeHelper 
-    {
-
-        public static const mimetypeXml:XML = <mimeTypes>
+   public class MimeTypeHelper extends Object
+   {
+      
+      public function MimeTypeHelper()
+      {
+         super();
+      }
+      
+      public static function getMimeType(param1:String) : String
+      {
+         var mimeNode:XML = null;
+         var fileExtension:String = param1;
+         mimeNode = MimeTypeHelper.mimetypeXml.mimeType.(attribute("fileExtension") == fileExtension)[0];
+         if(mimeNode)
+         {
+            return mimeNode.@type;
+         }
+         return null;
+      }
+      
+      public static const mimetypeXml:XML = <mimeTypes>
   <mimeType fileExtension="3dm" type="x-world/x-3dmf"/>
   <mimeType fileExtension="3dmf" type="x-world/x-3dmf"/>
   <mimeType fileExtension="a" type="application/octet-stream"/>
@@ -646,22 +663,6 @@
   <mimeType fileExtension="zip" type="multipart/x-zip"/>
   <mimeType fileExtension="zoo" type="application/octet-stream"/>
   <mimeType fileExtension="zsh" type="text/x-script.zsh"/>
-</mimeTypes>
-        ;
-
-
-        public static function getMimeType(fileExtension:String):String
-        {
-            var mimeNode:XML;
-            mimeNode = MimeTypeHelper.mimetypeXml.mimeType.(attribute("fileExtension") == fileExtension)[0];
-            if (mimeNode)
-            {
-                return (mimeNode.@type);
-            };
-            return (null);
-        }
-
-
-    }
-}//package com.ankamagames.berilia.utils.web
-
+</mimeTypes>;
+   }
+}

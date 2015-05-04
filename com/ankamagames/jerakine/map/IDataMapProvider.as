@@ -1,20 +1,28 @@
-﻿package com.ankamagames.jerakine.map
+package com.ankamagames.jerakine.map
 {
-    public interface IDataMapProvider 
-    {
-
-        function get width():int;
-        function get height():int;
-        function pointLos(_arg_1:int, _arg_2:int, _arg_3:Boolean=true):Boolean;
-        function pointMov(_arg_1:int, _arg_2:int, _arg_3:Boolean=true, _arg_4:int=-1, _arg_5:int=-1):Boolean;
-        function farmCell(_arg_1:int, _arg_2:int):Boolean;
-        function pointSpecialEffects(_arg_1:int, _arg_2:int):uint;
-        function pointWeight(_arg_1:int, _arg_2:int, _arg_3:Boolean=true):Number;
-        function hasEntity(_arg_1:int, _arg_2:int):Boolean;
-        function updateCellMovLov(_arg_1:uint, _arg_2:Boolean):void;
-        function isChangeZone(_arg_1:uint, _arg_2:uint):Boolean;
-        function getCellSpeed(_arg_1:uint):int;
-
-    }
-}//package com.ankamagames.jerakine.map
-
+   public interface IDataMapProvider
+   {
+      
+      function get width() : int;
+      
+      function get height() : int;
+      
+      function pointLos(param1:int, param2:int, param3:Boolean = true) : Boolean;
+      
+      function pointMov(param1:int, param2:int, param3:Boolean = true, param4:int = -1, param5:int = -1) : Boolean;
+      
+      function farmCell(param1:int, param2:int) : Boolean;
+      
+      function pointSpecialEffects(param1:int, param2:int) : uint;
+      
+      function pointWeight(param1:int, param2:int, param3:Boolean = true) : Number;
+      
+      function hasEntity(param1:int, param2:int) : Boolean;
+      
+      function updateCellMovLov(param1:uint, param2:Boolean) : void;
+      
+      function isChangeZone(param1:uint, param2:uint) : Boolean;
+      
+      function getCellSpeed(param1:uint) : int;
+   }
+}

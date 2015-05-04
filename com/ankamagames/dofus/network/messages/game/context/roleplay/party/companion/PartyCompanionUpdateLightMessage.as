@@ -1,90 +1,99 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party.companion
+package com.ankamagames.dofus.network.messages.game.context.roleplay.party.companion
 {
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyUpdateLightMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class PartyCompanionUpdateLightMessage extends PartyUpdateLightMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6472;
-
-        private var _isInitialized:Boolean = false;
-        public var indexId:uint = 0;
-
-
-        override public function get isInitialized():Boolean
-        {
-            return (((super.isInitialized) && (this._isInitialized)));
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6472);
-        }
-
-        public function initPartyCompanionUpdateLightMessage(partyId:uint=0, id:uint=0, lifePoints:uint=0, maxLifePoints:uint=0, prospecting:uint=0, regenRate:uint=0, indexId:uint=0):PartyCompanionUpdateLightMessage
-        {
-            super.initPartyUpdateLightMessage(partyId, id, lifePoints, maxLifePoints, prospecting, regenRate);
-            this.indexId = indexId;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.indexId = 0;
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_PartyCompanionUpdateLightMessage(output);
-        }
-
-        public function serializeAs_PartyCompanionUpdateLightMessage(output:ICustomDataOutput):void
-        {
-            super.serializeAs_PartyUpdateLightMessage(output);
-            if (this.indexId < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.indexId) + ") on element indexId.")));
-            };
-            output.writeByte(this.indexId);
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_PartyCompanionUpdateLightMessage(input);
-        }
-
-        public function deserializeAs_PartyCompanionUpdateLightMessage(input:ICustomDataInput):void
-        {
-            super.deserialize(input);
-            this.indexId = input.readByte();
-            if (this.indexId < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.indexId) + ") on element of PartyCompanionUpdateLightMessage.indexId.")));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.roleplay.party.companion
-
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyUpdateLightMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class PartyCompanionUpdateLightMessage extends PartyUpdateLightMessage implements INetworkMessage
+   {
+      
+      public function PartyCompanionUpdateLightMessage()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 6472;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return (super.isInitialized) && (this._isInitialized);
+      }
+      
+      public var indexId:uint = 0;
+      
+      override public function getMessageId() : uint
+      {
+         return 6472;
+      }
+      
+      public function initPartyCompanionUpdateLightMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0, param4:uint = 0, param5:uint = 0, param6:uint = 0, param7:uint = 0) : PartyCompanionUpdateLightMessage
+      {
+         super.initPartyUpdateLightMessage(param1,param2,param3,param4,param5,param6);
+         this.indexId = param7;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.indexId = 0;
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_PartyCompanionUpdateLightMessage(param1);
+      }
+      
+      public function serializeAs_PartyCompanionUpdateLightMessage(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_PartyUpdateLightMessage(param1);
+         if(this.indexId < 0)
+         {
+            throw new Error("Forbidden value (" + this.indexId + ") on element indexId.");
+         }
+         else
+         {
+            param1.writeByte(this.indexId);
+            return;
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_PartyCompanionUpdateLightMessage(param1);
+      }
+      
+      public function deserializeAs_PartyCompanionUpdateLightMessage(param1:ICustomDataInput) : void
+      {
+         super.deserialize(param1);
+         this.indexId = param1.readByte();
+         if(this.indexId < 0)
+         {
+            throw new Error("Forbidden value (" + this.indexId + ") on element of PartyCompanionUpdateLightMessage.indexId.");
+         }
+         else
+         {
+            return;
+         }
+      }
+   }
+}

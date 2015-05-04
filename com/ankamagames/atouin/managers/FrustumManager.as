@@ -1,562 +1,570 @@
-﻿package com.ankamagames.atouin.managers
+package com.ankamagames.atouin.managers
 {
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import flash.display.DisplayObjectContainer;
-    import com.ankamagames.atouin.types.FrustumShape;
-    import com.ankamagames.atouin.types.Frustum;
-    import com.ankamagames.jerakine.utils.errors.SingletonError;
-    import com.ankamagames.jerakine.types.enums.DirectionsEnum;
-    import flash.events.MouseEvent;
-    import flash.display.Sprite;
-    import flash.geom.Point;
-    import com.ankamagames.atouin.AtouinConstants;
-    import __AS3__.vec.Vector;
-    import flash.display.Bitmap;
-    import com.ankamagames.jerakine.utils.display.StageShareManager;
-    import flash.display.BitmapData;
-    import flash.display.Shape;
-    import com.ankamagames.atouin.data.map.Map;
-    import com.ankamagames.atouin.data.map.Cell;
-    import com.ankamagames.atouin.data.map.CellData;
-    import com.ankamagames.atouin.utils.CellIdConverter;
-    import com.ankamagames.atouin.messages.AdjacentMapClickMessage;
-    import com.ankamagames.atouin.Atouin;
-    import com.ankamagames.atouin.messages.CellClickMessage;
-    import com.ankamagames.atouin.messages.AdjacentMapOutMessage;
-    import flash.display.DisplayObject;
-    import com.ankamagames.atouin.messages.AdjacentMapOverMessage;
-    import __AS3__.vec.*;
-
-    public class FrustumManager 
-    {
-
-        protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FrustumManager));
-        private static var _self:FrustumManager;
-
-        private var _frustumContainer:DisplayObjectContainer;
-        private var _shapeTop:FrustumShape;
-        private var _shapeRight:FrustumShape;
-        private var _shapeBottom:FrustumShape;
-        private var _shapeLeft:FrustumShape;
-        private var _frustrum:Frustum;
-        private var _lastCellId:int;
-        private var _enable:Boolean;
-
-        public function FrustumManager()
-        {
-            if (_self)
-            {
-                throw (new SingletonError());
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.display.DisplayObjectContainer;
+   import com.ankamagames.atouin.types.FrustumShape;
+   import com.ankamagames.atouin.types.Frustum;
+   import com.ankamagames.jerakine.types.enums.DirectionsEnum;
+   import flash.events.MouseEvent;
+   import flash.display.Sprite;
+   import flash.geom.Point;
+   import com.ankamagames.atouin.AtouinConstants;
+   import flash.display.Bitmap;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import flash.display.BitmapData;
+   import flash.display.Shape;
+   import com.ankamagames.atouin.data.map.Map;
+   import com.ankamagames.atouin.data.map.Cell;
+   import com.ankamagames.atouin.data.map.CellData;
+   import com.ankamagames.atouin.utils.CellIdConverter;
+   import com.ankamagames.atouin.messages.AdjacentMapClickMessage;
+   import com.ankamagames.atouin.Atouin;
+   import com.ankamagames.atouin.messages.CellClickMessage;
+   import com.ankamagames.atouin.messages.AdjacentMapOutMessage;
+   import flash.display.DisplayObject;
+   import com.ankamagames.atouin.messages.AdjacentMapOverMessage;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
+   
+   public class FrustumManager extends Object
+   {
+      
+      public function FrustumManager()
+      {
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
+            return;
+         }
+      }
+      
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FrustumManager));
+      
+      private static var _self:FrustumManager;
+      
+      public static function getInstance() : FrustumManager
+      {
+         if(!_self)
+         {
+            _self = new FrustumManager();
+         }
+         return _self;
+      }
+      
+      private var _frustumContainer:DisplayObjectContainer;
+      
+      private var _shapeTop:FrustumShape;
+      
+      private var _shapeRight:FrustumShape;
+      
+      private var _shapeBottom:FrustumShape;
+      
+      private var _shapeLeft:FrustumShape;
+      
+      private var _frustrum:Frustum;
+      
+      private var _lastCellId:int;
+      
+      private var _enable:Boolean;
+      
+      public function init(param1:DisplayObjectContainer) : void
+      {
+         this._frustumContainer = param1;
+         this._shapeTop = new FrustumShape(DirectionsEnum.UP);
+         this._shapeRight = new FrustumShape(DirectionsEnum.RIGHT);
+         this._shapeBottom = new FrustumShape(DirectionsEnum.DOWN);
+         this._shapeLeft = new FrustumShape(DirectionsEnum.LEFT);
+         this._frustumContainer.addChild(this._shapeLeft);
+         this._frustumContainer.addChild(this._shapeTop);
+         this._frustumContainer.addChild(this._shapeRight);
+         this._frustumContainer.addChild(this._shapeBottom);
+         this._shapeLeft.buttonMode = true;
+         this._shapeTop.buttonMode = true;
+         this._shapeRight.buttonMode = true;
+         this._shapeBottom.buttonMode = true;
+         this._shapeLeft.addEventListener(MouseEvent.CLICK,this.click);
+         this._shapeTop.addEventListener(MouseEvent.CLICK,this.click);
+         this._shapeRight.addEventListener(MouseEvent.CLICK,this.click);
+         this._shapeBottom.addEventListener(MouseEvent.CLICK,this.click);
+         this._shapeLeft.addEventListener(MouseEvent.MOUSE_OVER,this.mouseMove);
+         this._shapeTop.addEventListener(MouseEvent.MOUSE_OVER,this.mouseMove);
+         this._shapeRight.addEventListener(MouseEvent.MOUSE_OVER,this.mouseMove);
+         this._shapeBottom.addEventListener(MouseEvent.MOUSE_OVER,this.mouseMove);
+         this._shapeLeft.addEventListener(MouseEvent.MOUSE_OUT,this.out);
+         this._shapeTop.addEventListener(MouseEvent.MOUSE_OUT,this.out);
+         this._shapeRight.addEventListener(MouseEvent.MOUSE_OUT,this.out);
+         this._shapeBottom.addEventListener(MouseEvent.MOUSE_OUT,this.out);
+         this._shapeLeft.addEventListener(MouseEvent.MOUSE_MOVE,this.mouseMove);
+         this._shapeTop.addEventListener(MouseEvent.MOUSE_MOVE,this.mouseMove);
+         this._shapeRight.addEventListener(MouseEvent.MOUSE_MOVE,this.mouseMove);
+         this._shapeBottom.addEventListener(MouseEvent.MOUSE_MOVE,this.mouseMove);
+         this.setBorderInteraction(false);
+         this._lastCellId = -1;
+      }
+      
+      public function setBorderInteraction(param1:Boolean) : void
+      {
+         this._enable = param1;
+         this._shapeTop.mouseEnabled = param1;
+         this._shapeRight.mouseEnabled = param1;
+         this._shapeBottom.mouseEnabled = param1;
+         this._shapeLeft.mouseEnabled = param1;
+         this.updateMap();
+      }
+      
+      public function updateMap() : void
+      {
+         this._lastCellId = -1;
+         if(this._enable)
+         {
+            this._shapeTop.mouseEnabled = !(this.findNearestCell(this._shapeTop).cell == -1);
+            this._shapeRight.mouseEnabled = !(this.findNearestCell(this._shapeRight).cell == -1);
+            this._shapeBottom.mouseEnabled = !(this.findNearestCell(this._shapeBottom).cell == -1);
+            this._shapeLeft.mouseEnabled = !(this.findNearestCell(this._shapeLeft).cell == -1);
+         }
+      }
+      
+      public function getShape(param1:int) : Sprite
+      {
+         switch(param1)
+         {
+            case DirectionsEnum.UP:
+               return this._shapeTop;
+            case DirectionsEnum.LEFT:
+               return this._shapeLeft;
+            case DirectionsEnum.RIGHT:
+               return this._shapeRight;
+            case DirectionsEnum.DOWN:
+               return this._shapeBottom;
+            default:
+               return null;
+         }
+      }
+      
+      public function set frustum(param1:Frustum) : void
+      {
+         this._frustrum = param1;
+         var _loc2_:Point = new Point(param1.x + AtouinConstants.CELL_HALF_WIDTH * param1.scale,param1.y + AtouinConstants.CELL_HALF_HEIGHT * param1.scale);
+         var _loc3_:Point = new Point(param1.x - AtouinConstants.CELL_HALF_WIDTH * param1.scale + param1.width,param1.y + AtouinConstants.CELL_HALF_HEIGHT * param1.scale);
+         var _loc4_:Point = new Point(param1.x + AtouinConstants.CELL_HALF_WIDTH * param1.scale,param1.y - AtouinConstants.CELL_HEIGHT * param1.scale + param1.height);
+         var _loc5_:Point = new Point(param1.x - AtouinConstants.CELL_HALF_WIDTH * param1.scale + param1.width,param1.y - AtouinConstants.CELL_HEIGHT * param1.scale + param1.height);
+         var _loc6_:Point = new Point(param1.x,param1.y);
+         var _loc7_:Point = new Point(param1.x + param1.width,param1.y);
+         var _loc8_:Point = new Point(param1.x,param1.y + param1.height - AtouinConstants.CELL_HALF_HEIGHT * param1.scale);
+         var _loc9_:Point = new Point(param1.x + param1.width,param1.y + param1.height - AtouinConstants.CELL_HALF_HEIGHT * param1.scale);
+         var _loc10_:Number = 1;
+         var _loc11_:Vector.<int> = new Vector.<int>(7,true);
+         _loc11_[0] = 1;
+         _loc11_[1] = 2;
+         _loc11_[2] = 2;
+         _loc11_[3] = 2;
+         _loc11_[4] = 2;
+         _loc11_[5] = 2;
+         _loc11_[6] = 2;
+         var _loc12_:Vector.<Number> = new Vector.<Number>(14,true);
+         _loc12_[0] = 0;
+         _loc12_[1] = _loc6_.y;
+         _loc12_[2] = _loc6_.x;
+         _loc12_[3] = _loc6_.y;
+         _loc12_[4] = _loc2_.x;
+         _loc12_[5] = _loc2_.y;
+         _loc12_[6] = _loc4_.x;
+         _loc12_[7] = _loc4_.y;
+         _loc12_[8] = _loc8_.x;
+         _loc12_[9] = _loc8_.y;
+         _loc12_[10] = 0;
+         _loc12_[11] = _loc8_.y;
+         _loc12_[12] = 0;
+         _loc12_[13] = _loc6_.y;
+         var _loc13_:Bitmap = this.drawShape(16746564,_loc11_,_loc12_);
+         if(_loc13_ != null)
+         {
+            this._shapeLeft.addChild(_loc13_);
+         }
+         var _loc14_:Vector.<Number> = new Vector.<Number>(14,true);
+         _loc14_[0] = _loc6_.x;
+         _loc14_[1] = 0;
+         _loc14_[2] = _loc6_.x;
+         _loc14_[3] = _loc6_.y;
+         _loc14_[4] = _loc2_.x;
+         _loc14_[5] = _loc2_.y;
+         _loc14_[6] = _loc3_.x;
+         _loc14_[7] = _loc3_.y;
+         _loc14_[8] = _loc7_.x;
+         _loc14_[9] = _loc7_.y;
+         _loc14_[10] = _loc7_.x;
+         _loc14_[11] = 0;
+         _loc14_[12] = 0;
+         _loc14_[13] = 0;
+         _loc13_ = this.drawShape(7803289,_loc11_,_loc14_);
+         if(_loc13_ != null)
+         {
+            this._shapeTop.addChild(_loc13_);
+         }
+         var _loc15_:Vector.<Number> = new Vector.<Number>(14,true);
+         _loc15_[0] = StageShareManager.startWidth;
+         _loc15_[1] = _loc7_.y;
+         _loc15_[2] = _loc7_.x;
+         _loc15_[3] = _loc7_.y;
+         _loc15_[4] = _loc3_.x;
+         _loc15_[5] = _loc3_.y;
+         _loc15_[6] = _loc5_.x;
+         _loc15_[7] = _loc5_.y;
+         _loc15_[8] = _loc9_.x;
+         _loc15_[9] = _loc9_.y;
+         _loc15_[10] = StageShareManager.startWidth;
+         _loc15_[11] = _loc9_.y;
+         _loc15_[12] = StageShareManager.startWidth;
+         _loc15_[13] = _loc7_.y;
+         _loc13_ = this.drawShape(1218969,_loc11_,_loc15_);
+         if(_loc13_ != null)
+         {
+            _loc13_.x = StageShareManager.startWidth - _loc13_.width;
+            _loc13_.y = 15;
+            this._shapeRight.addChild(_loc13_);
+         }
+         var _loc16_:Vector.<Number> = new Vector.<Number>(14,true);
+         _loc16_[0] = _loc9_.x;
+         _loc16_[1] = StageShareManager.startHeight;
+         _loc16_[2] = _loc9_.x;
+         _loc16_[3] = _loc9_.y;
+         _loc16_[4] = _loc5_.x;
+         _loc16_[5] = _loc5_.y + 10;
+         _loc16_[6] = _loc4_.x;
+         _loc16_[7] = _loc4_.y + 10;
+         _loc16_[8] = _loc8_.x;
+         _loc16_[9] = _loc8_.y;
+         _loc16_[10] = _loc8_.x;
+         _loc16_[11] = StageShareManager.startHeight;
+         _loc16_[12] = _loc9_.x;
+         _loc16_[13] = StageShareManager.startHeight;
+         _loc13_ = this.drawShape(7807590,_loc11_,_loc16_);
+         if(_loc13_ != null)
+         {
+            _loc13_.y = StageShareManager.startHeight - _loc13_.height;
+            this._shapeBottom.addChild(_loc13_);
+         }
+      }
+      
+      private function drawShape(param1:uint, param2:Vector.<int>, param3:Vector.<Number>) : Bitmap
+      {
+         var _loc5_:BitmapData = null;
+         var _loc4_:Shape = new Shape();
+         _loc4_.graphics.beginFill(param1,0);
+         _loc4_.graphics.drawPath(param2,param3);
+         _loc4_.graphics.endFill();
+         if(_loc4_.width > 0 && _loc4_.height > 0)
+         {
+            _loc5_ = new BitmapData(_loc4_.width,_loc4_.height,true,16777215);
+            _loc5_.draw(_loc4_);
+            _loc4_.graphics.clear();
+            _loc4_ = null;
+            return new Bitmap(_loc5_);
+         }
+         return null;
+      }
+      
+      private function click(param1:MouseEvent) : void
+      {
+         var _loc2_:uint = 0;
+         var _loc3_:Map = MapDisplayManager.getInstance().getDataMapContainer().dataMap;
+         switch(param1.target)
+         {
+            case this._shapeRight:
+               _loc2_ = _loc3_.rightNeighbourId;
+               break;
+            case this._shapeLeft:
+               _loc2_ = _loc3_.leftNeighbourId;
+               break;
+            case this._shapeBottom:
+               _loc2_ = _loc3_.bottomNeighbourId;
+               break;
+            case this._shapeTop:
+               _loc2_ = _loc3_.topNeighbourId;
+               break;
+         }
+         var _loc4_:Point = new Point(isNaN(param1.localX)?Sprite(param1.target).mouseX:param1.localX,isNaN(param1.localY)?Sprite(param1.target).mouseY:param1.localY);
+         var _loc5_:Object = this.findNearestCell(param1.target as Sprite,_loc4_);
+         if(_loc5_.cell == -1)
+         {
+            return;
+         }
+         if(!_loc5_.custom)
+         {
+            this.sendClickAdjacentMsg(_loc2_,_loc5_.cell);
+         }
+         else
+         {
+            this.sendCellClickMsg(_loc2_,_loc5_.cell);
+         }
+      }
+      
+      private function findCustomNearestCell(param1:Sprite, param2:Point = null) : Object
+      {
+         var _loc6_:Array = null;
+         var _loc7_:Point = null;
+         var _loc8_:* = NaN;
+         var _loc9_:* = 0;
+         var _loc10_:uint = 0;
+         var _loc11_:uint = 0;
+         var _loc3_:Map = MapDisplayManager.getInstance().getDataMapContainer().dataMap;
+         var _loc4_:uint = 0;
+         var _loc5_:uint = 0;
+         if(!param2)
+         {
+            var param2:Point = new Point(param1.mouseX,param1.mouseY);
+         }
+         switch(param1)
+         {
+            case this._shapeRight:
+               _loc5_ = 1;
+               _loc6_ = _loc3_.rightArrowCell;
+               break;
+            case this._shapeLeft:
+               _loc5_ = 1;
+               _loc6_ = _loc3_.leftArrowCell;
+               break;
+            case this._shapeBottom:
+               _loc4_ = 1;
+               _loc6_ = _loc3_.bottomArrowCell;
+               break;
+            case this._shapeTop:
+               _loc4_ = 1;
+               _loc6_ = _loc3_.topArrowCell;
+               break;
+         }
+         if(!_loc6_ || !_loc6_.length)
+         {
+            return {
+               "cell":-1,
+               "distance":Number.MAX_VALUE
             };
-        }
-
-        public static function getInstance():FrustumManager
-        {
-            if (!(_self))
+         }
+         var _loc12_:Number = Number.MAX_VALUE;
+         var _loc13_:uint = 0;
+         while(_loc13_ < _loc6_.length)
+         {
+            _loc10_ = _loc6_[_loc13_];
+            _loc7_ = Cell.cellPixelCoords(_loc10_);
+            _loc9_ = CellData(_loc3_.cells[_loc10_]).floor;
+            if(_loc5_ == 1)
             {
-                _self = new (FrustumManager)();
-            };
-            return (_self);
-        }
-
-
-        public function init(frustumContainer:DisplayObjectContainer):void
-        {
-            this._frustumContainer = frustumContainer;
-            this._shapeTop = new FrustumShape(DirectionsEnum.UP);
-            this._shapeRight = new FrustumShape(DirectionsEnum.RIGHT);
-            this._shapeBottom = new FrustumShape(DirectionsEnum.DOWN);
-            this._shapeLeft = new FrustumShape(DirectionsEnum.LEFT);
-            this._frustumContainer.addChild(this._shapeLeft);
-            this._frustumContainer.addChild(this._shapeTop);
-            this._frustumContainer.addChild(this._shapeRight);
-            this._frustumContainer.addChild(this._shapeBottom);
-            this._shapeLeft.buttonMode = true;
-            this._shapeTop.buttonMode = true;
-            this._shapeRight.buttonMode = true;
-            this._shapeBottom.buttonMode = true;
-            this._shapeLeft.addEventListener(MouseEvent.CLICK, this.click);
-            this._shapeTop.addEventListener(MouseEvent.CLICK, this.click);
-            this._shapeRight.addEventListener(MouseEvent.CLICK, this.click);
-            this._shapeBottom.addEventListener(MouseEvent.CLICK, this.click);
-            this._shapeLeft.addEventListener(MouseEvent.MOUSE_OVER, this.mouseMove);
-            this._shapeTop.addEventListener(MouseEvent.MOUSE_OVER, this.mouseMove);
-            this._shapeRight.addEventListener(MouseEvent.MOUSE_OVER, this.mouseMove);
-            this._shapeBottom.addEventListener(MouseEvent.MOUSE_OVER, this.mouseMove);
-            this._shapeLeft.addEventListener(MouseEvent.MOUSE_OUT, this.out);
-            this._shapeTop.addEventListener(MouseEvent.MOUSE_OUT, this.out);
-            this._shapeRight.addEventListener(MouseEvent.MOUSE_OUT, this.out);
-            this._shapeBottom.addEventListener(MouseEvent.MOUSE_OUT, this.out);
-            this._shapeLeft.addEventListener(MouseEvent.MOUSE_MOVE, this.mouseMove);
-            this._shapeTop.addEventListener(MouseEvent.MOUSE_MOVE, this.mouseMove);
-            this._shapeRight.addEventListener(MouseEvent.MOUSE_MOVE, this.mouseMove);
-            this._shapeBottom.addEventListener(MouseEvent.MOUSE_MOVE, this.mouseMove);
-            this.setBorderInteraction(false);
-            this._lastCellId = -1;
-        }
-
-        public function setBorderInteraction(enable:Boolean):void
-        {
-            this._enable = enable;
-            this._shapeTop.mouseEnabled = enable;
-            this._shapeRight.mouseEnabled = enable;
-            this._shapeBottom.mouseEnabled = enable;
-            this._shapeLeft.mouseEnabled = enable;
-            this.updateMap();
-        }
-
-        public function updateMap():void
-        {
-            this._lastCellId = -1;
-            if (this._enable)
-            {
-                this._shapeTop.mouseEnabled = !((this.findNearestCell(this._shapeTop).cell == -1));
-                this._shapeRight.mouseEnabled = !((this.findNearestCell(this._shapeRight).cell == -1));
-                this._shapeBottom.mouseEnabled = !((this.findNearestCell(this._shapeBottom).cell == -1));
-                this._shapeLeft.mouseEnabled = !((this.findNearestCell(this._shapeLeft).cell == -1));
-            };
-        }
-
-        public function getShape(direction:int):Sprite
-        {
-            switch (direction)
-            {
-                case DirectionsEnum.UP:
-                    return (this._shapeTop);
-                case DirectionsEnum.LEFT:
-                    return (this._shapeLeft);
-                case DirectionsEnum.RIGHT:
-                    return (this._shapeRight);
-                case DirectionsEnum.DOWN:
-                    return (this._shapeBottom);
-            };
-            return (null);
-        }
-
-        public function set frustum(rFrustum:Frustum):void
-        {
-            this._frustrum = rFrustum;
-            var pTopLeftInner:Point = new Point((rFrustum.x + (AtouinConstants.CELL_HALF_WIDTH * rFrustum.scale)), (rFrustum.y + (AtouinConstants.CELL_HALF_HEIGHT * rFrustum.scale)));
-            var pTopRightInner:Point = new Point(((rFrustum.x - (AtouinConstants.CELL_HALF_WIDTH * rFrustum.scale)) + rFrustum.width), (rFrustum.y + (AtouinConstants.CELL_HALF_HEIGHT * rFrustum.scale)));
-            var pBottomLeftInner:Point = new Point((rFrustum.x + (AtouinConstants.CELL_HALF_WIDTH * rFrustum.scale)), ((rFrustum.y - (AtouinConstants.CELL_HEIGHT * rFrustum.scale)) + rFrustum.height));
-            var pBottomRightInner:Point = new Point(((rFrustum.x - (AtouinConstants.CELL_HALF_WIDTH * rFrustum.scale)) + rFrustum.width), ((rFrustum.y - (AtouinConstants.CELL_HEIGHT * rFrustum.scale)) + rFrustum.height));
-            var pTopLeft:Point = new Point(rFrustum.x, rFrustum.y);
-            var pTopRight:Point = new Point((rFrustum.x + rFrustum.width), rFrustum.y);
-            var pBottomLeft:Point = new Point(rFrustum.x, ((rFrustum.y + rFrustum.height) - (AtouinConstants.CELL_HALF_HEIGHT * rFrustum.scale)));
-            var pBottomRight:Point = new Point((rFrustum.x + rFrustum.width), ((rFrustum.y + rFrustum.height) - (AtouinConstants.CELL_HALF_HEIGHT * rFrustum.scale)));
-            var alphaShape:Number = 1;
-            var commands:Vector.<int> = new Vector.<int>(7, true);
-            commands[0] = 1;
-            commands[1] = 2;
-            commands[2] = 2;
-            commands[3] = 2;
-            commands[4] = 2;
-            commands[5] = 2;
-            commands[6] = 2;
-            var leftCoords:Vector.<Number> = new Vector.<Number>(14, true);
-            leftCoords[0] = 0;
-            leftCoords[1] = pTopLeft.y;
-            leftCoords[2] = pTopLeft.x;
-            leftCoords[3] = pTopLeft.y;
-            leftCoords[4] = pTopLeftInner.x;
-            leftCoords[5] = pTopLeftInner.y;
-            leftCoords[6] = pBottomLeftInner.x;
-            leftCoords[7] = pBottomLeftInner.y;
-            leftCoords[8] = pBottomLeft.x;
-            leftCoords[9] = pBottomLeft.y;
-            leftCoords[10] = 0;
-            leftCoords[11] = pBottomLeft.y;
-            leftCoords[12] = 0;
-            leftCoords[13] = pTopLeft.y;
-            var bmpShape:Bitmap = this.drawShape(16746564, commands, leftCoords);
-            if (bmpShape != null)
-            {
-                this._shapeLeft.addChild(bmpShape);
-            };
-            var topCoords:Vector.<Number> = new Vector.<Number>(14, true);
-            topCoords[0] = pTopLeft.x;
-            topCoords[1] = 0;
-            topCoords[2] = pTopLeft.x;
-            topCoords[3] = pTopLeft.y;
-            topCoords[4] = pTopLeftInner.x;
-            topCoords[5] = pTopLeftInner.y;
-            topCoords[6] = pTopRightInner.x;
-            topCoords[7] = pTopRightInner.y;
-            topCoords[8] = pTopRight.x;
-            topCoords[9] = pTopRight.y;
-            topCoords[10] = pTopRight.x;
-            topCoords[11] = 0;
-            topCoords[12] = 0;
-            topCoords[13] = 0;
-            bmpShape = this.drawShape(7803289, commands, topCoords);
-            if (bmpShape != null)
-            {
-                this._shapeTop.addChild(bmpShape);
-            };
-            var rightCoords:Vector.<Number> = new Vector.<Number>(14, true);
-            rightCoords[0] = StageShareManager.startWidth;
-            rightCoords[1] = pTopRight.y;
-            rightCoords[2] = pTopRight.x;
-            rightCoords[3] = pTopRight.y;
-            rightCoords[4] = pTopRightInner.x;
-            rightCoords[5] = pTopRightInner.y;
-            rightCoords[6] = pBottomRightInner.x;
-            rightCoords[7] = pBottomRightInner.y;
-            rightCoords[8] = pBottomRight.x;
-            rightCoords[9] = pBottomRight.y;
-            rightCoords[10] = StageShareManager.startWidth;
-            rightCoords[11] = pBottomRight.y;
-            rightCoords[12] = StageShareManager.startWidth;
-            rightCoords[13] = pTopRight.y;
-            bmpShape = this.drawShape(1218969, commands, rightCoords);
-            if (bmpShape != null)
-            {
-                bmpShape.x = (StageShareManager.startWidth - bmpShape.width);
-                bmpShape.y = 15;
-                this._shapeRight.addChild(bmpShape);
-            };
-            var bottomCoords:Vector.<Number> = new Vector.<Number>(14, true);
-            bottomCoords[0] = pBottomRight.x;
-            bottomCoords[1] = StageShareManager.startHeight;
-            bottomCoords[2] = pBottomRight.x;
-            bottomCoords[3] = pBottomRight.y;
-            bottomCoords[4] = pBottomRightInner.x;
-            bottomCoords[5] = (pBottomRightInner.y + 10);
-            bottomCoords[6] = pBottomLeftInner.x;
-            bottomCoords[7] = (pBottomLeftInner.y + 10);
-            bottomCoords[8] = pBottomLeft.x;
-            bottomCoords[9] = pBottomLeft.y;
-            bottomCoords[10] = pBottomLeft.x;
-            bottomCoords[11] = StageShareManager.startHeight;
-            bottomCoords[12] = pBottomRight.x;
-            bottomCoords[13] = StageShareManager.startHeight;
-            bmpShape = this.drawShape(7807590, commands, bottomCoords);
-            if (bmpShape != null)
-            {
-                bmpShape.y = (StageShareManager.startHeight - bmpShape.height);
-                this._shapeBottom.addChild(bmpShape);
-            };
-        }
-
-        private function drawShape(pColor:uint, pCommands:Vector.<int>, pCoords:Vector.<Number>):Bitmap
-        {
-            var sBmp:BitmapData;
-            var sShape:Shape = new Shape();
-            sShape.graphics.beginFill(pColor, 0);
-            sShape.graphics.drawPath(pCommands, pCoords);
-            sShape.graphics.endFill();
-            if ((((sShape.width > 0)) && ((sShape.height > 0))))
-            {
-                sBmp = new BitmapData(sShape.width, sShape.height, true, 0xFFFFFF);
-                sBmp.draw(sShape);
-                sShape.graphics.clear();
-                sShape = null;
-                return (new Bitmap(sBmp));
-            };
-            return (null);
-        }
-
-        private function click(e:MouseEvent):void
-        {
-            var destMapId:uint;
-            var currentMap:Map = MapDisplayManager.getInstance().getDataMapContainer().dataMap;
-            switch (e.target)
-            {
-                case this._shapeRight:
-                    destMapId = currentMap.rightNeighbourId;
-                    break;
-                case this._shapeLeft:
-                    destMapId = currentMap.leftNeighbourId;
-                    break;
-                case this._shapeBottom:
-                    destMapId = currentMap.bottomNeighbourId;
-                    break;
-                case this._shapeTop:
-                    destMapId = currentMap.topNeighbourId;
-                    break;
-            };
-            var localMousePosition:Point = new Point(((isNaN(e.localX)) ? Sprite(e.target).mouseX : e.localX), ((isNaN(e.localY)) ? Sprite(e.target).mouseY : e.localY));
-            var cellData:Object = this.findNearestCell((e.target as Sprite), localMousePosition);
-            if (cellData.cell == -1)
-            {
-                return;
-            };
-            if (!(cellData.custom))
-            {
-                this.sendClickAdjacentMsg(destMapId, cellData.cell);
+               _loc8_ = Math.abs(param2.x - this._frustrum.y - (_loc7_.y - _loc9_ + AtouinConstants.CELL_HALF_HEIGHT) * this._frustrum.scale);
             }
-            else
+            if(_loc4_ == 1)
             {
-                this.sendCellClickMsg(destMapId, cellData.cell);
-            };
-        }
-
-        private function findCustomNearestCell(target:Sprite, localMousePosition:Point=null):Object
-        {
-            var cellList:Array;
-            var p:Point;
-            var d:Number;
-            var floor:int;
-            var cellId:uint;
-            var currentCellId:uint;
-            var currentMap:Map = MapDisplayManager.getInstance().getDataMapContainer().dataMap;
-            var x:uint;
-            var y:uint;
-            if (!(localMousePosition))
-            {
-                localMousePosition = new Point(target.mouseX, target.mouseY);
-            };
-            switch (target)
-            {
-                case this._shapeRight:
-                    y = 1;
-                    cellList = currentMap.rightArrowCell;
-                    break;
-                case this._shapeLeft:
-                    y = 1;
-                    cellList = currentMap.leftArrowCell;
-                    break;
-                case this._shapeBottom:
-                    x = 1;
-                    cellList = currentMap.bottomArrowCell;
-                    break;
-                case this._shapeTop:
-                    x = 1;
-                    cellList = currentMap.topArrowCell;
-                    break;
-            };
-            if (((!(cellList)) || (!(cellList.length))))
-            {
-                return ({
-                    "cell":-1,
-                    "distance":Number.MAX_VALUE
-                });
-            };
-            var currentDist:Number = Number.MAX_VALUE;
-            var i:uint;
-            while (i < cellList.length)
-            {
-                cellId = cellList[i];
-                p = Cell.cellPixelCoords(cellId);
-                floor = CellData(currentMap.cells[cellId]).floor;
-                if (y == 1)
-                {
-                    d = Math.abs(((localMousePosition.x - this._frustrum.y) - (((p.y - floor) + AtouinConstants.CELL_HALF_HEIGHT) * this._frustrum.scale)));
-                };
-                if (x == 1)
-                {
-                    d = Math.abs(((localMousePosition.x - this._frustrum.x) - ((p.x + AtouinConstants.CELL_HALF_WIDTH) * this._frustrum.scale)));
-                };
-                if (d < currentDist)
-                {
-                    currentDist = d;
-                    currentCellId = cellId;
-                };
-                i++;
-            };
-            return ({
-                "cell":currentCellId,
-                "distance":currentDist
-            });
-        }
-
-        private function findNearestCell(target:Sprite, localMousePosition:Point=null):Object
-        {
-            var x:int;
-            var y:int;
-            var sx:int;
-            var sy:int;
-            var p:Point;
-            var floor:int;
-            var d:Number;
-            var destMapId:uint;
-            var i:uint;
-            var limit:uint;
-            var cellId:int;
-            var cellData:CellData;
-            var mapChangeData:uint;
-            var currentMap:Map = MapDisplayManager.getInstance().getDataMapContainer().dataMap;
-            var near:Number = Number.MAX_VALUE;
-            if (!(localMousePosition))
-            {
-                localMousePosition = new Point(target.mouseX, target.mouseY);
-            };
-            switch (target)
-            {
-                case this._shapeRight:
-                    x = (AtouinConstants.MAP_WIDTH - 1);
-                    y = (AtouinConstants.MAP_WIDTH - 1);
-                    destMapId = currentMap.rightNeighbourId;
-                    break;
-                case this._shapeLeft:
-                    x = 0;
-                    y = 0;
-                    destMapId = currentMap.leftNeighbourId;
-                    break;
-                case this._shapeBottom:
-                    x = (AtouinConstants.MAP_HEIGHT - 1);
-                    y = -((AtouinConstants.MAP_HEIGHT - 1));
-                    destMapId = currentMap.bottomNeighbourId;
-                    break;
-                case this._shapeTop:
-                    x = 0;
-                    y = 0;
-                    destMapId = currentMap.topNeighbourId;
-                    break;
-            };
-            var customData:Object = this.findCustomNearestCell(target);
-            if (customData.cell != -1)
-            {
-                near = customData.distance;
-                sx = CellIdConverter.cellIdToCoord(customData.cell).x;
-                sy = CellIdConverter.cellIdToCoord(customData.cell).y;
-            };
-            if ((((target == this._shapeRight)) || ((target == this._shapeLeft))))
-            {
-                limit = (AtouinConstants.MAP_HEIGHT * 2);
-                i = 0;
-                while (i < limit)
-                {
-                    cellId = CellIdConverter.coordToCellId(x, y);
-                    p = Cell.cellPixelCoords(cellId);
-                    floor = CellData(currentMap.cells[cellId]).floor;
-                    d = Math.abs(((localMousePosition.y - this._frustrum.y) - (((p.y - floor) + AtouinConstants.CELL_HALF_HEIGHT) * this._frustrum.scale)));
-                    if (d < near)
-                    {
-                        cellData = (currentMap.cells[cellId] as CellData);
-                        mapChangeData = cellData.mapChangeData;
-                        if (((mapChangeData) && ((((((target == this._shapeRight)) && ((((((mapChangeData & 1)) || ((((((cellId + 1) % (AtouinConstants.MAP_WIDTH * 2)) == 0)) && ((mapChangeData & 2)))))) || ((((((cellId + 1) % (AtouinConstants.MAP_WIDTH * 2)) == 0)) && ((mapChangeData & 128)))))))) || ((((target == this._shapeLeft)) && ((((((((x == -(y))) && ((mapChangeData & 8)))) || ((mapChangeData & 16)))) || ((((x == -(y))) && ((mapChangeData & 32))))))))))))
-                        {
-                            sx = x;
-                            sy = y;
-                            near = d;
-                        };
-                    };
-                    if (!((i % 2)))
-                    {
-                        x++;
-                    }
-                    else
-                    {
-                        y--;
-                    };
-                    i++;
-                };
+               _loc8_ = Math.abs(param2.x - this._frustrum.x - (_loc7_.x + AtouinConstants.CELL_HALF_WIDTH) * this._frustrum.scale);
             }
-            else
+            if(_loc8_ < _loc12_)
             {
-                i = 0;
-                while (i < (AtouinConstants.MAP_WIDTH * 2))
-                {
-                    cellId = CellIdConverter.coordToCellId(x, y);
-                    p = Cell.cellPixelCoords(cellId);
-                    d = Math.abs(((localMousePosition.x - this._frustrum.x) - ((p.x + AtouinConstants.CELL_HALF_WIDTH) * this._frustrum.scale)));
-                    if (d < near)
-                    {
-                        cellData = (currentMap.cells[cellId] as CellData);
-                        mapChangeData = cellData.mapChangeData;
-                        if (((mapChangeData) && ((((((target == this._shapeTop)) && ((((((((cellId < AtouinConstants.MAP_WIDTH)) && ((mapChangeData & 32)))) || ((mapChangeData & 64)))) || ((((cellId < AtouinConstants.MAP_WIDTH)) && ((mapChangeData & 128)))))))) || ((((target == this._shapeBottom)) && ((((((((cellId >= (AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH))) && ((mapChangeData & 2)))) || ((mapChangeData & 4)))) || ((((cellId >= (AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH))) && ((mapChangeData & 8))))))))))))
-                        {
-                            sx = x;
-                            sy = y;
-                            near = d;
-                        };
-                    };
-                    if (!((i % 2)))
-                    {
-                        x++;
-                    }
-                    else
-                    {
-                        y++;
-                    };
-                    i++;
-                };
-            };
-            if (near != Number.MAX_VALUE)
+               _loc12_ = _loc8_;
+               _loc11_ = _loc10_;
+            }
+            _loc13_++;
+         }
+         return {
+            "cell":_loc11_,
+            "distance":_loc12_
+         };
+      }
+      
+      private function findNearestCell(param1:Sprite, param2:Point = null) : Object
+      {
+         var _loc3_:* = 0;
+         var _loc4_:* = 0;
+         var _loc5_:* = 0;
+         var _loc6_:* = 0;
+         var _loc7_:Point = null;
+         var _loc8_:* = 0;
+         var _loc9_:* = NaN;
+         var _loc10_:uint = 0;
+         var _loc11_:uint = 0;
+         var _loc12_:uint = 0;
+         var _loc14_:* = 0;
+         var _loc16_:CellData = null;
+         var _loc17_:uint = 0;
+         var _loc13_:Map = MapDisplayManager.getInstance().getDataMapContainer().dataMap;
+         var _loc15_:Number = Number.MAX_VALUE;
+         if(!param2)
+         {
+            var param2:Point = new Point(param1.mouseX,param1.mouseY);
+         }
+         switch(param1)
+         {
+            case this._shapeRight:
+               _loc3_ = AtouinConstants.MAP_WIDTH - 1;
+               _loc4_ = AtouinConstants.MAP_WIDTH - 1;
+               _loc10_ = _loc13_.rightNeighbourId;
+               break;
+            case this._shapeLeft:
+               _loc3_ = 0;
+               _loc4_ = 0;
+               _loc10_ = _loc13_.leftNeighbourId;
+               break;
+            case this._shapeBottom:
+               _loc3_ = AtouinConstants.MAP_HEIGHT - 1;
+               _loc4_ = -(AtouinConstants.MAP_HEIGHT - 1);
+               _loc10_ = _loc13_.bottomNeighbourId;
+               break;
+            case this._shapeTop:
+               _loc3_ = 0;
+               _loc4_ = 0;
+               _loc10_ = _loc13_.topNeighbourId;
+               break;
+         }
+         var _loc18_:Object = this.findCustomNearestCell(param1);
+         if(_loc18_.cell != -1)
+         {
+            _loc15_ = _loc18_.distance;
+            _loc5_ = CellIdConverter.cellIdToCoord(_loc18_.cell).x;
+            _loc6_ = CellIdConverter.cellIdToCoord(_loc18_.cell).y;
+         }
+         if(param1 == this._shapeRight || param1 == this._shapeLeft)
+         {
+            _loc12_ = AtouinConstants.MAP_HEIGHT * 2;
+            _loc11_ = 0;
+            while(_loc11_ < _loc12_)
             {
-                return ({
-                    "cell":CellIdConverter.coordToCellId(sx, sy),
-                    "custom":(near == customData.distance)
-                });
-            };
-            return ({
-                "cell":-1,
-                "custom":false
-            });
-        }
-
-        private function sendClickAdjacentMsg(mapId:uint, cellId:uint):void
-        {
-            var msg:AdjacentMapClickMessage = new AdjacentMapClickMessage();
-            msg.cellId = cellId;
-            msg.adjacentMapId = mapId;
-            Atouin.getInstance().handler.process(msg);
-        }
-
-        private function sendCellClickMsg(mapId:uint, cellId:uint):void
-        {
-            var msg:CellClickMessage = new CellClickMessage();
-            msg.cellId = cellId;
-            msg.id = mapId;
-            Atouin.getInstance().handler.process(msg);
-        }
-
-        private function out(e:MouseEvent):void
-        {
-            var n:uint;
-            switch (e.target)
+               _loc14_ = CellIdConverter.coordToCellId(_loc3_,_loc4_);
+               _loc7_ = Cell.cellPixelCoords(_loc14_);
+               _loc8_ = CellData(_loc13_.cells[_loc14_]).floor;
+               _loc9_ = Math.abs(param2.y - this._frustrum.y - (_loc7_.y - _loc8_ + AtouinConstants.CELL_HALF_HEIGHT) * this._frustrum.scale);
+               if(_loc9_ < _loc15_)
+               {
+                  _loc16_ = _loc13_.cells[_loc14_] as CellData;
+                  _loc17_ = _loc16_.mapChangeData;
+                  if((_loc17_) && ((param1 == this._shapeRight) && (_loc17_ & 1 || (_loc14_ + 1) % (AtouinConstants.MAP_WIDTH * 2) == 0 && _loc17_ & 2 || (_loc14_ + 1) % (AtouinConstants.MAP_WIDTH * 2) == 0 && _loc17_ & 128) || (param1 == this._shapeLeft) && (_loc3_ == -_loc4_ && _loc17_ & 8 || _loc17_ & 16 || _loc3_ == -_loc4_ && _loc17_ & 32)))
+                  {
+                     _loc5_ = _loc3_;
+                     _loc6_ = _loc4_;
+                     _loc15_ = _loc9_;
+                  }
+               }
+               if(!(_loc11_ % 2))
+               {
+                  _loc3_++;
+               }
+               else
+               {
+                  _loc4_--;
+               }
+               _loc11_++;
+            }
+         }
+         else
+         {
+            _loc11_ = 0;
+            while(_loc11_ < AtouinConstants.MAP_WIDTH * 2)
             {
-                case this._shapeRight:
-                    n = DirectionsEnum.RIGHT;
-                    break;
-                case this._shapeLeft:
-                    n = DirectionsEnum.LEFT;
-                    break;
-                case this._shapeBottom:
-                    n = DirectionsEnum.DOWN;
-                    break;
-                case this._shapeTop:
-                    n = DirectionsEnum.UP;
-                    break;
+               _loc14_ = CellIdConverter.coordToCellId(_loc3_,_loc4_);
+               _loc7_ = Cell.cellPixelCoords(_loc14_);
+               _loc9_ = Math.abs(param2.x - this._frustrum.x - (_loc7_.x + AtouinConstants.CELL_HALF_WIDTH) * this._frustrum.scale);
+               if(_loc9_ < _loc15_)
+               {
+                  _loc16_ = _loc13_.cells[_loc14_] as CellData;
+                  _loc17_ = _loc16_.mapChangeData;
+                  if((_loc17_) && ((param1 == this._shapeTop) && (_loc14_ < AtouinConstants.MAP_WIDTH && _loc17_ & 32 || _loc17_ & 64 || _loc14_ < AtouinConstants.MAP_WIDTH && _loc17_ & 128) || (param1 == this._shapeBottom) && (_loc14_ >= AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH && _loc17_ & 2 || _loc17_ & 4 || _loc14_ >= AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH && _loc17_ & 8)))
+                  {
+                     _loc5_ = _loc3_;
+                     _loc6_ = _loc4_;
+                     _loc15_ = _loc9_;
+                  }
+               }
+               if(!(_loc11_ % 2))
+               {
+                  _loc3_++;
+               }
+               else
+               {
+                  _loc4_++;
+               }
+               _loc11_++;
+            }
+         }
+         if(_loc15_ != Number.MAX_VALUE)
+         {
+            return {
+               "cell":CellIdConverter.coordToCellId(_loc5_,_loc6_),
+               "custom":_loc15_ == _loc18_.distance
             };
-            this._lastCellId = -1;
-            var msg:AdjacentMapOutMessage = new AdjacentMapOutMessage(n, DisplayObject(e.target));
-            Atouin.getInstance().handler.process(msg);
-        }
-
-        private function mouseMove(e:MouseEvent):void
-        {
-            var n:uint;
-            switch (e.target)
-            {
-                case this._shapeRight:
-                    n = DirectionsEnum.RIGHT;
-                    break;
-                case this._shapeLeft:
-                    n = DirectionsEnum.LEFT;
-                    break;
-                case this._shapeBottom:
-                    n = DirectionsEnum.DOWN;
-                    break;
-                case this._shapeTop:
-                    n = DirectionsEnum.UP;
-                    break;
-            };
-            var cellId:int = this.findNearestCell((e.target as Sprite)).cell;
-            if ((((cellId == -1)) || ((cellId == this._lastCellId))))
-            {
-                return;
-            };
-            this._lastCellId = cellId;
-            var cellData:CellData = (MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId] as CellData);
-            var msg:AdjacentMapOverMessage = new AdjacentMapOverMessage(n, DisplayObject(e.target), cellId, cellData);
-            Atouin.getInstance().handler.process(msg);
-        }
-
-
-    }
-}//package com.ankamagames.atouin.managers
-
+         }
+         return {
+            "cell":-1,
+            "custom":false
+         };
+      }
+      
+      private function sendClickAdjacentMsg(param1:uint, param2:uint) : void
+      {
+         var _loc3_:AdjacentMapClickMessage = new AdjacentMapClickMessage();
+         _loc3_.cellId = param2;
+         _loc3_.adjacentMapId = param1;
+         Atouin.getInstance().handler.process(_loc3_);
+      }
+      
+      private function sendCellClickMsg(param1:uint, param2:uint) : void
+      {
+         var _loc3_:CellClickMessage = new CellClickMessage();
+         _loc3_.cellId = param2;
+         _loc3_.id = param1;
+         Atouin.getInstance().handler.process(_loc3_);
+      }
+      
+      private function out(param1:MouseEvent) : void
+      {
+         var _loc2_:uint = 0;
+         switch(param1.target)
+         {
+            case this._shapeRight:
+               _loc2_ = DirectionsEnum.RIGHT;
+               break;
+            case this._shapeLeft:
+               _loc2_ = DirectionsEnum.LEFT;
+               break;
+            case this._shapeBottom:
+               _loc2_ = DirectionsEnum.DOWN;
+               break;
+            case this._shapeTop:
+               _loc2_ = DirectionsEnum.UP;
+               break;
+         }
+         this._lastCellId = -1;
+         var _loc3_:AdjacentMapOutMessage = new AdjacentMapOutMessage(_loc2_,DisplayObject(param1.target));
+         Atouin.getInstance().handler.process(_loc3_);
+      }
+      
+      private function mouseMove(param1:MouseEvent) : void
+      {
+         var _loc2_:uint = 0;
+         switch(param1.target)
+         {
+            case this._shapeRight:
+               _loc2_ = DirectionsEnum.RIGHT;
+               break;
+            case this._shapeLeft:
+               _loc2_ = DirectionsEnum.LEFT;
+               break;
+            case this._shapeBottom:
+               _loc2_ = DirectionsEnum.DOWN;
+               break;
+            case this._shapeTop:
+               _loc2_ = DirectionsEnum.UP;
+               break;
+         }
+         var _loc3_:int = this.findNearestCell(param1.target as Sprite).cell;
+         if(_loc3_ == -1 || _loc3_ == this._lastCellId)
+         {
+            return;
+         }
+         this._lastCellId = _loc3_;
+         var _loc4_:CellData = MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc3_] as CellData;
+         var _loc5_:AdjacentMapOverMessage = new AdjacentMapOverMessage(_loc2_,DisplayObject(param1.target),_loc3_,_loc4_);
+         Atouin.getInstance().handler.process(_loc5_);
+      }
+   }
+}

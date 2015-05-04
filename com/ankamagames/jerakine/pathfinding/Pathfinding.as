@@ -1,551 +1,570 @@
-﻿package com.ankamagames.jerakine.pathfinding
+package com.ankamagames.jerakine.pathfinding
 {
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import com.ankamagames.jerakine.types.positions.MovementPath;
-    import com.ankamagames.jerakine.map.IDataMapProvider;
-    import com.ankamagames.jerakine.types.positions.MapPoint;
-    import com.ankamagames.jerakine.types.positions.PathElement;
-    import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
-    import flash.utils.getTimer;
-    import flash.events.Event;
-
-    public class Pathfinding 
-    {
-
-        private static var _minX:int;
-        private static var _maxX:int;
-        private static var _minY:int;
-        private static var _maxY:int;
-        protected static var _log:Logger = Log.getLogger(getQualifiedClassName(Pathfinding));
-        private static var _self:Pathfinding;
-
-        private var _mapStatus:Array;
-        private var _openList:Array;
-        private var _movPath:MovementPath;
-        private var _nHVCost:uint = 10;
-        private var _nDCost:uint = 15;
-        private var _nHeuristicCost:uint = 10;
-        private var _bAllowDiagCornering:Boolean = false;
-        private var _bAllowTroughEntity:Boolean;
-        private var _bIsFighting:Boolean;
-        private var _callBackFunction:Function;
-        private var _argsFunction:Array;
-        private var _enterFrameIsActive:Boolean = false;
-        private var _map:IDataMapProvider;
-        private var _start:MapPoint;
-        private var _end:MapPoint;
-        private var _allowDiag:Boolean;
-        private var _endX:int;
-        private var _endY:int;
-        private var _endPoint:MapPoint;
-        private var _startPoint:MapPoint;
-        private var _startX:int;
-        private var _startY:int;
-        private var _endPointAux:MapPoint;
-        private var _endAuxX:int;
-        private var _endAuxY:int;
-        private var _distanceToEnd:int;
-        private var _nowY:int;
-        private var _nowX:int;
-        private var _currentTime:int;
-        private var _maxTime:int = 30;
-        private var _previousCellId:int;
-
-
-        public static function init(minX:int, maxX:int, minY:int, maxY:int):void
-        {
-            _minX = minX;
-            _maxX = maxX;
-            _minY = minY;
-            _maxY = maxY;
-        }
-
-        public static function findPath(map:IDataMapProvider, start:MapPoint, end:MapPoint, allowDiag:Boolean=true, bAllowTroughEntity:Boolean=true, callBack:Function=null, args:Array=null, bIsFighting:Boolean=false):MovementPath
-        {
-            return (new (Pathfinding)().processFindPath(map, start, end, allowDiag, bAllowTroughEntity, callBack, args, bIsFighting));
-        }
-
-
-        public function processFindPath(map:IDataMapProvider, start:MapPoint, end:MapPoint, allowDiag:Boolean=true, bAllowTroughEntity:Boolean=true, callBack:Function=null, args:Array=null, bIsFighting:Boolean=false):MovementPath
-        {
-            this._callBackFunction = callBack;
-            this._argsFunction = args;
-            this._movPath = new MovementPath();
-            this._movPath.start = start;
-            this._movPath.end = end;
-            this._bAllowTroughEntity = bAllowTroughEntity;
-            this._bIsFighting = bIsFighting;
-            this._bAllowDiagCornering = allowDiag;
-            if ((((((map.height == 0)) || ((map.width == 0)))) || ((start == null))))
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.types.positions.MovementPath;
+   import com.ankamagames.jerakine.map.IDataMapProvider;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.positions.PathElement;
+   import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
+   import flash.events.Event;
+   import flash.utils.getTimer;
+   
+   public class Pathfinding extends Object
+   {
+      
+      public function Pathfinding()
+      {
+         super();
+      }
+      
+      private static var _minX:int;
+      
+      private static var _maxX:int;
+      
+      private static var _minY:int;
+      
+      private static var _maxY:int;
+      
+      protected static var _log:Logger = Log.getLogger(getQualifiedClassName(Pathfinding));
+      
+      private static var _self:Pathfinding;
+      
+      public static function init(param1:int, param2:int, param3:int, param4:int) : void
+      {
+         _minX = param1;
+         _maxX = param2;
+         _minY = param3;
+         _maxY = param4;
+      }
+      
+      public static function findPath(param1:IDataMapProvider, param2:MapPoint, param3:MapPoint, param4:Boolean = true, param5:Boolean = true, param6:Function = null, param7:Array = null, param8:Boolean = false) : MovementPath
+      {
+         return new Pathfinding().processFindPath(param1,param2,param3,param4,param5,param6,param7,param8);
+      }
+      
+      private var _mapStatus:Array;
+      
+      private var _openList:Array;
+      
+      private var _movPath:MovementPath;
+      
+      private var _nHVCost:uint = 10;
+      
+      private var _nDCost:uint = 15;
+      
+      private var _nHeuristicCost:uint = 10;
+      
+      private var _bAllowDiagCornering:Boolean = false;
+      
+      private var _bAllowTroughEntity:Boolean;
+      
+      private var _bIsFighting:Boolean;
+      
+      private var _callBackFunction:Function;
+      
+      private var _argsFunction:Array;
+      
+      private var _enterFrameIsActive:Boolean = false;
+      
+      private var _map:IDataMapProvider;
+      
+      private var _start:MapPoint;
+      
+      private var _end:MapPoint;
+      
+      private var _allowDiag:Boolean;
+      
+      private var _endX:int;
+      
+      private var _endY:int;
+      
+      private var _endPoint:MapPoint;
+      
+      private var _startPoint:MapPoint;
+      
+      private var _startX:int;
+      
+      private var _startY:int;
+      
+      private var _endPointAux:MapPoint;
+      
+      private var _endAuxX:int;
+      
+      private var _endAuxY:int;
+      
+      private var _distanceToEnd:int;
+      
+      private var _nowY:int;
+      
+      private var _nowX:int;
+      
+      private var _currentTime:int;
+      
+      private var _maxTime:int = 30;
+      
+      private var _previousCellId:int;
+      
+      public function processFindPath(param1:IDataMapProvider, param2:MapPoint, param3:MapPoint, param4:Boolean = true, param5:Boolean = true, param6:Function = null, param7:Array = null, param8:Boolean = false) : MovementPath
+      {
+         this._callBackFunction = param6;
+         this._argsFunction = param7;
+         this._movPath = new MovementPath();
+         this._movPath.start = param2;
+         this._movPath.end = param3;
+         this._bAllowTroughEntity = param5;
+         this._bIsFighting = param8;
+         this._bAllowDiagCornering = param4;
+         if(param1.height == 0 || param1.width == 0 || param2 == null)
+         {
+            return this._movPath;
+         }
+         this.findPathInternal(param1,param2,param3,param4);
+         if(this._callBackFunction == null)
+         {
+            return this._movPath;
+         }
+         return null;
+      }
+      
+      private function isOpened(param1:int, param2:int) : Boolean
+      {
+         return this._mapStatus[param1][param2].opened;
+      }
+      
+      private function isClosed(param1:int, param2:int) : Boolean
+      {
+         var _loc3_:CellInfo = this._mapStatus[param1][param2];
+         if(!_loc3_ || !_loc3_.closed)
+         {
+            return false;
+         }
+         return _loc3_.closed;
+      }
+      
+      private function nearerSquare() : uint
+      {
+         var _loc3_:* = NaN;
+         var _loc1_:Number = 9999999;
+         var _loc2_:uint = 0;
+         var _loc4_:* = -1;
+         var _loc5_:int = this._openList.length;
+         while(++_loc4_ < _loc5_)
+         {
+            _loc3_ = this._mapStatus[this._openList[_loc4_][0]][this._openList[_loc4_][1]].heuristic + this._mapStatus[this._openList[_loc4_][0]][this._openList[_loc4_][1]].movementCost;
+            _loc3_ = this._mapStatus[this._openList[_loc4_][0]][this._openList[_loc4_][1]].heuristic + this._mapStatus[this._openList[_loc4_][0]][this._openList[_loc4_][1]].movementCost;
+            if(_loc3_ <= _loc1_)
             {
-                return (this._movPath);
-            };
-            this.findPathInternal(map, start, end, allowDiag);
-            if (this._callBackFunction == null)
-            {
-                return (this._movPath);
-            };
-            return (null);
-        }
-
-        private function isOpened(y:int, x:int):Boolean
-        {
-            return (this._mapStatus[y][x].opened);
-        }
-
-        private function isClosed(y:int, x:int):Boolean
-        {
-            var cellInfo:CellInfo = this._mapStatus[y][x];
-            if (((!(cellInfo)) || (!(cellInfo.closed))))
-            {
-                return (false);
-            };
-            return (cellInfo.closed);
-        }
-
-        private function nearerSquare():uint
-        {
-            var thisF:Number;
-            var minimum:Number = 9999999;
-            var indexFound:uint;
-            var i:int = -1;
-            var len:int = this._openList.length;
-            while (++i < len)
-            {
-                thisF = (this._mapStatus[this._openList[i][0]][this._openList[i][1]].heuristic + this._mapStatus[this._openList[i][0]][this._openList[i][1]].movementCost);
-                thisF = (this._mapStatus[this._openList[i][0]][this._openList[i][1]].heuristic + this._mapStatus[this._openList[i][0]][this._openList[i][1]].movementCost);
-                if (thisF <= minimum)
-                {
-                    minimum = thisF;
-                    indexFound = i;
-                };
-            };
-            return (indexFound);
-        }
-
-        private function closeSquare(y:int, x:int):void
-        {
-            var len:uint = this._openList.length;
-            var i:int = -1;
-            while (++i < len)
-            {
-                if (this._openList[i][0] == y)
-                {
-                    if (this._openList[i][1] == x)
-                    {
-                        this._openList.splice(i, 1);
-                        break;
-                    };
-                };
-            };
-            var cellInfo:CellInfo = this._mapStatus[y][x];
-            cellInfo.opened = false;
-            cellInfo.closed = true;
-        }
-
-        private function openSquare(y:int, x:int, parent:Array, movementCost:uint, heuristic:Number, replacing:Boolean):void
-        {
-            var len:int;
-            var i:int;
-            if (!(replacing))
-            {
-                len = this._openList.length;
-                i = -1;
-                while (++i < len)
-                {
-                    if ((((this._openList[i][0] == y)) && ((this._openList[i][1] == x))))
-                    {
-                        replacing = true;
-                        break;
-                    };
-                };
-            };
-            if (!(replacing))
-            {
-                this._openList.push([y, x]);
-                this._mapStatus[y][x] = new CellInfo(heuristic, null, true, false);
-            };
-            var cellInfo:CellInfo = this._mapStatus[y][x];
-            cellInfo.parent = parent;
-            cellInfo.movementCost = movementCost;
-        }
-
-        private function movementPathFromArray(returnPath:Array):void
-        {
-            var pElem:PathElement;
-            var i:uint;
-            while (i < (returnPath.length - 1))
-            {
-                pElem = new PathElement();
-                pElem.step.x = returnPath[i].x;
-                pElem.step.y = returnPath[i].y;
-                pElem.orientation = returnPath[i].orientationTo(returnPath[(i + 1)]);
-                this._movPath.addPoint(pElem);
-                i++;
-            };
-            this._movPath.compress();
-            this._movPath.fill();
-        }
-
-        private function initFindPath():void
-        {
-            this._currentTime = 0;
-            if (this._callBackFunction == null)
-            {
-                this._maxTime = 2000000;
-                this.pathFrame(null);
+               _loc1_ = _loc3_;
+               _loc2_ = _loc4_;
             }
-            else
+         }
+         return _loc2_;
+      }
+      
+      private function closeSquare(param1:int, param2:int) : void
+      {
+         var _loc3_:uint = this._openList.length;
+         var _loc4_:* = -1;
+         while(++_loc4_ < _loc3_)
+         {
+            if(this._openList[_loc4_][0] == param1)
             {
-                if (!(this._enterFrameIsActive))
-                {
-                    this._enterFrameIsActive = true;
-                    EnterFrameDispatcher.addEventListener(this.pathFrame, "pathFrame");
-                };
-                this._maxTime = 20;
-            };
-        }
-
-        private function pathFrame(E:Event):void
-        {
-            var n:int;
-            var j:int;
-            var time:int;
-            var i:int;
-            var pointWeight:Number;
-            var movementCost:int;
-            var cellOnEndColumn:Boolean;
-            var cellOnStartColumn:Boolean;
-            var cellOnEndLine:Boolean;
-            var cellOnStartLine:Boolean;
-            var mp:MapPoint;
-            var distanceTmpToEnd:int;
-            var _local_14:Number;
-            if (this._currentTime == 0)
-            {
-                this._currentTime = getTimer();
-            };
-            if ((((this._openList.length > 0)) && (!(this.isClosed(this._endY, this._endX)))))
-            {
-                n = this.nearerSquare();
-                this._nowY = this._openList[n][0];
-                this._nowX = this._openList[n][1];
-                this._previousCellId = MapPoint.fromCoords(this._nowX, this._nowY).cellId;
-                this.closeSquare(this._nowY, this._nowX);
-                j = (this._nowY - 1);
-                while (j < (this._nowY + 2))
-                {
-                    i = (this._nowX - 1);
-                    while (i < (this._nowX + 2))
-                    {
-                        if ((((((((((((j >= _minY)) && ((j < _maxY)))) && ((i >= _minX)))) && ((i < _maxX)))) && (!((((j == this._nowY)) && ((i == this._nowX))))))) && (((((this._allowDiag) || ((j == this._nowY)))) || ((((i == this._nowX)) && (((((((this._bAllowDiagCornering) || ((j == this._nowY)))) || ((i == this._nowX)))) || (((this._map.pointMov(this._nowX, j, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId)) || (this._map.pointMov(i, this._nowY, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))))))))))))
-                        {
-                            if (((((((!(this._map.pointMov(this._nowX, j, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))) && (!(this._map.pointMov(i, this._nowY, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))))) && (!(this._bIsFighting)))) && (this._allowDiag)))
-                            {
-                            }
-                            else
-                            {
-                                if (this._map.pointMov(i, j, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))
-                                {
-                                    if (!(this.isClosed(j, i)))
-                                    {
-                                        if ((((i == this._endX)) && ((j == this._endY))))
-                                        {
-                                            pointWeight = 1;
-                                        }
-                                        else
-                                        {
-                                            pointWeight = this._map.pointWeight(i, j, this._bAllowTroughEntity);
-                                        };
-                                        movementCost = (this._mapStatus[this._nowY][this._nowX].movementCost + ((((((j == this._nowY)) || ((i == this._nowX)))) ? this._nHVCost : this._nDCost) * pointWeight));
-                                        if (this._bAllowTroughEntity)
-                                        {
-                                            cellOnEndColumn = ((i + j) == (this._endX + this._endY));
-                                            cellOnStartColumn = ((i + j) == (this._startX + this._startY));
-                                            cellOnEndLine = ((i - j) == (this._endX - this._endY));
-                                            cellOnStartLine = ((i - j) == (this._startX - this._startY));
-                                            mp = MapPoint.fromCoords(i, j);
-                                            if (((((!(cellOnEndColumn)) && (!(cellOnEndLine)))) || (((!(cellOnStartColumn)) && (!(cellOnStartLine))))))
-                                            {
-                                                movementCost = (movementCost + mp.distanceToCell(this._endPoint));
-                                                movementCost = (movementCost + mp.distanceToCell(this._startPoint));
-                                            };
-                                            if ((((i == this._endX)) || ((j == this._endY))))
-                                            {
-                                                movementCost = (movementCost - 3);
-                                            };
-                                            if (((((((cellOnEndColumn) || (cellOnEndLine))) || (((i + j) == (this._nowX + this._nowY))))) || (((i - j) == (this._nowX - this._nowY)))))
-                                            {
-                                                movementCost = (movementCost - 2);
-                                            };
-                                            if ((((i == this._startX)) || ((j == this._startY))))
-                                            {
-                                                movementCost = (movementCost - 3);
-                                            };
-                                            if (((cellOnStartColumn) || (cellOnStartLine)))
-                                            {
-                                                movementCost = (movementCost - 2);
-                                            };
-                                            distanceTmpToEnd = mp.distanceToCell(this._endPoint);
-                                            if (distanceTmpToEnd < this._distanceToEnd)
-                                            {
-                                                if ((((((((i == this._endX)) || ((j == this._endY)))) || (((i + j) == (this._endX + this._endY))))) || (((i - j) == (this._endX - this._endY)))))
-                                                {
-                                                    this._endPointAux = mp;
-                                                    this._endAuxX = i;
-                                                    this._endAuxY = j;
-                                                    this._distanceToEnd = distanceTmpToEnd;
-                                                };
-                                            };
-                                        };
-                                        if (this.isOpened(j, i))
-                                        {
-                                            if (movementCost < this._mapStatus[j][i].movementCost)
-                                            {
-                                                this.openSquare(j, i, [this._nowY, this._nowX], movementCost, undefined, true);
-                                            };
-                                        }
-                                        else
-                                        {
-                                            _local_14 = (this._nHeuristicCost * Math.sqrt((((this._endY - j) * (this._endY - j)) + ((this._endX - i) * (this._endX - i)))));
-                                            this.openSquare(j, i, [this._nowY, this._nowX], movementCost, _local_14, false);
-                                        };
-                                    };
-                                };
-                            };
-                        };
-                        i++;
-                    };
-                    j++;
-                };
-                time = getTimer();
-                if ((time - this._currentTime) < this._maxTime)
-                {
-                    this.pathFrame(null);
-                }
-                else
-                {
-                    this._currentTime = 0;
-                };
+               if(this._openList[_loc4_][1] == param2)
+               {
+                  this._openList.splice(_loc4_,1);
+                  break;
+               }
             }
-            else
+         }
+         var _loc5_:CellInfo = this._mapStatus[param1][param2];
+         _loc5_.opened = false;
+         _loc5_.closed = true;
+      }
+      
+      private function openSquare(param1:int, param2:int, param3:Array, param4:uint, param5:Number, param6:Boolean) : void
+      {
+         var _loc8_:* = 0;
+         var _loc9_:* = 0;
+         if(!param6)
+         {
+            _loc8_ = this._openList.length;
+            _loc9_ = -1;
+            while(++_loc9_ < _loc8_)
             {
-                this.endPathFrame();
-            };
-        }
-
-        private function endPathFrame():void
-        {
-            var returnPath:Array;
-            var newY:int;
-            var newX:int;
-            var tmpMapPoint:MapPoint;
-            var returnPathOpti:Array;
-            var k:uint;
-            var kX:int;
-            var kY:int;
-            var nextX:int;
-            var nextY:int;
-            var interX:int;
-            var interY:int;
-            this._enterFrameIsActive = false;
-            EnterFrameDispatcher.removeEventListener(this.pathFrame);
-            var pFound:Boolean = this.isClosed(this._endY, this._endX);
-            if (!(pFound))
+               if(this._openList[_loc9_][0] == param1 && this._openList[_loc9_][1] == param2)
+               {
+                  var param6:* = true;
+                  break;
+               }
+            }
+         }
+         if(!param6)
+         {
+            this._openList.push([param1,param2]);
+            this._mapStatus[param1][param2] = new CellInfo(param5,null,true,false);
+         }
+         var _loc7_:CellInfo = this._mapStatus[param1][param2];
+         _loc7_.parent = param3;
+         _loc7_.movementCost = param4;
+      }
+      
+      private function movementPathFromArray(param1:Array) : void
+      {
+         var _loc3_:PathElement = null;
+         var _loc2_:uint = 0;
+         while(_loc2_ < param1.length - 1)
+         {
+            _loc3_ = new PathElement();
+            _loc3_.step.x = param1[_loc2_].x;
+            _loc3_.step.y = param1[_loc2_].y;
+            _loc3_.orientation = param1[_loc2_].orientationTo(param1[_loc2_ + 1]);
+            this._movPath.addPoint(_loc3_);
+            _loc2_++;
+         }
+         this._movPath.compress();
+         this._movPath.fill();
+      }
+      
+      private function initFindPath() : void
+      {
+         this._currentTime = 0;
+         if(this._callBackFunction == null)
+         {
+            this._maxTime = 2000000;
+            this.pathFrame(null);
+         }
+         else
+         {
+            if(!this._enterFrameIsActive)
             {
-                this._endY = this._endAuxY;
-                this._endX = this._endAuxX;
-                this._endPoint = this._endPointAux;
-                pFound = true;
-                this._movPath.replaceEnd(this._endPoint);
-            };
-            this._previousCellId = -1;
-            if (pFound)
+               this._enterFrameIsActive = true;
+               EnterFrameDispatcher.addEventListener(this.pathFrame,"pathFrame");
+            }
+            this._maxTime = 20;
+         }
+      }
+      
+      private function pathFrame(param1:Event) : void
+      {
+         var _loc2_:* = 0;
+         var _loc3_:* = 0;
+         var _loc4_:* = 0;
+         var _loc5_:* = 0;
+         var _loc6_:* = NaN;
+         var _loc7_:* = 0;
+         var _loc8_:* = false;
+         var _loc9_:* = false;
+         var _loc10_:* = false;
+         var _loc11_:* = false;
+         var _loc12_:MapPoint = null;
+         var _loc13_:* = 0;
+         var _loc14_:* = NaN;
+         if(this._currentTime == 0)
+         {
+            this._currentTime = getTimer();
+         }
+         if(this._openList.length > 0 && !this.isClosed(this._endY,this._endX))
+         {
+            _loc2_ = this.nearerSquare();
+            this._nowY = this._openList[_loc2_][0];
+            this._nowX = this._openList[_loc2_][1];
+            this._previousCellId = MapPoint.fromCoords(this._nowX,this._nowY).cellId;
+            this.closeSquare(this._nowY,this._nowX);
+            _loc3_ = this._nowY - 1;
+            while(_loc3_ < this._nowY + 2)
             {
-                returnPath = new Array();
-                this._nowY = this._endY;
-                this._nowX = this._endX;
-                while (((!((this._nowY == this._startY))) || (!((this._nowX == this._startX)))))
-                {
-                    returnPath.push(MapPoint.fromCoords(this._nowX, this._nowY));
-                    newY = this._mapStatus[this._nowY][this._nowX].parent[0];
-                    newX = this._mapStatus[this._nowY][this._nowX].parent[1];
-                    this._nowY = newY;
-                    this._nowX = newX;
-                };
-                returnPath.push(this._startPoint);
-                if (this._allowDiag)
-                {
-                    returnPathOpti = new Array();
-                    k = 0;
-                    while (k < returnPath.length)
-                    {
-                        returnPathOpti.push(returnPath[k]);
-                        this._previousCellId = returnPath[k].cellId;
-                        if (((((((returnPath[(k + 2)]) && ((MapPoint(returnPath[k]).distanceToCell(returnPath[(k + 2)]) == 1)))) && (!(this._map.isChangeZone(returnPath[k].cellId, returnPath[(k + 1)].cellId))))) && (!(this._map.isChangeZone(returnPath[(k + 1)].cellId, returnPath[(k + 2)].cellId)))))
+               _loc5_ = this._nowX - 1;
+               while(_loc5_ < this._nowX + 2)
+               {
+                  if(_loc3_ >= _minY && _loc3_ < _maxY && _loc5_ >= _minX && _loc5_ < _maxX && !(_loc3_ == this._nowY && _loc5_ == this._nowX) && ((this._allowDiag) || _loc3_ == this._nowY || _loc5_ == this._nowX && ((this._bAllowDiagCornering) || _loc3_ == this._nowY || _loc5_ == this._nowX || (this._map.pointMov(this._nowX,_loc3_,this._bAllowTroughEntity,this._previousCellId,this._endPoint.cellId)) || (this._map.pointMov(_loc5_,this._nowY,this._bAllowTroughEntity,this._previousCellId,this._endPoint.cellId)))))
+                  {
+                     if(!(!this._map.pointMov(this._nowX,_loc3_,this._bAllowTroughEntity,this._previousCellId,this._endPoint.cellId) && !this._map.pointMov(_loc5_,this._nowY,this._bAllowTroughEntity,this._previousCellId,this._endPoint.cellId) && !this._bIsFighting && (this._allowDiag)))
+                     {
+                        if(this._map.pointMov(_loc5_,_loc3_,this._bAllowTroughEntity,this._previousCellId,this._endPoint.cellId))
                         {
-                            k++;
+                           if(!this.isClosed(_loc3_,_loc5_))
+                           {
+                              if(_loc5_ == this._endX && _loc3_ == this._endY)
+                              {
+                                 _loc6_ = 1;
+                              }
+                              else
+                              {
+                                 _loc6_ = this._map.pointWeight(_loc5_,_loc3_,this._bAllowTroughEntity);
+                              }
+                              _loc7_ = this._mapStatus[this._nowY][this._nowX].movementCost + (_loc3_ == this._nowY || _loc5_ == this._nowX?this._nHVCost:this._nDCost) * _loc6_;
+                              if(this._bAllowTroughEntity)
+                              {
+                                 _loc8_ = _loc5_ + _loc3_ == this._endX + this._endY;
+                                 _loc9_ = _loc5_ + _loc3_ == this._startX + this._startY;
+                                 _loc10_ = _loc5_ - _loc3_ == this._endX - this._endY;
+                                 _loc11_ = _loc5_ - _loc3_ == this._startX - this._startY;
+                                 _loc12_ = MapPoint.fromCoords(_loc5_,_loc3_);
+                                 if(!_loc8_ && !_loc10_ || !_loc9_ && !_loc11_)
+                                 {
+                                    _loc7_ = _loc7_ + _loc12_.distanceToCell(this._endPoint);
+                                    _loc7_ = _loc7_ + _loc12_.distanceToCell(this._startPoint);
+                                 }
+                                 if(_loc5_ == this._endX || _loc3_ == this._endY)
+                                 {
+                                    _loc7_ = _loc7_ - 3;
+                                 }
+                                 if((_loc8_) || (_loc10_) || _loc5_ + _loc3_ == this._nowX + this._nowY || _loc5_ - _loc3_ == this._nowX - this._nowY)
+                                 {
+                                    _loc7_ = _loc7_ - 2;
+                                 }
+                                 if(_loc5_ == this._startX || _loc3_ == this._startY)
+                                 {
+                                    _loc7_ = _loc7_ - 3;
+                                 }
+                                 if((_loc9_) || (_loc11_))
+                                 {
+                                    _loc7_ = _loc7_ - 2;
+                                 }
+                                 _loc13_ = _loc12_.distanceToCell(this._endPoint);
+                                 if(_loc13_ < this._distanceToEnd)
+                                 {
+                                    this._endPointAux = _loc12_;
+                                    this._endAuxX = _loc5_;
+                                    this._endAuxY = _loc3_;
+                                    this._distanceToEnd = _loc13_;
+                                 }
+                              }
+                              if(this.isOpened(_loc3_,_loc5_))
+                              {
+                                 if(_loc7_ < this._mapStatus[_loc3_][_loc5_].movementCost)
+                                 {
+                                    this.openSquare(_loc3_,_loc5_,[this._nowY,this._nowX],_loc7_,undefined,true);
+                                 }
+                              }
+                              else
+                              {
+                                 _loc14_ = this._nHeuristicCost * Math.sqrt((this._endY - _loc3_) * (this._endY - _loc3_) + (this._endX - _loc5_) * (this._endX - _loc5_));
+                                 this.openSquare(_loc3_,_loc5_,[this._nowY,this._nowX],_loc7_,_loc14_,false);
+                              }
+                           }
                         }
-                        else
-                        {
-                            if (((returnPath[(k + 3)]) && ((MapPoint(returnPath[k]).distanceToCell(returnPath[(k + 3)]) == 2))))
-                            {
-                                kX = returnPath[k].x;
-                                kY = returnPath[k].y;
-                                nextX = returnPath[(k + 3)].x;
-                                nextY = returnPath[(k + 3)].y;
-                                interX = (kX + Math.round(((nextX - kX) / 2)));
-                                interY = (kY + Math.round(((nextY - kY) / 2)));
-                                if (((this._map.pointMov(interX, interY, true, this._previousCellId, this._endPoint.cellId)) && ((this._map.pointWeight(interX, interY) < 2))))
-                                {
-                                    tmpMapPoint = MapPoint.fromCoords(interX, interY);
-                                    returnPathOpti.push(tmpMapPoint);
-                                    this._previousCellId = tmpMapPoint.cellId;
-                                    k++;
-                                    k++;
-                                };
-                            }
-                            else
-                            {
-                                if (((returnPath[(k + 2)]) && ((MapPoint(returnPath[k]).distanceToCell(returnPath[(k + 2)]) == 2))))
-                                {
-                                    kX = returnPath[k].x;
-                                    kY = returnPath[k].y;
-                                    nextX = returnPath[(k + 2)].x;
-                                    nextY = returnPath[(k + 2)].y;
-                                    interX = returnPath[(k + 1)].x;
-                                    interY = returnPath[(k + 1)].y;
-                                    if (((((((((kX + kY) == (nextX + nextY))) && (!(((kX - kY) == (interX - interY)))))) && (!(this._map.isChangeZone(MapPoint.fromCoords(kX, kY).cellId, MapPoint.fromCoords(interX, interY).cellId))))) && (!(this._map.isChangeZone(MapPoint.fromCoords(interX, interY).cellId, MapPoint.fromCoords(nextX, nextY).cellId)))))
-                                    {
-                                        k++;
-                                    }
-                                    else
-                                    {
-                                        if (((((((((kX - kY) == (nextX - nextY))) && (!(((kX - kY) == (interX - interY)))))) && (!(this._map.isChangeZone(MapPoint.fromCoords(kX, kY).cellId, MapPoint.fromCoords(interX, interY).cellId))))) && (!(this._map.isChangeZone(MapPoint.fromCoords(interX, interY).cellId, MapPoint.fromCoords(nextX, nextY).cellId)))))
-                                        {
-                                            k++;
-                                        }
-                                        else
-                                        {
-                                            if ((((((((kX == nextX)) && (!((kX == interX))))) && ((this._map.pointWeight(kX, interY) < 2)))) && (this._map.pointMov(kX, interY, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))))
-                                            {
-                                                tmpMapPoint = MapPoint.fromCoords(kX, interY);
-                                                returnPathOpti.push(tmpMapPoint);
-                                                this._previousCellId = tmpMapPoint.cellId;
-                                                k++;
-                                            }
-                                            else
-                                            {
-                                                if ((((((((kY == nextY)) && (!((kY == interY))))) && ((this._map.pointWeight(interX, kY) < 2)))) && (this._map.pointMov(interX, kY, this._bAllowTroughEntity, this._previousCellId, this._endPoint.cellId))))
-                                                {
-                                                    tmpMapPoint = MapPoint.fromCoords(interX, kY);
-                                                    returnPathOpti.push(tmpMapPoint);
-                                                    this._previousCellId = tmpMapPoint.cellId;
-                                                    k++;
-                                                };
-                                            };
-                                        };
-                                    };
-                                };
-                            };
-                        };
-                        k++;
-                    };
-                    returnPath = returnPathOpti;
-                };
-                if (returnPath.length == 1)
-                {
-                    returnPath = new Array();
-                };
-                returnPath.reverse();
-                this.movementPathFromArray(returnPath);
-            };
-            if (this._callBackFunction != null)
+                     }
+                  }
+                  _loc5_++;
+               }
+               _loc3_++;
+            }
+            _loc4_ = getTimer();
+            if(_loc4_ - this._currentTime < this._maxTime)
             {
-                if (this._argsFunction)
-                {
-                    this._callBackFunction(this._movPath, this._argsFunction);
-                }
-                else
-                {
-                    this._callBackFunction(this._movPath);
-                };
-            };
-        }
-
-        private function findPathInternal(map:IDataMapProvider, start:MapPoint, end:MapPoint, allowDiag:Boolean):void
-        {
-            var x:uint;
-            this._map = map;
-            this._start = start;
-            this._end = end;
-            this._allowDiag = allowDiag;
-            this._endPoint = MapPoint.fromCoords(end.x, end.y);
-            this._startPoint = MapPoint.fromCoords(start.x, start.y);
-            this._endX = end.x;
-            this._endY = end.y;
-            this._startX = start.x;
-            this._startY = start.y;
-            this._endPointAux = this._startPoint;
-            this._endAuxX = this._startX;
-            this._endAuxY = this._startY;
-            this._distanceToEnd = this._startPoint.distanceToCell(this._endPoint);
-            this._mapStatus = new Array();
-            var y:int = _minY;
-            while (y < _maxY)
+               this.pathFrame(null);
+            }
+            else
             {
-                this._mapStatus[y] = new Array();
-                x = _minX;
-                while (x <= _maxX)
-                {
-                    this._mapStatus[y][x] = new CellInfo(0, new Array(), false, false);
-                    x++;
-                };
-                y++;
-            };
-            this._openList = new Array();
-            this.openSquare(this._startY, this._startX, undefined, 0, undefined, false);
-            this.initFindPath();
-        }
-
-        private function tracePath(returnPath:Array):void
-        {
-            var point:MapPoint;
-            var cheminEnChaine:String = new String("");
-            var i:uint;
-            while (i < returnPath.length)
+               this._currentTime = 0;
+            }
+         }
+         else
+         {
+            this.endPathFrame();
+         }
+      }
+      
+      private function endPathFrame() : void
+      {
+         var _loc2_:Array = null;
+         var _loc3_:* = 0;
+         var _loc4_:* = 0;
+         var _loc5_:MapPoint = null;
+         var _loc6_:Array = null;
+         var _loc7_:uint = 0;
+         var _loc8_:* = 0;
+         var _loc9_:* = 0;
+         var _loc10_:* = 0;
+         var _loc11_:* = 0;
+         var _loc12_:* = 0;
+         var _loc13_:* = 0;
+         this._enterFrameIsActive = false;
+         EnterFrameDispatcher.removeEventListener(this.pathFrame);
+         var _loc1_:Boolean = this.isClosed(this._endY,this._endX);
+         if(!_loc1_)
+         {
+            this._endY = this._endAuxY;
+            this._endX = this._endAuxX;
+            this._endPoint = this._endPointAux;
+            _loc1_ = true;
+            this._movPath.replaceEnd(this._endPoint);
+         }
+         this._previousCellId = -1;
+         if(_loc1_)
+         {
+            _loc2_ = new Array();
+            this._nowY = this._endY;
+            this._nowX = this._endX;
+            while(!(this._nowY == this._startY) || !(this._nowX == this._startX))
             {
-                point = (returnPath[i] as MapPoint);
-                cheminEnChaine = cheminEnChaine.concat((" " + point.cellId));
-                i++;
-            };
-        }
-
-        private function nearObstacle(x:int, y:int, map:IDataMapProvider):int
-        {
-            var j:int;
-            var distanceMaxToCheck:int = 2;
-            var distanceMin:int = 42;
-            var i:int = -(distanceMaxToCheck);
-            while (i < distanceMaxToCheck)
+               _loc2_.push(MapPoint.fromCoords(this._nowX,this._nowY));
+               _loc3_ = this._mapStatus[this._nowY][this._nowX].parent[0];
+               _loc4_ = this._mapStatus[this._nowY][this._nowX].parent[1];
+               this._nowY = _loc3_;
+               this._nowX = _loc4_;
+            }
+            _loc2_.push(this._startPoint);
+            if(this._allowDiag)
             {
-                j = -(distanceMaxToCheck);
-                while (j < distanceMaxToCheck)
-                {
-                    if (!(map.pointMov((x + i), (y + j), true, this._previousCellId, this._endPoint.cellId)))
-                    {
-                        distanceMin = Math.min(distanceMin, MapPoint(MapPoint.fromCoords(x, y)).distanceToCell(MapPoint.fromCoords((x + i), (y + j))));
-                    };
-                    j++;
-                };
-                i++;
-            };
-            return (distanceMin);
-        }
-
-
-    }
-}//package com.ankamagames.jerakine.pathfinding
-
+               _loc6_ = new Array();
+               _loc7_ = 0;
+               while(_loc7_ < _loc2_.length)
+               {
+                  _loc6_.push(_loc2_[_loc7_]);
+                  this._previousCellId = _loc2_[_loc7_].cellId;
+                  if((_loc2_[_loc7_ + 2] && MapPoint(_loc2_[_loc7_]).distanceToCell(_loc2_[_loc7_ + 2]) == 1) && (!this._map.isChangeZone(_loc2_[_loc7_].cellId,_loc2_[_loc7_ + 1].cellId)) && !this._map.isChangeZone(_loc2_[_loc7_ + 1].cellId,_loc2_[_loc7_ + 2].cellId))
+                  {
+                     _loc7_++;
+                  }
+                  else if((_loc2_[_loc7_ + 3]) && MapPoint(_loc2_[_loc7_]).distanceToCell(_loc2_[_loc7_ + 3]) == 2)
+                  {
+                     _loc8_ = _loc2_[_loc7_].x;
+                     _loc9_ = _loc2_[_loc7_].y;
+                     _loc10_ = _loc2_[_loc7_ + 3].x;
+                     _loc11_ = _loc2_[_loc7_ + 3].y;
+                     _loc12_ = _loc8_ + Math.round((_loc10_ - _loc8_) / 2);
+                     _loc13_ = _loc9_ + Math.round((_loc11_ - _loc9_) / 2);
+                     if((this._map.pointMov(_loc12_,_loc13_,true,this._previousCellId,this._endPoint.cellId)) && this._map.pointWeight(_loc12_,_loc13_) < 2)
+                     {
+                        _loc5_ = MapPoint.fromCoords(_loc12_,_loc13_);
+                        _loc6_.push(_loc5_);
+                        this._previousCellId = _loc5_.cellId;
+                        _loc7_++;
+                        _loc7_++;
+                     }
+                  }
+                  else if((_loc2_[_loc7_ + 2]) && MapPoint(_loc2_[_loc7_]).distanceToCell(_loc2_[_loc7_ + 2]) == 2)
+                  {
+                     _loc8_ = _loc2_[_loc7_].x;
+                     _loc9_ = _loc2_[_loc7_].y;
+                     _loc10_ = _loc2_[_loc7_ + 2].x;
+                     _loc11_ = _loc2_[_loc7_ + 2].y;
+                     _loc12_ = _loc2_[_loc7_ + 1].x;
+                     _loc13_ = _loc2_[_loc7_ + 1].y;
+                     if(_loc8_ + _loc9_ == _loc10_ + _loc11_ && !(_loc8_ - _loc9_ == _loc12_ - _loc13_) && !this._map.isChangeZone(MapPoint.fromCoords(_loc8_,_loc9_).cellId,MapPoint.fromCoords(_loc12_,_loc13_).cellId) && !this._map.isChangeZone(MapPoint.fromCoords(_loc12_,_loc13_).cellId,MapPoint.fromCoords(_loc10_,_loc11_).cellId))
+                     {
+                        _loc7_++;
+                     }
+                     else if(_loc8_ - _loc9_ == _loc10_ - _loc11_ && !(_loc8_ - _loc9_ == _loc12_ - _loc13_) && !this._map.isChangeZone(MapPoint.fromCoords(_loc8_,_loc9_).cellId,MapPoint.fromCoords(_loc12_,_loc13_).cellId) && !this._map.isChangeZone(MapPoint.fromCoords(_loc12_,_loc13_).cellId,MapPoint.fromCoords(_loc10_,_loc11_).cellId))
+                     {
+                        _loc7_++;
+                     }
+                     else if(_loc8_ == _loc10_ && !(_loc8_ == _loc12_) && this._map.pointWeight(_loc8_,_loc13_) < 2 && (this._map.pointMov(_loc8_,_loc13_,this._bAllowTroughEntity,this._previousCellId,this._endPoint.cellId)))
+                     {
+                        _loc5_ = MapPoint.fromCoords(_loc8_,_loc13_);
+                        _loc6_.push(_loc5_);
+                        this._previousCellId = _loc5_.cellId;
+                        _loc7_++;
+                     }
+                     else if(_loc9_ == _loc11_ && !(_loc9_ == _loc13_) && this._map.pointWeight(_loc12_,_loc9_) < 2 && (this._map.pointMov(_loc12_,_loc9_,this._bAllowTroughEntity,this._previousCellId,this._endPoint.cellId)))
+                     {
+                        _loc5_ = MapPoint.fromCoords(_loc12_,_loc9_);
+                        _loc6_.push(_loc5_);
+                        this._previousCellId = _loc5_.cellId;
+                        _loc7_++;
+                     }
+                     
+                     
+                     
+                  }
+                  
+                  
+                  _loc7_++;
+               }
+               _loc2_ = _loc6_;
+            }
+            if(_loc2_.length == 1)
+            {
+               _loc2_ = new Array();
+            }
+            _loc2_.reverse();
+            this.movementPathFromArray(_loc2_);
+         }
+         if(this._callBackFunction != null)
+         {
+            if(this._argsFunction)
+            {
+               this._callBackFunction(this._movPath,this._argsFunction);
+            }
+            else
+            {
+               this._callBackFunction(this._movPath);
+            }
+         }
+      }
+      
+      private function findPathInternal(param1:IDataMapProvider, param2:MapPoint, param3:MapPoint, param4:Boolean) : void
+      {
+         var _loc6_:uint = 0;
+         this._map = param1;
+         this._start = param2;
+         this._end = param3;
+         this._allowDiag = param4;
+         this._endPoint = MapPoint.fromCoords(param3.x,param3.y);
+         this._startPoint = MapPoint.fromCoords(param2.x,param2.y);
+         this._endX = param3.x;
+         this._endY = param3.y;
+         this._startX = param2.x;
+         this._startY = param2.y;
+         this._endPointAux = this._startPoint;
+         this._endAuxX = this._startX;
+         this._endAuxY = this._startY;
+         this._distanceToEnd = this._startPoint.distanceToCell(this._endPoint);
+         this._mapStatus = new Array();
+         var _loc5_:int = _minY;
+         while(_loc5_ < _maxY)
+         {
+            this._mapStatus[_loc5_] = new Array();
+            _loc6_ = _minX;
+            while(_loc6_ <= _maxX)
+            {
+               this._mapStatus[_loc5_][_loc6_] = new CellInfo(0,new Array(),false,false);
+               _loc6_++;
+            }
+            _loc5_++;
+         }
+         this._openList = new Array();
+         this.openSquare(this._startY,this._startX,undefined,0,undefined,false);
+         this.initFindPath();
+      }
+      
+      private function tracePath(param1:Array) : void
+      {
+         var _loc3_:MapPoint = null;
+         var _loc2_:String = new String("");
+         var _loc4_:uint = 0;
+         while(_loc4_ < param1.length)
+         {
+            _loc3_ = param1[_loc4_] as MapPoint;
+            _loc2_ = _loc2_.concat(" " + _loc3_.cellId);
+            _loc4_++;
+         }
+      }
+      
+      private function nearObstacle(param1:int, param2:int, param3:IDataMapProvider) : int
+      {
+         var _loc7_:* = 0;
+         var _loc4_:* = 2;
+         var _loc5_:* = 42;
+         var _loc6_:int = -_loc4_;
+         while(_loc6_ < _loc4_)
+         {
+            _loc7_ = -_loc4_;
+            while(_loc7_ < _loc4_)
+            {
+               if(!param3.pointMov(param1 + _loc6_,param2 + _loc7_,true,this._previousCellId,this._endPoint.cellId))
+               {
+                  _loc5_ = Math.min(_loc5_,MapPoint(MapPoint.fromCoords(param1,param2)).distanceToCell(MapPoint.fromCoords(param1 + _loc6_,param2 + _loc7_)));
+               }
+               _loc7_++;
+            }
+            _loc6_++;
+         }
+         return _loc5_;
+      }
+   }
+}

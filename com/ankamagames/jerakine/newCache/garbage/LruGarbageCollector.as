@@ -1,111 +1,108 @@
-﻿package com.ankamagames.jerakine.newCache.garbage
+package com.ankamagames.jerakine.newCache.garbage
 {
-    import com.ankamagames.jerakine.newCache.ICacheGarbageCollector;
-    import com.ankamagames.jerakine.pools.Pool;
-    import flash.utils.Dictionary;
-    import com.ankamagames.jerakine.newCache.ICache;
-    import com.ankamagames.jerakine.interfaces.IDestroyable;
-    import flash.display.BitmapData;
-    import flash.utils.ByteArray;
-
-    public class LruGarbageCollector implements ICacheGarbageCollector 
-    {
-
-        private static var _pool:Pool;
-
-        protected var _usageCount:Dictionary;
-        private var _cache:ICache;
-
-        public function LruGarbageCollector():void
-        {
-            this._usageCount = new Dictionary(true);
-            super();
-            if (!(_pool))
+   import com.ankamagames.jerakine.newCache.ICacheGarbageCollector;
+   import com.ankamagames.jerakine.pools.Pool;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.newCache.ICache;
+   import com.ankamagames.jerakine.interfaces.IDestroyable;
+   import flash.display.BitmapData;
+   import flash.utils.ByteArray;
+   
+   public class LruGarbageCollector extends Object implements ICacheGarbageCollector
+   {
+      
+      public function LruGarbageCollector()
+      {
+         this._usageCount = new Dictionary(true);
+         super();
+         if(!_pool)
+         {
+            _pool = new Pool(LruGarbageCollector,500,50);
+         }
+      }
+      
+      private static var _pool:Pool;
+      
+      protected var _usageCount:Dictionary;
+      
+      private var _cache:ICache;
+      
+      public function set cache(param1:ICache) : void
+      {
+         this._cache = param1;
+      }
+      
+      public function used(param1:*) : void
+      {
+         if(this._usageCount[param1])
+         {
+            this._usageCount[param1]++;
+         }
+         else
+         {
+            this._usageCount[param1] = 1;
+         }
+      }
+      
+      public function purge(param1:uint) : void
+      {
+         var _loc3_:* = undefined;
+         var _loc4_:UsageCountHelper = null;
+         var _loc5_:* = undefined;
+         var _loc2_:Array = new Array();
+         for(_loc3_ in this._usageCount)
+         {
+            _loc2_.push((_pool.checkOut() as LruGarbageCollector).init(_loc3_,this._usageCount[_loc3_]));
+         }
+         _loc2_.sortOn("count",Array.NUMERIC | Array.DESCENDING);
+         for each(_loc4_ in _loc2_)
+         {
+            _loc4_.free();
+            _pool.checkIn(_loc4_);
+         }
+         while(this._cache.size > param1 && (_loc2_.length))
+         {
+            _loc5_ = this._cache.extract(_loc2_.pop().ref);
+            if(_loc5_ is IDestroyable)
             {
-                _pool = new Pool(UsageCountHelper, 500, 50);
-            };
-        }
-
-        public function set cache(cache:ICache):void
-        {
-            this._cache = cache;
-        }
-
-        public function used(ref:*):void
-        {
-            if (this._usageCount[ref])
-            {
-                var _local_2 = this._usageCount;
-                var _local_3 = ref;
-                var _local_4 = (_local_2[_local_3] + 1);
-                _local_2[_local_3] = _local_4;
+               (_loc5_ as IDestroyable).destroy();
             }
-            else
+            if(_loc5_ is BitmapData)
             {
-                this._usageCount[ref] = 1;
-            };
-        }
-
-        public function purge(bounds:uint):void
-        {
-            var obj:*;
-            var el:UsageCountHelper;
-            var poke:*;
-            var elements:Array = new Array();
-            for (obj in this._usageCount)
+               (_loc5_ as BitmapData).dispose();
+            }
+            if(_loc5_ is ByteArray)
             {
-                elements.push((_pool.checkOut() as UsageCountHelper).init(obj, this._usageCount[obj]));
-            };
-            elements.sortOn("count", (Array.NUMERIC | Array.DESCENDING));
-            for each (el in elements)
-            {
-                el.free();
-                _pool.checkIn(el);
-            };
-            while ((((this._cache.size > bounds)) && (elements.length)))
-            {
-                poke = this._cache.extract(elements.pop().ref);
-                if ((poke is IDestroyable))
-                {
-                    (poke as IDestroyable).destroy();
-                };
-                if ((poke is BitmapData))
-                {
-                    (poke as BitmapData).dispose();
-                };
-                if ((poke is ByteArray))
-                {
-                    (poke as ByteArray).clear();
-                };
-            };
-        }
-
-
-    }
-}//package com.ankamagames.jerakine.newCache.garbage
-
+               (_loc5_ as ByteArray).clear();
+            }
+         }
+      }
+   }
+}
 import com.ankamagames.jerakine.pools.Poolable;
 
-class UsageCountHelper implements Poolable 
+class UsageCountHelper extends Object implements Poolable
 {
-
-    public var ref:Object;
-    public var count:uint;
-
-
-    public function init(ref:Object, count:uint):UsageCountHelper
-    {
-        this.ref = ref;
-        this.count = count;
-        return (this);
-    }
-
-    public function free():void
-    {
-        this.ref = null;
-        this.count = 0;
-    }
-
-
+   
+   function UsageCountHelper()
+   {
+      super();
+   }
+   
+   public var ref:Object;
+   
+   public var count:uint;
+   
+   public function init(param1:Object, param2:uint) : UsageCountHelper
+   {
+      this.ref = param1;
+      this.count = param2;
+      return this;
+   }
+   
+   public function free() : void
+   {
+      this.ref = null;
+      this.count = 0;
+   }
 }
-

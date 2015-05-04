@@ -1,144 +1,161 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class GameFightPlacementPossiblePositionsMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 703;
-
-        private var _isInitialized:Boolean = false;
-        public var positionsForChallengers:Vector.<uint>;
-        public var positionsForDefenders:Vector.<uint>;
-        public var teamNumber:uint = 2;
-
-        public function GameFightPlacementPossiblePositionsMessage()
-        {
-            this.positionsForChallengers = new Vector.<uint>();
-            this.positionsForDefenders = new Vector.<uint>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (703);
-        }
-
-        public function initGameFightPlacementPossiblePositionsMessage(positionsForChallengers:Vector.<uint>=null, positionsForDefenders:Vector.<uint>=null, teamNumber:uint=2):GameFightPlacementPossiblePositionsMessage
-        {
-            this.positionsForChallengers = positionsForChallengers;
-            this.positionsForDefenders = positionsForDefenders;
-            this.teamNumber = teamNumber;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.positionsForChallengers = new Vector.<uint>();
-            this.positionsForDefenders = new Vector.<uint>();
-            this.teamNumber = 2;
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_GameFightPlacementPossiblePositionsMessage(output);
-        }
-
-        public function serializeAs_GameFightPlacementPossiblePositionsMessage(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.positionsForChallengers.length);
-            var _i1:uint;
-            while (_i1 < this.positionsForChallengers.length)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class GameFightPlacementPossiblePositionsMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function GameFightPlacementPossiblePositionsMessage()
+      {
+         this.positionsForChallengers = new Vector.<uint>();
+         this.positionsForDefenders = new Vector.<uint>();
+         super();
+      }
+      
+      public static const protocolId:uint = 703;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var positionsForChallengers:Vector.<uint>;
+      
+      public var positionsForDefenders:Vector.<uint>;
+      
+      public var teamNumber:uint = 2;
+      
+      override public function getMessageId() : uint
+      {
+         return 703;
+      }
+      
+      public function initGameFightPlacementPossiblePositionsMessage(param1:Vector.<uint> = null, param2:Vector.<uint> = null, param3:uint = 2) : GameFightPlacementPossiblePositionsMessage
+      {
+         this.positionsForChallengers = param1;
+         this.positionsForDefenders = param2;
+         this.teamNumber = param3;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.positionsForChallengers = new Vector.<uint>();
+         this.positionsForDefenders = new Vector.<uint>();
+         this.teamNumber = 2;
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_GameFightPlacementPossiblePositionsMessage(param1);
+      }
+      
+      public function serializeAs_GameFightPlacementPossiblePositionsMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeShort(this.positionsForChallengers.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.positionsForChallengers.length)
+         {
+            if(this.positionsForChallengers[_loc2_] < 0 || this.positionsForChallengers[_loc2_] > 559)
             {
-                if ((((this.positionsForChallengers[_i1] < 0)) || ((this.positionsForChallengers[_i1] > 559))))
-                {
-                    throw (new Error((("Forbidden value (" + this.positionsForChallengers[_i1]) + ") on element 1 (starting at 1) of positionsForChallengers.")));
-                };
-                output.writeVarShort(this.positionsForChallengers[_i1]);
-                _i1++;
-            };
-            output.writeShort(this.positionsForDefenders.length);
-            var _i2:uint;
-            while (_i2 < this.positionsForDefenders.length)
+               throw new Error("Forbidden value (" + this.positionsForChallengers[_loc2_] + ") on element 1 (starting at 1) of positionsForChallengers.");
+            }
+            else
             {
-                if ((((this.positionsForDefenders[_i2] < 0)) || ((this.positionsForDefenders[_i2] > 559))))
-                {
-                    throw (new Error((("Forbidden value (" + this.positionsForDefenders[_i2]) + ") on element 2 (starting at 1) of positionsForDefenders.")));
-                };
-                output.writeVarShort(this.positionsForDefenders[_i2]);
-                _i2++;
-            };
-            output.writeByte(this.teamNumber);
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_GameFightPlacementPossiblePositionsMessage(input);
-        }
-
-        public function deserializeAs_GameFightPlacementPossiblePositionsMessage(input:ICustomDataInput):void
-        {
-            var _val1:uint;
-            var _val2:uint;
-            var _positionsForChallengersLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _positionsForChallengersLen)
+               param1.writeVarShort(this.positionsForChallengers[_loc2_]);
+               _loc2_++;
+               continue;
+            }
+         }
+         param1.writeShort(this.positionsForDefenders.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.positionsForDefenders.length)
+         {
+            if(this.positionsForDefenders[_loc3_] < 0 || this.positionsForDefenders[_loc3_] > 559)
             {
-                _val1 = input.readVarUhShort();
-                if ((((_val1 < 0)) || ((_val1 > 559))))
-                {
-                    throw (new Error((("Forbidden value (" + _val1) + ") on elements of positionsForChallengers.")));
-                };
-                this.positionsForChallengers.push(_val1);
-                _i1++;
-            };
-            var _positionsForDefendersLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _positionsForDefendersLen)
+               throw new Error("Forbidden value (" + this.positionsForDefenders[_loc3_] + ") on element 2 (starting at 1) of positionsForDefenders.");
+            }
+            else
             {
-                _val2 = input.readVarUhShort();
-                if ((((_val2 < 0)) || ((_val2 > 559))))
-                {
-                    throw (new Error((("Forbidden value (" + _val2) + ") on elements of positionsForDefenders.")));
-                };
-                this.positionsForDefenders.push(_val2);
-                _i2++;
-            };
-            this.teamNumber = input.readByte();
-            if (this.teamNumber < 0)
+               param1.writeVarShort(this.positionsForDefenders[_loc3_]);
+               _loc3_++;
+               continue;
+            }
+         }
+         param1.writeByte(this.teamNumber);
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_GameFightPlacementPossiblePositionsMessage(param1);
+      }
+      
+      public function deserializeAs_GameFightPlacementPossiblePositionsMessage(param1:ICustomDataInput) : void
+      {
+         var _loc6_:uint = 0;
+         var _loc7_:uint = 0;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc6_ = param1.readVarUhShort();
+            if(_loc6_ < 0 || _loc6_ > 559)
             {
-                throw (new Error((("Forbidden value (" + this.teamNumber) + ") on element of GameFightPlacementPossiblePositionsMessage.teamNumber.")));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.fight
-
+               throw new Error("Forbidden value (" + _loc6_ + ") on elements of positionsForChallengers.");
+            }
+            else
+            {
+               this.positionsForChallengers.push(_loc6_);
+               _loc3_++;
+               continue;
+            }
+         }
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
+         {
+            _loc7_ = param1.readVarUhShort();
+            if(_loc7_ < 0 || _loc7_ > 559)
+            {
+               throw new Error("Forbidden value (" + _loc7_ + ") on elements of positionsForDefenders.");
+            }
+            else
+            {
+               this.positionsForDefenders.push(_loc7_);
+               _loc5_++;
+               continue;
+            }
+         }
+         this.teamNumber = param1.readByte();
+         if(this.teamNumber < 0)
+         {
+            throw new Error("Forbidden value (" + this.teamNumber + ") on element of GameFightPlacementPossiblePositionsMessage.teamNumber.");
+         }
+         else
+         {
+            return;
+         }
+      }
+   }
+}

@@ -1,93 +1,115 @@
-﻿package com.ankamagames.dofus.network.types.game.data.items.effects
+package com.ankamagames.dofus.network.types.game.data.items.effects
 {
-    import com.ankamagames.jerakine.network.INetworkType;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-
-    [Trusted]
-    public class ObjectEffectMount extends ObjectEffect implements INetworkType 
-    {
-
-        public static const protocolId:uint = 179;
-
-        public var mountId:uint = 0;
-        public var date:Number = 0;
-        public var modelId:uint = 0;
-
-
-        override public function getTypeId():uint
-        {
-            return (179);
-        }
-
-        public function initObjectEffectMount(actionId:uint=0, mountId:uint=0, date:Number=0, modelId:uint=0):ObjectEffectMount
-        {
-            super.initObjectEffect(actionId);
-            this.mountId = mountId;
-            this.date = date;
-            this.modelId = modelId;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.mountId = 0;
-            this.date = 0;
-            this.modelId = 0;
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_ObjectEffectMount(output);
-        }
-
-        public function serializeAs_ObjectEffectMount(output:ICustomDataOutput):void
-        {
-            super.serializeAs_ObjectEffect(output);
-            if (this.mountId < 0)
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class ObjectEffectMount extends ObjectEffect implements INetworkType
+   {
+      
+      public function ObjectEffectMount()
+      {
+         super();
+      }
+      
+      public static const protocolId:uint = 179;
+      
+      public var mountId:uint = 0;
+      
+      public var date:Number = 0;
+      
+      public var modelId:uint = 0;
+      
+      override public function getTypeId() : uint
+      {
+         return 179;
+      }
+      
+      public function initObjectEffectMount(param1:uint = 0, param2:uint = 0, param3:Number = 0, param4:uint = 0) : ObjectEffectMount
+      {
+         super.initObjectEffect(param1);
+         this.mountId = param2;
+         this.date = param3;
+         this.modelId = param4;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.mountId = 0;
+         this.date = 0;
+         this.modelId = 0;
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_ObjectEffectMount(param1);
+      }
+      
+      public function serializeAs_ObjectEffectMount(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_ObjectEffect(param1);
+         if(this.mountId < 0)
+         {
+            throw new Error("Forbidden value (" + this.mountId + ") on element mountId.");
+         }
+         else
+         {
+            param1.writeInt(this.mountId);
+            if(this.date < -9.007199254740992E15 || this.date > 9.007199254740992E15)
             {
-                throw (new Error((("Forbidden value (" + this.mountId) + ") on element mountId.")));
-            };
-            output.writeInt(this.mountId);
-            if ((((this.date < -9007199254740992)) || ((this.date > 9007199254740992))))
+               throw new Error("Forbidden value (" + this.date + ") on element date.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.date) + ") on element date.")));
-            };
-            output.writeDouble(this.date);
-            if (this.modelId < 0)
+               param1.writeDouble(this.date);
+               if(this.modelId < 0)
+               {
+                  throw new Error("Forbidden value (" + this.modelId + ") on element modelId.");
+               }
+               else
+               {
+                  param1.writeVarShort(this.modelId);
+                  return;
+               }
+            }
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_ObjectEffectMount(param1);
+      }
+      
+      public function deserializeAs_ObjectEffectMount(param1:ICustomDataInput) : void
+      {
+         super.deserialize(param1);
+         this.mountId = param1.readInt();
+         if(this.mountId < 0)
+         {
+            throw new Error("Forbidden value (" + this.mountId + ") on element of ObjectEffectMount.mountId.");
+         }
+         else
+         {
+            this.date = param1.readDouble();
+            if(this.date < -9.007199254740992E15 || this.date > 9.007199254740992E15)
             {
-                throw (new Error((("Forbidden value (" + this.modelId) + ") on element modelId.")));
-            };
-            output.writeVarShort(this.modelId);
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_ObjectEffectMount(input);
-        }
-
-        public function deserializeAs_ObjectEffectMount(input:ICustomDataInput):void
-        {
-            super.deserialize(input);
-            this.mountId = input.readInt();
-            if (this.mountId < 0)
+               throw new Error("Forbidden value (" + this.date + ") on element of ObjectEffectMount.date.");
+            }
+            else
             {
-                throw (new Error((("Forbidden value (" + this.mountId) + ") on element of ObjectEffectMount.mountId.")));
-            };
-            this.date = input.readDouble();
-            if ((((this.date < -9007199254740992)) || ((this.date > 9007199254740992))))
-            {
-                throw (new Error((("Forbidden value (" + this.date) + ") on element of ObjectEffectMount.date.")));
-            };
-            this.modelId = input.readVarUhShort();
-            if (this.modelId < 0)
-            {
-                throw (new Error((("Forbidden value (" + this.modelId) + ") on element of ObjectEffectMount.modelId.")));
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.types.game.data.items.effects
-
+               this.modelId = param1.readVarUhShort();
+               if(this.modelId < 0)
+               {
+                  throw new Error("Forbidden value (" + this.modelId + ") on element of ObjectEffectMount.modelId.");
+               }
+               else
+               {
+                  return;
+               }
+            }
+         }
+      }
+   }
+}

@@ -1,9 +1,11 @@
-﻿package com.ankamagames.berilia.types.uiDefinition
+package com.ankamagames.berilia.types.uiDefinition
 {
-    public class ScrollContainerElement extends ContainerElement 
-    {
-
-
-    }
-}//package com.ankamagames.berilia.types.uiDefinition
-
+   public class ScrollContainerElement extends ContainerElement
+   {
+      
+      public function ScrollContainerElement()
+      {
+         super();
+      }
+   }
+}

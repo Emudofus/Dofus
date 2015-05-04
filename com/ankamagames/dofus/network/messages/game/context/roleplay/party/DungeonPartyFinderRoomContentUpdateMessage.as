@@ -1,142 +1,155 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party
+package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.party.DungeonPartyFinderPlayer;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class DungeonPartyFinderRoomContentUpdateMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6250;
-
-        private var _isInitialized:Boolean = false;
-        public var dungeonId:uint = 0;
-        public var addedPlayers:Vector.<DungeonPartyFinderPlayer>;
-        public var removedPlayersIds:Vector.<uint>;
-
-        public function DungeonPartyFinderRoomContentUpdateMessage()
-        {
-            this.addedPlayers = new Vector.<DungeonPartyFinderPlayer>();
-            this.removedPlayersIds = new Vector.<uint>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6250);
-        }
-
-        public function initDungeonPartyFinderRoomContentUpdateMessage(dungeonId:uint=0, addedPlayers:Vector.<DungeonPartyFinderPlayer>=null, removedPlayersIds:Vector.<uint>=null):DungeonPartyFinderRoomContentUpdateMessage
-        {
-            this.dungeonId = dungeonId;
-            this.addedPlayers = addedPlayers;
-            this.removedPlayersIds = removedPlayersIds;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.dungeonId = 0;
-            this.addedPlayers = new Vector.<DungeonPartyFinderPlayer>();
-            this.removedPlayersIds = new Vector.<uint>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_DungeonPartyFinderRoomContentUpdateMessage(output);
-        }
-
-        public function serializeAs_DungeonPartyFinderRoomContentUpdateMessage(output:ICustomDataOutput):void
-        {
-            if (this.dungeonId < 0)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.DungeonPartyFinderPlayer;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class DungeonPartyFinderRoomContentUpdateMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function DungeonPartyFinderRoomContentUpdateMessage()
+      {
+         this.addedPlayers = new Vector.<DungeonPartyFinderPlayer>();
+         this.removedPlayersIds = new Vector.<uint>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6250;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var dungeonId:uint = 0;
+      
+      public var addedPlayers:Vector.<DungeonPartyFinderPlayer>;
+      
+      public var removedPlayersIds:Vector.<uint>;
+      
+      override public function getMessageId() : uint
+      {
+         return 6250;
+      }
+      
+      public function initDungeonPartyFinderRoomContentUpdateMessage(param1:uint = 0, param2:Vector.<DungeonPartyFinderPlayer> = null, param3:Vector.<uint> = null) : DungeonPartyFinderRoomContentUpdateMessage
+      {
+         this.dungeonId = param1;
+         this.addedPlayers = param2;
+         this.removedPlayersIds = param3;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.dungeonId = 0;
+         this.addedPlayers = new Vector.<DungeonPartyFinderPlayer>();
+         this.removedPlayersIds = new Vector.<uint>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_DungeonPartyFinderRoomContentUpdateMessage(param1);
+      }
+      
+      public function serializeAs_DungeonPartyFinderRoomContentUpdateMessage(param1:ICustomDataOutput) : void
+      {
+         if(this.dungeonId < 0)
+         {
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element dungeonId.");
+         }
+         else
+         {
+            param1.writeVarShort(this.dungeonId);
+            param1.writeShort(this.addedPlayers.length);
+            var _loc2_:uint = 0;
+            while(_loc2_ < this.addedPlayers.length)
             {
-                throw (new Error((("Forbidden value (" + this.dungeonId) + ") on element dungeonId.")));
-            };
-            output.writeVarShort(this.dungeonId);
-            output.writeShort(this.addedPlayers.length);
-            var _i2:uint;
-            while (_i2 < this.addedPlayers.length)
+               (this.addedPlayers[_loc2_] as DungeonPartyFinderPlayer).serializeAs_DungeonPartyFinderPlayer(param1);
+               _loc2_++;
+            }
+            param1.writeShort(this.removedPlayersIds.length);
+            var _loc3_:uint = 0;
+            while(_loc3_ < this.removedPlayersIds.length)
             {
-                (this.addedPlayers[_i2] as DungeonPartyFinderPlayer).serializeAs_DungeonPartyFinderPlayer(output);
-                _i2++;
-            };
-            output.writeShort(this.removedPlayersIds.length);
-            var _i3:uint;
-            while (_i3 < this.removedPlayersIds.length)
+               if(this.removedPlayersIds[_loc3_] < 0)
+               {
+                  throw new Error("Forbidden value (" + this.removedPlayersIds[_loc3_] + ") on element 3 (starting at 1) of removedPlayersIds.");
+               }
+               else
+               {
+                  param1.writeVarInt(this.removedPlayersIds[_loc3_]);
+                  _loc3_++;
+                  continue;
+               }
+            }
+            return;
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_DungeonPartyFinderRoomContentUpdateMessage(param1);
+      }
+      
+      public function deserializeAs_DungeonPartyFinderRoomContentUpdateMessage(param1:ICustomDataInput) : void
+      {
+         var _loc6_:DungeonPartyFinderPlayer = null;
+         var _loc7_:uint = 0;
+         this.dungeonId = param1.readVarUhShort();
+         if(this.dungeonId < 0)
+         {
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element of DungeonPartyFinderRoomContentUpdateMessage.dungeonId.");
+         }
+         else
+         {
+            var _loc2_:uint = param1.readUnsignedShort();
+            var _loc3_:uint = 0;
+            while(_loc3_ < _loc2_)
             {
-                if (this.removedPlayersIds[_i3] < 0)
-                {
-                    throw (new Error((("Forbidden value (" + this.removedPlayersIds[_i3]) + ") on element 3 (starting at 1) of removedPlayersIds.")));
-                };
-                output.writeVarInt(this.removedPlayersIds[_i3]);
-                _i3++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_DungeonPartyFinderRoomContentUpdateMessage(input);
-        }
-
-        public function deserializeAs_DungeonPartyFinderRoomContentUpdateMessage(input:ICustomDataInput):void
-        {
-            var _item2:DungeonPartyFinderPlayer;
-            var _val3:uint;
-            this.dungeonId = input.readVarUhShort();
-            if (this.dungeonId < 0)
+               _loc6_ = new DungeonPartyFinderPlayer();
+               _loc6_.deserialize(param1);
+               this.addedPlayers.push(_loc6_);
+               _loc3_++;
+            }
+            var _loc4_:uint = param1.readUnsignedShort();
+            var _loc5_:uint = 0;
+            while(_loc5_ < _loc4_)
             {
-                throw (new Error((("Forbidden value (" + this.dungeonId) + ") on element of DungeonPartyFinderRoomContentUpdateMessage.dungeonId.")));
-            };
-            var _addedPlayersLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _addedPlayersLen)
-            {
-                _item2 = new DungeonPartyFinderPlayer();
-                _item2.deserialize(input);
-                this.addedPlayers.push(_item2);
-                _i2++;
-            };
-            var _removedPlayersIdsLen:uint = input.readUnsignedShort();
-            var _i3:uint;
-            while (_i3 < _removedPlayersIdsLen)
-            {
-                _val3 = input.readVarUhInt();
-                if (_val3 < 0)
-                {
-                    throw (new Error((("Forbidden value (" + _val3) + ") on elements of removedPlayersIds.")));
-                };
-                this.removedPlayersIds.push(_val3);
-                _i3++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.roleplay.party
-
+               _loc7_ = param1.readVarUhInt();
+               if(_loc7_ < 0)
+               {
+                  throw new Error("Forbidden value (" + _loc7_ + ") on elements of removedPlayersIds.");
+               }
+               else
+               {
+                  this.removedPlayersIds.push(_loc7_);
+                  _loc5_++;
+                  continue;
+               }
+            }
+            return;
+         }
+      }
+   }
+}

@@ -1,127 +1,131 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight.challenge
+package com.ankamagames.dofus.network.messages.game.context.fight.challenge
 {
-    import com.ankamagames.jerakine.network.NetworkMessage;
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class ChallengeTargetsListMessage extends NetworkMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 5613;
-
-        private var _isInitialized:Boolean = false;
-        public var targetIds:Vector.<int>;
-        public var targetCells:Vector.<int>;
-
-        public function ChallengeTargetsListMessage()
-        {
-            this.targetIds = new Vector.<int>();
-            this.targetCells = new Vector.<int>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (this._isInitialized);
-        }
-
-        override public function getMessageId():uint
-        {
-            return (5613);
-        }
-
-        public function initChallengeTargetsListMessage(targetIds:Vector.<int>=null, targetCells:Vector.<int>=null):ChallengeTargetsListMessage
-        {
-            this.targetIds = targetIds;
-            this.targetCells = targetCells;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            this.targetIds = new Vector.<int>();
-            this.targetCells = new Vector.<int>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_ChallengeTargetsListMessage(output);
-        }
-
-        public function serializeAs_ChallengeTargetsListMessage(output:ICustomDataOutput):void
-        {
-            output.writeShort(this.targetIds.length);
-            var _i1:uint;
-            while (_i1 < this.targetIds.length)
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class ChallengeTargetsListMessage extends NetworkMessage implements INetworkMessage
+   {
+      
+      public function ChallengeTargetsListMessage()
+      {
+         this.targetIds = new Vector.<int>();
+         this.targetCells = new Vector.<int>();
+         super();
+      }
+      
+      public static const protocolId:uint = 5613;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return this._isInitialized;
+      }
+      
+      public var targetIds:Vector.<int>;
+      
+      public var targetCells:Vector.<int>;
+      
+      override public function getMessageId() : uint
+      {
+         return 5613;
+      }
+      
+      public function initChallengeTargetsListMessage(param1:Vector.<int> = null, param2:Vector.<int> = null) : ChallengeTargetsListMessage
+      {
+         this.targetIds = param1;
+         this.targetCells = param2;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         this.targetIds = new Vector.<int>();
+         this.targetCells = new Vector.<int>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_ChallengeTargetsListMessage(param1);
+      }
+      
+      public function serializeAs_ChallengeTargetsListMessage(param1:ICustomDataOutput) : void
+      {
+         param1.writeShort(this.targetIds.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.targetIds.length)
+         {
+            param1.writeInt(this.targetIds[_loc2_]);
+            _loc2_++;
+         }
+         param1.writeShort(this.targetCells.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.targetCells.length)
+         {
+            if(this.targetCells[_loc3_] < -1 || this.targetCells[_loc3_] > 559)
             {
-                output.writeInt(this.targetIds[_i1]);
-                _i1++;
-            };
-            output.writeShort(this.targetCells.length);
-            var _i2:uint;
-            while (_i2 < this.targetCells.length)
+               throw new Error("Forbidden value (" + this.targetCells[_loc3_] + ") on element 2 (starting at 1) of targetCells.");
+            }
+            else
             {
-                if ((((this.targetCells[_i2] < -1)) || ((this.targetCells[_i2] > 559))))
-                {
-                    throw (new Error((("Forbidden value (" + this.targetCells[_i2]) + ") on element 2 (starting at 1) of targetCells.")));
-                };
-                output.writeShort(this.targetCells[_i2]);
-                _i2++;
-            };
-        }
-
-        public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_ChallengeTargetsListMessage(input);
-        }
-
-        public function deserializeAs_ChallengeTargetsListMessage(input:ICustomDataInput):void
-        {
-            var _val1:int;
-            var _val2:int;
-            var _targetIdsLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _targetIdsLen)
+               param1.writeShort(this.targetCells[_loc3_]);
+               _loc3_++;
+               continue;
+            }
+         }
+      }
+      
+      public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_ChallengeTargetsListMessage(param1);
+      }
+      
+      public function deserializeAs_ChallengeTargetsListMessage(param1:ICustomDataInput) : void
+      {
+         var _loc6_:* = 0;
+         var _loc7_:* = 0;
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc6_ = param1.readInt();
+            this.targetIds.push(_loc6_);
+            _loc3_++;
+         }
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
+         {
+            _loc7_ = param1.readShort();
+            if(_loc7_ < -1 || _loc7_ > 559)
             {
-                _val1 = input.readInt();
-                this.targetIds.push(_val1);
-                _i1++;
-            };
-            var _targetCellsLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _targetCellsLen)
+               throw new Error("Forbidden value (" + _loc7_ + ") on elements of targetCells.");
+            }
+            else
             {
-                _val2 = input.readShort();
-                if ((((_val2 < -1)) || ((_val2 > 559))))
-                {
-                    throw (new Error((("Forbidden value (" + _val2) + ") on elements of targetCells.")));
-                };
-                this.targetCells.push(_val2);
-                _i2++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.context.fight.challenge
-
+               this.targetCells.push(_loc7_);
+               _loc5_++;
+               continue;
+            }
+         }
+      }
+   }
+}

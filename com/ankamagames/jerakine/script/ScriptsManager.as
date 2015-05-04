@@ -1,75 +1,73 @@
-﻿package com.ankamagames.jerakine.script
+package com.ankamagames.jerakine.script
 {
-    import flash.utils.Dictionary;
-    import com.ankamagames.jerakine.interfaces.IScriptsPlayer;
-
-    public class ScriptsManager 
-    {
-
-        private static var _self:ScriptsManager;
-        public static const LUA_PLAYER:String = "LUA_PLAYER";
-
-        private var _players:Dictionary;
-        private var _apis:Dictionary;
-
-        public function ScriptsManager()
-        {
-            this._players = new Dictionary();
-            this._apis = new Dictionary();
-            super();
-        }
-
-        public static function getInstance():ScriptsManager
-        {
-            if (!(_self))
-            {
-                _self = new (ScriptsManager)();
-            };
-            return (_self);
-        }
-
-
-        public function addPlayer(pPlayerType:String, pPlayer:IScriptsPlayer):void
-        {
-            this._players[pPlayerType] = pPlayer;
-        }
-
-        public function getPlayer(pPlayerType:String):IScriptsPlayer
-        {
-            return (this._players[pPlayerType]);
-        }
-
-        public function addPlayerApi(pPlayer:IScriptsPlayer, pApiId:String, pApi:*):void
-        {
-            if (!(this._apis[pPlayer]))
-            {
-                this._apis[pPlayer] = new Dictionary();
-            };
-            this._apis[pPlayer][pApiId] = pApi;
-            pPlayer.addApi(pApiId, pApi);
-        }
-
-        public function getPlayerApi(pPlayer:IScriptsPlayer, pApiId:String)
-        {
-            var api:*;
-            if (this._apis[pPlayer])
-            {
-                api = this._apis[pPlayer][pApiId];
-            };
-            return (api);
-        }
-
-        public function playScript(pPlayerType:String, pScript:String):void
-        {
-            this._players[pPlayerType].playScript(pScript);
-        }
-
-        public function playFile(pPlayerType:String, pScriptUri:String):void
-        {
-            this._players[pPlayerType].playFile(pScriptUri);
-        }
-
-
-    }
-}//package com.ankamagames.jerakine.script
-
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.interfaces.IScriptsPlayer;
+   
+   public class ScriptsManager extends Object
+   {
+      
+      public function ScriptsManager()
+      {
+         this._players = new Dictionary();
+         this._apis = new Dictionary();
+         super();
+      }
+      
+      private static var _self:ScriptsManager;
+      
+      public static function getInstance() : ScriptsManager
+      {
+         if(!_self)
+         {
+            _self = new ScriptsManager();
+         }
+         return _self;
+      }
+      
+      public static const LUA_PLAYER:String = "LUA_PLAYER";
+      
+      private var _players:Dictionary;
+      
+      private var _apis:Dictionary;
+      
+      public function addPlayer(param1:String, param2:IScriptsPlayer) : void
+      {
+         this._players[param1] = param2;
+      }
+      
+      public function getPlayer(param1:String) : IScriptsPlayer
+      {
+         return this._players[param1];
+      }
+      
+      public function addPlayerApi(param1:IScriptsPlayer, param2:String, param3:*) : void
+      {
+         if(!this._apis[param1])
+         {
+            this._apis[param1] = new Dictionary();
+         }
+         this._apis[param1][param2] = param3;
+         param1.addApi(param2,param3);
+      }
+      
+      public function getPlayerApi(param1:IScriptsPlayer, param2:String) : *
+      {
+         var _loc3_:* = undefined;
+         if(this._apis[param1])
+         {
+            _loc3_ = this._apis[param1][param2];
+         }
+         return _loc3_;
+      }
+      
+      public function playScript(param1:String, param2:String) : void
+      {
+         this._players[param1].playScript(param2);
+      }
+      
+      public function playFile(param1:String, param2:String) : void
+      {
+         this._players[param1].playFile(param2);
+      }
+   }
+}

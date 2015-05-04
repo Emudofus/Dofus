@@ -1,372 +1,376 @@
-﻿package com.ankamagames.berilia.components.gridRenderer
+package com.ankamagames.berilia.components.gridRenderer
 {
-    import com.ankamagames.berilia.interfaces.IGridRenderer;
-    import com.ankamagames.jerakine.logger.Logger;
-    import com.ankamagames.berilia.components.Grid;
-    import flash.geom.ColorTransform;
-    import com.ankamagames.jerakine.types.Uri;
-    import flash.utils.Dictionary;
-    import com.ankamagames.jerakine.logger.Log;
-    import flash.utils.getQualifiedClassName;
-    import com.ankamagames.berilia.types.data.TreeData;
-    import flash.display.Sprite;
-    import com.ankamagames.berilia.components.Texture;
-    import com.ankamagames.berilia.components.Label;
-    import flash.events.MouseEvent;
-    import flash.display.DisplayObject;
-    import com.ankamagames.jerakine.messages.Message;
-    import com.ankamagames.berilia.UIComponent;
-    import flash.display.Shape;
-    import flash.geom.Transform;
-    import com.ankamagames.jerakine.interfaces.IInterfaceListener;
-    import com.ankamagames.berilia.components.Tree;
-    import com.ankamagames.berilia.Berilia;
-
-    [RendererArgs(fontCss="String", eventLineColor="uint", oddLineColor="uint", overLineColor="uint", selectedLineColor="uint", expandableBtnUri="com.ankamagames.jerakine.types::Uri", simpleItemUri="com.ankamagames.jerakine.types::Uri", endItemUri="com.ankamagames.jerakine.types::Uri")]
-    public class TreeGridRenderer implements IGridRenderer 
-    {
-
-        protected var _log:Logger;
-        private var _grid:Grid;
-        private var _bgColor1:ColorTransform;
-        private var _bgColor2:ColorTransform;
-        private var _selectedColor:ColorTransform;
-        private var _overColor:ColorTransform;
-        private var _cssUri:Uri;
-        private var _expendBtnUri:Uri;
-        private var _simpleItemUri:Uri;
-        private var _endItemUri:Uri;
-        private var _shapeIndex:Dictionary;
-        private var _indexRef:Dictionary;
-        private var _uriRef:Array;
-
-        public function TreeGridRenderer(strParams:String)
-        {
-            var params:Array;
-            this._log = Log.getLogger(getQualifiedClassName(TreeGridRenderer));
-            this._shapeIndex = new Dictionary(true);
-            this._indexRef = new Dictionary(true);
-            this._uriRef = new Array();
-            super();
-            if (strParams)
+   import com.ankamagames.berilia.interfaces.IGridRenderer;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.berilia.components.Grid;
+   import flash.geom.ColorTransform;
+   import com.ankamagames.jerakine.types.Uri;
+   import flash.utils.Dictionary;
+   import flash.display.DisplayObject;
+   import com.ankamagames.berilia.types.data.TreeData;
+   import flash.display.Sprite;
+   import com.ankamagames.berilia.components.Texture;
+   import com.ankamagames.berilia.components.Label;
+   import flash.events.MouseEvent;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.berilia.UIComponent;
+   import flash.display.Shape;
+   import flash.geom.Transform;
+   import com.ankamagames.jerakine.interfaces.IInterfaceListener;
+   import com.ankamagames.berilia.components.Tree;
+   import com.ankamagames.berilia.Berilia;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   
+   public class TreeGridRenderer extends Object implements IGridRenderer
+   {
+      
+      public function TreeGridRenderer(param1:String)
+      {
+         var _loc2_:Array = null;
+         this._log = Log.getLogger(getQualifiedClassName(TreeGridRenderer));
+         this._shapeIndex = new Dictionary(true);
+         this._indexRef = new Dictionary(true);
+         this._uriRef = new Array();
+         super();
+         if(param1)
+         {
+            _loc2_ = param1.length?param1.split(","):null;
+            if((_loc2_[0]) && (_loc2_[0].length))
             {
-                params = ((strParams.length) ? strParams.split(",") : null);
-                if (((params[0]) && (params[0].length)))
-                {
-                    this._cssUri = new Uri(params[0]);
-                };
-                if (((params[1]) && (params[1].length)))
-                {
-                    this._bgColor1 = new ColorTransform();
-                    this._bgColor1.color = parseInt(params[1], 16);
-                };
-                if (((params[2]) && (params[2].length)))
-                {
-                    this._bgColor2 = new ColorTransform();
-                    this._bgColor2.color = parseInt(params[2], 16);
-                };
-                if (((params[3]) && (params[3].length)))
-                {
-                    this._overColor = new ColorTransform();
-                    this._overColor.color = parseInt(params[3], 16);
-                };
-                if (((params[4]) && (params[4].length)))
-                {
-                    this._selectedColor = new ColorTransform();
-                    this._selectedColor.color = parseInt(params[4], 16);
-                };
-                if (((params[5]) && (params[5].length)))
-                {
-                    this._expendBtnUri = new Uri(params[5]);
-                };
-                if (((params[6]) && (params[6].length)))
-                {
-                    this._simpleItemUri = new Uri(params[6]);
-                };
-                if (((params[7]) && (params[7].length)))
-                {
-                    this._endItemUri = new Uri(params[7]);
-                };
-            };
-        }
-
-        public function set grid(g:Grid):void
-        {
-            this._grid = g;
-        }
-
-        public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0):DisplayObject
-        {
-            var treeData:TreeData;
-            var raw:Sprite = new Sprite();
-            raw.mouseEnabled = false;
-            this._indexRef[raw] = data;
-            treeData = data;
-            var texture:Texture = new Texture();
-            texture.mouseEnabled = true;
-            texture.width = 10;
-            texture.height = (this._grid.slotHeight + 1);
-            texture.y = ((this._grid.slotHeight - 18) / 2);
-            if (treeData)
+               this._cssUri = new Uri(_loc2_[0]);
+            }
+            if((_loc2_[1]) && (_loc2_[1].length))
             {
-                texture.x = (treeData.depth * texture.width);
-                if (((treeData.children) && (treeData.children.length)))
-                {
-                    texture.uri = this._expendBtnUri;
-                    texture.buttonMode = true;
-                }
-                else
-                {
-                    if (treeData.parent.children.indexOf(treeData) == (treeData.parent.children.length - 1))
-                    {
-                        texture.uri = this._endItemUri;
-                    }
-                    else
-                    {
-                        texture.uri = this._simpleItemUri;
-                    };
-                };
-                if (treeData.expend)
-                {
-                    texture.gotoAndStop = "selected";
-                }
-                else
-                {
-                    texture.gotoAndStop = "normal";
-                };
-            };
-            texture.finalize();
-            var label:Label = new Label();
-            label.mouseEnabled = true;
-            label.useHandCursor = true;
-            label.x = ((texture.x + texture.width) + 3);
-            label.width = (this._grid.slotWidth - label.x);
-            label.height = this._grid.slotHeight;
-            if (((data) && (data.value.hasOwnProperty("css"))))
+               this._bgColor1 = new ColorTransform();
+               this._bgColor1.color = parseInt(_loc2_[1],16);
+            }
+            if((_loc2_[2]) && (_loc2_[2].length))
             {
-                if ((data.css is String))
-                {
-                    if (!(this._uriRef[data.value.css]))
-                    {
-                        this._uriRef[data.value.css] = new Uri(data.value.css);
-                    };
-                    label.css = this._uriRef[data.value.css];
-                }
-                else
-                {
-                    label.css = data.value.css;
-                };
-                if (data.value.hasOwnProperty("cssClass"))
-                {
-                    label.cssClass = data.value.cssClass;
-                };
-            };
-            if ((((data is String)) || ((data == null))))
+               this._bgColor2 = new ColorTransform();
+               this._bgColor2.color = parseInt(_loc2_[2],16);
+            }
+            if((_loc2_[3]) && (_loc2_[3].length))
             {
-                label.text = data;
+               this._overColor = new ColorTransform();
+               this._overColor.color = parseInt(_loc2_[3],16);
+            }
+            if((_loc2_[4]) && (_loc2_[4].length))
+            {
+               this._selectedColor = new ColorTransform();
+               this._selectedColor.color = parseInt(_loc2_[4],16);
+            }
+            if((_loc2_[5]) && (_loc2_[5].length))
+            {
+               this._expendBtnUri = new Uri(_loc2_[5]);
+            }
+            if((_loc2_[6]) && (_loc2_[6].length))
+            {
+               this._simpleItemUri = new Uri(_loc2_[6]);
+            }
+            if((_loc2_[7]) && (_loc2_[7].length))
+            {
+               this._endItemUri = new Uri(_loc2_[7]);
+            }
+         }
+      }
+      
+      protected var _log:Logger;
+      
+      private var _grid:Grid;
+      
+      private var _bgColor1:ColorTransform;
+      
+      private var _bgColor2:ColorTransform;
+      
+      private var _selectedColor:ColorTransform;
+      
+      private var _overColor:ColorTransform;
+      
+      private var _cssUri:Uri;
+      
+      private var _expendBtnUri:Uri;
+      
+      private var _simpleItemUri:Uri;
+      
+      private var _endItemUri:Uri;
+      
+      private var _shapeIndex:Dictionary;
+      
+      private var _indexRef:Dictionary;
+      
+      private var _uriRef:Array;
+      
+      public function set grid(param1:Grid) : void
+      {
+         this._grid = param1;
+      }
+      
+      public function render(param1:*, param2:uint, param3:Boolean, param4:uint = 0) : DisplayObject
+      {
+         var _loc6_:TreeData = null;
+         var _loc5_:Sprite = new Sprite();
+         _loc5_.mouseEnabled = false;
+         this._indexRef[_loc5_] = param1;
+         _loc6_ = param1;
+         var _loc7_:Texture = new Texture();
+         _loc7_.mouseEnabled = true;
+         _loc7_.width = 10;
+         _loc7_.height = this._grid.slotHeight + 1;
+         _loc7_.y = (this._grid.slotHeight - 18) / 2;
+         if(_loc6_)
+         {
+            _loc7_.x = _loc6_.depth * _loc7_.width;
+            if((_loc6_.children) && (_loc6_.children.length))
+            {
+               _loc7_.uri = this._expendBtnUri;
+               _loc7_.buttonMode = true;
+            }
+            else if(_loc6_.parent.children.indexOf(_loc6_) == _loc6_.parent.children.length - 1)
+            {
+               _loc7_.uri = this._endItemUri;
             }
             else
             {
-                label.text = data.label;
-            };
-            if (this._cssUri)
+               _loc7_.uri = this._simpleItemUri;
+            }
+            
+            if(_loc6_.expend)
             {
-                label.css = this._cssUri;
-            };
-            this.updateBackground(raw, index, selected);
-            label.addEventListener(MouseEvent.MOUSE_OVER, this.onRollOver);
-            label.addEventListener(MouseEvent.MOUSE_OUT, this.onRollOut);
-            texture.addEventListener(MouseEvent.CLICK, this.onRelease);
-            label.finalize();
-            raw.addChild(texture);
-            raw.addChild(label);
-            return (raw);
-        }
-
-        public function getDataLength(data:*, selected:Boolean):uint
-        {
-            return (1);
-        }
-
-        public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint=0):void
-        {
-            var treeData:TreeData;
-            var texture:Texture;
-            var label:Label;
-            if ((dispObj is Sprite))
-            {
-                treeData = data;
-                this._indexRef[dispObj] = treeData;
-                texture = (Sprite(dispObj).getChildAt(1) as Texture);
-                label = (Sprite(dispObj).getChildAt(2) as Label);
-                if (treeData != null)
-                {
-                    texture.x = ((treeData.depth * 10) + 3);
-                    if (((treeData.children) && (treeData.children.length)))
-                    {
-                        texture.uri = this._expendBtnUri;
-                        if (treeData.expend)
-                        {
-                            texture.gotoAndStop = "selected";
-                        }
-                        else
-                        {
-                            texture.gotoAndStop = "normal";
-                        };
-                    }
-                    else
-                    {
-                        if (treeData.parent.children.indexOf(treeData) == (treeData.parent.children.length - 1))
-                        {
-                            texture.uri = this._endItemUri;
-                        }
-                        else
-                        {
-                            texture.uri = this._simpleItemUri;
-                        };
-                    };
-                    label.x = ((texture.x + texture.width) + 3);
-                    label.width = (this._grid.slotWidth - label.x);
-                    label.css = this._cssUri;
-                    label.cssClass = "";
-                    if (((data) && (data.value.hasOwnProperty("css"))))
-                    {
-                        if ((data.value.css is String))
-                        {
-                            if (!(this._uriRef[data.value.css]))
-                            {
-                                this._uriRef[data.value.css] = new Uri(data.value.css);
-                            };
-                            label.css = this._uriRef[data.value.css];
-                        }
-                        else
-                        {
-                            label.css = data.value.css;
-                        };
-                        if (data.value.hasOwnProperty("cssClass"))
-                        {
-                            label.cssClass = data.value.cssClass;
-                        };
-                    };
-                    label.text = treeData.label;
-                    label.finalize();
-                }
-                else
-                {
-                    label.text = "";
-                    texture.uri = null;
-                };
-                this.updateBackground((dispObj as Sprite), index, selected);
+               _loc7_.gotoAndStop = "selected";
             }
             else
             {
-                this._log.warn((("Can't update, " + dispObj.name) + " is not a Sprite"));
-            };
-        }
-
-        public function remove(dispObj:DisplayObject):void
-        {
-            var label:Label;
-            this._indexRef[dispObj] = null;
-            if ((dispObj is Label))
+               _loc7_.gotoAndStop = "normal";
+            }
+         }
+         _loc7_.finalize();
+         var _loc8_:Label = new Label();
+         _loc8_.mouseEnabled = true;
+         _loc8_.useHandCursor = true;
+         _loc8_.x = _loc7_.x + _loc7_.width + 3;
+         _loc8_.width = this._grid.slotWidth - _loc8_.x;
+         _loc8_.height = this._grid.slotHeight;
+         if((param1) && (param1.value.hasOwnProperty("css")))
+         {
+            if(param1.css is String)
             {
-                label = (dispObj as Label);
-                if (label.parent)
-                {
-                    label.parent.removeChild(dispObj);
-                };
-                label.removeEventListener(MouseEvent.MOUSE_OUT, this.onRollOut);
-                label.removeEventListener(MouseEvent.MOUSE_OVER, this.onRollOver);
-            };
-        }
-
-        public function destroy():void
-        {
-            this._grid = null;
-            this._shapeIndex = null;
-        }
-
-        public function renderModificator(childs:Array):Array
-        {
-            return (childs);
-        }
-
-        public function eventModificator(msg:Message, functionName:String, args:Array, target:UIComponent):String
-        {
-            return (functionName);
-        }
-
-        private function updateBackground(raw:Sprite, index:uint, selected:Boolean):void
-        {
-            var shape:Shape;
-            if (!(this._shapeIndex[raw]))
+               if(!this._uriRef[param1.value.css])
+               {
+                  this._uriRef[param1.value.css] = new Uri(param1.value.css);
+               }
+               _loc8_.css = this._uriRef[param1.value.css];
+            }
+            else
             {
-                shape = new Shape();
-                shape.graphics.beginFill(0xFFFFFF);
-                shape.graphics.drawRect(0, 0, this._grid.slotWidth, (this._grid.slotHeight + 1));
-                raw.addChildAt(shape, 0);
-                this._shapeIndex[raw] = {
-                    "trans":new Transform(shape),
-                    "shape":shape
-                };
-            };
-            var t:ColorTransform = (((index % 2)) ? this._bgColor1 : this._bgColor2);
-            if (((selected) && (this._selectedColor)))
+               _loc8_.css = param1.value.css;
+            }
+            if(param1.value.hasOwnProperty("cssClass"))
             {
-                t = this._selectedColor;
-            };
-            this._shapeIndex[raw].currentColor = t;
-            DisplayObject(this._shapeIndex[raw].shape).visible = !((t == null));
-            if (t)
+               _loc8_.cssClass = param1.value.cssClass;
+            }
+         }
+         if(param1 is String || param1 == null)
+         {
+            _loc8_.text = param1;
+         }
+         else
+         {
+            _loc8_.text = param1.label;
+         }
+         if(this._cssUri)
+         {
+            _loc8_.css = this._cssUri;
+         }
+         this.updateBackground(_loc5_,param2,param3);
+         _loc8_.addEventListener(MouseEvent.MOUSE_OVER,this.onRollOver);
+         _loc8_.addEventListener(MouseEvent.MOUSE_OUT,this.onRollOut);
+         _loc7_.addEventListener(MouseEvent.CLICK,this.onRelease);
+         _loc8_.finalize();
+         _loc5_.addChild(_loc7_);
+         _loc5_.addChild(_loc8_);
+         return _loc5_;
+      }
+      
+      public function getDataLength(param1:*, param2:Boolean) : uint
+      {
+         return 1;
+      }
+      
+      public function update(param1:*, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void
+      {
+         var _loc6_:TreeData = null;
+         var _loc7_:Texture = null;
+         var _loc8_:Label = null;
+         if(param3 is Sprite)
+         {
+            _loc6_ = param1;
+            this._indexRef[param3] = _loc6_;
+            _loc7_ = Sprite(param3).getChildAt(1) as Texture;
+            _loc8_ = Sprite(param3).getChildAt(2) as Label;
+            if(_loc6_ != null)
             {
-                Transform(this._shapeIndex[raw].trans).colorTransform = t;
-            };
-        }
-
-        private function onRollOver(e:MouseEvent):void
-        {
-            var raw:Sprite;
-            if ((((e.target.name.indexOf("extension") == -1)) && (e.target.text.length)))
+               _loc7_.x = _loc6_.depth * 10 + 3;
+               if((_loc6_.children) && (_loc6_.children.length))
+               {
+                  _loc7_.uri = this._expendBtnUri;
+                  if(_loc6_.expend)
+                  {
+                     _loc7_.gotoAndStop = "selected";
+                  }
+                  else
+                  {
+                     _loc7_.gotoAndStop = "normal";
+                  }
+               }
+               else if(_loc6_.parent.children.indexOf(_loc6_) == _loc6_.parent.children.length - 1)
+               {
+                  _loc7_.uri = this._endItemUri;
+               }
+               else
+               {
+                  _loc7_.uri = this._simpleItemUri;
+               }
+               
+               _loc8_.x = _loc7_.x + _loc7_.width + 3;
+               _loc8_.width = this._grid.slotWidth - _loc8_.x;
+               _loc8_.css = this._cssUri;
+               _loc8_.cssClass = "";
+               if((param1) && (param1.value.hasOwnProperty("css")))
+               {
+                  if(param1.value.css is String)
+                  {
+                     if(!this._uriRef[param1.value.css])
+                     {
+                        this._uriRef[param1.value.css] = new Uri(param1.value.css);
+                     }
+                     _loc8_.css = this._uriRef[param1.value.css];
+                  }
+                  else
+                  {
+                     _loc8_.css = param1.value.css;
+                  }
+                  if(param1.value.hasOwnProperty("cssClass"))
+                  {
+                     _loc8_.cssClass = param1.value.cssClass;
+                  }
+               }
+               _loc8_.text = _loc6_.label;
+               _loc8_.finalize();
+            }
+            else
             {
-                raw = (e.target.parent as Sprite);
-                if (this._overColor)
-                {
-                    Transform(this._shapeIndex[raw].trans).colorTransform = this._overColor;
-                    DisplayObject(this._shapeIndex[raw].shape).visible = true;
-                };
-            };
-        }
-
-        private function onRollOut(e:MouseEvent):void
-        {
-            var raw:Sprite;
-            if (e.target.name.indexOf("extension") == -1)
+               _loc8_.text = "";
+               _loc7_.uri = null;
+            }
+            this.updateBackground(param3 as Sprite,param2,param4);
+         }
+         else
+         {
+            this._log.warn("Can\'t update, " + param3.name + " is not a Sprite");
+         }
+      }
+      
+      public function remove(param1:DisplayObject) : void
+      {
+         var _loc2_:Label = null;
+         this._indexRef[param1] = null;
+         if(param1 is Label)
+         {
+            _loc2_ = param1 as Label;
+            if(_loc2_.parent)
             {
-                raw = (e.target.parent as Sprite);
-                if (this._shapeIndex[raw])
-                {
-                    if (this._shapeIndex[raw].currentColor)
-                    {
-                        Transform(this._shapeIndex[raw].trans).colorTransform = this._shapeIndex[raw].currentColor;
-                    };
-                    DisplayObject(this._shapeIndex[raw].shape).visible = !((this._shapeIndex[raw].currentColor == null));
-                };
+               _loc2_.parent.removeChild(param1);
+            }
+            _loc2_.removeEventListener(MouseEvent.MOUSE_OUT,this.onRollOut);
+            _loc2_.removeEventListener(MouseEvent.MOUSE_OVER,this.onRollOver);
+         }
+      }
+      
+      public function destroy() : void
+      {
+         this._grid = null;
+         this._shapeIndex = null;
+      }
+      
+      public function renderModificator(param1:Array) : Array
+      {
+         return param1;
+      }
+      
+      public function eventModificator(param1:Message, param2:String, param3:Array, param4:UIComponent) : String
+      {
+         return param2;
+      }
+      
+      private function updateBackground(param1:Sprite, param2:uint, param3:Boolean) : void
+      {
+         var _loc5_:Shape = null;
+         if(!this._shapeIndex[param1])
+         {
+            _loc5_ = new Shape();
+            _loc5_.graphics.beginFill(16777215);
+            _loc5_.graphics.drawRect(0,0,this._grid.slotWidth,this._grid.slotHeight + 1);
+            param1.addChildAt(_loc5_,0);
+            this._shapeIndex[param1] = {
+               "trans":new Transform(_loc5_),
+               "shape":_loc5_
             };
-        }
-
-        private function onRelease(e:MouseEvent):void
-        {
-            var listener:IInterfaceListener;
-            var data:TreeData = this._indexRef[e.target.parent];
-            data.expend = !(data.expend);
-            Tree(this._grid).rerender();
-            for each (listener in Berilia.getInstance().UISoundListeners)
+         }
+         var _loc4_:ColorTransform = param2 % 2?this._bgColor1:this._bgColor2;
+         if((param3) && (this._selectedColor))
+         {
+            _loc4_ = this._selectedColor;
+         }
+         this._shapeIndex[param1].currentColor = _loc4_;
+         DisplayObject(this._shapeIndex[param1].shape).visible = !(_loc4_ == null);
+         if(_loc4_)
+         {
+            Transform(this._shapeIndex[param1].trans).colorTransform = _loc4_;
+         }
+      }
+      
+      private function onRollOver(param1:MouseEvent) : void
+      {
+         var _loc2_:Sprite = null;
+         if(param1.target.name.indexOf("extension") == -1 && (param1.target.text.length))
+         {
+            _loc2_ = param1.target.parent as Sprite;
+            if(this._overColor)
             {
-                listener.playUISound("16004");
-            };
-        }
-
-
-    }
-}//package com.ankamagames.berilia.components.gridRenderer
-
+               Transform(this._shapeIndex[_loc2_].trans).colorTransform = this._overColor;
+               DisplayObject(this._shapeIndex[_loc2_].shape).visible = true;
+            }
+         }
+      }
+      
+      private function onRollOut(param1:MouseEvent) : void
+      {
+         var _loc2_:Sprite = null;
+         if(param1.target.name.indexOf("extension") == -1)
+         {
+            _loc2_ = param1.target.parent as Sprite;
+            if(this._shapeIndex[_loc2_])
+            {
+               if(this._shapeIndex[_loc2_].currentColor)
+               {
+                  Transform(this._shapeIndex[_loc2_].trans).colorTransform = this._shapeIndex[_loc2_].currentColor;
+               }
+               DisplayObject(this._shapeIndex[_loc2_].shape).visible = !(this._shapeIndex[_loc2_].currentColor == null);
+            }
+         }
+      }
+      
+      private function onRelease(param1:MouseEvent) : void
+      {
+         var _loc3_:IInterfaceListener = null;
+         var _loc2_:TreeData = this._indexRef[param1.target.parent];
+         _loc2_.expend = !_loc2_.expend;
+         Tree(this._grid).rerender();
+         for each(_loc3_ in Berilia.getInstance().UISoundListeners)
+         {
+            _loc3_.playUISound("16004");
+         }
+      }
+   }
+}

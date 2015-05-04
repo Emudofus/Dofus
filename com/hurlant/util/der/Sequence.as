@@ -1,113 +1,112 @@
-﻿package com.hurlant.util.der
+package com.hurlant.util.der
 {
-    import flash.utils.ByteArray;
-
-    public dynamic class Sequence extends Array implements IAsn1Type 
-    {
-
-        protected var type:uint;
-        protected var len:uint;
-
-        public function Sequence(type:uint=48, length:uint=0)
-        {
-            this.type = type;
-            this.len = length;
-        }
-
-        public function getLength():uint
-        {
-            return (this.len);
-        }
-
-        public function getType():uint
-        {
-            return (this.type);
-        }
-
-        public function toDER():ByteArray
-        {
-            var e:IAsn1Type;
-            var tmp:ByteArray = new ByteArray();
-            var i:int;
-            while (i < length)
+   import flash.utils.ByteArray;
+   
+   public dynamic class Sequence extends Array implements IAsn1Type
+   {
+      
+      public function Sequence(param1:uint = 48, param2:uint = 0)
+      {
+         super();
+         this.type = param1;
+         this.len = param2;
+      }
+      
+      protected var type:uint;
+      
+      protected var len:uint;
+      
+      public function getLength() : uint
+      {
+         return this.len;
+      }
+      
+      public function getType() : uint
+      {
+         return this.type;
+      }
+      
+      public function toDER() : ByteArray
+      {
+         var _loc3_:IAsn1Type = null;
+         var _loc1_:ByteArray = new ByteArray();
+         var _loc2_:* = 0;
+         while(_loc2_ < length)
+         {
+            _loc3_ = this[_loc2_];
+            if(_loc3_ == null)
             {
-                e = this[i];
-                if (e == null)
-                {
-                    tmp.writeByte(5);
-                    tmp.writeByte(0);
-                }
-                else
-                {
-                    tmp.writeBytes(e.toDER());
-                };
-                i++;
-            };
-            return (DER.wrapDER(this.type, tmp));
-        }
-
-        public function toString():String
-        {
-            var found:Boolean;
-            var key:String;
-            var s:String = DER.indent;
-            DER.indent = (DER.indent + "    ");
-            var t:String = "";
-            var i:int;
-            while (i < length)
+               _loc1_.writeByte(5);
+               _loc1_.writeByte(0);
+            }
+            else
             {
-                if (this[i] != null)
-                {
-                    found = false;
-                    for (key in this)
-                    {
-                        if (((!((i.toString() == key))) && ((this[i] == this[key]))))
-                        {
-                            t = (t + (((key + ": ") + this[i]) + "\n"));
-                            found = true;
-                            break;
-                        };
-                    };
-                    if (!(found))
-                    {
-                        t = (t + (this[i] + "\n"));
-                    };
-                };
-                i++;
-            };
-            DER.indent = s;
-            return ((((((((((DER.indent + "Sequence[") + this.type) + "][") + this.len) + "][\n") + t) + "\n") + s) + "]"));
-        }
-
-        public function findAttributeValue(oid:String):IAsn1Type
-        {
-            var set:*;
-            var child:*;
-            var tmp:*;
-            var id:ObjectIdentifier;
-            for each (set in this)
+               _loc1_.writeBytes(_loc3_.toDER());
+            }
+            _loc2_++;
+         }
+         return DER.wrapDER(this.type,_loc1_);
+      }
+      
+      public function toString() : String
+      {
+         var _loc4_:* = false;
+         var _loc5_:String = null;
+         var _loc1_:String = DER.indent;
+         DER.indent = DER.indent + "    ";
+         var _loc2_:* = "";
+         var _loc3_:* = 0;
+         while(_loc3_ < length)
+         {
+            if(this[_loc3_] != null)
             {
-                if ((set is Set))
-                {
-                    child = set[0];
-                    if ((child is Sequence))
-                    {
-                        tmp = child[0];
-                        if ((tmp is ObjectIdentifier))
-                        {
-                            id = (tmp as ObjectIdentifier);
-                            if (id.toString() == oid)
-                            {
-                                return ((child[1] as IAsn1Type));
-                            };
-                        };
-                    };
-                };
-            };
-            return (null);
-        }
-
-
-    }
-}//package com.hurlant.util.der
-
+               _loc4_ = false;
+               for(_loc5_ in this)
+               {
+                  if(!(_loc3_.toString() == _loc5_) && this[_loc3_] == this[_loc5_])
+                  {
+                     _loc2_ = _loc2_ + (_loc5_ + ": " + this[_loc3_] + "\n");
+                     _loc4_ = true;
+                     break;
+                  }
+               }
+               if(!_loc4_)
+               {
+                  _loc2_ = _loc2_ + (this[_loc3_] + "\n");
+               }
+            }
+            _loc3_++;
+         }
+         DER.indent = _loc1_;
+         return DER.indent + "Sequence[" + this.type + "][" + this.len + "][\n" + _loc2_ + "\n" + _loc1_ + "]";
+      }
+      
+      public function findAttributeValue(param1:String) : IAsn1Type
+      {
+         var _loc2_:* = undefined;
+         var _loc3_:* = undefined;
+         var _loc4_:* = undefined;
+         var _loc5_:ObjectIdentifier = null;
+         for each(_loc2_ in this)
+         {
+            if(_loc2_ is Set)
+            {
+               _loc3_ = _loc2_[0];
+               if(_loc3_ is Sequence)
+               {
+                  _loc4_ = _loc3_[0];
+                  if(_loc4_ is ObjectIdentifier)
+                  {
+                     _loc5_ = _loc4_ as ObjectIdentifier;
+                     if(_loc5_.toString() == param1)
+                     {
+                        return _loc3_[1] as IAsn1Type;
+                     }
+                  }
+               }
+            }
+         }
+         return null;
+      }
+   }
+}

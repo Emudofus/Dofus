@@ -1,47 +1,42 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import com.ankamagames.berilia.interfaces.IApi;
-    import com.ankamagames.berilia.types.data.UiModule;
-    import com.ankamagames.jerakine.types.Color;
-
-    [InstanciedApi]
-    public class ColorApi implements IApi 
-    {
-
-        private var _module:UiModule;
-
-
-        [ApiData(name="module")]
-        public function set module(value:UiModule):void
-        {
-            this._module = value;
-        }
-
-        [Trusted]
-        public function destroy():void
-        {
-            this._module = null;
-        }
-
-        [Trusted]
-        public function changeLightness(c:uint, value:Number):uint
-        {
-            return (Color.setHSLlightness(c, value));
-        }
-
-        [Trusted]
-        public function changeSaturation(c:uint, saturation:Number):uint
-        {
-            return (Color.setHSVSaturation(c, saturation));
-        }
-
-        [Trusted]
-        public function generateColorList(methode:int):Array
-        {
-            return (Color.generateColorList(methode));
-        }
-
-
-    }
-}//package com.ankamagames.dofus.uiApi
-
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import com.ankamagames.jerakine.types.Color;
+   
+   public class ColorApi extends Object implements IApi
+   {
+      
+      public function ColorApi()
+      {
+         super();
+      }
+      
+      private var _module:UiModule;
+      
+      public function set module(param1:UiModule) : void
+      {
+         this._module = param1;
+      }
+      
+      public function destroy() : void
+      {
+         this._module = null;
+      }
+      
+      public function changeLightness(param1:uint, param2:Number) : uint
+      {
+         return Color.setHSLlightness(param1,param2);
+      }
+      
+      public function changeSaturation(param1:uint, param2:Number) : uint
+      {
+         return Color.setHSVSaturation(param1,param2);
+      }
+      
+      public function generateColorList(param1:int) : Array
+      {
+         return Color.generateColorList(param1);
+      }
+   }
+}

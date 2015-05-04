@@ -1,167 +1,165 @@
-﻿package com.ankamagames.dofus.network.messages.game.character.choice
+package com.ankamagames.dofus.network.messages.game.character.choice
 {
-    import com.ankamagames.jerakine.network.INetworkMessage;
-    import __AS3__.vec.Vector;
-    import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRecolorInformation;
-    import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRelookInformation;
-    import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
-    import flash.utils.ByteArray;
-    import com.ankamagames.jerakine.network.CustomDataWrapper;
-    import com.ankamagames.jerakine.network.ICustomDataOutput;
-    import com.ankamagames.jerakine.network.ICustomDataInput;
-    import __AS3__.vec.*;
-
-    [Trusted]
-    public class CharactersListWithModificationsMessage extends CharactersListMessage implements INetworkMessage 
-    {
-
-        public static const protocolId:uint = 6120;
-
-        private var _isInitialized:Boolean = false;
-        public var charactersToRecolor:Vector.<CharacterToRecolorInformation>;
-        public var charactersToRename:Vector.<int>;
-        public var unusableCharacters:Vector.<int>;
-        public var charactersToRelook:Vector.<CharacterToRelookInformation>;
-
-        public function CharactersListWithModificationsMessage()
-        {
-            this.charactersToRecolor = new Vector.<CharacterToRecolorInformation>();
-            this.charactersToRename = new Vector.<int>();
-            this.unusableCharacters = new Vector.<int>();
-            this.charactersToRelook = new Vector.<CharacterToRelookInformation>();
-            super();
-        }
-
-        override public function get isInitialized():Boolean
-        {
-            return (((super.isInitialized) && (this._isInitialized)));
-        }
-
-        override public function getMessageId():uint
-        {
-            return (6120);
-        }
-
-        public function initCharactersListWithModificationsMessage(characters:Vector.<CharacterBaseInformations>=null, hasStartupActions:Boolean=false, charactersToRecolor:Vector.<CharacterToRecolorInformation>=null, charactersToRename:Vector.<int>=null, unusableCharacters:Vector.<int>=null, charactersToRelook:Vector.<CharacterToRelookInformation>=null):CharactersListWithModificationsMessage
-        {
-            super.initCharactersListMessage(characters, hasStartupActions);
-            this.charactersToRecolor = charactersToRecolor;
-            this.charactersToRename = charactersToRename;
-            this.unusableCharacters = unusableCharacters;
-            this.charactersToRelook = charactersToRelook;
-            this._isInitialized = true;
-            return (this);
-        }
-
-        override public function reset():void
-        {
-            super.reset();
-            this.charactersToRecolor = new Vector.<CharacterToRecolorInformation>();
-            this.charactersToRename = new Vector.<int>();
-            this.unusableCharacters = new Vector.<int>();
-            this.charactersToRelook = new Vector.<CharacterToRelookInformation>();
-            this._isInitialized = false;
-        }
-
-        override public function pack(output:ICustomDataOutput):void
-        {
-            var data:ByteArray = new ByteArray();
-            this.serialize(new CustomDataWrapper(data));
-            writePacket(output, this.getMessageId(), data);
-        }
-
-        override public function unpack(input:ICustomDataInput, length:uint):void
-        {
-            this.deserialize(input);
-        }
-
-        override public function serialize(output:ICustomDataOutput):void
-        {
-            this.serializeAs_CharactersListWithModificationsMessage(output);
-        }
-
-        public function serializeAs_CharactersListWithModificationsMessage(output:ICustomDataOutput):void
-        {
-            super.serializeAs_CharactersListMessage(output);
-            output.writeShort(this.charactersToRecolor.length);
-            var _i1:uint;
-            while (_i1 < this.charactersToRecolor.length)
-            {
-                (this.charactersToRecolor[_i1] as CharacterToRecolorInformation).serializeAs_CharacterToRecolorInformation(output);
-                _i1++;
-            };
-            output.writeShort(this.charactersToRename.length);
-            var _i2:uint;
-            while (_i2 < this.charactersToRename.length)
-            {
-                output.writeInt(this.charactersToRename[_i2]);
-                _i2++;
-            };
-            output.writeShort(this.unusableCharacters.length);
-            var _i3:uint;
-            while (_i3 < this.unusableCharacters.length)
-            {
-                output.writeInt(this.unusableCharacters[_i3]);
-                _i3++;
-            };
-            output.writeShort(this.charactersToRelook.length);
-            var _i4:uint;
-            while (_i4 < this.charactersToRelook.length)
-            {
-                (this.charactersToRelook[_i4] as CharacterToRelookInformation).serializeAs_CharacterToRelookInformation(output);
-                _i4++;
-            };
-        }
-
-        override public function deserialize(input:ICustomDataInput):void
-        {
-            this.deserializeAs_CharactersListWithModificationsMessage(input);
-        }
-
-        public function deserializeAs_CharactersListWithModificationsMessage(input:ICustomDataInput):void
-        {
-            var _item1:CharacterToRecolorInformation;
-            var _val2:int;
-            var _val3:int;
-            var _item4:CharacterToRelookInformation;
-            super.deserialize(input);
-            var _charactersToRecolorLen:uint = input.readUnsignedShort();
-            var _i1:uint;
-            while (_i1 < _charactersToRecolorLen)
-            {
-                _item1 = new CharacterToRecolorInformation();
-                _item1.deserialize(input);
-                this.charactersToRecolor.push(_item1);
-                _i1++;
-            };
-            var _charactersToRenameLen:uint = input.readUnsignedShort();
-            var _i2:uint;
-            while (_i2 < _charactersToRenameLen)
-            {
-                _val2 = input.readInt();
-                this.charactersToRename.push(_val2);
-                _i2++;
-            };
-            var _unusableCharactersLen:uint = input.readUnsignedShort();
-            var _i3:uint;
-            while (_i3 < _unusableCharactersLen)
-            {
-                _val3 = input.readInt();
-                this.unusableCharacters.push(_val3);
-                _i3++;
-            };
-            var _charactersToRelookLen:uint = input.readUnsignedShort();
-            var _i4:uint;
-            while (_i4 < _charactersToRelookLen)
-            {
-                _item4 = new CharacterToRelookInformation();
-                _item4.deserialize(input);
-                this.charactersToRelook.push(_item4);
-                _i4++;
-            };
-        }
-
-
-    }
-}//package com.ankamagames.dofus.network.messages.game.character.choice
-
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRecolorInformation;
+   import com.ankamagames.dofus.network.types.game.character.choice.CharacterToRelookInformation;
+   import com.ankamagames.dofus.network.types.game.character.choice.CharacterBaseInformations;
+   import com.ankamagames.jerakine.network.ICustomDataOutput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.network.CustomDataWrapper;
+   import com.ankamagames.jerakine.network.ICustomDataInput;
+   
+   public class CharactersListWithModificationsMessage extends CharactersListMessage implements INetworkMessage
+   {
+      
+      public function CharactersListWithModificationsMessage()
+      {
+         this.charactersToRecolor = new Vector.<CharacterToRecolorInformation>();
+         this.charactersToRename = new Vector.<int>();
+         this.unusableCharacters = new Vector.<int>();
+         this.charactersToRelook = new Vector.<CharacterToRelookInformation>();
+         super();
+      }
+      
+      public static const protocolId:uint = 6120;
+      
+      private var _isInitialized:Boolean = false;
+      
+      override public function get isInitialized() : Boolean
+      {
+         return (super.isInitialized) && (this._isInitialized);
+      }
+      
+      public var charactersToRecolor:Vector.<CharacterToRecolorInformation>;
+      
+      public var charactersToRename:Vector.<int>;
+      
+      public var unusableCharacters:Vector.<int>;
+      
+      public var charactersToRelook:Vector.<CharacterToRelookInformation>;
+      
+      override public function getMessageId() : uint
+      {
+         return 6120;
+      }
+      
+      public function initCharactersListWithModificationsMessage(param1:Vector.<CharacterBaseInformations> = null, param2:Boolean = false, param3:Vector.<CharacterToRecolorInformation> = null, param4:Vector.<int> = null, param5:Vector.<int> = null, param6:Vector.<CharacterToRelookInformation> = null) : CharactersListWithModificationsMessage
+      {
+         super.initCharactersListMessage(param1,param2);
+         this.charactersToRecolor = param3;
+         this.charactersToRename = param4;
+         this.unusableCharacters = param5;
+         this.charactersToRelook = param6;
+         this._isInitialized = true;
+         return this;
+      }
+      
+      override public function reset() : void
+      {
+         super.reset();
+         this.charactersToRecolor = new Vector.<CharacterToRecolorInformation>();
+         this.charactersToRename = new Vector.<int>();
+         this.unusableCharacters = new Vector.<int>();
+         this.charactersToRelook = new Vector.<CharacterToRelookInformation>();
+         this._isInitialized = false;
+      }
+      
+      override public function pack(param1:ICustomDataOutput) : void
+      {
+         var _loc2_:ByteArray = new ByteArray();
+         this.serialize(new CustomDataWrapper(_loc2_));
+         writePacket(param1,this.getMessageId(),_loc2_);
+      }
+      
+      override public function unpack(param1:ICustomDataInput, param2:uint) : void
+      {
+         this.deserialize(param1);
+      }
+      
+      override public function serialize(param1:ICustomDataOutput) : void
+      {
+         this.serializeAs_CharactersListWithModificationsMessage(param1);
+      }
+      
+      public function serializeAs_CharactersListWithModificationsMessage(param1:ICustomDataOutput) : void
+      {
+         super.serializeAs_CharactersListMessage(param1);
+         param1.writeShort(this.charactersToRecolor.length);
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.charactersToRecolor.length)
+         {
+            (this.charactersToRecolor[_loc2_] as CharacterToRecolorInformation).serializeAs_CharacterToRecolorInformation(param1);
+            _loc2_++;
+         }
+         param1.writeShort(this.charactersToRename.length);
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.charactersToRename.length)
+         {
+            param1.writeInt(this.charactersToRename[_loc3_]);
+            _loc3_++;
+         }
+         param1.writeShort(this.unusableCharacters.length);
+         var _loc4_:uint = 0;
+         while(_loc4_ < this.unusableCharacters.length)
+         {
+            param1.writeInt(this.unusableCharacters[_loc4_]);
+            _loc4_++;
+         }
+         param1.writeShort(this.charactersToRelook.length);
+         var _loc5_:uint = 0;
+         while(_loc5_ < this.charactersToRelook.length)
+         {
+            (this.charactersToRelook[_loc5_] as CharacterToRelookInformation).serializeAs_CharacterToRelookInformation(param1);
+            _loc5_++;
+         }
+      }
+      
+      override public function deserialize(param1:ICustomDataInput) : void
+      {
+         this.deserializeAs_CharactersListWithModificationsMessage(param1);
+      }
+      
+      public function deserializeAs_CharactersListWithModificationsMessage(param1:ICustomDataInput) : void
+      {
+         var _loc10_:CharacterToRecolorInformation = null;
+         var _loc11_:* = 0;
+         var _loc12_:* = 0;
+         var _loc13_:CharacterToRelookInformation = null;
+         super.deserialize(param1);
+         var _loc2_:uint = param1.readUnsignedShort();
+         var _loc3_:uint = 0;
+         while(_loc3_ < _loc2_)
+         {
+            _loc10_ = new CharacterToRecolorInformation();
+            _loc10_.deserialize(param1);
+            this.charactersToRecolor.push(_loc10_);
+            _loc3_++;
+         }
+         var _loc4_:uint = param1.readUnsignedShort();
+         var _loc5_:uint = 0;
+         while(_loc5_ < _loc4_)
+         {
+            _loc11_ = param1.readInt();
+            this.charactersToRename.push(_loc11_);
+            _loc5_++;
+         }
+         var _loc6_:uint = param1.readUnsignedShort();
+         var _loc7_:uint = 0;
+         while(_loc7_ < _loc6_)
+         {
+            _loc12_ = param1.readInt();
+            this.unusableCharacters.push(_loc12_);
+            _loc7_++;
+         }
+         var _loc8_:uint = param1.readUnsignedShort();
+         var _loc9_:uint = 0;
+         while(_loc9_ < _loc8_)
+         {
+            _loc13_ = new CharacterToRelookInformation();
+            _loc13_.deserialize(param1);
+            this.charactersToRelook.push(_loc13_);
+            _loc9_++;
+         }
+      }
+   }
+}
